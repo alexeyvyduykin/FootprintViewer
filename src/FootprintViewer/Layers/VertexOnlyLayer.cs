@@ -12,13 +12,21 @@ namespace FootprintViewer
     {
         private readonly ILayer _source;
 
+        private static readonly SymbolStyle PointStyle = new SymbolStyle
+        {
+            Fill = new Brush(Color.White),
+            Outline = new Pen(Color.Black, 2 / 0.3),
+            SymbolType = SymbolType.Ellipse,                        
+            SymbolScale = 0.3,
+        };
+
         public override BoundingBox Envelope => _source.Envelope;
 
         public VertexOnlyLayer(ILayer source)
         {
             _source = source;
             _source.DataChanged += (sender, args) => OnDataChanged(args);
-            Style = new SymbolStyle { SymbolScale = 0.5 };
+            Style = PointStyle;
         }
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)

@@ -33,9 +33,6 @@ namespace FootprintViewer
 
         private static readonly SymbolStyle DisableStyle = new SymbolStyle { Enabled = false };
 
-
-
-
         public static Map CreateMap()
         {
             var backgroundLayer = CreateBackgroundLayer();

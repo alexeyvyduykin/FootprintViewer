@@ -12,7 +12,7 @@ namespace FootprintViewer
     public class EditingManipulator : MouseManipulator
     {
         private bool _isDragging = false;    
-        private int _vertexRadius = 100;
+        private int _vertexRadius = 4;
         private InteractiveFeature _draggingFeature;
         private WritableLayer _layer = null;
 
