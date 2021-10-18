@@ -51,7 +51,7 @@ namespace FootprintViewer
 
                 _draggingFeature.Dragging(worldPosition);
 
-                MapView.SetCursorType(CursorType.FeatureDragging);
+                MapView.SetCursorType(CursorType.EditingFeaturePoint);
                 _layer.DataHasChanged();                
             }
             

@@ -7,8 +7,9 @@
         ZoomRectangle,
         ZoomHorizontal,
         ZoomVertical,
-
-        FeatureEditing,
-        FeatureDragging,
+        HoverEditPoint,
+        HoverDragPoint,
+        EditingFeaturePoint,
+        DraggingFeature,
     }
 }
