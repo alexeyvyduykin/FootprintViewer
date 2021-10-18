@@ -165,6 +165,9 @@ namespace FootprintViewer.WPF
                 case CursorType.ZoomVertical:
                     Cursor = Cursors.SizeNS;
                     break;
+                case CursorType.FeatureDragging:
+                    Cursor = Cursors.UpArrow;
+                    break;
                 default:
                     Cursor = Cursors.Arrow;
                     break;

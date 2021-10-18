@@ -12,7 +12,9 @@ namespace FootprintViewer
     public class EditingManipulator : MouseManipulator
     {
         private bool _isDragging = false;    
-        private int _vertexRadius = 50;
+        private int _vertexRadius = 100;
+        private InteractiveFeature _draggingFeature;
+        private WritableLayer _layer = null;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
 
@@ -22,12 +24,17 @@ namespace FootprintViewer
 
             if(_isDragging == true)
             {
-                MapView.EditManager.StopDragging();
+                _draggingFeature.EndDragging();
 
+                var bb = _draggingFeature.Geometry.BoundingBox;
+                             
                 MapView.Map.PanLock = false;
+
+                MapView.NavigateToAOI(bb);
+
                 _isDragging = false;
             }
-          
+
             MapView.SetCursorType(CursorType.Default);
 
             e.Handled = true;
@@ -42,7 +49,10 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                MapView.EditManager.Dragging(worldPosition);
+                _draggingFeature.Dragging(worldPosition);
+
+                MapView.SetCursorType(CursorType.FeatureDragging);
+                _layer.DataHasChanged();                
             }
             
             e.Handled = true;
@@ -55,21 +65,29 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var mapInfo = MapView.GetMapInfo(screenPosition);
 
-            _isDragging = MapView.EditManager.StartDragging(mapInfo, _vertexRadius);
+            _isDragging = StartDragging(mapInfo, _vertexRadius);
 
             if(_isDragging == true)
             {
-                MapView.Map.PanLock = true;
-
-                MapView.SetCursorType(GetCursorType());
+                MapView.Map.PanLock = true;          
             }
 
             e.Handled = true;
         }
 
-        private CursorType GetCursorType()
+        private bool StartDragging(MapInfo mapInfo, double screenDistance)
         {
-            return CursorType.ZoomRectangle;
+            if (mapInfo.Feature != null && mapInfo.Feature is InteractiveFeature interactiveFeature)
+            {
+                var distance = mapInfo.Resolution * screenDistance;
+
+                _draggingFeature = interactiveFeature;
+                _layer = (WritableLayer)mapInfo.Layer;
+
+                return interactiveFeature.BeginDragging(mapInfo.WorldPosition, distance);
+            }
+
+            return false;
         }
     }
 }

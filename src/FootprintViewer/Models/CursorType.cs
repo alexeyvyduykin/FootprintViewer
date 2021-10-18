@@ -6,6 +6,7 @@
         Pan,
         ZoomRectangle,
         ZoomHorizontal,
-        ZoomVertical
+        ZoomVertical,
+        FeatureDragging,
     }
 }

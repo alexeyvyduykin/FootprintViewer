@@ -2,7 +2,9 @@
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.UI;
+using NetTopologySuite.Operation.Distance;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer
 {
@@ -23,6 +25,12 @@ namespace FootprintViewer
         public abstract void EndDrawing();
 
         public abstract IList<Point> EditVertices();
+
+        public abstract bool BeginDragging(Point worldPosition, double screenDistance);
+
+        public abstract bool Dragging(Point worldPosition);
+
+        public abstract void EndDragging();
     }
 
     public interface IInteractiveFeature : IFeature
@@ -37,7 +45,7 @@ namespace FootprintViewer
 
         IList<Point> EditVertices();
 
-        bool BeginDragging(MapInfo mapInfo, double screenDistance);
+        bool BeginDragging(Point worldPosition, double screenDistance);
 
         bool Dragging(Point worldPosition);
 
