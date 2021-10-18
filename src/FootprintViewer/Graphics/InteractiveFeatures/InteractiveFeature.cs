@@ -26,11 +26,11 @@ namespace FootprintViewer
 
         public abstract IList<Point> EditVertices();
 
-        public abstract bool BeginDragging(Point worldPosition, double screenDistance);
+        public abstract bool BeginEditing(Point worldPosition, double screenDistance);
 
-        public abstract bool Dragging(Point worldPosition);
+        public abstract bool Editing(Point worldPosition);
 
-        public abstract void EndDragging();
+        public abstract void EndEditing();
     }
 
     public interface IInteractiveFeature : IFeature
@@ -45,10 +45,10 @@ namespace FootprintViewer
 
         IList<Point> EditVertices();
 
-        bool BeginDragging(Point worldPosition, double screenDistance);
+        bool BeginEditing(Point worldPosition, double screenDistance);
 
-        bool Dragging(Point worldPosition);
+        bool Editing(Point worldPosition);
 
-        void EndDragging();
+        void EndEditing();
     }
 }

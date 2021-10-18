@@ -11,7 +11,7 @@ namespace FootprintViewer
     {
         private bool _isDrawing = false;
 
-        private bool _isDragging = false;
+        private bool _isEditing = false;
         private Point _vertex;
         private Point _startOffsetToVertex;
 
@@ -95,9 +95,9 @@ namespace FootprintViewer
             return new List<Point>();
         }
 
-        public override bool BeginDragging(Point worldPosition, double screenDistance)
+        public override bool BeginEditing(Point worldPosition, double screenDistance)
         {
-            if (_isDragging == true)
+            if (_isEditing == true)
             {
                 return false;
             }
@@ -110,7 +110,7 @@ namespace FootprintViewer
             {
                 _vertex = vertexTouched;
                 _startOffsetToVertex = worldPosition - vertexTouched;
-                _isDragging = true;
+                _isEditing = true;
 
                 return true; // to indicate start of drag
             }
@@ -118,9 +118,9 @@ namespace FootprintViewer
             return false;
         }
 
-        public override bool Dragging(Point worldPosition)
+        public override bool Editing(Point worldPosition)
         {
-            if (_isDragging == false)
+            if (_isEditing == false)
             {
                 return false;
             }
@@ -158,11 +158,11 @@ namespace FootprintViewer
             return true;
         }
 
-        public override void EndDragging()
+        public override void EndEditing()
         {
-            if (_isDragging == true)
+            if (_isEditing == true)
             {
-                _isDragging = false;
+                _isEditing = false;
             }
         }
     }

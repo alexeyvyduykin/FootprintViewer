@@ -11,9 +11,9 @@ namespace FootprintViewer
 {
     public class EditingManipulator : MouseManipulator
     {
-        private bool _isDragging = false;    
+        private bool _isEditing = false;    
         private int _vertexRadius = 4;
-        private InteractiveFeature _draggingFeature;
+        private InteractiveFeature _editingFeature;
         private WritableLayer _layer = null;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
@@ -22,17 +22,17 @@ namespace FootprintViewer
         {        
             base.Completed(e);
 
-            if(_isDragging == true)
+            if(_isEditing == true)
             {
-                _draggingFeature.EndDragging();
+                _editingFeature.EndEditing();
 
-                var bb = _draggingFeature.Geometry.BoundingBox;
+                var bb = _editingFeature.Geometry.BoundingBox;
                              
                 MapView.Map.PanLock = false;
 
                 MapView.NavigateToAOI(bb);
 
-                _isDragging = false;
+                _isEditing = false;
             }
 
             MapView.SetCursorType(CursorType.Default);
@@ -44,12 +44,12 @@ namespace FootprintViewer
         {                    
             base.Delta(e);
 
-            if (_isDragging == true)
+            if (_isEditing == true)
             {
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                _draggingFeature.Dragging(worldPosition);
+                _editingFeature.Editing(worldPosition);
 
                 MapView.SetCursorType(CursorType.EditingFeaturePoint);
                 _layer.DataHasChanged();                
@@ -65,9 +65,9 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var mapInfo = MapView.GetMapInfo(screenPosition);
 
-            _isDragging = StartDragging(mapInfo, _vertexRadius);
+            _isEditing = StartDragging(mapInfo, _vertexRadius);
 
-            if(_isDragging == true)
+            if(_isEditing == true)
             {
                 MapView.Map.PanLock = true;          
             }
@@ -81,10 +81,10 @@ namespace FootprintViewer
             {
                 var distance = mapInfo.Resolution * screenDistance;
 
-                _draggingFeature = interactiveFeature;
+                _editingFeature = interactiveFeature;
                 _layer = (WritableLayer)mapInfo.Layer;
 
-                return interactiveFeature.BeginDragging(mapInfo.WorldPosition, distance);
+                return interactiveFeature.BeginEditing(mapInfo.WorldPosition, distance);
             }
 
             return false;
