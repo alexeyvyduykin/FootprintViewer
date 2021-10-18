@@ -1,6 +1,7 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
 using Mapsui.UI;
+using NetTopologySuite.Triangulate.QuadEdge;
 //using NetTopologySuite.Utilities;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace FootprintViewer
         private bool _isDrawing = false;
         private Point _center;
         private Point _sizeNE;
+
+        private bool _isDragging = false;
+        private Point _vertex;
+        private Point _startOffsetToVertex;
 
         public override AddInfo BeginDrawing(Point worldPosition)
         {
@@ -100,6 +105,10 @@ namespace FootprintViewer
 
         public override IList<Point> EditVertices()
         {
+            if (Geometry != null && _isDragging == true)
+            {
+                return new List<Point>() { _center };
+            }
             if (Geometry != null && _isDrawing == false)
             {
                 return new List<Point>() { _center, _sizeNE };
@@ -110,86 +119,60 @@ namespace FootprintViewer
 
         public override bool BeginDragging(Point worldPosition, double screenDistance)
         {
-            throw new NotImplementedException();
+            if (_isDragging == true)
+            {
+                return false;
+            }
+
+            var vertices = EditVertices();
+
+            var vertexTouched = vertices.OrderBy(v => v.Distance(worldPosition)).FirstOrDefault(v => v.Distance(worldPosition) < screenDistance);
+            
+            if (vertexTouched != null && vertexTouched == _sizeNE)
+            {
+                _vertex = vertexTouched;
+                _startOffsetToVertex = worldPosition - vertexTouched;
+                _isDragging = true;
+
+                return true; // to indicate start of drag
+            }
+
+            return false;
         }
 
         public override bool Dragging(Point worldPosition)
         {
-            throw new NotImplementedException();
+            if (_isDragging == false)
+            {
+                return false;
+            }
+
+            var p1 = worldPosition - _startOffsetToVertex;
+
+            var radius = _center.Distance(p1);
+
+            var angleRad = 45.0 / 180.0 * Math.PI;
+
+            _sizeNE = new Point(radius * Math.Sin(angleRad) + _center.X, radius * Math.Cos(angleRad) + _center.Y);
+
+            var vertices = GetCircle(_center, radius, 180);
+
+            Geometry = new Polygon()
+            {
+                ExteriorRing = new LinearRing(vertices)
+            };
+
+            RenderedGeometry.Clear();
+
+            return true;
         }
 
         public override void EndDragging()
         {
-            throw new NotImplementedException();
+            if (_isDragging == true)
+            {
+                _isDragging = false;
+            }
         }
-        //public bool StartDragging(MapInfo mapInfo, double screenDistance)
-        //{
-        //    if (mapInfo.Feature != null && mapInfo.Feature is InteractiveFeature interactiveFeature)
-        //    {
-        //        var vertexTouched = FindVertexTouched(mapInfo, interactiveFeature.EditVertices(), screenDistance);
-        //        if (vertexTouched != null)
-        //        {
-        //            _dragInfo.Feature = interactiveFeature;
-        //            _dragInfo.Vertex = vertexTouched;
-        //            _dragInfo.StartOffsetToVertex = mapInfo.WorldPosition - _dragInfo.Vertex;
-
-        //            return true; // to indicate start of drag
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
-        //public bool Dragging(Point worldPosition)
-        //{
-        //    if (_dragInfo.Feature == null)
-        //        return false;
-
-        //    SetPointXY(_dragInfo.Vertex, worldPosition - _dragInfo.StartOffsetToVertex);
-
-        //    if (_dragInfo.Feature.Geometry is Polygon polygon) // Not this only works correctly it the feature is in the outerring.
-        //    {
-        //        var count = polygon.ExteriorRing.Vertices.Count;
-        //        var vertices = polygon.ExteriorRing.Vertices;
-        //        var index = vertices.IndexOf(_dragInfo.Vertex);
-        //        if (index >= 0)
-        //        {
-        //            // It is a ring where the first should be the same as the last.
-        //            // So if the first was removed than set the last to the value of the new first
-        //            if (index == 0)
-        //            {
-        //                SetPointXY(vertices[count - 1], vertices[0]);
-        //            }
-        //            // If the last was removed then set the first to the value of the new last
-        //            else if (index == vertices.Count)
-        //            {
-        //                SetPointXY(vertices[0], vertices[count - 1]);
-        //            }
-        //        }
-        //    }
-
-        //    _dragInfo.Feature.RenderedGeometry.Clear();
-        //    Layer.DataHasChanged();
-        //    return true;
-        //}
-
-        //public void StopDragging()
-        //{
-        //    if (_dragInfo.Feature != null)
-        //    {
-        //        _dragInfo.Feature = null;
-        //    }
-        //}
-
-        //private Point FindVertexTouched(MapInfo mapInfo, IEnumerable<Point> vertices, double screenDistance)
-        //{
-        //    return vertices.OrderBy(v => v.Distance(mapInfo.WorldPosition)).FirstOrDefault(v => v.Distance(mapInfo.WorldPosition) < mapInfo.Resolution * screenDistance);
-        //}
-
-        //private void SetPointXY(Point target, Point position)
-        //{
-        //    target.X = position.X;
-        //    target.Y = position.Y;
-        //}
     }
 }
