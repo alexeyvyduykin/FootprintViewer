@@ -23,7 +23,7 @@ namespace FootprintViewer
 
                 _addInfo = interactiveRectangle.BeginDrawing(worldPosition);
 
-                Layer.Add(_addInfo.Feature);
+                Layer.AddAOI(_addInfo);
                 Layer.DataHasChanged();
 
                 return (false, new BoundingBox());
@@ -31,6 +31,9 @@ namespace FootprintViewer
             else
             {
                 _addInfo.Feature.EndDrawing();
+
+                Layer.ResetAOI();
+                Layer.AddAOI(_addInfo);
 
                 BoundingBox bb = _addInfo.Feature.Geometry.BoundingBox;
 
@@ -173,7 +176,7 @@ namespace FootprintViewer
             _addInfo.Feature.EndDrawing();
 
             Layer.ResetAOI();
-            Layer.Add(_addInfo.Feature);
+            Layer.AddAOI(_addInfo);
 
             var bb = _addInfo.Feature.Geometry.BoundingBox;
 
@@ -190,7 +193,7 @@ namespace FootprintViewer
 
                 _addInfo = interactiveCircle.BeginDrawing(worldPosition);
 
-                Layer.Add(_addInfo.Feature);
+                Layer.AddAOI(_addInfo);
                 Layer.DataHasChanged();
 
                 return (false, new BoundingBox());
@@ -198,6 +201,9 @@ namespace FootprintViewer
             else
             {
                 _addInfo.Feature.EndDrawing();
+
+                Layer.ResetAOI();
+                Layer.AddAOI(_addInfo);
 
                 var bb = _addInfo.Feature.Geometry.BoundingBox;
 

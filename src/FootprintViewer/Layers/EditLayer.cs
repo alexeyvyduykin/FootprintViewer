@@ -10,14 +10,28 @@ using System.Linq;
 
 namespace FootprintViewer
 {
-    public class EditLayer : WritableLayer
+    public class EditLayer : BaseLayer
     {   
         private List<AddInfo> _aoiInfos = new List<AddInfo>();
         private AddInfo _routeInfo = new AddInfo();
 
+        private WritableLayer _layer = new WritableLayer();
+
         public EditLayer() : base()
         {
 
+        }
+
+        public override BoundingBox Envelope => _layer.Envelope;
+
+        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        {
+            return _layer.GetFeaturesInView(box, resolution);
+        }
+
+        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        {
+            _layer.RefreshData(extent, resolution, changeType);
         }
 
         private AddInfo GetCurrentInfo()
@@ -31,11 +45,11 @@ namespace FootprintViewer
             {
                 _aoiInfos.Add(addInfo);
 
-                Add(addInfo.Feature);
+                _layer.Add(addInfo.Feature);
 
                 if (addInfo.HelpFeatures != null && addInfo.HelpFeatures.Count > 0)
                 {
-                    AddRange(addInfo.HelpFeatures);
+                    _layer.AddRange(addInfo.HelpFeatures);
                 }
             }
         }
@@ -44,8 +58,10 @@ namespace FootprintViewer
         {
             foreach (var item in _aoiInfos)
             {
-                TryRemove(item.Feature);
+                _layer.TryRemove(item.Feature);
             }
+
+            _aoiInfos.Clear();
         }
 
         public void ClearAOIHelpers()
@@ -56,7 +72,7 @@ namespace FootprintViewer
             {
                 foreach (var item in aoiInfo.HelpFeatures)
                 {
-                    TryRemove(item);
+                    _layer.TryRemove(item);
                 }
 
                 aoiInfo.HelpFeatures = null;
@@ -68,8 +84,8 @@ namespace FootprintViewer
             ClearRouteHelpers();
 
             if (_routeInfo.Feature != null)
-            {                    
-                TryRemove(_routeInfo.Feature);
+            {
+                _layer.TryRemove(_routeInfo.Feature);
                 _routeInfo.Feature = null;
             }
 
@@ -82,7 +98,7 @@ namespace FootprintViewer
             {
                 foreach (var item in _routeInfo.HelpFeatures)
                 {
-                    TryRemove(item);
+                    _layer.TryRemove(item);
                 }
 
                 _routeInfo.HelpFeatures = null;
@@ -97,13 +113,15 @@ namespace FootprintViewer
             {
                 _routeInfo = addInfo;
 
-                Add(addInfo.Feature);
+                _layer.Add(addInfo.Feature);
 
                 if (addInfo.HelpFeatures != null && addInfo.HelpFeatures.Count > 0)
                 {
-                    AddRange(addInfo.HelpFeatures);
+                    _layer.AddRange(addInfo.HelpFeatures);
                 }
             }
         }
+
+
     }
 }
