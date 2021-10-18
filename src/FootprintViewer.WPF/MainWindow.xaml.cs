@@ -74,7 +74,7 @@ namespace FootprintViewer.WPF
 
         private void InitializeEditSetup()
         {
-            MapControl.EditManager.Layer = (WritableLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+            MapControl.EditManager.Layer = (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
 
             Loaded += (sender, args) =>
             {

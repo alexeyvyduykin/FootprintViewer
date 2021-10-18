@@ -9,7 +9,7 @@ namespace FootprintViewer
 {
     public class EditManager
     {
-        public WritableLayer Layer { get; set; }
+        public EditLayer Layer { get; set; }
 
         private AddInfo? _addInfo;
 
@@ -60,8 +60,7 @@ namespace FootprintViewer
 
                 _addInfo = interactiveRoute.BeginDrawing(worldPosition);
 
-                Layer.Add(_addInfo.Feature);
-                Layer.AddRange(_addInfo.HelpFeatures);
+                Layer.AddRoute(_addInfo);
                 Layer.DataHasChanged();
             }
             else
@@ -105,11 +104,7 @@ namespace FootprintViewer
                 return;
             }
 
-            // TODO: need tested
-            foreach (var item in _addInfo.HelpFeatures)
-            {
-                Layer.TryRemove(item);
-            }
+            Layer.ClearRouteHelpers();
 
             _addInfo.Feature.EndDrawing();
 
@@ -124,8 +119,7 @@ namespace FootprintViewer
 
                 _addInfo = interactivePolygon.BeginDrawing(worldPosition);
 
-                Layer.Add(_addInfo.Feature);
-                Layer.AddRange(_addInfo.HelpFeatures);
+                Layer.AddAOI(_addInfo);          
                 Layer.DataHasChanged();
 
                 return (false, new BoundingBox());
@@ -144,6 +138,8 @@ namespace FootprintViewer
 
                     if (click == true)
                     {
+
+
                         return EndDrawingPolygon();                    
                     }
                 }
@@ -172,13 +168,12 @@ namespace FootprintViewer
                 return (false, new BoundingBox());
             }
 
-            // TODO: need tested
-            foreach (var item in _addInfo.HelpFeatures)
-            {
-                Layer.TryRemove(item);
-            }
+            Layer.ClearAOIHelpers();
 
             _addInfo.Feature.EndDrawing();
+
+            Layer.ResetAOI();
+            Layer.Add(_addInfo.Feature);
 
             var bb = _addInfo.Feature.Geometry.BoundingBox;
 

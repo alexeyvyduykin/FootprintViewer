@@ -133,19 +133,7 @@ namespace FootprintViewer.WPF
         public EditManager EditManager => _editManager;
 
         public void NavigateToAOI(BoundingBox boundingBox)
-        {
-            var layer = (WritableLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-       
-            var features = layer.GetFeatures().ToList();
-          
-            // HACK: maybe problems in future
-            if (features.Count > 1)
-            {              
-                var f = features.Where(s => s.Geometry.BoundingBox.Equals(boundingBox) == false).Single();
-
-                layer.TryRemove(f);                
-            }
-
+        {              
             Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
@@ -218,6 +206,12 @@ namespace FootprintViewer.WPF
                     _actualController = new DrawCircleController();
                     break;
                 case ToolType.RoutingDistance:
+                    var layer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+                    if(layer != null)
+                    {
+                        layer.ClearRoute();
+                    }
+
                     _actualController = new DrawRouteController();
                     break;
                 case ToolType.Editing:

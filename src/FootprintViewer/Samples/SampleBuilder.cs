@@ -51,7 +51,7 @@ namespace FootprintViewer
             map.Layers.Add(CreateEmptyFootprintLayer()); // FootprintLayer
             map.Layers.Add(CreateFootprintBorderLayer()); // FootprintBorderLayer
 
-            var editLayer = CreatePolygonLayer();//CreateEditLayer();
+            var editLayer = CreateEditLayer();
             map.Layers.Add(editLayer);
             map.Layers.Add(new VertexOnlyLayer(editLayer) { Name = nameof(LayerType.VertexLayer) });
 
@@ -94,9 +94,9 @@ namespace FootprintViewer
             return tileLayer;
         }
 
-        private static WritableLayer CreatePolygonLayer()
+        private static EditLayer CreateEditLayer()
         {
-            var polygonLayer = new WritableLayer
+            var editLayer = new EditLayer
             {
                 Name = nameof(LayerType.EditLayer),
                 Style = CreateSelectedStyle(),
@@ -112,9 +112,11 @@ namespace FootprintViewer
 
             var interactiveFeature = new InteractivePolygon(feature);
 
-            polygonLayer.Add(interactiveFeature);
+            AddInfo addInfo = new AddInfo() { Feature = interactiveFeature };
 
-            return polygonLayer;
+            editLayer.AddAOI(addInfo);
+
+            return editLayer;
         }
 
         public static void Scale(IGeometry geometry, double scale, Mapsui.Geometries.Point center)
