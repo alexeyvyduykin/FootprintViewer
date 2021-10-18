@@ -1,6 +1,7 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
 using Mapsui.UI;
+using NetTopologySuite.Triangulate.QuadEdge;
 //using NetTopologySuite.GeometriesGraph;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,10 @@ namespace FootprintViewer
     {
         private bool _isDrawing = false;
         private Feature _helpLineString;
+
+        private bool _isEditing = false;
+        private Point _vertex;
+        private Point _startOffsetToVertex;
 
         public override AddInfo BeginDrawing(Point worldPosition)
         {
@@ -89,17 +94,50 @@ namespace FootprintViewer
 
         public override bool BeginEditing(Point worldPosition, double screenDistance)
         {
-            throw new System.NotImplementedException();
+            if (_isEditing == true)
+            {
+                return false;
+            }
+
+            var vertices = EditVertices();
+
+            var vertexTouched = vertices.OrderBy(v => v.Distance(worldPosition)).FirstOrDefault(v => v.Distance(worldPosition) < screenDistance);
+            
+            if (vertexTouched != null)
+            {
+                _vertex = vertexTouched;
+                _startOffsetToVertex = worldPosition - vertexTouched;
+                _isEditing = true;
+
+                return true; // to indicate start of drag
+            }
+
+            return false;
         }
 
         public override bool Editing(Point worldPosition)
         {
-            throw new System.NotImplementedException();
+            if (_isEditing == false)
+            {
+                return false;
+            }
+
+            var position = worldPosition - _startOffsetToVertex;
+            
+            _vertex.X = position.X;
+            _vertex.Y = position.Y;
+
+            RenderedGeometry.Clear();
+
+            return true;
         }
 
         public override void EndEditing()
         {
-            throw new System.NotImplementedException();
+            if (_isEditing == true)
+            {
+                _isEditing = false;
+            }
         }
     }
 }
