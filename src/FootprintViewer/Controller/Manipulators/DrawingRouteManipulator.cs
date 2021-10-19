@@ -18,7 +18,7 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                MapView.Observer.DrawingRoute(worldPosition, screenPosition, MapView.Viewport);
+                MapView.Observer.CreatingRoute(worldPosition, screenPosition, MapView.Viewport);
             }
 
             MapView.SetCursorType(CursorType.Default);
@@ -67,7 +67,7 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Observer.DrawingHoverRoute(worldPosition);
+            MapView.Observer.HoverCreatingRoute(worldPosition);
         }
     }
 }

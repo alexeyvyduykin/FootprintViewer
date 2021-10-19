@@ -13,21 +13,21 @@ namespace FootprintViewer
 
     public interface IInteractiveFeatureObserver
     {
-        (bool, BoundingBox, IInteractiveFeature) DrawingRectangle(Point worldPosition);
+        (bool, BoundingBox, IInteractiveFeature) CreatingRectangle(Point worldPosition);
 
-        void DrawingHoverRectangle(Point worldPosition);
+        void HoverCreatingRectangle(Point worldPosition);
 
-        void DrawingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
+        void CreatingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
 
-        void DrawingHoverRoute(Point worldPosition);
+        void HoverCreatingRoute(Point worldPosition);
 
-        (bool, BoundingBox) DrawingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
+        (bool, BoundingBox) CreatingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
        
-        void DrawingHoverPolygon(Point worldPosition);
+        void HoverCreatingPolygon(Point worldPosition);
 
-        (bool, BoundingBox) DrawingCircle(Point worldPosition);
+        (bool, BoundingBox) CreatingCircle(Point worldPosition);
 
-        void DrawingHoverCircle(Point worldPosition);
+        void HoverCreatingCircle(Point worldPosition);
     }
 
     public class InteractiveFeatureObserver : IInteractiveFeatureObserver, IInteractiveFeatureParent
@@ -44,7 +44,7 @@ namespace FootprintViewer
         public EditLayer Layer => _editLayer;
 
         // rectangle
-        public (bool, BoundingBox, IInteractiveFeature) DrawingRectangle(Point worldPosition)
+        public (bool, BoundingBox, IInteractiveFeature) CreatingRectangle(Point worldPosition)
         {
             if (_addInfo == null)
             {
@@ -76,7 +76,7 @@ namespace FootprintViewer
             }
         }
 
-        public void DrawingHoverRectangle(Point worldPosition)
+        public void HoverCreatingRectangle(Point worldPosition)
         {
             if (_addInfo != null)
             {
@@ -87,7 +87,7 @@ namespace FootprintViewer
         }
 
         // route
-        public void DrawingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
+        public void CreatingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
         {
             if (_addInfo == null)
             {
@@ -123,7 +123,7 @@ namespace FootprintViewer
             }
         }
 
-        public void DrawingHoverRoute(Point worldPosition)
+        public void HoverCreatingRoute(Point worldPosition)
         {
             if (_addInfo != null)
             {
@@ -147,7 +147,7 @@ namespace FootprintViewer
         }
 
         // polygon
-        public (bool, BoundingBox) DrawingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
+        public (bool, BoundingBox) CreatingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
         {
             if (_addInfo == null)
             {
@@ -188,7 +188,7 @@ namespace FootprintViewer
             }
         }
 
-        public void DrawingHoverPolygon(Point worldPosition)
+        public void HoverCreatingPolygon(Point worldPosition)
         {
             if (_addInfo != null)
             {
@@ -219,7 +219,7 @@ namespace FootprintViewer
         }
 
         // circle
-        public (bool, BoundingBox) DrawingCircle(Point worldPosition)
+        public (bool, BoundingBox) CreatingCircle(Point worldPosition)
         {
             if (_addInfo == null)
             {
@@ -249,7 +249,7 @@ namespace FootprintViewer
             }
         }
 
-        public void DrawingHoverCircle(Point worldPosition)
+        public void HoverCreatingCircle(Point worldPosition)
         {
             if (_addInfo != null)
             {
@@ -268,6 +268,5 @@ namespace FootprintViewer
 
             return mouseDownScreenPosition.Distance(screenPosition) < _minPixelsMovedForDrag;
         }
-
     }
 }

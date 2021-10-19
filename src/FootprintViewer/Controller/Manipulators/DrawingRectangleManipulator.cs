@@ -24,7 +24,7 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb, f) = MapView.Observer.DrawingRectangle(worldPosition);
+                var (isDraw, bb, f) = MapView.Observer.CreatingRectangle(worldPosition);
                 
                 if (isDraw == true)
                 {
@@ -81,7 +81,7 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Observer.DrawingHoverRectangle(worldPosition);
+            MapView.Observer.HoverCreatingRectangle(worldPosition);
         }
     }
 
