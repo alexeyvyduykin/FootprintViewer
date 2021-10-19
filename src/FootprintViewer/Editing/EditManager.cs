@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace FootprintViewer
 {
+    // TODO: Drawing to Creating
     public class EditManager
     {
         public EditLayer Layer { get; set; }
@@ -36,7 +37,6 @@ namespace FootprintViewer
                 Layer.AddAOI(_addInfo);
 
                 BoundingBox bb = _addInfo.Feature.Geometry.BoundingBox;
-                var area = ((Polygon)_addInfo.Feature.Geometry).Area;
 
                 IInteractiveFeature ff = _addInfo.Feature;
 

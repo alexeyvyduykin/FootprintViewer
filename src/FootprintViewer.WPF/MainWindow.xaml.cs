@@ -20,7 +20,7 @@ using Mapsui.UI.Wpf;
 namespace FootprintViewer.WPF
 {
     /*
-    1) Tools -> ZoomIn/ZoomOut 
+  + 1) Tools -> ZoomIn/ZoomOut 
     2) Tools -> AOI Rect/Poly/Circle
     3) Hints -> Flyout/Popup
     4) Tools -> RouteDistance
