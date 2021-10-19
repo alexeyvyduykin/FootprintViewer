@@ -18,7 +18,7 @@
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb) = MapView.EditManager.DrawingPolygon(worldPosition, screenPosition, MapView.Viewport);
+                var (isDraw, bb) = MapView.Observer.DrawingPolygon(worldPosition, screenPosition, MapView.Viewport);
 
                 if (isDraw == true)
                 {
@@ -73,7 +73,7 @@
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.EditManager.DrawingHoverPolygon(worldPosition);
+            MapView.Observer.DrawingHoverPolygon(worldPosition);
         }
     }
 }

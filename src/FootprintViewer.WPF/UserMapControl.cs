@@ -11,14 +11,11 @@ namespace FootprintViewer.WPF
 {
     public class UserMapControl : MapControl, IMapView
     {
-        private Mapsui.Geometries.Point? _mouseDownPoint;      
-        private readonly EditManager _editManager;
+        private Mapsui.Geometries.Point? _mouseDownPoint;          
         private IController _actualController;
 
         public UserMapControl() : base()
-        {
-            _editManager = new EditManager();
-
+        {        
             _actualController = new EditController();
 
             MouseEnter += MyMapControl_MouseEnter;
@@ -28,6 +25,20 @@ namespace FootprintViewer.WPF
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
         }
+
+
+
+        public IInteractiveFeatureObserver Observer
+        {
+            get { return (IInteractiveFeatureObserver)GetValue(ObserverProperty); }
+            set { SetValue(ObserverProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ObserverProperty =
+            DependencyProperty.Register("Observer", typeof(IInteractiveFeatureObserver), typeof(UserMapControl));
+
+
 
         private void MyMapControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -129,8 +140,6 @@ namespace FootprintViewer.WPF
             //e.Handled = 
             _actualController.HandleMouseEnter(this, e.ToMouseEventArgs(this));
         }
-
-        public EditManager EditManager => _editManager;
 
         public void NavigateToAOI(BoundingBox boundingBox)
         {              

@@ -16,7 +16,7 @@
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb) = MapView.EditManager.DrawingCircle(worldPosition);
+                var (isDraw, bb) = MapView.Observer.DrawingCircle(worldPosition);
 
                 if (isDraw == true)
                 {
@@ -70,7 +70,7 @@
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.EditManager.DrawingHoverCircle(worldPosition);
+            MapView.Observer.DrawingHoverCircle(worldPosition);
         }
     }
 }

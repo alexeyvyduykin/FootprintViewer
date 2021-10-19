@@ -9,7 +9,7 @@ namespace FootprintViewer
     {
         IReadOnlyViewport Viewport { get; }
 
-        EditManager EditManager { get; }
+        IInteractiveFeatureObserver Observer { get; set; }
 
         //IController ActualController { get; }
 

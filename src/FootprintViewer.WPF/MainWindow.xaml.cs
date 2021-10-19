@@ -75,12 +75,14 @@ namespace FootprintViewer.WPF
         }
 
         private void InitializeEditSetup()
-        {
-            MapControl.EditManager.Layer = (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+        {          
+            var editLayer =  (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));      
+            var observer = new InteractiveFeatureObserver(editLayer);
+            MapControl.Observer = observer;
 
             Loaded += (sender, args) =>
             {
-                MapControl.Navigator.NavigateTo(MapControl.EditManager.Layer.Envelope.Grow(MapControl.EditManager.Layer.Envelope.Width * 0.2));
+                MapControl.Navigator.NavigateTo(observer.Layer.Envelope.Grow(observer.Layer.Envelope.Width * 0.2));
             };
         }
 

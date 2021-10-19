@@ -1,21 +1,49 @@
 ﻿using Mapsui;
 using Mapsui.Geometries;
-using Mapsui.Layers;
-using Mapsui.UI;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
 namespace FootprintViewer
 {
-    // TODO: Drawing to Creating
-    public class EditManager
+    public interface IInteractiveFeatureParent
     {
-        public EditLayer Layer { get; set; }
 
+    }
+
+    public interface IInteractiveFeatureObserver
+    {
+        (bool, BoundingBox, IInteractiveFeature) DrawingRectangle(Point worldPosition);
+
+        void DrawingHoverRectangle(Point worldPosition);
+
+        void DrawingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
+
+        void DrawingHoverRoute(Point worldPosition);
+
+        (bool, BoundingBox) DrawingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
+       
+        void DrawingHoverPolygon(Point worldPosition);
+
+        (bool, BoundingBox) DrawingCircle(Point worldPosition);
+
+        void DrawingHoverCircle(Point worldPosition);
+    }
+
+    public class InteractiveFeatureObserver : IInteractiveFeatureObserver, IInteractiveFeatureParent
+    {    
         private AddInfo? _addInfo;
-
+        private readonly EditLayer _editLayer;
         private readonly int _minPixelsMovedForDrag = 4;
 
+        public InteractiveFeatureObserver(EditLayer editLayer)
+        {
+            _editLayer = editLayer;
+        }
+
+        public EditLayer Layer => _editLayer;
+
+        // rectangle
         public (bool, BoundingBox, IInteractiveFeature) DrawingRectangle(Point worldPosition)
         {
             if (_addInfo == null)
@@ -58,6 +86,7 @@ namespace FootprintViewer
             }
         }
 
+        // route
         public void DrawingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
         {
             if (_addInfo == null)
@@ -117,6 +146,7 @@ namespace FootprintViewer
             _addInfo = null;
         }
 
+        // polygon
         public (bool, BoundingBox) DrawingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
         {
             if (_addInfo == null)
@@ -125,7 +155,7 @@ namespace FootprintViewer
 
                 _addInfo = interactivePolygon.BeginDrawing(worldPosition);
 
-                Layer.AddAOI(_addInfo);          
+                Layer.AddAOI(_addInfo);
                 Layer.DataHasChanged();
 
                 return (false, new BoundingBox());
@@ -146,7 +176,7 @@ namespace FootprintViewer
                     {
 
 
-                        return EndDrawingPolygon();                    
+                        return EndDrawingPolygon();
                     }
                 }
 
@@ -188,6 +218,7 @@ namespace FootprintViewer
             return (true, bb);
         }
 
+        // circle
         public (bool, BoundingBox) DrawingCircle(Point worldPosition)
         {
             if (_addInfo == null)
@@ -237,5 +268,6 @@ namespace FootprintViewer
 
             return mouseDownScreenPosition.Distance(screenPosition) < _minPixelsMovedForDrag;
         }
+
     }
 }
