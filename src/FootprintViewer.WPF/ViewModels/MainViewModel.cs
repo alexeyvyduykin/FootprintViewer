@@ -123,6 +123,12 @@ namespace FootprintViewer.WPF.ViewModels
         [Reactive]
         public ObservableCollection<MapLayer> MapLayers { get; set; }
 
+        [Reactive]
+        public string AOIDescription { get; set; } = "AOI";
+
+        [Reactive]
+        public string RouteDescription { get; set; } = "Route";
+
         public void InvalidateMap()
         {
             MapInvalidate?.Invoke(this, EventArgs.Empty);

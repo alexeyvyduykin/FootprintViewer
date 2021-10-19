@@ -19,10 +19,6 @@ namespace FootprintViewer
 
         void NavigateToAOI(BoundingBox boundingBox);
 
-        void SetDescriptionAOI(string str);
-
-        void SetDescriptionRoute(string str);
-
         void HideTracker();
 
         void InvalidatePlot(bool updateData = true);

@@ -19,8 +19,8 @@ namespace FootprintViewer
 
         public InteractivePolygon() : base() { }
 
-        public InteractivePolygon(IFeature feature) : base(feature) { }
-
+        public InteractivePolygon(IInteractiveFeatureParent parent) : base(parent) { }
+   
         public override AddInfo BeginDrawing(Point worldPosition)
         {
             if (_isDrawing == true)
@@ -102,6 +102,8 @@ namespace FootprintViewer
                 };
 
                 this["Name"] = FeatureType.AOIPolygon.ToString();
+
+                Parent?.OnCreatingCompleted(this);
             }
         }
 

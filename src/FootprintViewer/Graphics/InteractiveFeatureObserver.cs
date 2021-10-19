@@ -8,12 +8,12 @@ namespace FootprintViewer
 {
     public interface IInteractiveFeatureParent
     {
-
+        void OnCreatingCompleted(IInteractiveFeature feature);
     }
 
     public interface IInteractiveFeatureObserver
     {
-        (bool, BoundingBox, IInteractiveFeature) CreatingRectangle(Point worldPosition);
+        (bool, BoundingBox) CreatingRectangle(Point worldPosition);
 
         void HoverCreatingRectangle(Point worldPosition);
 
@@ -30,6 +30,13 @@ namespace FootprintViewer
         void HoverCreatingCircle(Point worldPosition);
     }
 
+    public class FeatureEventArgs : EventArgs
+    {   
+        public IInteractiveFeature Feature { get; set; }
+    }
+
+    public delegate void FeatureEventHandler(object sender, FeatureEventArgs e);
+
     public class InteractiveFeatureObserver : IInteractiveFeatureObserver, IInteractiveFeatureParent
     {    
         private AddInfo? _addInfo;
@@ -41,21 +48,48 @@ namespace FootprintViewer
             _editLayer = editLayer;
         }
 
+        public FeatureEventHandler CreatingCompleted;
+
         public EditLayer Layer => _editLayer;
 
+        private IInteractiveFeature CreateRectangle()
+        {
+            return new InteractiveRectangle(this);
+        }
+
+        private IInteractiveFeature CreateRoute()
+        {
+            return new InteractiveRoute(this);
+        }
+
+        private IInteractiveFeature CreateCircle()
+        {
+            return new InteractiveCircle(this);
+        }
+
+        private IInteractiveFeature CreatePolygon()
+        {
+            return new InteractivePolygon(this);
+        }
+
+        public void OnCreatingCompleted(IInteractiveFeature feature)
+        {
+            CreatingCompleted?.Invoke(this, new FeatureEventArgs() { Feature = feature });
+        }
+
         // rectangle
-        public (bool, BoundingBox, IInteractiveFeature) CreatingRectangle(Point worldPosition)
+        public (bool, BoundingBox) CreatingRectangle(Point worldPosition)
         {
             if (_addInfo == null)
             {
-                var interactiveRectangle = new InteractiveRectangle();
+                var interactiveRectangle = CreateRectangle();
 
                 _addInfo = interactiveRectangle.BeginDrawing(worldPosition);
 
                 Layer.AddAOI(_addInfo);
                 Layer.DataHasChanged();
 
-                return (false, new BoundingBox(), null);
+                return (false, new BoundingBox());
             }
             else
             {
@@ -66,13 +100,11 @@ namespace FootprintViewer
 
                 BoundingBox bb = _addInfo.Feature.Geometry.BoundingBox;
 
-                IInteractiveFeature ff = _addInfo.Feature;
-
                 _addInfo = null;
 
                 Layer.DataHasChanged();
 
-                return (true, bb, ff);
+                return (true, bb);
             }
         }
 
@@ -91,7 +123,7 @@ namespace FootprintViewer
         {
             if (_addInfo == null)
             {
-                var interactiveRoute = new InteractiveRoute();
+                var interactiveRoute = CreateRoute();
 
                 _addInfo = interactiveRoute.BeginDrawing(worldPosition);
 
@@ -151,7 +183,7 @@ namespace FootprintViewer
         {
             if (_addInfo == null)
             {
-                var interactivePolygon = new InteractivePolygon();
+                var interactivePolygon = CreatePolygon();
 
                 _addInfo = interactivePolygon.BeginDrawing(worldPosition);
 
@@ -223,7 +255,7 @@ namespace FootprintViewer
         {
             if (_addInfo == null)
             {
-                var interactiveCircle = new InteractiveCircle();
+                var interactiveCircle = CreateCircle();
 
                 _addInfo = interactiveCircle.BeginDrawing(worldPosition);
 

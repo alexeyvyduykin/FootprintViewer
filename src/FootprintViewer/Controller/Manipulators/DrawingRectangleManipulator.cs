@@ -24,15 +24,10 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb, f) = MapView.Observer.CreatingRectangle(worldPosition);
+                var (isDraw, bb) = MapView.Observer.CreatingRectangle(worldPosition);
                 
                 if (isDraw == true)
                 {
-                    var coord = ProjectHelper.ToString(bb.Centroid);
-                    var vertices = f.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();                    
-                    var area = SphericalUtil.ComputeSignedArea(vertices);
-                    string str = $"{area:N2} km² | {coord}";
-                    MapView.SetDescriptionAOI(str);
                     MapView.NavigateToAOI(bb);
                 }
             }

@@ -15,6 +15,8 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
+        public InteractiveRectangle(IInteractiveFeatureParent parent) : base(parent) { }
+
         public override AddInfo BeginDrawing(Point worldPosition)
         {
             if (_isDrawing == false)
@@ -80,6 +82,8 @@ namespace FootprintViewer
                 };
 
                 this["Name"] = FeatureType.AOIRectangle.ToString();
+
+                Parent?.OnCreatingCompleted(this);
 
                 RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }

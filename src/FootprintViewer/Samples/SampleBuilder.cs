@@ -108,9 +108,9 @@ namespace FootprintViewer
 
             Scale(polygon, 2500.0, polygon.BoundingBox.Centroid);
 
-            var feature = new Feature { Geometry = polygon };
+            //var feature = new Feature { Geometry = polygon };
 
-            var interactiveFeature = new InteractivePolygon(feature);
+            var interactiveFeature = new InteractivePolygon() { Geometry = polygon };
 
             AddInfo addInfo = new AddInfo() { Feature = interactiveFeature };
 

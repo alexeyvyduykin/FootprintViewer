@@ -12,7 +12,16 @@ namespace FootprintViewer
 
     public abstract class InteractiveFeature : Feature, IInteractiveFeature
     {
+        private readonly IInteractiveFeatureParent? _parent;
+
         public InteractiveFeature() : base() { }
+
+        public InteractiveFeature(IInteractiveFeatureParent parent) : base()
+        {
+            _parent = parent;
+        }
+
+        public IInteractiveFeatureParent? Parent => _parent;
 
         public InteractiveFeature(IFeature feature) : base(feature) { }
 
@@ -35,6 +44,8 @@ namespace FootprintViewer
 
     public interface IInteractiveFeature : IFeature
     {
+        IInteractiveFeatureParent? Parent { get; }
+
         AddInfo BeginDrawing(Point worldPosition);
 
         void Drawing(Point worldPosition);

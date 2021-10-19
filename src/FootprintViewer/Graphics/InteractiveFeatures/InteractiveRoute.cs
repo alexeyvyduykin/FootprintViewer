@@ -17,6 +17,8 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
+        public InteractiveRoute(IInteractiveFeatureParent parent) : base(parent) { }
+
         public override AddInfo BeginDrawing(Point worldPosition)
         {
             if (_isDrawing == true)
@@ -78,6 +80,8 @@ namespace FootprintViewer
         {
             if (_isDrawing == true)
             {
+                Parent?.OnCreatingCompleted(this);
+
                 _isDrawing = false;
             }
         }

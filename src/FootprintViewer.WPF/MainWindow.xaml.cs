@@ -36,17 +36,19 @@ namespace FootprintViewer.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly MainViewModel _mainViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            var vm = new MainViewModel();
+            _mainViewModel = new MainViewModel();
 
-            vm.MapInvalidate += Vm_MapInvalidate;
+            _mainViewModel.MapInvalidate += Vm_MapInvalidate;
 
-            vm.InvalidateMap();
+            _mainViewModel.InvalidateMap();
 
-            DataContext = vm;
+            DataContext = _mainViewModel;
 
             MapControl.FeatureInfo += MapControlFeatureInfo;
             MapControl.MouseMove += MapControlOnMouseMove;
@@ -69,8 +71,6 @@ namespace FootprintViewer.WPF
 
             MapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
 
-            MapControl.DescriptionChanged += DescriptionChanged;
-
             InitializeEditSetup();
         }
 
@@ -78,12 +78,28 @@ namespace FootprintViewer.WPF
         {          
             var editLayer =  (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));      
             var observer = new InteractiveFeatureObserver(editLayer);
+            observer.CreatingCompleted += FeatureEndCreating;     
+            
             MapControl.Observer = observer;
-
+        
             Loaded += (sender, args) =>
             {
                 MapControl.Navigator.NavigateTo(observer.Layer.Envelope.Grow(observer.Layer.Envelope.Width * 0.2));
             };
+        }
+
+        private void FeatureEndCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+            var bb = feature.Geometry.BoundingBox;
+            var coord = ProjectHelper.ToString(bb.Centroid);
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            area = Math.Abs(area);
+            string str = $"{area:N2} km² | {coord}";
+       
+            _mainViewModel.AOIDescription = str;
+            //_mainViewModel.RouteDescription;
         }
 
         private void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -92,13 +108,6 @@ namespace FootprintViewer.WPF
             {
                 ScaleBarControl.Update(MapControl.Map, viewport);
             }
-        }
-
-        private void DescriptionChanged(object? sender, EventArgs e)
-        {
-            AOIDescription.Text = MapControl.AOIDescription;
-
-            RouteDescription.Text = MapControl.RouteDescription;
         }
 
         private void ListBoxFootprints_SelectionChanged(object sender, SelectionChangedEventArgs e)
