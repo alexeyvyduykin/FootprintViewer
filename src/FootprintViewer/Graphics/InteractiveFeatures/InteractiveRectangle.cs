@@ -64,6 +64,8 @@ namespace FootprintViewer
                 ((Polygon)Geometry).ExteriorRing.Vertices[2] = p2;
                 ((Polygon)Geometry).ExteriorRing.Vertices[3] = p3;
 
+                Parent?.OnHoverCreating(this);
+
                 RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }

@@ -16,6 +16,8 @@ using System.Windows.Forms;
 using NetTopologySuite.GeometriesGraph;
 using NetTopologySuite.Operation.Overlay;
 using Mapsui.UI.Wpf;
+using Mapsui.Geometries;
+using NetTopologySuite.Algorithm;
 
 namespace FootprintViewer.WPF
 {
@@ -78,8 +80,10 @@ namespace FootprintViewer.WPF
         {          
             var editLayer =  (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));      
             var observer = new InteractiveFeatureObserver(editLayer);
-            observer.CreatingCompleted += FeatureEndCreating;     
-            
+            observer.CreatingCompleted += FeatureEndCreating;
+            observer.HoverCreating += FeatureHoverCreating;
+            observer.StepCreating += FeatureStepCreating;
+
             MapControl.Observer = observer;
         
             Loaded += (sender, args) =>
@@ -101,6 +105,33 @@ namespace FootprintViewer.WPF
             _mainViewModel.AOIDescription = str;
             //_mainViewModel.RouteDescription;
         }
+
+        private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            area = Math.Abs(area);
+            string str = $"{area:N2} km²";
+
+            _mainViewModel.AOIHoverDescription = str;
+            //_mainViewModel.RouteHoverDescription;
+        }
+
+        private void FeatureStepCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+
+           if(feature["Name"].Equals(FeatureType.Route.ToString()) == true)
+           {
+                var geometry = (LineString)feature.Geometry;               
+                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+                var distance = SphericalUtil.ComputeDistance(vertices);
+                string str = $"{distance:N2} km";
+                _mainViewModel.RouteDescription= str;
+           }
+        }
+
 
         private void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

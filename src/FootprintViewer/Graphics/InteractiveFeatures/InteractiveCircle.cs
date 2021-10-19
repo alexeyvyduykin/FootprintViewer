@@ -89,6 +89,8 @@ namespace FootprintViewer
                     ExteriorRing = new LinearRing(vertices)
                 };
 
+                Parent?.OnHoverCreating(this);
+
                 RenderedGeometry?.Clear();
             }
         }

@@ -129,6 +129,12 @@ namespace FootprintViewer.WPF.ViewModels
         [Reactive]
         public string RouteDescription { get; set; } = "Route";
 
+        [Reactive]
+        public string AOIHoverDescription { get; set; } = "Hover AOI";
+
+        [Reactive]
+        public string RouteHoverDescription { get; set; } = "Hover Route";
+
         public void InvalidateMap()
         {
             MapInvalidate?.Invoke(this, EventArgs.Empty);

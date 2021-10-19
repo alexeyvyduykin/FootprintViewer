@@ -8,7 +8,11 @@ namespace FootprintViewer
 {
     public interface IInteractiveFeatureParent
     {
+        void OnStepCreating(IInteractiveFeature feature);
+
         void OnCreatingCompleted(IInteractiveFeature feature);
+
+        void OnHoverCreating(IInteractiveFeature feature);
     }
 
     public interface IInteractiveFeatureObserver
@@ -48,7 +52,11 @@ namespace FootprintViewer
             _editLayer = editLayer;
         }
 
+        public FeatureEventHandler StepCreating;
+
         public FeatureEventHandler CreatingCompleted;
+
+        public FeatureEventHandler HoverCreating;
 
         public EditLayer Layer => _editLayer;
 
@@ -72,9 +80,19 @@ namespace FootprintViewer
             return new InteractivePolygon(this);
         }
 
+        public void OnStepCreating(IInteractiveFeature feature)
+        {
+            StepCreating?.Invoke(this, new FeatureEventArgs() { Feature = feature });
+        }
+
         public void OnCreatingCompleted(IInteractiveFeature feature)
         {
             CreatingCompleted?.Invoke(this, new FeatureEventArgs() { Feature = feature });
+        }
+
+        public void OnHoverCreating(IInteractiveFeature feature)
+        {
+            HoverCreating?.Invoke(this, new FeatureEventArgs() { Feature = feature });
         }
 
         // rectangle

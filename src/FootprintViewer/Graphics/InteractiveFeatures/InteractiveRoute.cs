@@ -60,6 +60,8 @@ namespace FootprintViewer
                 ((LineString)Geometry).Vertices.Add(p0); // and add it to the geometry
                 ((LineString)_helpLineString.Geometry).Vertices = new[] { p1, p2 };
 
+                Parent?.OnStepCreating(this);
+
                 RenderedGeometry?.Clear();
                 _helpLineString.RenderedGeometry?.Clear();
             }
@@ -71,6 +73,8 @@ namespace FootprintViewer
             {
                 ((LineString)_helpLineString.Geometry).EndPoint.X = worldPosition.X;
                 ((LineString)_helpLineString.Geometry).EndPoint.Y = worldPosition.Y;
+
+                Parent?.OnHoverCreating(this);
 
                 _helpLineString.RenderedGeometry?.Clear();
             }
