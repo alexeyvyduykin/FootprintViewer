@@ -139,13 +139,7 @@ namespace FootprintViewer.WPF
         {
             var screenPosition = e.GetPosition(MapControl);
             var worldPosition = MapControl.Viewport.ScreenToWorld(screenPosition.X, screenPosition.Y);
-            var point = SphericalMercator.ToLonLat(worldPosition.X, worldPosition.Y);
-
-            var lon = (point.X >= 0.0) ? $"{point.X:F5}°E" : $"{Math.Abs(point.X):F5}°W";
-            var lat = (point.Y >= 0.0) ? $"{point.Y:F5}°N" : $"{Math.Abs(point.Y):F5}°S";
-
-            TextBlockCoordinates.Text = $"{lon} {lat}";
-
+            TextBlockCoordinates.Text = ProjectHelper.ToString(worldPosition);
             TextBlockResolution.Text = GetCurrentResolution();
         }
 
