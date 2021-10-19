@@ -14,7 +14,7 @@ namespace FootprintViewer
         private bool _isEditing = false;    
         private int _vertexRadius = 4;
         private InteractiveFeature _editingFeature;
-        private WritableLayer _layer = null;
+        private EditLayer _layer = null;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
 
@@ -82,7 +82,7 @@ namespace FootprintViewer
                 var distance = mapInfo.Resolution * screenDistance;
 
                 _editingFeature = interactiveFeature;
-                _layer = (WritableLayer)mapInfo.Layer;
+                _layer = (EditLayer)mapInfo.Layer;
 
                 return interactiveFeature.BeginEditing(mapInfo.WorldPosition, distance);
             }

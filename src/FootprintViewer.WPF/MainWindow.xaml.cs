@@ -69,6 +69,8 @@ namespace FootprintViewer.WPF
 
             MapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
 
+            MapControl.DescriptionChanged += DescriptionChanged;
+
             InitializeEditSetup();
         }
 
@@ -88,6 +90,13 @@ namespace FootprintViewer.WPF
             {
                 ScaleBarControl.Update(MapControl.Map, viewport);
             }
+        }
+
+        private void DescriptionChanged(object? sender, EventArgs e)
+        {
+            AOIDescription.Text = MapControl.AOIDescription;
+
+            RouteDescription.Text = MapControl.RouteDescription;
         }
 
         private void ListBoxFootprints_SelectionChanged(object sender, SelectionChangedEventArgs e)

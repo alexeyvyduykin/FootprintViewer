@@ -15,7 +15,7 @@ namespace FootprintViewer
 
         private readonly int _minPixelsMovedForDrag = 4;
 
-        public (bool, BoundingBox) DrawingRectangle(Point worldPosition)
+        public (bool, BoundingBox, IInteractiveFeature) DrawingRectangle(Point worldPosition)
         {
             if (_addInfo == null)
             {
@@ -26,7 +26,7 @@ namespace FootprintViewer
                 Layer.AddAOI(_addInfo);
                 Layer.DataHasChanged();
 
-                return (false, new BoundingBox());
+                return (false, new BoundingBox(), null);
             }
             else
             {
@@ -36,12 +36,15 @@ namespace FootprintViewer
                 Layer.AddAOI(_addInfo);
 
                 BoundingBox bb = _addInfo.Feature.Geometry.BoundingBox;
+                var area = ((Polygon)_addInfo.Feature.Geometry).Area;
+
+                IInteractiveFeature ff = _addInfo.Feature;
 
                 _addInfo = null;
 
                 Layer.DataHasChanged();
 
-                return (true, bb);
+                return (true, bb, ff);
             }
         }
 

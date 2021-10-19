@@ -55,8 +55,15 @@
                 <Separator Height="20" Visibility="Hidden"/>
                 <Button x:Name="ToolDefault" Height="40" Width="40" HorizontalAlignment="Left" Content="Default"/>
             </StackPanel>
-            
-            
+
+            <StackPanel Margin="8,0,0,20" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
+                    <TextBlock x:Name="RouteDescription" Text="Route" Foreground="White"></TextBlock>
+                </Border>
+                <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
+                    <TextBlock x:Name="AOIDescription" Text="AOI" Foreground="White"></TextBlock>
+                </Border>
+            </StackPanel>
             
             
             <Border BorderBrush="White" 

@@ -221,5 +221,24 @@ namespace FootprintViewer.WPF
                     throw new Exception();
             }
         }
+
+        public EventHandler DescriptionChanged;
+
+        public string AOIDescription { get; protected set; }
+        public string RouteDescription { get; protected set; }
+
+        public void SetDescriptionAOI(string str) 
+        {
+            AOIDescription = str;
+
+            DescriptionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetDescriptionRoute(string str) 
+        {
+            RouteDescription = str;
+
+            DescriptionChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
