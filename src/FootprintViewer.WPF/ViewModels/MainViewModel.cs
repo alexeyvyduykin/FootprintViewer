@@ -1,10 +1,11 @@
 ﻿using FootprintViewer.Models;
 using Mapsui;
+using Mapsui.Geometries;
 using Mapsui.Layers;
+using Mapsui.Projection;
 using Mapsui.Providers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ using System.Windows.Input;
 namespace FootprintViewer.WPF.ViewModels
 {
     public class MainViewModel : ReactiveObject
-    {  
+    {
         public event EventHandler CurrentFootprint;
 
         public MainViewModel()
@@ -26,7 +27,17 @@ namespace FootprintViewer.WPF.ViewModels
             ActualController = new EditController();
 
             Map = SampleBuilder.CreateMap();
-            
+
+            var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+
+            InteractiveFeatureObserver = new InteractiveFeatureObserver(editLayer);
+
+            InteractiveFeatureObserver.CreatingCompleted += FeatureEndCreating;
+
+            InteractiveFeatureObserver.HoverCreating += FeatureHoverCreating;
+
+            InteractiveFeatureObserver.StepCreating += FeatureStepCreating;
+
             Map.DataChanged += Map_DataChanged;
 
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
@@ -47,11 +58,11 @@ namespace FootprintViewer.WPF.ViewModels
 
             ToolRectangleAOICommand = new RelayCommand(_ => ActualController = new DrawRectangleController());
 
-            ToolPolygonAOICommand = ReactiveCommand.Create(() => { ActualController = new DrawPolygonController(); }); 
+            ToolPolygonAOICommand = ReactiveCommand.Create(() => { ActualController = new DrawPolygonController(); });
 
             ToolCircleAOICommand = new RelayCommand(_ => ActualController = new DrawCircleController());
 
-            ToolRouteDistanceCommand = new RelayCommand(_ => 
+            ToolRouteDistanceCommand = new RelayCommand(_ =>
             {
                 var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
                 if (layer != null)
@@ -66,7 +77,7 @@ namespace FootprintViewer.WPF.ViewModels
         }
 
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
-  
+
         public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
 
         // tools
@@ -143,6 +154,44 @@ namespace FootprintViewer.WPF.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
+        private void FeatureEndCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+            var bb = feature.Geometry.BoundingBox;
+            var coord = ProjectHelper.ToString(bb.Centroid);
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            area = Math.Abs(area);
+
+            AOIDescription = $"{area:N2} km² | {coord}";
+            //RouteDescription;
+        }
+
+        private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            area = Math.Abs(area);
+
+            AOIHoverDescription = $"{area:N2} km²";
+            //RouteHoverDescription;
+        }
+
+        private void FeatureStepCreating(object? sender, FeatureEventArgs e)
+        {
+            var feature = e.Feature;
+
+            if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
+            {
+                var geometry = (LineString)feature.Geometry;
+                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+                var distance = SphericalUtil.ComputeDistance(vertices);
+
+                RouteDescription = $"{distance:N2} km";
+            }
+        }
+
         [Reactive]
         public ObservableCollection<Footprint> Footprints { get; set; }
 
@@ -169,6 +218,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public IController ActualController { get; set; }
+
+        [Reactive]
+        public IInteractiveFeatureObserver InteractiveFeatureObserver { get; set; }
     }
 
     public class MapLayer

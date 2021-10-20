@@ -62,69 +62,12 @@ namespace FootprintViewer.WPF
         private void InitializeEditSetup()
         {          
             var editLayer =  (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));      
-            var observer = new InteractiveFeatureObserver(editLayer);
-            observer.CreatingCompleted += FeatureEndCreating;
-            observer.HoverCreating += FeatureHoverCreating;
-            observer.StepCreating += FeatureStepCreating;
-
-            MapControl.Observer = observer;
         
             Loaded += (sender, args) =>
             {
-                MapControl.Navigator.NavigateTo(observer.Layer.Envelope.Grow(observer.Layer.Envelope.Width * 0.2));
+                MapControl.Navigator.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
             };
         }
-
-        private void FeatureEndCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
-            var bb = feature.Geometry.BoundingBox;
-            var coord = ProjectHelper.ToString(bb.Centroid);
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            area = Math.Abs(area);
-            string str = $"{area:N2} km² | {coord}";
-
-            if (DataContext is MainViewModel viewModel)
-            {
-                viewModel.AOIDescription = str;
-                //_mainViewModel.RouteDescription;
-            }
-        }
-
-        private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            area = Math.Abs(area);
-            string str = $"{area:N2} km²";
-
-            if (DataContext is MainViewModel viewModel)
-            {
-                viewModel.AOIHoverDescription = str;
-                //_mainViewModel.RouteHoverDescription;
-            }
-        }
-
-        private void FeatureStepCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
-
-           if(feature["Name"].Equals(FeatureType.Route.ToString()) == true)
-           {
-                var geometry = (LineString)feature.Geometry;               
-                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-                var distance = SphericalUtil.ComputeDistance(vertices);
-                string str = $"{distance:N2} km";
-
-                    if (DataContext is MainViewModel viewModel)
-                    {
-                        viewModel.RouteDescription = str;
-                    }
-           }
-        }
-
 
         private void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

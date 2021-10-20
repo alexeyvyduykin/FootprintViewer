@@ -17,6 +17,12 @@ namespace FootprintViewer
 
     public interface IInteractiveFeatureObserver
     {
+        event FeatureEventHandler StepCreating;
+
+        event FeatureEventHandler CreatingCompleted;
+
+        event FeatureEventHandler HoverCreating;
+
         (bool, BoundingBox) CreatingRectangle(Point worldPosition);
 
         void HoverCreatingRectangle(Point worldPosition);
@@ -52,11 +58,11 @@ namespace FootprintViewer
             _editLayer = editLayer;
         }
 
-        public FeatureEventHandler StepCreating;
+        public event FeatureEventHandler StepCreating;
 
-        public FeatureEventHandler CreatingCompleted;
+        public event FeatureEventHandler CreatingCompleted;
 
-        public FeatureEventHandler HoverCreating;
+        public event FeatureEventHandler HoverCreating;
 
         public EditLayer Layer => _editLayer;
 
