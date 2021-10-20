@@ -10,12 +10,12 @@
         xmlns:vm="clr-namespace:FootprintViewer.WPF.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
-        x:Name="Level0"
-        Title="MainWindow" Height="600" Width="1200">
+        x:Name="TopLevel"
+        Title="FootprintViewer" Height="600" Width="1200">
 
-    <!--<Window.DataContext>
+    <Window.DataContext>
         <vm:MainViewModel></vm:MainViewModel>
-    </Window.DataContext>-->
+    </Window.DataContext>
 
     <Window.Resources>
         <Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>
@@ -33,27 +33,35 @@
 
         <Grid Grid.Column="0">
 
-            <local:UserMapControl x:Name="MapControl"                                                     
-                            VerticalAlignment="Stretch" 
-                            HorizontalAlignment="Stretch" />
-
+            <local:UserMapControl x:Name="MapControl"                                   
+                                  MapSource="{Binding Map}"
+                                  Controller="{Binding ActualController}"                           
+                                  VerticalAlignment="Stretch"                             
+                                  HorizontalAlignment="Stretch" />
+            <!--Controller="{Binding ActualController}"-->
             <StackPanel Orientation="Vertical" 
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left"                    
                         Margin="8">
 
-                <Button x:Name="ToolZoomIn" Height="40" Width="40" HorizontalAlignment="Left" Content="+"/>
-                <Button x:Name="ToolZoomOut" Height="40" Width="40" HorizontalAlignment="Left" Content="-"/>
+                <Button x:Name="ToolZoomIn" Height="36" Width="36" HorizontalAlignment="Left" Content="+"/>
+                <Button x:Name="ToolZoomOut" Height="36" Width="36" HorizontalAlignment="Left" Content="-"/>
                 <Separator Height="20" Visibility="Hidden"/>
-                <StackPanel Height="40" Orientation="Horizontal">
-                    <Button x:Name="ToolRectAOI" Width="40" Content="Rect"/>
-                    <Button x:Name="ToolPolyAOI" Width="40" Content="Poly"/>
-                    <Button x:Name="ToolCircleAOI" Width="40" Content="Circle"/>
+                <StackPanel Height="36" Orientation="Horizontal">
+                    <Button Width="36" Content="Rect" Command="{Binding ToolRectangleAOICommand}"/>
+                    <Button Width="36" Content="Poly">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.ToolPolygonAOICommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    </Button>
+                    
+                    <Button Width="36" Content="Circle" Command="{Binding ToolCircleAOICommand}"/>
                 </StackPanel>
-                <Button x:Name="ToolRouteDistance" Height="40" Width="40" HorizontalAlignment="Left" Content="Route"/>
-                <Button x:Name="ToolEdit" Height="40" Width="40" HorizontalAlignment="Left" Content="Edit"/>
-                <Separator Height="20" Visibility="Hidden"/>
-                <Button x:Name="ToolDefault" Height="40" Width="40" HorizontalAlignment="Left" Content="Default"/>
+                <Button Height="36" Width="36" HorizontalAlignment="Left" Content="Route" Command="{Binding ToolRouteDistanceCommand}"/>
+                <Button Height="36" Width="36" HorizontalAlignment="Left" Content="Edit" Command="{Binding ToolEditCommand}"/>
             </StackPanel>
 
             <StackPanel Margin="8,0,0,20" VerticalAlignment="Bottom" HorizontalAlignment="Left">
@@ -122,12 +130,12 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=Level0, Path=DataContext.MouseOverEnterCommand}"
+                                    <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.MouseOverEnterCommand}"
                                                            CommandParameter="{Binding}"/>
                                 </i:EventTrigger>
 
                                 <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=Level0, Path=DataContext.MouseOverLeaveCommand}"/>
+                                    <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.MouseOverLeaveCommand}"/>
                                 </i:EventTrigger>
 
                             </i:Interaction.Triggers>

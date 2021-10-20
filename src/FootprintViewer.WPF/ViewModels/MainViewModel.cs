@@ -4,25 +4,29 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Windows.Input;
 
 namespace FootprintViewer.WPF.ViewModels
 {
     public class MainViewModel : ReactiveObject
-    {
-        public event EventHandler MapInvalidate;
+    {  
         public event EventHandler CurrentFootprint;
 
         public MainViewModel()
         {
             Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints());
 
-            Map = SampleBuilder.CreateMap();
+            ActualController = new EditController();
 
+            Map = SampleBuilder.CreateMap();
+            
             Map.DataChanged += Map_DataChanged;
 
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
@@ -33,8 +37,6 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Map.Layers.Replace(nameof(LayerType.FootprintLayer), layer);
 
-                    InvalidateMap();
-
                     CurrentFootprint?.Invoke(this, EventArgs.Empty);
                 }
             });
@@ -42,11 +44,41 @@ namespace FootprintViewer.WPF.ViewModels
             MouseOverEnterCommand = ReactiveCommand.Create<Footprint>(ShowFootprintBorder);
 
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
+
+            ToolRectangleAOICommand = new RelayCommand(_ => ActualController = new DrawRectangleController());
+
+            ToolPolygonAOICommand = ReactiveCommand.Create(() => { ActualController = new DrawPolygonController(); }); 
+
+            ToolCircleAOICommand = new RelayCommand(_ => ActualController = new DrawCircleController());
+
+            ToolRouteDistanceCommand = new RelayCommand(_ => 
+            {
+                var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                if (layer != null)
+                {
+                    layer.ClearRoute();
+                }
+
+                ActualController = new DrawRouteController();
+            });
+
+            ToolEditCommand = new RelayCommand(_ => ActualController = new EditController());
         }
 
-
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
+  
         public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
+
+        // tools
+        public ICommand ToolRectangleAOICommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ToolPolygonAOICommand { get; }
+
+        public ICommand ToolCircleAOICommand { get; }
+
+        public ICommand ToolRouteDistanceCommand { get; }
+
+        public ICommand ToolEditCommand { get; }
 
         private void ShowFootprintBorder(Footprint footprint)
         {
@@ -135,10 +167,8 @@ namespace FootprintViewer.WPF.ViewModels
         [Reactive]
         public string RouteHoverDescription { get; set; } = "Hover Route";
 
-        public void InvalidateMap()
-        {
-            MapInvalidate?.Invoke(this, EventArgs.Empty);
-        }
+        [Reactive]
+        public IController ActualController { get; set; }
     }
 
     public class MapLayer

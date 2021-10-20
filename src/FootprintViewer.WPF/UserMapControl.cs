@@ -6,18 +6,18 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace FootprintViewer.WPF
 {
     public class UserMapControl : MapControl, IMapView
     {
         private Mapsui.Geometries.Point? _mouseDownPoint;          
-        private IController _actualController;
-
+     
         public UserMapControl() : base()
-        {        
-            _actualController = new EditController();
-
+        {                 
             MouseEnter += MyMapControl_MouseEnter;
             MouseLeave += MyMapControl_MouseLeave;
             MouseWheel += MyMapControl_MouseWheel;
@@ -25,8 +25,6 @@ namespace FootprintViewer.WPF
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
         }
-
-
 
         public IInteractiveFeatureObserver Observer
         {
@@ -38,7 +36,38 @@ namespace FootprintViewer.WPF
         public static readonly DependencyProperty ObserverProperty =
             DependencyProperty.Register("Observer", typeof(IInteractiveFeatureObserver), typeof(UserMapControl));
 
+        public IController Controller
+        {
+            get { return (IController)GetValue(ControllerProperty); }
+            set { SetValue(ControllerProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ControllerProperty =
+            DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new EditController()));
+
+
+        public Map MapSource
+        {
+            get { return (Map)GetValue(MapSourceProperty); }
+            set { SetValue(MapSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MapSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MapSourceProperty =
+            DependencyProperty.Register("MapSource", typeof(Map), typeof(UserMapControl), new PropertyMetadata(null, OnMapSourceChanged));
+
+
+        private static void OnMapSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is UserMapControl mapControl)
+            {
+                if (e.NewValue != null && e.NewValue is Map map)
+                {
+                    mapControl.Map = map;                    
+                }
+            }
+        }
 
         private void MyMapControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -53,7 +82,7 @@ namespace FootprintViewer.WPF
             e.MouseDevice.Capture(null);
 
             //e.Handled = 
-            _actualController.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
+            Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
 
             // Open the context menu
             //var p = e.GetPosition(this).ToScreenPoint();
@@ -82,7 +111,7 @@ namespace FootprintViewer.WPF
             }
 
             //e.Handled = 
-            _actualController.HandleMouseMove(this, e.ToMouseEventArgs(this));
+            Controller.HandleMouseMove(this, e.ToMouseEventArgs(this));
         }
 
         private void MyMapControl_MouseDown(object sender, MouseButtonEventArgs e)
@@ -100,8 +129,8 @@ namespace FootprintViewer.WPF
             _mouseDownPoint = e.GetPosition(this).ToScreenPoint();
 
 
-           //e.Handled = 
-            _actualController.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
+            //e.Handled = 
+            Controller.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
         }
 
         private void MyMapControl_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -114,7 +143,7 @@ namespace FootprintViewer.WPF
             }
 
             //e.Handled = 
-            _actualController.HandleMouseWheel(this, e.ToMouseWheelEventArgs(this));
+            Controller.HandleMouseWheel(this, e.ToMouseWheelEventArgs(this));
         }
 
         private void MyMapControl_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -126,7 +155,7 @@ namespace FootprintViewer.WPF
             }
 
             //e.Handled = 
-            _actualController.HandleMouseLeave(this, e.ToMouseEventArgs(this));
+            Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));
         }
 
         private void MyMapControl_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -138,7 +167,7 @@ namespace FootprintViewer.WPF
             }
 
             //e.Handled = 
-            _actualController.HandleMouseEnter(this, e.ToMouseEventArgs(this));
+            Controller.HandleMouseEnter(this, e.ToMouseEventArgs(this));
         }
 
         public void NavigateToAOI(BoundingBox boundingBox)
@@ -196,39 +225,6 @@ namespace FootprintViewer.WPF
         public void SetClipboardText(string text)
         {
             throw new NotImplementedException();
-        }
-
-        public void SetActiveTool(ToolType tool)
-        {
-            switch (tool)
-            {
-                case ToolType.None:
-                    _actualController = null;
-                    break;
-                case ToolType.DrawingRectangleAOI:
-                    _actualController = new DrawRectangleController();
-                    break;
-                case ToolType.DrawingPolygonAOI:
-                    _actualController = new DrawPolygonController();
-                    break;
-                case ToolType.DrawingCircleAOI:
-                    _actualController = new DrawCircleController();
-                    break;
-                case ToolType.RoutingDistance:
-                    var layer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-                    if(layer != null)
-                    {
-                        layer.ClearRoute();
-                    }
-
-                    _actualController = new DrawRouteController();
-                    break;
-                case ToolType.Editing:
-                    _actualController = new EditController();
-                    break;
-                default:
-                    throw new Exception();
-            }
         }
     }
 }

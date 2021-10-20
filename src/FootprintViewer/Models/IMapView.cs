@@ -11,11 +11,9 @@ namespace FootprintViewer
 
         IInteractiveFeatureObserver Observer { get; set; }
 
-        //IController ActualController { get; }
+        IController Controller { get; set; }
 
         MapInfo GetMapInfo(Point screenPosition, int margin = 0);
-
-        void SetActiveTool(ToolType tool);
 
         void NavigateToAOI(BoundingBox boundingBox);
 

@@ -23,9 +23,9 @@ namespace FootprintViewer.WPF
 {
     /*
   + 1) Tools -> ZoomIn/ZoomOut 
-    2) Tools -> AOI Rect/Poly/Circle
+  + 2) Tools -> AOI Rect/Poly/Circle
     3) Hints -> Flyout/Popup
-    4) Tools -> RouteDistance
+  + 4) Tools -> RouteDistance
     5) Tools -> LayerList
     6) Hints -> Inner Tutorial
     7) Tools -> ToolInfoList
@@ -37,20 +37,10 @@ namespace FootprintViewer.WPF
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        private readonly MainViewModel _mainViewModel;
-
+    {        
         public MainWindow()
         {
             InitializeComponent();
-
-            _mainViewModel = new MainViewModel();
-
-            _mainViewModel.MapInvalidate += Vm_MapInvalidate;
-
-            _mainViewModel.InvalidateMap();
-
-            DataContext = _mainViewModel;
 
             MapControl.FeatureInfo += MapControlFeatureInfo;
             MapControl.MouseMove += MapControlOnMouseMove;
@@ -61,13 +51,6 @@ namespace FootprintViewer.WPF
 
             ToolZoomIn.Click += (s, e) => MapControl.Navigator.ZoomIn();
             ToolZoomOut.Click += (s, e) => MapControl.Navigator.ZoomOut();
-
-            ToolRectAOI.Click += (s, e) => MapControl.SetActiveTool(ToolType.DrawingRectangleAOI);
-            ToolPolyAOI.Click += (s, e) => MapControl.SetActiveTool(ToolType.DrawingPolygonAOI);
-            ToolCircleAOI.Click += (s, e) => MapControl.SetActiveTool(ToolType.DrawingCircleAOI);
-            ToolRouteDistance.Click += (s, e) => MapControl.SetActiveTool(ToolType.RoutingDistance);            
-            ToolDefault.Click += (s, e) => MapControl.SetActiveTool(ToolType.None);
-            ToolEdit.Click += (s, e) => MapControl.SetActiveTool(ToolType.Editing);
 
             ListBoxFootprints.SelectionChanged += ListBoxFootprints_SelectionChanged;
 
@@ -101,9 +84,12 @@ namespace FootprintViewer.WPF
             var area = SphericalUtil.ComputeSignedArea(vertices);
             area = Math.Abs(area);
             string str = $"{area:N2} km² | {coord}";
-       
-            _mainViewModel.AOIDescription = str;
-            //_mainViewModel.RouteDescription;
+
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.AOIDescription = str;
+                //_mainViewModel.RouteDescription;
+            }
         }
 
         private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
@@ -114,8 +100,11 @@ namespace FootprintViewer.WPF
             area = Math.Abs(area);
             string str = $"{area:N2} km²";
 
-            _mainViewModel.AOIHoverDescription = str;
-            //_mainViewModel.RouteHoverDescription;
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.AOIHoverDescription = str;
+                //_mainViewModel.RouteHoverDescription;
+            }
         }
 
         private void FeatureStepCreating(object? sender, FeatureEventArgs e)
@@ -128,7 +117,11 @@ namespace FootprintViewer.WPF
                 var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
                 var distance = SphericalUtil.ComputeDistance(vertices);
                 string str = $"{distance:N2} km";
-                _mainViewModel.RouteDescription= str;
+
+                    if (DataContext is MainViewModel viewModel)
+                    {
+                        viewModel.RouteDescription = str;
+                    }
            }
         }
 
@@ -162,14 +155,6 @@ namespace FootprintViewer.WPF
         private void MapControl_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             TextBlockResolution.Text = GetCurrentResolution();
-        }
-
-        private void Vm_MapInvalidate(object sender, EventArgs e)
-        {
-            if (sender is MainViewModel mainViewModel)
-            {
-                MapControl.Map = mainViewModel.Map;
-            }
         }
 
         private static void MapControlFeatureInfo(object sender, FeatureInfoEventArgs e)
