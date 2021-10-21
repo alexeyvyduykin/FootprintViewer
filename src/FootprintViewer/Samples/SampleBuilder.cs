@@ -55,6 +55,8 @@ namespace FootprintViewer
             map.Layers.Add(editLayer);
             map.Layers.Add(new VertexOnlyLayer(editLayer) { Name = nameof(LayerType.VertexLayer) });
 
+            map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
+
             return map;
         }
 

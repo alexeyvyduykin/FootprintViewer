@@ -34,36 +34,19 @@
         <Grid Grid.Column="0">
 
             <local:UserMapControl x:Name="MapControl"                                   
-                                  MapSource="{Binding Map}"
+                                  MapSource="{Binding Map}"                              
                                   Observer="{Binding InteractiveFeatureObserver}"
                                   Controller="{Binding ActualController}"                           
                                   VerticalAlignment="Stretch"                             
                                   HorizontalAlignment="Stretch" />
             <!--Controller="{Binding ActualController}"-->
-            <StackPanel Orientation="Vertical" 
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"                    
-                        Margin="8">
+            <Grid VerticalAlignment="Center"                        
+                  HorizontalAlignment="Left"                                            
+                  Margin="8">
+                <controls:ToolControl DataContext="{Binding ToolManager}"/>
+            </Grid>
 
-                <Button x:Name="ToolZoomIn" Height="36" Width="36" HorizontalAlignment="Left" Content="+"/>
-                <Button x:Name="ToolZoomOut" Height="36" Width="36" HorizontalAlignment="Left" Content="-"/>
-                <Separator Height="20" Visibility="Hidden"/>
-                <StackPanel Height="36" Orientation="Horizontal">
-                    <Button Width="36" Content="Rect" Command="{Binding ToolRectangleAOICommand}"/>
-                    <Button Width="36" Content="Poly">
 
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.ToolPolygonAOICommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    </Button>
-                    
-                    <Button Width="36" Content="Circle" Command="{Binding ToolCircleAOICommand}"/>
-                </StackPanel>
-                <Button Height="36" Width="36" HorizontalAlignment="Left" Content="Route" Command="{Binding ToolRouteDistanceCommand}"/>
-                <Button Height="36" Width="36" HorizontalAlignment="Left" Content="Edit" Command="{Binding ToolEditCommand}"/>
-            </StackPanel>
 
             <StackPanel Margin="8,0,0,20" VerticalAlignment="Bottom" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">

@@ -28,8 +28,9 @@ namespace FootprintViewer.WPF
   + 4) Tools -> RouteDistance
     5) Tools -> LayerList
     6) Hints -> Inner Tutorial
-    7) Tools -> ToolInfoList
+  + 7) Tools -> ToolManager
     8) FootprintList -> Filter
+    9) Features -> InfoPanel
      */
 
 
@@ -49,24 +50,9 @@ namespace FootprintViewer.WPF
 
             TextBlockResolution.Text = GetCurrentResolution();
 
-            ToolZoomIn.Click += (s, e) => MapControl.Navigator.ZoomIn();
-            ToolZoomOut.Click += (s, e) => MapControl.Navigator.ZoomOut();
-
             ListBoxFootprints.SelectionChanged += ListBoxFootprints_SelectionChanged;
 
             MapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
-
-            InitializeEditSetup();
-        }
-
-        private void InitializeEditSetup()
-        {          
-            var editLayer =  (EditLayer)MapControl.Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));      
-        
-            Loaded += (sender, args) =>
-            {
-                MapControl.Navigator.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
-            };
         }
 
         private void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

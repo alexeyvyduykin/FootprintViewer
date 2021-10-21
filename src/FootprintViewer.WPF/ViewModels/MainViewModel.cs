@@ -1,4 +1,6 @@
-﻿using FootprintViewer.Models;
+﻿using BruTile.Wms;
+using FootprintViewer.Models;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -9,6 +11,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -19,17 +22,17 @@ namespace FootprintViewer.WPF.ViewModels
     public class MainViewModel : ReactiveObject
     {
         public event EventHandler CurrentFootprint;
-
+        
         public MainViewModel()
         {
             Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints());
 
             ActualController = new EditController();
-
+            
             Map = SampleBuilder.CreateMap();
 
             var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-
+                   
             InteractiveFeatureObserver = new InteractiveFeatureObserver(editLayer);
 
             InteractiveFeatureObserver.CreatingCompleted += FeatureEndCreating;
@@ -56,40 +59,14 @@ namespace FootprintViewer.WPF.ViewModels
 
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
-            ToolRectangleAOICommand = new RelayCommand(_ => ActualController = new DrawRectangleController());
-
-            ToolPolygonAOICommand = ReactiveCommand.Create(() => { ActualController = new DrawPolygonController(); });
-
-            ToolCircleAOICommand = new RelayCommand(_ => ActualController = new DrawCircleController());
-
-            ToolRouteDistanceCommand = new RelayCommand(_ =>
-            {
-                var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-                if (layer != null)
-                {
-                    layer.ClearRoute();
-                }
-
-                ActualController = new DrawRouteController();
-            });
-
-            ToolEditCommand = new RelayCommand(_ => ActualController = new EditController());
+            ToolManager = CreateToolManager();
+          
+            SubscribingToFeatureObserver(InteractiveFeatureObserver, ToolManager);
         }
 
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
 
         public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
-
-        // tools
-        public ICommand ToolRectangleAOICommand { get; }
-
-        public ReactiveCommand<Unit, Unit> ToolPolygonAOICommand { get; }
-
-        public ICommand ToolCircleAOICommand { get; }
-
-        public ICommand ToolRouteDistanceCommand { get; }
-
-        public ICommand ToolEditCommand { get; }
 
         private void ShowFootprintBorder(Footprint footprint)
         {
@@ -192,6 +169,94 @@ namespace FootprintViewer.WPF.ViewModels
             }
         }
 
+        private ToolManager CreateToolManager()
+        {
+            var toolZoomIn = new Tool()
+            {
+                Title = "+",
+                Command = new RelayCommand(_ =>
+                {         
+                    Map.Initialized = false;
+                    Map.Home = (n) => n.ZoomIn();
+
+                    // HACK: add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
+                    var layer = new Mapsui.Layers.Layer();
+                    Map.Layers.Add(layer);
+                    Map.Layers.Remove(layer);
+                }),
+            };
+
+            var toolZoomOut = new Tool()
+            {
+                Title = "-",
+                Command = new RelayCommand(_ => 
+                {              
+                    Map.Initialized = false;
+                    Map.Home = (n) => n.ZoomOut();
+
+                    var layer = new Mapsui.Layers.Layer();
+                    Map.Layers.Add(layer);
+                    Map.Layers.Remove(layer);
+                }),
+            };
+
+            var toolRectangle = new Tool()
+            {
+                Title = "Rect",
+                Command = new RelayCommand(_ => ActualController = new DrawRectangleController()),
+            };
+
+            var toolPolygon = new Tool()
+            {
+                Title = "Poly",
+                Command = new RelayCommand(_ => ActualController = new DrawPolygonController()),
+            };
+
+            var toolCircle = new Tool()
+            {
+                Title = "Circle",
+                Command = new RelayCommand(_ => ActualController = new DrawCircleController()),
+            };
+      
+            var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
+        
+            var toolRouteDistance = new Tool()
+            {
+                Title = "Route",
+                Command = new RelayCommand(_ => 
+                {
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                    if (layer != null)
+                    {
+                        layer.ClearRoute();
+                    }
+
+                    ActualController = new DrawRouteController(); 
+                })
+            };
+
+            var toolEdit = new Tool()
+            {
+                Title = "Edit",
+                Command = new RelayCommand(_ => ActualController = new EditController())
+            };
+
+            var toolManager = new ToolManager();
+
+            toolManager.ZoomIn = toolZoomIn;
+            toolManager.ZoomOut = toolZoomOut;
+            toolManager.AOICollection = aoiCollection;
+            toolManager.RouteDistance = toolRouteDistance;
+            toolManager.Edit = toolEdit;
+
+            return toolManager;
+        }
+
+        private void SubscribingToFeatureObserver(IInteractiveFeatureObserver featureObserver, ToolManager toolManager)
+        {
+            featureObserver.CreatingCompleted += (s, e) => { toolManager.ResetAllTools(); };
+        }
+
         [Reactive]
         public ObservableCollection<Footprint> Footprints { get; set; }
 
@@ -221,6 +286,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public IInteractiveFeatureObserver InteractiveFeatureObserver { get; set; }
+
+        [Reactive]
+        public ToolManager ToolManager { get; set; }
     }
 
     public class MapLayer
