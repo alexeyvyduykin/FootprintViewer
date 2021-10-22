@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
+using Mapsui.Geometries;
+
 namespace FootprintViewer
 {
     public class DrawingRouteManipulator : MouseManipulator
     {
         private bool _skip;
         private int _counter;
-
+        private readonly int _minPixelsMovedForDrag = 4;
         public DrawingRouteManipulator(IMapView plotView) : base(plotView) { }
 
         public override void Completed(MouseEventArgs e)
@@ -18,7 +20,14 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                MapView.Observer.CreatingRoute(worldPosition, screenPosition, MapView.Viewport);
+                bool IsEnd(Point worldPosition)
+                {                 
+                    var p = MapView.Viewport.WorldToScreen(worldPosition);
+
+                    return IsClick(p, screenPosition);                    
+                }
+
+                MapView.Plotter.CreatingConcrete(worldPosition, IsEnd);
             }
 
             MapView.SetCursorType(CursorType.Default);
@@ -54,6 +63,15 @@ namespace FootprintViewer
         {
             return CursorType.ZoomRectangle;
         }
+        private bool IsClick(Point screenPosition, Point mouseDownScreenPosition)
+        {
+            if (mouseDownScreenPosition == null || screenPosition == null)
+            {
+                return false;
+            }
+
+            return mouseDownScreenPosition.Distance(screenPosition) < _minPixelsMovedForDrag;
+        }
     }
 
     public class HoverDrawingLineManipulator : MouseManipulator
@@ -67,7 +85,7 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Observer.HoverCreatingRoute(worldPosition);
+            MapView.Plotter.HoverCreatingConcrete(worldPosition);
         }
     }
 }

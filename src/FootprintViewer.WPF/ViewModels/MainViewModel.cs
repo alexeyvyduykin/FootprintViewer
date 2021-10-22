@@ -1,4 +1,5 @@
 ﻿using BruTile.Wms;
+using FootprintViewer.Graphics;
 using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using Mapsui;
@@ -32,14 +33,14 @@ namespace FootprintViewer.WPF.ViewModels
             Map = SampleBuilder.CreateMap();
 
             var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-                   
-            InteractiveFeatureObserver = new InteractiveFeatureObserver(editLayer);
 
-            InteractiveFeatureObserver.CreatingCompleted += FeatureEndCreating;
+       //     Plotter = new Plotter(/*editLayer*/);
 
-            InteractiveFeatureObserver.HoverCreating += FeatureHoverCreating;
+       //     Plotter.EndCreating += FeatureEndCreating;
 
-            InteractiveFeatureObserver.StepCreating += FeatureStepCreating;
+       //     Plotter.HoverCreating += FeatureHoverCreating;
+
+        //    Plotter.StepCreating += FeatureStepCreating;
 
             Map.DataChanged += Map_DataChanged;
 
@@ -62,8 +63,6 @@ namespace FootprintViewer.WPF.ViewModels
             ToolManager = CreateToolManager();
 
             InfoPanel = SampleBuilder.CreateInfoPanel();
-          
-            SubscribingToFeatureObserver(InteractiveFeatureObserver, ToolManager);
         }
 
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
@@ -133,43 +132,43 @@ namespace FootprintViewer.WPF.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
-        private void FeatureEndCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
-            var bb = feature.Geometry.BoundingBox;
-            var coord = ProjectHelper.ToString(bb.Centroid);
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            area = Math.Abs(area);
+        //private void FeatureEndCreating(object? sender, FeatureEventArgs e)
+        //{
+        //    var feature = e.Feature;
+        //    var bb = feature.Geometry.BoundingBox;
+        //    var coord = ProjectHelper.ToString(bb.Centroid);
+        //    var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+        //    var area = SphericalUtil.ComputeSignedArea(vertices);
+        //    area = Math.Abs(area);
 
-            AOIDescription = $"{area:N2} km² | {coord}";
-            //RouteDescription;
-        }
+        //    AOIDescription = $"{area:N2} km² | {coord}";
+        //    //RouteDescription;
+        //}
 
-        private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            area = Math.Abs(area);
+        //private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
+        //{
+        //    var feature = e.Feature;
+        //    var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+        //    var area = SphericalUtil.ComputeSignedArea(vertices);
+        //    area = Math.Abs(area);
 
-            AOIHoverDescription = $"{area:N2} km²";
-            //RouteHoverDescription;
-        }
+        //    AOIHoverDescription = $"{area:N2} km²";
+        //    //RouteHoverDescription;
+        //}
 
-        private void FeatureStepCreating(object? sender, FeatureEventArgs e)
-        {
-            var feature = e.Feature;
+        //private void FeatureStepCreating(object? sender, FeatureEventArgs e)
+        //{
+        //    var feature = e.Feature;
 
-            if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
-            {
-                var geometry = (LineString)feature.Geometry;
-                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-                var distance = SphericalUtil.ComputeDistance(vertices);
+        //    if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
+        //    {
+        //        var geometry = (LineString)feature.Geometry;
+        //        var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+        //        var distance = SphericalUtil.ComputeDistance(vertices);
 
-                RouteDescription = $"{distance:N2} km";
-            }
-        }
+        //        RouteDescription = $"{distance:N2} km";
+        //    }
+        //}
 
         private ToolManager CreateToolManager()
         {
@@ -205,19 +204,96 @@ namespace FootprintViewer.WPF.ViewModels
             var toolRectangle = new Tool()
             {
                 Title = "Rect",
-                Command = new RelayCommand(_ => ActualController = new DrawRectangleController()),
+                Command = new RelayCommand(_ => 
+                {
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+               
+                    Plotter = new Plotter(InteractiveRectangle.Build());
+
+                    Plotter.BeginCreating += (s, e) => 
+                    {
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+                    };
+
+                    Plotter.EndCreating += (s, e) =>
+                    {
+                        layer.ResetAOI();
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+
+                        ToolManager.ResetAllTools();
+                    };
+                    
+                    Plotter.Hover += (s, e) => { layer.DataHasChanged(); };
+
+                    ActualController = new DrawRectangleController();                 
+                }),
             };
 
             var toolPolygon = new Tool()
             {
                 Title = "Poly",
-                Command = new RelayCommand(_ => ActualController = new DrawPolygonController()),
+                Command = new RelayCommand(_ => 
+                {
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+
+                    Plotter = new Plotter(InteractivePolygon.Build());
+
+                    Plotter.BeginCreating += (s, e) =>
+                    {
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+                    };
+
+                    Plotter.Creating += (s, e) => layer.DataHasChanged();
+
+                    Plotter.EndCreating += (s, e) =>
+                    {
+                        layer.ClearAOIHelpers();
+
+                        layer.ResetAOI();
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+
+                        ToolManager.ResetAllTools();
+                    };
+
+                    Plotter.Hover += (s, e) => layer.DataHasChanged();
+
+
+                    ActualController = new DrawPolygonController(); 
+                }),
             };
 
             var toolCircle = new Tool()
             {
                 Title = "Circle",
-                Command = new RelayCommand(_ => ActualController = new DrawCircleController()),
+                Command = new RelayCommand(_ =>
+                {
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+
+                    Plotter = new Plotter(InteractiveCircle.Build());
+
+                    Plotter.BeginCreating += (s, e) =>
+                    {
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+                    };
+
+                    Plotter.EndCreating += (s, e) =>
+                    {
+                        layer.ResetAOI();
+                        layer.AddAOI(e.AddInfo);
+                        layer.DataHasChanged();
+
+                        ToolManager.ResetAllTools();
+                    };
+
+                    Plotter.Hover += (s, e) => { layer.DataHasChanged(); };
+
+                    ActualController = new DrawCircleController(); 
+                }),
             };
       
             var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
@@ -228,10 +304,28 @@ namespace FootprintViewer.WPF.ViewModels
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-                    if (layer != null)
+                        
+                    layer.ClearRoute();
+                                        
+                    Plotter = new Plotter(InteractiveRoute.Build());
+
+                    Plotter.BeginCreating += (s, e) =>
                     {
-                        layer.ClearRoute();
-                    }
+                        layer.AddRoute(e.AddInfo);
+                        layer.DataHasChanged();
+                    };
+
+                    Plotter.Creating += (s, e) => layer.DataHasChanged();
+
+                    Plotter.EndCreating += (s, e) =>
+                    {
+                        layer.ClearRouteHelpers();
+                        layer.DataHasChanged();
+
+                        ToolManager.ResetAllTools();
+                    };
+
+                    Plotter.Hover += (s, e) => layer.DataHasChanged();
 
                     ActualController = new DrawRouteController(); 
                 })
@@ -252,11 +346,6 @@ namespace FootprintViewer.WPF.ViewModels
             toolManager.Edit = toolEdit;
 
             return toolManager;
-        }
-
-        private void SubscribingToFeatureObserver(IInteractiveFeatureObserver featureObserver, ToolManager toolManager)
-        {
-            featureObserver.CreatingCompleted += (s, e) => { toolManager.ResetAllTools(); };
         }
 
         [Reactive]
@@ -287,7 +376,7 @@ namespace FootprintViewer.WPF.ViewModels
         public IController ActualController { get; set; }
 
         [Reactive]
-        public IInteractiveFeatureObserver InteractiveFeatureObserver { get; set; }
+        public Plotter Plotter { get; set; }
 
         [Reactive]
         public ToolManager ToolManager { get; set; }

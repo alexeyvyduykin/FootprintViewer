@@ -35,7 +35,7 @@
 
             <local:UserMapControl x:Name="MapControl"                                   
                                   MapSource="{Binding Map}"                              
-                                  Observer="{Binding InteractiveFeatureObserver}"
+                                  Plotter="{Binding Plotter}"
                                   Controller="{Binding ActualController}"                           
                                   VerticalAlignment="Stretch"                             
                                   HorizontalAlignment="Stretch" />

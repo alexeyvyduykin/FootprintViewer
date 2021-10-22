@@ -1,4 +1,6 @@
-﻿namespace FootprintViewer
+﻿using FootprintViewer.Graphics;
+
+namespace FootprintViewer
 {
     public class DrawingCircleManipulator : MouseManipulator
     {
@@ -16,7 +18,7 @@
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb) = MapView.Observer.CreatingCircle(worldPosition);
+                var (isDraw, bb) = MapView.Plotter.CreatingConcrete(worldPosition);
 
                 if (isDraw == true)
                 {
@@ -70,7 +72,7 @@
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Observer.HoverCreatingCircle(worldPosition);
+            MapView.Plotter.HoverCreatingConcrete(worldPosition);
         }
     }
 }

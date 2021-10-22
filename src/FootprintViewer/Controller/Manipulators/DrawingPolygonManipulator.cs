@@ -1,4 +1,7 @@
-﻿namespace FootprintViewer
+﻿using Mapsui.Geometries;
+using System;
+
+namespace FootprintViewer
 {
     public class DrawingPolygonManipulator : MouseManipulator
     {
@@ -8,6 +11,7 @@
 
         private bool _skip;
         private int _counter;
+        private const int _minPixelsMovedForDrag = 4;
 
         public override void Completed(MouseEventArgs e)
         {
@@ -18,7 +22,14 @@
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb) = MapView.Observer.CreatingPolygon(worldPosition, screenPosition, MapView.Viewport);
+                bool isClick(Point worldPosition)
+                {
+                    var p0 = MapView.Viewport.WorldToScreen(worldPosition);
+
+                    return IsClick(p0, screenPosition);
+                }
+
+                var (isDraw, bb) = MapView.Plotter.CreatingConcrete(worldPosition, isClick);
 
                 if (isDraw == true)
                 {
@@ -57,6 +68,15 @@
         {
             return CursorType.ZoomRectangle;
         }
+        private static bool IsClick(Point screenPosition, Point mouseDownScreenPosition)
+        {
+            if (mouseDownScreenPosition == null || screenPosition == null)
+            {
+                return false;
+            }
+
+            return mouseDownScreenPosition.Distance(screenPosition) < _minPixelsMovedForDrag;
+        }
     }
 
     public class HoverDrawingPolygonManipulator : MouseManipulator
@@ -73,7 +93,7 @@
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Observer.HoverCreatingPolygon(worldPosition);
+            MapView.Plotter.HoverCreatingConcrete(worldPosition);
         }
     }
 }

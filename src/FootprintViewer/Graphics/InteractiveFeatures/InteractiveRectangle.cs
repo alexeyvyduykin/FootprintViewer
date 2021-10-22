@@ -1,7 +1,6 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
-using Mapsui.UI;
-using NetTopologySuite.Triangulate.QuadEdge;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +14,17 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
-        public InteractiveRectangle(IInteractiveFeatureParent parent) : base(parent) { }
+        protected InteractiveRectangle() : base() { }
+        
+        public static InteractiveRectangle Build()
+        {
+            return new InteractiveRectangle();          
+        }
+
+        public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isClick)
+        {                 
+            return true;
+        }
 
         public override AddInfo BeginDrawing(Point worldPosition)
         {
@@ -64,8 +73,6 @@ namespace FootprintViewer
                 ((Polygon)Geometry).ExteriorRing.Vertices[2] = p2;
                 ((Polygon)Geometry).ExteriorRing.Vertices[3] = p3;
 
-                Parent?.OnHoverCreating(this);
-
                 RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
@@ -84,8 +91,6 @@ namespace FootprintViewer
                 };
 
                 this["Name"] = FeatureType.AOIRectangle.ToString();
-
-                Parent?.OnCreatingCompleted(this);
 
                 RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }

@@ -134,11 +134,9 @@ namespace FootprintViewer
             var polygon = GeometryFromWKT.Parse(wkt);
 
             Scale(polygon, 2500.0, polygon.BoundingBox.Centroid);
-
-            //var feature = new Feature { Geometry = polygon };
-
-            var interactiveFeature = new InteractivePolygon() { Geometry = polygon };
-
+  
+            var interactiveFeature = InteractivePolygon.Build(polygon);
+     
             AddInfo addInfo = new AddInfo() { Feature = interactiveFeature };
 
             editLayer.AddAOI(addInfo);

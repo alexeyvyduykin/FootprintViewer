@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using FootprintViewer.Graphics;
 
 namespace FootprintViewer.WPF
 {
@@ -26,15 +27,15 @@ namespace FootprintViewer.WPF
             MouseUp += MyMapControl_MouseUp;
         }
 
-        public IInteractiveFeatureObserver Observer
+        public Plotter Plotter
         {
-            get { return (IInteractiveFeatureObserver)GetValue(ObserverProperty); }
-            set { SetValue(ObserverProperty, value); }
+            get { return (Plotter)GetValue(PlotterProperty); }
+            set { SetValue(PlotterProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ObserverProperty =
-            DependencyProperty.Register("Observer", typeof(IInteractiveFeatureObserver), typeof(UserMapControl));
+        public static readonly DependencyProperty PlotterProperty =
+            DependencyProperty.Register("Plotter", typeof(Plotter), typeof(UserMapControl));
 
         public IController Controller
         {

@@ -6,42 +6,53 @@ using System.Text;
 
 namespace FootprintViewer.Graphics
 {
+    public class FeatureEventArgs : EventArgs
+    {
+        public AddInfo AddInfo { get; set; }
+    }
+
+    public delegate void FeatureEventHandler(object sender, FeatureEventArgs e);
+
     public class Plotter 
     {
-        private AddInfo? _addInfo;     
-        private readonly List<IInteractiveFeature> _cache = new List<IInteractiveFeature>();
+        private AddInfo? _addInfo;             
+        private readonly InteractiveFeature _feature;
 
-        public Plotter() { }
+        public Plotter(InteractiveFeature feature) { _feature = feature; }
 
-        public event FeatureEventHandler BeginCreating;
+        public event FeatureEventHandler? BeginCreating;
 
-        public event FeatureEventHandler StepCreating;
+        public event FeatureEventHandler? Creating;
 
-        public event FeatureEventHandler EndCreating;
+        public event FeatureEventHandler? EndCreating;
 
-        public event FeatureEventHandler HoverCreating;
+        public event FeatureEventHandler? Hover;
 
-        public (bool, BoundingBox) CreatingConcrete(Concrete concrete, Point worldPosition, Point screenPosition, IReadOnlyViewport viewport)
+        public (bool, BoundingBox) CreatingConcrete(Point worldPosition)
+        {
+            return CreatingConcrete(worldPosition, point => true);
+        }
+
+        public (bool, BoundingBox) CreatingConcrete(Point worldPosition, Predicate<Point> isEnd)
         {
             if (_addInfo == null)
-            {
-                var interactiveConcrete = concrete.CreateConcrete();
+            {          
+                _addInfo = _feature.BeginDrawing(worldPosition);
 
-                _addInfo = interactiveConcrete.BeginDrawing(worldPosition);
-
-                BeginCreating?.Invoke(this, new FeatureEventArgs() { Feature = _addInfo.Feature });
+                BeginCreating?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
 
                 return (false, new BoundingBox());
             }
             else
             {
-
-                var res = concrete.IsEndDrawing(worldPosition, screenPosition, viewport);
+                var res = _feature.IsEndDrawing(worldPosition, isEnd);
 
                 if (res == true)
                 {
                     _addInfo.Feature.EndDrawing();
-                 
+
+                    EndCreating?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
+
                     BoundingBox bb = _addInfo.Feature.Geometry.BoundingBox;
 
                     _addInfo = null;
@@ -51,7 +62,9 @@ namespace FootprintViewer.Graphics
                 else
                 {
                     _addInfo.Feature.Drawing(worldPosition);
-                    
+
+                    Creating?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
+
                     return (false, new BoundingBox());
                 }
             }
@@ -63,6 +76,7 @@ namespace FootprintViewer.Graphics
             {
                 _addInfo.Feature.DrawingHover(worldPosition);
 
+                Hover?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
             }
         }
     }

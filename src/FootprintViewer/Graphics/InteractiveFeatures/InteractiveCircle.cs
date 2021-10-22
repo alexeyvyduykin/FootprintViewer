@@ -1,8 +1,5 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
-using Mapsui.UI;
-using NetTopologySuite.Triangulate.QuadEdge;
-//using NetTopologySuite.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +16,17 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
-        public InteractiveCircle(IInteractiveFeatureParent parent) : base(parent) { }
+        protected InteractiveCircle() : base() { }
+
+        public static InteractiveCircle Build()
+        {
+            return new InteractiveCircle();      
+        }
+
+        public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isClick)
+        {                
+            return true;
+        }
 
         public override AddInfo BeginDrawing(Point worldPosition)
         {
@@ -89,8 +96,6 @@ namespace FootprintViewer
                     ExteriorRing = new LinearRing(vertices)
                 };
 
-                Parent?.OnHoverCreating(this);
-
                 RenderedGeometry?.Clear();
             }
         }
@@ -102,8 +107,6 @@ namespace FootprintViewer
                 _isDrawing = false;
 
                 this["Name"] = FeatureType.AOICircle.ToString();
-
-                Parent?.OnCreatingCompleted(this);
 
                 RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }

@@ -1,8 +1,6 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
-using Mapsui.UI;
-using NetTopologySuite.Triangulate.QuadEdge;
-//using NetTopologySuite.GeometriesGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +15,31 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
-        public InteractiveRoute(IInteractiveFeatureParent parent) : base(parent) { }
+        protected InteractiveRoute() : base() { }
+
+        public static InteractiveRoute Build()
+        {
+            return new InteractiveRoute();
+        }
+
+        public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isEnd)
+        {
+            var routeGeometry = (LineString)Geometry;
+
+            if (routeGeometry.Vertices.Count > 1)
+            {         
+                foreach (var item in routeGeometry.Vertices)
+                {
+                    var click = isEnd.Invoke(item);              
+                    if (click == true)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         public override AddInfo BeginDrawing(Point worldPosition)
         {
@@ -60,8 +82,6 @@ namespace FootprintViewer
                 ((LineString)Geometry).Vertices.Add(p0); // and add it to the geometry
                 ((LineString)_helpLineString.Geometry).Vertices = new[] { p1, p2 };
 
-                Parent?.OnStepCreating(this);
-
                 RenderedGeometry?.Clear();
                 _helpLineString.RenderedGeometry?.Clear();
             }
@@ -74,8 +94,6 @@ namespace FootprintViewer
                 ((LineString)_helpLineString.Geometry).EndPoint.X = worldPosition.X;
                 ((LineString)_helpLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
-                Parent?.OnHoverCreating(this);
-
                 _helpLineString.RenderedGeometry?.Clear();
             }
         }
@@ -84,8 +102,6 @@ namespace FootprintViewer
         {
             if (_isDrawing == true)
             {
-                Parent?.OnCreatingCompleted(this);
-
                 _isDrawing = false;
             }
         }

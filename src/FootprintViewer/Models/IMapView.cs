@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+﻿using FootprintViewer.Graphics;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.UI;
@@ -9,7 +9,7 @@ namespace FootprintViewer
     {
         IReadOnlyViewport Viewport { get; }
 
-        IInteractiveFeatureObserver Observer { get; set; }
+        Plotter Plotter { get; set; }
 
         IController Controller { get; set; }
 

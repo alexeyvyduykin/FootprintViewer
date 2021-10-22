@@ -1,29 +1,17 @@
 ﻿using Mapsui.Geometries;
-using Mapsui.Layers;
 using Mapsui.Providers;
-using Mapsui.UI;
-using NetTopologySuite.Operation.Distance;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer
 {
-
-
     public abstract class InteractiveFeature : Feature, IInteractiveFeature
     {
-        private readonly IInteractiveFeatureParent? _parent;
-
         public InteractiveFeature() : base() { }
 
-        public InteractiveFeature(IInteractiveFeatureParent parent) : base()
-        {
-            _parent = parent;
-        }
-
-        public IInteractiveFeatureParent? Parent => _parent;
-
         public InteractiveFeature(IFeature feature) : base(feature) { }
+
+        public abstract bool IsEndDrawing(Point worldPosition, Predicate<Point> isClick);
 
         public abstract AddInfo BeginDrawing(Point worldPosition);
 
@@ -44,8 +32,6 @@ namespace FootprintViewer
 
     public interface IInteractiveFeature : IFeature
     {
-        IInteractiveFeatureParent? Parent { get; }
-
         AddInfo BeginDrawing(Point worldPosition);
 
         void Drawing(Point worldPosition);

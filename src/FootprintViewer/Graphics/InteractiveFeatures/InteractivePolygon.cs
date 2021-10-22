@@ -1,7 +1,6 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
-using Mapsui.UI;
-using NetTopologySuite.GeometriesGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,10 +16,35 @@ namespace FootprintViewer
         private Point _vertex;
         private Point _startOffsetToVertex;
 
-        public InteractivePolygon() : base() { }
+        protected InteractivePolygon() : base() { }
 
-        public InteractivePolygon(IInteractiveFeatureParent parent) : base(parent) { }
-   
+        public static InteractivePolygon Build()
+        {
+            return new InteractivePolygon();           
+        }
+
+        public static InteractivePolygon Build(IGeometry geometry)
+        {
+            return new InteractivePolygon() { Geometry = geometry };
+        }
+
+        public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isEnd)
+        {
+            var polygonGeometry = (LineString)Geometry;
+
+            if (polygonGeometry.Vertices.Count > 2)
+            {
+                var click = isEnd.Invoke(polygonGeometry.Vertices[0]);
+
+                if (click == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public override AddInfo BeginDrawing(Point worldPosition)
         {
             if (_isDrawing == true)
@@ -71,8 +95,6 @@ namespace FootprintViewer
                 ((LineString)Geometry).Vertices.Add(p0); // and add it to the geometry
                 ((LineString)_helpLineString.Geometry).Vertices = new[] { p1, p2 };
 
-                Parent?.OnStepCreating(this);
-
                 RenderedGeometry?.Clear();
                 _helpLineString.RenderedGeometry?.Clear();
                 _helpPolygon.RenderedGeometry?.Clear();
@@ -85,8 +107,6 @@ namespace FootprintViewer
             {
                 ((LineString)_helpLineString.Geometry).EndPoint.X = worldPosition.X;
                 ((LineString)_helpLineString.Geometry).EndPoint.Y = worldPosition.Y;
-
-                Parent?.OnHoverCreating(this);
 
                 _helpLineString.RenderedGeometry?.Clear();
             }
@@ -106,8 +126,6 @@ namespace FootprintViewer
                 };
 
                 this["Name"] = FeatureType.AOIPolygon.ToString();
-
-                Parent?.OnCreatingCompleted(this);
             }
         }
 
