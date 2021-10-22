@@ -89,8 +89,14 @@
                                        Margin="15,0,15,0"/>
                             <Button Content="{Binding CommandTitle}"
                                     Style="{StaticResource CloseBottom}"                                                                       
-                                    HorizontalAlignment="Right"
-                                    Command="{Binding Command}"/>
+                                    HorizontalAlignment="Right">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction Command="{Binding Command}"
+                                                               CommandParameter="{Binding}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
                         </DockPanel>
                     </Border>
                 </DataTemplate>

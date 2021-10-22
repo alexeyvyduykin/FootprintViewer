@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace FootprintViewer.WPF.ViewModels
@@ -170,6 +171,30 @@ namespace FootprintViewer.WPF.ViewModels
         //    }
         //}
 
+        private string FeatureLengthStepCreating(Feature feature)
+        {         
+            if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
+            {
+                var geometry = (LineString)feature.Geometry;
+                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+                var distance = SphericalUtil.ComputeDistance(vertices);
+
+                return $"{distance:N2} km";
+            }
+
+            return "error";
+        }
+
+        private string FeatureAreaEndCreating(Feature feature)
+        {          
+            var bb = feature.Geometry.BoundingBox;
+            var coord = ProjectHelper.ToString(bb.Centroid);
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            area = Math.Abs(area);
+            return $"{area:N2} km² | {coord}";        
+        }
+
         private ToolManager CreateToolManager()
         {
             var toolZoomIn = new Tool()
@@ -221,6 +246,18 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.ResetAOI();
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
+
+
+                        var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+                        
+                        void Closing()
+                        {                           
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+                        }
+                                                
+                        InfoPanel.OpenAOI(descr, Closing);
+
 
                         ToolManager.ResetAllTools();
                     };
@@ -306,7 +343,9 @@ namespace FootprintViewer.WPF.ViewModels
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
                         
                     layer.ClearRoute();
-                                        
+
+                    InfoPanel.CloseRoute();
+
                     Plotter = new Plotter(InteractiveRoute.Build());
 
                     Plotter.BeginCreating += (s, e) =>
@@ -315,7 +354,20 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.DataHasChanged();
                     };
 
-                    Plotter.Creating += (s, e) => layer.DataHasChanged();
+                    Plotter.Creating += (s, e) =>
+                    {
+                        var descr = FeatureLengthStepCreating((Feature)e.AddInfo.Feature);
+
+                        void Closing()
+                        {
+                            layer.ClearRoute();
+                            layer.DataHasChanged();
+                        }
+
+                        InfoPanel.OpenRoute(descr, Closing);
+
+                        layer.DataHasChanged();
+                    };
 
                     Plotter.EndCreating += (s, e) =>
                     {

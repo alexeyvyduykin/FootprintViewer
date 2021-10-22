@@ -80,7 +80,7 @@ namespace FootprintViewer
 
             var infoPanel = new InfoPanel();
 
-            infoPanel.Items = new ObservableCollection<InfoPanelItem>(new[] { routeItem, aoiItem });
+            //infoPanel.Items = new ObservableCollection<InfoPanelItem>(new[] { routeItem, aoiItem });
 
             return infoPanel;
         }
