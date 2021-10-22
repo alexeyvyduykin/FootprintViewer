@@ -14,7 +14,7 @@ namespace FootprintViewer
         {
             _dict.Clear();
 
-            var shapeFileName = @"C:\Users\User\AlexeyVyduykin\Resources\SAR\mosaics-geotiff\mosaic-tiff-ruonly.shp";
+            var shapeFileName = @"..\\..\\..\\..\\..\\data\\mosaics-geotiff\\mosaic-tiff-ruonly.shp";
 
             var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
 
@@ -50,7 +50,7 @@ namespace FootprintViewer
             InitDictionary();
 
             var mbtilesPaths =
-            Directory.GetFiles(@"C:\Users\User\AlexeyVyduykin\Resources\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
+            Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
 
             var list = new List<Footprint>();
 

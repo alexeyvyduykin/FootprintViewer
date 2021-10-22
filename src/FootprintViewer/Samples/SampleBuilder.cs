@@ -160,7 +160,7 @@ namespace FootprintViewer
 
         private static ILayer CreateBackgroundLayer()
         {
-            string path = @"C:/Users/User/AlexeyVyduykin/Resources/WorldMap/world.mbtiles";
+            string path = @"..\\..\\..\\..\\..\\data\\world.mbtiles";
 
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
