@@ -46,7 +46,11 @@
                 <controls:ToolControl DataContext="{Binding ToolManager}"/>
             </Grid>
 
-
+            <Grid VerticalAlignment="Bottom"                        
+                  HorizontalAlignment="Center"                                            
+                  Margin="0,0,0,60">
+                <controls:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+            </Grid>
 
             <StackPanel Margin="8,0,0,20" VerticalAlignment="Bottom" HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal">

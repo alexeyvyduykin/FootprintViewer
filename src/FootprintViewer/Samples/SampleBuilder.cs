@@ -3,6 +3,7 @@ using BruTile.FileSystem;
 using BruTile.MbTiles;
 using BruTile.Predefined;
 using BruTile.Web;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Geometries.WellKnownText;
@@ -14,6 +15,7 @@ using Mapsui.Styles.Thematics;
 using Mapsui.UI;
 using SQLite;
 using System;
+using System.Collections.ObjectModel;
 
 namespace FootprintViewer
 {
@@ -58,6 +60,29 @@ namespace FootprintViewer
             map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
             return map;
+        }
+
+        public static InfoPanel CreateInfoPanel()
+        {
+            InfoPanelItem routeItem = new InfoPanelItem()
+            {
+                Title = "Route",
+                Text = "Description",
+                CommandTitle = "X",
+            };
+
+            InfoPanelItem aoiItem = new InfoPanelItem()
+            {
+                Title = "AOI",
+                Text = "Description",
+                CommandTitle = "X",
+            };
+
+            var infoPanel = new InfoPanel();
+
+            infoPanel.Items = new ObservableCollection<InfoPanelItem>(new[] { routeItem, aoiItem });
+
+            return infoPanel;
         }
 
         public static readonly Random random = new System.Random();

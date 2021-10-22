@@ -22,16 +22,12 @@ using NetTopologySuite.Algorithm;
 namespace FootprintViewer.WPF
 {
     /*
-  + 1) Tools -> ZoomIn/ZoomOut 
-  + 2) Tools -> AOI Rect/Poly/Circle
     3) Hints -> Flyout/Popup
-  + 4) Tools -> RouteDistance
     5) Tools -> LayerList
     6) Hints -> Inner Tutorial
-  + 7) Tools -> ToolManager
     8) FootprintList -> Filter
     9) Features -> InfoPanel
-     */
+    */
 
 
     /// <summary>

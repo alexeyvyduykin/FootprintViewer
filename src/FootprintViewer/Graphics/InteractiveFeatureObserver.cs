@@ -6,39 +6,6 @@ using System.Text;
 
 namespace FootprintViewer
 {
-    public interface IInteractiveFeatureParent
-    {
-        void OnStepCreating(IInteractiveFeature feature);
-
-        void OnCreatingCompleted(IInteractiveFeature feature);
-
-        void OnHoverCreating(IInteractiveFeature feature);
-    }
-
-    public interface IInteractiveFeatureObserver
-    {
-        event FeatureEventHandler StepCreating;
-
-        event FeatureEventHandler CreatingCompleted;
-
-        event FeatureEventHandler HoverCreating;
-
-        (bool, BoundingBox) CreatingRectangle(Point worldPosition);
-
-        void HoverCreatingRectangle(Point worldPosition);
-
-        void CreatingRoute(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
-
-        void HoverCreatingRoute(Point worldPosition);
-
-        (bool, BoundingBox) CreatingPolygon(Point worldPosition, Point screenPosition, IReadOnlyViewport viewport);
-       
-        void HoverCreatingPolygon(Point worldPosition);
-
-        (bool, BoundingBox) CreatingCircle(Point worldPosition);
-
-        void HoverCreatingCircle(Point worldPosition);
-    }
 
     public class FeatureEventArgs : EventArgs
     {   
@@ -47,6 +14,7 @@ namespace FootprintViewer
 
     public delegate void FeatureEventHandler(object sender, FeatureEventArgs e);
 
+    // TODO: create abstract Plotter, and concrete manipulaters for each feature, Plotter fires creating events
     public class InteractiveFeatureObserver : IInteractiveFeatureObserver, IInteractiveFeatureParent
     {    
         private AddInfo? _addInfo;

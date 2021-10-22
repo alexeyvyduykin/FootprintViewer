@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="FootprintViewer.WPF.Controls.InfoPanelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:FootprintViewer.WPF.Controls"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
+             d:DataContext="{d:DesignInstance vm:InfoPanelDesigner, IsDesignTimeCreatable=True}"             
+             mc:Ignorable="d" 
+             d:Background="LightBlue">
+
+    <UserControl.Resources>
+        <Color x:Key="InfoPanelItemBackground" R="4" G="15" B="27" A="191"/>
+        <Color x:Key="InfoPanelItemOverlay" R="114" G="115" B="127" A="191"/>
+        <SolidColorBrush x:Key="InfoPanelItemOverlayBrush" Color="{StaticResource InfoPanelItemOverlay}"/>
+        <SolidColorBrush x:Key="InfoPanelItemBrush" Color="{StaticResource InfoPanelItemBackground}"/>
+
+        <Style TargetType="{x:Type Button}" x:Key="InfoPanelButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Width" Value="29"></Setter>
+            <Setter Property="Height" Value="29"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="{TemplateBinding Border.CornerRadius}" 
+                                Background="{TemplateBinding Background}">
+                            <Grid>
+                                <ContentPresenter x:Name="MyContentPresenter" 
+                                                  Content="{TemplateBinding Content}" 
+                                                  HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center" 
+                                                  Margin="0,0,0,0" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource InfoPanelItemOverlayBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="CloseBottom" BasedOn="{StaticResource InfoPanelButton}">
+            <Setter Property="Border.BorderThickness" Value="0" />
+            <Setter Property="Border.CornerRadius" Value="3" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="InfoPanelBorder">
+            <Setter Property="Width" Value="400"/>
+            <Setter Property="Height" Value="52"/>
+            <Setter Property="Background" Value="{StaticResource InfoPanelItemBrush}"/>
+         
+            <Setter Property="Padding" Value="15,7,15,7" />
+            <Setter Property="Margin" Value="0,0,0,21" />
+            <Setter Property="CornerRadius" Value="3" />
+        </Style>
+
+    </UserControl.Resources>
+
+    
+    
+
+    <Grid>
+
+        <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical"></StackPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource InfoPanelBorder}">
+                        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding Title}" 
+                                       Foreground="White" 
+                                       VerticalAlignment="Center"
+                                       Width="32" Height="32"/>
+                            <TextBlock Text="{Binding Text}" 
+                                       Foreground="White"
+                                       VerticalAlignment="Center"
+                                       Margin="15,0,15,0"/>
+                            <Button Content="{Binding CommandTitle}"
+                                    Style="{StaticResource CloseBottom}"                                                                       
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding Command}"/>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            
+        </ItemsControl>
+        
+    </Grid>
+</UserControl>

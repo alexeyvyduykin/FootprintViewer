@@ -60,6 +60,8 @@ namespace FootprintViewer.WPF.ViewModels
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
             ToolManager = CreateToolManager();
+
+            InfoPanel = SampleBuilder.CreateInfoPanel();
           
             SubscribingToFeatureObserver(InteractiveFeatureObserver, ToolManager);
         }
@@ -289,6 +291,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public ToolManager ToolManager { get; set; }
+
+        [Reactive]
+        public InfoPanel InfoPanel { get; set; }
     }
 
     public class MapLayer
