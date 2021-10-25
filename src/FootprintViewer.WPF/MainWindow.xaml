@@ -51,26 +51,6 @@
                   Margin="0,0,0,60">
                 <controls:InfoPanelControl DataContext="{Binding InfoPanel}"/>
             </Grid>
-
-            <StackPanel Margin="8,0,0,20" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal">
-                    <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
-                        <TextBlock Text="{Binding RouteDescription}" Foreground="White"></TextBlock>
-                    </Border>
-                    <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
-                        <TextBlock Text="{Binding RouteHoverDescription}" Foreground="White"></TextBlock>
-                    </Border>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
-                        <TextBlock Text="{Binding AOIDescription}" Foreground="White"></TextBlock>
-                    </Border>
-                    <Border Margin="4" Width="300" Height="20" Background="Black" Opacity="0.6">
-                        <TextBlock Text="{Binding AOIHoverDescription}" Foreground="White"></TextBlock>
-                    </Border>
-                </StackPanel>
-            </StackPanel>
-            
             
             <Border BorderBrush="White" 
                     Opacity="0.65" 

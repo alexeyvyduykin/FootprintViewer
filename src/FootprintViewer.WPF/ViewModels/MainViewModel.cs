@@ -413,18 +413,6 @@ namespace FootprintViewer.WPF.ViewModels
         public ObservableCollection<MapLayer> MapLayers { get; set; }
 
         [Reactive]
-        public string AOIDescription { get; set; } = "AOI";
-
-        [Reactive]
-        public string RouteDescription { get; set; } = "Route";
-
-        [Reactive]
-        public string AOIHoverDescription { get; set; } = "Hover AOI";
-
-        [Reactive]
-        public string RouteHoverDescription { get; set; } = "Hover Route";
-
-        [Reactive]
         public IController ActualController { get; set; }
 
         [Reactive]

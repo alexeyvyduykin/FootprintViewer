@@ -1,0 +1,54 @@
+﻿<ItemsControl x:Class="FootprintViewer.WPF.Controls.TipControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FootprintViewer.WPF.Controls"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"     
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
+             d:ItemsSource="{x:Static vm:TipDesigner.Items}"                      
+             mc:Ignorable="d"
+             d:DesignHeight="80" d:DesignWidth="340">
+
+    <ItemsControl.Resources>
+        <Color x:Key="TipBackground" R="4" G="15" B="27" A="191"/>
+        <SolidColorBrush x:Key="TipBrush" Color="{StaticResource TipBackground}"/>
+
+        <Style TargetType="Border" x:Key="TipBorder">
+            <Setter Property="Background" Value="{StaticResource TipBrush}"/>
+            <Setter Property="Padding" Value="8,4,8,4" />
+            <Setter Property="CornerRadius" Value="3" />
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TipTextBlock">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </ItemsControl.Resources>
+                        
+    <!-- ItemsPanelTemplate -->
+    <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+            <Canvas Background="Transparent"/>
+        </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+
+    <!-- ItemContainerStyle -->
+    <ItemsControl.ItemContainerStyle>
+        <Style>
+            <Setter Property="Canvas.Left" Value="{Binding X}" />
+            <Setter Property="Canvas.Top" Value="{Binding Y}" />
+        </Style>
+    </ItemsControl.ItemContainerStyle>
+
+    <!-- ItemTemplate -->
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border Style="{StaticResource TipBorder}">
+                <TextBlock Style="{StaticResource TipTextBlock}" 
+                           Text="{Binding Text}"/>
+            </Border>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+
+</ItemsControl>

@@ -17,10 +17,10 @@ namespace FootprintViewer
 
         void NavigateToAOI(BoundingBox boundingBox);
 
-        void HideTracker();
+        void ShowTip(string text);
+       
+        void HideTip();
 
         void InvalidatePlot(bool updateData = true);
-
-        void SetClipboardText(string text);
     }
 }

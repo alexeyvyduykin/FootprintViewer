@@ -10,13 +10,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using FootprintViewer.Graphics;
+using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
+using FootprintViewer.WPF.Controls;
+using System.Collections.ObjectModel;
+using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.WPF
 {
     public class UserMapControl : MapControl, IMapView
     {
-        private Mapsui.Geometries.Point? _mouseDownPoint;          
-     
+        private Mapsui.Geometries.Point? _mouseDownPoint;
+        private TipControl? _tip = null;
+
         public UserMapControl() : base()
         {                 
             MouseEnter += MyMapControl_MouseEnter;
@@ -109,6 +115,12 @@ namespace FootprintViewer.WPF
             if (e.Handled)
             {
                 return;
+            }
+        
+            if (_tip != null)
+            {
+                var screenPosition = e.GetPosition(this);
+                _tip.SetPosition(screenPosition.X + 20, screenPosition.Y);
             }
 
             //e.Handled = 
@@ -213,19 +225,31 @@ namespace FootprintViewer.WPF
             }
         }
 
-        public void HideTracker()
+        public void ShowTip(string text)
         {
-            throw new NotImplementedException();
+            if (_tip != null)
+            {
+                HideTip();
+            }
+
+            _tip = new TipControl();
+            _tip.Tip = new Tip() { Text = "Description test" }; 
+
+            Children.Add(_tip);
+        }
+
+        public void HideTip()
+        {
+            if (_tip != null)
+            {
+                Children.Remove(_tip);
+                _tip = null;
+            }
         }
 
         public void InvalidatePlot(bool updateData = true)
         {
             base.InvalidateVisual();
-        }
-
-        public void SetClipboardText(string text)
-        {
-            throw new NotImplementedException();
         }
     }
 }
