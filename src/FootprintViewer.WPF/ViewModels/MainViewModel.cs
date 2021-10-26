@@ -7,6 +7,7 @@ using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using NetTopologySuite.Algorithm;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -196,6 +197,24 @@ namespace FootprintViewer.WPF.ViewModels
             return $"{area:N2} km² | {coord}";        
         }
 
+        private double GetFeatureArea(Feature feature)
+        {
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            return Math.Abs(area);           
+        }
+
+        private double GetRouteLength(AddInfo addInfo)
+        {
+            var geometry = (LineString)addInfo.Feature.Geometry;
+            var fHelp = addInfo.HelpFeatures.Single();
+            var verts0 = geometry.AllVertices();
+            var verts1 = fHelp.Geometry.AllVertices();
+            var verts = verts0.Union(verts1);
+            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            return SphericalUtil.ComputeDistance(vertices);
+        }
+
         private ToolManager CreateToolManager()
         {
             var toolZoomIn = new Tool()
@@ -242,9 +261,9 @@ namespace FootprintViewer.WPF.ViewModels
                     };
 
                     Plotter.BeginCreating += (s, e) => 
-                    {                        
+                    {
                         layer.AddAOI(e.AddInfo);
-                        layer.DataHasChanged();
+                        layer.DataHasChanged();                     
                     };
 
                     Plotter.EndCreating += (s, e) =>
@@ -270,13 +289,9 @@ namespace FootprintViewer.WPF.ViewModels
                     
                     Plotter.Hover += (s, e) =>
                     {
-                        if (Tip != null)
-                        {
-                            var vertices = e.AddInfo.Feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-                            var area = SphericalUtil.ComputeSignedArea(vertices);
-                            area = Math.Abs(area);
-                            Tip.Title = $"Область: {area:N2} km²";
-                        }
+                        var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+                        Tip.Title = $"Область: {area:N2} km²";
+                        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
                         layer.DataHasChanged();
                     };
@@ -294,13 +309,30 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter = new Plotter(InteractivePolygon.Build());
 
+                    Tip = new Tip()
+                    {
+                        Text = "Нажмите и перетащите, чтобы нарисовать полигон",
+                    };
+
                     Plotter.BeginCreating += (s, e) =>
                     {
+                        Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
+
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
                     };
 
-                    Plotter.Creating += (s, e) => layer.DataHasChanged();
+                    Plotter.Creating += (s, e) =>
+                    {
+                        if (e.AddInfo.Feature.Geometry.AllVertices().Count() > 2)
+                        {
+                            var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+                            Tip.Title = $"Область: {area:N2} km²";
+                            Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
+                        }
+
+                        layer.DataHasChanged();
+                    };
 
                     Plotter.EndCreating += (s, e) =>
                     {
@@ -310,10 +342,15 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
 
+                        Tip = null;
+
                         ToolManager.ResetAllTools();
                     };
 
-                    Plotter.Hover += (s, e) => layer.DataHasChanged();
+                    Plotter.Hover += (s, e) => 
+                    {
+                        layer.DataHasChanged(); 
+                    };
 
 
                     ActualController = new DrawPolygonController(); 
@@ -329,6 +366,11 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter = new Plotter(InteractiveCircle.Build());
 
+                    Tip = new Tip()
+                    {
+                        Text = "Нажмите и перетащите, чтобы нарисовать круг",
+                    };
+
                     Plotter.BeginCreating += (s, e) =>
                     {
                         layer.AddAOI(e.AddInfo);
@@ -341,10 +383,19 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
 
+                        Tip = null;
+
                         ToolManager.ResetAllTools();
                     };
 
-                    Plotter.Hover += (s, e) => { layer.DataHasChanged(); };
+                    Plotter.Hover += (s, e) =>
+                    {
+                        var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+                        Tip.Title = $"Область: {area:N2} km²";
+                        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+
+                        layer.DataHasChanged(); 
+                    };
 
                     ActualController = new DrawCircleController(); 
                 }),
@@ -365,8 +416,18 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter = new Plotter(InteractiveRoute.Build());
 
+                    Tip = new Tip()
+                    {
+                        Text = "Кликните, чтобы начать измерение",
+                    };
+
                     Plotter.BeginCreating += (s, e) =>
                     {
+                        var distance = GetRouteLength(e.AddInfo);
+                        var str = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
+                        Tip.Title = $"Расстояние: {str}";
+                        Tip.Text = "";
+
                         layer.AddRoute(e.AddInfo);
                         layer.DataHasChanged();
                     };
@@ -391,10 +452,19 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.ClearRouteHelpers();
                         layer.DataHasChanged();
 
+                        Tip = null;
+
                         ToolManager.ResetAllTools();
                     };
 
-                    Plotter.Hover += (s, e) => layer.DataHasChanged();
+                    Plotter.Hover += (s, e) => 
+                    {
+                        var distance = GetRouteLength(e.AddInfo);
+                        var str = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
+                        Tip.Title = $"Расстояние: {str}";
+
+                        layer.DataHasChanged();
+                    };
 
                     ActualController = new DrawRouteController(); 
                 })
