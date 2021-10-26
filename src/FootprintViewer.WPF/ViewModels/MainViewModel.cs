@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using System.Windows.Input;
 
@@ -235,8 +236,13 @@ namespace FootprintViewer.WPF.ViewModels
                
                     Plotter = new Plotter(InteractiveRectangle.Build());
 
-                    Plotter.BeginCreating += (s, e) => 
+                    Tip = new Tip()
                     {
+                        Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник",
+                    };
+
+                    Plotter.BeginCreating += (s, e) => 
+                    {                        
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
                     };
@@ -247,6 +253,7 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
 
+                        Tip = null;
 
                         var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
                         
@@ -258,11 +265,21 @@ namespace FootprintViewer.WPF.ViewModels
                                                 
                         InfoPanel.OpenAOI(descr, Closing);
 
-
                         ToolManager.ResetAllTools();
                     };
                     
-                    Plotter.Hover += (s, e) => { layer.DataHasChanged(); };
+                    Plotter.Hover += (s, e) =>
+                    {
+                        if (Tip != null)
+                        {
+                            var vertices = e.AddInfo.Feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+                            var area = SphericalUtil.ComputeSignedArea(vertices);
+                            area = Math.Abs(area);
+                            Tip.Title = $"Область: {area:N2} km²";
+                        }
+
+                        layer.DataHasChanged();
+                    };
 
                     ActualController = new DrawRectangleController();                 
                 }),
@@ -423,6 +440,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public InfoPanel InfoPanel { get; set; }
+
+        [Reactive]
+        public Tip? Tip { get; set; }
     }
 
     public class MapLayer

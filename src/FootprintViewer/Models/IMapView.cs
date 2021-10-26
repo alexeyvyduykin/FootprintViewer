@@ -17,10 +17,6 @@ namespace FootprintViewer
 
         void NavigateToAOI(BoundingBox boundingBox);
 
-        void ShowTip(string text);
-       
-        void HideTip();
-
         void InvalidatePlot(bool updateData = true);
     }
 }

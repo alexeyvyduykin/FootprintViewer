@@ -9,7 +9,7 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
              d:ItemsSource="{x:Static vm:TipDesigner.Items}"                      
              mc:Ignorable="d"
-             d:DesignHeight="80" d:DesignWidth="340">
+             d:DesignHeight="200" d:DesignWidth="340">
 
     <ItemsControl.Resources>
         <Color x:Key="TipBackground" R="4" G="15" B="27" A="191"/>
@@ -21,9 +21,24 @@
             <Setter Property="CornerRadius" Value="3" />
         </Style>
 
-        <Style TargetType="TextBlock" x:Key="TipTextBlock">
+        <Style TargetType="TextBlock" x:Key="txt">
+            <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TipTitle" BasedOn="{StaticResource txt}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TipText" BasedOn="{StaticResource txt}">
             <Setter Property="Foreground" Value="White"/>
         </Style>
+
     </ItemsControl.Resources>
                         
     <!-- ItemsPanelTemplate -->
@@ -45,8 +60,10 @@
     <ItemsControl.ItemTemplate>
         <DataTemplate>
             <Border Style="{StaticResource TipBorder}">
-                <TextBlock Style="{StaticResource TipTextBlock}" 
-                           Text="{Binding Text}"/>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TipTitle}" Text="{Binding Title}"/>
+                    <TextBlock Style="{StaticResource TipText}" Text="{Binding Text}"/>
+                </StackPanel>
             </Border>
         </DataTemplate>
     </ItemsControl.ItemTemplate>

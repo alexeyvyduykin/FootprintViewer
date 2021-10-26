@@ -21,8 +21,8 @@ namespace FootprintViewer.WPF
     public class UserMapControl : MapControl, IMapView
     {
         private Mapsui.Geometries.Point? _mouseDownPoint;
-        private TipControl? _tip = null;
-
+        private readonly TipControl _tipOverlay;
+        private bool _isActivateTip = false;
         public UserMapControl() : base()
         {                 
             MouseEnter += MyMapControl_MouseEnter;
@@ -31,6 +31,9 @@ namespace FootprintViewer.WPF
             MouseDown += MyMapControl_MouseDown;
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
+
+            _tipOverlay = new TipControl();
+            Children.Add(_tipOverlay);
         }
 
         public Plotter Plotter
@@ -53,6 +56,27 @@ namespace FootprintViewer.WPF
         public static readonly DependencyProperty ControllerProperty =
             DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new EditController()));
 
+        public Tip? TipSource
+        {
+            get { return (Tip)GetValue(TipSourceProperty); }
+            set { SetValue(TipSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty TipSourceProperty =
+            DependencyProperty.Register("TipSource", typeof(Tip), typeof(UserMapControl), new PropertyMetadata(null, OnTipSourceChanged));
+
+        private static void OnTipSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var mapControl = (UserMapControl)d;
+            if (e.NewValue == null)
+            {
+                mapControl.HideTip();
+            }                
+            else
+            {            
+                mapControl.ActiveateTip();         
+            }
+        }
 
         public Map MapSource
         {
@@ -63,7 +87,6 @@ namespace FootprintViewer.WPF
         // Using a DependencyProperty as the backing store for MapSource.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MapSourceProperty =
             DependencyProperty.Register("MapSource", typeof(Map), typeof(UserMapControl), new PropertyMetadata(null, OnMapSourceChanged));
-
 
         private static void OnMapSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -116,11 +139,18 @@ namespace FootprintViewer.WPF
             {
                 return;
             }
-        
-            if (_tip != null)
+
+            if (TipSource != null)
             {
+                if (_isActivateTip == true)
+                {
+                    _tipOverlay.ItemsSource = new ObservableCollection<Tip>() { TipSource };
+                    _isActivateTip = false;
+                }
+
                 var screenPosition = e.GetPosition(this);
-                _tip.SetPosition(screenPosition.X + 20, screenPosition.Y);
+                TipSource.X = screenPosition.X + 20;
+                TipSource.Y = screenPosition.Y;
             }
 
             //e.Handled = 
@@ -224,27 +254,15 @@ namespace FootprintViewer.WPF
                     break;
             }
         }
-
-        public void ShowTip(string text)
+        
+        protected void ActiveateTip()
         {
-            if (_tip != null)
-            {
-                HideTip();
-            }
-
-            _tip = new TipControl();
-            _tip.Tip = new Tip() { Text = "Description test" }; 
-
-            Children.Add(_tip);
+            _isActivateTip = true;     
         }
 
-        public void HideTip()
-        {
-            if (_tip != null)
-            {
-                Children.Remove(_tip);
-                _tip = null;
-            }
+        protected void HideTip()
+        {       
+            _tipOverlay.ItemsSource = new ObservableCollection<Tip>();                        
         }
 
         public void InvalidatePlot(bool updateData = true)

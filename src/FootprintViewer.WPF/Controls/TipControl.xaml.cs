@@ -23,33 +23,6 @@ namespace FootprintViewer.WPF.Controls
         public TipControl()
         {
             InitializeComponent();
-
-            //if (DataContext != null && DataContext is Tip tip)
-            //{
-            //    Tip = tip;
-            //    ItemsSource = new ObservableCollection<Tip>() { tip };
-            //}
-            //else
-            //{
-            //    ItemsSource = new ObservableCollection<Tip>();
-            //}
-        }
-
-        public Tip? Tip { get; set; }
-
-        public void SetPosition(double x, double y)
-        {
-            if (Tip != null)
-            {
-                Tip.X = x;
-                Tip.Y = y;         
-                ItemsSource = new ObservableCollection<Tip>() { Tip };
-            }
-        }
-
-        public void Clear()
-        {
-            ItemsSource = new ObservableCollection<Tip>();
         }
     }
 }
