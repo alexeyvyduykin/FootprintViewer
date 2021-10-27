@@ -10,18 +10,18 @@ namespace FootprintViewer.ViewModels
 {
     public class InfoPanel : ReactiveObject
     {
-        private readonly InfoPanelItem?[] _list = new InfoPanelItem?[2] { null, null };
+        private readonly Dictionary<string, InfoPanelItem?> _dict = new Dictionary<string, InfoPanelItem?>();
 
         public InfoPanel()
         {
             Items = new ObservableCollection<InfoPanelItem>();
         }
 
-        public void OpenAOI(string description, Action closing)
+        public void Open(string key, string description, Action closing)
         {
-            InfoPanelItem aoiItem = new InfoPanelItem()
+            InfoPanelItem item = new InfoPanelItem()
             {
-                Title = "AOI",
+                Title = key,
                 Text = description,
                 CommandTitle = "X",
                 Command = ReactiveCommand.Create<InfoPanelItem>((item) => 
@@ -31,61 +31,43 @@ namespace FootprintViewer.ViewModels
                 })
             };
 
-            SetItem(0, aoiItem);
+            SetItem(key, item);
         }
 
-        public void CloseAOI()
+        public void Close(string key)
         {
-            var t = _list[0];
+            if (_dict.ContainsKey(key) == false)
+            {
+                return;
+            }
+
+            var s = _dict[key];
             
-            if (t != null)
+            if (s != null)
             {
-                Items.Remove(t);
-                _list[0] = null;              
+                Items.Remove(s);
+                _dict[key] = null;              
             }
         }
 
-        public void OpenRoute(string description, Action closing)
+        private void SetItem(string key, InfoPanelItem item)
         {
-            InfoPanelItem routeItem = new InfoPanelItem()
+            if(_dict.ContainsKey(key) == false)
             {
-                Title = "Route",
-                Text = description,
-                CommandTitle = "X",
-                Command = ReactiveCommand.Create<InfoPanelItem>((item) => 
-                {
-                    Remove(item);
-                    closing.Invoke();
-                })
-            };
-
-            SetItem(1, routeItem);
-        }
-
-        public void CloseRoute()
-        {
-            var t = _list[1];
-
-            if (t != null)
-            {
-                Items.Remove(t);
-                _list[1] = null;
+                _dict.Add(key, null);              
             }
-        }
 
-        private void SetItem(int index, InfoPanelItem item)
-        {
-            var t = _list[index];
+            var s = _dict[key];
 
-            if (t != null)
+            if (s != null)
             {
-                Items.Remove(t);
-                _list[index] = item;
+                Items.Remove(s);
+                _dict[key] = item;
                 Items.Insert(0, item);
             }
             else
             {
-                _list[index] = item;
+                _dict[key] = item;
                 Items.Insert(0, item);
             }
         }
@@ -96,14 +78,13 @@ namespace FootprintViewer.ViewModels
             {
                 Items.Remove(item);
 
-                if (_list[0] == item)
+                foreach (var key in _dict.Keys)
                 {
-                    _list[0] = null;
-                }
-
-                if (_list[1] == item)
-                {
-                    _list[1] = null;
+                    if (_dict[key] == item)
+                    {
+                        _dict[key] = null;
+                        break;
+                    }
                 }
             }
         }

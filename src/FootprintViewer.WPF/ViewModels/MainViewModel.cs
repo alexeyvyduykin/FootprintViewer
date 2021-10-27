@@ -26,8 +26,10 @@ namespace FootprintViewer.WPF.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {
+        private enum InfoPanelType { AOI, Route }
+
         public event EventHandler CurrentFootprint;
-        
+
         public MainViewModel()
         {
             Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints());
@@ -228,7 +230,7 @@ namespace FootprintViewer.WPF.ViewModels
                             layer.DataHasChanged();
                         }
                                                 
-                        InfoPanel.OpenAOI(descr, Closing);
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
 
                         ToolManager.ResetAllTools();
                     };
@@ -361,7 +363,7 @@ namespace FootprintViewer.WPF.ViewModels
                         
                     layer.ClearRoute();
 
-                    InfoPanel.CloseRoute();
+                    InfoPanel.Close(nameof(InfoPanelType.Route));
 
                     Plotter = new Plotter(InteractiveRoute.Build());
 
@@ -390,7 +392,7 @@ namespace FootprintViewer.WPF.ViewModels
                             layer.DataHasChanged();
                         }
 
-                        InfoPanel.OpenRoute(FormatHelper.ToDistance(distance), Closing);
+                        InfoPanel.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), Closing);
 
                         layer.DataHasChanged();
                     };
