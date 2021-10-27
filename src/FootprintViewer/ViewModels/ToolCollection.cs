@@ -127,6 +127,8 @@ namespace FootprintViewer.ViewModels
                     Invalidate();
 
                     IsActive = true;
+
+                    Visible = false;
                 }
                 else
                 {
