@@ -8,6 +8,7 @@ using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
 using NetTopologySuite.Algorithm;
+using NetTopologySuite.Operation.Distance;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -36,14 +37,6 @@ namespace FootprintViewer.WPF.ViewModels
             Map = SampleBuilder.CreateMap();
 
             var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-
-       //     Plotter = new Plotter(/*editLayer*/);
-
-       //     Plotter.EndCreating += FeatureEndCreating;
-
-       //     Plotter.HoverCreating += FeatureHoverCreating;
-
-        //    Plotter.StepCreating += FeatureStepCreating;
 
             Map.DataChanged += Map_DataChanged;
 
@@ -135,66 +128,14 @@ namespace FootprintViewer.WPF.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
-        //private void FeatureEndCreating(object? sender, FeatureEventArgs e)
-        //{
-        //    var feature = e.Feature;
-        //    var bb = feature.Geometry.BoundingBox;
-        //    var coord = ProjectHelper.ToString(bb.Centroid);
-        //    var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-        //    var area = SphericalUtil.ComputeSignedArea(vertices);
-        //    area = Math.Abs(area);
-
-        //    AOIDescription = $"{area:N2} km² | {coord}";
-        //    //RouteDescription;
-        //}
-
-        //private void FeatureHoverCreating(object? sender, FeatureEventArgs e)
-        //{
-        //    var feature = e.Feature;
-        //    var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-        //    var area = SphericalUtil.ComputeSignedArea(vertices);
-        //    area = Math.Abs(area);
-
-        //    AOIHoverDescription = $"{area:N2} km²";
-        //    //RouteHoverDescription;
-        //}
-
-        //private void FeatureStepCreating(object? sender, FeatureEventArgs e)
-        //{
-        //    var feature = e.Feature;
-
-        //    if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
-        //    {
-        //        var geometry = (LineString)feature.Geometry;
-        //        var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-        //        var distance = SphericalUtil.ComputeDistance(vertices);
-
-        //        RouteDescription = $"{distance:N2} km";
-        //    }
-        //}
-
-        private string FeatureLengthStepCreating(Feature feature)
-        {         
-            if (feature["Name"].Equals(FeatureType.Route.ToString()) == true)
-            {
-                var geometry = (LineString)feature.Geometry;
-                var vertices = geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-                var distance = SphericalUtil.ComputeDistance(vertices);
-
-                return $"{distance:N2} km";
-            }
-
-            return "error";
-        }
-
         private string FeatureAreaEndCreating(Feature feature)
         {          
             var bb = feature.Geometry.BoundingBox;
-            var coord = ProjectHelper.ToString(bb.Centroid);
+            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y);         
             var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
             area = Math.Abs(area);
-            return $"{area:N2} km² | {coord}";        
+            return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";        
         }
 
         private double GetFeatureArea(Feature feature)
@@ -214,6 +155,8 @@ namespace FootprintViewer.WPF.ViewModels
             var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             return SphericalUtil.ComputeDistance(vertices);
         }
+
+
 
         private ToolManager CreateToolManager()
         {
@@ -293,7 +236,7 @@ namespace FootprintViewer.WPF.ViewModels
                     Plotter.Hover += (s, e) =>
                     {
                         var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                        Tip.Title = $"Область: {area:N2} km²";
+                        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                         Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
                         layer.DataHasChanged();
@@ -331,7 +274,7 @@ namespace FootprintViewer.WPF.ViewModels
                         if (e.AddInfo.Feature.Geometry.AllVertices().Count() > 2)
                         {
                             var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                            Tip.Title = $"Область: {area:N2} km²";
+                            Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                             Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
                         }
 
@@ -396,7 +339,7 @@ namespace FootprintViewer.WPF.ViewModels
                     Plotter.Hover += (s, e) =>
                     {
                         var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                        Tip.Title = $"Область: {area:N2} km²";
+                        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                         Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
                         layer.DataHasChanged(); 
@@ -429,9 +372,8 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter.BeginCreating += (s, e) =>
                     {
-                        var distance = GetRouteLength(e.AddInfo);
-                        var str = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
-                        Tip.Title = $"Расстояние: {str}";
+                        var distance = GetRouteLength(e.AddInfo);                      
+                        Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
                         Tip.Text = "";
 
                         layer.AddRoute(e.AddInfo);
@@ -440,7 +382,7 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter.Creating += (s, e) =>
                     {
-                        var descr = FeatureLengthStepCreating((Feature)e.AddInfo.Feature);
+                        var distance = GetRouteLength(e.AddInfo);
 
                         void Closing()
                         {
@@ -448,7 +390,7 @@ namespace FootprintViewer.WPF.ViewModels
                             layer.DataHasChanged();
                         }
 
-                        InfoPanel.OpenRoute(descr, Closing);
+                        InfoPanel.OpenRoute(FormatHelper.ToDistance(distance), Closing);
 
                         layer.DataHasChanged();
                     };
@@ -465,9 +407,8 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter.Hover += (s, e) => 
                     {
-                        var distance = GetRouteLength(e.AddInfo);
-                        var str = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
-                        Tip.Title = $"Расстояние: {str}";
+                        var distance = GetRouteLength(e.AddInfo);                   
+                        Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
 
                         layer.DataHasChanged();
                     };

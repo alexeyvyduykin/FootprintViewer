@@ -89,7 +89,8 @@ namespace FootprintViewer.WPF
         {
             var screenPosition = e.GetPosition(MapControl);
             var worldPosition = MapControl.Viewport.ScreenToWorld(screenPosition.X, screenPosition.Y);
-            TextBlockCoordinates.Text = ProjectHelper.ToString(worldPosition);
+            var coord = SphericalMercator.ToLonLat(worldPosition.X, worldPosition.Y);
+            TextBlockCoordinates.Text = FormatHelper.ToCoordinate(coord.X, coord.Y);
             TextBlockResolution.Text = GetCurrentResolution();
         }
 
@@ -103,7 +104,7 @@ namespace FootprintViewer.WPF
             double groundResolution = MapControl.Viewport.Resolution * Math.Cos(point.Y / 180.0 * Math.PI);
             var scale = groundResolution * 96 / 0.0254;
             //var scale = MapScale(point.Y, zoomlevel, 96, 256);         
-            return $"1:{scale:N0}";
+            return FormatHelper.ToScale(scale);
         }
     }
 }
