@@ -13,6 +13,9 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; }
 
         [Reactive]
+        public string Tooltip { get; set; }
+
+        [Reactive]
         public string Title { get; set; }
 
         public ICommand Command { get; set; }

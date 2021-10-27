@@ -22,6 +22,7 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Width" Value="29"></Setter>
             <Setter Property="Height" Value="29"></Setter>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -96,6 +97,9 @@
                                                                CommandParameter="{Binding}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
+                                <Button.ToolTip>
+                                    <ToolTip Content="Закрыть" Style="{StaticResource FastTooltip}"/>
+                                </Button.ToolTip>
                             </Button>
                         </DockPanel>
                     </Border>

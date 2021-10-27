@@ -220,6 +220,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolZoomIn = new Tool()
             {
                 Title = "+",
+                Tooltip = "Приблизить",
                 Command = new RelayCommand(_ =>
                 {         
                     Map.Initialized = false;
@@ -235,6 +236,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolZoomOut = new Tool()
             {
                 Title = "-",
+                Tooltip = "Отдалить",
                 Command = new RelayCommand(_ => 
                 {              
                     Map.Initialized = false;
@@ -249,6 +251,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolRectangle = new Tool()
             {
                 Title = "Rect",
+                Tooltip = "Нарисуйте прямоугольную AOI",
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
@@ -303,6 +306,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolPolygon = new Tool()
             {
                 Title = "Poly",
+                Tooltip = "Нарисуйте полигональную AOI",
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
@@ -360,6 +364,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolCircle = new Tool()
             {
                 Title = "Circle",
+                Tooltip = "Нарисуйте круговую AOI",
                 Command = new RelayCommand(_ =>
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
@@ -406,6 +411,7 @@ namespace FootprintViewer.WPF.ViewModels
             var toolRouteDistance = new Tool()
             {
                 Title = "Route",
+                Tooltip = "Измерить расстояние",
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));

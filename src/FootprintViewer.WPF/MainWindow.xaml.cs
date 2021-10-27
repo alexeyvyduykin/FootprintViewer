@@ -21,12 +21,10 @@ using NetTopologySuite.Algorithm;
 
 namespace FootprintViewer.WPF
 {
-    /*
-    3) Hints -> Flyout/Popup
+    /*   
     5) Tools -> LayerList
     6) Hints -> Inner Tutorial
     8) FootprintList -> Filter
-    9) Features -> InfoPanel
     */
 
 

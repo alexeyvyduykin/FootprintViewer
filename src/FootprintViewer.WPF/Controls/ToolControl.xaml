@@ -19,6 +19,7 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Width" Value="36"></Setter>
             <Setter Property="Height" Value="36"></Setter>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -57,7 +58,6 @@
             <Setter Property="Border.CornerRadius" Value="0,0,4,4" />
         </Style>
 
-
         <Style TargetType="{x:Type ToggleButton}" x:Key="ToolToggleButton">
             <Setter Property="Background" Value="#373737" />
             <Setter Property="Foreground" Value="White" />
@@ -65,6 +65,7 @@
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Width" Value="36"></Setter>
             <Setter Property="Height" Value="36"></Setter>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -116,20 +117,28 @@
     
     <StackPanel>
 
-
         <StackPanel DataContext="{Binding ZoomIn}"
                     Margin="0,0,0,1" 
                     HorizontalAlignment="Left">
             <Button Style="{StaticResource ToolButtonTop}"
                     Content="{Binding Title}"
-                    Command="{Binding Command}"/>
+                    Command="{Binding Command}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                </Button.ToolTip>
+            </Button>
+            
         </StackPanel>
 
         <StackPanel DataContext="{Binding ZoomOut}"
                     HorizontalAlignment="Left">
             <Button Style="{StaticResource ToolButtonBottom}" 
                     Content="{Binding Title}"
-                    Command="{Binding Command}"/>
+                    Command="{Binding Command}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
         
         
@@ -152,10 +161,8 @@
                 </i:EventTrigger>
 
             </i:Interaction.Triggers>
-
            
             <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}"/>
-
 
             <ItemsControl ItemsSource="{Binding Items}"
                           AlternationCount="{Binding Items.Count}">
@@ -178,6 +185,9 @@
                                     <i:InvokeCommandAction Command="{Binding Command}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
+                            <ToggleButton.ToolTip>
+                                <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                            </ToggleButton.ToolTip>
                         </ToggleButton>
 
                         <DataTemplate.Triggers>
@@ -203,6 +213,10 @@
                         <i:InvokeCommandAction Command="{Binding Command}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+
+                <ToggleButton.ToolTip>
+                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                </ToggleButton.ToolTip>
             </ToggleButton>
         </StackPanel>
 
