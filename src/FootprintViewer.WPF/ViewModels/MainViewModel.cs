@@ -158,8 +158,6 @@ namespace FootprintViewer.WPF.ViewModels
             return SphericalUtil.ComputeDistance(vertices);
         }
 
-
-
         private ToolManager CreateToolManager()
         {
             var toolZoomIn = new Tool()
@@ -209,7 +207,7 @@ namespace FootprintViewer.WPF.ViewModels
                     };
 
                     Plotter.BeginCreating += (s, e) => 
-                    {
+                    {                
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();                     
                     };
@@ -293,6 +291,16 @@ namespace FootprintViewer.WPF.ViewModels
 
                         Tip = null;
 
+                        var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+
+                        void Closing()
+                        {
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+                        }
+
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+
                         ToolManager.ResetAllTools();
                     };
 
@@ -334,6 +342,16 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.DataHasChanged();
 
                         Tip = null;
+
+                        var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+
+                        void Closing()
+                        {
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+                        }
+
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
 
                         ToolManager.ResetAllTools();
                     };
