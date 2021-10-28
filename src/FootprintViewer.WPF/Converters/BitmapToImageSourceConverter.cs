@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
@@ -46,9 +47,16 @@ namespace FootprintViewer.WPF.Converters
         {
             if (value is null || !(value is Image myImage))
             {//ensure provided value is valid image.
-                return null;
+
+              //  string filePath = @"..\\..\\..\\..\\..\\resources\\FootprintNotLoading.png";
+
+              //  return SaveClipboardImageToFile(filePath);
             }
 
+           // string filePath = @"..\\..\\..\\..\\..\\resources\\FootprintNotLoading.png";
+
+            return (BitmapSource)new BitmapImage(new Uri(@"/FootprintViewer;component/resources/FootprintNotLoading.png", UriKind.Relative));
+   
             if (myImage.Height > Int16.MaxValue || myImage.Width > Int16.MaxValue)
             {//GetHbitmap will fail if either dimension is larger than max short value.
              //Throwing here to reduce cpu and resource usage when error can be detected early.
@@ -79,6 +87,21 @@ namespace FootprintViewer.WPF.Converters
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private static BitmapSource SaveClipboardImageToFile(string filePath)
+        {
+            //var image = Clipboard.GetImage();
+            BitmapSource image = (BitmapSource)Clipboard.GetImage();
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                //encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Frames.Add(BitmapFrame.Create(image as BitmapSource));
+                encoder.Save(fileStream);
+            }
+
+            return image;
         }
     }
 }

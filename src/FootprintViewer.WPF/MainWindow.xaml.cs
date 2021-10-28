@@ -44,7 +44,7 @@ namespace FootprintViewer.WPF
 
             TextBlockResolution.Text = GetCurrentResolution();
 
-            ListBoxFootprints.SelectionChanged += ListBoxFootprints_SelectionChanged;
+          //  ListBoxFootprints.SelectionChanged += ListBoxFootprints_SelectionChanged;
 
             MapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
         }
@@ -57,18 +57,18 @@ namespace FootprintViewer.WPF
             }
         }
 
-        private void ListBoxFootprints_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is System.Windows.Controls.ListBox listBox && listBox.SelectedItem is Footprint footprint)
-            {
-                if (footprint.Geometry != null)
-                {
-                    var point = footprint.Geometry.BoundingBox.Centroid;
+        //private void ListBoxFootprints_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (sender is System.Windows.Controls.ListBox listBox && listBox.SelectedItem is Footprint footprint)
+        //    {
+        //        if (footprint.Geometry != null)
+        //        {
+        //            var point = footprint.Geometry.BoundingBox.Centroid;
 
-                    MapControl.Navigator.CenterOn(point);
-                }
-            }
-        }
+        //            MapControl.Navigator.CenterOn(point);
+        //        }
+        //    }
+        //}
 
         private void MapControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {

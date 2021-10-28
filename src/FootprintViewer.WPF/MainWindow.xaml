@@ -82,7 +82,11 @@
             </Border>
         </Grid>
 
-        <ListBox x:Name="ListBoxFootprints"
+
+        <controls:SidePanelControl Grid.Column="1" 
+                                   DataContext="{Binding SidePanel}" />
+
+        <!--<ListBox x:Name="ListBoxFootprints"
                  Grid.Column="1" 
                  ItemsSource="{Binding Footprints}"
                  SelectedItem="{Binding SelectedFootprint}">
@@ -110,11 +114,11 @@
                             </i:Interaction.Triggers>
 
                             <Viewbox Width="200" Height="200">
-                                <!--<ContentPresenter Content="{Binding Map0}"
+                                --><!--<ContentPresenter Content="{Binding Map0}"
                                             Width="300"
                                             Height="300"
                                             VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"/>-->
+                                            HorizontalAlignment="Stretch"/>--><!--
                                 <Image Source="{Binding Image0, Converter={StaticResource imageToBitmapSourceConverter}}"
                                    Width="200"
                                    Height="200"/>
@@ -130,6 +134,6 @@
                 </DataTemplate>
 
             </ListBox.ItemTemplate>
-        </ListBox>
+        </ListBox>-->
     </Grid>
 </Window>

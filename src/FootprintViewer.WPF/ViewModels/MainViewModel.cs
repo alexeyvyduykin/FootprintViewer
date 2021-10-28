@@ -28,11 +28,8 @@ namespace FootprintViewer.WPF.ViewModels
     {
         private enum InfoPanelType { AOI, Route }
 
-        public event EventHandler CurrentFootprint;
-
         public MainViewModel()
         {
-            Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints());
 
             ActualController = new EditController();
             
@@ -42,63 +39,22 @@ namespace FootprintViewer.WPF.ViewModels
 
             Map.DataChanged += Map_DataChanged;
 
-            this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
+            var tabs = new SceneSearch() 
             {
-                if (footprint != null)
-                {
-                    var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
+                Title = "Поиск сцены",
+                Name = "Scene",
+                Map = Map,
+                Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints())        
+            };
 
-                    Map.Layers.Replace(nameof(LayerType.FootprintLayer), layer);
-
-                    CurrentFootprint?.Invoke(this, EventArgs.Empty);
-                }
-            });
-
-            MouseOverEnterCommand = ReactiveCommand.Create<Footprint>(ShowFootprintBorder);
-
-            MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
+            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { tabs }), SelectedTab = tabs  };
 
             ToolManager = CreateToolManager();
 
             InfoPanel = SampleBuilder.CreateInfoPanel();
         }
 
-        public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
 
-        public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
-
-        private void ShowFootprintBorder(Footprint footprint)
-        {
-            var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintBorderLayer));
-
-            if (layers != null)
-            {
-                var layer = layers.SingleOrDefault();
-
-                if (layer != null && layer is WritableLayer writableLayer)
-                {
-                    writableLayer.Clear();
-                    writableLayer.Add(new Feature() { Geometry = footprint.Geometry });
-                    writableLayer.DataHasChanged();
-                }
-            }
-        }
-
-        private void HideFootprintBorder()
-        {
-            var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintBorderLayer));
-
-            if (layers != null)
-            {
-                var layer = layers.SingleOrDefault();
-
-                if (layer != null && layer is WritableLayer writableLayer)
-                {
-                    writableLayer.Clear();
-                    writableLayer.DataHasChanged();
-                }
-            }
-        }
 
         private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
         {
@@ -454,14 +410,13 @@ namespace FootprintViewer.WPF.ViewModels
             return toolManager;
         }
 
-        [Reactive]
-        public ObservableCollection<Footprint> Footprints { get; set; }
 
-        [Reactive]
-        public Footprint SelectedFootprint { get; set; }
 
         [Reactive]
         public Map Map { get; set; }
+
+        [Reactive]
+        public SidePanel SidePanel { get; set; }
 
         [Reactive]
         public ObservableCollection<MapLayer> MapLayers { get; set; }
