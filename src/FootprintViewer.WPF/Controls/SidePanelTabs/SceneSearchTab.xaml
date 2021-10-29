@@ -6,7 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"         
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"  
-             d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=True}"
              xmlns:local="clr-namespace:FootprintViewer.WPF.Controls.SidePanelTabs"  
              x:Name="SceneSearchTabName"
              mc:Ignorable="d" 

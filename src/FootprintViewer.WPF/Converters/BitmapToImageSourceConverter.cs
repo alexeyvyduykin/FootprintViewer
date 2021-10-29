@@ -46,16 +46,10 @@ namespace FootprintViewer.WPF.Converters
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is null || !(value is Image myImage))
-            {//ensure provided value is valid image.
-
-              //  string filePath = @"..\\..\\..\\..\\..\\resources\\FootprintNotLoading.png";
-
-              //  return SaveClipboardImageToFile(filePath);
+            {
+                //ensure provided value is valid image.
+                return (BitmapSource)Application.Current.FindResource("NotLoadingFootprintImage");
             }
-
-           // string filePath = @"..\\..\\..\\..\\..\\resources\\FootprintNotLoading.png";
-
-            return (BitmapSource)new BitmapImage(new Uri(@"/FootprintViewer;component/resources/FootprintNotLoading.png", UriKind.Relative));
    
             if (myImage.Height > Int16.MaxValue || myImage.Width > Int16.MaxValue)
             {//GetHbitmap will fail if either dimension is larger than max short value.

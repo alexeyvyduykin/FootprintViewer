@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
         {
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
             {
-                if (footprint != null && Map != null)
+                if (footprint != null && Map != null && footprint.Path != null)
                 {
                     var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
 
@@ -118,11 +118,13 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearchDesigner : SceneSearch
     {
-        public SceneSearchDesigner()
+        public SceneSearchDesigner() : base()
         {
-            var f1 = new Footprint("footprint1", "");
+            var f1 = new Footprint() { Name = "footprint1" };
+            var f2 = new Footprint() { Name = "footprint2" };
+            var f3 = new Footprint() { Name = "footprint3" };
 
-            Footprints = new ObservableCollection<Footprint>(new[] { f1 });
+            Footprints = new ObservableCollection<Footprint>(new[] { f1, f2, f3 });
         }
     }
 }
