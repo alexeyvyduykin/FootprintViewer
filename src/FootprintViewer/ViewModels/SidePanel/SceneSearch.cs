@@ -8,6 +8,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -120,11 +121,29 @@ namespace FootprintViewer.ViewModels
     {
         public SceneSearchDesigner() : base()
         {
-            var f1 = new Footprint() { Name = "footprint1" };
-            var f2 = new Footprint() { Name = "footprint2" };
-            var f3 = new Footprint() { Name = "footprint3" };
+            var list = new List<Footprint>();
 
-            Footprints = new ObservableCollection<Footprint>(new[] { f1, f2, f3 });
+            Random random = new Random();
+
+            var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
+            var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
+
+            foreach (var item in names)
+            {
+                var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
+                var date = DateTime.UtcNow;
+
+                list.Add(new Footprint() 
+                {
+                    Date = date.Date.ToShortDateString(),
+                    SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
+                    SunElevation = $"{random.Next(0, 90)}°",
+                    CloudCoverFull = $"{random.Next(0, 100)}%",
+                    TileNumber = name.ToUpper(),
+                });
+            }
+
+            Footprints = new ObservableCollection<Footprint>(list);
         }
     }
 }

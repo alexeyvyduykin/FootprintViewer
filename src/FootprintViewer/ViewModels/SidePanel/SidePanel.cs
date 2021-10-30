@@ -21,7 +21,7 @@ namespace FootprintViewer.ViewModels
     {
         public SidePanelDesigner()
         {
-            var tab1 = new SceneSearch()
+            var tab1 = new SceneSearchDesigner()
             {
                 Name = "Scene",
                 Title = "Поиск сцены"

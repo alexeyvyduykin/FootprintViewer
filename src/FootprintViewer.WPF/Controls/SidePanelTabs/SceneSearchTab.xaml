@@ -9,16 +9,58 @@
              d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=True}"
              xmlns:local="clr-namespace:FootprintViewer.WPF.Controls.SidePanelTabs"  
              x:Name="SceneSearchTabName"
+             MinWidth="380"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="380">
 
     <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="#4c9ae7"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#212b35"/>
+      
         <converters:ImageToBitmapSourceConverter x:Key="imageToBitmapSourceConverter"/>
-    </UserControl.Resources>
 
-    <Grid>
+
+        <Style x:Key="SearchTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontSize" Value="13"></Setter>
+            <Setter Property="FontFamily" Value="Roboto"></Setter>
+        </Style>
+
+        <Style x:Key="SceneDateTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFF"></Setter>
+            <Setter Property="FontSize" Value="13"></Setter>
+            <Setter Property="FontFamily" Value="Roboto"></Setter>
+        </Style>
+
+        <Style x:Key="SceneInfoTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFFFFFBF"></Setter>
+            <Setter Property="FontSize" Value="12"></Setter>
+            <Setter Property="FontFamily" Value="Roboto"></Setter>
+        </Style>
+
+    </UserControl.Resources>
+    
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Margin="10" Height="34" Width="34" Background="{StaticResource AccentBrush}" Foreground="White">Filter</Button>
+            <TextBlock Text="Настройки поиска" VerticalAlignment="Center" Style="{StaticResource SearchTextBlock}"></TextBlock>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Visibility="Collapsed"></Grid>
+        
         <ListBox x:Name="ListBoxFootprints"
-                 Grid.Column="1" 
+                 Grid.Row="2" 
+                 BorderThickness="0"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 Background="Transparent"
+                 HorizontalContentAlignment="Stretch"
                  ItemsSource="{Binding Footprints}"
                  SelectedItem="{Binding SelectedFootprint}">
             <i:Interaction.Triggers>
@@ -27,48 +69,57 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
-
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
+                    <Border Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                        <Border Grid.Column="0"
-                            BorderBrush="Red" BorderThickness="1">
+                            <Border Grid.Column="0">
 
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=SceneSearchTabName, Path=DataContext.MouseOverEnterCommand}"
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseEnter">
+                                        <i:InvokeCommandAction Command="{Binding ElementName=SceneSearchTabName, Path=DataContext.MouseOverEnterCommand}"
                                                            CommandParameter="{Binding}"/>
-                                </i:EventTrigger>
+                                    </i:EventTrigger>
 
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=SceneSearchTabName, Path=DataContext.MouseOverLeaveCommand}"/>
-                                </i:EventTrigger>
+                                    <i:EventTrigger EventName="MouseLeave">
+                                        <i:InvokeCommandAction Command="{Binding ElementName=SceneSearchTabName, Path=DataContext.MouseOverLeaveCommand}"/>
+                                    </i:EventTrigger>
 
-                            </i:Interaction.Triggers>
+                                </i:Interaction.Triggers>
 
-                            <Viewbox Width="200" Height="200">
-                                <!--<ContentPresenter Content="{Binding Map0}"
-                                            Width="300"
-                                            Height="300"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"/>-->
-                                <Image Source="{Binding Image0, Converter={StaticResource imageToBitmapSourceConverter}}"
-                                   Width="200"
-                                   Height="200"/>
-                            </Viewbox>
-                        </Border>
+                                <Viewbox Width="155" Height="155">
+                                    <Image Source="{Binding Image0, Converter={StaticResource imageToBitmapSourceConverter}}"/>
+                                </Viewbox>
+                            </Border>
 
-                        <StackPanel Grid.Column="1">
-                            <TextBlock Text="Name:"></TextBlock>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </StackPanel>
-
-                    </Grid>
+                            <Border Grid.Column="1">
+                                <Grid>
+                                    <TextBlock Text="{Binding Date}"                                                                                   
+                                           Style="{StaticResource SceneDateTextBlock}"                                       
+                                           VerticalAlignment="Top" HorizontalAlignment="Right"></TextBlock>
+                                    <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+                                        <TextBlock Text="{Binding SatelliteName}"
+                                           Margin="0,4,0,4"
+                                           Style="{StaticResource SceneInfoTextBlock}"/>
+                                        <TextBlock Text="{Binding SunElevation}"
+                                                     Margin="0,4,0,4"
+                                           Style="{StaticResource SceneInfoTextBlock}"/>
+                                        <TextBlock Text="{Binding CloudCoverFull}"
+                                                     Margin="0,4,0,4"
+                                           Style="{StaticResource SceneInfoTextBlock}"/>
+                                        <TextBlock Text="{Binding TileNumber}"
+                                                     Margin="0,4,0,4"
+                                           Style="{StaticResource SceneInfoTextBlock}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
 
             </ListBox.ItemTemplate>

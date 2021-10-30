@@ -6,6 +6,7 @@ using Mapsui.Projection;
 using Mapsui.Rendering.Skia;
 using Mapsui.Utilities;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -61,11 +62,18 @@ namespace FootprintViewer
 
             var list = new List<Footprint>();
 
+            Random random = new Random();
+
+            var date = DateTime.UtcNow;
+            var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
+
             foreach (var item in mbtilesPaths)
             {
                 var path = item;
                 var filename = Path.GetFileNameWithoutExtension(item);
                 var name = filename.Split('_').FirstOrDefault();
+
+                var tileNumber = name.Replace("-", "").ToUpper();
 
                 if (string.IsNullOrEmpty(name) == false && _dict.ContainsKey(name) == true)
                 {
@@ -78,7 +86,12 @@ namespace FootprintViewer
 
                     list.Add(new Footprint()
                     {
-                        Name = filename,
+                        Date = date.Date.ToShortDateString(),
+                        SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
+                        SunElevation = $"{random.Next(0, 90)}°",
+                        CloudCoverFull = $"{random.Next(0, 100)}%",
+                        TileNumber = tileNumber,
+
                         Path = path,
                         Image0 = CreateMbTilesLayer(path),
                         Geometry = poly

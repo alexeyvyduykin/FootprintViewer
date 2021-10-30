@@ -6,6 +6,7 @@ using Mapsui.Utilities;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SQLite;
+using System;
 using System.Drawing;
 
 namespace FootprintViewer.Models
@@ -18,7 +19,15 @@ namespace FootprintViewer.Models
         //    CreateMbTilesLayer(path);
         }
 
-        public string Name { get; set; }
+        public string Date { get; set; }
+
+        public string SatelliteName { get; set; }
+
+        public string SunElevation { get; set; }
+
+        public string CloudCoverFull { get; set; }
+
+        public string TileNumber { get; set; }
 
         public string? Path { get; set; }
 
