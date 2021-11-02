@@ -38,8 +38,29 @@ namespace FootprintViewer.ViewModels
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
             SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);
+        }
 
-            Footprints = new ObservableCollection<Footprint>();
+        public void AddFootprints(IEnumerable<Footprint> footprints)
+        {
+            foreach (var item in footprints)
+            {
+                Footprints.Add(item);
+            }
+
+            var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
+            sortNames.Sort();
+
+            FilterFullUpdate(sortNames);
+        }
+
+        private void FilterFullUpdate(IEnumerable<string> names)
+        {
+            Filter.Sensors.Clear();
+    
+            foreach (var item in names)
+            {
+                Filter.Sensors.Add(new Sensor() { Name = item });
+            }
         }
 
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
@@ -111,10 +132,13 @@ namespace FootprintViewer.ViewModels
         public Map? Map { get; set; }
 
         [Reactive]
-        public ObservableCollection<Footprint> Footprints { get; set; }
+        public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
 
         [Reactive]
         public Footprint? SelectedFootprint { get; set; }
+
+        [Reactive]
+        public SceneSearchFilter Filter { get; set; } = new SceneSearchFilter();
     }
 
     public class SceneSearchDesigner : SceneSearch
@@ -143,7 +167,7 @@ namespace FootprintViewer.ViewModels
                 });
             }
 
-            Footprints = new ObservableCollection<Footprint>(list);
+            AddFootprints(list);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BruTile.Wms;
+using DynamicData;
 using FootprintViewer.Graphics;
 using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
@@ -39,15 +40,19 @@ namespace FootprintViewer.WPF.ViewModels
 
             Map.DataChanged += Map_DataChanged;
 
-            var tabs = new SceneSearch() 
+            var tab = new SceneSearch() 
             {
                 Title = "Поиск сцены",
                 Name = "Scene",
-                Map = Map,
-                Footprints = new ObservableCollection<Footprint>(ResourceManager.GetFootprints())        
+                Map = Map,     
             };
 
-            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { tabs }), SelectedTab = tabs  };
+            tab.AddFootprints(ResourceManager.GetFootprints());
+
+            tab.Filter.FromDate = DateTime.Today.AddDays(-1);
+            tab.Filter.ToDate = DateTime.Today.AddDays(1);
+
+            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { tab }), SelectedTab = tab  };
 
             ToolManager = CreateToolManager();
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:FootprintViewer.WPF"  
-        xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"     
+        xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"           
         xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"
         xmlns:vm="clr-namespace:FootprintViewer.WPF.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -25,7 +25,7 @@
 
     
     
-    <Grid>
+    <Grid x:Name="GridOverlay">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -40,6 +40,7 @@
                                   TipSource="{Binding Tip}"
                                   VerticalAlignment="Stretch"                             
                                   HorizontalAlignment="Stretch" />
+
             <!--Controller="{Binding ActualController}"-->
             <Grid VerticalAlignment="Center"                        
                   HorizontalAlignment="Left"                                            
@@ -85,55 +86,5 @@
 
         <controls:SidePanelControl Grid.Column="1" 
                                    DataContext="{Binding SidePanel}" />
-
-        <!--<ListBox x:Name="ListBoxFootprints"
-                 Grid.Column="1" 
-                 ItemsSource="{Binding Footprints}"
-                 SelectedItem="{Binding SelectedFootprint}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0"
-                            BorderBrush="Red" BorderThickness="1">
-
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.MouseOverEnterCommand}"
-                                                           CommandParameter="{Binding}"/>
-                                </i:EventTrigger>
-
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding ElementName=TopLevel, Path=DataContext.MouseOverLeaveCommand}"/>
-                                </i:EventTrigger>
-
-                            </i:Interaction.Triggers>
-
-                            <Viewbox Width="200" Height="200">
-                                --><!--<ContentPresenter Content="{Binding Map0}"
-                                            Width="300"
-                                            Height="300"
-                                            VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch"/>--><!--
-                                <Image Source="{Binding Image0, Converter={StaticResource imageToBitmapSourceConverter}}"
-                                   Width="200"
-                                   Height="200"/>
-                            </Viewbox>
-                        </Border>
-
-                        <StackPanel Grid.Column="1">
-                            <TextBlock Text="Name:"></TextBlock>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </StackPanel>
-
-                    </Grid>
-                </DataTemplate>
-
-            </ListBox.ItemTemplate>
-        </ListBox>-->
     </Grid>
 </Window>
