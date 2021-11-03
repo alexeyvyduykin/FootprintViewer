@@ -11,14 +11,26 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace FootprintViewer
+namespace FootprintViewer.Data
 {
-    public static class ResourceManager
-    {
-        private static readonly Dictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new Dictionary<string, NetTopologySuite.Geometries.Geometry>();
 
-        private static void InitDictionary()
+    public interface IDataSource
+    {
+        IEnumerable<Footprint> GetFootprints();
+    }
+
+    public class DataSource : IDataSource
+    {
+        private readonly Dictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new Dictionary<string, NetTopologySuite.Geometries.Geometry>();
+
+        public DataSource()
+        {
+
+        }
+
+        private void InitDictionary()
         {
             _dict.Clear();
 
@@ -37,28 +49,13 @@ namespace FootprintViewer
                     _dict.Add(name, geometry);
                 }
             }
-
-            //var shapeFileName = @"C:\Users\User\AlexeyVyduykin\Resources\SAR\mosaics-geotiff\mosaic-tiff-ruonly.shp";
-
-            //using (var reader = new ShapefileDataReader(shapeFileName, new NetTopologySuite.Geometries.GeometryFactory()))
-            //{
-            //    int length = reader.DbaseHeader.NumFields;
-            //    while (reader.Read())
-            //    {
-            //        var fdfd = reader["LABEL"];
-            //        var geom = reader.Geometry;
-
-            //        int gfgf = 0;
-            //    }
-            //}
         }
 
-        public static IEnumerable<Footprint> GetFootprints()
+        public IEnumerable<Footprint> GetFootprints()
         {
             InitDictionary();
 
-            var mbtilesPaths =
-            Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
+            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
 
             var list = new List<Footprint>();
 
@@ -102,7 +99,7 @@ namespace FootprintViewer
             return list;
         }
 
-        private static Image CreateMbTilesLayer(string path)
+        private Image CreateMbTilesLayer(string path)
         {
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 

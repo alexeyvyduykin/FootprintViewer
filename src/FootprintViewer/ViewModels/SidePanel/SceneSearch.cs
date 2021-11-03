@@ -1,24 +1,30 @@
-﻿using FootprintViewer.Models;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.UI;
+using Microsoft.VisualBasic;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
     {
-        public event EventHandler CurrentFootprint;
-
+        public event EventHandler? CurrentFootprint;
+        
         public SceneSearch()
         {
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
@@ -33,27 +39,43 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
+            this.WhenAnyValue(s => s.DataSource).Subscribe(_ => DataSourceChanged());
+
             MouseOverEnterCommand = ReactiveCommand.Create<Footprint>(ShowFootprintBorder);
 
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);
+            SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);            
         }
 
-        public void AddFootprints(IEnumerable<Footprint> footprints)
+        private static async Task<IEnumerable<Footprint>> LoadDataAsync(IDataSource dataSource)
         {
-            foreach (var item in footprints)
+            return await Task.Run(() =>
             {
-                Footprints.Add(item);
-            }
-
-            var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
-            sortNames.Sort();
-
-            FilterFullUpdate(sortNames);
+                //Thread.Sleep(5000);
+                return dataSource.GetFootprints();
+            });
         }
 
-        private void FilterFullUpdate(IEnumerable<string> names)
+        private async void DataSourceChanged()
+        {
+            if (DataSource != null)
+            {
+                var footprints = await LoadDataAsync(DataSource);
+           
+                foreach (var item in footprints)
+                {
+                    Footprints.Add(item);
+                }
+
+                var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
+                sortNames.Sort();
+
+                FilterFullUpdate(sortNames);
+            }
+        }
+
+        protected void FilterFullUpdate(IEnumerable<string> names)
         {
             Filter.Sensors.Clear();
     
@@ -129,6 +151,9 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
+        public IDataSource? DataSource { get; set; }
+
+        [Reactive]
         public Map? Map { get; set; }
 
         [Reactive]
@@ -168,6 +193,19 @@ namespace FootprintViewer.ViewModels
             }
 
             AddFootprints(list);
+        }
+
+        public void AddFootprints(IEnumerable<Footprint> footprints)
+        {
+            foreach (var item in footprints)
+            {
+                Footprints.Add(item);
+            }
+
+            var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
+            sortNames.Sort();
+
+            FilterFullUpdate(sortNames);
         }
     }
 }

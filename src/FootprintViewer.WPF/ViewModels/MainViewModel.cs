@@ -1,5 +1,6 @@
 ﻿using BruTile.Wms;
 using DynamicData;
+using FootprintViewer.Data;
 using FootprintViewer.Graphics;
 using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
@@ -45,9 +46,8 @@ namespace FootprintViewer.WPF.ViewModels
                 Title = "Поиск сцены",
                 Name = "Scene",
                 Map = Map,     
+                DataSource = new DataSource(),
             };
-
-            tab.AddFootprints(ResourceManager.GetFootprints());
 
             tab.Filter.FromDate = DateTime.Today.AddDays(-1);
             tab.Filter.ToDate = DateTime.Today.AddDays(1);
