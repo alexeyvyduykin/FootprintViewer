@@ -21,9 +21,9 @@ namespace FootprintViewer.Models
 
         public string SatelliteName { get; set; }
 
-        public string SunElevation { get; set; }
+        public double SunElevation { get; set; }
 
-        public string CloudCoverFull { get; set; }
+        public double CloudCoverFull { get; set; }
 
         public string TileNumber { get; set; }
 

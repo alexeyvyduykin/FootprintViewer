@@ -1,8 +1,11 @@
-﻿using FootprintViewer.Data;
+﻿using DynamicData;
+using DynamicData.Binding;
+using FootprintViewer.Data;
 using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using Mapsui.Providers.Wfs.Utilities;
 using Mapsui.UI;
 using Microsoft.VisualBasic;
 using ReactiveUI;
@@ -11,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -22,9 +26,12 @@ using System.Windows.Input;
 namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
-    {
+{
+        protected readonly SourceList<Footprint> _sourceFootprints;
+        private readonly ReadOnlyObservableCollection<Footprint> _footprints;
+
         public event EventHandler? CurrentFootprint;
-        
+       
         public SceneSearch()
         {
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
@@ -45,7 +52,29 @@ namespace FootprintViewer.ViewModels
 
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);            
+            SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);
+
+            Filter = new SceneSearchFilter();
+      
+            _sourceFootprints = new SourceList<Footprint>();
+
+            var cancellation = _sourceFootprints.Connect()
+                .Filter(Filter.Observable)
+                .Bind(out _footprints)
+                .DisposeMany()
+                .Subscribe(_ =>
+                {
+                    Task.Run(() => longRunningRoutine());
+                });        
+        }
+
+        private void longRunningRoutine()
+        {
+            IsUpdating = true;
+
+          //  System.Threading.Thread.Sleep(1000);
+
+            IsUpdating = false;
         }
 
         private static async Task<IEnumerable<Footprint>> LoadDataAsync(IDataSource dataSource)
@@ -62,28 +91,18 @@ namespace FootprintViewer.ViewModels
             if (DataSource != null)
             {
                 var footprints = await LoadDataAsync(DataSource);
-           
-                foreach (var item in footprints)
-                {
-                    Footprints.Add(item);
-                }
 
-                var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
+                _sourceFootprints.Clear();
+                _sourceFootprints.AddRange(footprints);
+
+                var sortNames = new List<Footprint>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
                 sortNames.Sort();
 
-                FilterFullUpdate(sortNames);
+                Filter.AddSensors(sortNames);
             }
         }
 
-        protected void FilterFullUpdate(IEnumerable<string> names)
-        {
-            Filter.Sensors.Clear();
-    
-            foreach (var item in names)
-            {
-                Filter.Sensors.Add(new Sensor() { Name = item });
-            }
-        }
+
 
         public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
 
@@ -156,14 +175,20 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public Map? Map { get; set; }
 
-        [Reactive]
-        public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
+
+        public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
+
+      //  [Reactive]
+     //   public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
 
         [Reactive]
         public Footprint? SelectedFootprint { get; set; }
 
         [Reactive]
-        public SceneSearchFilter Filter { get; set; } = new SceneSearchFilter();
+        public SceneSearchFilter Filter { get; set; }
+
+        [Reactive]
+        public bool IsUpdating { get; set; } = false;
     }
 
     public class SceneSearchDesigner : SceneSearch
@@ -186,8 +211,8 @@ namespace FootprintViewer.ViewModels
                 {
                     Date = date.Date.ToShortDateString(),
                     SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
-                    SunElevation = $"{random.Next(0, 90)}°",
-                    CloudCoverFull = $"{random.Next(0, 100)}%",
+                    SunElevation = random.Next(0, 90),
+                    CloudCoverFull = random.Next(0, 100),
                     TileNumber = name.ToUpper(),
                 });
             }
@@ -196,16 +221,14 @@ namespace FootprintViewer.ViewModels
         }
 
         public void AddFootprints(IEnumerable<Footprint> footprints)
-        {
-            foreach (var item in footprints)
-            {
-                Footprints.Add(item);
-            }
+        {            
+            _sourceFootprints.Clear();
+            _sourceFootprints.AddRange(footprints);
 
             var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
             sortNames.Sort();
 
-            FilterFullUpdate(sortNames);
+            Filter.AddSensors(sortNames); 
         }
     }
 }

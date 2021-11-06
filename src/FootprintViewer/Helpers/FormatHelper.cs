@@ -27,5 +27,15 @@ namespace FootprintViewer
         {
             return $"1:{scale:N0}";
         }
+
+        public static string ToPercent(double value)
+        {
+            return $"{value}%";
+        }
+
+        public static string ToDegree(double value)
+        {
+            return $"{value}°";
+        }
     }
 }

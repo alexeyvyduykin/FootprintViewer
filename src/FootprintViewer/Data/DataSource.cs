@@ -85,8 +85,8 @@ namespace FootprintViewer.Data
                     {
                         Date = date.Date.ToShortDateString(),
                         SatelliteName = satellites[random.Next(0, satellites.Length)],
-                        SunElevation = $"{random.Next(0, 90)}°",
-                        CloudCoverFull = $"{random.Next(0, 100)}%",
+                        SunElevation = random.Next(0, 90),
+                        CloudCoverFull = random.Next(0, 100),
                         TileNumber = tileNumber,
 
                         Path = path,

@@ -1,10 +1,17 @@
-﻿using HarfBuzzSharp;
+﻿using FootprintViewer.Models;
+using HarfBuzzSharp;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using DynamicData.Binding;
+using System.Reactive.Linq;
+using System.Threading;
+using DynamicData;
 
 namespace FootprintViewer.ViewModels
 {
@@ -19,9 +26,63 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearchFilter : ReactiveObject
     {
+        private readonly IObservable<Func<Footprint, bool>> _observableFilter;
+
         public SceneSearchFilter()
         {
+            Cloudiness = 0.0;
+            MinSunElevation = 0.0;
+            MaxSunElevation = 90.0;
+            IsFullCoverAOI = false;
+            IsAllSensorActive = true;
 
+            _observableFilter = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation).Select(_ => MakeFilter());
+        }
+
+        public void AddSensors(IEnumerable<string> sensors)
+        {
+            Sensors.Clear();
+
+            foreach (var item in sensors)
+            {
+                Sensors.Add(new Sensor() { Name = item });
+            }
+
+            var databasesValid = Sensors
+                .ToObservableChangeSet()
+                .AutoRefresh(model => model.IsActive)
+                .Subscribe(s => 
+                {
+                    var temp = Cloudiness;
+                    Cloudiness = temp + 1;
+                    Cloudiness = temp;
+                });
+
+            // HACK: call observable
+            var temp = Cloudiness;
+            Cloudiness = temp + 1;
+            Cloudiness = temp;
+        }
+
+        public IObservable<Func<Footprint, bool>> Observable => _observableFilter;
+
+        private Func<Footprint, bool> MakeFilter()
+        {
+            return footprint => 
+            {
+                if (Sensors.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
+                {                   
+                    if (footprint.CloudCoverFull >= Cloudiness)
+                    {
+                        if (footprint.SunElevation >= MinSunElevation && footprint.SunElevation <= MaxSunElevation)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            };
         }
 
         [Reactive]
@@ -31,22 +92,22 @@ namespace FootprintViewer.ViewModels
         public DateTime ToDate { get; set; }
 
         [Reactive]
-        public double Cloudiness { get; set; } = 0.0;
+        public double Cloudiness { get; set; }
 
         [Reactive]
-        public double MinSunElevation { get; set; } = 0.0;
+        public double MinSunElevation { get; set; }
 
         [Reactive]
-        public double MaxSunElevation { get; set; } = 90.0;
+        public double MaxSunElevation { get; set; }
 
         [Reactive]
-        public bool IsFullCoverAOI { get; set; } = false;
+        public bool IsFullCoverAOI { get; set; }
 
         [Reactive]
         public ObservableCollection<Sensor> Sensors { get; set; } = new ObservableCollection<Sensor>();
 
         [Reactive]
-        public bool IsAllSensorActive { get; set; } = true;
+        public bool IsAllSensorActive { get; set; }
     }
 
 

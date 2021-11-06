@@ -106,10 +106,10 @@
                                         <TextBlock Text="{Binding SatelliteName}"
                                            Margin="0,4,0,4"
                                            Style="{StaticResource SceneInfoTextBlock}"/>
-                                        <TextBlock Text="{Binding SunElevation}"
+                                        <TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
                                                      Margin="0,4,0,4"
                                            Style="{StaticResource SceneInfoTextBlock}"/>
-                                        <TextBlock Text="{Binding CloudCoverFull}"
+                                        <TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
                                                      Margin="0,4,0,4"
                                            Style="{StaticResource SceneInfoTextBlock}"/>
                                         <TextBlock Text="{Binding TileNumber}"
