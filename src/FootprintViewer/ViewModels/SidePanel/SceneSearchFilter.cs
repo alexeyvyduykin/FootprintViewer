@@ -52,6 +52,11 @@ namespace FootprintViewer.ViewModels
             //    Select(_ => MakeFilter());
         }
 
+        public void ForceUpdate()
+        {
+            Update?.Invoke(this, EventArgs.Empty);
+        }
+
         public void AddSensors(IEnumerable<string> sensors)
         {
             Sensors.Clear();
@@ -88,7 +93,7 @@ namespace FootprintViewer.ViewModels
             else
             {
                 var footprintPolygon = (Polygon)footprint.Geometry;
-                var aoiPolygon = (Polygon)AOI.Geometry;
+                var aoiPolygon = (Polygon)AOI;
                                     
                 isAoiCondition = PolygonContain(aoiPolygon, footprintPolygon);                              
             }
@@ -346,7 +351,7 @@ namespace FootprintViewer.ViewModels
         public bool IsAllSensorActive { get; set; }
 
         [Reactive]
-        public Feature? AOI { get; set; }
+        public IGeometry? AOI { get; set; }
     }
 
     public class SceneSearchFilterDesigner : SceneSearchFilter

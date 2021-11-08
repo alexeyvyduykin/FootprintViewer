@@ -18,7 +18,7 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                var (isDraw, bb) = MapView.Plotter.CreatingConcrete(worldPosition);
+                var (isDraw, bb) = MapView.Plotter.CreatingFeature(worldPosition);
 
                 if (isDraw == true)
                 {
@@ -72,7 +72,7 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Plotter.HoverCreatingConcrete(worldPosition);
+            MapView.Plotter.HoverCreatingFeature(worldPosition);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace FootprintViewer
                     return IsClick(p, screenPosition);                    
                 }
 
-                MapView.Plotter.CreatingConcrete(worldPosition, IsEnd);
+                MapView.Plotter.CreatingFeature(worldPosition, IsEnd);
             }
 
             MapView.SetCursorType(CursorType.Default);
@@ -85,7 +85,7 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-            MapView.Plotter.HoverCreatingConcrete(worldPosition);
+            MapView.Plotter.HoverCreatingFeature(worldPosition);
         }
     }
 }

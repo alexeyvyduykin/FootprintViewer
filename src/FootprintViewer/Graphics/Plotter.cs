@@ -1,7 +1,10 @@
 ﻿using Mapsui;
 using Mapsui.Geometries;
+using Mapsui.UI;
+using NetTopologySuite.Operation.Distance;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Text;
 
 namespace FootprintViewer.Graphics
@@ -11,12 +14,19 @@ namespace FootprintViewer.Graphics
         public AddInfo AddInfo { get; set; }
     }
 
+    public class EditingFeatureEventArgs : EventArgs
+    {
+        public InteractiveFeature Feature { get; set; }
+    }
+
     public delegate void FeatureEventHandler(object sender, FeatureEventArgs e);
+    public delegate void EditingFeatureEventHandler(object sender, EditingFeatureEventArgs e);
 
     public class Plotter 
     {
         private AddInfo? _addInfo;             
         private readonly InteractiveFeature _feature;
+        private bool _isEditing = false;
 
         public Plotter(InteractiveFeature feature) { _feature = feature; }
 
@@ -28,12 +38,18 @@ namespace FootprintViewer.Graphics
 
         public event FeatureEventHandler? Hover;
 
-        public (bool, BoundingBox) CreatingConcrete(Point worldPosition)
+        public event EditingFeatureEventHandler? BeginEditing;
+
+        public event EditingFeatureEventHandler? Editing;
+
+        public event EditingFeatureEventHandler? EndEditing;
+
+        public (bool, BoundingBox) CreatingFeature(Point worldPosition)
         {
-            return CreatingConcrete(worldPosition, point => true);
+            return CreatingFeature(worldPosition, point => true);
         }
 
-        public (bool, BoundingBox) CreatingConcrete(Point worldPosition, Predicate<Point> isEnd)
+        public (bool, BoundingBox) CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
         {
             if (_addInfo == null)
             {          
@@ -70,7 +86,7 @@ namespace FootprintViewer.Graphics
             }
         }
 
-        public void HoverCreatingConcrete(Point worldPosition)
+        public void HoverCreatingFeature(Point worldPosition)
         {
             if (_addInfo != null)
             {
@@ -78,6 +94,47 @@ namespace FootprintViewer.Graphics
 
                 Hover?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
             }
+        }
+
+        public void EditingFeature(Point worldPosition)
+        {
+            if (_isEditing == true)
+            {
+                _feature.Editing(worldPosition);
+
+                Editing?.Invoke(this, new EditingFeatureEventArgs() { Feature = _feature });
+            }
+        }
+
+        public void BeginEditingFeature(Point worldPosition, double screenDistance)
+        {
+            if (_isEditing == false)
+            {
+                var res = _feature.BeginEditing(worldPosition, screenDistance);
+
+                if (res == true)
+                {
+                    _isEditing = true;
+
+                    BeginEditing?.Invoke(this, new EditingFeatureEventArgs() { Feature = _feature });
+                }              
+            }
+        }
+
+        public (bool, BoundingBox) EndEditingFeature()
+        {
+            if (_isEditing == true)
+            {
+                _feature.EndEditing();
+
+                EndEditing?.Invoke(this, new EditingFeatureEventArgs() { Feature = _feature });
+
+                _isEditing = false;
+
+                return (true, _feature.Geometry.BoundingBox);
+            }
+            
+            return (false, new BoundingBox());
         }
     }
 }

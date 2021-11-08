@@ -6,7 +6,7 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Providers.Wfs.Utilities;
-using Mapsui.UI;
+using Mapsui.Geometries;
 using Microsoft.VisualBasic;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -91,9 +91,11 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public void SetAOI(Feature aoi)
+        public void SetAOI(IGeometry aoi)
         {
             Filter.AOI = aoi;
+
+            Filter.ForceUpdate();
         }
 
         public void ResetAOI()

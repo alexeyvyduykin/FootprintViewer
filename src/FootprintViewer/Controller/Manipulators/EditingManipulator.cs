@@ -13,7 +13,6 @@ namespace FootprintViewer
     {
         private bool _isEditing = false;    
         private int _vertexRadius = 4;
-        private InteractiveFeature _editingFeature;
         private EditLayer _layer = null;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
@@ -24,9 +23,7 @@ namespace FootprintViewer
 
             if(_isEditing == true)
             {
-                _editingFeature.EndEditing();
-
-                var bb = _editingFeature.Geometry.BoundingBox;
+                var (_, bb) = MapView.Plotter.EndEditingFeature();
                              
                 MapView.Map.PanLock = false;
 
@@ -49,7 +46,7 @@ namespace FootprintViewer
                 var screenPosition = e.Position;
                 var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
-                _editingFeature.Editing(worldPosition);
+                MapView.Plotter.EditingFeature(worldPosition);
 
                 MapView.SetCursorType(CursorType.EditingFeaturePoint);
                 _layer.DataHasChanged();                
@@ -65,29 +62,25 @@ namespace FootprintViewer
             var screenPosition = e.Position;
             var mapInfo = MapView.GetMapInfo(screenPosition);
 
-            _isEditing = StartDragging(mapInfo, _vertexRadius);
+            _isEditing = false;
 
+            if (mapInfo.Feature != null && mapInfo.Feature is InteractiveFeature interactiveFeature)
+            {
+                var distance = mapInfo.Resolution * _vertexRadius;
+
+                _layer = (EditLayer)mapInfo.Layer;
+
+                MapView.Plotter.BeginEditingFeature(mapInfo.WorldPosition, distance);
+               
+                _isEditing = true;
+            }
+                                
             if(_isEditing == true)
             {
                 MapView.Map.PanLock = true;          
             }
 
             e.Handled = true;
-        }
-
-        private bool StartDragging(MapInfo mapInfo, double screenDistance)
-        {
-            if (mapInfo.Feature != null && mapInfo.Feature is InteractiveFeature interactiveFeature)
-            {
-                var distance = mapInfo.Resolution * screenDistance;
-
-                _editingFeature = interactiveFeature;
-                _layer = (EditLayer)mapInfo.Layer;
-
-                return interactiveFeature.BeginEditing(mapInfo.WorldPosition, distance);
-            }
-
-            return false;
         }
     }
 }

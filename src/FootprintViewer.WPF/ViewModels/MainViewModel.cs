@@ -23,6 +23,7 @@ using System.Reactive.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using System.Windows.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FootprintViewer.WPF.ViewModels
 {
@@ -197,7 +198,7 @@ namespace FootprintViewer.WPF.ViewModels
                                                 
                         InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
 
-                        tab.SetAOI(feature);
+                        tab.SetAOI(feature.Geometry);
 
                         ToolManager.ResetAllTools();
                     };
@@ -211,6 +212,26 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.DataHasChanged();
                     };
 
+
+                    Plotter.EndEditing += (s, e) => 
+                    {
+                        var feature = (Feature)e.Feature;
+
+                        var descr = FeatureAreaEndCreating(feature);
+
+                        void Closing()
+                        {
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+
+                            tab.ResetAOI();
+                        }
+
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+
+                        tab.SetAOI(feature.Geometry);
+                    };
+
                     ActualController = new DrawRectangleController();                 
                 }),
             };
@@ -222,6 +243,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                    var tab = (SceneSearch)SidePanel.Tabs.Single();
 
                     Plotter = new Plotter(InteractivePolygon.Build());
 
@@ -266,7 +288,11 @@ namespace FootprintViewer.WPF.ViewModels
                         {
                             layer.ResetAOI();
                             layer.DataHasChanged();
+                            
+                            tab.ResetAOI();
                         }
+
+                        tab.SetAOI(e.AddInfo.Feature.Geometry);
 
                         InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
 
@@ -278,7 +304,25 @@ namespace FootprintViewer.WPF.ViewModels
                         layer.DataHasChanged(); 
                     };
 
+                    Plotter.EndEditing += (s, e) =>
+                    {
+                        var feature = (Feature)e.Feature;
 
+                        var descr = FeatureAreaEndCreating(feature);
+
+                        void Closing()
+                        {
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+
+                            tab.ResetAOI();
+                        }
+
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+
+                        tab.SetAOI(feature.Geometry);
+                    };
+ 
                     ActualController = new DrawPolygonController(); 
                 }),
             };
@@ -290,6 +334,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Command = new RelayCommand(_ =>
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                    var tab = (SceneSearch)SidePanel.Tabs.Single();
 
                     Plotter = new Plotter(InteractiveCircle.Build());
 
@@ -318,7 +363,11 @@ namespace FootprintViewer.WPF.ViewModels
                         {
                             layer.ResetAOI();
                             layer.DataHasChanged();
+                           
+                            tab.ResetAOI();
                         }
+
+                        tab.SetAOI(e.AddInfo.Feature.Geometry);
 
                         InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
 
@@ -332,6 +381,25 @@ namespace FootprintViewer.WPF.ViewModels
                         Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
                         layer.DataHasChanged(); 
+                    };
+
+                    Plotter.EndEditing += (s, e) =>
+                    {
+                        var feature = (Feature)e.Feature;
+
+                        var descr = FeatureAreaEndCreating(feature);
+
+                        void Closing()
+                        {
+                            layer.ResetAOI();
+                            layer.DataHasChanged();
+
+                            tab.ResetAOI();
+                        }
+
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+
+                        tab.SetAOI(feature.Geometry);
                     };
 
                     ActualController = new DrawCircleController(); 
