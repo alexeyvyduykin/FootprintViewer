@@ -151,7 +151,7 @@ namespace FootprintViewer.ViewModels
 
         private void SelectionChanged(Footprint footprint)
         {
-            if (Map != null && footprint.Geometry != null)
+            if (Map != null && footprint != null && footprint.Geometry != null)
             {
                 var point = footprint.Geometry.BoundingBox.Centroid;
 
