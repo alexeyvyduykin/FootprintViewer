@@ -27,8 +27,9 @@ namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
 {
-        protected readonly SourceList<Footprint> _sourceFootprints;
-        private readonly ReadOnlyObservableCollection<Footprint> _footprints;
+        private readonly IList<Footprint> _sourceFootprints = new List<Footprint>();
+       // protected readonly SourceList<Footprint> _sourceFootprints;
+       // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
 
         public event EventHandler? CurrentFootprint;
        
@@ -55,17 +56,49 @@ namespace FootprintViewer.ViewModels
             SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);
 
             Filter = new SceneSearchFilter();
-      
-            _sourceFootprints = new SourceList<Footprint>();
 
-            var cancellation = _sourceFootprints.Connect()
-                .Filter(Filter.Observable)
-                .Bind(out _footprints)
-                .DisposeMany()
-                .Subscribe(_ =>
+            Filter.Update += Filter_Update;
+
+            //_sourceFootprints = new SourceList<Footprint>();
+
+            //var cancellation = _sourceFootprints.Connect()
+            //    .Filter(Filter.Observable)
+            //    .Bind(out _footprints)
+            //    .DisposeMany()
+            //    .Subscribe(_ =>
+            //    {
+            //        Task.Run(() => longRunningRoutine());
+            //    });        
+        }
+
+        private void Filter_Update(object? sender, EventArgs e)
+        {
+            if (sender is SceneSearchFilter filter)
+            {
+                IsUpdating = true;
+
+                Footprints.Clear();
+
+                foreach (var item in _sourceFootprints)
                 {
-                    Task.Run(() => longRunningRoutine());
-                });        
+                    if (filter.Filtering(item) == true)
+                    {
+                        Footprints.Add(item);
+                    }
+                }
+                
+                IsUpdating = false;
+            }
+        }
+
+        public void SetAOI(Feature aoi)
+        {
+            Filter.AOI = aoi;
+        }
+
+        public void ResetAOI()
+        {
+            Filter.AOI = null;
         }
 
         private void longRunningRoutine()
@@ -92,8 +125,14 @@ namespace FootprintViewer.ViewModels
             {
                 var footprints = await LoadDataAsync(DataSource);
 
-                _sourceFootprints.Clear();
+                // _sourceFootprints.Clear();
+                // _sourceFootprints.AddRange(footprints);
+
                 _sourceFootprints.AddRange(footprints);
+
+
+                Footprints.Clear();
+                Footprints.AddRange(footprints);
 
                 var sortNames = new List<Footprint>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
                 sortNames.Sort();
@@ -175,11 +214,10 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public Map? Map { get; set; }
 
+       // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
 
-        public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
-
-      //  [Reactive]
-     //   public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
+        [Reactive]
+        public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
 
         [Reactive]
         public Footprint? SelectedFootprint { get; set; }
@@ -222,8 +260,11 @@ namespace FootprintViewer.ViewModels
 
         public void AddFootprints(IEnumerable<Footprint> footprints)
         {            
-            _sourceFootprints.Clear();
-            _sourceFootprints.AddRange(footprints);
+          //  _sourceFootprints.Clear();
+          //  _sourceFootprints.AddRange(footprints);
+
+            Footprints.Clear();
+            Footprints.AddRange(footprints);
 
             var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
             sortNames.Sort();

@@ -159,7 +159,9 @@ namespace FootprintViewer.WPF.ViewModels
                 Command = new RelayCommand(_ => 
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-               
+
+                    var tab = (SceneSearch)SidePanel.Tabs.Single();
+
                     Plotter = new Plotter(InteractiveRectangle.Build());
 
                     Tip = new Tip()
@@ -175,21 +177,27 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter.EndCreating += (s, e) =>
                     {
+                        var feature = (Feature)e.AddInfo.Feature;
+
                         layer.ResetAOI();
                         layer.AddAOI(e.AddInfo);
                         layer.DataHasChanged();
 
                         Tip = null;
 
-                        var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+                        var descr = FeatureAreaEndCreating(feature);
                         
                         void Closing()
                         {                           
                             layer.ResetAOI();
                             layer.DataHasChanged();
+
+                            tab.ResetAOI();
                         }
                                                 
                         InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+
+                        tab.SetAOI(feature);
 
                         ToolManager.ResetAllTools();
                     };
@@ -372,7 +380,7 @@ namespace FootprintViewer.WPF.ViewModels
                         }
 
                         InfoPanel.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), Closing);
-
+                        
                         layer.DataHasChanged();
                     };
 
