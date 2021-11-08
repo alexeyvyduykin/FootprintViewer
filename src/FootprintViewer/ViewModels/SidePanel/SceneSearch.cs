@@ -101,6 +101,8 @@ namespace FootprintViewer.ViewModels
         public void ResetAOI()
         {
             Filter.AOI = null;
+            
+            Filter.ForceUpdate();
         }
 
         private void longRunningRoutine()
