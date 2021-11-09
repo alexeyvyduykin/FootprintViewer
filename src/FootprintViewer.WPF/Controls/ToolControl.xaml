@@ -9,17 +9,19 @@
              d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
              x:Name="userControl"
-             d:DesignHeight="450" d:DesignWidth="800" d:Margin="20">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Cursor="Hand">
     
     <UserControl.Resources>
+        
         <Style TargetType="{x:Type Button}" x:Key="ToolButton">
             <Setter Property="Background" Value="#373737" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Opacity" Value="0.7" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Width" Value="36"></Setter>
-            <Setter Property="Height" Value="36"></Setter>
-            <Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -112,7 +114,7 @@
         <Style TargetType="ToggleButton" x:Key="ToolToggleButtonBottom" BasedOn="{StaticResource ToolToggleButton}">
             <Setter Property="Border.CornerRadius" Value="0,0,4,4" />
         </Style>
-
+        
     </UserControl.Resources>
     
     <StackPanel>
@@ -120,6 +122,7 @@
         <StackPanel DataContext="{Binding ZoomIn}"
                     Margin="0,0,0,1" 
                     HorizontalAlignment="Left">
+                       
             <Button Style="{StaticResource ToolButtonTop}"
                     Content="{Binding Title}"
                     Command="{Binding Command}">
@@ -140,8 +143,9 @@
                 </Button.ToolTip>
             </Button>
         </StackPanel>
-        
-        
+
+        <StackPanel Height="10"/>
+
         <StackPanel x:Name="stck" HorizontalAlignment="Left"
                     Background="Transparent"
                     Margin="0,0,0,1" 
@@ -162,7 +166,7 @@
 
             </i:Interaction.Triggers>
            
-            <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}"/>
+            <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}" Height="0"/>
 
             <ItemsControl ItemsSource="{Binding Items}"
                           AlternationCount="{Binding Items.Count}">

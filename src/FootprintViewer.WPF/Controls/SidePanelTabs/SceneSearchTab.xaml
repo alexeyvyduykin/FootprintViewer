@@ -49,7 +49,12 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Name="FilterButton" Margin="10" Height="34" Width="34" Background="{StaticResource AccentBrush}" Foreground="White" Click="FilterButton_Click">Filter</Button>
+            <Button Name="FilterButton" Margin="10" 
+                    Height="34" Width="34" 
+                    Background="{StaticResource AccentBrush}" 
+                    Foreground="White" 
+                    Cursor="Hand"
+                    Click="FilterButton_Click">Filter</Button>
             <TextBlock Text="Настройки поиска" VerticalAlignment="Center" Style="{StaticResource SearchTextBlock}"></TextBlock>
         </StackPanel>
 
@@ -71,7 +76,7 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="10">
+                    <Border Padding="10" Cursor="Hand" Background="Transparent">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
