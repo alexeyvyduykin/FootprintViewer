@@ -6,6 +6,13 @@ namespace FootprintViewer
     public static class FeatureStyles
     {
         private static readonly Dictionary<string, VectorStyle> _dict;
+        private static readonly Color _color = new Color { R = 76, G = 154, B = 231, A = 255 };
+        private static readonly Pen _pen = new Pen(_color, 3);
+        private static readonly Pen _penDot = new Pen(_color, 4) { PenStyle = PenStyle.Dot };
+        private static readonly Brush _brush = new Brush(Color.Opacity(_color, 0.25f));
+        private static readonly Color _darkColor = new Color { R = 67, G = 135, B = 202, A = 255 };
+        private static readonly Pen _darkPen = new Pen(_darkColor, 3);
+        private static readonly Pen _darkPenDash = new Pen(_darkColor, 3) { PenStyle = PenStyle.Dash };
 
         static FeatureStyles()
         {
@@ -32,47 +39,49 @@ namespace FootprintViewer
         private static readonly VectorStyle RouteStyle = new VectorStyle
         {
             Fill = null,
-            Line = new Pen(Color.Red, 8)
-        };
-
-        private static readonly VectorStyle RouteDrawingStyle = new VectorStyle
-        {
-            Fill = null,
-            Line = new Pen(Color.Red, 8)
-            {
-                PenStyle = PenStyle.Dash,
-            },
+            Line = _darkPen
         };
 
         private static readonly VectorStyle AOIRectangleStyle = new VectorStyle
         {
             Fill = null,
-            Outline = new Pen(Color.Orange, 4),
-        };
-
-
-        private static readonly VectorStyle AOIRectangleDrawingStyle = new VectorStyle
-        {
-            Fill = new Brush(Color.Opacity(Color.Orange, 0.3f)),
-            Outline = new Pen(Color.Orange, 4),
+            Outline = _pen,
         };
 
         private static readonly VectorStyle AOIPolygonStyle = new VectorStyle
         {
             Fill = null,
-            Line = new Pen(Color.Green, 4),
-            Outline = new Pen(Color.Green, 4),
+            Line = _pen,
+            Outline = _pen,
+        };
+
+        private static readonly VectorStyle AOICircleStyle = new VectorStyle
+        {
+            Fill = null,
+            Outline = _pen,
+        };
+
+        private static readonly VectorStyle RouteDrawingStyle = new VectorStyle
+        {
+            Fill = null,
+            Line = _darkPenDash,
+        };
+
+        private static readonly VectorStyle AOIRectangleDrawingStyle = new VectorStyle
+        {
+            Fill = _brush,
+            Outline = _pen,
         };
 
         private static readonly VectorStyle AOIPolygonBorderStyle = new VectorStyle
         {
             Fill = null,
-            Line = new Pen(Color.Green, 4),
+            Line = _pen,
         };
 
         private static readonly VectorStyle AOIPolygonAreaStyle = new VectorStyle
         {
-            Fill = new Brush(Color.Opacity(Color.Green, 0.3f)),
+            Fill = _brush,
             Line = null,
             Outline = null,
         };
@@ -80,23 +89,13 @@ namespace FootprintViewer
         private static readonly VectorStyle AOIPolygonDrawingStyle = new VectorStyle
         {
             Fill = null,
-            Line = new Pen(Color.Green, 4)
-            {
-                PenStyle = PenStyle.Dot,
-            },
+            Line = _penDot,
         };
-
-        private static readonly VectorStyle AOICircleStyle = new VectorStyle
-        {
-            Fill = null,
-            Outline = new Pen(Color.Gray, 4),
-        };
-
 
         private static readonly VectorStyle AOICircleDrawingStyle = new VectorStyle
         {
-            Fill = new Brush(Color.Opacity(Color.Gray, 0.3f)),
-            Outline = new Pen(Color.Gray, 4),
+            Fill = _brush,
+            Outline = _pen,
         };
     }
 }
