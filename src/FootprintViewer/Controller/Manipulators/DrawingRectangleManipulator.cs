@@ -29,11 +29,11 @@ namespace FootprintViewer
                 if (isDraw == true)
                 {
                     MapView.NavigateToAOI(bb);
+                    
+                    MapView.SetCursor(CursorType.Default, "DrawingRectangleManipulator.Completed");
                 }
             }
-
-            MapView.SetCursorType(CursorType.Default);
-
+           
             e.Handled = true;
         }
 
@@ -53,15 +53,8 @@ namespace FootprintViewer
 
             _skip = false;
             _counter = 0;
-
-            MapView.SetCursorType(GetCursorType());
                 
             e.Handled = true;            
-        }
-
-        private CursorType GetCursorType()
-        {
-            return CursorType.ZoomRectangle;
         }
     }
 
@@ -77,6 +70,17 @@ namespace FootprintViewer
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
             MapView.Plotter.HoverCreatingFeature(worldPosition);
+
+            e.Handled = true;
+        }
+
+        public override void Started(MouseEventArgs e)
+        {
+            base.Started(e);
+           
+            MapView.SetCursor(CursorType.Cross, "HoverDrawingRectangleManipulator.Started");
+            
+            e.Handled = true;
         }
     }
 

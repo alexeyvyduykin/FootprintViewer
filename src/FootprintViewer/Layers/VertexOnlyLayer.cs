@@ -4,6 +4,8 @@ using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
+using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace FootprintViewer
@@ -16,10 +18,10 @@ namespace FootprintViewer
         {
             Fill = new Brush(Color.White),
             Outline = new Pen(Color.Black, 2 / 0.3),
-            SymbolType = SymbolType.Ellipse,                        
-            SymbolScale = 0.3,
+            SymbolType = SymbolType.Ellipse,
+            SymbolScale = 0.3,       
         };
-
+       
         public override BoundingBox Envelope => _source.Envelope;
 
         public VertexOnlyLayer(ILayer source)
@@ -36,14 +38,14 @@ namespace FootprintViewer
             {
                 if (feature.Geometry is Point || feature.Geometry is MultiPoint)
                 {
-                    continue; // Points with a vertex on top confuse me
+                    throw new Exception();
                 }
 
                 if (feature is InteractiveFeature interactiveFeature)
                 {
-                    foreach (var vertices in interactiveFeature.EditVertices())
-                    {
-                        yield return new Feature { Geometry = vertices };
+                    foreach (var point in interactiveFeature.EditVertices())
+                    {                          
+                        yield return new Feature { Geometry = point };
                     }
                 }
             }

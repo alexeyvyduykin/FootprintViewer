@@ -23,4 +23,8 @@
     <ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="resources\GrabHand.cur" />
+  </ItemGroup>
+
 </Project>

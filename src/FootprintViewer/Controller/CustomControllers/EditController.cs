@@ -8,7 +8,8 @@ namespace FootprintViewer
     {
         public EditController()
         {
-            this.BindMouseDown(MouseButton.Left, MapCommands.Editing);    
+            this.BindMouseDown(MouseButton.Left, MapCommands.Editing);
+            this.BindMouseEnter(MapCommands.HoverEditing);
         }
     }
 }

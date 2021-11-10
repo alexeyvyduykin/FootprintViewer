@@ -19,7 +19,24 @@ namespace FootprintViewer
 
         public EditLayer() : base()
         {
+        
+        }
 
+        public List<Point> GetVertices()
+        {                
+            var features = _layer.GetFeatures();
+
+            List<Point> list = new List<Point>();
+
+            foreach (var f in features)
+            {
+                if (f is InteractiveFeature interactiveFeature)
+                {
+                    list.AddRange(interactiveFeature.EditVertices());
+                }
+            }
+
+            return list;
         }
 
         public override BoundingBox Envelope => _layer.Envelope;

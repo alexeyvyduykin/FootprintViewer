@@ -44,6 +44,8 @@ namespace FootprintViewer.Graphics
 
         public event EditingFeatureEventHandler? EndEditing;
 
+        public bool IsEditing => _isEditing;
+
         public (bool, BoundingBox) CreatingFeature(Point worldPosition)
         {
             return CreatingFeature(worldPosition, point => true);

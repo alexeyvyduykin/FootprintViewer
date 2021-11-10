@@ -17,6 +17,7 @@
             HoverDrawingCircle = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingCircleManipulator(view), args));
 
             Editing = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new EditingManipulator(view), args));
+            HoverEditing = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverEditingManipulator(view), args));
         }
 
         public static IViewCommand<MouseDownEventArgs> DrawingLine { get; private set; }
@@ -36,5 +37,7 @@
         public static IViewCommand<MouseEventArgs> HoverDrawingCircle { get; private set; }
 
         public static IViewCommand<MouseDownEventArgs> Editing { get; private set; }
+        
+        public static IViewCommand<MouseEventArgs> HoverEditing { get; private set; }
     }
 }

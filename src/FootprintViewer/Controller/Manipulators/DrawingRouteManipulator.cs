@@ -27,11 +27,14 @@ namespace FootprintViewer
                     return IsClick(p, screenPosition);                    
                 }
 
-                MapView.Plotter.CreatingFeature(worldPosition, IsEnd);
+                var (isCreate, _) = MapView.Plotter.CreatingFeature(worldPosition, IsEnd);
+
+                if (isCreate == true)
+                {
+                    MapView.SetCursor(CursorType.Default, "DrawingRouteManipulator.Completed");
+                }
             }
-
-            MapView.SetCursorType(CursorType.Default);
-
+ 
             e.Handled = true;
         }
 
@@ -51,18 +54,10 @@ namespace FootprintViewer
 
             _skip = false;
             _counter = 0;
-
-            //if (_editMode == EditMode.AddLine)
-            {
-                MapView.SetCursorType(GetCursorType());
-                e.Handled = true;
-            }
+                
+            e.Handled = true;            
         }
 
-        private CursorType GetCursorType()
-        {
-            return CursorType.ZoomRectangle;
-        }
         private bool IsClick(Point screenPosition, Point mouseDownScreenPosition)
         {
             if (mouseDownScreenPosition == null || screenPosition == null)
@@ -86,6 +81,17 @@ namespace FootprintViewer
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
             MapView.Plotter.HoverCreatingFeature(worldPosition);
+            
+            e.Handled = true;
+        }
+
+        public override void Started(MouseEventArgs e)
+        {
+            base.Started(e);
+
+            MapView.SetCursor(CursorType.Cross, "HoverDrawingLineManipulator.Started");
+
+            e.Handled = true;
         }
     }
 }

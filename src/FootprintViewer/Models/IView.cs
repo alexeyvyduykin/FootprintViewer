@@ -6,6 +6,6 @@ namespace FootprintViewer
     {
         Map Map { get; }
 
-        void SetCursorType(CursorType cursorType);
+        void SetCursor(CursorType cursorType, string info = "");
     }
 }

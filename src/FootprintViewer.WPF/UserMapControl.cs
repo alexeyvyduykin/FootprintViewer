@@ -15,6 +15,8 @@ using System.Windows.Controls;
 using FootprintViewer.WPF.Controls;
 using System.Collections.ObjectModel;
 using FootprintViewer.ViewModels;
+using System.Security.Policy;
+using System.Diagnostics;
 
 namespace FootprintViewer.WPF
 {
@@ -23,8 +25,11 @@ namespace FootprintViewer.WPF
         private Mapsui.Geometries.Point? _mouseDownPoint;
         private readonly TipControl _tipOverlay;
         private bool _isActivateTip = false;
+        private Cursor? _grabHandCursor;
+        private bool _isLeftMouseDown = false;
+        private CursorType _currentCursorType = CursorType.Default;
         public UserMapControl() : base()
-        {                 
+        {
             MouseEnter += MyMapControl_MouseEnter;
             MouseLeave += MyMapControl_MouseLeave;
             MouseWheel += MyMapControl_MouseWheel;
@@ -54,7 +59,15 @@ namespace FootprintViewer.WPF
 
         // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControllerProperty =
-            DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new EditController()));
+            DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new EditController(), OnControllerChanged));
+
+        private static void OnControllerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var mapControl = (UserMapControl)d;
+
+            // HACK: after tools check, hover manipulator not active, it call this
+            mapControl.Controller.HandleMouseEnter(mapControl, new MouseEventArgs());
+        }
 
         public Tip? TipSource
         {
@@ -94,7 +107,7 @@ namespace FootprintViewer.WPF
             {
                 if (e.NewValue != null && e.NewValue is Map map)
                 {
-                    mapControl.Map = map;                    
+                    mapControl.Map = map;
                 }
             }
         }
@@ -108,8 +121,10 @@ namespace FootprintViewer.WPF
             }
 
             //var releasedArgs = (PointerReleasedEventArgs)e;
-
+            
             e.MouseDevice.Capture(null);
+            
+            _isLeftMouseDown = false;
 
             //e.Handled = 
             Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
@@ -135,6 +150,7 @@ namespace FootprintViewer.WPF
         private void MyMapControl_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             base.OnMouseMove(e);
+  
             if (e.Handled)
             {
                 return;
@@ -154,11 +170,25 @@ namespace FootprintViewer.WPF
             }
 
             //e.Handled = 
-            Controller.HandleMouseMove(this, e.ToMouseEventArgs(this));
+
+            var args = e.ToMouseEventArgs(this);
+            Controller.HandleMouseMove(this, args);
+
+            if (args.Handled == false)
+            {
+                if (_isLeftMouseDown == true && e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+                {
+                    SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");                   
+                }
+                else
+                {
+                    SetCursor(CursorType.Default, "UserMapControl.MyMapControl_MouseMove");
+                }
+            }
         }
 
         private void MyMapControl_MouseDown(object sender, MouseButtonEventArgs e)
-        {
+        {            
             base.OnMouseDown(e);
             if (e.Handled)
             {
@@ -171,6 +201,10 @@ namespace FootprintViewer.WPF
             // store the mouse down point, check it when mouse button is released to determine if the context menu should be shown
             _mouseDownPoint = e.GetPosition(this).ToScreenPoint();
 
+            if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                _isLeftMouseDown = true;
+            }
 
             //e.Handled = 
             Controller.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
@@ -197,6 +231,8 @@ namespace FootprintViewer.WPF
                 return;
             }
 
+            _isLeftMouseDown = false;
+
             //e.Handled = 
             Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));
         }
@@ -209,50 +245,50 @@ namespace FootprintViewer.WPF
                 return;
             }
 
+            _isLeftMouseDown = false;
+
             //e.Handled = 
             Controller.HandleMouseEnter(this, e.ToMouseEventArgs(this));
         }
 
         public void NavigateToAOI(BoundingBox boundingBox)
-        {              
-            Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
+        {                
+            Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));            
         }
 
-        public void SetCursorType(CursorType cursorType)
+        public void SetCursor(CursorType cursorType, string info = "")
         {
+            if (_grabHandCursor == null)
+            {
+                _grabHandCursor = new Cursor(App.GetResourceStream(new Uri("resources/GrabHand.cur", UriKind.Relative)).Stream);
+            }
+
+            if (_currentCursorType == cursorType)
+            {
+                return;
+            }
+
             switch (cursorType)
             {
-                case CursorType.Pan:
-                    Cursor = Cursors.Hand;
-                    break;
-                case CursorType.ZoomRectangle:
-                    Cursor = Cursors.SizeAll;
-                    break;
-                case CursorType.ZoomHorizontal:
-                    Cursor = Cursors.SizeWE;
-                    break;
-                case CursorType.ZoomVertical:
-                    Cursor = Cursors.SizeNS;
-                    break;
-
-                case CursorType.HoverEditPoint:
-                    Cursor = Cursors.UpArrow;
-                    break;
-                case CursorType.HoverDragPoint:
-                    Cursor = Cursors.SizeAll;
-                    break;
-
-                case CursorType.EditingFeaturePoint:
-                    Cursor = Cursors.SizeAll;
-                    break;
-                case CursorType.DraggingFeature:
-                    Cursor = Cursors.SizeAll;
-                    break;
-
-                default:
+                case CursorType.Default:
                     Cursor = Cursors.Arrow;
                     break;
+                case CursorType.Hand:
+                    Cursor = Cursors.Hand;
+                    break;
+                case CursorType.HandGrab:
+                    Cursor = _grabHandCursor;
+                    break;
+                case CursorType.Cross:
+                    Cursor = Cursors.Cross;
+                    break;
+                default:
+                    throw new Exception();
             }
+
+            _currentCursorType = cursorType;
+
+            Debug.WriteLine($"Set Cursor = {Cursor}, Info = {info}");
         }
         
         protected void ActiveateTip()
