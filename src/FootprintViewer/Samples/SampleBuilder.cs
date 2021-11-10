@@ -207,13 +207,16 @@ namespace FootprintViewer
 
         private static WritableLayer CreateFootprintBorderLayer()
         {
+            Color color = new Color() { R = 76, G = 185, B = 247, A = 255 };
+
             var layer = new WritableLayer
             {
                 Name = nameof(LayerType.FootprintBorderLayer),
                 Style = new VectorStyle
                 {
-                    Fill = new Brush(Color.Opacity(Color.Blue, 0.3f)),
-                    Line = new Pen() { Color = Color.Blue, Width = 1.0 },
+                    Fill = new Brush(Color.Opacity(color, 0.25f)),
+                    Line = new Pen(color, 1.0),
+                    Outline = new Pen(color, 1.0),
                     Enabled = true
                 }
             };
