@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:FootprintViewer.WPF.Controls"
+             xmlns:local="clr-namespace:FootprintViewer.WPF" 
+             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
              d:DataContext="{d:DesignInstance vm:InfoPanelDesigner, IsDesignTimeCreatable=True}"             
              mc:Ignorable="d" 
@@ -62,6 +63,32 @@
             <Setter Property="CornerRadius" Value="3" />
         </Style>
 
+        <DataTemplate x:Key="RouteItemTemplate">
+            <Grid>
+                <Viewbox>
+                    <Image Source="{DynamicResource IconCircle}"/>
+                </Viewbox>
+                <Viewbox Margin="8.5">
+                    <Image Source="{DynamicResource IconScale}"/>
+                </Viewbox>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="AOIItemTemplate">
+            <Grid>
+                <Viewbox>
+                    <Image Source="{DynamicResource IconCircle}"/>
+                </Viewbox>
+                <Viewbox Margin="8.5">
+                    <Image Source="{DynamicResource IconSquare}"/>
+                </Viewbox>
+            </Grid>
+        </DataTemplate>
+
+        <local:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector" 
+                                     RouteTemplate="{StaticResource RouteItemTemplate}"
+                                     AOITemplate="{StaticResource AOIItemTemplate}"/>
+
     </UserControl.Resources>
 
     
@@ -80,16 +107,17 @@
                 <DataTemplate>
                     <Border Style="{StaticResource InfoPanelBorder}">
                         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-                            <TextBlock Text="{Binding Title}" 
-                                       Foreground="White" 
-                                       VerticalAlignment="Center"
-                                       Width="32" Height="32"/>
+
+                            <Grid Width="32" Height="32">
+                                <ContentControl Content="{Binding}"                                             
+                                                ContentTemplateSelector="{StaticResource InfoPanelIconDataSelector}"/>
+                            </Grid>
+                                                        
                             <TextBlock Text="{Binding Text}" 
                                        Foreground="White"
                                        VerticalAlignment="Center"
                                        Margin="15,0,15,0"/>
-                            <Button Content="{Binding CommandTitle}"
-                                    Style="{StaticResource CloseBottom}"                                                                       
+                            <Button Style="{StaticResource CloseBottom}"                                                                       
                                     HorizontalAlignment="Right">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
@@ -100,6 +128,11 @@
                                 <Button.ToolTip>
                                     <ToolTip Content="Закрыть" Style="{StaticResource FastTooltip}"/>
                                 </Button.ToolTip>
+
+                                <Viewbox Margin="8">
+                                    <Image Source="{DynamicResource IconClose}"/>
+                                </Viewbox>
+
                             </Button>
                         </DockPanel>
                     </Border>
