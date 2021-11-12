@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:FootprintViewer.WPF.Controls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"   
+             xmlns:local="clr-namespace:FootprintViewer.WPF"
+             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
              d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
@@ -114,7 +115,30 @@
         <Style TargetType="ToggleButton" x:Key="ToolToggleButtonBottom" BasedOn="{StaticResource ToolToggleButton}">
             <Setter Property="Border.CornerRadius" Value="0,0,4,4" />
         </Style>
-        
+
+        <DataTemplate x:Key="RectangleItemTemplate">
+            <Viewbox>
+                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
+            </Viewbox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PolygonItemTemplate">
+            <Viewbox>
+                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
+            </Viewbox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="CircleItemTemplate">
+            <Viewbox>
+                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
+            </Viewbox>
+        </DataTemplate>
+
+        <local:ToolIconSelector x:Key="ToolIconDataSelector" 
+                                RectangleTemplate="{StaticResource RectangleItemTemplate}"
+                                PolygonTemplate="{StaticResource PolygonItemTemplate}"
+                                CircleTemplate="{StaticResource CircleItemTemplate}"/>
+
     </UserControl.Resources>
     
     <StackPanel>
@@ -192,41 +216,14 @@
                                 <i:EventTrigger EventName="Checked">
                                     <i:InvokeCommandAction Command="{Binding Command}"/>
                                 </i:EventTrigger>
-
-                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddRectangle">
-                                    <i:ChangePropertyAction PropertyName="Content">
-                                        <i:ChangePropertyAction.Value>
-                                            <Viewbox>
-                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
-                                            </Viewbox>
-                                        </i:ChangePropertyAction.Value>
-                                    </i:ChangePropertyAction>
-                                </i:DataTrigger>
-
-                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddPolygon">
-                                    <i:ChangePropertyAction PropertyName="Content">
-                                        <i:ChangePropertyAction.Value>
-                                            <Viewbox>
-                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
-                                            </Viewbox>
-                                        </i:ChangePropertyAction.Value>
-                                    </i:ChangePropertyAction>
-                                </i:DataTrigger>
-
-                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddCircle">
-                                    <i:ChangePropertyAction PropertyName="Content">
-                                        <i:ChangePropertyAction.Value>
-                                            <Viewbox>
-                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
-                                            </Viewbox>
-                                        </i:ChangePropertyAction.Value>
-                                    </i:ChangePropertyAction>
-                                </i:DataTrigger>
-
                             </i:Interaction.Triggers>
                             <ToggleButton.ToolTip>
                                 <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                             </ToggleButton.ToolTip>
+
+                            <ContentControl Content="{Binding}"
+                                            ContentTemplateSelector="{StaticResource ToolIconDataSelector}"/>
+
                         </ToggleButton>
 
                         <DataTemplate.Triggers>
