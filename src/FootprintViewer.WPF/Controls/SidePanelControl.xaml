@@ -122,10 +122,13 @@
                 <DockPanel LastChildFill="True">
                     <TextBlock Text="{Binding SelectedItem.Title, ElementName=SidePanel}" 
                                HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
                                Style="{StaticResource SidePanelHeaderTextBlock}"/>
 
                     <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="51" Padding="0">
-                        <TextBlock Text=">" HorizontalAlignment="Center" Style="{StaticResource SidePanelHeaderTextBlock}"/>
+                        <Viewbox Margin="21,0,21,0">
+                            <Image Source="{DynamicResource IconChevronRight}"/>
+                        </Viewbox>
                     </Border>
                 </DockPanel>
             </Border>
@@ -137,9 +140,9 @@
                     SelectedItem="{Binding SelectedTab}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <Border >
-                        <TextBlock Text="{Binding Name}" Foreground="WhiteSmoke"></TextBlock>
-                    </Border>
+                    <Viewbox Margin="8">
+                        <Image Source="{DynamicResource IconImage}"/>
+                    </Viewbox>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
