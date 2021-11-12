@@ -123,24 +123,28 @@
                     Margin="0,0,0,1" 
                     HorizontalAlignment="Left">
                        
-            <Button Style="{StaticResource ToolButtonTop}"
-                    Content="{Binding Title}"
+            <Button Style="{StaticResource ToolButtonTop}"                  
                     Command="{Binding Command}">
                 <Button.ToolTip>
                     <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </Button.ToolTip>
+                <Viewbox>
+                    <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
+                </Viewbox>
             </Button>
             
         </StackPanel>
 
         <StackPanel DataContext="{Binding ZoomOut}"
                     HorizontalAlignment="Left">
-            <Button Style="{StaticResource ToolButtonBottom}" 
-                    Content="{Binding Title}"
+            <Button Style="{StaticResource ToolButtonBottom}"                  
                     Command="{Binding Command}">
                 <Button.ToolTip>
                     <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </Button.ToolTip>
+                <Viewbox>
+                    <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomOut}"/>
+                </Viewbox>
             </Button>
         </StackPanel>
 
@@ -182,12 +186,43 @@
                         <ToggleButton x:Name="btn"                                
                                       Margin="4,0,0,0"
                                       IsChecked="{Binding IsActive, Mode=TwoWay}"                                
-                                      Style="{StaticResource ToolToggleButtonCorner}"                                
-                                      Content="{Binding Title}">
+                                      Style="{StaticResource ToolToggleButtonCorner}">
+
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Checked">
                                     <i:InvokeCommandAction Command="{Binding Command}"/>
                                 </i:EventTrigger>
+
+                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddRectangle">
+                                    <i:ChangePropertyAction PropertyName="Content">
+                                        <i:ChangePropertyAction.Value>
+                                            <Viewbox>
+                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
+                                            </Viewbox>
+                                        </i:ChangePropertyAction.Value>
+                                    </i:ChangePropertyAction>
+                                </i:DataTrigger>
+
+                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddPolygon">
+                                    <i:ChangePropertyAction PropertyName="Content">
+                                        <i:ChangePropertyAction.Value>
+                                            <Viewbox>
+                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
+                                            </Viewbox>
+                                        </i:ChangePropertyAction.Value>
+                                    </i:ChangePropertyAction>
+                                </i:DataTrigger>
+
+                                <i:DataTrigger Binding="{Binding Title}" Comparison="Equal" Value="AddCircle">
+                                    <i:ChangePropertyAction PropertyName="Content">
+                                        <i:ChangePropertyAction.Value>
+                                            <Viewbox>
+                                                <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
+                                            </Viewbox>
+                                        </i:ChangePropertyAction.Value>
+                                    </i:ChangePropertyAction>
+                                </i:DataTrigger>
+
                             </i:Interaction.Triggers>
                             <ToggleButton.ToolTip>
                                 <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
@@ -200,6 +235,7 @@
                                 <Setter Property="Border.CornerRadius" TargetName="btn" Value="4,4,0,0"/>
                             </Trigger>
                         </DataTemplate.Triggers>
+
                     </DataTemplate>
                     
                 </ItemsControl.ItemTemplate>
@@ -210,8 +246,7 @@
                     Margin="0,0,0,1"
                     HorizontalAlignment="Left">
             <ToggleButton Style="{StaticResource ToolToggleButtonBottom}"                    
-                          IsChecked="{Binding IsActive, Mode=TwoWay}"                   
-                          Content="{Binding Title}">
+                          IsChecked="{Binding IsActive, Mode=TwoWay}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
                         <i:InvokeCommandAction Command="{Binding Command}"/>
@@ -221,6 +256,10 @@
                 <ToggleButton.ToolTip>
                     <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </ToggleButton.ToolTip>
+
+                <Viewbox>
+                    <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconScale}"/>
+                </Viewbox>
             </ToggleButton>
         </StackPanel>
 

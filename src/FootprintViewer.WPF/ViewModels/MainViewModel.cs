@@ -155,7 +155,7 @@ namespace FootprintViewer.WPF.ViewModels
 
             var toolRectangle = new Tool()
             {
-                Title = "Rect",
+                Title = "AddRectangle",
                 Tooltip = "Нарисуйте прямоугольную AOI",
                 Command = new RelayCommand(_ => 
                 {
@@ -238,7 +238,7 @@ namespace FootprintViewer.WPF.ViewModels
 
             var toolPolygon = new Tool()
             {
-                Title = "Poly",
+                Title = "AddPolygon",
                 Tooltip = "Нарисуйте полигональную AOI",
                 Command = new RelayCommand(_ => 
                 {
@@ -329,7 +329,7 @@ namespace FootprintViewer.WPF.ViewModels
 
             var toolCircle = new Tool()
             {
-                Title = "Circle",
+                Title = "AddCircle",
                 Tooltip = "Нарисуйте круговую AOI",
                 Command = new RelayCommand(_ =>
                 {

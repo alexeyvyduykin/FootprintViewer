@@ -84,17 +84,17 @@ namespace FootprintViewer.ViewModels
         {          
             var toolRectangle = new Tool()
             {
-                Title = "Rect",
+                Title = "AddRectangle",
             };
 
             var toolPolygon = new Tool()
             {
-                Title = "Poly",
+                Title = "AddPolygon",
             };
 
             var toolCircle = new Tool()
             {
-                Title = "Circle",
+                Title = "AddCircle",
             };
         
             var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
