@@ -13,7 +13,12 @@
     <UserControl.Resources>
         <SolidColorBrush x:Key="SidePanelHeaderBrush" Color="#4c9ae7"/>
         <SolidColorBrush x:Key="TabControlHeaderBackground" Color="#171e26"/>
-        <SolidColorBrush x:Key="TabItemSelectedBackground" Color="White" Opacity="0.35"/>
+        <!--<SolidColorBrush x:Key="TabItemSelectedBackground" Color="White" Opacity="0.35"/>-->
+        <SolidColorBrush x:Key="TabItemSelectedBackground">
+            <SolidColorBrush.Color>
+                <Color R="56" G="65" B="74" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
 
         <Style x:Key="SidePanelHeaderTextBlock" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#FFFFFFE6"></Setter>
@@ -134,7 +139,7 @@
             </Border>
         </StackPanel>
 
-        <TabControl DockPanel.Dock="Right"                                
+        <TabControl                             
                     x:Name="SidePanel"                               
                     ItemsSource="{Binding Tabs}"
                     SelectedItem="{Binding SelectedTab}">

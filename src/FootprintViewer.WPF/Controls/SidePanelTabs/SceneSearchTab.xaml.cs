@@ -26,9 +26,18 @@ namespace FootprintViewer.WPF.Controls.SidePanelTabs
             InitializeComponent();
         }
 
-        private bool _isFilterOpen = false;
         private string _filterName = "FilterBorder";
         private Border _border;
+
+        public bool IsFilterOpen
+        {
+            get { return (bool)GetValue(IsFilterOpenProperty); }
+            set { SetValue(IsFilterOpenProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsFilterOpen.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsFilterOpenProperty =
+            DependencyProperty.Register("IsFilterOpen", typeof(bool), typeof(SceneSearchTab), new PropertyMetadata(false));
 
         private void FilterButton_Click(object sender, RoutedEventArgs e)
         {
@@ -36,9 +45,9 @@ namespace FootprintViewer.WPF.Controls.SidePanelTabs
 
             if (DataContext is SceneSearch sceneSearch)
             {
-                if (_isFilterOpen == false)
+                if (IsFilterOpen == false)
                 {
-                    _isFilterOpen = true;
+                    IsFilterOpen = true;
 
                     _border = new Border()
                     {
@@ -57,7 +66,7 @@ namespace FootprintViewer.WPF.Controls.SidePanelTabs
                 {                    
                     parentWindow.GridOverlay.Children.Remove(_border);
 
-                    _isFilterOpen = false;
+                    IsFilterOpen = false;
                 }
             }
         }
