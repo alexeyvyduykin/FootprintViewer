@@ -20,11 +20,14 @@
     </UserControl.Resources>
 
     <Border Background="{StaticResource BackgroundBrush}" >
-    <StackPanel>
+        <StackPanel>
 
             <Border Padding="20">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Дата" Margin="0,0,30,0"></TextBlock>
+                    <Viewbox Width="18" Height="18">
+                        <Image Source="{DynamicResource IconToday}"/>
+                    </Viewbox>
+                    <TextBlock Text="Дата" Margin="8,0,30,0" VerticalAlignment="Center"></TextBlock>
                     <DatePicker SelectedDate="{Binding FromDate}"  Margin="0,0,20,0" BorderThickness="0"></DatePicker>
                     <DatePicker SelectedDate="{Binding ToDate}" Margin="0,0,20,0" BorderThickness="0"></DatePicker>
                 </StackPanel>
@@ -37,11 +40,14 @@
 
                     <StackPanel Margin="0,0,0,20">
                         <DockPanel LastChildFill="True">
-                            <TextBlock Text="Облачность"></TextBlock>
+                            <Viewbox Width="18" Height="18">
+                                <Image Source="{DynamicResource IconCloudyMain}"/>
+                            </Viewbox>
+                            <TextBlock Text="Облачность" Margin="8,0,0,0"></TextBlock>
                             <TextBlock HorizontalAlignment="Right">                                           
                                 <Run Text="≤ "/>                                                        
                                 <Run Text="{Binding Value, ElementName=CloudinessSlider}"/>                                                
-                                <Run Text=" %"/>            
+                                <Run Text=" %"/>
                             </TextBlock>
                         </DockPanel>
                         <Slider x:Name="CloudinessSlider" Minimum="0" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True"  Value="{Binding Cloudiness}"/>
@@ -74,7 +80,10 @@
 
                     <StackPanel Margin="0,0,0,20">
                         <DockPanel LastChildFill="True">
-                            <TextBlock Text="Угол падения солнечных лучей"></TextBlock>
+                            <Viewbox Width="18" Height="18">
+                                <Image Source="{DynamicResource IconSunElevationMain}"/>
+                            </Viewbox>
+                            <TextBlock Text="Угол падения солнечных лучей" Margin="8,0,0,0"></TextBlock>
                             <TextBlock HorizontalAlignment="Right">                                                               
                                 <Run Text="{Binding Value, ElementName=AngleSlider}"/>  
                                 <Run Text=" - "/>                                                        
@@ -119,7 +128,10 @@
             <Border Padding="20">
                 <StackPanel>
                     <DockPanel LastChildFill="True" Margin="0,0,0,10">
-                        <TextBlock Text="Сенсоры"></TextBlock>
+                        <Viewbox Width="18" Height="18">
+                            <Image Source="{DynamicResource IconSatelliteMain}"/>
+                        </Viewbox>
+                        <TextBlock Text="Сенсоры" Margin="8,0,0,0"></TextBlock>
                         <CheckBox Content="Все сенсоры" IsChecked="{Binding IsAllSensorActive}" HorizontalAlignment="Right" Foreground="White"></CheckBox>
                     </DockPanel>
 
@@ -138,6 +150,5 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-
     </Border>
 </UserControl>
