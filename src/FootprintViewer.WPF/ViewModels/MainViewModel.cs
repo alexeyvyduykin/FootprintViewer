@@ -33,10 +33,13 @@ namespace FootprintViewer.WPF.ViewModels
 
         public MainViewModel()
         {
-
             ActualController = new EditController();
-            
+
+            DataSource = new DataSource();
+
             Map = SampleBuilder.CreateMap();
+
+            Map.SetWorldMapLayer(DataSource.WorldMapSources.FirstOrDefault());
 
             var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
 
@@ -47,7 +50,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Title = "Поиск сцены",
                 Name = "Scene",
                 Map = Map,     
-                DataSource = new DataSource(),
+                DataSource = DataSource,
             };
 
             tab.Filter.FromDate = DateTime.Today.AddDays(-1);
@@ -58,9 +61,11 @@ namespace FootprintViewer.WPF.ViewModels
             ToolManager = CreateToolManager();
 
             InfoPanel = SampleBuilder.CreateInfoPanel();
+
+            WorldMapSelector = new WorldMapSelector(DataSource.WorldMapSources);
+
+            WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
         }
-
-
 
         private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
         {
@@ -480,6 +485,16 @@ namespace FootprintViewer.WPF.ViewModels
                 Command = new RelayCommand(_ => ActualController = new EditController())
             };
 
+            var toolWorldMaps = new Tool()
+            {
+                Title = "WorldMaps",
+                Tooltip = "Список слоев",
+                Command = new RelayCommand(_ => 
+                {
+                
+                })
+            };
+
             var toolManager = new ToolManager();
 
             toolManager.ZoomIn = toolZoomIn;
@@ -487,11 +502,13 @@ namespace FootprintViewer.WPF.ViewModels
             toolManager.AOICollection = aoiCollection;
             toolManager.RouteDistance = toolRouteDistance;
             toolManager.Edit = toolEdit;
+            toolManager.WorldMaps = toolWorldMaps;
 
             return toolManager;
         }
 
-
+        [Reactive]
+        public DataSource DataSource { get; set; }
 
         [Reactive]
         public Map Map { get; set; }
@@ -516,6 +533,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public Tip? Tip { get; set; }
+
+        [Reactive]
+        public WorldMapSelector WorldMapSelector { get; set; }
     }
 
     public class MapLayer

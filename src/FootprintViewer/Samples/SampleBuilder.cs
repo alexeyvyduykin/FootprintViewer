@@ -36,20 +36,14 @@ namespace FootprintViewer
         private static readonly SymbolStyle DisableStyle = new SymbolStyle { Enabled = false };
 
         public static Map CreateMap()
-        {
-            var backgroundLayer = CreateBackgroundLayer();
-
+        {    
             var map = new Map()
             {
                 CRS = "EPSG:3857",
-                Transformation = new MinimalTransformation(),
-                Limiter = new ViewportLimiterKeepWithin { PanLimits = backgroundLayer.Envelope/*limiter*/ }
+                Transformation = new MinimalTransformation(),        
             };
 
-            //map.Layers.Add(OpenStreetMap.CreateTileLayer());
-            //map.Layers.Add(CreateOpenStreetMapLayer());
-
-            map.Layers.Add(backgroundLayer); // BackgroundLayer
+            map.Layers.Add(CreateEmptyBackgroundLayer()); // BackgroundLayer
             map.Layers.Add(CreateEmptyFootprintLayer()); // FootprintLayer
             map.Layers.Add(CreateFootprintBorderLayer()); // FootprintBorderLayer
 
@@ -158,19 +152,9 @@ namespace FootprintViewer
             vertex.Y = center.Y + (vertex.Y - center.Y) * scale;
         }
 
-        private static ILayer CreateBackgroundLayer()
-        {
-            string path = @"..\\..\\..\\..\\..\\data\\world\\world.mbtiles";
-
-            var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
-
-            var area = mbTilesTileSource.Schema.Extent.ToBoundingBox();
-            var delta = area.Width / 2.0;
-
-            //double minX, double minY, double maxX, double maxY
-            var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
-
-            var layer = new TileLayer(mbTilesTileSource)
+        private static ILayer CreateEmptyBackgroundLayer()
+        {    
+            var layer = new Layer()
             {
                 Name = nameof(LayerType.BackgroundLayer)
             };

@@ -75,6 +75,9 @@ namespace FootprintViewer.ViewModels
         
         [Reactive]
         public Tool Edit { get; set; }
+
+        [Reactive]
+        public Tool WorldMaps { get; set; }
     }
 
 
@@ -111,9 +114,15 @@ namespace FootprintViewer.ViewModels
                 Title = "Edit",
             };
 
+            var toolWorldMaps = new Tool()
+            {
+                Title = "WorldMaps",
+            };
+
             AOICollection = aoiCollection;
             RouteDistance = toolRouteDistance;
             Edit = toolEdit;
+            WorldMaps = toolWorldMaps;
         }
 
     }

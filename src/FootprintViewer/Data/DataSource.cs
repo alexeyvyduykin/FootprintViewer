@@ -19,16 +19,32 @@ namespace FootprintViewer.Data
     public interface IDataSource
     {
         IEnumerable<Footprint> GetFootprints();
+
+        IList<LayerSource> WorldMapSources { get; }
     }
 
     public class DataSource : IDataSource
     {
         private readonly Dictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new Dictionary<string, NetTopologySuite.Geometries.Geometry>();
+        private readonly List<LayerSource> _worldMapSources;
 
         public DataSource()
         {
+            var layerPath = @"..\\..\\..\\..\\..\\data\\world\\world.mbtiles";
+            var userLayerPath = Directory.GetFiles(@"..\\..\\..\\..\\..\\userData\\world", "*.mbtiles").Select(Path.GetFullPath).ToList();
 
+            _worldMapSources = new List<LayerSource>();
+
+            _worldMapSources.Add(new LayerSource() { Name = "WorldDefault", Path = layerPath });
+
+            foreach (var path in userLayerPath)
+            {
+                var name = Path.GetFileNameWithoutExtension(path);
+                _worldMapSources.Add(new LayerSource() { Name = name, Path = path });
+            }
         }
+
+        public IList<LayerSource> WorldMapSources => _worldMapSources;
 
         private void InitDictionary()
         {
