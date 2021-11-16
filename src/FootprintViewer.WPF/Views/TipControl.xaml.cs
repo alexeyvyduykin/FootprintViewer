@@ -1,5 +1,7 @@
-﻿using System;
+﻿using FootprintViewer.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls
+namespace FootprintViewer.WPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для WorldMapSelectorView.xaml
+    /// Логика взаимодействия для TipControl.xaml
     /// </summary>
-    public partial class WorldMapSelectorView : UserControl
-    {
-        public WorldMapSelectorView()
+    public partial class TipControl : ItemsControl
+    {      
+        public TipControl()
         {
             InitializeComponent();
         }

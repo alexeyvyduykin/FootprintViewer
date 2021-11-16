@@ -1,11 +1,12 @@
-﻿<UserControl x:Class="FootprintViewer.WPF.Controls.ToolControl"
+﻿<UserControl x:Class="FootprintViewer.WPF.Views.ToolControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"   
-             xmlns:local="clr-namespace:FootprintViewer.WPF"
-             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"
+             xmlns:local="clr-namespace:FootprintViewer.WPF"                           
+             xmlns:views="clr-namespace:FootprintViewer.WPF.Views"       
+             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"      
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
              d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"
              mc:Ignorable="d" 
@@ -144,17 +145,18 @@
                                 CircleTemplate="{StaticResource CircleItemTemplate}"/>
 
     </UserControl.Resources>
-    
+
+    <Grid>
     <StackPanel>
 
-        <StackPanel DataContext="{Binding ZoomIn}"
+            <StackPanel DataContext="{Binding ZoomIn}"
                     Margin="0,0,0,1" 
                     HorizontalAlignment="Left">
                        
             <Button Style="{StaticResource ToolButtonTop}"                  
                     Command="{Binding Command}">
                 <Button.ToolTip>
-                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                        <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </Button.ToolTip>
                 <Viewbox>
                     <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
@@ -163,7 +165,7 @@
             
         </StackPanel>
 
-        <StackPanel DataContext="{Binding ZoomOut}"
+            <StackPanel DataContext="{Binding ZoomOut}"
                     HorizontalAlignment="Left">
             <Button Style="{StaticResource ToolButtonBottom}"                  
                     Command="{Binding Command}">
@@ -197,10 +199,10 @@
                 </i:EventTrigger>
 
             </i:Interaction.Triggers>
-           
-            <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}" Height="0"/>
 
-            <ItemsControl ItemsSource="{Binding Items}"
+                <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}" Height="0"/>
+
+                <ItemsControl ItemsSource="{Binding Items}"
                           AlternationCount="{Binding Items.Count}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -218,14 +220,14 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Checked">
-                                    <i:InvokeCommandAction Command="{Binding Command}"/>
+                                        <i:InvokeCommandAction Command="{Binding Command}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <ToggleButton.ToolTip>
-                                <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                             </ToggleButton.ToolTip>
 
-                            <ContentControl Content="{Binding}"
+                                <ContentControl Content="{Binding}"
                                             ContentTemplateSelector="{StaticResource ToolIconDataSelector}"/>
 
                         </ToggleButton>
@@ -242,20 +244,20 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
-           
-        <StackPanel DataContext="{Binding RouteDistance}"   
+
+            <StackPanel DataContext="{Binding RouteDistance}"   
                     Margin="0,0,0,1"
                     HorizontalAlignment="Left">
             <ToggleButton Style="{StaticResource ToolToggleButtonBottom}"                    
                           IsChecked="{Binding IsActive, Mode=TwoWay}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Checked">
-                        <i:InvokeCommandAction Command="{Binding Command}"/>
+                            <i:InvokeCommandAction Command="{Binding Command}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
 
                 <ToggleButton.ToolTip>
-                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                        <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </ToggleButton.ToolTip>
 
                 <Viewbox>
@@ -266,20 +268,41 @@
 
         <StackPanel Height="10"/>
 
-        <StackPanel DataContext="{Binding WorldMaps}"                      
+            <controls:Flyout Placement="Right"                         
+                             Target="{Binding ElementName=LayerSelectorButton}"                         
+                             IsAnchor="True"                         
+                             Background="#212b35"                                              
+                             IsOpen="{Binding WorldMapSelector.IsOpen}"    
+                             Visibility="Collapsed"
+                             Content="{Binding WorldMapSelector}">
+                <controls:Flyout.FlyoutTemplate>
+                    <DataTemplate>
+                        <views:WorldMapSelectorView DataContext="{Binding}"/>
+                    </DataTemplate>
+                </controls:Flyout.FlyoutTemplate>
+            </controls:Flyout>
+
+            <StackPanel DataContext="{Binding WorldMaps}"                      
                     HorizontalAlignment="Left">
-            <Button x:Name="LayerSelectorButton" 
-                    Style="{StaticResource ToolButtonCorner}"
-                    Click="SelectorButton_Click">
-                <Button.ToolTip>
-                    <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
-                </Button.ToolTip>
+                <Button x:Name="LayerSelectorButton" 
+                        Style="{StaticResource ToolButtonCorner}">
 
-                <Viewbox>
-                    <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
-                </Viewbox>
-            </Button>
+                    <Button.ToolTip>
+                        <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
+                    </Button.ToolTip>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding Command}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <Viewbox>
+                        <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
+                    </Viewbox>
+                </Button>
+            </StackPanel>
+
         </StackPanel>
-
-    </StackPanel>
+    </Grid>
 </UserControl>

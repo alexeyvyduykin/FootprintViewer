@@ -19,5 +19,8 @@ namespace FootprintViewer.ViewModels
         public string Title { get; set; }
 
         public ICommand Command { get; set; }
+
+        [Reactive]
+        public object Content { get; set; }
     }
 }

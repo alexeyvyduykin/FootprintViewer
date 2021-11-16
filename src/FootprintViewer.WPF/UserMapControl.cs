@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using FootprintViewer.ViewModels;
 using System.Security.Policy;
 using System.Diagnostics;
+using FootprintViewer.WPF.Views;
 
 namespace FootprintViewer.WPF
 {

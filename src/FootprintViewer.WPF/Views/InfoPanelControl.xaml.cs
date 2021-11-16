@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls.SidePanelTabs
+namespace FootprintViewer.WPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для SceneSearchFilter.xaml
+    /// Логика взаимодействия для InfoPanelControl.xaml
     /// </summary>
-    public partial class SceneSearchFilter : UserControl
+    public partial class InfoPanelControl : UserControl
     {
-        public SceneSearchFilter()
+        public InfoPanelControl()
         {
             InitializeComponent();
         }

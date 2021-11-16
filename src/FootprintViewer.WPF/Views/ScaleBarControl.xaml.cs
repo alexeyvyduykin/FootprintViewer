@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls
+namespace FootprintViewer.WPF.Views
 {
     /// <summary>
     /// Логика взаимодействия для ScaleBarControl.xaml

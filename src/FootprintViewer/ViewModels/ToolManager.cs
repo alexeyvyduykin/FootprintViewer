@@ -78,6 +78,10 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Tool WorldMaps { get; set; }
+
+        //TODO: replace from ToolManager
+        [Reactive]
+        public WorldMapSelector WorldMapSelector { get; set; }
     }
 
 

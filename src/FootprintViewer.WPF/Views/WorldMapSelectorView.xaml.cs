@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls
+namespace FootprintViewer.WPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для InfoPanelControl.xaml
+    /// Логика взаимодействия для WorldMapSelectorView.xaml
     /// </summary>
-    public partial class InfoPanelControl : UserControl
+    public partial class WorldMapSelectorView : UserControl
     {
-        public InfoPanelControl()
+        public WorldMapSelectorView()
         {
             InitializeComponent();
         }

@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls.SidePanelTabs
+namespace FootprintViewer.WPF.Views.SidePanelTabs
 {
     /// <summary>
     /// Логика взаимодействия для SceneSearchTab.xaml

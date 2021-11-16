@@ -65,6 +65,8 @@ namespace FootprintViewer.WPF.ViewModels
             WorldMapSelector = new WorldMapSelector(DataSource.WorldMapSources);
 
             WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
+
+            ToolManager.WorldMapSelector = WorldMapSelector;
         }
 
         private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
@@ -491,8 +493,9 @@ namespace FootprintViewer.WPF.ViewModels
                 Tooltip = "Список слоев",
                 Command = new RelayCommand(_ => 
                 {
-                
-                })
+                    WorldMapSelector.Click();
+                }),
+               //Content = WorldMapSelector,
             };
 
             var toolManager = new ToolManager();

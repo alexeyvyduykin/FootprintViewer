@@ -1,7 +1,5 @@
-﻿using FootprintViewer.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls
+namespace FootprintViewer.WPF.Views.SidePanelTabs
 {
     /// <summary>
-    /// Логика взаимодействия для TipControl.xaml
+    /// Логика взаимодействия для SceneSearchFilter.xaml
     /// </summary>
-    public partial class TipControl : ItemsControl
-    {      
-        public TipControl()
+    public partial class SceneSearchFilter : UserControl
+    {
+        public SceneSearchFilter()
         {
             InitializeComponent();
         }

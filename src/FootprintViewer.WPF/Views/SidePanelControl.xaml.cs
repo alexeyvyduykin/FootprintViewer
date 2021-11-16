@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Controls
+namespace FootprintViewer.WPF.Views
 {
     /// <summary>
     /// Логика взаимодействия для SidePanelControl.xaml

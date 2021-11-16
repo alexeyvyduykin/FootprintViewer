@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:FootprintViewer.WPF"  
-        xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"           
+        xmlns:views="clr-namespace:FootprintViewer.WPF.Views"           
         xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"
         xmlns:vm="clr-namespace:FootprintViewer.WPF.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -45,13 +45,13 @@
             <Grid VerticalAlignment="Center"                        
                   HorizontalAlignment="Left"                                            
                   Margin="8">
-                <controls:ToolControl DataContext="{Binding ToolManager}"/>
+                <views:ToolControl DataContext="{Binding ToolManager}"/>
             </Grid>
 
             <Grid VerticalAlignment="Bottom"                        
                   HorizontalAlignment="Center"                                            
                   Margin="0,0,0,60">
-                <controls:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+                <views:InfoPanelControl DataContext="{Binding InfoPanel}"/>
             </Grid>
             
             <Border BorderBrush="White" 
@@ -75,8 +75,8 @@
                                Grid.Column="1"
                                HorizontalAlignment="Center"
                                Foreground="WhiteSmoke"/>
-                 
-                    <controls:ScaleBarControl x:Name="ScaleBarControl"
+
+                    <views:ScaleBarControl x:Name="ScaleBarControl"
                                               Grid.Column="2" />
                   
                 </Grid>
@@ -84,7 +84,7 @@
         </Grid>
 
 
-        <controls:SidePanelControl Grid.Column="1" 
+        <views:SidePanelControl Grid.Column="1" 
                                    DataContext="{Binding SidePanel}" />
     </Grid>
 </Window>
