@@ -6,8 +6,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"         
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"  
+             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"  
              d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=True}"
-             xmlns:local="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"  
+             xmlns:views="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"  
              x:Name="SceneSearchTabName"
              MinWidth="380"
              mc:Ignorable="d" 
@@ -77,8 +78,27 @@
         </Style>
         
     </UserControl.Resources>
-    
-    <Grid Background="{StaticResource BackgroundBrush}">
+
+
+
+<Grid>
+
+        <controls:Flyout Placement="Left"      
+                         Margin="0,10,0,0"                                              
+                         Target="{Binding ElementName=btnSearch}"                                                                            
+                         Background="#212b35"                                              
+                         IsOpen="{Binding Filter.IsOpen}"    
+                         Visibility="Collapsed"
+                         Content="{Binding Filter}">
+            <controls:Flyout.FlyoutTemplate>
+                <DataTemplate>
+                    <views:SceneSearchFilter DataContext="{Binding}"/>
+                </DataTemplate>
+            </controls:Flyout.FlyoutTemplate>
+        </controls:Flyout>
+
+
+        <Grid Background="{StaticResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -86,17 +106,23 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
+        <Button Grid.Row="0"         
+                x:Name="btnSearch"
+                Style="{StaticResource SearchButton}">
 
-        <Button Grid.Row="0"            
-                Style="{StaticResource SearchButton}"
-                Click="FilterButton_Click">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:InvokeCommandAction Command="{Binding FilterClickCommand}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
             <StackPanel Orientation="Horizontal">
 
                 <ContentControl Width="34" Height="34" Margin="10">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=SceneSearchTabName, Path=IsFilterOpen}" Value="True">
+                                    <DataTrigger Binding="{Binding Filter.IsOpen}" Value="True">
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <Grid>
@@ -111,7 +137,7 @@
                                     </Setter>
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding ElementName=SceneSearchTabName, Path=IsFilterOpen}" Value="False">
+                                    <DataTrigger Binding="{Binding Filter.IsOpen}" Value="False">
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <Grid>
@@ -229,5 +255,8 @@
 
             </ListBox.ItemTemplate>
         </ListBox>
-    </Grid>
+        </Grid>
+   
+
+</Grid>
 </UserControl>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -33,7 +35,7 @@ namespace FootprintViewer.WPF.Controls
             var a = Math.Sqrt(2) * offset;
 
             _border = new Border()
-            {
+            {              
                 Name = "FlyoutBorder",
                 BorderThickness = new Thickness(0),
                 Background = Background,
@@ -51,7 +53,7 @@ namespace FootprintViewer.WPF.Controls
             };
 
             _border.Child = new ContentControl()
-            {
+            {              
                 Content = Content,
                 ContentTemplate = FlyoutTemplate
             };
@@ -150,6 +152,7 @@ namespace FootprintViewer.WPF.Controls
                         case FlyoutPlacementMode.Left:
                         {
                             marginFlyout = new Thickness(0, 0, W - p.X + offset, 0);
+                            marginArrow = new Thickness(0, p.Y, W - p.X + offset, 0);
                             if (IsAnchor == true)
                             {
                                 marginFlyout = new Thickness(0, p.Y, W - p.X + offset, 0);
@@ -175,7 +178,7 @@ namespace FootprintViewer.WPF.Controls
                         case FlyoutPlacementMode.Top:
                         {
                             marginFlyout = new Thickness(0, 0, 0, H - p.Y + offset);
-
+                            marginArrow = new Thickness(p.X, 0, 0, H - p.Y + offset);
                             if (IsAnchor == true)
                             {
                                 marginFlyout = new Thickness(p.X, 0, 0, H - p.Y + offset);
@@ -199,7 +202,7 @@ namespace FootprintViewer.WPF.Controls
                         case FlyoutPlacementMode.Right:
                         {
                             marginFlyout = new Thickness(p.X + w + offset, 0, 0, 0);
-
+                            marginArrow = new Thickness(p.X + w + offset, p.Y, 0, 0);
                             if (IsAnchor == true)
                             {
                                 marginFlyout = new Thickness(p.X + w + offset, p.Y, 0, 0);
@@ -223,7 +226,7 @@ namespace FootprintViewer.WPF.Controls
                         case FlyoutPlacementMode.Bottom:
                         {
                             marginFlyout = new Thickness(0, p.Y + h + offset, 0, 0);
-
+                            marginArrow = new Thickness(p.X, p.Y + h + offset, 0, 0);
                             if (IsAnchor == true)
                             {
                                 marginFlyout = new Thickness(p.X, p.Y + h + offset, 0, 0);
@@ -254,7 +257,7 @@ namespace FootprintViewer.WPF.Controls
                     _arrow.VerticalAlignment = vertical;
                     _arrow.RenderTransformOrigin = transformPoint;
                     _arrow.RenderTransform = transform;
-                    _arrow.Margin = marginFlyout;
+                    _arrow.Margin = marginArrow;
 
                     overlay.Children.Add(_arrow);
                     overlay.Children.Add(_border);                
@@ -282,37 +285,62 @@ namespace FootprintViewer.WPF.Controls
 
                 var p = target.TransformToAncestor(overlay).Transform(new Point(0, 0));
 
-                Thickness margin;
+                Thickness marginFlyout;
+                Thickness marginArrow;
 
                 switch (Placement)
                 {
                     case FlyoutPlacementMode.Left:
                     {
-                        margin = new Thickness(0, p.Y, W - p.X + offset, 0);
+                        marginFlyout = new Thickness(0, 0, W - p.X + offset, 0);
+                        marginArrow = new Thickness(0, p.Y, W - p.X + offset, 0);
+                        if (IsAnchor == true)
+                        {
+                            marginFlyout = new Thickness(0, p.Y, W - p.X + offset, 0);
+                        }
+                           
                         break;
                     }
                     case FlyoutPlacementMode.Top:
                     {
-                        margin = new Thickness(p.X, 0, 0, H - p.Y + offset);
+                        marginFlyout = new Thickness(0, 0, 0, H - p.Y + offset);
+                        marginArrow = new Thickness(p.X, 0, 0, H - p.Y + offset);
+                        if (IsAnchor == true)
+                        {
+                            marginFlyout = new Thickness(p.X, 0, 0, H - p.Y + offset);
+                        }
+                       
                         break;
                     }
                     case FlyoutPlacementMode.Right:
                     {
-                        margin = new Thickness(p.X + w + offset, p.Y, 0, 0);
+                        marginFlyout = new Thickness(p.X + w + offset, 0, 0, 0);
+                        marginArrow = new Thickness(p.X + w + offset, p.Y, 0, 0);
+                        if (IsAnchor == true)
+                        {
+                            marginFlyout = new Thickness(p.X + w + offset, p.Y, 0, 0);
+                        }
+                      
                         break;
                     }
                     case FlyoutPlacementMode.Bottom:
                     {
-                        margin = new Thickness(p.X, p.Y + h + offset, 0, 0);
+                        marginFlyout = new Thickness(0, p.Y + h + offset, 0, 0);
+                        marginArrow = new Thickness(p.X, p.Y + h + offset, 0, 0);
+                        if (IsAnchor == true)
+                        {
+                            marginFlyout = new Thickness(p.X, p.Y + h + offset, 0, 0);
+                        }
+               
                         break;
                     }
                     default:
                         break;
                 }
-
-                _border.Margin = margin;
-
-                _arrow.Margin = margin;
+              
+                _border.Margin = new Thickness(Margin.Left + marginFlyout.Left, Margin.Top + marginFlyout.Top, Margin.Right + marginFlyout.Right, Margin.Bottom + marginFlyout.Bottom);
+     
+                _arrow.Margin = marginArrow;
             }
         }
 
@@ -346,7 +374,9 @@ namespace FootprintViewer.WPF.Controls
                     flyout._overlay.SizeChanged -= flyout._overlay_SizeChanged;
                 }
 
-                flyout._overlay = flyout.Target.GetParentOfType<Grid>();
+                Window parentWindow = Window.GetWindow(flyout.Target);
+
+                flyout._overlay = FlyoutExtensions.FindVisualChildren<Grid>(parentWindow).First();
 
                 if (flyout._overlay == null)
                 {
@@ -418,6 +448,23 @@ namespace FootprintViewer.WPF.Controls
             }
 
             return res;
+        }
+
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null)
+                yield break;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+
+                if (child != null && child is T)
+                    yield return (T)child;
+
+                foreach (T childOfChild in FindVisualChildren<T>(child))
+                    yield return childOfChild;
+            }
         }
     }
 }

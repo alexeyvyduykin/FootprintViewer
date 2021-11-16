@@ -54,6 +54,11 @@ namespace FootprintViewer.ViewModels
             //    Select(_ => MakeFilter());
         }
 
+        public void Click()
+        {
+            IsOpen = !IsOpen;
+        }
+
         public void ForceUpdate()
         {
             Update?.Invoke(this, EventArgs.Empty);
@@ -164,6 +169,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public IGeometry? AOI { get; set; }
+
+        [Reactive]
+        public bool IsOpen { get; set; }
     }
 
     public class SceneSearchFilterDesigner : SceneSearchFilter

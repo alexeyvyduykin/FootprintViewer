@@ -23,9 +23,9 @@
         <converters:ImageToBitmapSourceConverter x:Key="imageToBitmapSourceConverter"/>
     </Window.Resources>
 
-    
-    
-    <Grid x:Name="GridOverlay">
+
+    <Grid>
+        <Grid x:Name="GridOverlay">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -86,5 +86,6 @@
 
         <views:SidePanelControl Grid.Column="1" 
                                    DataContext="{Binding SidePanel}" />
+        </Grid>
     </Grid>
 </Window>
