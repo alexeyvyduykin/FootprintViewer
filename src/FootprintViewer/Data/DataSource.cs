@@ -2,6 +2,7 @@
 using BruTile.MbTiles;
 using FootprintViewer.Models;
 using Mapsui;
+using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Rendering.Skia;
 using Mapsui.Utilities;
@@ -25,16 +26,31 @@ namespace FootprintViewer.Data
 
     public class DataSource : IDataSource
     {
-        private readonly Dictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new Dictionary<string, NetTopologySuite.Geometries.Geometry>();
+        private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();
         private readonly List<LayerSource> _worldMapSources;
+        private readonly List<Footprint> _footprints;
+        private Random _random = new Random();
+        private readonly string[] _satellites;
+        private readonly DateTime _date;
 
         public DataSource()
         {
+            _worldMapSources = new List<LayerSource>();
+            _footprints = new List<Footprint>();
+
+            _satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
+            _date = DateTime.UtcNow;
+
+            BuildWorldMaps();
+        }
+
+        public IList<LayerSource> WorldMapSources => _worldMapSources;
+
+        private void BuildWorldMaps()
+        {
             var layerPath = @"..\\..\\..\\..\\..\\data\\world\\world.mbtiles";
             var userLayerPath = Directory.GetFiles(@"..\\..\\..\\..\\..\\userData\\world", "*.mbtiles").Select(Path.GetFullPath).ToList();
-
-            _worldMapSources = new List<LayerSource>();
-
+        
             _worldMapSources.Add(new LayerSource() { Name = "WorldDefault", Path = layerPath });
 
             foreach (var path in userLayerPath)
@@ -44,9 +60,80 @@ namespace FootprintViewer.Data
             }
         }
 
-        public IList<LayerSource> WorldMapSources => _worldMapSources;
+        public IEnumerable<Footprint> GetFootprints()
+        {
+            BuildFootprintBorders();
+            BuildFootprints();
+            BuildUserFootprints();
 
-        private void InitDictionary()
+            return _footprints;
+        }
+
+        private void BuildFootprints()
+        {   
+            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
+                             
+            foreach (var item in mbtilesPaths)
+            {
+                var path = item;
+                var filename = Path.GetFileNameWithoutExtension(item);
+                var name = filename.Split('_').FirstOrDefault();
+
+                var tileNumber = name.Replace("-", "").ToUpper();
+                tileNumber += "-Preview";
+
+                if (string.IsNullOrEmpty(name) == false && _dict.ContainsKey(name) == true)
+                {
+                    var geometry = _dict[name];
+                    var points = geometry.Coordinates;
+                    var exteriorRing = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
+                    var poly = new Polygon(exteriorRing);
+
+                    _footprints.Add(CreateFootprint(tileNumber, path, poly));
+                }
+            }
+        }
+
+        private void BuildUserFootprints()
+        {
+            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\userData\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
+
+            foreach (var item in mbtilesPaths)
+            {
+                var path = item;
+                var filename = Path.GetFileNameWithoutExtension(item);
+                var name = filename.Split('_').FirstOrDefault();
+
+                var tileNumber = name.Replace("-", "").ToUpper();
+
+                if (string.IsNullOrEmpty(name) == false && _dict.ContainsKey(name) == true)
+                {
+                    var geometry = _dict[name];
+                    var points = geometry.Coordinates;
+                    var exteriorRing = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
+                    var poly = new Polygon(exteriorRing);
+
+                    _footprints.Add(CreateFootprint(tileNumber, path, poly));
+                }
+            }
+        }
+
+        private Footprint CreateFootprint(string tile, string path, Geometry poly)
+        {
+            return new Footprint()
+            {
+                Date = _date.Date.ToShortDateString(),
+                SatelliteName = _satellites[_random.Next(0, _satellites.Length)],
+                SunElevation = _random.Next(0, 90),
+                CloudCoverFull = _random.Next(0, 100),
+                TileNumber = tile,
+                Path = path,
+                Preview = CreatePreviewImage(path),
+                Geometry = poly
+            };
+        }
+
+        private void BuildFootprintBorders()
         {
             _dict.Clear();
 
@@ -67,55 +154,7 @@ namespace FootprintViewer.Data
             }
         }
 
-        public IEnumerable<Footprint> GetFootprints()
-        {
-            InitDictionary();
-
-            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
-
-            var list = new List<Footprint>();
-
-            Random random = new Random();
-
-            var date = DateTime.UtcNow;
-            var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
-
-            foreach (var item in mbtilesPaths)
-            {
-                var path = item;
-                var filename = Path.GetFileNameWithoutExtension(item);
-                var name = filename.Split('_').FirstOrDefault();
-
-                var tileNumber = name.Replace("-", "").ToUpper();
-
-                if (string.IsNullOrEmpty(name) == false && _dict.ContainsKey(name) == true)
-                {
-                    var geometry = _dict[name];
-                    var points = geometry.Coordinates;
-
-                    Mapsui.Geometries.LinearRing exteriorRing =
-                        new Mapsui.Geometries.LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
-                    var poly = new Mapsui.Geometries.Polygon(exteriorRing);
-
-                    list.Add(new Footprint()
-                    {
-                        Date = date.Date.ToShortDateString(),
-                        SatelliteName = satellites[random.Next(0, satellites.Length)],
-                        SunElevation = random.Next(0, 90),
-                        CloudCoverFull = random.Next(0, 100),
-                        TileNumber = tileNumber,
-
-                        Path = path,
-                        Image0 = CreateMbTilesLayer(path),
-                        Geometry = poly
-                    });
-                }
-            }
-
-            return list;
-        }
-
-        private Image CreateMbTilesLayer(string path)
+        private Image CreatePreviewImage(string path)
         {
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
@@ -134,8 +173,10 @@ namespace FootprintViewer.Data
                 Height = 200,
                 Resolution = ZoomHelper.DetermineResolution(area.Width, area.Height, 200, 200)
             };
+         
+            var backgroundColor = new Mapsui.Styles.Color() { R = 33, G = 43, B = 53, A = 255 }; // #212b35
 
-            var bitmap = new MapRenderer().RenderToBitmapStream(viewport, map.Layers, map.BackColor);
+            var bitmap = new MapRenderer().RenderToBitmapStream(viewport, map.Layers, backgroundColor);
 
             // var imageSource = new BitmapImage();
             // imageSource.BeginInit();

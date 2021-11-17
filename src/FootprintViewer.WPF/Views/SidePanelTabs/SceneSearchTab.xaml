@@ -16,7 +16,14 @@
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="AccentBrush" Color="#4c9ae7"/>
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#212b35"/>
+
+        <!-- #212b35 -->
+        <SolidColorBrush x:Key="BackgroundBrush">
+            <SolidColorBrush.Color>
+                <Color R="33" G="43" B="53" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
+
         <SolidColorBrush x:Key="SearchButtonoverlay">
             <SolidColorBrush.Color>
                 <Color R="56" G="65" B="74" A="255"></Color>
@@ -200,7 +207,7 @@
                                 </i:Interaction.Triggers>
 
                                 <Viewbox Width="155" Height="155">
-                                    <Image Source="{Binding Image0, Converter={StaticResource imageToBitmapSourceConverter}}"/>
+                                    <Image Source="{Binding Preview, Converter={StaticResource imageToBitmapSourceConverter}}"/>
                                 </Viewbox>
                             </Border>
 

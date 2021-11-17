@@ -32,6 +32,6 @@ namespace FootprintViewer.Models
         public Mapsui.Geometries.Geometry? Geometry { get; set; }
 
         [Reactive]
-        public Image Image0 { get; set; }
+        public Image Preview { get; set; }
     }
 }
