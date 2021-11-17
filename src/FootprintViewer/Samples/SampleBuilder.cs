@@ -47,11 +47,11 @@ namespace FootprintViewer
             map.Layers.Add(CreateEmptyFootprintLayer()); // FootprintLayer
             map.Layers.Add(CreateFootprintBorderLayer()); // FootprintBorderLayer
 
-            var editLayer = CreateEditLayer();
+            var editLayer = CreateEmptyEditLayer();
             map.Layers.Add(editLayer);
             map.Layers.Add(new VertexOnlyLayer(editLayer) { Name = nameof(LayerType.VertexLayer) });
 
-            map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
+            //map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
             return map;
         }
@@ -134,6 +134,18 @@ namespace FootprintViewer
             AddInfo addInfo = new AddInfo() { Feature = interactiveFeature };
 
             editLayer.AddAOI(addInfo);
+
+            return editLayer;
+        }
+
+        private static EditLayer CreateEmptyEditLayer()
+        {
+            var editLayer = new EditLayer
+            {
+                Name = nameof(LayerType.EditLayer),
+                Style = CreateSelectedStyle(),
+                IsMapInfoLayer = true
+            };
 
             return editLayer;
         }
