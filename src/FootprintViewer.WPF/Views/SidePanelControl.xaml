@@ -59,7 +59,7 @@
         <!--Tab Control-->
         <Style  TargetType="{x:Type TabControl}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="False" />
             <Setter Property="TabStripPlacement" Value="Right" />
             <Setter Property="Template">
                 <Setter.Value>
