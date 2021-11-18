@@ -31,6 +31,9 @@ namespace FootprintViewer.WPF.ViewModels
     {
         private enum InfoPanelType { AOI, Route }
 
+        private readonly EditLayer _editLayer;
+        private readonly SceneSearch _sceneSearchTab;
+
         public MainViewModel()
         {
             ActualController = new EditController();
@@ -41,11 +44,11 @@ namespace FootprintViewer.WPF.ViewModels
 
             Map.SetWorldMapLayer(DataSource.WorldMapSources.FirstOrDefault());
 
-            var editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+            _editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
 
             Map.DataChanged += Map_DataChanged;
 
-            var tab = new SceneSearch() 
+            _sceneSearchTab = new SceneSearch() 
             {
                 Title = "Поиск сцены",
                 Name = "Scene",
@@ -53,10 +56,10 @@ namespace FootprintViewer.WPF.ViewModels
                 DataSource = DataSource,
             };
 
-            tab.Filter.FromDate = DateTime.Today.AddDays(-1);
-            tab.Filter.ToDate = DateTime.Today.AddDays(1);
+            _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
+            _sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
 
-            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { tab }), SelectedTab = tab  };
+            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { _sceneSearchTab }), SelectedTab = _sceneSearchTab };
 
             ToolManager = CreateToolManager();
 
@@ -127,6 +130,24 @@ namespace FootprintViewer.WPF.ViewModels
             return SphericalUtil.ComputeDistance(vertices);
         }
 
+        private void CloseInfoPanelAOI()
+        {
+            _editLayer.ResetAOI();
+            _editLayer.DataHasChanged();
+
+            _sceneSearchTab.ResetAOI();
+            
+            ToolManager.ResetAllTools();
+        }
+
+        private void CloseInfoPanelRoute()
+        {
+            _editLayer.ClearRoute();
+            _editLayer.DataHasChanged();
+            
+            ToolManager.ResetAllTools();
+        }
+
         private ToolManager CreateToolManager()
         {
             var toolZoomIn = new Tool()
@@ -165,11 +186,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Title = "AddRectangle",
                 Tooltip = "Нарисуйте прямоугольную AOI",
                 Command = new RelayCommand(_ => 
-                {
-                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-
-                    var tab = (SceneSearch)SidePanel.Tabs.Single();
-
+                {                   
                     Plotter = new Plotter(InteractiveRectangle.Build());
 
                     Tip = new Tip()
@@ -178,34 +195,26 @@ namespace FootprintViewer.WPF.ViewModels
                     };
 
                     Plotter.BeginCreating += (s, e) => 
-                    {                
-                        layer.AddAOI(e.AddInfo);
-                        layer.DataHasChanged();                     
+                    {
+                        _editLayer.AddAOI(e.AddInfo);
+                        _editLayer.DataHasChanged();                     
                     };
 
                     Plotter.EndCreating += (s, e) =>
                     {
                         var feature = (Feature)e.AddInfo.Feature;
 
-                        layer.ResetAOI();
-                        layer.AddAOI(e.AddInfo);
-                        layer.DataHasChanged();
+                        _editLayer.ResetAOI();
+                        _editLayer.AddAOI(e.AddInfo);
+                        _editLayer.DataHasChanged();
 
                         Tip = null;
 
                         var descr = FeatureAreaEndCreating(feature);
-                        
-                        void Closing()
-                        {                           
-                            layer.ResetAOI();
-                            layer.DataHasChanged();
+                                                                        
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
-                            tab.ResetAOI();
-                        }
-                                                
-                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
-
-                        tab.SetAOI(feature.Geometry);
+                        _sceneSearchTab.SetAOI(feature.Geometry);
 
                         ToolManager.ResetAllTools();
                     };
@@ -216,7 +225,7 @@ namespace FootprintViewer.WPF.ViewModels
                         Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                         Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
-                        layer.DataHasChanged();
+                        _editLayer.DataHasChanged();
                     };
 
 
@@ -226,17 +235,9 @@ namespace FootprintViewer.WPF.ViewModels
 
                         var descr = FeatureAreaEndCreating(feature);
 
-                        void Closing()
-                        {
-                            layer.ResetAOI();
-                            layer.DataHasChanged();
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
-                            tab.ResetAOI();
-                        }
-
-                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
-
-                        tab.SetAOI(feature.Geometry);
+                        _sceneSearchTab.SetAOI(feature.Geometry);
                     };
 
                     ActualController = new DrawRectangleController();                 
@@ -249,9 +250,6 @@ namespace FootprintViewer.WPF.ViewModels
                 Tooltip = "Нарисуйте полигональную AOI",
                 Command = new RelayCommand(_ => 
                 {
-                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-                    var tab = (SceneSearch)SidePanel.Tabs.Single();
-
                     Plotter = new Plotter(InteractivePolygon.Build());
 
                     Tip = new Tip()
@@ -263,8 +261,8 @@ namespace FootprintViewer.WPF.ViewModels
                     {
                         Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
 
-                        layer.AddAOI(e.AddInfo);
-                        layer.DataHasChanged();
+                        _editLayer.AddAOI(e.AddInfo);
+                        _editLayer.DataHasChanged();
                     };
 
                     Plotter.Creating += (s, e) =>
@@ -276,39 +274,31 @@ namespace FootprintViewer.WPF.ViewModels
                             Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
                         }
 
-                        layer.DataHasChanged();
+                        _editLayer.DataHasChanged();
                     };
 
                     Plotter.EndCreating += (s, e) =>
                     {
-                        layer.ClearAOIHelpers();
+                        _editLayer.ClearAOIHelpers();
 
-                        layer.ResetAOI();
-                        layer.AddAOI(e.AddInfo);
-                        layer.DataHasChanged();
+                        _editLayer.ResetAOI();
+                        _editLayer.AddAOI(e.AddInfo);
+                        _editLayer.DataHasChanged();
 
                         Tip = null;
 
                         var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
 
-                        void Closing()
-                        {
-                            layer.ResetAOI();
-                            layer.DataHasChanged();
-                            
-                            tab.ResetAOI();
-                        }
+                        _sceneSearchTab.SetAOI(e.AddInfo.Feature.Geometry);
 
-                        tab.SetAOI(e.AddInfo.Feature.Geometry);
-
-                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
                         ToolManager.ResetAllTools();
                     };
 
                     Plotter.Hover += (s, e) => 
                     {
-                        layer.DataHasChanged(); 
+                        _editLayer.DataHasChanged(); 
                     };
 
                     Plotter.EndEditing += (s, e) =>
@@ -317,17 +307,9 @@ namespace FootprintViewer.WPF.ViewModels
 
                         var descr = FeatureAreaEndCreating(feature);
 
-                        void Closing()
-                        {
-                            layer.ResetAOI();
-                            layer.DataHasChanged();
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
-                            tab.ResetAOI();
-                        }
-
-                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
-
-                        tab.SetAOI(feature.Geometry);
+                        _sceneSearchTab.SetAOI(feature.Geometry);
                     };
  
                     ActualController = new DrawPolygonController(); 
@@ -366,17 +348,9 @@ namespace FootprintViewer.WPF.ViewModels
 
                         var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
 
-                        void Closing()
-                        {
-                            layer.ResetAOI();
-                            layer.DataHasChanged();
-                           
-                            tab.ResetAOI();
-                        }
-
                         tab.SetAOI(e.AddInfo.Feature.Geometry);
 
-                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, Closing);
+                        InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
                         ToolManager.ResetAllTools();
                     };
@@ -448,13 +422,7 @@ namespace FootprintViewer.WPF.ViewModels
                     {
                         var distance = GetRouteLength(e.AddInfo);
 
-                        void Closing()
-                        {
-                            layer.ClearRoute();
-                            layer.DataHasChanged();
-                        }
-
-                        InfoPanel.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), Closing);
+                        InfoPanel.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), CloseInfoPanelRoute);
                         
                         layer.DataHasChanged();
                     };
@@ -499,7 +467,6 @@ namespace FootprintViewer.WPF.ViewModels
                 {
                     WorldMapSelector.Click();
                 }),
-               //Content = WorldMapSelector,
             };
 
             var toolManager = new ToolManager();
