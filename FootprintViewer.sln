@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.WPF", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.Avalonia", "src\FootprintViewer.Avalonia\FootprintViewer.Avalonia.csproj", "{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6184C0DB-894C-43A7-A55D-C3B76E234163}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatelliteGeometrySample", "samples\SatelliteGeometrySample\SatelliteGeometrySample.csproj", "{98455353-2A8B-43A0-879A-C41A72E40AF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,10 @@ Global
 		{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +45,7 @@ Global
 		{24057ADA-494C-461B-B3E6-A1A8FD80035F} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{F8A0CF99-8EA9-42FD-8CA2-A53E0AD52109} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
+		{98455353-2A8B-43A0-879A-C41A72E40AF8} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
