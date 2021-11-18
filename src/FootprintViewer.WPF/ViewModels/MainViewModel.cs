@@ -484,7 +484,11 @@ namespace FootprintViewer.WPF.ViewModels
             var toolEdit = new Tool()
             {
                 Title = "Edit",
-                Command = new RelayCommand(_ => ActualController = new EditController())
+                Command = new RelayCommand(_ => 
+                {
+                    Tip = null;
+                    ActualController = new EditController(); 
+                })
             };
 
             var toolWorldMaps = new Tool()
