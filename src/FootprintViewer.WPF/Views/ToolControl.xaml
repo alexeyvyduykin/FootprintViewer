@@ -45,7 +45,7 @@
                             </Trigger>
 
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="OrangeRed" />
+                                <Setter Property="Opacity" Value="1.0" />
                                 <Setter Property="Foreground" Value="White" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -95,12 +95,12 @@
                             </Trigger>
 
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="OrangeRed" />
+                                <Setter Property="Opacity" Value="1.0" />
                                 <Setter Property="Foreground" Value="White" />
                             </Trigger>
 
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Background" Value="DarkBlue" />
+                                <Setter Property="Opacity" Value="1.0" />
                                 <Setter Property="Foreground" Value="White" />
                             </Trigger>
                         </ControlTemplate.Triggers>
