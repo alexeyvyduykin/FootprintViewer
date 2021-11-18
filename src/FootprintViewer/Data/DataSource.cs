@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-
     public interface IDataSource
     {
         IEnumerable<Footprint> GetFootprints();
@@ -32,6 +31,8 @@ namespace FootprintViewer.Data
         private Random _random = new Random();
         private readonly string[] _satellites;
         private readonly DateTime _date;
+        private readonly SolutionFolder _dataFolder = new SolutionFolder("data");
+        private readonly SolutionFolder _userDataFolder = new SolutionFolder("userData");
 
         public DataSource()
         {
@@ -40,7 +41,7 @@ namespace FootprintViewer.Data
 
             _satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
             _date = DateTime.UtcNow;
-
+        
             BuildWorldMaps();
         }
 
@@ -48,10 +49,14 @@ namespace FootprintViewer.Data
 
         private void BuildWorldMaps()
         {
-            var layerPath = @"..\\..\\..\\..\\..\\data\\world\\world.mbtiles";
-            var userLayerPath = Directory.GetFiles(@"..\\..\\..\\..\\..\\userData\\world", "*.mbtiles").Select(Path.GetFullPath).ToList();
-        
-            _worldMapSources.Add(new LayerSource() { Name = "WorldDefault", Path = layerPath });
+            var layerPath = _dataFolder.GetPath("world.mbtiles", "world");
+
+            var userLayerPath = _userDataFolder.GetPaths("*.mbtiles", "world");
+
+            if (layerPath != null)
+            {
+                _worldMapSources.Add(new LayerSource() { Name = "WorldDefault", Path = layerPath });
+            }
 
             foreach (var path in userLayerPath)
             {
@@ -61,18 +66,18 @@ namespace FootprintViewer.Data
         }
 
         public IEnumerable<Footprint> GetFootprints()
-        {
-            BuildFootprintBorders();
-            BuildFootprints();
+        {          
+            BuildFootprintBorders();          
+            BuildFootprints();           
             BuildUserFootprints();
 
             return _footprints;
         }
 
         private void BuildFootprints()
-        {   
-            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\data\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
-                             
+        {      
+            var mbtilesPaths = _dataFolder.GetPaths("*.mbtiles", "footprints");
+
             foreach (var item in mbtilesPaths)
             {
                 var path = item;
@@ -95,8 +100,8 @@ namespace FootprintViewer.Data
         }
 
         private void BuildUserFootprints()
-        {
-            var mbtilesPaths = Directory.GetFiles(@"..\\..\\..\\..\\..\\userData\\footprints", "*.mbtiles").Select(Path.GetFullPath).ToList();
+        {    
+            var mbtilesPaths = _userDataFolder.GetPaths("*.mbtiles", "footprints");
 
             foreach (var item in mbtilesPaths)
             {
@@ -137,7 +142,16 @@ namespace FootprintViewer.Data
         {
             _dict.Clear();
 
-            var shapeFileName = @"..\\..\\..\\..\\..\\data\\mosaics-geotiff\\mosaic-tiff-ruonly.shp";
+            var shapeFileName = _dataFolder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
+
+            string path = @"C:\Users\User\Desktop\app test\MyTest.txt";
+
+                // Create a file to write to.
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine($"shapeFileName={shapeFileName}");                                 
+                }
+            
 
             var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
 
