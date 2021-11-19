@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.Avalonia", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{6184C0DB-894C-43A7-A55D-C3B76E234163}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatelliteGeometrySample", "samples\SatelliteGeometrySample\SatelliteGeometrySample.csproj", "{98455353-2A8B-43A0-879A-C41A72E40AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatelliteGeometrySample", "samples\SatelliteGeometrySample\SatelliteGeometrySample.csproj", "{98455353-2A8B-43A0-879A-C41A72E40AF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseCreatorSample", "Samples\DatabaseCreatorSample\DatabaseCreatorSample.csproj", "{BA8DC50E-3CC3-4697-AAEC-A62266388CC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98455353-2A8B-43A0-879A-C41A72E40AF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA8DC50E-3CC3-4697-AAEC-A62266388CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA8DC50E-3CC3-4697-AAEC-A62266388CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA8DC50E-3CC3-4697-AAEC-A62266388CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA8DC50E-3CC3-4697-AAEC-A62266388CC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{F8A0CF99-8EA9-42FD-8CA2-A53E0AD52109} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{1EA2CBCF-3B1B-4FE7-945D-859CD8E5A55A} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{98455353-2A8B-43A0-879A-C41A72E40AF8} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
+		{BA8DC50E-3CC3-4697-AAEC-A62266388CC9} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
