@@ -23,7 +23,6 @@ using System.Reactive.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FootprintViewer.WPF.ViewModels
 {

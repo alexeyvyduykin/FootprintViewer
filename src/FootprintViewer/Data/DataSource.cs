@@ -143,16 +143,7 @@ namespace FootprintViewer.Data
             _dict.Clear();
 
             var shapeFileName = _dataFolder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
-
-            string path = @"C:\Users\User\Desktop\app test\MyTest.txt";
-
-                // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    sw.WriteLine($"shapeFileName={shapeFileName}");                                 
-                }
             
-
             var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
 
             foreach (var shapefileFeature in shp.ReadByMBRFilter(shp.ShapefileBounds))
