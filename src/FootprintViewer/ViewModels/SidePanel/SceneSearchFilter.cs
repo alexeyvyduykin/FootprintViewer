@@ -89,7 +89,7 @@ namespace FootprintViewer.ViewModels
             Cloudiness = temp;
         }
 
-        public bool Filtering(Footprint footprint)
+        public bool Filtering(FootprintImage footprint)
         {
             bool isAoiCondition = false; 
 
@@ -124,7 +124,7 @@ namespace FootprintViewer.ViewModels
 
         //public IObservable<Func<Footprint, bool>> Observable => _observableFilter;
 
-        private Func<Footprint, bool> MakeFilter()
+        private Func<FootprintImage, bool> MakeFilter()
         {
             return footprint => 
             {

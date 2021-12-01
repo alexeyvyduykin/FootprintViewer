@@ -11,9 +11,9 @@ using System.Drawing;
 
 namespace FootprintViewer.Models
 {
-    public class Footprint : ReactiveObject
+    public class FootprintImage : ReactiveObject
     {
-        public Footprint()
+        public FootprintImage()
         {                    
         }
 

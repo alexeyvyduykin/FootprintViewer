@@ -62,13 +62,15 @@ namespace FootprintViewer.WPF.ViewModels
             ToolManager.WorldMapSelector = WorldMapSelector;
         }
 
-        public MainViewModel(Map map, UserDataSource userDataSource)
+        public MainViewModel(Map map, IUserDataSource userDataSource, IDataSource dataSource)
         {
             Map = map;
 
             ActualController = new EditController();
 
             UserDataSource = userDataSource;
+
+            DataSource = dataSource;
 
             _editLayer = (EditLayer)map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
 
@@ -509,6 +511,9 @@ namespace FootprintViewer.WPF.ViewModels
 
         [Reactive]
         public IUserDataSource UserDataSource { get; set; }
+
+        [Reactive]
+        public IDataSource DataSource { get; set; }
 
         [Reactive]
         public Map Map { get; set; }

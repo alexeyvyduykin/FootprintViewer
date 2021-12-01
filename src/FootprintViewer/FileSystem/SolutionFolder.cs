@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.FileSystem
 {
     public class SolutionFolder
     {
@@ -21,10 +19,10 @@ namespace FootprintViewer.Data
         {
             _solutionFolderName = name;
             _path = Directory.GetCurrentDirectory();// AppDomain.CurrentDomain.BaseDirectory;
-            
+
             if (_path != null)
             {
-                _path = Path.GetFullPath(Path.Combine(_path, _separator));            
+                _path = Path.GetFullPath(Path.Combine(_path, _separator));
                 _path = Path.Combine(_path, _solutionFolderName);
             }
         }
@@ -33,7 +31,7 @@ namespace FootprintViewer.Data
         {
             if (_path != null)
             {
-                var path = string.IsNullOrEmpty(subFolder) ? _path  : Path.Combine(_path, subFolder);
+                var path = string.IsNullOrEmpty(subFolder) ? _path : Path.Combine(_path, subFolder);
 
                 return Path.Combine(path, fileName);
             }
@@ -51,6 +49,6 @@ namespace FootprintViewer.Data
             }
 
             return new List<string>();
-        }      
+        }
     }
 }

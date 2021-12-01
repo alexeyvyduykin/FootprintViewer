@@ -27,7 +27,7 @@ namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
 {
-        private readonly IList<Footprint> _sourceFootprints = new List<Footprint>();
+        private readonly IList<FootprintImage> _sourceFootprints = new List<FootprintImage>();
        // protected readonly SourceList<Footprint> _sourceFootprints;
        // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
 
@@ -49,13 +49,13 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => DataSourceChanged());
 
-            MouseOverEnterCommand = ReactiveCommand.Create<Footprint>(ShowFootprintBorder);
+            MouseOverEnterCommand = ReactiveCommand.Create<FootprintImage>(ShowFootprintBorder);
 
             MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
 
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<Footprint>(SelectionChanged);
+            SelectedItemChangedCommand = ReactiveCommand.Create<FootprintImage>(SelectionChanged);
 
             Filter = new SceneSearchFilter();
 
@@ -116,7 +116,7 @@ namespace FootprintViewer.ViewModels
             IsUpdating = false;
         }
 
-        private static async Task<IEnumerable<Footprint>> LoadDataAsync(IUserDataSource dataSource)
+        private static async Task<IEnumerable<FootprintImage>> LoadDataAsync(IUserDataSource dataSource)
         {
             return await Task.Run(() =>
             {
@@ -140,7 +140,7 @@ namespace FootprintViewer.ViewModels
                 Footprints.Clear();
                 Footprints.AddRange(footprints);
 
-                var sortNames = new List<Footprint>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
+                var sortNames = new List<FootprintImage>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
                 sortNames.Sort();
 
                 Filter.AddSensors(sortNames);
@@ -149,13 +149,13 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
-        public ReactiveCommand<Footprint, Unit> MouseOverEnterCommand { get; }
+        public ReactiveCommand<FootprintImage, Unit> MouseOverEnterCommand { get; }
 
         public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
 
-        public ReactiveCommand<Footprint, Unit> SelectedItemChangedCommand { get; }
+        public ReactiveCommand<FootprintImage, Unit> SelectedItemChangedCommand { get; }
 
-        private void ShowFootprintBorder(Footprint footprint)
+        private void ShowFootprintBorder(FootprintImage footprint)
         {
             if (Map != null)
             {
@@ -199,7 +199,7 @@ namespace FootprintViewer.ViewModels
             Filter.Click();
         }
 
-        private void SelectionChanged(Footprint footprint)
+        private void SelectionChanged(FootprintImage footprint)
         {
             if (Map != null && footprint != null && footprint.Geometry != null)
             {
@@ -228,10 +228,10 @@ namespace FootprintViewer.ViewModels
        // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
 
         [Reactive]
-        public ObservableCollection<Footprint> Footprints { get; private set; } = new ObservableCollection<Footprint>();
+        public ObservableCollection<FootprintImage> Footprints { get; private set; } = new ObservableCollection<FootprintImage>();
 
         [Reactive]
-        public Footprint? SelectedFootprint { get; set; }
+        public FootprintImage? SelectedFootprint { get; set; }
 
         [Reactive]
         public SceneSearchFilter Filter { get; set; }
@@ -244,7 +244,7 @@ namespace FootprintViewer.ViewModels
     {
         public SceneSearchDesigner() : base()
         {
-            var list = new List<Footprint>();
+            var list = new List<FootprintImage>();
 
             Random random = new Random();
 
@@ -256,7 +256,7 @@ namespace FootprintViewer.ViewModels
                 var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
                 var date = DateTime.UtcNow;
 
-                list.Add(new Footprint() 
+                list.Add(new FootprintImage() 
                 {
                     Date = date.Date.ToShortDateString(),
                     SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
@@ -269,7 +269,7 @@ namespace FootprintViewer.ViewModels
             AddFootprints(list);
         }
 
-        public void AddFootprints(IEnumerable<Footprint> footprints)
+        public void AddFootprints(IEnumerable<FootprintImage> footprints)
         {            
           //  _sourceFootprints.Clear();
           //  _sourceFootprints.AddRange(footprints);
