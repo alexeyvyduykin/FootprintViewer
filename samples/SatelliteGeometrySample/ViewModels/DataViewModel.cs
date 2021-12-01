@@ -78,6 +78,8 @@ namespace SatelliteGeometrySample.ViewModels
             return new FootprintInfo()
             {
                 Name = footprint.Name,
+                SatelliteName = footprint.SatelliteName,
+                TargetName = footprint.TargetName,
                 Begin = footprint.Begin.ToString(),
                 Duration = footprint.Duration,
                 Node = footprint.Node,
@@ -87,6 +89,12 @@ namespace SatelliteGeometrySample.ViewModels
 
         [Reactive]
         public string? Name { get; set; }
+
+        [Reactive]
+        public string? SatelliteName { get; set; }
+
+        [Reactive]
+        public string? TargetName { get; set; }
 
         [Reactive]
         public string? Begin { get; set; }

@@ -17,6 +17,7 @@ namespace DatabaseCreatorSample.Data
         public static IEnumerable<Footprint> Create(IEnumerable<Satellite> satellites)
         {
             var footprints = new List<Footprint>();
+            int footprintCount = 0;
 
             foreach (var satellite in satellites)
             {
@@ -36,8 +37,6 @@ namespace DatabaseCreatorSample.Data
                 var countPerNode = _countFootprints / nodes.Count;
 
                 var uDelta = 360.0 / countPerNode;
-
-                int footprintCount = 0;
 
                 for (int i = 0; i < nodes.Count; i++)
                 {
@@ -187,7 +186,7 @@ namespace DatabaseCreatorSample.Data
             var res4 = new Geo2D(lon4, center.Lat + dlat4, GeoCoordTypes.Degrees);
             list.Add(res4);
 
-            return (t, new NetTopologySuite.Geometries.Point(center.Lon, center.Lat), list);
+            return (t, new Point(center.Lon, center.Lat), list);
         }
 
         private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Band band, int node, double u)

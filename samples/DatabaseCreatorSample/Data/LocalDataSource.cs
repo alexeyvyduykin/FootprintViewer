@@ -22,7 +22,7 @@ namespace DatabaseCreatorSample.Data
 
             (_leftStrips, _rightStrips) = StripBuilder.Create(_satellites);
 
-            _footprints = FootprintBuilder.Create(_satellites.Take(1));
+            _footprints = FootprintBuilder.Create(_satellites);
 
             _targets = GroundTargetBuilder.Create(_footprints.ToList());
         }

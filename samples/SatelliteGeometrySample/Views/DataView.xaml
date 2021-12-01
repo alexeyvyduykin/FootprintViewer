@@ -40,6 +40,8 @@
             <Border Margin="4" Padding="8,4,8,4" BorderBrush="Black" BorderThickness="1" CornerRadius="4">
                 <StackPanel>
                     <TextBlock Text="{Binding FootprintInfo.Name, StringFormat={}Name: {0}}"/>
+                    <TextBlock Text="{Binding FootprintInfo.SatelliteName, StringFormat={}SatelliteName: {0}}"/>
+                    <TextBlock Text="{Binding FootprintInfo.TargetName, StringFormat={}TargetName: {0}}"/>
                     <TextBlock Text="{Binding FootprintInfo.Begin, StringFormat={}Begin: {0}}"/>
                     <TextBlock Text="{Binding FootprintInfo.Duration, StringFormat={}Duration: {0} sec}"/>
                     <TextBlock Text="{Binding FootprintInfo.Node, StringFormat={}Node: {0}}"/>
