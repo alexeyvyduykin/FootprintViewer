@@ -16,14 +16,14 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public interface IDataSource
+    public interface IUserDataSource
     {
         IEnumerable<Footprint> GetFootprints();
 
         IList<LayerSource> WorldMapSources { get; }
     }
 
-    public class DataSource : IDataSource
+    public class UserDataSource : IUserDataSource
     {
         private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();
         private readonly List<LayerSource> _worldMapSources;
@@ -34,7 +34,7 @@ namespace FootprintViewer.Data
         private readonly SolutionFolder _dataFolder = new SolutionFolder("data");
         private readonly SolutionFolder _userDataFolder = new SolutionFolder("userData");
 
-        public DataSource()
+        public UserDataSource()
         {
             _worldMapSources = new List<LayerSource>();
             _footprints = new List<Footprint>();

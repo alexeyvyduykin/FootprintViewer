@@ -37,11 +37,11 @@ namespace FootprintViewer.WPF.ViewModels
         {
             ActualController = new EditController();
 
-            DataSource = new DataSource();
+            UserDataSource = new UserDataSource();
 
             Map = SampleBuilder.CreateMap();
 
-            Map.SetWorldMapLayer(DataSource.WorldMapSources.FirstOrDefault());
+            Map.SetWorldMapLayer(UserDataSource.WorldMapSources.FirstOrDefault());
 
             _editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
 
@@ -52,7 +52,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Title = "Поиск сцены",
                 Name = "Scene",
                 Map = Map,     
-                DataSource = DataSource,
+                UserDataSource = UserDataSource,
             };
 
             _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
@@ -64,7 +64,7 @@ namespace FootprintViewer.WPF.ViewModels
 
             InfoPanel = SampleBuilder.CreateInfoPanel();
 
-            WorldMapSelector = new WorldMapSelector(DataSource.WorldMapSources);
+            WorldMapSelector = new WorldMapSelector(UserDataSource.WorldMapSources);
 
             WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
 
@@ -481,7 +481,7 @@ namespace FootprintViewer.WPF.ViewModels
         }
 
         [Reactive]
-        public DataSource DataSource { get; set; }
+        public IUserDataSource UserDataSource { get; set; }
 
         [Reactive]
         public Map Map { get; set; }

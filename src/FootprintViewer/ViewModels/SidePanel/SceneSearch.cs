@@ -47,7 +47,7 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.DataSource).Subscribe(_ => DataSourceChanged());
+            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => DataSourceChanged());
 
             MouseOverEnterCommand = ReactiveCommand.Create<Footprint>(ShowFootprintBorder);
 
@@ -116,7 +116,7 @@ namespace FootprintViewer.ViewModels
             IsUpdating = false;
         }
 
-        private static async Task<IEnumerable<Footprint>> LoadDataAsync(IDataSource dataSource)
+        private static async Task<IEnumerable<Footprint>> LoadDataAsync(IUserDataSource dataSource)
         {
             return await Task.Run(() =>
             {
@@ -127,9 +127,9 @@ namespace FootprintViewer.ViewModels
 
         private async void DataSourceChanged()
         {
-            if (DataSource != null)
+            if (UserDataSource != null)
             {
-                var footprints = await LoadDataAsync(DataSource);
+                var footprints = await LoadDataAsync(UserDataSource);
 
                 // _sourceFootprints.Clear();
                 // _sourceFootprints.AddRange(footprints);
@@ -220,7 +220,7 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public IDataSource? DataSource { get; set; }
+        public IUserDataSource? UserDataSource { get; set; }
 
         [Reactive]
         public Map? Map { get; set; }
