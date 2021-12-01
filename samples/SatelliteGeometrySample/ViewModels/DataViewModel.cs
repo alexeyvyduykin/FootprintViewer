@@ -115,12 +115,9 @@ namespace SatelliteGeometrySample.ViewModels
 
         public ObservableCollection<SatelliteInfo> SatelliteInfos { get; set; }
 
-        public DataViewModel(Map map)
+        public DataViewModel(Map map, IDataSource source)
         {
             _map = map;
-
-            //  using ApplicationContext db = new ApplicationContext(MainDataSource.GetOptions());
-            var source = DataSourceBuilder.CreateFromDatabase();
 
             var list = source.Satellites.Select(s => new SatelliteInfo(s)).ToList();
             SatelliteInfos = new ObservableCollection<SatelliteInfo>();
