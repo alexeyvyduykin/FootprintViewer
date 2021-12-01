@@ -3,21 +3,23 @@ using System.Collections.Generic;
 
 namespace DatabaseCreatorSample.Data
 {
-    public class TrackDataSource
+    internal static class TrackBuilder
     {
-        private readonly IDictionary<int, IList<IList<(double lon, double lat)>>> _tracks;
-        private readonly Satellite _satellite;
-
-        public TrackDataSource(Satellite satellite)
+        public static IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> Create(IEnumerable<Satellite> satellites)
         {
-            _satellite = satellite;
+            var tracks = new Dictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>>();
 
-            _tracks = Build(satellite);
+            foreach (var satellite in satellites)
+            {
+                tracks.Add(satellite.Name, BuildTracks(satellite));
+            }
+
+            return tracks;
         }
 
-        private static Dictionary<int, IList<IList<(double, double)>>> Build(Satellite satellite)
+        private static Dictionary<int, List<List<(double, double)>>> BuildTracks(Satellite satellite)
         {
-            var tracks = new Dictionary<int, IList<IList<(double, double)>>>();
+            var tracks = new Dictionary<int, List<List<(double, double)>>>();
 
             var sat = satellite.ToPRDCTSatellite();
 
@@ -25,7 +27,7 @@ namespace DatabaseCreatorSample.Data
             {
                 var coords = sat.GetGroundTrackDynStep(node.Value - 1, 60.0, ScienceConverters.From180To180);
 
-                tracks.Add(node.Value, new List<IList<(double, double)>>());
+                tracks.Add(node.Value, new List<List<(double, double)>>());
 
                 List<(double, double)> temp = new List<(double, double)>();
 
@@ -86,9 +88,5 @@ namespace DatabaseCreatorSample.Data
 
             return (lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1));
         }
-
-        public Satellite Satellite => _satellite;
-
-        public IDictionary<int, IList<IList<(double lon, double lat)>>> GroundTracks => _tracks;
     }
 }

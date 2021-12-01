@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using static Mapsui.Providers.ArcGIS.TileInfo;
 
 namespace DatabaseCreatorSample.Data
 {
@@ -145,7 +144,7 @@ namespace DatabaseCreatorSample.Data
                 nodes.Add(node);
             }
 
-            Console.WriteLine("Nodes: TrueTimePastAN = {0}, Period = {1}, numNodes = {2}", TrueTimePastAN, Orbit.Period, numNodes);
+            //Console.WriteLine("Nodes: TrueTimePastAN = {0}, Period = {1}, numNodes = {2}", TrueTimePastAN, Orbit.Period, numNodes);
             return nodes;
         }
 

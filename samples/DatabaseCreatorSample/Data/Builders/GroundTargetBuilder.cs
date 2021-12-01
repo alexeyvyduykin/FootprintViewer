@@ -1,21 +1,22 @@
-﻿using Mapsui.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace DatabaseCreatorSample.Data
 {
-    public class TargetDataSource
+    internal static class GroundTargetBuilder
     {
-        private static Random _random = new Random();
-        private static int _count = 5000;
-        private readonly List<GroundTarget> _targets = new List<GroundTarget>();
+        private static readonly Random _random = new Random();
+        private static readonly int _countTargets = 5000;
 
-        public TargetDataSource(IList<Footprint> footprints)
+        public static IEnumerable<GroundTarget> Create(IList<Footprint> footprints)
         {
-            int counts = footprints.Count;
+            int counts = footprints.Count();
 
             int index = 0;
+
+            var targets = new List<GroundTarget>();
 
             for (int i = 0; i < counts; i++)
             {
@@ -25,10 +26,10 @@ namespace DatabaseCreatorSample.Data
 
                 footprints[i].TargetName = target.Name;
 
-                _targets.Add(target);
+                targets.Add(target);
             }
 
-            for (int i = 0; i < _count - counts; i++)
+            for (int i = 0; i < _countTargets - counts; i++)
             {
                 var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
 
@@ -36,9 +37,10 @@ namespace DatabaseCreatorSample.Data
 
                 var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, center);
 
-                _targets.Add(target);
+                targets.Add(target);
             }
 
+            return targets;
         }
 
         private static GroundTarget CreateRandomTarget(string name, GroundTargetType type, Point center)
@@ -50,22 +52,38 @@ namespace DatabaseCreatorSample.Data
                     {
                         Name = name,
                         Type = GroundTargetType.Point,
-                        Points = new[] { center },
+                        Points = new Point(center.X, center.Y),
                     };
                 case GroundTargetType.Route:
                 {
                     var list = new List<Point>();
                     double r = _random.Next(10, 20 + 1) / 10.0;
                     double d = 2 * r;
-                    
+
                     var lon0 = center.X - r;
-                    if (lon0 < -180) lon0 += 360;
-                    if (lon0 > 180) lon0 -= 360;
+                    if (lon0 < -180)
+                    {
+                        lon0 += 360;
+                    }
+
+                    if (lon0 > 180)
+                    {
+                        lon0 -= 360;
+                    }
+
                     var begin = new Point(lon0, center.Y);
-                  
+
                     var lon1 = center.X + r;
-                    if (lon1 < -180) lon1 += 360;
-                    if (lon1 > 180) lon1 -= 360;
+                    if (lon1 < -180)
+                    {
+                        lon1 += 360;
+                    }
+
+                    if (lon1 > 180)
+                    {
+                        lon1 -= 360;
+                    }
+
                     var end = new Point(lon1, center.Y);
 
                     var count = _random.Next(2, 5 + 1);
@@ -78,8 +96,16 @@ namespace DatabaseCreatorSample.Data
                         var a = direction * ScienceMath.DegreesToRadians;
                         var yd = dd * Math.Tan(a);
                         var lon = last.X + dd;
-                        if (lon < -180) lon += 360;
-                        if (lon > 180) lon -= 360;
+                        if (lon < -180)
+                        {
+                            lon += 360;
+                        }
+
+                        if (lon > 180)
+                        {
+                            lon -= 360;
+                        }
+
                         var point = new Point(lon, last.Y + yd);
 
                         list.Add(point);
@@ -92,7 +118,7 @@ namespace DatabaseCreatorSample.Data
                     {
                         Name = name,
                         Type = GroundTargetType.Route,
-                        Points = list,//Rotate(list, center, _random.Next(0, 360 + 1)),
+                        Points = new LineString(list.Select(s => new Coordinate(s.X, s.Y)).ToArray()),//Rotate(list, center, _random.Next(0, 360 + 1)),
                     };
                 }
                 case GroundTargetType.Area:
@@ -112,9 +138,14 @@ namespace DatabaseCreatorSample.Data
 
                         var lon = center.X + dlon;
                         if (lon < -180)
+                        {
                             lon += 360;
+                        }
+
                         if (lon > 180)
+                        {
                             lon -= 360;
+                        }
 
                         var point = new Point(lon, center.Y + dlat);
 
@@ -127,7 +158,7 @@ namespace DatabaseCreatorSample.Data
                     {
                         Name = name,
                         Type = GroundTargetType.Area,
-                        Points = list,
+                        Points = new LineString(list.Select(s => new Coordinate(s.X, s.Y)).ToArray()),
                     };
                 }
                 default:
@@ -140,29 +171,23 @@ namespace DatabaseCreatorSample.Data
             double angleInRadians = angleInDegrees * (Math.PI / 180);
             double cosTheta = Math.Cos(angleInRadians);
             double sinTheta = Math.Sin(angleInRadians);
-            return new Point
-            {
-                X =
-                    (int)
+            return new NetTopologySuite.Geometries.Point((int)
                     (cosTheta * (pointToRotate.X - centerPoint.X) -
                     sinTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.X),
-                Y =
                     (int)
                     (sinTheta * (pointToRotate.X - centerPoint.X) +
                     cosTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.Y)
-            };
+            );
         }
 
         private static IEnumerable<Point> Rotate(IEnumerable<Point> pointsToRotate, Point centerPoint, double angleInDegrees)
         {
-            var list = new List<Point>();
+            var list = new List<NetTopologySuite.Geometries.Point>();
             foreach (var item in pointsToRotate)
             {
                 list.Add(Rotate(item, centerPoint, angleInDegrees));
             }
             return list;
         }
-
-        public IEnumerable<GroundTarget> Targets => _targets;
     }
 }

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using DatabaseCreatorSample.Data;
+using DynamicData;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
@@ -12,29 +13,29 @@ namespace SatelliteGeometrySample
     public class FootprintProvider : MemoryProvider
     {
         private IFeature _lastSelected;
-        private readonly Dictionary<string, List<IFeature>> _dict = new Dictionary<string, List<IFeature>>();        
-        private readonly Dictionary<string, List<Footprint>> _cache = new Dictionary<string, List<Footprint>>();
+        private readonly List<IFeature> _dict = new List<IFeature>();        
+        private readonly List<Footprint> _cache = new List<Footprint>();
 
-        public FootprintProvider()
+        public FootprintProvider(IDataSource source)
         {
-            _dict = Build();
+            _dict = Build(source.Footprints);
 
-            ReplaceFeatures(_dict.SelectMany(s => s.Value));
+            ReplaceFeatures(_dict);
         }
 
         public Footprint GetFootprint(string name)
         {
-            return _cache.SelectMany(s => s.Value).Where(s => s.Name.Equals(name)).FirstOrDefault();
+            return _cache.Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
         public IEnumerable<Footprint> GetFootprints()
         {
-            return _cache.SelectMany(s => s.Value);
+            return _cache;
         }
 
         public void SelectFeature(string name)
         {
-            var feature = _dict.SelectMany(s => s.Value).Where(s => name.Equals((string)s["Name"])).First();
+            var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();
 
             if (_lastSelected != null)
             {
@@ -54,44 +55,35 @@ namespace SatelliteGeometrySample
             }
         }
 
-        private Dictionary<string, List<IFeature>> Build()
+        private List<IFeature> Build(IEnumerable<Footprint> footprints)
         {
-            var dictionary = new Dictionary<string, List<IFeature>>();
+            var list = new List<IFeature>();
 
-            foreach (var satellite in SatelliteDataSource.Satellites.Take(1))
+            foreach (var item in footprints)
             {
-                FootprintDataSource source = new FootprintDataSource(satellite);
+                //var ring = new LinearRing();
 
-                var list = new List<IFeature>();
+                //foreach (var p in item.Border)
+                //{
+                //    var point = SphericalMercator.FromLonLat(p.X, p.Y);
+                //    ring.Vertices.Add(point);
+                //}
 
-                foreach (var item in source.Footprints)
-                {
-                    //var ring = new LinearRing();
+                //var poly = new Polygon() { ExteriorRing = ring };
 
-                    //foreach (var p in item.Border)
-                    //{
-                    //    var point = SphericalMercator.FromLonLat(p.X, p.Y);
-                    //    ring.Vertices.Add(point);
-                    //}
+                var poly = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
 
-                    //var poly = new Polygon() { ExteriorRing = ring };
+                var feature = new Feature { Geometry = poly };
 
-                    var poly = AreaCutting(item.Border.ToList());
+                feature["Name"] = item.Name;
+                feature["State"] = "Unselect";
 
-                    var feature = new Feature { Geometry = poly };
-                    
-                    feature["Name"] = item.Name;
-                    feature["State"] = "Unselect";
-
-                    list.Add(feature);
-                }
-
-                dictionary.Add(satellite.Name, list);
-
-                _cache.Add(satellite.Name, source.Footprints.ToList());
+                list.Add(feature);
             }
 
-            return dictionary;
+            _cache.Add(footprints);
+
+            return list;
         }
 
         private IGeometry AreaCutting(IList<Point> points)

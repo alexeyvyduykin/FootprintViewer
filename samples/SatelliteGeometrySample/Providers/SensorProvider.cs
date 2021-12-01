@@ -14,9 +14,23 @@ namespace SatelliteGeometrySample
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
 
-        public SensorProvider()
+        public SensorProvider(IDataSource source)
         {
-            Initialize();
+            var satellites = source.LeftStrips.Keys;
+
+            foreach (var name in satellites)
+            {                             
+                var dictLeft = FromStrips(source.LeftStrips[name]);
+                var dictRight = FromStrips(source.RightStrips[name]);
+
+                _dictLeft.Add(name, dictLeft);
+                _dictright.Add(name, dictRight);
+
+                if (_cache.ContainsKey(name) == false)
+                {
+                    _cache.Add(name, new List<IFeature>());
+                }
+            }
         }
 
         public void Update(SatelliteInfo info)
@@ -51,26 +65,7 @@ namespace SatelliteGeometrySample
             ReplaceFeatures(_cache.SelectMany(s => s.Value));
         }
 
-        private void Initialize()
-        {
-            foreach (var sat in SatelliteDataSource.Satellites)
-            {
-                SensorDataSource source = new SensorDataSource(sat);
-
-                var dictLeft = FromStrips(source.LeftStrips);
-                var dictRight = FromStrips(source.RightStrips);
-
-                _dictLeft.Add(sat.Name, dictLeft);
-                _dictright.Add(sat.Name, dictRight);
-
-                if (_cache.ContainsKey(sat.Name) == false)
-                {
-                    _cache.Add(sat.Name, new List<IFeature>());
-                }
-            }
-        }
-
-        private Dictionary<int, List<IFeature>> FromStrips(Dictionary<int, List<List<Point>>> strips)
+        private Dictionary<int, List<IFeature>> FromStrips(Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
         {
             var dict = new Dictionary<int, List<IFeature>>();
             foreach (var item in strips)

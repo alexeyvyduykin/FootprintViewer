@@ -12,29 +12,22 @@ using System.Text;
 namespace SatelliteGeometrySample
 {
     public class TargetProvider : MemoryProvider
-    {
-        private readonly FootprintProvider _provider;
+    {      
         private readonly List<IFeature> _list;
         private readonly List<GroundTarget> _cache = new List<GroundTarget>();
 
-        public TargetProvider(FootprintProvider provider)
-        {
-            _provider = provider;
-
-            _list = Build();
+        public TargetProvider(IDataSource source)
+        {       
+            _list = Build(source.Targets);
             
             ReplaceFeatures(_list);
         }
 
-        private List<IFeature> Build()
+        private List<IFeature> Build(IEnumerable<GroundTarget> groundTargets)
         {
             List<IFeature> list = new List<IFeature>();
-
-            var footprints = _provider.GetFootprints();
-
-            var source = new TargetDataSource(new List<DatabaseCreatorSample.Data.Footprint>(footprints));
-
-            foreach (var item in source.Targets)
+        
+            foreach (var item in groundTargets)
             {
                 var feature = new Feature()
                 {
@@ -45,7 +38,7 @@ namespace SatelliteGeometrySample
                 {
                     case GroundTargetType.Point:
                     {                      
-                        var p = item.Points.First();                                                    
+                        var p = (NetTopologySuite.Geometries.Point)item.Points;                                                    
                         var point = SphericalMercator.FromLonLat(p.X, p.Y);                                                
                         feature.Geometry = point;
                         feature["Type"] = "Point";
@@ -53,13 +46,13 @@ namespace SatelliteGeometrySample
                     break;
                     case GroundTargetType.Route:
                     {
-                        feature.Geometry = RouteCutting(item.Points.ToList());
+                        feature.Geometry = RouteCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Route";
                     }
                         break;
                     case GroundTargetType.Area:
                     {
-                        feature.Geometry = AreaCutting(item.Points.ToList());
+                        feature.Geometry = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Area";
                     }                        
                     break;

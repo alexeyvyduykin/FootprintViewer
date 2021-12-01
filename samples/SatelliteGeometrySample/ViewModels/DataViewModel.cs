@@ -38,20 +38,9 @@ namespace SatelliteGeometrySample.ViewModels
             //});
 
             this.WhenAnyValue(s => s.CurrentNode, s => s.IsShow, s => s.IsLeftStrip, s => s.IsRightStrip).Subscribe(_ =>
-            {
-                test2();
+            {              
                 // UpdateStrips?.Invoke(this, EventArgs.Empty);               
             });
-        }
-
-        private void test1()
-        {
-            int dfdf = 0;
-        }
-
-        private void test2()
-        {
-            int dfdf = 0;
         }
 
         //public event EventHandler UpdateTrack;
@@ -130,15 +119,18 @@ namespace SatelliteGeometrySample.ViewModels
         {
             _map = map;
 
-            var list = SatelliteDataSource.Satellites.Select(s => new SatelliteInfo(s)).ToList();
+            //  using ApplicationContext db = new ApplicationContext(MainDataSource.GetOptions());
+            var source = DataSourceBuilder.CreateFromDatabase();
+
+            var list = source.Satellites.Select(s => new SatelliteInfo(s)).ToList();
             SatelliteInfos = new ObservableCollection<SatelliteInfo>();
             SatelliteInfos.CollectionChanged += items_CollectionChanged;
             SatelliteInfos.AddRange(list);
 
-            _trackProvider = new TrackProvider();
-            _sensorProvider = new SensorProvider();
-            _footprintProvider = new FootprintProvider();
-            _targetProvider = new TargetProvider(_footprintProvider);
+            _trackProvider = new TrackProvider(source);
+            _sensorProvider = new SensorProvider(source);
+            _footprintProvider = new FootprintProvider(source);
+            _targetProvider = new TargetProvider(source);
 
             _targetlayer = CreateTargetLayer(_targetProvider);
             _sensorLayer = CreateSensorLayer(_sensorProvider);
@@ -235,7 +227,7 @@ namespace SatelliteGeometrySample.ViewModels
                     Fill = null,
                     Line = new Pen(Color.Green, 1),
                 },
-                DataSource = provider,       
+                DataSource = provider,
             };
         }
 
@@ -249,7 +241,7 @@ namespace SatelliteGeometrySample.ViewModels
                     Line = null,
                     Outline = null,
                 },
-                DataSource = provider,             
+                DataSource = provider,
             };
         }
 

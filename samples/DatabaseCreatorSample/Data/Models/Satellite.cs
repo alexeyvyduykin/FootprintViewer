@@ -8,14 +8,14 @@ namespace DatabaseCreatorSample.Data
         public string Name { get; set; }
         public double Semiaxis { get; set; }
         public double Eccentricity { get; set; }
-        public double Inclination { get; set; } 
-        public double ArgumentOfPerigee { get; set; }
-        public double LonAN { get; set; }
-        public double RAAN { get; set; }
+        public double InclinationDeg { get; set; } 
+        public double ArgumentOfPerigeeDeg { get; set; }
+        public double LongitudeAscendingNodeDeg { get; set; }
+        public double RightAscensionAscendingNodeDeg { get; set; }
         public double Period { get; set; }
         public DateTime Epoch { get; set; }     
-        public double InnerHalfAngle { get; set; }
-        public double OuterHalfAngle { get; set; }
+        public double InnerHalfAngleDeg { get; set; }
+        public double OuterHalfAngleDeg { get; set; }
     }
 
     public static class SatelliteExtensions
@@ -24,10 +24,10 @@ namespace DatabaseCreatorSample.Data
         {
             var a = satellite.Semiaxis;
             var ecc = satellite.Eccentricity;
-            var incl = satellite.Inclination * ScienceMath.DegreesToRadians;
-            var argOfPer = satellite.ArgumentOfPerigee * ScienceMath.DegreesToRadians;
-            var lonAN = satellite.LonAN * ScienceMath.DegreesToRadians;
-            var raan = satellite.RAAN * ScienceMath.DegreesToRadians;
+            var incl = satellite.InclinationDeg * ScienceMath.DegreesToRadians;
+            var argOfPer = satellite.ArgumentOfPerigeeDeg * ScienceMath.DegreesToRadians;
+            var lonAN = satellite.LongitudeAscendingNodeDeg * ScienceMath.DegreesToRadians;
+            var raan = satellite.RightAscensionAscendingNodeDeg * ScienceMath.DegreesToRadians;
             var period = satellite.Period;
             var epoch = satellite.Epoch;
 
@@ -36,24 +36,21 @@ namespace DatabaseCreatorSample.Data
             return new PRDCTSatellite(orbit, 1);
         }
 
-        public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, string direction)
+        public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, SatelliteStripDirection direction)
         {
-            var inner = satellite.InnerHalfAngle;
-            var outer = satellite.OuterHalfAngle;
+            var inner = satellite.InnerHalfAngleDeg;
+            var outer = satellite.OuterHalfAngleDeg;
             var angle = (outer - inner) / 2.0;
             var roll = inner + angle;
 
-            if (direction == "Left")
+            switch (direction)
             {
-                return new PRDCTSensor(angle, roll);
-            }
-            else if(direction == "Right")
-            {
-                return new PRDCTSensor(angle, -roll);
-            }
-            else
-            {
-                throw new Exception();
+                case SatelliteStripDirection.Left:
+                    return new PRDCTSensor(angle, roll);
+                case SatelliteStripDirection.Right:
+                    return new PRDCTSensor(angle, -roll);
+                default:
+                    throw new Exception();
             }
         }
     }

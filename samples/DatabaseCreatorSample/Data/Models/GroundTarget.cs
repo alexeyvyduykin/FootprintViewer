@@ -1,7 +1,5 @@
-﻿using Mapsui.Geometries;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using NetTopologySuite.Geometries;
 
 namespace DatabaseCreatorSample.Data
 {
@@ -17,7 +15,7 @@ namespace DatabaseCreatorSample.Data
         public string Name { get; set; }
 
         public GroundTargetType Type { get; set; }
-     
-        public IEnumerable<Point> Points { get; set; }
+
+        public Geometry Points { get; set; }
     }
 }

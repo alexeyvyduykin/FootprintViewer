@@ -1,108 +1,97 @@
-﻿using Mapsui.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DatabaseCreatorSample.Data
 {
-    public class FootprintDataSource
-    {
-        private static Random _random = new Random();
-        private static int _count = 440;
-        private static int _durationMin = 10;
-        private static int _durationMax = 30;
-        private readonly Satellite _satellite;
-        private readonly IList<Footprint> _footprints;
-
-        public FootprintDataSource(Satellite satellite)
-        {           
-            _satellite = satellite;
-            _footprints = Build(satellite);
-        }
-
-        private static IList<Footprint> Build(Satellite satellite)
-        {
-            var footprints = new List<Footprint>();
-            
-            var sat = satellite.ToPRDCTSatellite();
-            var sensor1 = satellite.ToPRDCTSensor("Left");
-            var sensor2 = satellite.ToPRDCTSensor("Right");
-
-            var band1 = new Band(sat.Orbit, sensor1.VerticalHalfAngleDEG, sensor1.RollAngleDEG);
-            var band2 = new Band(sat.Orbit, sensor2.VerticalHalfAngleDEG, sensor2.RollAngleDEG);
-
-            Band[] bands = new Band[] { band1, band2 };
-
-            var epoch = sat.Orbit.Epoch;
-
-            var nodes = sat.Nodes();
-
-            var countPerNode = (_count / nodes.Count);
-
-            var uDelta = 360.0 / countPerNode;
-
-            int footprintCount = 0;
-
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                double uLast = 0.0;
-                for (int j = 0; j < countPerNode; j++)
-                {
-                    double u1 = uLast;
-                    double u2 = uLast + uDelta;
-
-                    double u = u1 + (u2 - u1) / 2.0;
-                    double duration = _random.Next(_durationMin, _durationMax + 1);
-
-                    int sensorIndex;
-
-                    if (u >= 75 && u <= 105)
-                    {
-                        sensorIndex = 0;
-                    }
-                    else if (u >= 255 && u <= 285)
-                    {
-                        sensorIndex = 1;
-                    }
-                    else
-                    {                        
-                        sensorIndex = _random.Next(0, 1 + 1);
-                    }
-
-                    var (t, center, border) = FootprintBuilder.GetRandomFootprint(sat, bands[sensorIndex], nodes[i].Value - 1, u);
-
-                    footprints.Add(new Footprint()
-                    {
-                        Name = $"Footprint{++footprintCount:0000}",
-                        SatelliteName = satellite.Name,
-                        Center = center,
-                        Border = border.Select(s => new Point(s.Lon, s.Lat)),
-                        Begin = epoch.AddSeconds(t - duration / 2.0),
-                        Duration = duration,
-                        Node = nodes[i].Value,
-                        Direction = sensorIndex,
-                    });
-
-                    uLast += uDelta;
-                }
-
-            }
-
-            return footprints;
-        }
-
-        public Satellite Satellite => _satellite;
-
-        public IEnumerable<Footprint> Footprints => _footprints;
-    }
-
     internal static class FootprintBuilder
     {
         private static readonly Random _random = new Random();
         private static readonly double _size = 1.2;
         private static readonly double _r = Math.Sqrt(_size * _size / 2.0);
+        private static readonly int _countFootprints = 440;
+        private static readonly int _durationMin = 10;
+        private static readonly int _durationMax = 30;
 
-        public static double GetRandomAngle(double a1, double a2)
+        public static IEnumerable<Footprint> Create(IEnumerable<Satellite> satellites)
+        {
+            var footprints = new List<Footprint>();
+
+            foreach (var satellite in satellites)
+            {
+                var sat = satellite.ToPRDCTSatellite();
+                var sensor1 = satellite.ToPRDCTSensor(SatelliteStripDirection.Left);
+                var sensor2 = satellite.ToPRDCTSensor(SatelliteStripDirection.Right);
+
+                var band1 = new Band(sat.Orbit, sensor1.VerticalHalfAngleDEG, sensor1.RollAngleDEG);
+                var band2 = new Band(sat.Orbit, sensor2.VerticalHalfAngleDEG, sensor2.RollAngleDEG);
+
+                Band[] bands = new Band[] { band1, band2 };
+
+                var epoch = sat.Orbit.Epoch;
+
+                var nodes = sat.Nodes();
+
+                var countPerNode = _countFootprints / nodes.Count;
+
+                var uDelta = 360.0 / countPerNode;
+
+                int footprintCount = 0;
+
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    double uLast = 0.0;
+                    for (int j = 0; j < countPerNode; j++)
+                    {
+                        double u1 = uLast;
+                        double u2 = uLast + uDelta;
+
+                        double u = u1 + (u2 - u1) / 2.0;
+                        double duration = _random.Next(_durationMin, _durationMax + 1);
+
+                        SatelliteStripDirection sensorIndex;
+
+                        if (u >= 75 && u <= 105)
+                        {
+                            sensorIndex = SatelliteStripDirection.Left;
+                        }
+                        else if (u >= 255 && u <= 285)
+                        {
+                            sensorIndex = SatelliteStripDirection.Right;
+                        }
+                        else
+                        {
+                            sensorIndex = (SatelliteStripDirection)_random.Next(0, 1 + 1);
+                        }
+
+                        var (t, center, border) = GetRandomFootprint(sat, bands[(int)sensorIndex], nodes[i].Value - 1, u);
+
+                        //var ring = new LinearRing(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray());
+                        //var polygon = new Polygon(ring);
+                        var line = new LineString(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray());
+                        footprints.Add(new Footprint()
+                        {
+                            Name = $"Footprint{++footprintCount:0000}",
+                            SatelliteName = satellite.Name,
+                            Center = center,
+                            Points = line,//border.Select(s => new NetTopologySuite.Geometries.Point(s.Lon, s.Lat)),
+                            Begin = epoch.AddSeconds(t - duration / 2.0),
+                            Duration = duration,
+                            Node = nodes[i].Value,
+                            Direction = sensorIndex,
+                        });
+
+                        uLast += uDelta;
+                    }
+
+                }
+            }
+
+            return footprints;
+        }
+
+        private static double GetRandomAngle(double a1, double a2)
         {
             double d = Math.Floor(Math.Abs(a2 - a1));
 
@@ -115,8 +104,7 @@ namespace DatabaseCreatorSample.Data
             return aCenter + res / 2.0;
         }
 
-
-        public static (double, Point, IEnumerable<Geo2D>) GetRandomFootprint(PRDCTSatellite satellite, Band band, int node, double u)
+        private static (double, Point, IEnumerable<Geo2D>) GetRandomFootprint(PRDCTSatellite satellite, Band band, int node, double u)
         {
             var list = new List<Geo2D>();
 
@@ -199,7 +187,7 @@ namespace DatabaseCreatorSample.Data
             var res4 = new Geo2D(lon4, center.Lat + dlat4, GeoCoordTypes.Degrees);
             list.Add(res4);
 
-            return (t, new Point(center.Lon, center.Lat), list);
+            return (t, new NetTopologySuite.Geometries.Point(center.Lon, center.Lat), list);
         }
 
         private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Band band, int node, double u)

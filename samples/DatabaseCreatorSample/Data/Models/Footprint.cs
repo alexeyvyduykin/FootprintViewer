@@ -1,9 +1,15 @@
-﻿using Mapsui.Geometries;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using NetTopologySuite.Geometries;
 
 namespace DatabaseCreatorSample.Data
 {
+    public enum SatelliteStripDirection
+    {
+        Left,
+        Right
+    }
+
     public class Footprint
     {
         public string Name { get; set; }
@@ -14,7 +20,7 @@ namespace DatabaseCreatorSample.Data
 
         public Point Center { get; set; }
 
-        public IEnumerable<Point> Border { get; set; } 
+        public LineString Points { get; set; }
 
         public DateTime Begin { get; set; }
 
@@ -22,6 +28,6 @@ namespace DatabaseCreatorSample.Data
 
         public int Node { get; set; }
 
-        public int Direction { get; set; }
+        public SatelliteStripDirection Direction { get; set; }
     }
 }
