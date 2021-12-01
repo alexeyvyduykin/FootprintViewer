@@ -1,11 +1,7 @@
-﻿using FootprintViewer.WPF;
+﻿using FootprintViewer.Data;
+using FootprintViewer.WPF;
 using FootprintViewer.WPF.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FootprintViewer
@@ -19,7 +15,13 @@ namespace FootprintViewer
         {
             base.OnStartup(e);
 
-            var window = new MainWindow() { DataContext = new MainViewModel() };
+            var map = SampleBuilder.CreateMap();
+
+            var userDataSource = new UserDataSource();
+
+            map.SetWorldMapLayer(userDataSource.WorldMapSources.FirstOrDefault());
+
+            var window = new MainWindow() { DataContext = new MainViewModel(map, userDataSource) };
 
             window.Show();
         }

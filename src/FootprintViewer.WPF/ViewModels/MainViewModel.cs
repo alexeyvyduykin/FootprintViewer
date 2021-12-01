@@ -1,28 +1,18 @@
-﻿using BruTile.Wms;
-using DynamicData;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Graphics;
-using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
-using NetTopologySuite.Algorithm;
-using NetTopologySuite.Operation.Distance;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Cryptography;
-using System.Windows.Input;
 
 namespace FootprintViewer.WPF.ViewModels
 {
@@ -33,6 +23,7 @@ namespace FootprintViewer.WPF.ViewModels
         private readonly EditLayer _editLayer;
         private readonly SceneSearch _sceneSearchTab;
 
+        // Create some design-time data
         public MainViewModel()
         {
             ActualController = new EditController();
@@ -47,11 +38,11 @@ namespace FootprintViewer.WPF.ViewModels
 
             Map.DataChanged += Map_DataChanged;
 
-            _sceneSearchTab = new SceneSearch() 
+            _sceneSearchTab = new SceneSearch()
             {
                 Title = "Поиск сцены",
                 Name = "Scene",
-                Map = Map,     
+                Map = Map,
                 UserDataSource = UserDataSource,
             };
 
@@ -67,6 +58,42 @@ namespace FootprintViewer.WPF.ViewModels
             WorldMapSelector = new WorldMapSelector(UserDataSource.WorldMapSources);
 
             WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
+
+            ToolManager.WorldMapSelector = WorldMapSelector;
+        }
+
+        public MainViewModel(Map map, UserDataSource userDataSource)
+        {
+            Map = map;
+
+            ActualController = new EditController();
+
+            UserDataSource = userDataSource;
+
+            _editLayer = (EditLayer)map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+
+            map.DataChanged += Map_DataChanged;
+
+            _sceneSearchTab = new SceneSearch()
+            {
+                Title = "Поиск сцены",
+                Name = "Scene",
+                Map = map,
+                UserDataSource = userDataSource,
+            };
+
+            _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
+            _sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
+
+            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { _sceneSearchTab }), SelectedTab = _sceneSearchTab };
+
+            ToolManager = CreateToolManager();
+
+            InfoPanel = SampleBuilder.CreateInfoPanel();
+
+            WorldMapSelector = new WorldMapSelector(userDataSource.WorldMapSources);
+
+            WorldMapSelector.SelectLayer += (layer) => { map.SetWorldMapLayer(layer); };
 
             ToolManager.WorldMapSelector = WorldMapSelector;
         }
@@ -102,20 +129,20 @@ namespace FootprintViewer.WPF.ViewModels
         }
 
         private string FeatureAreaEndCreating(Feature feature)
-        {          
+        {
             var bb = feature.Geometry.BoundingBox;
-            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y);         
+            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y);
             var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
             area = Math.Abs(area);
-            return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";        
+            return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";
         }
 
         private double GetFeatureArea(Feature feature)
         {
             var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
-            return Math.Abs(area);           
+            return Math.Abs(area);
         }
 
         private double GetRouteLength(AddInfo addInfo)
@@ -135,7 +162,7 @@ namespace FootprintViewer.WPF.ViewModels
             _editLayer.DataHasChanged();
 
             _sceneSearchTab.ResetAOI();
-            
+
             ToolManager.ResetAllTools();
         }
 
@@ -143,7 +170,7 @@ namespace FootprintViewer.WPF.ViewModels
         {
             _editLayer.ClearRoute();
             _editLayer.DataHasChanged();
-            
+
             ToolManager.ResetAllTools();
         }
 
@@ -154,7 +181,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Title = "+",
                 Tooltip = "Приблизить",
                 Command = new RelayCommand(_ =>
-                {         
+                {
                     Map.Initialized = false;
                     Map.Home = (n) => n.ZoomIn();
 
@@ -169,8 +196,8 @@ namespace FootprintViewer.WPF.ViewModels
             {
                 Title = "-",
                 Tooltip = "Отдалить",
-                Command = new RelayCommand(_ => 
-                {              
+                Command = new RelayCommand(_ =>
+                {
                     Map.Initialized = false;
                     Map.Home = (n) => n.ZoomOut();
 
@@ -184,8 +211,8 @@ namespace FootprintViewer.WPF.ViewModels
             {
                 Title = "AddRectangle",
                 Tooltip = "Нарисуйте прямоугольную AOI",
-                Command = new RelayCommand(_ => 
-                {                   
+                Command = new RelayCommand(_ =>
+                {
                     Plotter = new Plotter(InteractiveRectangle.Build());
 
                     Tip = new Tip()
@@ -193,10 +220,10 @@ namespace FootprintViewer.WPF.ViewModels
                         Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник",
                     };
 
-                    Plotter.BeginCreating += (s, e) => 
+                    Plotter.BeginCreating += (s, e) =>
                     {
                         _editLayer.AddAOI(e.AddInfo);
-                        _editLayer.DataHasChanged();                     
+                        _editLayer.DataHasChanged();
                     };
 
                     Plotter.EndCreating += (s, e) =>
@@ -210,14 +237,14 @@ namespace FootprintViewer.WPF.ViewModels
                         Tip = null;
 
                         var descr = FeatureAreaEndCreating(feature);
-                                                                        
+
                         InfoPanel.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
 
                         _sceneSearchTab.SetAOI(feature.Geometry);
 
                         ToolManager.ResetAllTools();
                     };
-                    
+
                     Plotter.Hover += (s, e) =>
                     {
                         var area = GetFeatureArea((Feature)e.AddInfo.Feature);
@@ -228,7 +255,7 @@ namespace FootprintViewer.WPF.ViewModels
                     };
 
 
-                    Plotter.EndEditing += (s, e) => 
+                    Plotter.EndEditing += (s, e) =>
                     {
                         var feature = (Feature)e.Feature;
 
@@ -239,7 +266,7 @@ namespace FootprintViewer.WPF.ViewModels
                         _sceneSearchTab.SetAOI(feature.Geometry);
                     };
 
-                    ActualController = new DrawRectangleController();                 
+                    ActualController = new DrawRectangleController();
                 }),
             };
 
@@ -247,7 +274,7 @@ namespace FootprintViewer.WPF.ViewModels
             {
                 Title = "AddPolygon",
                 Tooltip = "Нарисуйте полигональную AOI",
-                Command = new RelayCommand(_ => 
+                Command = new RelayCommand(_ =>
                 {
                     Plotter = new Plotter(InteractivePolygon.Build());
 
@@ -295,9 +322,9 @@ namespace FootprintViewer.WPF.ViewModels
                         ToolManager.ResetAllTools();
                     };
 
-                    Plotter.Hover += (s, e) => 
+                    Plotter.Hover += (s, e) =>
                     {
-                        _editLayer.DataHasChanged(); 
+                        _editLayer.DataHasChanged();
                     };
 
                     Plotter.EndEditing += (s, e) =>
@@ -310,8 +337,8 @@ namespace FootprintViewer.WPF.ViewModels
 
                         _sceneSearchTab.SetAOI(feature.Geometry);
                     };
- 
-                    ActualController = new DrawPolygonController(); 
+
+                    ActualController = new DrawPolygonController();
                 }),
             };
 
@@ -360,7 +387,7 @@ namespace FootprintViewer.WPF.ViewModels
                         Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                         Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
-                        layer.DataHasChanged(); 
+                        layer.DataHasChanged();
                     };
 
                     Plotter.EndEditing += (s, e) =>
@@ -382,20 +409,20 @@ namespace FootprintViewer.WPF.ViewModels
                         tab.SetAOI(feature.Geometry);
                     };
 
-                    ActualController = new DrawCircleController(); 
+                    ActualController = new DrawCircleController();
                 }),
             };
-      
+
             var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
-        
+
             var toolRouteDistance = new Tool()
             {
                 Title = "Route",
                 Tooltip = "Измерить расстояние",
-                Command = new RelayCommand(_ => 
+                Command = new RelayCommand(_ =>
                 {
                     var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
-                        
+
                     layer.ClearRoute();
 
                     InfoPanel.Close(nameof(InfoPanelType.Route));
@@ -409,7 +436,7 @@ namespace FootprintViewer.WPF.ViewModels
 
                     Plotter.BeginCreating += (s, e) =>
                     {
-                        var distance = GetRouteLength(e.AddInfo);                      
+                        var distance = GetRouteLength(e.AddInfo);
                         Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
                         Tip.Text = "";
 
@@ -422,7 +449,7 @@ namespace FootprintViewer.WPF.ViewModels
                         var distance = GetRouteLength(e.AddInfo);
 
                         InfoPanel.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), CloseInfoPanelRoute);
-                        
+
                         layer.DataHasChanged();
                     };
 
@@ -436,25 +463,25 @@ namespace FootprintViewer.WPF.ViewModels
                         ToolManager.ResetAllTools();
                     };
 
-                    Plotter.Hover += (s, e) => 
+                    Plotter.Hover += (s, e) =>
                     {
-                        var distance = GetRouteLength(e.AddInfo);                   
+                        var distance = GetRouteLength(e.AddInfo);
                         Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
 
                         layer.DataHasChanged();
                     };
 
-                    ActualController = new DrawRouteController(); 
+                    ActualController = new DrawRouteController();
                 })
             };
 
             var toolEdit = new Tool()
             {
                 Title = "Edit",
-                Command = new RelayCommand(_ => 
+                Command = new RelayCommand(_ =>
                 {
                     Tip = null;
-                    ActualController = new EditController(); 
+                    ActualController = new EditController();
                 })
             };
 
@@ -462,7 +489,7 @@ namespace FootprintViewer.WPF.ViewModels
             {
                 Title = "WorldMaps",
                 Tooltip = "Список слоев",
-                Command = new RelayCommand(_ => 
+                Command = new RelayCommand(_ =>
                 {
                     WorldMapSelector.Click();
                 }),
