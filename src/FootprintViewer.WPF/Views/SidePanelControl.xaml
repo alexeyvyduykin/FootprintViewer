@@ -157,6 +157,9 @@
                 <DataTemplate DataType="{x:Type vm:SatelliteViewer}">
                     <tabs:SatelliteViewerTab Width="380"/>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:GroundTargetViewer}">
+                    <tabs:GroundTargetViewerTab Width="380"/>
+                </DataTemplate>
             </TabControl.Resources>
         </TabControl>
     </DockPanel>

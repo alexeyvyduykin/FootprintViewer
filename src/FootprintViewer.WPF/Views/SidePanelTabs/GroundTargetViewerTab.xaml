@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="FootprintViewer.WPF.Views.SidePanelTabs.GroundTargetViewerTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"          
+             d:DataContext="{d:DesignInstance vm:GroundTargetViewerDesigner, IsDesignTimeCreatable=True}"       
+             MinWidth="380"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="380">
+
+    <UserControl.Resources>
+        <converters:TargetViewerContentTypeConverter x:Key="targetViewerContentTypeConverter"/>
+        <vm:GroundTargetViewerDesigner x:Key="DesignDataTargetViewer" Type="Show"/>
+        <SolidColorBrush x:Key="BackgroundBrush">
+            <SolidColorBrush.Color>
+                <Color R="33" G="43" B="53" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <ContentControl Margin="10" d:DataContext="{StaticResource DesignDataTargetViewer}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Empty">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid>
+                                        <TextBlock FontSize="30">Empty</TextBlock>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Show">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid>
+                                        <TextBlock FontSize="30">Show</TextBlock>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Update">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid>
+                                        <TextBlock FontSize="30">Update</TextBlock>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </Grid>
+    
+</UserControl>

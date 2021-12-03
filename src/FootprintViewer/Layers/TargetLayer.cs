@@ -1,10 +1,12 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
+using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace FootprintViewer.Layers
@@ -23,6 +25,23 @@ namespace FootprintViewer.Layers
             Style = _style;
             DataSource = provider;
             IsMapInfoLayer = false;
+        }
+
+        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        {
+            base.RefreshData(extent, resolution, changeType);
+
+            if (changeType == ChangeType.Discrete)
+            {
+                Debug.WriteLine("TargetLayer: call RefreshData()");
+            }
+        }
+
+        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        {
+         //   Debug.WriteLine("TargetLayer: call GetFeaturesInView()");
+
+            return base.GetFeaturesInView(box, resolution);
         }
 
         private static ThemeStyle CreateTargetThemeStyle()

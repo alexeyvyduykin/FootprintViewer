@@ -26,7 +26,7 @@ namespace FootprintViewer.WPF.ViewModels
         private readonly EditLayer _editLayer;
         private readonly SceneSearch _sceneSearchTab;
         private readonly SatelliteViewer _satelliteViewerTab;
-
+        private readonly GroundTargetViewer _groundTargetViewerTab;
         // Create some design-time data
         public MainViewModel()
         {
@@ -89,10 +89,25 @@ namespace FootprintViewer.WPF.ViewModels
                 DataSource = dataSource,
             };
 
+            _groundTargetViewerTab = new GroundTargetViewer(Map)
+            {
+                Title = "Просмотр наземных целей",
+                Name = "GroundTargetViewer",
+            };
+
             _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
             _sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
 
-            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new SidePanelTab[] { _sceneSearchTab, _satelliteViewerTab }), SelectedTab = _sceneSearchTab };
+            SidePanel = new SidePanel()
+            {
+                Tabs = new ObservableCollection<SidePanelTab>(new SidePanelTab[] 
+                {
+                    _sceneSearchTab, 
+                    _satelliteViewerTab, 
+                    _groundTargetViewerTab 
+                }), 
+                SelectedTab = _sceneSearchTab 
+            };
 
             ToolManager = CreateToolManager();
 
