@@ -18,12 +18,12 @@ namespace FootprintViewer
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            var map = SampleBuilder.CreateMap();
-
+          
             var userDataSource = new UserDataSource();
 
             var dataSource = CreateFromDatabase();
+
+            var map = ProjectFactory.CreateMap(dataSource);
 
             map.SetWorldMapLayer(userDataSource.WorldMapSources.FirstOrDefault());
 

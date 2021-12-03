@@ -1,5 +1,5 @@
-﻿using DatabaseCreatorSample.Data;
-using DynamicData;
+﻿using DynamicData;
+using FootprintViewer.Data;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
@@ -10,7 +10,7 @@ using Mapsui.Styles.Thematics;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SatelliteGeometrySample
+namespace FootprintViewer.Layers
 {
     public class FootprintLayer : MemoryLayer
     {
@@ -24,6 +24,7 @@ namespace SatelliteGeometrySample
             _previewStyle = CreateFootprintPreviewThemeStyle();
             _style = CreateFootprintThemeStyle();
 
+            Name = nameof(LayerType.Footprint);
             DataSource = provider;
             IsMapInfoLayer = true;
         }

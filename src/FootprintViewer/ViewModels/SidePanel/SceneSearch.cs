@@ -1,38 +1,29 @@
 ﻿using DynamicData;
-using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Models;
 using Mapsui;
+using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
-using Mapsui.Providers.Wfs.Utilities;
-using Mapsui.Geometries;
-using Microsoft.VisualBasic;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
-{
+    {
         private readonly IList<FootprintImage> _sourceFootprints = new List<FootprintImage>();
-       // protected readonly SourceList<Footprint> _sourceFootprints;
-       // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
+        // protected readonly SourceList<Footprint> _sourceFootprints;
+        // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
 
         public event EventHandler? CurrentFootprint;
-       
+
         public SceneSearch()
         {
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
@@ -41,13 +32,13 @@ namespace FootprintViewer.ViewModels
                 {
                     var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
 
-                    Map.Layers.Replace(nameof(LayerType.FootprintLayer), layer);
+                    Map.Layers.Replace(nameof(LayerType.FootprintImage), layer);
 
                     CurrentFootprint?.Invoke(this, EventArgs.Empty);
                 }
             });
 
-            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => DataSourceChanged());
+            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
 
             MouseOverEnterCommand = ReactiveCommand.Create<FootprintImage>(ShowFootprintBorder);
 
@@ -88,7 +79,7 @@ namespace FootprintViewer.ViewModels
                         Footprints.Add(item);
                     }
                 }
-                
+
                 IsUpdating = false;
             }
         }
@@ -103,7 +94,7 @@ namespace FootprintViewer.ViewModels
         public void ResetAOI()
         {
             Filter.AOI = null;
-            
+
             Filter.ForceUpdate();
         }
 
@@ -111,7 +102,7 @@ namespace FootprintViewer.ViewModels
         {
             IsUpdating = true;
 
-          //  System.Threading.Thread.Sleep(1000);
+            //  System.Threading.Thread.Sleep(1000);
 
             IsUpdating = false;
         }
@@ -125,7 +116,7 @@ namespace FootprintViewer.ViewModels
             });
         }
 
-        private async void DataSourceChanged()
+        private async void UserDataSourceChanged()
         {
             if (UserDataSource != null)
             {
@@ -159,7 +150,7 @@ namespace FootprintViewer.ViewModels
         {
             if (Map != null)
             {
-                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintBorderLayer));
+                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
 
                 if (layers != null)
                 {
@@ -179,7 +170,7 @@ namespace FootprintViewer.ViewModels
         {
             if (Map != null)
             {
-                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintBorderLayer));
+                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
 
                 if (layers != null)
                 {
@@ -225,7 +216,7 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public Map? Map { get; set; }
 
-       // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
+        // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
 
         [Reactive]
         public ObservableCollection<FootprintImage> Footprints { get; private set; } = new ObservableCollection<FootprintImage>();
@@ -256,7 +247,7 @@ namespace FootprintViewer.ViewModels
                 var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
                 var date = DateTime.UtcNow;
 
-                list.Add(new FootprintImage() 
+                list.Add(new FootprintImage()
                 {
                     Date = date.Date.ToShortDateString(),
                     SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
@@ -270,9 +261,9 @@ namespace FootprintViewer.ViewModels
         }
 
         public void AddFootprints(IEnumerable<FootprintImage> footprints)
-        {            
-          //  _sourceFootprints.Clear();
-          //  _sourceFootprints.AddRange(footprints);
+        {
+            //  _sourceFootprints.Clear();
+            //  _sourceFootprints.AddRange(footprints);
 
             Footprints.Clear();
             Footprints.AddRange(footprints);
@@ -280,7 +271,7 @@ namespace FootprintViewer.ViewModels
             var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
             sortNames.Sort();
 
-            Filter.AddSensors(sortNames); 
+            Filter.AddSensors(sortNames);
         }
     }
 }

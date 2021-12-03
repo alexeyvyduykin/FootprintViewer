@@ -1,6 +1,7 @@
 ﻿using BruTile;
 using BruTile.MbTiles;
 using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -9,6 +10,7 @@ using Mapsui.UI;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FootprintViewer
@@ -18,8 +20,18 @@ namespace FootprintViewer
         public static void SetWorldMapLayer(this Map map, LayerSource source)
         { 
             var layer = CreateWorldMapLayer(source);
-            map.Layers.Replace(nameof(LayerType.BackgroundLayer), layer);
+            map.Layers.Replace(nameof(LayerType.WorldMap), layer);
             map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Envelope };
+        }
+
+        public static ILayer GetLayer(this Map map, LayerType layerType)
+        {
+            return map.Layers.First(l => l.Name.Equals(layerType.ToString()));
+        }
+
+        public static T GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
+        {
+            return (T)map.Layers.First(l => l.Name.Equals(layerType.ToString()));
         }
 
         public static void Replace(this LayerCollection collection, string name, ILayer layer)
@@ -63,7 +75,7 @@ namespace FootprintViewer
 
             var layer = new TileLayer(mbTilesTileSource)
             {
-                Name = nameof(LayerType.BackgroundLayer)
+                Name = nameof(LayerType.WorldMap)
             };
 
             return layer;

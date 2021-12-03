@@ -8,7 +8,8 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace FootprintViewer
+
+namespace FootprintViewer.Layers
 {
     public class VertexOnlyLayer : BaseLayer
     {

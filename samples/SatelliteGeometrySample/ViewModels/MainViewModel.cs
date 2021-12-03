@@ -13,7 +13,7 @@ namespace SatelliteGeometrySample.ViewModels
         public DataViewModel DataViewModel { get; set; }
 
         [Reactive]
-        public DataSource DataSource { get; set; }
+        public UserDataSource UserDataSource { get; set; }
 
         [Reactive]
         public Map Map { get; set; }

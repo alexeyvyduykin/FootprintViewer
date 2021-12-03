@@ -150,11 +150,14 @@
                     </Viewbox>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
+            <TabControl.Resources>
                 <DataTemplate DataType="{x:Type vm:SceneSearch}">
                     <tabs:SceneSearchTab Width="380"/>
                 </DataTemplate>
-            </TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type vm:SatelliteViewer}">
+                    <tabs:SatelliteViewerTab Width="380"/>
+                </DataTemplate>
+            </TabControl.Resources>
         </TabControl>
     </DockPanel>
 </UserControl>

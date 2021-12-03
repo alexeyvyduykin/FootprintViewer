@@ -1,6 +1,9 @@
-﻿using FootprintViewer.Data;
+﻿using BruTile.Wmts.Generated;
+using FootprintViewer.Data;
 using FootprintViewer.Graphics;
+using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
+using FootprintViewer.WPF.Views.SidePanelTabs;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -22,6 +25,7 @@ namespace FootprintViewer.WPF.ViewModels
 
         private readonly EditLayer _editLayer;
         private readonly SceneSearch _sceneSearchTab;
+        private readonly SatelliteViewer _satelliteViewerTab;
 
         // Create some design-time data
         public MainViewModel()
@@ -30,14 +34,8 @@ namespace FootprintViewer.WPF.ViewModels
 
             UserDataSource = new UserDataSource();
 
-            Map = SampleBuilder.CreateMap();
-
-            Map.SetWorldMapLayer(UserDataSource.WorldMapSources.FirstOrDefault());
-
-            _editLayer = (EditLayer)Map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
-
-            Map.DataChanged += Map_DataChanged;
-
+            Map = ProjectFactory.CreateEmptyMap();
+    
             _sceneSearchTab = new SceneSearch()
             {
                 Title = "Поиск сцены",
@@ -53,7 +51,7 @@ namespace FootprintViewer.WPF.ViewModels
 
             ToolManager = CreateToolManager();
 
-            InfoPanel = SampleBuilder.CreateInfoPanel();
+            InfoPanel = ProjectFactory.CreateInfoPanel();
 
             WorldMapSelector = new WorldMapSelector(UserDataSource.WorldMapSources);
 
@@ -69,10 +67,10 @@ namespace FootprintViewer.WPF.ViewModels
             ActualController = new EditController();
 
             UserDataSource = userDataSource;
-
+            
             DataSource = dataSource;
-
-            _editLayer = (EditLayer)map.Layers.First(l => l.Name == nameof(LayerType.EditLayer));
+            
+            _editLayer = map.GetLayer<EditLayer>(LayerType.Edit);
 
             map.DataChanged += Map_DataChanged;
 
@@ -84,14 +82,21 @@ namespace FootprintViewer.WPF.ViewModels
                 UserDataSource = userDataSource,
             };
 
+            _satelliteViewerTab = new SatelliteViewer(Map)
+            {
+                Title = "Просмотр спутников",
+                Name = "SatelliteViewer",
+                DataSource = dataSource,
+            };
+
             _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
             _sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
 
-            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new[] { _sceneSearchTab }), SelectedTab = _sceneSearchTab };
+            SidePanel = new SidePanel() { Tabs = new ObservableCollection<SidePanelTab>(new SidePanelTab[] { _sceneSearchTab, _satelliteViewerTab }), SelectedTab = _sceneSearchTab };
 
             ToolManager = CreateToolManager();
 
-            InfoPanel = SampleBuilder.CreateInfoPanel();
+            InfoPanel = ProjectFactory.CreateInfoPanel();
 
             WorldMapSelector = new WorldMapSelector(userDataSource.WorldMapSources);
 
@@ -350,7 +355,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Tooltip = "Нарисуйте круговую AOI",
                 Command = new RelayCommand(_ =>
                 {
-                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.Edit));
                     var tab = (SceneSearch)SidePanel.Tabs.Single();
 
                     Plotter = new Plotter(InteractiveCircle.Build());
@@ -423,7 +428,7 @@ namespace FootprintViewer.WPF.ViewModels
                 Tooltip = "Измерить расстояние",
                 Command = new RelayCommand(_ =>
                 {
-                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.EditLayer));
+                    var layer = (EditLayer)Map.Layers.FirstOrDefault(l => l.Name == nameof(LayerType.Edit));
 
                     layer.ClearRoute();
 

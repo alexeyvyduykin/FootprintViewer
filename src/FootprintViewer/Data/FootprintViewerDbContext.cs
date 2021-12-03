@@ -39,7 +39,7 @@ namespace FootprintViewer.Data
         protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
         {
             builder.Property(b => b.Name).IsRequired();
-            builder.HasKey(b => b.Name);
+            builder.HasKey(b => b.Name);         
         }
 
         protected void GroundTargetConfigure(EntityTypeBuilder<GroundTarget> builder)

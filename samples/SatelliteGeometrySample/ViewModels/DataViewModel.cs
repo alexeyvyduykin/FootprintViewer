@@ -112,15 +112,11 @@ namespace SatelliteGeometrySample.ViewModels
     public class DataViewModel : ReactiveObject
     {
         private readonly Map _map;
-        private readonly ILayer _targetlayer;
-        private readonly ILayer _sensorLayer;
-        private readonly ILayer _trackLayer;
+        private readonly TargetLayer _targetlayer;
+        private readonly SensorLayer _sensorLayer;
+        private readonly TrackLayer _trackLayer;
         private readonly FootprintLayer _footprintLayer;
-        private readonly TargetProvider _targetProvider;
-        private readonly TrackProvider _trackProvider;
-        private readonly SensorProvider _sensorProvider;
-        private readonly FootprintProvider _footprintProvider;
-
+       
         public ObservableCollection<SatelliteInfo> SatelliteInfos { get; set; }
 
         public DataViewModel(Map map, IDataSource source)
@@ -131,16 +127,11 @@ namespace SatelliteGeometrySample.ViewModels
             SatelliteInfos = new ObservableCollection<SatelliteInfo>();
             SatelliteInfos.CollectionChanged += items_CollectionChanged;
             SatelliteInfos.AddRange(list);
-
-            _trackProvider = new TrackProvider(source);
-            _sensorProvider = new SensorProvider(source);
-            _footprintProvider = new FootprintProvider(source);
-            _targetProvider = new TargetProvider(source);
-
-            _targetlayer = CreateTargetLayer(_targetProvider);
-            _sensorLayer = CreateSensorLayer(_sensorProvider);
-            _trackLayer = CreateTrackLayer(_trackProvider);
-            _footprintLayer = new FootprintLayer(_footprintProvider);
+            
+            _targetlayer = new TargetLayer(new TargetProvider(source));
+            _sensorLayer = new SensorLayer(new SensorProvider(source));
+            _trackLayer = new TrackLayer(new TrackProvider(source));
+            _footprintLayer = new FootprintLayer(new FootprintProvider(source));
 
             _map.Layers.Add(_targetlayer);
             _map.Layers.Add(_sensorLayer);
@@ -175,18 +166,16 @@ namespace SatelliteGeometrySample.ViewModels
                 if (e.PropertyName == nameof(SatelliteInfo.IsShow) ||
                     e.PropertyName == nameof(SatelliteInfo.CurrentNode) ||
                     e.PropertyName == nameof(SatelliteInfo.IsTrack))
-                {
-                    _trackProvider.Update(info);
-                    _trackLayer.DataHasChanged();
+                {                
+                    _trackLayer.Update(info);
                 }
 
                 if (e.PropertyName == nameof(SatelliteInfo.IsShow) ||
                     e.PropertyName == nameof(SatelliteInfo.CurrentNode) ||
                     e.PropertyName == nameof(SatelliteInfo.IsLeftStrip) ||
                     e.PropertyName == nameof(SatelliteInfo.IsRightStrip))
-                {
-                    _sensorProvider.Update(info);
-                    _sensorLayer.DataHasChanged();
+                {                  
+                    _sensorLayer.Update(info);
                 }
             }
         }
@@ -205,9 +194,9 @@ namespace SatelliteGeometrySample.ViewModels
                         return;
                     }
 
-                    FootprintInfo = FootprintInfo.BuildFrom(_footprintProvider.GetFootprint(name));
+                    FootprintInfo = FootprintInfo.BuildFrom(_footprintLayer.GetFootprint(name));
 
-                    _footprintProvider.SelectFeature(name);
+                    _footprintLayer.SelectFeature(name);
                 }
             }
 
@@ -222,84 +211,5 @@ namespace SatelliteGeometrySample.ViewModels
 
         [Reactive]
         public MapInfo MapInfo { get; set; }
-
-        private static ILayer CreateTrackLayer(IProvider provider)
-        {
-            return new MemoryLayer
-            {
-                Style = new VectorStyle
-                {
-                    Fill = null,
-                    Line = new Pen(Color.Green, 1),
-                },
-                DataSource = provider,
-            };
-        }
-
-        private static ILayer CreateSensorLayer(IProvider provider)
-        {
-            return new MemoryLayer
-            {
-                Style = new VectorStyle
-                {
-                    Fill = new Brush(Color.Opacity(Color.Blue, 0.25f)),
-                    Line = null,
-                    Outline = null,
-                },
-                DataSource = provider,
-            };
-        }
-
-        private static ILayer CreateTargetLayer(IProvider provider)
-        {
-            return new MemoryLayer
-            {
-                Style = CreateTargetThemeStyle(),
-                DataSource = provider,
-            };
-        }
-
-        private static ThemeStyle CreateTargetThemeStyle()
-        {
-            return new ThemeStyle(f =>
-            {
-                if (f.Geometry is Point)
-                {
-                    return new SymbolStyle
-                    {
-                        Fill = new Brush(Color.Opacity(Color.Black, 0.3f)),
-                        Outline = new Pen(Color.Black, 2),
-                        SymbolType = SymbolType.Ellipse,
-                        SymbolScale = 0.3,
-                        MaxVisible = 5000,
-                    };
-                }
-
-                if (f.Geometry is LineString || f.Geometry is MultiLineString)
-                {
-                    return new VectorStyle
-                    {
-                        Fill = null,
-                        Outline = new Pen(Color.Black, 2),
-                        Line = new Pen(Color.Black, 2),
-                        MaxVisible = 5000,
-                    };
-                }
-
-                if (f.Geometry is Polygon || f.Geometry is MultiPolygon)
-                {
-                    return new VectorStyle
-                    {
-                        Fill = null,// new Brush(Color.Opacity(Color.Black, 0.3f)),
-                        Outline = new Pen(Color.Black, 2),
-                        Line = new Pen(Color.Black, 2),
-                        MaxVisible = 5000,
-                    };
-                }
-
-                throw new Exception();
-            });
-        }
-
     }
 }

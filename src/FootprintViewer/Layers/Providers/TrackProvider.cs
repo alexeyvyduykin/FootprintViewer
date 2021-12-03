@@ -1,12 +1,12 @@
-﻿using DatabaseCreatorSample.Data;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
-using SatelliteGeometrySample.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SatelliteGeometrySample
+namespace FootprintViewer.Layers
 {
     public class TrackProvider : MemoryProvider
     {
@@ -48,7 +48,7 @@ namespace SatelliteGeometrySample
 
         public void Update(SatelliteInfo info)
         {
-            var name = info.Satellite.Name;
+            var name = info.Name;
 
             _cache[name].Clear();
 

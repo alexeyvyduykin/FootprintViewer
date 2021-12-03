@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FootprintViewer
+namespace FootprintViewer.Layers
 {
     public class TileMemoryLayer : MemoryLayer
     {

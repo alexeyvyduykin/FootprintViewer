@@ -1,6 +1,6 @@
 ﻿#nullable enable
-using DatabaseCreatorSample.Data;
 using DynamicData;
+using FootprintViewer.Data;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SatelliteGeometrySample
+namespace FootprintViewer.Layers
 {
     public class FootprintProvider : MemoryProvider
     {

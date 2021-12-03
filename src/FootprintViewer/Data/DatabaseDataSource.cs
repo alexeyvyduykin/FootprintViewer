@@ -1,5 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Data
 {
@@ -19,7 +20,7 @@ namespace FootprintViewer.Data
 
         public IEnumerable<Footprint> Footprints => _db.Footprints; 
         
-        public IEnumerable<Satellite> Satellites => _db.Satellites;
+        public IEnumerable<Satellite> Satellites => _db.Satellites.OrderBy(s => s.Name);
         
         public IEnumerable<GroundTarget> Targets => _db.GroundTargets;
 

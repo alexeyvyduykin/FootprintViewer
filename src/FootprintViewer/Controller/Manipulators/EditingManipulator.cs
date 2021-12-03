@@ -1,4 +1,5 @@
-﻿using Mapsui.Geometries;
+﻿using FootprintViewer.Layers;
+using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Styles;
 using Mapsui.UI;

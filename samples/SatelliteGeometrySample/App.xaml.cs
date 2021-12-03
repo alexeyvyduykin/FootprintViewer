@@ -31,17 +31,17 @@ namespace SatelliteGeometrySample
 
         private MainViewModel CreateMainViewModel(DatabaseCreatorSample.Data.IDataSource source)
         {
-            var dataSource = new DataSource();
+            var userDataSource = new UserDataSource();
 
             var map = CreateMap();
 
-            map.SetWorldMapLayer(dataSource.WorldMapSources[0]/*.FirstOrDefault()*/);
+            map.SetWorldMapLayer(userDataSource.WorldMapSources[0]/*.FirstOrDefault()*/);
                               
             var dataViewModel = new DataViewModel(map, source);
 
             return new MainViewModel() 
             {           
-                DataSource = dataSource,
+                UserDataSource = userDataSource,
                 Map = map,
                 DataViewModel = dataViewModel,
             };
@@ -66,7 +66,7 @@ namespace SatelliteGeometrySample
         {
             var layer = new Layer()
             {
-                Name = nameof(LayerType.BackgroundLayer),
+                Name = nameof(LayerType.WorldMap),
             };
 
             return layer;
