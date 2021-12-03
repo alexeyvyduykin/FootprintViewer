@@ -4,9 +4,11 @@ using Mapsui;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace FootprintViewer.ViewModels
 {
@@ -16,30 +18,40 @@ namespace FootprintViewer.ViewModels
 
         public SatelliteInfo(Satellite satellite)
         {
+            Satellite = satellite;
             Name = satellite.Name;
 
             var count = satellite.ToPRDCTSatellite().Nodes().Count;
-
-            MinNode = 1;
+     
             MaxNode = count;
 
-            CurrentNode = 1;
+            ShowInfoClickCommand = ReactiveCommand.Create(ShowInfoClick);            
         }
+
+        private void ShowInfoClick() => IsShowInfo = !IsShowInfo;
+
+        public ReactiveCommand<Unit, Unit> ShowInfoClickCommand { get; }
 
         [Reactive]
         public string? Name { get; set; }
 
         [Reactive]
-        public int MinNode { get; set; }
+        public Satellite Satellite { get; set; }
+
+        [Reactive]
+        public int MinNode { get; set; } = 1;
 
         [Reactive]
         public int MaxNode { get; set; }
 
         [Reactive]
-        public int CurrentNode { get; set; }
+        public int CurrentNode { get; set; } = 1;
 
         [Reactive]
         public bool IsShow { get; set; } = false;
+
+        [Reactive]
+        public bool IsShowInfo { get; set; } = false;
 
         [Reactive]
         public bool IsTrack { get; set; } = true;
@@ -136,13 +148,16 @@ namespace FootprintViewer.ViewModels
     {
         public SatelliteViewerDesigner() : base()
         {
+            var dt = new DateTime(2000, 6, 1, 12, 0, 0);
+            var sat1 = new Satellite() { Semiaxis = 6945.03, Eccentricity = 0.0, InclinationDeg = 97.65, ArgumentOfPerigeeDeg = 0.0, LongitudeAscendingNodeDeg = 0.0, RightAscensionAscendingNodeDeg = 0.0, Period = 5760.0, Epoch = dt, InnerHalfAngleDeg = 32, OuterHalfAngleDeg = 48 };
+
             SatelliteInfos = new ObservableCollection<SatelliteInfo>()
             {
-                new SatelliteInfo() { Name = "Satellite1", IsShow = true,  MinNode = 1, MaxNode = 15, CurrentNode = 1, IsTrack = true, IsLeftStrip = true, IsRightStrip = false },
-                new SatelliteInfo() { Name = "Satellite2", IsShow = false, MinNode = 1, MaxNode = 15, CurrentNode = 1, IsTrack = true, IsLeftStrip = true, IsRightStrip = false },
-                new SatelliteInfo() { Name = "Satellite3", IsShow = false, MinNode = 1, MaxNode = 15, CurrentNode = 1, IsTrack = true, IsLeftStrip = true, IsRightStrip = false },
-                new SatelliteInfo() { Name = "Satellite4", IsShow = false, MinNode = 1, MaxNode = 15, CurrentNode = 1, IsTrack = true, IsLeftStrip = true, IsRightStrip = false },
-                new SatelliteInfo() { Name = "Satellite5", IsShow = false, MinNode = 1, MaxNode = 15, CurrentNode = 1, IsTrack = true, IsLeftStrip = true, IsRightStrip = false },
+                new SatelliteInfo() { Name = "Satellite1", Satellite = sat1, IsShow = true,  IsShowInfo = false, MaxNode = 15 },
+                new SatelliteInfo() { Name = "Satellite2", Satellite = sat1, IsShow = false, IsShowInfo = true, MaxNode = 15 },
+                new SatelliteInfo() { Name = "Satellite3", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
+                new SatelliteInfo() { Name = "Satellite4", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
+                new SatelliteInfo() { Name = "Satellite5", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
             };
         }
     }

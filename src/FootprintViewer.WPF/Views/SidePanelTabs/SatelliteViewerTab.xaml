@@ -10,26 +10,169 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="380">
 
-    <Grid>
-        <ItemsControl ItemsSource="{Binding SatelliteInfos}">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="#4c9ae7"/>
+        <SolidColorBrush x:Key="BackgroundBrush">
+            <SolidColorBrush.Color>
+                <Color R="33" G="43" B="53" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="BackgroundLightBrush">
+            <SolidColorBrush.Color>
+                <Color R="53" G="63" B="73" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        </Style>
+        <Style x:Key="txtHeaderNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style x:Key="txtBodyNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
+        <Style x:Key="txtInfoNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        </Style>
+        <Style x:Key="txtInfoValueKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding SatelliteInfos}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="8,4,8,4" Padding="4" Background="{StaticResource BackgroundLightBrush}">
+                            <StackPanel>
+                                <StackPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource txtHeaderNameKey}"/>
+                                        <Button Width="18" Height="18" FontSize="8" Background="{StaticResource AccentBrush}" Foreground="White" Margin="4,0,0,0"
+                                            Content="info">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Click">
+                                                    <i:InvokeCommandAction Command="{Binding ShowInfoClickCommand}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </Button>
+                                        <CheckBox IsChecked="{Binding IsShow}" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Show/Hide" Style="{StaticResource txtBodyNameKey}"/>
+                                    </DockPanel>
+                                </StackPanel>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Margin="8,4,8,4" Padding="4" BorderBrush="Black" BorderThickness="1">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-                            <CheckBox IsChecked="{Binding IsShow}" Content="Show/Hide"/>
-                            <Slider Minimum="{Binding MinNode}" Maximum="{Binding MaxNode}" Value="{Binding CurrentNode}" 
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsShow}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsShow}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+
+                                    <Slider Minimum="{Binding MinNode}" Maximum="{Binding MaxNode}" Value="{Binding CurrentNode}" 
                                     TickPlacement="TopLeft"
                                     TickFrequency="1" AutoToolTipPlacement="TopLeft"/>
-                            <CheckBox IsChecked="{Binding IsTrack}" Content="Is Track"/>
-                            <CheckBox IsChecked="{Binding IsLeftStrip}" Content="Is Left Strip"/>
-                            <CheckBox IsChecked="{Binding IsRightStrip}" Content="Is Right Strip"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding IsTrack}" DockPanel.Dock="Right"/>
+                                        <TextBlock Text="IsTrack" Style="{StaticResource txtBodyNameKey}"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding IsLeftStrip}" DockPanel.Dock="Right"/>
+                                        <TextBlock Text="IsLeftStrip" Style="{StaticResource txtBodyNameKey}"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding IsRightStrip}" DockPanel.Dock="Right"/>
+                                        <TextBlock Text="IsRightStrip" Style="{StaticResource txtBodyNameKey}"/>
+                                    </DockPanel>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsShowInfo}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsShowInfo}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Grid ShowGridLines="False">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Satellite.Semiaxis}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="0" Text="Semiaxis" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="1"  Text="{Binding Satellite.Eccentricity}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="1"  Text="Eccentricity" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="2"  Text="{Binding Satellite.InclinationDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="2"  Text="Inclination" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="3"  Text="{Binding Satellite.ArgumentOfPerigeeDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="3"  Text="ArgOfPerigee" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="4"  Text="{Binding Satellite.RightAscensionAscendingNodeDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="4"  Text="RAAN" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="5"  Text="{Binding Satellite.LongitudeAscendingNodeDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="5"  Text="LonAN" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="6"  Text="{Binding Satellite.Period}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="6"  Text="Period" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="7"  Text="{Binding Satellite.Epoch}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="7"  Text="Epoch" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="8"  Text="{Binding Satellite.InnerHalfAngleDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="8"  Text="InnerHalfAngle" Style="{StaticResource txtInfoNameKey}"/>
+
+                                        <TextBlock Grid.Column="0" Grid.Row="9"  Text="{Binding Satellite.OuterHalfAngleDeg}" Style="{StaticResource txtInfoValueKey}"/>
+                                        <TextBlock Grid.Column="1" Grid.Row="9"  Text="OuterHalfAngle" Style="{StaticResource txtInfoNameKey}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 
 
