@@ -53,7 +53,7 @@ namespace FootprintViewer.ViewModels
         public TargetViewerContentType Type { get; set; } = TargetViewerContentType.Empty;
 
         [Reactive]
-        public ObservableCollection<GroundTargetInfo> GroundTargetInfos { get; protected set; }
+        public ObservableCollection<GroundTargetInfo> GroundTargetInfos { get; set; }
     }
 
     public class GroundTargetViewerDesigner : GroundTargetViewer
@@ -63,4 +63,6 @@ namespace FootprintViewer.ViewModels
             Type = TargetViewerContentType.Show;
         }
     }
+
+    public class ObservableGroundTargetCollection : ObservableCollection<GroundTargetInfo> { }
 }
