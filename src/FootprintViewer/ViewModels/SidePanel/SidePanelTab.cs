@@ -13,5 +13,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public string Title { get; set; }
+
+        [Reactive]
+        public bool IsActive { get; set; } = false;
     }
 }

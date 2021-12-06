@@ -10,11 +10,30 @@ namespace FootprintViewer.ViewModels
 {
     public class SidePanel : ReactiveObject
     {
-        [Reactive]
-        public ObservableCollection<SidePanelTab> Tabs { get; set; }
+        public SidePanel()
+        {
+            this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
+            {
+                if (tab != null)
+                {
+                    foreach (var item in Tabs)
+                    {
+                        item.IsActive = false;
+
+                        if (item == tab)
+                        {
+                            item.IsActive = true;
+                        }                    
+                    }
+                }
+            });
+        }
 
         [Reactive]
-        public SidePanelTab SelectedTab { get; set; }
+        public ObservableCollection<SidePanelTab> Tabs { get; set; } = new ObservableCollection<SidePanelTab>();
+
+        [Reactive]
+        public SidePanelTab? SelectedTab { get; set; }
     }
 
     public class SidePanelDesigner : SidePanel
