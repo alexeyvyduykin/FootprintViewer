@@ -127,9 +127,10 @@ namespace FootprintViewer.ViewModels
 
                 _sourceFootprints.AddRange(footprints);
 
+               // Footprints.Clear();
+               // Footprints.AddRange(footprints);
 
-                Footprints.Clear();
-                Footprints.AddRange(footprints);
+                Footprints = new ObservableCollection<FootprintImage>(footprints);
 
                 var sortNames = new List<FootprintImage>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
                 sortNames.Sort();
