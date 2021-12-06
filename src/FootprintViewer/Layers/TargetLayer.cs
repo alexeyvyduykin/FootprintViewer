@@ -1,4 +1,5 @@
-﻿using Mapsui;
+﻿using FootprintViewer.Data;
+using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
@@ -11,10 +12,19 @@ using System.Text;
 
 namespace FootprintViewer.Layers
 {
+    public class TargetLayerEventArgs : EventArgs
+    {
+        public IEnumerable<IFeature>? Features { get; set; }
+        public double Resolution { get; set; }
+    }
+
+    public delegate void TargetLayerEventHandler(object? sender, TargetLayerEventArgs e);
+
     public class TargetLayer : MemoryLayer
     {
         private IStyle _style;
         private TargetProvider _provider;
+        private const int _maxVisible = 5000;
 
         public TargetLayer(IProvider provider)
         {
@@ -27,21 +37,36 @@ namespace FootprintViewer.Layers
             IsMapInfoLayer = false;
         }
 
+        public event TargetLayerEventHandler OnRefreshData;
+
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
             base.RefreshData(extent, resolution, changeType);
 
             if (changeType == ChangeType.Discrete)
             {
-                Debug.WriteLine("TargetLayer: call RefreshData()");
+                if (resolution < _maxVisible && extent.Equals(new BoundingBox(0,0,0,0)) == false)
+                {
+                    OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                    {
+                        Resolution = resolution,
+                        Features = GetFeaturesInView(extent, resolution),
+                    });
+                }
+                else
+                {
+                    OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                    {
+                        Resolution = resolution,
+                        Features = null
+                    });
+                }
             }
         }
 
-        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features)
         {
-         //   Debug.WriteLine("TargetLayer: call GetFeaturesInView()");
-
-            return base.GetFeaturesInView(box, resolution);
+            return _provider.FromDataSource(features);
         }
 
         private static ThemeStyle CreateTargetThemeStyle()
@@ -56,7 +81,7 @@ namespace FootprintViewer.Layers
                         Outline = new Pen(Color.Black, 2),
                         SymbolType = SymbolType.Ellipse,
                         SymbolScale = 0.3,
-                        MaxVisible = 5000,
+                        MaxVisible = _maxVisible,
                     };
                 }
 
@@ -67,7 +92,7 @@ namespace FootprintViewer.Layers
                         Fill = null,
                         Outline = new Pen(Color.Black, 2),
                         Line = new Pen(Color.Black, 2),
-                        MaxVisible = 5000,
+                        MaxVisible = _maxVisible,
                     };
                 }
 
@@ -78,7 +103,7 @@ namespace FootprintViewer.Layers
                         Fill = null,// new Brush(Color.Opacity(Color.Black, 0.3f)),
                         Outline = new Pen(Color.Black, 2),
                         Line = new Pen(Color.Black, 2),
-                        MaxVisible = 5000,
+                        MaxVisible = _maxVisible,
                     };
                 }
 

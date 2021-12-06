@@ -6,7 +6,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"            
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"          
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"        
+             x:Name="userControl"
              d:DataContext="{d:DesignInstance vm:GroundTargetViewerDesigner, IsDesignTimeCreatable=True}"       
              MinWidth="380"
              mc:Ignorable="d" 
@@ -14,6 +15,7 @@
 
     <UserControl.Resources>
         <converters:TargetViewerContentTypeConverter x:Key="targetViewerContentTypeConverter"/>
+        <converters:GroundTargetTypeConverter x:Key="groundTargetTypeConverter"/>
         <vm:ObservableGroundTargetCollection x:Key="coll">
             <vm:GroundTargetInfo Name="g1"></vm:GroundTargetInfo>
             <vm:GroundTargetInfo Name="g2"></vm:GroundTargetInfo>
@@ -23,6 +25,11 @@
         <SolidColorBrush x:Key="BackgroundBrush">
             <SolidColorBrush.Color>
                 <Color R="33" G="43" B="53" A="255"></Color>
+            </SolidColorBrush.Color>
+        </SolidColorBrush>
+        <SolidColorBrush x:Key="BackgroundLightBrush">
+            <SolidColorBrush.Color>
+                <Color R="53" G="63" B="73" A="255"></Color>
             </SolidColorBrush.Color>
         </SolidColorBrush>
         <Style TargetType="TextBlock">
@@ -45,7 +52,7 @@
                                                    TextWrapping="Wrap"
                                                    Margin="10" 
                                                    TextAlignment="Center"
-                                                   Text="Наземные цели при текущем приблежение не доступны"></TextBlock>
+                                                   Text="Наземные цели при текущем приблежение не доступны"/>
                                     </Grid>
                                 </Setter.Value>
                             </Setter>
@@ -55,15 +62,59 @@
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <Grid>
-                                        <ItemsControl ItemsSource="{Binding GroundTargetInfos}">
-                                            <ItemsControl.ItemTemplate>
+                                        <ListBox x:Name="listBox" 
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 HorizontalContentAlignment="Stretch"
+                                                 VerticalContentAlignment="Stretch"                                                 
+                                                 ItemsSource="{Binding GroundTargetInfos}" 
+                                                 SelectedItem="{Binding SelectedGroundTargetInfo}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="SelectionChanged">
+                                                    <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  
+                                                                           CommandParameter="{Binding ElementName=listBox, Path=SelectedItem}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="ListBoxItem">
+                                                                <ContentPresenter Margin="0,1,0,1"/>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                            
+                                            <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:GroundTargetInfo}">
-                                                    <Border>
-                                                        <TextBlock Text="{Binding Name}" Foreground="WhiteSmoke"></TextBlock>
+                                                    <Border Background="{StaticResource BackgroundLightBrush}">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseEnter">
+                                                                <i:InvokeCommandAction Command="{Binding ElementName=userControl, Path=DataContext.MouseOverEnterCommand}"                                                           
+                                                                                       CommandParameter="{Binding}"/>
+                                                            </i:EventTrigger>
+                                                            <i:EventTrigger EventName="MouseLeave">
+                                                                <i:InvokeCommandAction Command="{Binding ElementName=userControl, Path=DataContext.MouseOverLeaveCommand}"/>
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="36"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding Type, Converter={StaticResource groundTargetTypeConverter}}" 
+                                                                       Foreground="WhiteSmoke"/>
+                                                            <TextBlock Text="{Binding Name}" 
+                                                                       Foreground="WhiteSmoke"
+                                                                       Grid.Column="1"/>
+                                                        </Grid>
                                                     </Border>
                                                 </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
                                     </Grid>
                                 </Setter.Value>
                             </Setter>
@@ -73,7 +124,13 @@
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <Grid>
-                                        <TextBlock FontSize="30">Update</TextBlock>
+                                        <TextBlock VerticalAlignment="Center" 
+                                                   HorizontalAlignment="Center" 
+                                                   FontSize="30" 
+                                                   TextWrapping="Wrap"
+                                                   Margin="10" 
+                                                   TextAlignment="Center"
+                                                   Text="Загрузка..."/>
                                     </Grid>
                                 </Setter.Value>
                             </Setter>

@@ -8,16 +8,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace FootprintViewer.Layers
 {
     public class TargetProvider : MemoryProvider
     {      
         private readonly List<IFeature> _list;
-        private readonly List<GroundTarget> _cache = new List<GroundTarget>();
+        //private readonly IDictionary<string, GroundTarget> _cache = new Dictionary<string, GroundTarget>();
+        private readonly IDataSource _source;
 
         public TargetProvider(IDataSource source)
-        {       
+        {
+            _source = source;
+
             _list = Build(source.Targets);
             
             ReplaceFeatures(_list);
@@ -62,10 +66,17 @@ namespace FootprintViewer.Layers
 
                 list.Add(feature);
 
-                _cache.Add(item);
+                //_cache.Add(item.Name, item);
             }
 
             return list;
+        }
+
+        public IEnumerable<GroundTarget> FromDataSource(IEnumerable<IFeature> features)
+        {
+            var names = features.Select(s => (string)s["Name"]).ToList();
+
+            return _source.Targets.Where(s => names.Contains(s.Name));
         }
 
         private IGeometry AreaCutting(IList<Point> points)
