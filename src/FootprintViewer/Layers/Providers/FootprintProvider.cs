@@ -28,6 +28,11 @@ namespace FootprintViewer.Layers
             return _cache.Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
+        public IEnumerable<Footprint> GetFootprints()
+        {
+            return _cache;
+        }
+
         public void SelectFeature(string name)
         {
             var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();

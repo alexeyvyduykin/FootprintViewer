@@ -33,6 +33,8 @@ namespace FootprintViewer.Layers
 
         public void SelectFeature(string name) => _provider.SelectFeature(name);
 
+        public IEnumerable<Footprint> GetFootprints() => _provider.GetFootprints();        
+
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
             if (resolution >= 10000) // preview

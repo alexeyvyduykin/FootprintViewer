@@ -27,6 +27,8 @@ namespace FootprintViewer.WPF.ViewModels
         private readonly SceneSearch _sceneSearchTab;
         private readonly SatelliteViewer _satelliteViewerTab;
         private readonly GroundTargetViewer _groundTargetViewerTab;
+        private readonly FootprintObserver _footprintObserverTab;
+
         // Create some design-time data
         public MainViewModel()
         {
@@ -95,6 +97,12 @@ namespace FootprintViewer.WPF.ViewModels
                 Name = "GroundTargetViewer",
             };
 
+            _footprintObserverTab = new FootprintObserver(Map)
+            {
+                Title = "Просмотр рабочей программы",
+                Name = "FootprintViewer",
+            };
+
             _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
             _sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
 
@@ -104,7 +112,8 @@ namespace FootprintViewer.WPF.ViewModels
                 {
                     _sceneSearchTab, 
                     _satelliteViewerTab, 
-                    _groundTargetViewerTab 
+                    _groundTargetViewerTab,
+                    _footprintObserverTab,
                 }), 
                 SelectedTab = _sceneSearchTab 
             };
