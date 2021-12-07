@@ -76,8 +76,13 @@
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
 
-                                            <ListBox.ItemContainerStyle>
+                                            <!--<ListBox.ItemContainerStyle>
                                                 <Style TargetType="ListBoxItem">
+                                                   
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True"></Trigger>
+                                                    </Style.Triggers>
+                                                                                                        
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="ListBoxItem">
@@ -86,11 +91,12 @@
                                                         </Setter.Value>
                                                     </Setter>
                                                 </Style>
-                                            </ListBox.ItemContainerStyle>
-                                            
+                                            </ListBox.ItemContainerStyle>-->
+
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:GroundTargetInfo}">
-                                                    <Border Background="{StaticResource BackgroundLightBrush}">
+                                                    <Border Background="{StaticResource BackgroundLightBrush}" 
+                                                            Padding="8,4,8,4">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="MouseEnter">
                                                                 <i:InvokeCommandAction Command="{Binding ElementName=userControl, Path=DataContext.MouseOverEnterCommand}"                                                           

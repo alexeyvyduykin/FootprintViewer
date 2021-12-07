@@ -7,8 +7,6 @@ using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace FootprintViewer.Layers
 {
@@ -23,16 +21,22 @@ namespace FootprintViewer.Layers
     public class TargetLayer : MemoryLayer
     {
         private IStyle _style;
-        private TargetProvider _provider;
+        private readonly TargetProvider _provider;
         private const int _maxVisible = 5000;
+        private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
 
         public TargetLayer(IProvider provider)
         {
             _provider = (TargetProvider)provider;
-            _style = CreateTargetThemeStyle();
-            
-            Name = nameof(LayerType.GroundTarget);
+
+            var style1 = CreateTargetHighlightThemeStyle();
+            var style2 = CreateTargetThemeStyle();
+
+            _style = new StyleCollection() { style1, style2 };
             Style = _style;
+
+            Name = nameof(LayerType.GroundTarget);
+ 
             DataSource = provider;
             IsMapInfoLayer = false;
         }
@@ -45,23 +49,46 @@ namespace FootprintViewer.Layers
 
             if (changeType == ChangeType.Discrete)
             {
-                if (resolution < _maxVisible && extent.Equals(new BoundingBox(0,0,0,0)) == false)
+                if (extent.Left != _lastExtent.Left && extent.Top != _lastExtent.Top && extent.Right != _lastExtent.Right && extent.Bottom != _lastExtent.Bottom)
                 {
-                    OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                    if (resolution < _maxVisible && extent.Equals(new BoundingBox(0, 0, 0, 0)) == false)
                     {
-                        Resolution = resolution,
-                        Features = GetFeaturesInView(extent, resolution),
-                    });
-                }
-                else
-                {
-                    OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                        OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                        {
+                            Resolution = resolution,
+                            Features = GetFeaturesInView(extent, resolution),
+                        });
+                    }
+                    else
                     {
-                        Resolution = resolution,
-                        Features = null
-                    });
+                        OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
+                        {
+                            Resolution = resolution,
+                            Features = null
+                        });
+                    }
+
+                    _lastExtent = extent.Copy();                    
                 }
             }
+        }
+
+        public void SelectGroundTarget(string name)
+        {
+            _provider.SelectFeature(name);
+            DataHasChanged();
+        }
+
+        public void ShowHighlight(string name)
+        {
+            _provider.ShowHighlight(name);
+            DataHasChanged();
+        }
+
+        public void HideHighlight()
+        {
+            _provider.HideHighlight();
+            DataHasChanged();
         }
 
         public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features)
@@ -69,42 +96,176 @@ namespace FootprintViewer.Layers
             return _provider.FromDataSource(features);
         }
 
+        private static ThemeStyle CreateTargetHighlightThemeStyle()
+        {
+            return new ThemeStyle(f =>
+            {
+                var highlight = (bool)f["Highlight"];
+                var state = f["State"].ToString();
+
+                if (highlight == true)
+                {
+                    if (f.Geometry is Point)
+                    {
+                        switch (state)
+                        {
+                            case "Unselected":
+                                return new SymbolStyle
+                                {
+                                    Fill = new Brush(Color.Opacity(Color.Green, 0.4f)),
+                                    Outline = null,
+                                    SymbolType = SymbolType.Ellipse,
+                                    SymbolScale = 0.6,
+                                    MaxVisible = _maxVisible,
+                                };
+                            case "Selected":
+                                return new SymbolStyle
+                                {
+                                    Fill = new Brush(Color.Opacity(Color.Green, 0.4f)),
+                                    Outline = null,
+                                    SymbolType = SymbolType.Ellipse,
+                                    SymbolScale = 0.8,
+                                    MaxVisible = _maxVisible,
+                                };
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (f.Geometry is LineString || f.Geometry is MultiLineString)
+                    {
+                        switch (state)
+                        {
+                            case "Unselected":
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(Color.Opacity(Color.Green, 0.3f), 8),
+                                    MaxVisible = _maxVisible,
+                                };
+                            case "Selected":
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(Color.Opacity(Color.Green, 0.3f), 12),
+                                    MaxVisible = _maxVisible,
+                                };
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (f.Geometry is Polygon || f.Geometry is MultiPolygon)
+                    {
+                        switch (state)
+                        {
+                            case "Unselected":
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Outline = new Pen(Color.Opacity(Color.Green, 0.3f), 8),
+                                    Line = null,
+                                    MaxVisible = _maxVisible,
+                                };
+                            case "Selected":
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Outline = new Pen(Color.Opacity(Color.Green, 0.3f), 12),
+                                    Line = null,
+                                    MaxVisible = _maxVisible,
+                                };
+                            default:
+                                break;
+                        }
+                    }
+
+                    throw new Exception();
+                }
+
+                return null;
+            });
+        }
+
         private static ThemeStyle CreateTargetThemeStyle()
         {
             return new ThemeStyle(f =>
             {
+                var state = f["State"].ToString();
+
                 if (f.Geometry is Point)
                 {
-                    return new SymbolStyle
+                    switch (state)
                     {
-                        Fill = new Brush(Color.Opacity(Color.Black, 0.3f)),
-                        Outline = new Pen(Color.Black, 2),
-                        SymbolType = SymbolType.Ellipse,
-                        SymbolScale = 0.3,
-                        MaxVisible = _maxVisible,
-                    };
+                        case "Unselected":
+                            return new SymbolStyle
+                            {
+                                Fill = null,
+                                Outline = new Pen(Color.Black, 1.0),
+                                SymbolType = SymbolType.Ellipse,
+                                SymbolScale = 0.4,
+                                MaxVisible = _maxVisible,
+                            };
+                        case "Selected":
+                            return new SymbolStyle
+                            {
+                                Fill = null,
+                                Outline = new Pen(Color.Black, 4.0),
+                                SymbolType = SymbolType.Ellipse,
+                                SymbolScale = 0.6,
+                                MaxVisible = _maxVisible,
+                            };
+                        default:
+                            break;
+                    }
                 }
 
                 if (f.Geometry is LineString || f.Geometry is MultiLineString)
                 {
-                    return new VectorStyle
+                    switch (state)
                     {
-                        Fill = null,
-                        Outline = new Pen(Color.Black, 2),
-                        Line = new Pen(Color.Black, 2),
-                        MaxVisible = _maxVisible,
-                    };
+                        case "Unselected":
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Line = new Pen(Color.Black, 1),
+                                MaxVisible = _maxVisible,
+                            };
+                        case "Selected":
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Line = new Pen(Color.Black, 4),
+                                MaxVisible = _maxVisible,
+                            };
+                        default:
+                            break;
+                    }
                 }
 
                 if (f.Geometry is Polygon || f.Geometry is MultiPolygon)
                 {
-                    return new VectorStyle
+                    switch (state)
                     {
-                        Fill = null,// new Brush(Color.Opacity(Color.Black, 0.3f)),
-                        Outline = new Pen(Color.Black, 2),
-                        Line = new Pen(Color.Black, 2),
-                        MaxVisible = _maxVisible,
-                    };
+                        case "Unselected":
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Outline = new Pen(Color.Black, 1),
+                                Line = null,
+                                MaxVisible = _maxVisible,
+                            };
+                        case "Selected":
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Outline = new Pen(Color.Black, 4),
+                                Line = null,
+                                MaxVisible = _maxVisible,
+                            };
+                        default:
+                            break;
+                    }
                 }
 
                 throw new Exception();

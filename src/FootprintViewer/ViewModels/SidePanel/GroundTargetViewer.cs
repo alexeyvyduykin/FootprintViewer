@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Mapsui.Providers;
 using DynamicData;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -150,25 +151,42 @@ namespace FootprintViewer.ViewModels
 
         private void ShowHighlightTarget(GroundTargetInfo groundTarget)
         {
-            //if (_targetLayer != null && _targetLayer is WritableLayer writableLayer)
-            //{
-            //    writableLayer.Clear();
-            //    writableLayer.Add(new Feature() { Geometry = footprint.Geometry });
-            //    writableLayer.DataHasChanged();
-            //}
+            if(groundTarget != null)
+            {
+                var name = groundTarget.Name;
+
+                if (name != null)
+                {
+                    _targetLayer.ShowHighlight(name);
+                }
+            }
         }
 
         private void HideHighlightTarget()
         {
-            //if (_targetLayer != null && _targetLayer is WritableLayer writableLayer)
-            //{
-            //    writableLayer.Clear();
-            //    writableLayer.DataHasChanged();
-            //}
+            _targetLayer.HideHighlight();
         }
 
         private void SelectionChanged(GroundTargetInfo groundTarget)
         {
+            //if (groundTarget != null)
+            //{
+            //    var name = groundTarget.Name;
+
+            //    if (name != null)
+            //    {
+            //        _targetLayer.SelectGroundTarget(name);
+            //    }
+            //}
+
+            if (SelectedGroundTargetInfo != null)
+            {
+                var name = SelectedGroundTargetInfo.Name;
+                if (name != null)
+                {
+                    _targetLayer.SelectGroundTarget(name);
+                }           
+            }
 
         }
 

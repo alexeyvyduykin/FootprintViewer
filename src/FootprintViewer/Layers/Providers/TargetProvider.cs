@@ -17,6 +17,7 @@ namespace FootprintViewer.Layers
         private readonly List<IFeature> _list;
         //private readonly IDictionary<string, GroundTarget> _cache = new Dictionary<string, GroundTarget>();
         private readonly IDataSource _source;
+        private IFeature _lastSelected;
 
         public TargetProvider(IDataSource source)
         {
@@ -36,6 +37,8 @@ namespace FootprintViewer.Layers
                 var feature = new Feature()
                 {
                     ["Name"] = item.Name,
+                    ["State"] = "Unselected",
+                    ["Highlight"] = false,
                 };
 
                 switch (item.Type)
@@ -70,6 +73,32 @@ namespace FootprintViewer.Layers
             }
 
             return list;
+        }
+
+        public void SelectFeature(string name)
+        {
+            var feature = _list.Where(s => name.Equals((string)s["Name"])).First();
+
+            if (_lastSelected != null)
+            {
+                _lastSelected["State"] = "Unselected";
+            }
+
+            feature["State"] = "Selected";
+
+            _lastSelected = feature;
+        }
+
+        public void ShowHighlight(string name)
+        {
+            var feature = _list.Where(s => name.Equals((string)s["Name"])).First();
+
+            feature["Highlight"] = true;
+        }
+
+        public void HideHighlight()
+        {
+            _list.ForEach(s => s["Highlight"] = false);
         }
 
         public IEnumerable<GroundTarget> FromDataSource(IEnumerable<IFeature> features)
