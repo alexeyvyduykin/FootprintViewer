@@ -77,10 +77,10 @@ namespace FootprintViewer.ViewModels
             FootprintInfos = new ObservableCollection<FootprintInfo>();
 
             _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
-
-            Filter = new FootprintObserverFilter();
-
+   
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
+            
+            FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
             {
@@ -108,10 +108,22 @@ namespace FootprintViewer.ViewModels
                 }         
             });
 
+            this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
+
             Type = FootprintViewerContentType.Update;
         }
 
+        private void FilterChanged()
+        {
+            if (Filter != null)
+            {                               
+                Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
+            }
+        }
+        
         public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
+       
+        public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
         private void PreviewMouseLeftButtonDown()
         {
@@ -128,6 +140,11 @@ namespace FootprintViewer.ViewModels
             }
         }
 
+        private void FilterClick()
+        {       
+            Filter?.Click();
+        }
+
         private static async Task<IList<Footprint>> LoadDataAsync(FootprintLayer layer)
         {
             return await Task.Run(() =>
@@ -138,16 +155,37 @@ namespace FootprintViewer.ViewModels
         }
 
         private async void FootprintsChanged()
-        {
+        {         
             var footprints = await LoadDataAsync(_footrpintLayer);
 
-            FootprintInfos = new ObservableCollection<FootprintInfo>(footprints.Select(s => new FootprintInfo(s)));
+            if (footprints != null)
+            {
+                if (Filter == null)
+                {
+                    FootprintInfos = new ObservableCollection<FootprintInfo>(footprints.Select(s => new FootprintInfo(s)));
+                }
+
+                if (Filter != null)
+                {
+                    var list = new List<FootprintInfo>();
+
+                    foreach (var item in footprints)
+                    {
+                        if (Filter.Filtering(item) == true)
+                        {
+                            list.Add(new FootprintInfo(item));
+                        }
+                    }
+
+                    FootprintInfos = new ObservableCollection<FootprintInfo>(list);
+                }
+            }
             
             Type = FootprintViewerContentType.Show;
         }
 
         [Reactive]
-        public FootprintObserverFilter Filter { get; set; }
+        public FootprintObserverFilter? Filter { get; set; }
 
         [Reactive]
         public FootprintViewerContentType Type { get; set; }
@@ -156,7 +194,7 @@ namespace FootprintViewer.ViewModels
         public FootprintInfo? SelectedFootprintInfo { get; set; }
 
         [Reactive]
-        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }
+        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }      
     }
 
     public class FootprintObserverDesigner : FootprintObserver

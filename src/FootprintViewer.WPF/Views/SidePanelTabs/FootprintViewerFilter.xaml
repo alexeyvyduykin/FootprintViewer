@@ -8,7 +8,8 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"           
              d:DataContext="{d:DesignInstance vm:FootprintObserverFilterDesigner, IsDesignTimeCreatable=True}"                        
-             mc:Ignorable="d" d:DesignWidth="400">
+             mc:Ignorable="d" d:DesignWidth="400"
+             MinWidth="360">
     
     <UserControl.Resources>
         <SolidColorBrush x:Key="BackgroundBrush" Color="#212b35"/>

@@ -100,7 +100,8 @@ namespace FootprintViewer.WPF.ViewModels
             _footprintObserverTab = new FootprintObserver(Map)
             {
                 Title = "Просмотр рабочей программы",
-                Name = "FootprintViewer",
+                Name = "FootprintViewer",              
+                Filter = new FootprintObserverFilter(dataSource),
             };
 
             _sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
