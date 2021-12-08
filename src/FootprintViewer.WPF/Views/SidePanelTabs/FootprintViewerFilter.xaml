@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="FootprintViewer.WPF.Views.SidePanelTabs.FootprintViewerFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"       
+             xmlns:local="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"   
+             xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"           
+             d:DataContext="{d:DesignInstance vm:FootprintObserverFilterDesigner, IsDesignTimeCreatable=True}"                        
+             mc:Ignorable="d" d:DesignWidth="400">
+    
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#212b35"/>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Border Background="{StaticResource BackgroundBrush}" >
+        <StackPanel>
+
+            <Border Padding="20">
+                <StackPanel >
+
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="От витка"/>
+                        <Slider x:Name="CloudinessSlider" 
+                                Minimum="1" Maximum="15" 
+                                TickFrequency="1" IsSnapToTickEnabled="True" 
+                                Value="{Binding FromNode}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="10">1</TextBlock>
+                            <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">2</TextBlock>
+                            <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">3</TextBlock>
+                            <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">4</TextBlock>
+                            <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">5</TextBlock>
+                            <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">6</TextBlock>
+                            <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">7</TextBlock>
+                            <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">8</TextBlock>
+                            <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">9</TextBlock>
+                            <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
+                            <TextBlock Grid.Column="9" FontSize="10" HorizontalAlignment="Right">11</TextBlock>
+                            <TextBlock Grid.Column="10" FontSize="10" HorizontalAlignment="Right">12</TextBlock>
+                            <TextBlock Grid.Column="11" FontSize="10" HorizontalAlignment="Right">13</TextBlock>
+                            <TextBlock Grid.Column="12" FontSize="10" HorizontalAlignment="Right">14</TextBlock>
+                            <TextBlock Grid.Column="13" FontSize="10" HorizontalAlignment="Right">15</TextBlock>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="До витка"/>
+                        <Slider x:Name="AngleSlider"
+                                Minimum="1" Maximum="15" 
+                                TickFrequency="1" IsSnapToTickEnabled="True" 
+                                Value="{Binding ToNode}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontSize="10">1</TextBlock>
+                            <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">2</TextBlock>
+                            <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">3</TextBlock>
+                            <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">4</TextBlock>
+                            <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">5</TextBlock>
+                            <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">6</TextBlock>
+                            <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">7</TextBlock>
+                            <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">8</TextBlock>
+                            <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">9</TextBlock>
+                            <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
+                            <TextBlock Grid.Column="9" FontSize="10" HorizontalAlignment="Right">11</TextBlock>
+                            <TextBlock Grid.Column="10" FontSize="10" HorizontalAlignment="Right">12</TextBlock>
+                            <TextBlock Grid.Column="11" FontSize="10" HorizontalAlignment="Right">13</TextBlock>
+                            <TextBlock Grid.Column="12" FontSize="10" HorizontalAlignment="Right">14</TextBlock>
+                            <TextBlock Grid.Column="13" FontSize="10" HorizontalAlignment="Right">15</TextBlock>
+                        </Grid>
+                    </StackPanel>
+
+                    <CheckBox IsChecked="{Binding IsLeftStrip}" Margin="0,0,0,4" Foreground="White" Content="Левая полоса обзора"/>
+
+                    <CheckBox IsChecked="{Binding IsRightStrip}" Margin="0,4,0,0" Foreground="White" Content="Правая полоса обзора"/>
+                    
+                </StackPanel>
+            </Border>
+
+            <Border Margin="20,0,20,0" Height="1" Background="Silver"></Border>
+
+            <Border Padding="20">
+                <StackPanel>
+                    <DockPanel LastChildFill="True" Margin="0,0,0,10">
+                        <Viewbox Width="18" Height="18">
+                            <Image Source="{DynamicResource IconSatelliteMain}"/>
+                        </Viewbox>
+                        <TextBlock Text="Спутники" Margin="8,0,0,0"></TextBlock>
+                        <CheckBox Content="Все спутники" IsChecked="{Binding IsAllSatelliteActive}" HorizontalAlignment="Right" Foreground="White"></CheckBox>
+                    </DockPanel>
+
+                    <ItemsControl ItemsSource="{Binding Satellites}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="0,8,0,8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsActive}"></CheckBox>
+                                        <TextBlock Text="{Binding Name}" Foreground="White"></TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Border>
+</UserControl>

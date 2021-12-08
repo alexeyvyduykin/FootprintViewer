@@ -9,45 +9,63 @@ using System.Text;
 
 namespace FootprintViewer.ViewModels
 {
+    public class SatelliteItem : ReactiveObject
+    {
+        [Reactive]
+        public string Name { get; set; } = string.Empty;
+
+        [Reactive]
+        public bool IsActive { get; set; } = true;
+    }
+
     public class FootprintObserverFilter : ReactiveObject
     {
         public FootprintObserverFilter()
         {
-            Cloudiness = 0.0;
-            MinSunElevation = 0.0;
-            MaxSunElevation = 90.0;
-            IsFullCoverAOI = false;
-            IsAllSensorActive = true;
+            IsLeftStrip = true;
+            IsRightStrip = true;
+            IsAllSatelliteActive = true;
         }
         
         [Reactive]
-        public DateTime FromDate { get; set; }
+        public int FromNode { get; set; }
 
         [Reactive]
-        public DateTime ToDate { get; set; }
+        public int ToNode { get; set; }
 
         [Reactive]
-        public double Cloudiness { get; set; }
+        public bool IsLeftStrip { get; set; }
 
         [Reactive]
-        public double MinSunElevation { get; set; }
+        public bool IsRightStrip { get; set; }
 
         [Reactive]
-        public double MaxSunElevation { get; set; }
+        public bool IsAllSatelliteActive { get; set; }
 
         [Reactive]
-        public bool IsFullCoverAOI { get; set; }
-
-        [Reactive]
-        public ObservableCollection<Sensor> Sensors { get; set; } = new ObservableCollection<Sensor>();
-
-        [Reactive]
-        public bool IsAllSensorActive { get; set; }
+        public ObservableCollection<SatelliteItem> Satellites { get; set; } = new ObservableCollection<SatelliteItem>();
 
         [Reactive]
         public IGeometry? AOI { get; set; }
 
         [Reactive]
         public bool IsOpen { get; set; }
+    }
+
+    public class FootprintObserverFilterDesigner : FootprintObserverFilter
+    {
+        public FootprintObserverFilterDesigner()
+        {
+            var sat1 = new SatelliteItem() { Name = "Satellite1" };
+            var sat2 = new SatelliteItem() { Name = "Satellite2" };
+            var sat3 = new SatelliteItem() { Name = "Satellite3" };
+            var sat4 = new SatelliteItem() { Name = "Satellite4" };
+            var sat5 = new SatelliteItem() { Name = "Satellite5" };
+
+            FromNode = 1;
+            ToNode = 15;
+
+            Satellites = new ObservableCollection<SatelliteItem>(new[] { sat1, sat2, sat3, sat4, sat5 });
+        }
     }
 }
