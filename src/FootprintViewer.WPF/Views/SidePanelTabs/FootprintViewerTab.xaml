@@ -7,7 +7,8 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"            
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"        
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"  
+             xmlns:nts="clr-namespace:NetTopologySuite.Geometries;assembly=NetTopologySuite"
              x:Name="userControl"
              d:DataContext="{d:DesignInstance vm:FootprintObserverDesigner, IsDesignTimeCreatable=True}"       
              MinWidth="380"
@@ -16,12 +17,9 @@
 
     <UserControl.Resources>
         <converters:FootprintViewerContentTypeConverter x:Key="footprintViewerContentTypeConverter"/>
-        <vm:ObservableFootprintCollection x:Key="coll">
-            <vm:FootprintInfo Name="Footprint0001"></vm:FootprintInfo>
-            <vm:FootprintInfo Name="Footprint0002"></vm:FootprintInfo>
-            <vm:FootprintInfo Name="Footprint0003"></vm:FootprintInfo>
-        </vm:ObservableFootprintCollection>
-        <vm:FootprintObserver x:Key="DesignDataFootprintObserver" Type="Show" FootprintInfos="{StaticResource coll}" />
+        <converters:NTSCoordinateConverter x:Key="ntsCoordinateConverter"/>
+        <converters:DateTimeConverter x:Key="dateTimeConverter"/>
+        <converters:SatelliteStripDirectionConverter x:Key="satelliteStripDirectionConverter"/>
         <SolidColorBrush x:Key="BackgroundBrush">
             <SolidColorBrush.Color>
                 <Color R="33" G="43" B="53" A="255"></Color>
@@ -35,10 +33,31 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
         </Style>
+        <Style x:Key="txtHeaderNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style x:Key="txtBodyNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
+        <Style x:Key="txtInfoNameKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        </Style>
+        <Style x:Key="txtInfoValueKey" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Background="{StaticResource BackgroundBrush}">
-        <ContentControl Margin="10" d:DataContext="{StaticResource DesignDataFootprintObserver}">
+        <ContentControl Margin="10">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Style.Triggers>
@@ -53,20 +72,69 @@
                                                  VerticalContentAlignment="Stretch"                                                 
                                                  ItemsSource="{Binding FootprintInfos}" 
                                                  SelectedItem="{Binding SelectedFootprintInfo}">
-
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                                    <i:InvokeCommandAction Command="{Binding PreviewMouseLeftButtonDownCommand}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:FootprintInfo}">
                                                     <Border Background="{StaticResource BackgroundLightBrush}" 
                                                             Padding="8,4,8,4">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="36"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                            </Grid.ColumnDefinitions>
+                                                        <StackPanel>
                                                             <TextBlock Text="{Binding Name}" 
-                                                                       Foreground="WhiteSmoke"
-                                                                       Grid.Column="1"/>
-                                                        </Grid>
+                                                                       Foreground="WhiteSmoke"/>
+
+                                                            <StackPanel>
+                                                                <StackPanel.Style>
+                                                                    <Style TargetType="StackPanel">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsShowInfo}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsShowInfo}" Value="False">
+                                                                                <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </StackPanel.Style>
+                                                                
+                                                                <Grid ShowGridLines="False">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition></RowDefinition>
+                                                                        <RowDefinition></RowDefinition>
+                                                                        <RowDefinition></RowDefinition>
+                                                                        <RowDefinition></RowDefinition>
+                                                                        <RowDefinition></RowDefinition>
+                                                                        <RowDefinition></RowDefinition>
+                                                                    </Grid.RowDefinitions>
+
+                                                                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SatelliteName}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Satellite" Style="{StaticResource txtInfoNameKey}"/>
+
+                                                                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Center, Converter={StaticResource ntsCoordinateConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="1" Text="Center" Style="{StaticResource txtInfoNameKey}"/>
+
+                                                                    <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Begin, Converter={StaticResource dateTimeConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="2" Text="Begin" Style="{StaticResource txtInfoNameKey}"/>
+
+                                                                    <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Duration, StringFormat={}{0} sec}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="3" Text="Duration" Style="{StaticResource txtInfoNameKey}"/>
+                                                                    
+                                                                    <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Node}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="4" Text="Node" Style="{StaticResource txtInfoNameKey}"/>
+
+                                                                    <TextBlock Grid.Column="0" Grid.Row="5" Text="{Binding Direction, Converter={StaticResource satelliteStripDirectionConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                    <TextBlock Grid.Column="1" Grid.Row="5" Text="Direction" Style="{StaticResource txtInfoNameKey}"/>
+
+                                                                </Grid>
+                                                            </StackPanel>
+                                                        </StackPanel>
                                                     </Border>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>

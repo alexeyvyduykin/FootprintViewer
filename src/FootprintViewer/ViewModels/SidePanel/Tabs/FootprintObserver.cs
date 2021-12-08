@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using FootprintViewer.Data;
 using System.Threading;
 using System.Linq;
+using NetTopologySuite.Geometries;
 
 namespace FootprintViewer.ViewModels
 {
@@ -24,12 +25,39 @@ namespace FootprintViewer.ViewModels
         {
             _footprint = footprint;            
             Name = footprint.Name;
+            SatelliteName = footprint.SatelliteName;
+            Center = footprint.Center.Coordinate.Copy();
+            Begin = footprint.Begin;
+            Duration = footprint.Duration;
+            Node = footprint.Node;
+            Direction = footprint.Direction;
         }
 
         public Footprint Footprint => _footprint;
 
         [Reactive]
         public string? Name { get; set; }
+
+        [Reactive]
+        public bool IsShowInfo { get; set; } = false;
+
+        [Reactive]
+        public string? SatelliteName { get; set; }
+
+        [Reactive]
+        public Coordinate Center { get; set; } = new Coordinate();
+
+        [Reactive]
+        public DateTime Begin { get; set; }
+
+        [Reactive]
+        public double Duration { get; set; }
+
+        [Reactive]
+        public int Node { get; set; }
+
+        [Reactive]
+        public SatelliteStripDirection Direction { get; set; }
     }
 
     public enum FootprintViewerContentType
@@ -52,6 +80,8 @@ namespace FootprintViewer.ViewModels
 
             Filter = new FootprintObserverFilter();
 
+            PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
+
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
             {
                 if (type == FootprintViewerContentType.Update)
@@ -68,7 +98,34 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
+            this.WhenAnyValue(s => s.SelectedFootprintInfo).Subscribe(footprint =>
+            {
+                if (footprint != null)
+                {              
+                    FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+
+                    footprint.IsShowInfo = true;
+                }         
+            });
+
             Type = FootprintViewerContentType.Update;
+        }
+
+        public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
+
+        private void PreviewMouseLeftButtonDown()
+        {
+            if (SelectedFootprintInfo != null)
+            {              
+                if (SelectedFootprintInfo.IsShowInfo == true)
+                {
+                    SelectedFootprintInfo.IsShowInfo = false;
+                }
+                else
+                {
+                    SelectedFootprintInfo.IsShowInfo = true;
+                }
+            }
         }
 
         private static async Task<IList<Footprint>> LoadDataAsync(FootprintLayer layer)
@@ -107,8 +164,23 @@ namespace FootprintViewer.ViewModels
         public FootprintObserverDesigner() : base()
         {
             Type = FootprintViewerContentType.Show;
+
+            FootprintInfos = new ObservableCollection<FootprintInfo>() 
+            {           
+                new FootprintInfo(){ Name = "Footrpint0001", IsShowInfo = false },          
+                new FootprintInfo()
+                {
+                    Name = "Footrpint0002", 
+                    SatelliteName = "Satellite1", 
+                    IsShowInfo = true, 
+                    Center = new Coordinate(54.434545, -12.435454), 
+                    Begin = new DateTime(2001, 6, 1, 12, 0, 0),
+                    Duration = 35,
+                    Node = 11,
+                    Direction = SatelliteStripDirection.Left,
+                },            
+                new FootprintInfo(){ Name = "Footrpint0003", IsShowInfo = false },
+            };
         }
     }
-
-    public class ObservableFootprintCollection : ObservableCollection<FootprintInfo> { }
 }
