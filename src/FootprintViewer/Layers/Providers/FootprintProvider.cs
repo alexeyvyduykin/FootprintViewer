@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using DynamicData;
 using FootprintViewer.Data;
 using Mapsui.Geometries;
 using Mapsui.Projection;
@@ -12,12 +11,13 @@ namespace FootprintViewer.Layers
 {
     public class FootprintProvider : MemoryProvider
     {
-        private IFeature _lastSelected;
-        private readonly List<IFeature> _dict = new List<IFeature>();        
-        private readonly List<Footprint> _cache = new List<Footprint>();
+        private IFeature? _lastSelected;
+        private readonly List<IFeature> _dict = new List<IFeature>();
+        private readonly IDataSource _source;
 
         public FootprintProvider(IDataSource source)
         {
+            _source = source;
             _dict = Build(source.Footprints);
 
             ReplaceFeatures(_dict);
@@ -25,12 +25,12 @@ namespace FootprintViewer.Layers
 
         public Footprint GetFootprint(string name)
         {
-            return _cache.Where(s => s.Name.Equals(name)).FirstOrDefault();
+            return _source.Footprints.Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
         public IEnumerable<Footprint> GetFootprints()
         {
-            return _cache;
+            return _source.Footprints;
         }
 
         public void SelectFeature(string name)
@@ -61,16 +61,6 @@ namespace FootprintViewer.Layers
 
             foreach (var item in footprints)
             {
-                //var ring = new LinearRing();
-
-                //foreach (var p in item.Border)
-                //{
-                //    var point = SphericalMercator.FromLonLat(p.X, p.Y);
-                //    ring.Vertices.Add(point);
-                //}
-
-                //var poly = new Polygon() { ExteriorRing = ring };
-
                 var poly = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
 
                 var feature = new Feature { Geometry = poly };
@@ -80,8 +70,6 @@ namespace FootprintViewer.Layers
 
                 list.Add(feature);
             }
-
-            _cache.Add(footprints);
 
             return list;
         }
