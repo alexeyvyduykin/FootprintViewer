@@ -1,9 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+using System.Reactive;
 
 namespace FootprintViewer.ViewModels
 {
@@ -13,14 +10,14 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; }
 
         [Reactive]
-        public string Tooltip { get; set; }
+        public string? Tooltip { get; set; }
 
         [Reactive]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public ICommand Command { get; set; }
+        public ReactiveCommand<Unit, Unit>? Command { get; set; }
 
         [Reactive]
-        public object Content { get; set; }
+        public object? Content { get; set; }
     }
 }

@@ -153,9 +153,13 @@
                     Margin="0,0,0,1" 
                     HorizontalAlignment="Left">
                        
-            <Button Style="{StaticResource ToolButtonTop}"                  
-                    Command="{Binding Command}">
-                <Button.ToolTip>
+            <Button Style="{StaticResource ToolButtonTop}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding Command}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Button.ToolTip>
                         <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </Button.ToolTip>
                 <Viewbox>
@@ -167,9 +171,14 @@
 
             <StackPanel DataContext="{Binding ZoomOut}"
                     HorizontalAlignment="Left">
-            <Button Style="{StaticResource ToolButtonBottom}"                  
-                    Command="{Binding Command}">
-                <Button.ToolTip>
+            <Button Style="{StaticResource ToolButtonBottom}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:InvokeCommandAction Command="{Binding Command}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <Button.ToolTip>
                     <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                 </Button.ToolTip>
                 <Viewbox>

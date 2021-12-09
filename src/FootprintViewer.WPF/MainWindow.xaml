@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:FootprintViewer.WPF"  
         xmlns:views="clr-namespace:FootprintViewer.WPF.Views"           
         xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"
-        xmlns:vm="clr-namespace:FootprintViewer.WPF.ViewModels"
+        xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
         mc:Ignorable="d"
         x:Name="TopLevel"

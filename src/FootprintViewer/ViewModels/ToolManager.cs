@@ -1,9 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace FootprintViewer.ViewModels
 {
@@ -11,8 +8,8 @@ namespace FootprintViewer.ViewModels
     {
         public ToolManager()
         {
-            this.WhenAnyValue(x => x.RouteDistance.IsActive).Subscribe(isActive => 
-            {             
+            this.WhenAnyValue(x => x.RouteDistance.IsActive).Subscribe(isActive =>
+            {
                 if (isActive == true)
                 {
                     if (AOICollection != null)
@@ -24,7 +21,7 @@ namespace FootprintViewer.ViewModels
                 {
                     if (Edit != null)
                     {
-                        Edit.Command?.Execute(null);
+                        Edit.Command?.Execute().Subscribe();
                     }
                 }
             });
@@ -42,7 +39,7 @@ namespace FootprintViewer.ViewModels
                 {
                     if (Edit != null)
                     {
-                        Edit.Command?.Execute(null);
+                        Edit.Command?.Execute().Subscribe();
                     }
                 }
             });
@@ -72,7 +69,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Tool RouteDistance { get; set; }
-        
+
         [Reactive]
         public Tool Edit { get; set; }
 
@@ -88,7 +85,7 @@ namespace FootprintViewer.ViewModels
     public class ToolManagerDesigner : ToolManager
     {
         public ToolManagerDesigner()
-        {          
+        {
             var toolRectangle = new Tool()
             {
                 Title = "AddRectangle",
@@ -103,7 +100,7 @@ namespace FootprintViewer.ViewModels
             {
                 Title = "AddCircle",
             };
-        
+
             var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
 
             aoiCollection.Visible = true;

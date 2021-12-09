@@ -1,9 +1,11 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using FootprintViewer.WPF;
-using FootprintViewer.WPF.ViewModels;
+using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -18,7 +20,7 @@ namespace FootprintViewer
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-          
+
             var userDataSource = new UserDataSource();
 
             var dataSource = CreateFromDatabase();
@@ -27,7 +29,78 @@ namespace FootprintViewer
 
             map.SetWorldMapLayer(userDataSource.WorldMapSources.FirstOrDefault());
 
-            var window = new MainWindow() { DataContext = new MainViewModel(map, userDataSource, dataSource) };
+            var sceneSearchTab = new SceneSearch()
+            {
+                Title = "Поиск сцены",
+                Name = "Scene",
+                Map = map,
+                UserDataSource = userDataSource,
+            };
+
+            var satelliteViewerTab = new SatelliteViewer(map)
+            {
+                Title = "Просмотр спутников",
+                Name = "SatelliteViewer",
+                DataSource = dataSource,
+            };
+
+            var groundTargetViewerTab = new GroundTargetViewer(map)
+            {
+                Title = "Просмотр наземных целей",
+                Name = "GroundTargetViewer",
+            };
+
+            var footprintObserverTab = new FootprintObserver(map)
+            {
+                Title = "Просмотр рабочей программы",
+                Name = "FootprintViewer",
+                Filter = new FootprintObserverFilter(dataSource),
+            };
+
+            sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
+            sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
+
+            var sidePanel = new SidePanel()
+            {
+                Tabs = new ObservableCollection<SidePanelTab>(new SidePanelTab[]
+                {
+                    sceneSearchTab,
+                    satelliteViewerTab,
+                    groundTargetViewerTab,
+                    footprintObserverTab,
+                }),
+
+                SelectedTab = sceneSearchTab
+            };
+
+            var mainViewModel = new MainViewModel()
+            {
+                Map = map,
+                UserDataSource = userDataSource,
+                DataSource = dataSource,
+                InfoPanel = ProjectFactory.CreateInfoPanel(),
+                SidePanel = sidePanel,
+            };
+
+            mainViewModel.AOIChanged += (s, e) =>
+            {
+                if (s != null)
+                {
+                    if (s is IGeometry geometry)
+                    {
+                        sceneSearchTab.SetAOI(geometry);
+                    }
+                }
+                else
+                {
+                    sceneSearchTab.ResetAOI();
+                }
+            };
+
+            var window = new MainWindow()
+            {
+                DataContext = mainViewModel
+            };
 
             window.Show();
         }
