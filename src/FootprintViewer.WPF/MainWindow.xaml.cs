@@ -1,6 +1,5 @@
 ﻿using FootprintViewer;
 using FootprintViewer.Models;
-using FootprintViewer.WPF.ViewModels;
 using FootprintViewer.WPF.Controls;
 using Mapsui;
 using Mapsui.Layers;
@@ -21,13 +20,6 @@ using NetTopologySuite.Algorithm;
 
 namespace FootprintViewer.WPF
 {
-    /*   
-    5) Tools -> LayerList
-    6) Hints -> Inner Tutorial
-    8) FootprintList -> Filter
-    */
-
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

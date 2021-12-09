@@ -21,8 +21,35 @@
         <Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>
         <SolidColorBrush x:Key="MainBrush" Color="{StaticResource MainColor}"/>
         <converters:ImageToBitmapSourceConverter x:Key="imageToBitmapSourceConverter"/>
-    </Window.Resources>
 
+        <Color x:Key="TipBackground" R="4" G="15" B="27" A="191"/>
+        <SolidColorBrush x:Key="TipBrush" Color="{StaticResource TipBackground}"/>
+
+        <Style TargetType="Border" x:Key="TipBorder">
+            <Setter Property="Background" Value="{StaticResource TipBrush}"/>
+            <Setter Property="Padding" Value="8,4,8,4" />
+            <Setter Property="CornerRadius" Value="3" />
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="txt">
+            <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TipTitle" BasedOn="{StaticResource txt}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="TipText" BasedOn="{StaticResource txt}">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+    </Window.Resources>
 
     <Grid>
         <Grid x:Name="GridOverlay">
@@ -33,15 +60,25 @@
 
         <Grid Grid.Column="0">
 
-            <local:UserMapControl x:Name="MapControl"                                   
+                <local:UserMapControl x:Name="MapControl"                                   
                                   MapSource="{Binding Map}"                              
                                   Plotter="{Binding Plotter}"
                                   Controller="{Binding ActualController}"  
-                                  TipSource="{Binding Tip}"
+                                  TipSource="{Binding Tip}"                               
                                   VerticalAlignment="Stretch"                             
-                                  HorizontalAlignment="Stretch" />
+                                  HorizontalAlignment="Stretch">
+                    <local:UserMapControl.TipDataTemplate>
+                        <DataTemplate DataType="{x:Type vm:Tip}">
+                            <Border Style="{StaticResource TipBorder}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource TipTitle}" Text="{Binding Title}"/>
+                                    <TextBlock Style="{StaticResource TipText}" Text="{Binding Text}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </local:UserMapControl.TipDataTemplate>
+                </local:UserMapControl>
 
-            <!--Controller="{Binding ActualController}"-->
             <Grid VerticalAlignment="Center"                        
                   HorizontalAlignment="Left"                                            
                   Margin="8">
@@ -84,8 +121,8 @@
         </Grid>
 
 
-        <views:SidePanelControl Grid.Column="1" 
-                                   DataContext="{Binding SidePanel}" />
+        <views:SidePanelControl Grid.Column="1"                                    
+                                DataContext="{Binding SidePanel}" />
         </Grid>
     </Grid>
 </Window>

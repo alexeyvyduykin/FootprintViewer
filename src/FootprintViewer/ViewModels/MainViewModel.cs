@@ -172,10 +172,7 @@ namespace FootprintViewer.ViewModels
         {
             Plotter = new Plotter(InteractiveRectangle.Build());
 
-            Tip = new Tip()
-            {
-                Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник",
-            };
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
             Plotter.BeginCreating += (s, e) =>
             {
@@ -205,8 +202,9 @@ namespace FootprintViewer.ViewModels
             Plotter.Hover += (s, e) =>
             {
                 var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+
                 Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
 
                 _editLayer.DataHasChanged();
             };
@@ -230,10 +228,7 @@ namespace FootprintViewer.ViewModels
         {
             Plotter = new Plotter(InteractivePolygon.Build());
 
-            Tip = new Tip()
-            {
-                Text = "Нажмите и перетащите, чтобы нарисовать полигон",
-            };
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
             Plotter.BeginCreating += (s, e) =>
             {
@@ -248,8 +243,9 @@ namespace FootprintViewer.ViewModels
                 if (e.AddInfo.Feature.Geometry.AllVertices().Count() > 2)
                 {
                     var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+
                     Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
+                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                 }
 
                 _editLayer.DataHasChanged();
@@ -302,10 +298,7 @@ namespace FootprintViewer.ViewModels
 
             Plotter = new Plotter(InteractiveCircle.Build());
 
-            Tip = new Tip()
-            {
-                Text = "Нажмите и перетащите, чтобы нарисовать круг",
-            };
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
             Plotter.BeginCreating += (s, e) =>
             {
@@ -333,8 +326,9 @@ namespace FootprintViewer.ViewModels
             Plotter.Hover += (s, e) =>
             {
                 var area = GetFeatureArea((Feature)e.AddInfo.Feature);
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+
                 Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
 
                 _editLayer.DataHasChanged();
             };
@@ -374,16 +368,14 @@ namespace FootprintViewer.ViewModels
 
             Plotter = new Plotter(InteractiveRoute.Build());
 
-            Tip = new Tip()
-            {
-                Text = "Кликните, чтобы начать измерение",
-            };
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
 
             Plotter.BeginCreating += (s, e) =>
             {
                 var distance = GetRouteLength(e.AddInfo);
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+
                 Tip.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
 
                 _editLayer.AddRoute(e.AddInfo);
                 _editLayer.DataHasChanged();
@@ -411,6 +403,8 @@ namespace FootprintViewer.ViewModels
             Plotter.Hover += (s, e) =>
             {
                 var distance = GetRouteLength(e.AddInfo);
+
+                Tip.Text = "";
                 Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
 
                 _editLayer.DataHasChanged();

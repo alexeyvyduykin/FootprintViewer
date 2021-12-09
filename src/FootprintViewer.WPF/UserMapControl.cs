@@ -1,34 +1,26 @@
-﻿using Mapsui;
+﻿using FootprintViewer.Graphics;
+using FootprintViewer.ViewModels;
+using Mapsui;
 using Mapsui.Geometries;
-using Mapsui.Layers;
 using Mapsui.UI.Wpf;
 using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
-using System.Windows.Shapes;
-using FootprintViewer.Graphics;
-using System.Windows.Controls.Primitives;
-using System.Windows.Controls;
-using FootprintViewer.WPF.Controls;
 using System.Collections.ObjectModel;
-using FootprintViewer.ViewModels;
-using System.Security.Policy;
 using System.Diagnostics;
-using FootprintViewer.WPF.Views;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace FootprintViewer.WPF
 {
     public class UserMapControl : MapControl, IMapView
     {
         private Mapsui.Geometries.Point? _mouseDownPoint;
-        private readonly TipControl _tipOverlay;
-        private bool _isActivateTip = false;
         private Cursor? _grabHandCursor;
         private bool _isLeftMouseDown = false;
         private CursorType _currentCursorType = CursorType.Default;
+        private ItemsControl? _tipControl;
+
         public UserMapControl() : base()
         {
             MouseEnter += MyMapControl_MouseEnter;
@@ -37,9 +29,60 @@ namespace FootprintViewer.WPF
             MouseDown += MyMapControl_MouseDown;
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
+        }
 
-            _tipOverlay = new TipControl();
-            Children.Add(_tipOverlay);
+        private static ItemsControl? CreateTip()
+        {
+            string xaml = @"
+            <ItemsControl>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background=""Transparent""/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style>
+                        <Setter Property=""Canvas.Left"" Value=""{Binding X}""/>
+                        <Setter Property=""Canvas.Top"" Value=""{Binding Y}""/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>";
+
+            ParserContext parserContext = new ParserContext();
+            parserContext.XmlnsDictionary.Add("", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+            parserContext.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
+
+            return XamlReader.Parse(xaml, parserContext) as ItemsControl;
+        }
+
+        public DataTemplate TipDataTemplate
+        {
+            get { return (DataTemplate)GetValue(TipDataTemplateProperty); }
+            set { SetValue(TipDataTemplateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TipDataTemplate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TipDataTemplateProperty =
+            DependencyProperty.Register("TipDataTemplate", typeof(DataTemplate), typeof(UserMapControl), new PropertyMetadata(null, OnTipDataTemplateChanged));
+
+        private static void OnTipDataTemplateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var mapControl = (UserMapControl)d;
+            var template = (DataTemplate)e.NewValue;
+            var itemsControl = CreateTip();
+
+            if (itemsControl != null)
+            {
+                itemsControl.ItemTemplate = template;
+
+                if (mapControl._tipControl != null)
+                {
+                    mapControl.Children.Remove(mapControl._tipControl);
+                }
+
+                mapControl._tipControl = itemsControl;
+                mapControl.Children.Add(itemsControl);
+            }
         }
 
         public Plotter Plotter
@@ -70,14 +113,14 @@ namespace FootprintViewer.WPF
             mapControl.Controller.HandleMouseEnter(mapControl, new MouseEventArgs());
         }
 
-        public Tip? TipSource
+        public ITip? TipSource
         {
-            get { return (Tip)GetValue(TipSourceProperty); }
+            get { return (ITip)GetValue(TipSourceProperty); }
             set { SetValue(TipSourceProperty, value); }
         }
 
         public static readonly DependencyProperty TipSourceProperty =
-            DependencyProperty.Register("TipSource", typeof(Tip), typeof(UserMapControl), new PropertyMetadata(null, OnTipSourceChanged));
+            DependencyProperty.Register("TipSource", typeof(ITip), typeof(UserMapControl), new PropertyMetadata(null, OnTipSourceChanged));
 
         private static void OnTipSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -85,10 +128,10 @@ namespace FootprintViewer.WPF
             if (e.NewValue == null)
             {
                 mapControl.HideTip();
-            }                
+            }
             else
-            {            
-                mapControl.ActiveateTip();         
+            {
+                mapControl.ShowTip();
             }
         }
 
@@ -122,9 +165,9 @@ namespace FootprintViewer.WPF
             }
 
             //var releasedArgs = (PointerReleasedEventArgs)e;
-            
+
             e.MouseDevice.Capture(null);
-            
+
             _isLeftMouseDown = false;
 
             //e.Handled = 
@@ -151,7 +194,7 @@ namespace FootprintViewer.WPF
         private void MyMapControl_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             base.OnMouseMove(e);
-  
+
             if (e.Handled)
             {
                 return;
@@ -159,19 +202,12 @@ namespace FootprintViewer.WPF
 
             if (TipSource != null)
             {
-                if (_isActivateTip == true)
-                {
-                    _tipOverlay.ItemsSource = new ObservableCollection<Tip>() { TipSource };
-                    _isActivateTip = false;
-                }
-
                 var screenPosition = e.GetPosition(this);
                 TipSource.X = screenPosition.X + 20;
                 TipSource.Y = screenPosition.Y;
             }
 
             //e.Handled = 
-
             var args = e.ToMouseEventArgs(this);
             Controller.HandleMouseMove(this, args);
 
@@ -179,7 +215,7 @@ namespace FootprintViewer.WPF
             {
                 if (_isLeftMouseDown == true && e.MouseDevice.LeftButton == MouseButtonState.Pressed)
                 {
-                    SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");                   
+                    SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");
                 }
                 else
                 {
@@ -189,7 +225,7 @@ namespace FootprintViewer.WPF
         }
 
         private void MyMapControl_MouseDown(object sender, MouseButtonEventArgs e)
-        {            
+        {
             base.OnMouseDown(e);
             if (e.Handled)
             {
@@ -253,8 +289,8 @@ namespace FootprintViewer.WPF
         }
 
         public void NavigateToAOI(BoundingBox boundingBox)
-        {                
-            Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));            
+        {
+            Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
         public void SetCursor(CursorType cursorType, string info = "")
@@ -291,20 +327,21 @@ namespace FootprintViewer.WPF
 
             Debug.WriteLine($"Set Cursor = {Cursor}, Info = {info}");
         }
-        
-        protected void ActiveateTip()
+
+        protected void ShowTip()
         {
-            _isActivateTip = true;     
+            if (_tipControl != null && TipSource != null)
+            {
+                _tipControl.ItemsSource = new ObservableCollection<ITip>() { TipSource };
+            }
         }
 
         protected void HideTip()
-        {       
-            _tipOverlay.ItemsSource = new ObservableCollection<Tip>();                        
-        }
-
-        public void InvalidatePlot(bool updateData = true)
         {
-            base.InvalidateVisual();
+            if (_tipControl != null)
+            {
+                _tipControl.ItemsSource = new ObservableCollection<Tip>();
+            }
         }
     }
 }

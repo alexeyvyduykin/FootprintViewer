@@ -16,7 +16,5 @@ namespace FootprintViewer
         MapInfo GetMapInfo(Point screenPosition, int margin = 0);
 
         void NavigateToAOI(BoundingBox boundingBox);
-
-        void InvalidatePlot(bool updateData = true);
     }
 }

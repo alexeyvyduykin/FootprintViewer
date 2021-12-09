@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FootprintViewer.WPF.Views
+namespace FootprintViewer.WPF.Design
 {
     /// <summary>
     /// Логика взаимодействия для TipControl.xaml
     /// </summary>
-    public partial class TipControl : ItemsControl
+    public partial class TipDesigner : UserControl
     {      
-        public TipControl()
+        public TipDesigner()
         {
             InitializeComponent();
         }
