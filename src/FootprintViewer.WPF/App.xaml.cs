@@ -21,6 +21,8 @@ namespace FootprintViewer
         {
             base.OnStartup(e);
 
+            var mapListener = new MapListener();
+
             var userDataSource = new UserDataSource();
 
             var dataSource = CreateFromDatabase();
@@ -73,9 +75,18 @@ namespace FootprintViewer
                 SelectedTab = sceneSearchTab
             };
 
+            mapListener.ClickOnMap += (s, e) => 
+            {            
+                if (s is string name && footprintObserverTab.IsActive == true)
+                {
+                    footprintObserverTab.SelectFootprintInfo(name);
+                }
+            };
+
             var mainViewModel = new MainViewModel()
             {
                 Map = map,
+                MapListener = mapListener,
                 UserDataSource = userDataSource,
                 DataSource = dataSource,
                 InfoPanel = ProjectFactory.CreateInfoPanel(),

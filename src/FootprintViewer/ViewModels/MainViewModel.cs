@@ -527,6 +527,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public WorldMapSelector? WorldMapSelector { get; set; }
+
+        [Reactive]
+        public MapListener? MapListener { get; set; }
     }
 
     public class MapLayer

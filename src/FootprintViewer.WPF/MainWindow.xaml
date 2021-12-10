@@ -64,7 +64,8 @@
                                   MapSource="{Binding Map}"                              
                                   Plotter="{Binding Plotter}"
                                   Controller="{Binding ActualController}"  
-                                  TipSource="{Binding Tip}"                               
+                                  TipSource="{Binding Tip}"    
+                                  MapListener="{Binding MapListener}"
                                   VerticalAlignment="Stretch"                             
                                   HorizontalAlignment="Stretch">
                     <local:UserMapControl.TipDataTemplate>

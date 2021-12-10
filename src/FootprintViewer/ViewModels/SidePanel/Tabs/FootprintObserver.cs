@@ -125,6 +125,25 @@ namespace FootprintViewer.ViewModels
        
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
+        public void SelectFootprintInfo(string name)
+        {
+            var res = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
+
+            if (res != default)
+            {
+                ScrollCollectionToCenter(res);
+            }
+        }
+
+        private void ScrollCollectionToCenter(FootprintInfo item)
+        {
+            ScrollToCenter = true;
+
+            SelectedFootprintInfo = item;
+
+            ScrollToCenter = false;
+        }
+
         private void PreviewMouseLeftButtonDown()
         {
             if (SelectedFootprintInfo != null)
@@ -194,7 +213,10 @@ namespace FootprintViewer.ViewModels
         public FootprintInfo? SelectedFootprintInfo { get; set; }
 
         [Reactive]
-        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }      
+        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }
+
+        [Reactive]
+        public bool ScrollToCenter { get; set; } = false;
     }
 
     public class FootprintObserverDesigner : FootprintObserver

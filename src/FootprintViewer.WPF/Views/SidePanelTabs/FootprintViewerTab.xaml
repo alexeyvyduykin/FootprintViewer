@@ -7,7 +7,8 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"            
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
-             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"  
+             xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"   
+             xmlns:behaviors="clr-namespace:FootprintViewer.WPF.Behaviors"  
              xmlns:views="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"  
              x:Name="userControl"
              d:DataContext="{d:DesignInstance vm:FootprintObserverDesigner, IsDesignTimeCreatable=True}"       
@@ -182,7 +183,8 @@
                                                  HorizontalContentAlignment="Stretch"
                                                  VerticalContentAlignment="Stretch"                                                 
                                                  ItemsSource="{Binding FootprintInfos}" 
-                                                 SelectedItem="{Binding SelectedFootprintInfo}">
+                                                 SelectedItem="{Binding SelectedFootprintInfo}"
+                                                 behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                                         <i:InvokeCommandAction Command="{Binding PreviewMouseLeftButtonDownCommand}"/>

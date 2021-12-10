@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Graphics;
+using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
@@ -6,6 +7,7 @@ using Mapsui.UI.Wpf;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +22,7 @@ namespace FootprintViewer.WPF
         private bool _isLeftMouseDown = false;
         private CursorType _currentCursorType = CursorType.Default;
         private ItemsControl? _tipControl;
+        private Mapsui.UI.MapInfoEventArgs? _mapInfoEventArgs;
 
         public UserMapControl() : base()
         {
@@ -29,6 +32,28 @@ namespace FootprintViewer.WPF
             MouseDown += MyMapControl_MouseDown;
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
+
+            Info += UserMapControl_Info;
+        }
+
+        private void UserMapControl_Info(object? sender, Mapsui.UI.MapInfoEventArgs e)
+        {
+            if (MapListener != null)
+            {
+                _mapInfoEventArgs = e;
+
+                if (e.MapInfo != null && e.MapInfo.Feature != null)
+                {
+                    var feature = e.MapInfo.Feature;
+                    
+                    if (feature != null && feature.Fields.Contains("Name") == true)
+                    {
+                        var name = (string)feature["Name"];
+
+                        MapListener.Click(name);
+                    }
+                }
+            }
         }
 
         private static ItemsControl? CreateTip()
@@ -155,6 +180,28 @@ namespace FootprintViewer.WPF
                 }
             }
         }
+
+        public MapListener MapListener
+        {
+            get { return (MapListener)GetValue(MapListenerProperty); }
+            set { SetValue(MapListenerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MapListenerProperty =
+            DependencyProperty.Register("MapListener", typeof(MapListener), typeof(UserMapControl), new PropertyMetadata(null, OnMapListenerChanged));
+
+        private static void OnMapListenerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is UserMapControl mapControl)
+            {
+                if (e.NewValue != null && e.NewValue is MapListener mapListener)
+                {
+                
+                }
+            }
+        }
+
 
         private void MyMapControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
