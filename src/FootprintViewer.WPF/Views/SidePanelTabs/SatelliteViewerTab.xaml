@@ -11,57 +11,51 @@
              d:DesignHeight="450" d:DesignWidth="380">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentBrush" Color="#4c9ae7"/>
-        <SolidColorBrush x:Key="BackgroundBrush">
-            <SolidColorBrush.Color>
-                <Color R="33" G="43" B="53" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
-        <SolidColorBrush x:Key="BackgroundLightBrush">
-            <SolidColorBrush.Color>
-                <Color R="53" G="63" B="73" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
+        
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentBackgroundBrush}"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+        </Style>
         <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
         </Style>
         <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
         </Style>
         <Style x:Key="txtHeaderNameKey" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="FontSize" Value="15"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
         </Style>
         <Style x:Key="txtBodyNameKey" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>
         <Style x:Key="txtInfoNameKey" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         </Style>
         <Style x:Key="txtInfoValueKey" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>
     </UserControl.Resources>
     
-    <Grid Background="{StaticResource BackgroundBrush}">
+    <Grid Background="{StaticResource MainBackgroundBrush}">
         <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding SatelliteInfos}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="8,4,8,4" Padding="4" Background="{StaticResource BackgroundLightBrush}">
+                        <Border Margin="8,4,8,4" Padding="4" Background="{StaticResource LightBackgroundBrush}">
                             <StackPanel>
                                 <StackPanel>
                                     <DockPanel>
                                         <TextBlock Text="{Binding Name}" Style="{StaticResource txtHeaderNameKey}"/>
-                                        <Button Width="18" Height="18" FontSize="8" Background="{StaticResource AccentBrush}" Foreground="White" Margin="4,0,0,0"
+                                        <Button Width="18" Height="18" FontSize="8" Margin="4,0,0,0"
                                             Content="info">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Click">

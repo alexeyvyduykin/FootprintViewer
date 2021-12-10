@@ -17,9 +17,8 @@
     <UserControl.Resources>
         
         <Style TargetType="{x:Type Button}" x:Key="ToolButton">
-            <Setter Property="Background" Value="#373737" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="Background" Value="{StaticResource MainWidgetBrush}"/>
+            <Setter Property="Opacity" Value="0.7"/>
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Width" Value="36"/>
             <Setter Property="Height" Value="36"/>
@@ -40,13 +39,13 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.9" />
-                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
+                                <Setter Property="Opacity" Value="0.6" />
                             </Trigger>
 
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Opacity" Value="1.0" />
-                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />
+                                <Setter Property="Opacity" Value="0.8" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,8 +66,7 @@
         </Style>
 
         <Style TargetType="{x:Type ToggleButton}" x:Key="ToolToggleButton">
-            <Setter Property="Background" Value="#373737" />
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
             <Setter Property="Opacity" Value="0.7" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Width" Value="36"></Setter>
@@ -90,18 +88,18 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.9" />
-                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
+                                <Setter Property="Opacity" Value="0.6" />
                             </Trigger>
 
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Opacity" Value="1.0" />
-                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />
+                                <Setter Property="Opacity" Value="0.8" />
                             </Trigger>
 
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Opacity" Value="1.0" />
-                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />
+                                <Setter Property="Opacity" Value="0.8" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -280,7 +278,7 @@
             <controls:Flyout Placement="Right"                         
                              Target="{Binding ElementName=LayerSelectorButton}"                         
                              IsAnchor="True"                         
-                             Background="#212b35"                                              
+                             Background="{StaticResource MainBackgroundBrush}"                                              
                              IsOpen="{Binding WorldMapSelector.IsOpen}"    
                              Visibility="Collapsed"
                              Content="{Binding WorldMapSelector}">

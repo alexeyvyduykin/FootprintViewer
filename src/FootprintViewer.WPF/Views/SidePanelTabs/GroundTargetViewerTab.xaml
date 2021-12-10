@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"            
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"                   
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"        
              x:Name="userControl"
@@ -22,22 +21,18 @@
             <vm:GroundTargetInfo Name="g3"></vm:GroundTargetInfo>
         </vm:ObservableGroundTargetCollection>
         <vm:GroundTargetViewer x:Key="DesignDataTargetViewer" Type="Show" GroundTargetInfos="{StaticResource coll}" />
-        <SolidColorBrush x:Key="BackgroundBrush">
-            <SolidColorBrush.Color>
-                <Color R="33" G="43" B="53" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
-        <SolidColorBrush x:Key="BackgroundLightBrush">
-            <SolidColorBrush.Color>
-                <Color R="53" G="63" B="73" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
+      
         <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
         </Style>
+        
+        <Style TargetType="ListBox">
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+        </Style>
+        
     </UserControl.Resources>
     
-    <Grid Background="{StaticResource BackgroundBrush}">
+    <Grid Background="{StaticResource MainBackgroundBrush}">
         <ContentControl Margin="10" d:DataContext="{StaticResource DesignDataTargetViewer}">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
@@ -76,26 +71,9 @@
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
 
-                                            <!--<ListBox.ItemContainerStyle>
-                                                <Style TargetType="ListBoxItem">
-                                                   
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsSelected" Value="True"></Trigger>
-                                                    </Style.Triggers>
-                                                                                                        
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="ListBoxItem">
-                                                                <ContentPresenter Margin="0,1,0,1"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </ListBox.ItemContainerStyle>-->
-
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:GroundTargetInfo}">
-                                                    <Border Background="{StaticResource BackgroundLightBrush}" 
+                                                    <Border Background="{StaticResource LightBackgroundBrush}" 
                                                             Padding="8,4,8,4">
                                                         <i:Interaction.Triggers>
                                                             <i:EventTrigger EventName="MouseEnter">
@@ -111,11 +89,8 @@
                                                                 <ColumnDefinition Width="36"></ColumnDefinition>
                                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Type, Converter={StaticResource groundTargetTypeConverter}}" 
-                                                                       Foreground="WhiteSmoke"/>
-                                                            <TextBlock Text="{Binding Name}" 
-                                                                       Foreground="WhiteSmoke"
-                                                                       Grid.Column="1"/>
+                                                            <TextBlock Text="{Binding Type, Converter={StaticResource groundTargetTypeConverter}}"/>
+                                                            <TextBlock Text="{Binding Name}" Grid.Column="1"/>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>

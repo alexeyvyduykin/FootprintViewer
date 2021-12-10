@@ -5,56 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"    
              xmlns:tabs="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"
-             d:DataContext="{d:DesignInstance vm:SidePanelDesigner, IsDesignTimeCreatable=True}"
-             xmlns:local="clr-namespace:FootprintViewer.WPF.Views"
+             d:DataContext="{d:DesignInstance vm:SidePanelDesigner, IsDesignTimeCreatable=True}"           
              mc:Ignorable="d" 
              d:DesignHeight="450">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="SidePanelHeaderBrush" Color="#4c9ae7"/>
-        <SolidColorBrush x:Key="TabControlHeaderBackground" Color="#171e26"/>
-        <!--<SolidColorBrush x:Key="TabItemSelectedBackground" Color="White" Opacity="0.35"/>-->
-        <SolidColorBrush x:Key="TabItemSelectedBackground">
-            <SolidColorBrush.Color>
-                <Color R="56" G="65" B="74" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
 
         <Style x:Key="SidePanelHeaderTextBlock" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FFFFFFE6"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource LightForegroundBrush}"></Setter>
             <Setter Property="FontSize" Value="13"></Setter>
             <Setter Property="FontFamily" Value="Roboto"></Setter>
         </Style>
-
-        <!--<Style TargetType="TabControl">
-            <Setter Property="TabStripPlacement" Value="Right"></Setter>
-            <Setter Property="Padding" Value="0"></Setter>
-        </Style>
-        
-        <Style TargetType="TabItem">
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Border x:Name="Chrome"                        
-                                BorderThickness="1,1,1,0"                         
-                                BorderBrush="Black"                         
-                                Background="{TemplateBinding Background}">
-                            <ContentPresenter ContentSource="Header"                         
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"                         
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Selector.IsSelected" Value="True">
-                                <Setter TargetName="Chrome" Property="Margin" Value="1,1,1,-1"/>
-                                <Setter TargetName="Chrome" Property="Padding" Value="2"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
 
         <!--Tab Control-->
         <Style  TargetType="{x:Type TabControl}">
@@ -84,7 +45,7 @@
                                       Margin="0,0,0,0"            
                                       IsItemsHost="True"           
                                       KeyboardNavigation.TabIndex="1"           
-                                      Background="{StaticResource TabControlHeaderBackground}" />
+                                      Background="{StaticResource DarkBackgroundBrush}" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -100,16 +61,16 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TabItem}">
                         <Grid>
-                            <Border Name="Border" Background="Transparent">
+                            <Border Name="brdr" Background="Transparent">
                                 <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="9,9,9,9"/>
                             </Border>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource TabItemSelectedBackground}" />
+                                <Setter TargetName="brdr" Property="Background" Value="{StaticResource LightBackgroundBrush}" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="False">
-                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                <Setter TargetName="brdr" Property="Background" Value="{StaticResource DarkBackgroundBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -123,7 +84,7 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top"
                     x:Name="Header">
-            <Border Padding="15,8,0,8" Background="{StaticResource SidePanelHeaderBrush}">
+            <Border Padding="15,8,0,8" Background="{StaticResource AccentBackgroundBrush}">
                 <DockPanel LastChildFill="True">
                     <TextBlock Text="{Binding SelectedItem.Title, ElementName=SidePanel}" 
                                HorizontalAlignment="Left"

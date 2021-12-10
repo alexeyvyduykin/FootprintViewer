@@ -11,15 +11,15 @@
              d:Background="LightBlue">
 
     <UserControl.Resources>
-        <Color x:Key="InfoPanelItemBackground" R="4" G="15" B="27" A="191"/>
-        <Color x:Key="InfoPanelItemOverlay" R="114" G="115" B="127" A="191"/>
-        <SolidColorBrush x:Key="InfoPanelItemOverlayBrush" Color="{StaticResource InfoPanelItemOverlay}"/>
-        <SolidColorBrush x:Key="InfoPanelItemBrush" Color="{StaticResource InfoPanelItemBackground}"/>
+
+        <Style TargetType="ItemsControl">
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+        </Style>
 
         <Style TargetType="{x:Type Button}" x:Key="InfoPanelButton">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="White" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
+            <Setter Property="Opacity" Value="0.7" />
             <Setter Property="Width" Value="29"></Setter>
             <Setter Property="Height" Value="29"></Setter>
             <Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>
@@ -39,7 +39,7 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource InfoPanelItemOverlayBrush}" />
+                                <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -55,8 +55,8 @@
         <Style TargetType="Border" x:Key="InfoPanelBorder">
             <Setter Property="Width" Value="400"/>
             <Setter Property="Height" Value="52"/>
-            <Setter Property="Background" Value="{StaticResource InfoPanelItemBrush}"/>
-         
+            <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
+            <Setter Property="Opacity" Value="0.7" />
             <Setter Property="Padding" Value="15,7,15,7" />
             <Setter Property="Margin" Value="0,0,0,21" />
             <Setter Property="CornerRadius" Value="3" />
@@ -89,52 +89,49 @@
                                      AOITemplate="{StaticResource AOIItemTemplate}"/>
 
     </UserControl.Resources>
-
-    
-    
-
+        
     <Grid>
 
         <ItemsControl ItemsSource="{Binding Items}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"></StackPanel>
+                    <StackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Style="{StaticResource InfoPanelBorder}">
-                        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                    <Grid>
+                        <Border Style="{StaticResource InfoPanelBorder}">
+                            <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
 
-                            <Grid Width="32" Height="32">
-                                <ContentControl Content="{Binding}"                                             
-                                                ContentTemplateSelector="{StaticResource InfoPanelIconDataSelector}"/>
-                            </Grid>
-                                                        
-                            <TextBlock Text="{Binding Text}" 
-                                       Foreground="White"
+                                <Grid Width="32" Height="32">
+                                    <ContentControl Content="{Binding}"                                                                                             
+                                                    ContentTemplateSelector="{StaticResource InfoPanelIconDataSelector}"/>
+                                </Grid>
+
+                                <TextBlock Text="{Binding Text}"                                    
                                        VerticalAlignment="Center"
                                        Margin="15,0,15,0"/>
-                            <Button Style="{StaticResource CloseBottom}"                                                                       
-                                    HorizontalAlignment="Right">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <i:InvokeCommandAction Command="{Binding Command}"
-                                                               CommandParameter="{Binding}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <Button.ToolTip>
-                                    <ToolTip Content="Закрыть" Style="{StaticResource FastTooltip}"/>
-                                </Button.ToolTip>
 
-                                <Viewbox Margin="8">
-                                    <Image Source="{DynamicResource IconClose}"/>
-                                </Viewbox>
+                                <Button Style="{StaticResource CloseBottom}"                                                                                                  
+                                        HorizontalAlignment="Right">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:InvokeCommandAction Command="{Binding Command}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <Button.ToolTip>
+                                        <ToolTip Content="Закрыть" Style="{StaticResource FastTooltip}"/>
+                                    </Button.ToolTip>
+                                    <Viewbox Margin="8">
+                                        <Image Source="{DynamicResource IconClose}"/>
+                                    </Viewbox>
+                                </Button>
 
-                            </Button>
-                        </DockPanel>
-                    </Border>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             

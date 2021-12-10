@@ -15,45 +15,30 @@
              d:DesignHeight="450" d:DesignWidth="380">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="AccentBrush" Color="#4c9ae7"/>
-
-        <!-- #212b35 -->
-        <SolidColorBrush x:Key="BackgroundBrush">
-            <SolidColorBrush.Color>
-                <Color R="33" G="43" B="53" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
-
-        <SolidColorBrush x:Key="SearchButtonoverlay">
-            <SolidColorBrush.Color>
-                <Color R="56" G="65" B="74" A="255"></Color>
-            </SolidColorBrush.Color>
-        </SolidColorBrush>
 
         <converters:ImageToBitmapSourceConverter x:Key="imageToBitmapSourceConverter"/>
 
-
         <Style x:Key="SearchTextBlock" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="FontSize" Value="13"></Setter>
             <Setter Property="FontFamily" Value="Roboto"></Setter>
         </Style>
 
         <Style x:Key="SceneDateTextBlock" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FFFFFF"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="FontSize" Value="13"></Setter>
             <Setter Property="FontFamily" Value="Roboto"></Setter>
         </Style>
 
         <Style x:Key="SceneInfoTextBlock" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FFFFFFBF"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
             <Setter Property="FontSize" Value="12"></Setter>
             <Setter Property="FontFamily" Value="Roboto"></Setter>
         </Style>
 
         <Style  x:Key="SearchButton" TargetType="{x:Type Button}">
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Background" Value="#212b35"/>
+            <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -73,10 +58,10 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource SearchButtonoverlay}" />
+                                <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{StaticResource SearchButtonoverlay}"/>
+                                <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -86,14 +71,12 @@
         
     </UserControl.Resources>
 
-
-
-<Grid>
+    <Grid>
 
         <controls:Flyout Placement="Left"      
                          Margin="0,10,0,0"                                              
                          Target="{Binding ElementName=btnSearch}"                                                                            
-                         Background="#212b35"                                              
+                         Background="{StaticResource MainBackgroundBrush}"                                              
                          IsOpen="{Binding Filter.IsOpen}"    
                          Visibility="Collapsed"
                          Content="{Binding Filter}">
@@ -105,7 +88,7 @@
         </controls:Flyout>
 
 
-        <Grid Background="{StaticResource BackgroundBrush}">
+        <Grid Background="{StaticResource MainBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -179,7 +162,8 @@
                  SelectedItem="{Binding SelectedFootprint}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  CommandParameter="{Binding ElementName=ListBoxFootprints, Path=SelectedItem}"/>
+                    <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  
+                                           CommandParameter="{Binding ElementName=ListBoxFootprints, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
@@ -266,4 +250,5 @@
    
 
 </Grid>
+
 </UserControl>

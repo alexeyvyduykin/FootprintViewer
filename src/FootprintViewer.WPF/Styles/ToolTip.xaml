@@ -18,7 +18,7 @@
                                 Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Height}">
                         <TextBlock Text="{TemplateBinding Content}"
-                                   Foreground="WhiteSmoke" 
+                                   Foreground="{StaticResource MainForegroundBrush}" 
                                    Margin="8,4,8,4">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">

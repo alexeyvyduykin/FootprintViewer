@@ -5,6 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/ThemeDictionary.xaml"/>
                 <ResourceDictionary Source="ImageDictionary.xaml"/>
                 <ResourceDictionary Source="Styles/ToolTip.xaml"/>
             </ResourceDictionary.MergedDictionaries>
