@@ -1,17 +1,18 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using Mapsui;
-using ReactiveUI.Fody.Helpers;
+using Mapsui.Projection;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
-using FootprintViewer.Data;
-using System.Threading;
 using System.Linq;
-using NetTopologySuite.Geometries;
+using System.Reactive;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -23,7 +24,7 @@ namespace FootprintViewer.ViewModels
 
         public FootprintInfo(Footprint footprint)
         {
-            _footprint = footprint;            
+            _footprint = footprint;
             Name = footprint.Name;
             SatelliteName = footprint.SatelliteName;
             Center = footprint.Center.Coordinate.Copy();
@@ -61,7 +62,7 @@ namespace FootprintViewer.ViewModels
     }
 
     public enum FootprintViewerContentType
-    {    
+    {
         Show,
         Update
     }
@@ -69,17 +70,20 @@ namespace FootprintViewer.ViewModels
     public class FootprintObserver : SidePanelTab
     {
         private readonly FootprintLayer _footrpintLayer;
+        private readonly Map? _map;
 
-        public FootprintObserver() { }
+        protected FootprintObserver() { }
 
         public FootprintObserver(Map map)
         {
-            FootprintInfos = new ObservableCollection<FootprintInfo>();
+            _map = map;
 
             _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
-   
+
+            FootprintInfos = new ObservableCollection<FootprintInfo>();
+          
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
-            
+
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
@@ -93,19 +97,46 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsActive).Subscribe(active =>
             {
                 if (active == true)
-                {                                           
-                    Type = FootprintViewerContentType.Update;                   
+                {
+                    Type = FootprintViewerContentType.Update;
                 }
             });
 
             this.WhenAnyValue(s => s.SelectedFootprintInfo).Subscribe(footprint =>
             {
                 if (footprint != null)
-                {              
+                {
                     FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
 
                     footprint.IsShowInfo = true;
-                }         
+
+                    if (ScrollToCenter == false)
+                    {
+                        if (string.IsNullOrEmpty(footprint.Name) == false)
+                        {
+                            _footrpintLayer.SelectFeature(footprint.Name);
+                        }
+
+                        SetMapFocusTo(footprint.Center);
+                    }
+                }
+            });
+
+            this.WhenAnyValue(s => s.PreviewMouseLeftButtonCommandChecker).Subscribe(_ => 
+            {
+                if (SelectedFootprintInfo != null && string.IsNullOrEmpty(SelectedFootprintInfo.Name) == false)
+                {
+                    if (SelectedFootprintInfo.IsShowInfo == true)
+                    {
+                        _footrpintLayer.SelectFeature(SelectedFootprintInfo.Name);                    
+                    }
+                    else
+                    {
+                        _footrpintLayer.UnselectFeature(SelectedFootprintInfo.Name);                        
+                    }
+
+                    _footrpintLayer.DataHasChanged();
+                }
             });
 
             this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
@@ -116,22 +147,37 @@ namespace FootprintViewer.ViewModels
         private void FilterChanged()
         {
             if (Filter != null)
-            {                               
+            {
                 Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
             }
         }
-        
+
         public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
-       
+
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
         public void SelectFootprintInfo(string name)
         {
-            var res = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
+            var isSelect = _footrpintLayer.IsSelect(name);
 
-            if (res != default)
+            if (isSelect == true)
             {
-                ScrollCollectionToCenter(res);
+                _footrpintLayer.UnselectFeature(name);
+
+                FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+
+                SelectedFootprintInfo = null;
+            }
+            else
+            {         
+                _footrpintLayer.SelectFeature(name);
+
+                var item = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
+
+                if (item != null)
+                {
+                    ScrollCollectionToCenter(item);
+                }
             }
         }
 
@@ -144,10 +190,30 @@ namespace FootprintViewer.ViewModels
             ScrollToCenter = false;
         }
 
+        private void SetMapFocusTo(Coordinate coordinate)
+        {
+            if (_map != null)
+            {
+                var p = SphericalMercator.FromLonLat(coordinate.X, coordinate.Y);
+
+                _map.Initialized = false;
+
+                _map.Home = (navigator) =>
+                {
+                    navigator.CenterOn(new Mapsui.Geometries.Point(p.X, p.Y));
+                };
+
+                // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
+                var layer = new Mapsui.Layers.Layer();
+                _map.Layers.Add(layer);
+                _map.Layers.Remove(layer);
+            }
+        }
+
         private void PreviewMouseLeftButtonDown()
         {
             if (SelectedFootprintInfo != null)
-            {              
+            {
                 if (SelectedFootprintInfo.IsShowInfo == true)
                 {
                     SelectedFootprintInfo.IsShowInfo = false;
@@ -156,11 +222,13 @@ namespace FootprintViewer.ViewModels
                 {
                     SelectedFootprintInfo.IsShowInfo = true;
                 }
+
+                PreviewMouseLeftButtonCommandChecker = !PreviewMouseLeftButtonCommandChecker;
             }
         }
 
         private void FilterClick()
-        {       
+        {
             Filter?.Click();
         }
 
@@ -174,7 +242,7 @@ namespace FootprintViewer.ViewModels
         }
 
         private async void FootprintsChanged()
-        {         
+        {
             var footprints = await LoadDataAsync(_footrpintLayer);
 
             if (footprints != null)
@@ -199,7 +267,7 @@ namespace FootprintViewer.ViewModels
                     FootprintInfos = new ObservableCollection<FootprintInfo>(list);
                 }
             }
-            
+
             Type = FootprintViewerContentType.Show;
         }
 
@@ -217,6 +285,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool ScrollToCenter { get; set; } = false;
+
+        [Reactive]
+        private bool PreviewMouseLeftButtonCommandChecker { get; set; } = false;
     }
 
     public class FootprintObserverDesigner : FootprintObserver
@@ -225,20 +296,20 @@ namespace FootprintViewer.ViewModels
         {
             Type = FootprintViewerContentType.Show;
 
-            FootprintInfos = new ObservableCollection<FootprintInfo>() 
-            {           
-                new FootprintInfo(){ Name = "Footrpint0001", IsShowInfo = false },          
+            FootprintInfos = new ObservableCollection<FootprintInfo>()
+            {
+                new FootprintInfo(){ Name = "Footrpint0001", IsShowInfo = false },
                 new FootprintInfo()
                 {
-                    Name = "Footrpint0002", 
-                    SatelliteName = "Satellite1", 
-                    IsShowInfo = true, 
-                    Center = new Coordinate(54.434545, -12.435454), 
+                    Name = "Footrpint0002",
+                    SatelliteName = "Satellite1",
+                    IsShowInfo = true,
+                    Center = new Coordinate(54.434545, -12.435454),
                     Begin = new DateTime(2001, 6, 1, 12, 0, 0),
                     Duration = 35,
                     Node = 11,
                     Direction = SatelliteStripDirection.Left,
-                },            
+                },
                 new FootprintInfo(){ Name = "Footrpint0003", IsShowInfo = false },
             };
         }

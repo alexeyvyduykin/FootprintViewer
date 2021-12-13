@@ -33,6 +33,10 @@ namespace FootprintViewer.Layers
 
         public void SelectFeature(string name) => _provider.SelectFeature(name);
 
+        public void UnselectFeature(string name) => _provider.UnselectFeature(name);
+
+        public bool IsSelect(string name) => _provider.IsSelect(name);
+
         public IEnumerable<Footprint> GetFootprints() => _provider.GetFootprints();        
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
@@ -86,9 +90,9 @@ namespace FootprintViewer.Layers
                         style.Outline = new Pen(Color.Green, 1.0);
                         break;
                     case "Select":
-                        style.Fill = new Brush(Color.Opacity(Color.Green, 0.45f));
-                        style.Line = new Pen(Color.Green, 2.0);
-                        style.Outline = new Pen(Color.Green, 2.0);
+                        style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));
+                        style.Line = new Pen(Color.Black, 4.0);
+                        style.Outline = new Pen(Color.Black, 4.0);
                         break;
                     default:
                         style.Fill = new Brush(Color.Gray);
@@ -122,9 +126,9 @@ namespace FootprintViewer.Layers
                         style0.Outline = new Pen(Color.Green, 1.0);
                         break;
                     case "Select":
-                        style0.Fill = new Brush(Color.Opacity(Color.Red, 1.0f));
-                        style0.Line = new Pen(Color.Green, 2.0);
-                        style0.Outline = new Pen(Color.Green, 2.0);
+                        style0.Fill = new Brush(Color.Opacity(Color.Green, 1.0f));
+                        style0.Line = new Pen(Color.Black, 4.0);
+                        style0.Outline = new Pen(Color.Black, 4.0);
                         break;
                     default:
                         style0.Fill = new Brush(Color.Gray);

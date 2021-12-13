@@ -55,6 +55,18 @@ namespace FootprintViewer.Layers
             }
         }
 
+        public bool IsSelect(string name)
+        {
+            var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();
+
+            if (feature != null)
+            {
+                return ((string)feature["State"] == "Select") ? true : false;
+            }
+
+            throw new Exception();
+        }
+
         private List<IFeature> Build(IEnumerable<Footprint> footprints)
         {
             var list = new List<IFeature>();
