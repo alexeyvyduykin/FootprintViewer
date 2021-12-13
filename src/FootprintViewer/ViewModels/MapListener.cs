@@ -1,7 +1,5 @@
 ﻿using ReactiveUI;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.ViewModels
 {
@@ -12,11 +10,11 @@ namespace FootprintViewer.ViewModels
 
         }
 
-        public event EventHandler? ClickOnMap;
+        public event EventHandler? LeftClickOnMap;
 
-        public void Click(string name)
+        public void LeftClick(string name)
         {
-            ClickOnMap?.Invoke(name, EventArgs.Empty);
+            LeftClickOnMap?.Invoke(name, EventArgs.Empty);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Graphics;
-using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
@@ -23,6 +22,8 @@ namespace FootprintViewer.WPF
         private CursorType _currentCursorType = CursorType.Default;
         private ItemsControl? _tipControl;
         private Mapsui.UI.MapInfoEventArgs? _mapInfoEventArgs;
+        private string? _lastNameFeatureInfo;
+        private bool _infoLeftClick = false;
 
         public UserMapControl() : base()
         {
@@ -45,12 +46,12 @@ namespace FootprintViewer.WPF
                 if (e.MapInfo != null && e.MapInfo.Feature != null)
                 {
                     var feature = e.MapInfo.Feature;
-                    
+
                     if (feature != null && feature.Fields.Contains("Name") == true)
                     {
                         var name = (string)feature["Name"];
-
-                        MapListener.Click(name);
+                        _infoLeftClick = true;
+                        _lastNameFeatureInfo = name;
                     }
                 }
             }
@@ -197,7 +198,7 @@ namespace FootprintViewer.WPF
             {
                 if (e.NewValue != null && e.NewValue is MapListener mapListener)
                 {
-                
+
                 }
             }
         }
@@ -211,14 +212,18 @@ namespace FootprintViewer.WPF
                 return;
             }
 
-            //var releasedArgs = (PointerReleasedEventArgs)e;
-
             e.MouseDevice.Capture(null);
-
-            _isLeftMouseDown = false;
 
             //e.Handled = 
             Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
+
+            if (_infoLeftClick == true && string.IsNullOrEmpty(_lastNameFeatureInfo) == false)
+            {
+                MapListener.LeftClick(_lastNameFeatureInfo);
+                _infoLeftClick = false;
+            }
+
+            _isLeftMouseDown = false;
 
             // Open the context menu
             //var p = e.GetPosition(this).ToScreenPoint();
@@ -262,6 +267,7 @@ namespace FootprintViewer.WPF
             {
                 if (_isLeftMouseDown == true && e.MouseDevice.LeftButton == MouseButtonState.Pressed)
                 {
+                    _infoLeftClick = false;
                     SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");
                 }
                 else

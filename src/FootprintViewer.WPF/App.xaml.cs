@@ -75,14 +75,6 @@ namespace FootprintViewer
                 SelectedTab = sceneSearchTab
             };
 
-            mapListener.ClickOnMap += (s, e) => 
-            {            
-                if (s is string name && footprintObserverTab.IsActive == true)
-                {
-                    footprintObserverTab.SelectFootprintInfo(name);
-                }
-            };
-
             var mainViewModel = new MainViewModel()
             {
                 Map = map,
@@ -92,6 +84,20 @@ namespace FootprintViewer
                 InfoPanel = ProjectFactory.CreateInfoPanel(),
                 SidePanel = sidePanel,
             };
+
+            mapListener.LeftClickOnMap += (s, e) =>
+            {
+                if (s is string name && footprintObserverTab.IsActive == true)
+                {
+                    if (mainViewModel.Plotter != null && (mainViewModel.Plotter.IsCreating == true || mainViewModel.Plotter.IsEditing == true))
+                    {
+                        return;
+                    }
+
+                    footprintObserverTab.SelectFootprintInfo(name);
+                }
+            };
+
 
             mainViewModel.AOIChanged += (s, e) =>
             {

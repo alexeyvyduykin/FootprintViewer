@@ -1,11 +1,5 @@
-﻿using Mapsui;
-using Mapsui.Geometries;
-using Mapsui.UI;
-using NetTopologySuite.Operation.Distance;
+﻿using Mapsui.Geometries;
 using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Text;
 
 namespace FootprintViewer.Graphics
 {
@@ -22,11 +16,12 @@ namespace FootprintViewer.Graphics
     public delegate void FeatureEventHandler(object sender, FeatureEventArgs e);
     public delegate void EditingFeatureEventHandler(object sender, EditingFeatureEventArgs e);
 
-    public class Plotter 
+    public class Plotter
     {
-        private AddInfo? _addInfo;             
+        private AddInfo? _addInfo;
         private readonly InteractiveFeature _feature;
         private bool _isEditing = false;
+        private bool _isCreating = false;
 
         public Plotter(InteractiveFeature feature) { _feature = feature; }
 
@@ -46,6 +41,8 @@ namespace FootprintViewer.Graphics
 
         public bool IsEditing => _isEditing;
 
+        public bool IsCreating => _isCreating;
+
         public (bool, BoundingBox) CreatingFeature(Point worldPosition)
         {
             return CreatingFeature(worldPosition, point => true);
@@ -54,8 +51,10 @@ namespace FootprintViewer.Graphics
         public (bool, BoundingBox) CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
         {
             if (_addInfo == null)
-            {          
+            {
                 _addInfo = _feature.BeginDrawing(worldPosition);
+
+                _isCreating = true;
 
                 BeginCreating?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
 
@@ -68,6 +67,8 @@ namespace FootprintViewer.Graphics
                 if (res == true)
                 {
                     _addInfo.Feature.EndDrawing();
+
+                    _isCreating = false;
 
                     EndCreating?.Invoke(this, new FeatureEventArgs() { AddInfo = _addInfo });
 
@@ -119,7 +120,7 @@ namespace FootprintViewer.Graphics
                     _isEditing = true;
 
                     BeginEditing?.Invoke(this, new EditingFeatureEventArgs() { Feature = _feature });
-                }              
+                }
             }
         }
 
@@ -135,7 +136,7 @@ namespace FootprintViewer.Graphics
 
                 return (true, _feature.Geometry.BoundingBox);
             }
-            
+
             return (false, new BoundingBox());
         }
     }
