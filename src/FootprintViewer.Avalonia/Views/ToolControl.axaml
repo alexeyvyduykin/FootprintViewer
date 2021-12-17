@@ -1,0 +1,286 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.ToolControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"                          
+             mc:Ignorable="d" 
+             x:Name="userControl"
+             d:DesignWidth="800" d:DesignHeight="450"
+             Cursor="Hand">
+
+  <UserControl.Resources>
+
+    <local:ToolIconSelector x:Key="ToolIconDataSelector">
+      
+      <DataTemplate x:Key="AddRectangle">
+        <Viewbox>
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="AddPolygon">
+        <Viewbox>
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="AddCircle">
+        <Viewbox>
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
+        </Viewbox>
+      </DataTemplate>
+      
+    </local:ToolIconSelector>
+    
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+
+    <Style Selector="Button.toolButton">
+      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}"/>
+      <Setter Property="Opacity" Value="0.75"/> 
+      <Setter Property="Width" Value="36"/>
+      <Setter Property="Height" Value="36"/>
+      <!--<Setter Property="ToolTipService.InitialShowDelay" Value="0"/>-->
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>                
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Background="{TemplateBinding Background}"                                 
+                              Content="{TemplateBinding Content}"                                 
+                              CornerRadius="{TemplateBinding CornerRadius}"                                 
+                              HorizontalAlignment="Center"                                 
+                              VerticalAlignment="Center"                                
+                              Margin="0,0,0,0"/>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.toolButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />           
+    </Style>
+
+    <Style Selector="Button.toolButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />        
+    </Style>
+    
+    <Style Selector="Button.toolButton.toolButtonTop">
+      <Setter Property="CornerRadius" Value="4,4,0,0" />
+    </Style>
+
+    <Style Selector="Button.toolButton.toolButtonBottom">
+      <Setter Property="CornerRadius" Value="0,0,4,4" />
+    </Style>
+
+    <Style Selector="Button.toolButton.toolButtonCorner">
+      <Setter Property="CornerRadius" Value="4,4,4,4" />
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton">
+      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
+      <Setter Property="Opacity" Value="0.75" />   
+      <Setter Property="Width" Value="36"></Setter>
+      <Setter Property="Height" Value="36"></Setter>     
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>                
+            <ContentPresenter x:Name="PART_ContentPresenter"                                  
+                              Background="{TemplateBinding Background}"                                  
+                              Content="{TemplateBinding Content}"                                 
+                              CornerRadius="{TemplateBinding CornerRadius}"                                 
+                              HorizontalAlignment="Center"                                 
+                              VerticalAlignment="Center"                                 
+                              Margin="0,0,0,0" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />
+    </Style>
+    
+    <Style Selector="ToggleButton.toolToggleButton.toolToggleButtonCorner">
+      <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton.toolToggleButtonTop">
+      <Setter Property="CornerRadius" Value="4,4,0,0" />
+    </Style>
+
+    <Style Selector="ToggleButton.toolToggleButton.toolToggleButtonBottom">
+      <Setter Property="CornerRadius" Value="0,0,4,4" />
+    </Style>
+    
+  </UserControl.Styles>
+  
+  <Grid>
+    <StackPanel>
+
+      <StackPanel DataContext="{Binding ZoomIn}"             
+                  Margin="0,0,0,1"             
+                  HorizontalAlignment="Left">
+
+        <Button Classes="toolButton toolButtonTop"
+                Command="{Binding Command}">
+          <ToolTip.Tip>
+            <ToolTip Content="{Binding Tooltip}" Classes="fastTooltip"/>
+          </ToolTip.Tip>
+          <Viewbox>
+            <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
+          </Viewbox>
+        </Button>
+
+      </StackPanel>
+
+      <StackPanel DataContext="{Binding ZoomOut}"            
+                  HorizontalAlignment="Left">
+        <Button Classes="toolButton toolButtonBottom"
+                Command="{Binding Command}">
+          <ToolTip.Tip>
+            <ToolTip Content="{Binding Tooltip}" Classes="fastTooltip"/>
+          </ToolTip.Tip>
+          <Viewbox>
+            <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomOut}"/>
+          </Viewbox>
+        </Button>
+      </StackPanel>
+
+      <StackPanel Height="10"/>
+
+      <StackPanel x:Name="stck" HorizontalAlignment="Left"
+                  Background="Transparent"
+                  Margin="0,0,0,1"
+                  DataContext="{Binding AOICollection}">
+        
+        <i:Interaction.Behaviors>
+          <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #ChangeProperty}">
+            <ia:ChangePropertyAction TargetObject="{Binding #dummy}" PropertyName="IsEnabled" Value="True" />
+          </ia:EventTriggerBehavior>
+
+          <ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #ChangeProperty}">
+            <ia:ChangePropertyAction TargetObject="{Binding #dummy}" PropertyName="IsEnabled" Value="False" />
+          </ia:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+               
+        <TextBlock x:Name="dummy" IsEnabled="{Binding Visible, Mode=TwoWay}" Height="0"/>
+    
+        <ItemsControl Items="{Binding Items}">
+
+          <ItemsControl.Styles>
+
+            <Style Selector="ItemsControl > ContentPresenter.nth-first-child">
+              <Setter Property="Margin" Value="-4,0,0,0"/>
+            </Style>
+
+            <Style Selector="ItemsControl > ContentPresenter.nth-first-child > ToggleButton">                    
+              <Setter Property="CornerRadius" Value="4,4,0,0"/>
+            </Style>
+
+          </ItemsControl.Styles>
+          
+          <i:Interaction.Behaviors>
+            <iac:NthChildBehavior />
+          </i:Interaction.Behaviors>
+
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+
+              <ToggleButton Margin="4,0,0,0"
+                            IsChecked="{Binding IsActive, Mode=TwoWay}"
+                            Command="{Binding Command}"
+                            Classes="toolToggleButton toolToggleButtonCorner">
+                
+                <ToolTip.Tip>
+                  <ToolTip Content="{Binding Tooltip}" Classes="fastTooltip"/>
+                </ToolTip.Tip>
+
+                <ContentControl Content="{Binding}"
+                                ContentTemplate="{StaticResource ToolIconDataSelector}"/>
+
+              </ToggleButton>
+
+            </DataTemplate>
+
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+
+      <StackPanel DataContext="{Binding RouteDistance}"
+              Margin="0,0,0,1"
+              HorizontalAlignment="Left">
+        <ToggleButton Classes="toolToggleButton toolToggleButtonBottom"
+                      IsChecked="{Binding IsActive, Mode=TwoWay}"
+                      Command="{Binding Command}">
+
+          <ToolTip.Tip>
+            <ToolTip Content="{Binding Tooltip}" Classes="fastTooltip"/>
+          </ToolTip.Tip>
+
+          <Viewbox>
+            <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconScale}"/>
+          </Viewbox>
+        </ToggleButton>
+      </StackPanel>
+
+      <StackPanel Height="10"/>
+
+      <controls:Flyout Placement="Right"
+                       Target="{Binding ElementName=LayerSelectorButton}"
+                       IsAnchor="True"
+                       Background="{StaticResource MainBackgroundBrush}"
+                       IsOpen="{Binding WorldMapSelector.IsOpen}"        
+                       IsVisible="{Binding WorldMapSelector.IsOpen}"                    
+                       Content="{Binding WorldMapSelector}">
+        <controls:Flyout.FlyoutTemplate>
+          <DataTemplate>
+            <views:WorldMapSelectorView DataContext="{Binding}"/>
+          </DataTemplate>
+        </controls:Flyout.FlyoutTemplate>
+      </controls:Flyout>
+
+      <StackPanel DataContext="{Binding WorldMaps}"              
+                  HorizontalAlignment="Left">
+        <Button x:Name="LayerSelectorButton"
+                Command="{Binding Command}"
+                Classes="toolButton toolButtonCorner"
+                >
+
+          <ToolTip.Tip>
+            <ToolTip Content="{Binding Tooltip}" Classes="fastTooltip"/>
+          </ToolTip.Tip>
+
+          <Viewbox>
+            <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
+          </Viewbox>
+        </Button>
+      </StackPanel>
+
+    </StackPanel>
+  </Grid>
+  
+  
+</UserControl>

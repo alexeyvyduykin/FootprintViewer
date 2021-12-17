@@ -1,0 +1,253 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.SceneSearchTab"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"   
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:reactive="using:System.Reactive"
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+             d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=True}"
+             x:Name="SceneSearchTabName"
+             MinWidth="380"
+             mc:Ignorable="d"
+             d:DesignWidth="380" d:DesignHeight="450">
+
+  <UserControl.Resources>
+    <converters:ImageToBitmapSourceConverter x:Key="imageToBitmapSourceConverter"/>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.searchTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.sceneDateTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.sceneInfoTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+    <Style Selector="Button.searchButton">
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>     
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>     
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate>
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              BorderThickness="0"
+                              Background="{TemplateBinding Background}"
+                              Content="{TemplateBinding Content}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center"
+                              Margin="0,0,0,0" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.searchButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
+    </Style>
+
+    <Style Selector="Button.searchButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
+    </Style>
+
+    <Style Selector="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+    </Style>
+    
+  </UserControl.Styles>
+
+  <Grid>
+
+    <controls:Flyout Placement="Left"
+                     Margin="0,10,0,0"
+                     Target="{Binding ElementName=btnSearch}"
+                     Background="{StaticResource MainBackgroundBrush}"
+                     IsOpen="{Binding Filter.IsOpen}"
+                     IsVisible="{Binding Filter.IsOpen}"                   
+                     Content="{Binding Filter}">
+      <controls:Flyout.FlyoutTemplate>
+        <DataTemplate>
+          <views:SceneSearchFilter DataContext="{Binding}"/>
+        </DataTemplate>
+      </controls:Flyout.FlyoutTemplate>
+    </controls:Flyout>
+
+    <Grid RowDefinitions="Auto,*,50" 
+          Background="{StaticResource MainBackgroundBrush}">
+
+      <Button Grid.Row="0"
+              Classes="searchButton"              
+              x:Name="btnSearch"
+              Command="{Binding FilterClickCommand}">
+  
+        <StackPanel Orientation="Horizontal">
+
+          <ContentControl Width="34" Height="34" Margin="10" 
+                          x:Name="contentControl">
+           
+            <!-- Avalonia.Behavior error -->
+            <i:Interaction.Behaviors>
+
+              <ia:DataTriggerBehavior Binding="{Binding Filter.IsOpen}" ComparisonCondition="Equal" Value="True">
+                <ia:ChangePropertyAction TargetObject="{Binding #contentControl}" PropertyName="Content">
+                  <ia:ChangePropertyAction.Value>
+                    <Grid>
+                      <Viewbox>
+                        <Image Source="{DynamicResource IconTuneBack}"/>
+                      </Viewbox>
+                      <Viewbox Margin="10">
+                        <Image Source="{DynamicResource IconTuneClose}"/>
+                      </Viewbox>
+                    </Grid>
+                  </ia:ChangePropertyAction.Value>
+                </ia:ChangePropertyAction>
+              </ia:DataTriggerBehavior>
+
+              <ia:DataTriggerBehavior Binding="{Binding Filter.IsOpen}" ComparisonCondition="Equal" Value="False">
+                <ia:ChangePropertyAction TargetObject="{Binding #contentControl}" PropertyName="Content">
+                  <ia:ChangePropertyAction.Value>
+                    <Grid>
+                      <Viewbox>
+                        <Image Source="{DynamicResource IconTuneBack}"/>
+                      </Viewbox>
+                      <Viewbox Margin="8.5">
+                        <Image Source="{DynamicResource IconTune}"/>
+                      </Viewbox>
+                    </Grid>
+                  </ia:ChangePropertyAction.Value>
+                </ia:ChangePropertyAction>
+              </ia:DataTriggerBehavior>
+              
+           </i:Interaction.Behaviors>
+
+          </ContentControl>
+
+          <TextBlock Text="Настройки поиска" 
+                     VerticalAlignment="Center" 
+                     Classes="searchTextBlock"/>
+        </StackPanel>
+      </Button>
+    
+      <ListBox x:Name="ListBoxFootprints"
+               Grid.Row="1"
+               BorderThickness="0"
+               ScrollViewer.VerticalScrollBarVisibility="Visible"
+               Background="Transparent"      
+               Items="{Binding Footprints}"
+               SelectedItem="{Binding SelectedFootprint}">
+
+        <!-- Avalonia.Behavior error -->
+        <i:Interaction.Behaviors>
+
+          <ia:EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #ListBoxFootprints}">
+            <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.SelectedItemChangedCommand}"
+                                    CommandParameter="{Binding #ListBoxFootprints.SelectedItem}"/>
+          </ia:EventTriggerBehavior>
+
+        </i:Interaction.Behaviors>
+        
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Border Padding="10" Cursor="Hand" Background="Transparent">
+              <Grid ColumnDefinitions="Auto,*">
+
+                <Border Grid.Column="0" x:Name="brdr">
+
+                  <!-- Avalonia.Behavior error -->
+                  <i:Interaction.Behaviors>
+
+                    <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #brdr}">
+                      <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.MouseOverEnterCommand}" 
+                                              CommandParameter="{Binding}"/>
+                    </ia:EventTriggerBehavior>
+
+                    <ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #brdr}">
+                      <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.MouseOverLeaveCommand}"
+                                              CommandParameter="{x:Static reactive:Unit.Default}"/>
+                    </ia:EventTriggerBehavior>
+                    
+                  </i:Interaction.Behaviors>
+                                 
+                  <Viewbox Width="155" Height="155">
+                    <Image Source="{Binding Preview, Converter={StaticResource imageToBitmapSourceConverter}}"/>
+                  </Viewbox>
+          
+                </Border>
+
+                <Border Grid.Column="1">
+                  <Grid>
+                    <TextBlock Text="{Binding Date}"
+                               Classes="sceneDateTextBlock"
+                               VerticalAlignment="Top" HorizontalAlignment="Right"></TextBlock>
+
+                    <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding SatelliteName}"
+                                   Margin="0,4,8,4"
+                                   Classes="sceneInfoTextBlock"/>
+                        <Viewbox Width="16" Height="16">
+                          <Image Source="{DynamicResource IconSatellite}"/>
+                        </Viewbox>
+                      </StackPanel>
+
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
+                                   Margin="0,4,8,4"
+                                   Classes="sceneInfoTextBlock"/>
+                        <Viewbox Width="16" Height="16">
+                          <Image Source="{DynamicResource IconSunElevation}"/>
+                        </Viewbox>
+                      </StackPanel>
+
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
+                                   Margin="0,4,8,4"
+                                   Classes="sceneInfoTextBlock"/>
+                        <Viewbox Width="16" Height="16">
+                          <Image Source="{DynamicResource IconCloudy}"/>
+                        </Viewbox>
+                      </StackPanel>
+
+                      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding TileNumber}"
+                                   Margin="0,4,8,4"
+                                   Classes="sceneInfoTextBlock"/>
+                        <Viewbox Width="16" Height="16">
+                          <Image Source="{DynamicResource IconGrid}"/>
+                        </Viewbox>
+                      </StackPanel>
+                    </StackPanel>
+                  </Grid>
+                </Border>
+              </Grid>
+            </Border>
+          </DataTemplate>
+
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+
+
+  </Grid>
+  
+  
+</UserControl>

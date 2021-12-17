@@ -1,17 +1,133 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:FootprintViewer.Avalonia.ViewModels"
+<Window x:Class="FootprintViewer.Avalonia.Views.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"      
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="FootprintViewer.Avalonia.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="FootprintViewer.Avalonia">
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                        
+        xmlns:i="using:Avalonia.Xaml.Interactivity"
+        xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+        xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
+        xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+        xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+        xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+        xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"           
+        mc:Ignorable="d"
+        x:Name="TopLevel"
+        Title="FootprintViewer"
+        d:DesignWidth="800" d:DesignHeight="450"
+        Icon="/Assets/avalonia-logo.ico">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>      
+    <vm:MainViewModel/>    
+  </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  <Window.Resources>    
+    <!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
+    <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
 
+    <!--<Color x:Key="TipBackground" R="4" G="15" B="27" A="191"/>-->
+    <SolidColorBrush x:Key="TipBrush" Color="#040f1b" Opacity="0.65"/>
+  </Window.Resources>
+
+  <Window.Styles>
+    <Style Selector="Border.TipBorder">
+      <Setter Property="Background" Value="{StaticResource TipBrush}"/>
+      <Setter Property="Padding" Value="8,4,8,4" />
+      <Setter Property="CornerRadius" Value="3" />
+    </Style>
+
+    <Style Selector="TextBlock.txt">
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style Selector="TextBlock.txt[Text='']">
+      <Setter Property="IsVisible" Value="False"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock.TipTitle">
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style Selector="TextBlock.TipText">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+  </Window.Styles>
+  
+  <Grid>
+    <Grid x:Name="GridOverlay">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="Auto"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+
+      <Grid Grid.Column="0">
+
+        <local:UserMapControl x:Name="MapControl"
+                          MapSource="{Binding Map}"
+                          Plotter="{Binding Plotter}"
+                          Controller="{Binding ActualController}"
+                          TipSource="{Binding Tip}"
+                          MapListener="{Binding MapListener}"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch">
+          <local:UserMapControl.TipDataTemplate>
+            <DataTemplate DataType="{x:Type vm:Tip}">
+              <Border Classes="TipBorder">
+                <StackPanel>
+                  <TextBlock Classes="txt TipTitle" 
+                             Text="{Binding Title}"/>
+                  <TextBlock Classes="txt TipText" 
+                             Text="{Binding Text}"/>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </local:UserMapControl.TipDataTemplate>
+        </local:UserMapControl>
+
+        <Grid VerticalAlignment="Center"
+              HorizontalAlignment="Left"
+              Margin="8">
+          <views:ToolControl DataContext="{Binding ToolManager}"/>
+        </Grid>
+
+        <Grid VerticalAlignment="Bottom"
+              HorizontalAlignment="Center"
+              Margin="0,0,0,60">
+          <views:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+        </Grid>
+
+        <Border BorderBrush="White"
+                Opacity="0.65"
+                Background="{StaticResource MainBrush}"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Stretch">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="180"></ColumnDefinition>
+              <ColumnDefinition Width="150"></ColumnDefinition>            
+              <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="TextBlockCoordinates"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Foreground="WhiteSmoke"
+                       Text="0, 0" />
+            <TextBlock x:Name="TextBlockResolution"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Foreground="WhiteSmoke"/>
+
+            <views:ScaleBarControl x:Name="ScaleBarControl"                                  
+                                   Grid.Column="2" />
+
+          </Grid>
+        </Border>
+      </Grid>
+
+
+       <views:SidePanelControl Grid.Column="1"
+                               DataContext="{Binding SidePanel}" />
+    </Grid>
+  </Grid>
 </Window>

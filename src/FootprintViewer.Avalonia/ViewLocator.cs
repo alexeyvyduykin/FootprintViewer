@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using FootprintViewer.Avalonia.ViewModels;
+using ReactiveUI;
 using System;
 
 namespace FootprintViewer.Avalonia
@@ -26,7 +26,7 @@ namespace FootprintViewer.Avalonia
 
         public bool Match(object data)
         {
-            return data is ViewModelBase;
+            return data is ReactiveObject;
         }
     }
 }

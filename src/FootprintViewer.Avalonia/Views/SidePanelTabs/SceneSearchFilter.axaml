@@ -1,0 +1,143 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.SceneSearchFilter"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             d:DataContext="{d:DesignInstance vm:SceneSearchFilterDesigner, IsDesignTimeCreatable=True}"                          
+             mc:Ignorable="d" d:DesignWidth="400">
+  
+  <UserControl.Resources>
+    <converters:DateTimePickerConverter x:Key="dateTimePickerConverter"/>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+    </Style>
+
+    <Style Selector="CheckBox">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+    </Style>
+
+    <Style Selector="ItemsControl">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+    </Style>
+  </UserControl.Styles>
+
+  
+  
+  <Border Background="{StaticResource MainBackgroundBrush}" >
+    <StackPanel>
+
+      <Border Padding="20">
+        <StackPanel Orientation="Horizontal">
+          <Viewbox Width="18" Height="18">
+            <Image Source="{DynamicResource IconToday}"/>
+          </Viewbox>
+          <TextBlock Text="Дата" Margin="8,0,30,0" VerticalAlignment="Center"></TextBlock>
+          <DatePicker Width="100" SelectedDate="{Binding FromDate, Converter={StaticResource dateTimePickerConverter}}"  Margin="0,0,20,0" BorderThickness="0"></DatePicker>
+          <DatePicker Width="100" SelectedDate="{Binding ToDate, Converter={StaticResource dateTimePickerConverter}}" Margin="0,0,20,0" BorderThickness="0"></DatePicker>
+        </StackPanel>
+      </Border>
+
+      <Border Margin="20,0,20,0" Height="1" Background="Silver"></Border>
+
+      <Border Padding="20">
+        <StackPanel >
+
+          <StackPanel Margin="0,0,0,20">
+            <DockPanel LastChildFill="True">
+              <Viewbox Width="18" Height="18">
+                <Image Source="{DynamicResource IconCloudyMain}"/>
+              </Viewbox>
+              <TextBlock Text="Облачность" Margin="8,0,0,0"></TextBlock>
+              <TextBlock HorizontalAlignment="Right"
+                         Text="{Binding Value, StringFormat={}≤ {0} %, ElementName=CloudinessSlider}">
+              </TextBlock>
+            </DockPanel>
+            <Slider x:Name="CloudinessSlider" 
+                    Minimum="0" Maximum="100" TickFrequency="1" 
+                    IsSnapToTickEnabled="True"  
+                    Value="{Binding Cloudiness}"/>
+            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*">
+              <TextBlock Grid.Column="0" FontSize="10">0</TextBlock>
+              <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
+              <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">20</TextBlock>
+              <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">30</TextBlock>
+              <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">40</TextBlock>
+              <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">50</TextBlock>
+              <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">60</TextBlock>
+              <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">70</TextBlock>
+              <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">80</TextBlock>
+              <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">90</TextBlock>
+              <TextBlock Grid.Column="9" FontSize="10" HorizontalAlignment="Right">100</TextBlock>
+            </Grid>
+          </StackPanel>
+
+          <StackPanel Margin="0,0,0,20">
+            <DockPanel LastChildFill="True">
+              <Viewbox Width="18" Height="18">
+                <Image Source="{DynamicResource IconSunElevationMain}"/>
+              </Viewbox>
+              <TextBlock Text="Угол падения солнечных лучей" Margin="8,0,0,0"></TextBlock>
+              <TextBlock HorizontalAlignment="Right"
+                                    Text="{Binding Value, StringFormat={}{0} - 90 °, ElementName=AngleSlider}">                
+              </TextBlock>
+            </DockPanel>
+            <Slider x:Name="AngleSlider" 
+                    Minimum="0" Maximum="90" TickFrequency="1"
+                    IsSnapToTickEnabled="True" 
+                    Value="{Binding MinSunElevation}"/>
+            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*">
+              <TextBlock Grid.Column="0" FontSize="10">0</TextBlock>
+              <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
+              <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">20</TextBlock>
+              <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">30</TextBlock>
+              <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">40</TextBlock>
+              <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">50</TextBlock>
+              <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">60</TextBlock>
+              <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">70</TextBlock>
+              <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">80</TextBlock>
+              <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">90</TextBlock>
+            </Grid>
+          </StackPanel>
+
+          <StackPanel>
+            <CheckBox IsChecked="{Binding IsFullCoverAOI}" Content="Полное перекрытие AOI"></CheckBox>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Margin="20,0,20,0" Height="1" Background="Silver"></Border>
+
+      <Border Padding="20">
+        <StackPanel>
+          <DockPanel LastChildFill="True" Margin="0,0,0,10">
+            <Viewbox Width="18" Height="18">
+              <Image Source="{DynamicResource IconSatelliteMain}"/>
+            </Viewbox>
+            <TextBlock Text="Сенсоры" Margin="8,0,0,0"></TextBlock>
+            <CheckBox Content="Все сенсоры" IsChecked="{Binding IsAllSensorActive}" HorizontalAlignment="Right"></CheckBox>
+          </DockPanel>
+
+          <ItemsControl Items="{Binding Sensors}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Padding="0,8,0,8">
+                  <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding IsActive}"></CheckBox>
+                    <TextBlock Text="{Binding Name}"></TextBlock>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </Border>
+  
+</UserControl>

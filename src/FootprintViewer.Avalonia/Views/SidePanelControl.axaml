@@ -1,0 +1,136 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+             d:DataContext="{d:DesignInstance vm:SidePanelDesigner, IsDesignTimeCreatable=True}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450">
+
+  <UserControl.Resources>
+    <local:SidePanelSelector x:Key="sidePanelSelector">
+      <DataTemplate x:Key="SceneSearch">
+        <tabs:SceneSearchTab Width="380"/>
+      </DataTemplate>
+      <DataTemplate x:Key="SatelliteViewer">
+        <tabs:SatelliteViewerTab Width="380"/>
+      </DataTemplate>
+      <DataTemplate x:Key="GroundTargetViewer">
+        <tabs:GroundTargetViewerTab Width="380"/>
+      </DataTemplate>
+      <DataTemplate x:Key="FootprintObserver">
+        <tabs:FootprintViewerTab Width="380"/>
+      </DataTemplate>
+    </local:SidePanelSelector>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+
+    <Style Selector="TextBlock.sidePanelHeaderTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource LightForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+    <!--Tab Control-->
+    <Style Selector="TabControl">
+      <Setter Property="TabStripPlacement" Value="Right"></Setter>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border BorderThickness="0"             
+                  CornerRadius="0"  Margin="0" Padding="0"            
+                  Background="{StaticResource DarkBackgroundBrush}"              
+                  HorizontalAlignment="Stretch"             
+                  VerticalAlignment="Stretch">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+              </Grid.ColumnDefinitions>
+              <ItemsPresenter Name="PART_ItemsPresenter"                                 
+                              Grid.Column="1"
+                              Items="{TemplateBinding Items}"                                                         
+                              ItemTemplate="{TemplateBinding ItemTemplate}">                
+              </ItemsPresenter>
+              <ContentPresenter Name="PART_SelectedContentHost"                  
+                                Margin="0"                 
+                                HorizontalContentAlignment="Stretch"                 
+                                VerticalContentAlignment="Stretch"                 
+                                Content="{TemplateBinding SelectedContent}"                  
+                                ContentTemplate="{TemplateBinding SelectedContentTemplate}">
+              </ContentPresenter>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+
+    <!--Tab Item-->
+    <Style Selector="TabItem">
+      <Setter Property="Height" Value="50" />
+      <Setter Property="Width" Value="50" />
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Background" Value="Transparent"/>  
+      <Setter Property="Template">
+        <ControlTemplate>
+          <ContentPresenter Name="PART_ContentPresenter"                               
+                            Background="{TemplateBinding Background}"                       
+                            BorderThickness="0"   
+                            Margin="0"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"             
+                            Content="{TemplateBinding Header}"             
+                            HorizontalContentAlignment="Stretch"            
+                            VerticalContentAlignment="Stretch"/>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    
+    <Style Selector="TabItem:selected">
+      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"></RowDefinition>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+    
+    <StackPanel x:Name="Header">
+      <Border Padding="15,8,0,8" Background="{StaticResource AccentBackgroundBrush}">
+        <DockPanel LastChildFill="True">
+          <TextBlock Text="{Binding SelectedItem.Title, ElementName=SidePanel}"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Classes="sidePanelHeaderTextBlock"/>
+
+          <Border DockPanel.Dock="Right" HorizontalAlignment="Right" Width="51" Padding="0">
+            <Viewbox Margin="21,0,21,0">
+              <Image Source="{DynamicResource IconChevronRight}"/>
+            </Viewbox>
+          </Border>
+        </DockPanel>
+      </Border>
+    </StackPanel>
+
+    <TabControl x:Name="SidePanel"
+                Grid.Row="1"
+                HorizontalAlignment="Right"
+                Items="{Binding Tabs}"             
+                SelectedItem="{Binding SelectedTab}"
+                ContentTemplate="{StaticResource sidePanelSelector}">
+      <TabControl.ItemTemplate>
+        <DataTemplate>
+          <Viewbox Margin="8">
+            <Image Source="{DynamicResource IconImage}"/>
+          </Viewbox>
+        </DataTemplate>
+      </TabControl.ItemTemplate>
+    </TabControl>
+  </Grid>
+  
+</UserControl>
