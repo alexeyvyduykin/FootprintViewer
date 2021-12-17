@@ -84,6 +84,8 @@ namespace FootprintViewer.ViewModels
           
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
+            ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);
+
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
@@ -153,6 +155,8 @@ namespace FootprintViewer.ViewModels
         }
 
         public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
+
+        public ReactiveCommand<FootprintInfo, Unit> ClickOnItemCommand { get; }
 
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
@@ -225,6 +229,25 @@ namespace FootprintViewer.ViewModels
 
                 PreviewMouseLeftButtonCommandChecker = !PreviewMouseLeftButtonCommandChecker;
             }
+        }
+
+        private void ClickOnItem(FootprintInfo item)
+        {
+            if (SelectedFootprintInfo != null)
+            {
+                if (SelectedFootprintInfo.IsShowInfo == true)
+                {
+                    SelectedFootprintInfo.IsShowInfo = false;
+                }
+                else
+                {
+                    SelectedFootprintInfo.IsShowInfo = true;
+                }
+
+                PreviewMouseLeftButtonCommandChecker = !PreviewMouseLeftButtonCommandChecker;
+            }
+
+            SelectedFootprintInfo = item;
         }
 
         private void FilterClick()
