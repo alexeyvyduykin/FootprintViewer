@@ -47,39 +47,6 @@
       <Setter Property="VerticalAlignment" Value="Center"></Setter>
       <Setter Property="Margin" Value="0,0,4,0"></Setter>
     </Style>
-    <Style Selector="TextBlock.searchTextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="FontSize" Value="13"></Setter>
-    </Style>
-    <Style Selector="Button.searchButton">
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
-      <Setter Property="BorderBrush" Value="Transparent"/>
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-      <Setter Property="HorizontalAlignment" Value="Stretch"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate>
-            <ContentPresenter x:Name="PART_ContentPresenter"
-                              BorderThickness="0"
-                              Background="{TemplateBinding Background}"
-                              Content="{TemplateBinding Content}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Center"
-                              Margin="0,0,0,0" />
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-    <Style Selector="Button.searchButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
-    </Style>
-
-    <Style Selector="Button.searchButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
-    </Style>
-
     <Style Selector="ListBoxItem">
       <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
       <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
@@ -154,7 +121,7 @@
                        
           </ContentControl>
 
-          <TextBlock Text="Настройки поиска" VerticalAlignment="Center" Classes="searchTextBlock"/>
+          <TextBlock Text="Настройки поиска" VerticalAlignment="Center"/>
         </StackPanel>
       </Button>
 
