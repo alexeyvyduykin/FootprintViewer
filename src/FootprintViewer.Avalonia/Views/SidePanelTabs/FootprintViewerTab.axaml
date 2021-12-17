@@ -26,9 +26,6 @@
   </UserControl.Resources>
 
   <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
     <Style Selector="TextBlock.txtHeaderNameKey">
       <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
       <Setter Property="FontSize" Value="15"></Setter>
@@ -81,10 +78,6 @@
 
     <Style Selector="Button.searchButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
       <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
-    </Style>
-
-    <Style Selector="ListBox">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
     </Style>
 
     <Style Selector="ListBoxItem">

@@ -57,5 +57,21 @@
     <Setter Property="FontFamily" Value="Roboto"></Setter>
     <Setter Property="FontSize" Value="12"></Setter>
   </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+  </Style>
   
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+  </Style>
+  
+  <Style Selector="ItemsControl">
+    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+  </Style>
+
+  <Style Selector="ListBox">
+    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+  </Style>
+
 </Styles>

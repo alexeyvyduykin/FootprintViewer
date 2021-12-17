@@ -39,10 +39,6 @@
 
   <UserControl.Styles>
    
-    <Style Selector="ItemsControl">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-
     <Style Selector="Button.closeBottom">    
       <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
       <Setter Property="Opacity" Value="0.7" />

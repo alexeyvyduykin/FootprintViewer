@@ -10,18 +10,6 @@
              mc:Ignorable="d"
              d:DesignWidth="400" d:DesignHeight="360">
 
-  <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
-    </Style>
-    <Style Selector="CheckBox">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
-    </Style>
-    <Style Selector="ItemsControl">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
-    </Style>
-  </UserControl.Styles>
-
   <Border Background="{StaticResource MainBackgroundBrush}">
     <StackPanel>
 

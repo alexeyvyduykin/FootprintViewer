@@ -18,12 +18,6 @@
       <Setter Property="Background" Value="{StaticResource AccentBackgroundBrush}"></Setter>
       <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
     </Style>
-    <Style Selector="CheckBox">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
     <Style Selector="TextBlock.txtHeaderNameKey">
       <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
       <Setter Property="FontSize" Value="15"></Setter>

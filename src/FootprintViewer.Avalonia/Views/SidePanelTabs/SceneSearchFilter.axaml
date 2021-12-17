@@ -11,23 +11,6 @@
   <UserControl.Resources>
     <converters:DateTimePickerConverter x:Key="dateTimePickerConverter"/>
   </UserControl.Resources>
-
-  <UserControl.Styles>
-
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-
-    <Style Selector="CheckBox">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-
-    <Style Selector="ItemsControl">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-  </UserControl.Styles>
-
-  
   
   <Border Background="{StaticResource MainBackgroundBrush}" >
     <StackPanel>

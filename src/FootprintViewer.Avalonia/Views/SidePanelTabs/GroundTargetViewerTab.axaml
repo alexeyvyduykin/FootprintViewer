@@ -27,14 +27,7 @@
   </UserControl.Resources>
 
   <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-
-    <Style Selector="ListBox">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>
-
+    
     <Style Selector="ListBoxItem">
       <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"></Setter>
       <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
