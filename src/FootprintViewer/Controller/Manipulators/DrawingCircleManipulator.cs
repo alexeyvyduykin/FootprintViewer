@@ -1,6 +1,4 @@
-﻿using FootprintViewer.Graphics;
-
-namespace FootprintViewer
+﻿namespace FootprintViewer
 {
     public class DrawingCircleManipulator : MouseManipulator
     {
@@ -26,7 +24,7 @@ namespace FootprintViewer
                     MapView.SetCursor(CursorType.Default, "DrawingCircleManipulator.Completed");
                 }
             }
-        
+
             e.Handled = true;
         }
 
@@ -66,7 +64,7 @@ namespace FootprintViewer
             var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
 
             MapView.Plotter.HoverCreatingFeature(worldPosition);
-            
+
             e.Handled = true;
         }
 
@@ -75,7 +73,7 @@ namespace FootprintViewer
             base.Started(e);
 
             MapView.SetCursor(CursorType.Cross, "HoverDrawingCircleManipulator.Started");
-            
+
             e.Handled = true;
         }
     }

@@ -3,7 +3,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer
+namespace FootprintViewer.Interactivity
 {
     public abstract class InteractiveFeature : Feature, IInteractiveFeature
     {
@@ -28,24 +28,5 @@ namespace FootprintViewer
         public abstract bool Editing(Point worldPosition);
 
         public abstract void EndEditing();
-    }
-
-    public interface IInteractiveFeature : IFeature
-    {
-        AddInfo BeginDrawing(Point worldPosition);
-
-        void Drawing(Point worldPosition);
-
-        void DrawingHover(Point worldPosition);
-
-        void EndDrawing();
-
-        IList<Point> EditVertices();
-
-        bool BeginEditing(Point worldPosition, double screenDistance);
-
-        bool Editing(Point worldPosition);
-
-        void EndEditing();
     }
 }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FootprintViewer.Interactivity;
 
 namespace FootprintViewer
 {
@@ -75,7 +76,7 @@ namespace FootprintViewer
 
             _isEditing = false;
 
-            if (mapInfo.Feature != null && mapInfo.Feature is InteractiveFeature interactiveFeature)
+            if (mapInfo.Feature != null)
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
 

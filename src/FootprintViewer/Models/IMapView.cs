@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Graphics;
+﻿using FootprintViewer.Interactivity;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.UI;

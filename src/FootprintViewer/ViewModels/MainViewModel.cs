@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Graphics;
+using FootprintViewer.Interactivity;
 using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;

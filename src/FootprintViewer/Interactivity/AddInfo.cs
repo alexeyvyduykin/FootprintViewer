@@ -1,7 +1,7 @@
 ﻿using Mapsui.Providers;
 using System.Collections.Generic;
 
-namespace FootprintViewer
+namespace FootprintViewer.Interactivity
 {
     public class AddInfo
     {
