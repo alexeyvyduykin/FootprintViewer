@@ -14,7 +14,8 @@
     
     <Grid>
         <local:UserMapControl x:Name="MapControl"                                                                                                         
-                              MapSource="{Binding Map}"                                                                              
+                              MapSource="{Binding Map}"   
+                              MapListener="{Binding MapListener}"
                               VerticalAlignment="Stretch"                                                                                                   
                               HorizontalAlignment="Stretch" />
 

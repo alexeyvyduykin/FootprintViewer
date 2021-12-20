@@ -1,17 +1,17 @@
-﻿using Mapsui;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
-using System.Windows;
+﻿using InteractivitySample.ViewModels;
+using Mapsui;
+using Mapsui.UI;
 using Mapsui.UI.Wpf;
+using System.Windows;
+using System.Windows.Input;
 
 namespace InteractivitySample
 {
     public class UserMapControl : MapControl
     {
-        private Mapsui.Geometries.Point? _mouseDownPoint;
         private bool _isLeftMouseDown = false;
+        private bool _isLeftClick = false;
+        private MapInfo? _lastMapInfo;
 
         public UserMapControl() : base()
         {
@@ -21,6 +21,50 @@ namespace InteractivitySample
             MouseDown += MyMapControl_MouseDown;
             MouseMove += MyMapControl_MouseMove;
             MouseUp += MyMapControl_MouseUp;
+        }
+
+        private static void UserMapControl_Info(object? sender, MapInfoEventArgs e)
+        {
+            var s = (UserMapControl?)sender;
+
+            if (s != null)
+            {
+                if (e.MapInfo != null && e.MapInfo.Feature != null)
+                {
+                    s.SetMapInfo(e.MapInfo);
+                }
+            }
+        }
+
+        private void SetMapInfo(MapInfo mapInfo)
+        {
+            _lastMapInfo = mapInfo;
+            _isLeftClick = true;
+        }
+
+        public MapListener? MapListener
+        {
+            get { return (MapListener?)GetValue(MapListenerProperty); }
+            set { SetValue(MapListenerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MapListenerProperty =
+            DependencyProperty.Register("MapListener", typeof(MapListener), typeof(UserMapControl), new PropertyMetadata(null, OnMapListenerChanged));
+
+        private static void OnMapListenerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var s = (UserMapControl)d;
+
+            if (e.NewValue != null && e.NewValue is MapListener mapListener)
+            {
+                if (s.MapListener != null)
+                {
+                    s.Info -= UserMapControl_Info;
+                }
+
+                s.Info += UserMapControl_Info;
+            }
         }
 
         public Map MapSource
@@ -52,31 +96,16 @@ namespace InteractivitySample
                 return;
             }
 
-            //var releasedArgs = (PointerReleasedEventArgs)e;
-
             e.MouseDevice.Capture(null);
 
+            if (_isLeftClick == true)
+            {
+                MapListener?.LeftClick(_lastMapInfo);
+
+                _isLeftClick = false;
+            }
+
             _isLeftMouseDown = false;
-
-            //e.Handled = 
-            //   Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
-
-            // Open the context menu
-            //var p = e.GetPosition(this).ToScreenPoint();
-            //var d = p.DistanceTo(_mouseDownPoint);
-
-            //if (ContextMenu != null)
-            //{
-            //    if (Math.Abs(d) < 1e-8 && releasedArgs.InitialPressMouseButton == MouseButton.Right)
-            //    {
-            //        ContextMenu.DataContext = DataContext;
-            //        ContextMenu.IsVisible = true;
-            //    }
-            //    else
-            //    {
-            //        ContextMenu.IsVisible = false;
-            //    }
-            //}
         }
 
         private void MyMapControl_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -90,8 +119,16 @@ namespace InteractivitySample
 
             //e.Handled = 
 
-            //   var args = e.ToMouseEventArgs(this);
+            // var args = e.ToMouseEventArgs(this);
             //    Controller.HandleMouseMove(this, args);
+
+            if (e.Handled == false)
+            {
+                if (_isLeftMouseDown == true && e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+                {
+                    _isLeftClick = false;
+                }
+            }
         }
 
         private void MyMapControl_MouseDown(object sender, MouseButtonEventArgs e)
