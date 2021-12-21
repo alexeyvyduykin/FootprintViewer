@@ -40,26 +40,94 @@ namespace InteractivitySample.ViewModels
             MapListener = new MapListener();
 
             MapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
+
+            this.WhenAnyValue(s => s.IsSelect).Subscribe((_) =>
+            {
+                _selectedFeature = null;
+
+                InteractiveLayerRemove();
+         
+                if (IsSelect == true)
+                {                
+                    IsTranslate = false;
+                    IsRotate = false;
+                    IsScale = false;
+                    IsEdit = false;               
+                } 
+            });
+
+            this.WhenAnyValue(s => s.IsTranslate).Subscribe((_) =>
+            {
+                if (IsTranslate == true)
+                {
+                    IsSelect = false;
+                    IsRotate = false;
+                    IsScale = false;
+                    IsEdit = false;
+                }
+            });
+
+            this.WhenAnyValue(s => s.IsRotate).Subscribe((_) =>
+            {
+                if (IsRotate == true)
+                {
+                    IsTranslate = false;
+                    IsSelect = false;
+                    IsScale = false;
+                    IsEdit = false;
+                }
+            });
+
+            this.WhenAnyValue(s => s.IsScale).Subscribe((_) =>
+            {
+                if (IsScale == true)
+                {
+                    IsTranslate = false;
+                    IsRotate = false;
+                    IsSelect = false;
+                    IsEdit = false;
+                }
+            });
+
+            this.WhenAnyValue(s => s.IsEdit).Subscribe((_) =>
+            {
+                if (IsEdit == true)
+                {
+                    IsTranslate = false;
+                    IsRotate = false;
+                    IsScale = false;
+                    IsSelect = false;
+                }
+            });
         }
   
+        private void InteractiveLayerRemove()
+        {
+            var layer = Map.Layers.FindLayer("InteractiveLayer").FirstOrDefault();
+
+            if (layer != null)
+            {
+                Map.Layers.Remove(layer);
+            }
+        }
+
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
         {
-            if (sender is MapInfo mapInfo)
+            if (sender is MapInfo mapInfo && IsSelect == true)
             {
-                var layer = Map.Layers.FindLayer("InteractiveLayer").FirstOrDefault();
-             
-                if (layer != null)
-                {
-                    Map.Layers.Remove(layer);
-                }
+                InteractiveLayerRemove();
 
                 var feature = mapInfo.Feature;
 
                 if (feature != _selectedFeature)
                 {
-                    Map.Layers.Add(CreateInteractiveLayer(mapInfo.Layer));
+                    Map.Layers.Add(CreateSelectLayer(mapInfo.Layer, mapInfo.Feature));
 
                     _selectedFeature = feature;
+                }
+                else
+                {
+                    _selectedFeature = null;
                 }
             }
         }
@@ -82,7 +150,7 @@ namespace InteractivitySample.ViewModels
             map.Layers.Add(userLayer2);
             map.Layers.Add(userLayer3);
             map.Layers.Add(userLayer4);
-            map.Layers.Add(CreateInteractiveLayer(userLayer1));
+            //map.Layers.Add(CreateInteractiveLayer(userLayer1));
 
             return map;
         }
@@ -93,6 +161,21 @@ namespace InteractivitySample.ViewModels
             {
                 Name = "InteractiveLayer",
                 IsMapInfoLayer = true,
+            };
+        }
+
+        private static ILayer CreateSelectLayer(ILayer source, IFeature feature)
+        {
+            return new SelectLayer(source, feature)
+            {
+                Name = "InteractiveLayer",
+                IsMapInfoLayer = true,
+                Style = new VectorStyle()
+                {
+                    Fill = new Brush(Color.Transparent),
+                    Outline = new Pen(Color.Green, 4),
+                    Line = new Pen(Color.Green, 4),
+                },
             };
         }
 
@@ -223,5 +306,20 @@ namespace InteractivitySample.ViewModels
 
         [Reactive]
         public MapListener? MapListener { get; set; }
+
+        [Reactive]
+        public bool IsSelect { get; set; } = false;
+
+        [Reactive]
+        public bool IsTranslate { get; set; } = false;
+
+        [Reactive]
+        public bool IsRotate { get; set; } = false;
+
+        [Reactive]
+        public bool IsScale { get; set; } = false;
+
+        [Reactive]
+        public bool IsEdit { get; set; } = false;
     }
 }
