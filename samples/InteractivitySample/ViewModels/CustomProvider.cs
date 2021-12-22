@@ -3,6 +3,7 @@ using Mapsui.Geometries.WellKnownText;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using Mapsui.Styles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,27 @@ namespace InteractivitySample.ViewModels
 {
     public class CustomProvider : MemoryProvider
     {
-        private IFeature _feature;
+        private IList<IFeature> _features = new List<IFeature>();
 
-        public CustomProvider(string name, string wkt)
+        public CustomProvider()
+        {
+
+        }
+
+        public void AddFeature(string name, string wkt, IStyle? style = null)
         {
             var g = GeometryFromWKT.Parse(wkt);
-            _feature = new Feature { Geometry = g };
-            _feature["Name"] = name;
+            var feature = new Feature { Geometry = g };
+            feature["Name"] = name;
 
-            ReplaceFeatures(new[] { _feature });
+            if (style != null)
+            {
+                feature.Styles = new[] { style };
+            }
+
+            _features.Add(feature);
+
+            ReplaceFeatures(_features);
         }
     }
 }
