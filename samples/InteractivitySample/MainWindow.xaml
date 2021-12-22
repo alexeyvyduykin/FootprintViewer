@@ -22,6 +22,8 @@
         <local:UserMapControl x:Name="MapControl"                                                                                                         
                               MapSource="{Binding Map}"   
                               MapListener="{Binding MapListener}"
+                              Controller="{Binding ActualController}"
+                              MapObserver="{Binding MapObserver}"
                               VerticalAlignment="Stretch"                                                                                                   
                               HorizontalAlignment="Stretch" />
         

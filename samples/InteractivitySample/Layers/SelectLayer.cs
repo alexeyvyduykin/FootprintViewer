@@ -34,10 +34,10 @@ namespace InteractivitySample.Layers
         {
             if (box.Intersects(_feature.Geometry?.BoundingBox) == true)
             {
-                return new[] { _feature };
+               yield return _feature;
             }
 
-            return new Feature[] { };
+            //return new Feature[] { };
 
             //return _source.GetFeaturesInView(box, resolution);
         }

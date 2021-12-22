@@ -1,4 +1,6 @@
-﻿using InteractivitySample.Layers;
+﻿using InteractivitySample.Decorators;
+using InteractivitySample.Input.Controller;
+using InteractivitySample.Layers;
 using Mapsui;
 using Mapsui.Geometries.WellKnownText;
 using Mapsui.Layers;
@@ -8,15 +10,15 @@ using Mapsui.UI;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Windows.Controls;
 
 namespace InteractivitySample.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {
         private IFeature? _selectedFeature;
+        private IFeature? _scaleFeature;
 
         private static readonly Color PolygonBackgroundColor = new Color(20, 120, 120, 40);
         private static readonly Color PolygonLineColor = new Color(20, 120, 120, 255);
@@ -46,14 +48,14 @@ namespace InteractivitySample.ViewModels
                 _selectedFeature = null;
 
                 InteractiveLayerRemove();
-         
+
                 if (IsSelect == true)
-                {                
+                {
                     IsTranslate = false;
                     IsRotate = false;
                     IsScale = false;
-                    IsEdit = false;               
-                } 
+                    IsEdit = false;
+                }
             });
 
             this.WhenAnyValue(s => s.IsTranslate).Subscribe((_) =>
@@ -80,6 +82,10 @@ namespace InteractivitySample.ViewModels
 
             this.WhenAnyValue(s => s.IsScale).Subscribe((_) =>
             {
+                _scaleFeature = null;
+
+                InteractiveLayerRemove();
+
                 if (IsScale == true)
                 {
                     IsTranslate = false;
@@ -99,8 +105,10 @@ namespace InteractivitySample.ViewModels
                     IsSelect = false;
                 }
             });
+
+            ActualController = new EditController();
         }
-  
+
         private void InteractiveLayerRemove()
         {
             var layer = Map.Layers.FindLayer("InteractiveLayer").FirstOrDefault();
@@ -130,6 +138,52 @@ namespace InteractivitySample.ViewModels
                     _selectedFeature = null;
                 }
             }
+
+            if (sender is MapInfo mapInfo2 && IsScale == true)
+            {
+                InteractiveLayerRemove();
+
+                var feature = mapInfo2.Feature;
+
+                if (feature != _scaleFeature)
+                {
+                    var decorator = new ScaleDecorator(feature);
+
+                    Map.Layers.Add(CreateScaleLayer(mapInfo2.Layer, decorator));
+
+                    //Plotter = new EditingPlotter(decorator);
+
+                    MapObserver = new MapObserver();
+
+                    MapObserver.Started += (s, e) => 
+                    {
+                        var vertices = decorator.GetActiveVertices();
+
+                        var vertexTouched = vertices.OrderBy(v => v.Distance(e.WorldPosition)).FirstOrDefault(v => v.Distance(e.WorldPosition) < e.ScreenDistance);
+
+                        if (vertexTouched != null)
+                        {
+                            decorator.Starting(e.WorldPosition);
+                        }
+                    };
+
+                    MapObserver.Delta += (s, e) =>
+                    {
+                        decorator.Moving(e.WorldPosition);
+                    };
+
+                    MapObserver.Completed += (s, e) =>
+                    {
+                        decorator.Ending();
+                    };
+
+                    _scaleFeature = feature;
+                }
+                else
+                {
+                    _scaleFeature = null;
+                }
+            }
         }
 
         public static Map CreateMap()
@@ -139,14 +193,14 @@ namespace InteractivitySample.ViewModels
                 CRS = "EPSG:3857",
                 // Transformation = new MinimalTransformation(),
             };
-        
+
             var userLayer1 = CreatePolygonLayer();
             var userLayer2 = CreateCircleLayer();
             var userLayer3 = CreateRectangleLayer();
             var userLayer4 = CreateRouteLayer();
 
             map.Layers.Add(new Layer()); // BackgroundLayer
-            map.Layers.Add(userLayer1);        
+            map.Layers.Add(userLayer1);
             map.Layers.Add(userLayer2);
             map.Layers.Add(userLayer3);
             map.Layers.Add(userLayer4);
@@ -175,6 +229,23 @@ namespace InteractivitySample.ViewModels
                     Fill = new Brush(Color.Transparent),
                     Outline = new Pen(Color.Green, 4),
                     Line = new Pen(Color.Green, 4),
+                },
+            };
+        }
+
+        private static ILayer CreateScaleLayer(ILayer source, ScaleDecorator decorator)
+        {
+            return new InteractiveLayer(source, decorator)
+            {
+                Name = "InteractiveLayer",
+                IsMapInfoLayer = true,
+                Style = new SymbolStyle()
+                {
+                    Fill = new Brush(Color.White),
+                    Outline = new Pen(Color.Black, 2 / 0.3),
+                    Line = null,//new Pen(Color.Black, 2),
+                    SymbolType = SymbolType.Ellipse,
+                    SymbolScale = 0.3,
                 },
             };
         }
@@ -229,7 +300,7 @@ namespace InteractivitySample.ViewModels
             var polygonLayer = new WritableLayer
             {
                 Name = "RectangleLayer",
-                Style = CreateRectangleStyle(),    
+                Style = CreateRectangleStyle(),
                 IsMapInfoLayer = true,
             };
 
@@ -321,5 +392,11 @@ namespace InteractivitySample.ViewModels
 
         [Reactive]
         public bool IsEdit { get; set; } = false;
+
+        [Reactive]
+        public IController ActualController { get; set; }
+
+        [Reactive]
+        public IMapObserver? MapObserver { get; set; }
     }
 }
