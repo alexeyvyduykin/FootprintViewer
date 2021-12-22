@@ -44,5 +44,19 @@ namespace InteractivitySample.Decorators
             vertex.X = center.X + (vertex.X - center.X) * scale;
             vertex.Y = center.Y + (vertex.Y - center.Y) * scale;
         }
+
+        public static void Translate(IGeometry geometry, double deltaX, double deltaY)
+        {
+            foreach (var vertex in geometry.AllVertices())
+            {
+                Translate(vertex, deltaX, deltaY);
+            }
+        }
+
+        private static void Translate(Point vertex, double deltaX, double deltaY)
+        {
+            vertex.X = vertex.X + deltaX;
+            vertex.Y = vertex.Y + deltaY;
+        }
     }
 }

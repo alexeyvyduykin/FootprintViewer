@@ -11,14 +11,12 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
-using System.Windows.Controls;
 
 namespace InteractivitySample.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {
-        private IFeature? _selectedFeature;
-        private IFeature? _scaleFeature;
+        private IFeature? _currentFeature;
 
         private static readonly Color PolygonBackgroundColor = new Color(20, 120, 120, 40);
         private static readonly Color PolygonLineColor = new Color(20, 120, 120, 255);
@@ -45,7 +43,7 @@ namespace InteractivitySample.ViewModels
 
             this.WhenAnyValue(s => s.IsSelect).Subscribe((_) =>
             {
-                _selectedFeature = null;
+                _currentFeature = null;
 
                 InteractiveLayerRemove();
 
@@ -60,6 +58,10 @@ namespace InteractivitySample.ViewModels
 
             this.WhenAnyValue(s => s.IsTranslate).Subscribe((_) =>
             {
+                _currentFeature = null;
+
+                InteractiveLayerRemove();
+
                 if (IsTranslate == true)
                 {
                     IsSelect = false;
@@ -82,7 +84,7 @@ namespace InteractivitySample.ViewModels
 
             this.WhenAnyValue(s => s.IsScale).Subscribe((_) =>
             {
-                _scaleFeature = null;
+                _currentFeature = null;
 
                 InteractiveLayerRemove();
 
@@ -121,41 +123,53 @@ namespace InteractivitySample.ViewModels
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
         {
-            if (sender is MapInfo mapInfo && IsSelect == true)
+            if (sender is MapInfo mapInfo)
             {
-                InteractiveLayerRemove();
-
                 var feature = mapInfo.Feature;
 
-                if (feature != _selectedFeature)
+                if (IsSelect == true)
                 {
-                    Map.Layers.Add(CreateSelectLayer(mapInfo.Layer, mapInfo.Feature));
+                    InteractiveLayerRemove();
+        
+                    if (feature != _currentFeature)
+                    {
+                        Map.Layers.Add(CreateSelectLayer(mapInfo.Layer, mapInfo.Feature));
 
-                    _selectedFeature = feature;
+                        _currentFeature = feature;
+                    }
+                    else
+                    {
+                        _currentFeature = null;
+                    }
+
+                    return;
                 }
-                else
+                
+                IDecorator? decorator = null;
+
+                if (IsScale == true)
                 {
-                    _selectedFeature = null;
+                    decorator = new ScaleDecorator(feature);
                 }
-            }
+                if (IsTranslate == true)
+                {
+                    decorator = new TranslateDecorator(feature);
+                }
 
-            if (sender is MapInfo mapInfo2 && IsScale == true)
-            {
+                if (decorator == null)
+                {
+                    return;
+                }
+
                 InteractiveLayerRemove();
 
-                var feature = mapInfo2.Feature;
-
-                if (feature != _scaleFeature)
+                if (feature != _currentFeature)
                 {
-                    var decorator = new ScaleDecorator(feature);
-
-                    Map.Layers.Add(CreateScaleLayer(mapInfo2.Layer, decorator));
-
-                    //Plotter = new EditingPlotter(decorator);
+                    Map.Layers.Add(CreateDecoratorLayer(mapInfo.Layer, decorator));
 
                     MapObserver = new MapObserver();
 
-                    MapObserver.Started += (s, e) => 
+                    MapObserver.Started += (s, e) =>
                     {
                         var vertices = decorator.GetActiveVertices();
 
@@ -177,11 +191,11 @@ namespace InteractivitySample.ViewModels
                         decorator.Ending();
                     };
 
-                    _scaleFeature = feature;
+                    _currentFeature = feature;
                 }
                 else
                 {
-                    _scaleFeature = null;
+                    _currentFeature = null;
                 }
             }
         }
@@ -233,7 +247,7 @@ namespace InteractivitySample.ViewModels
             };
         }
 
-        private static ILayer CreateScaleLayer(ILayer source, ScaleDecorator decorator)
+        private static ILayer CreateDecoratorLayer(ILayer source, IDecorator decorator)
         {
             return new InteractiveLayer(source, decorator)
             {
