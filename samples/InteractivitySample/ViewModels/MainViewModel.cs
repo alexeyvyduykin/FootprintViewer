@@ -73,6 +73,10 @@ namespace InteractivitySample.ViewModels
 
             this.WhenAnyValue(s => s.IsRotate).Subscribe((_) =>
             {
+                _currentFeature = null;
+
+                InteractiveLayerRemove();
+
                 if (IsRotate == true)
                 {
                     IsTranslate = false;
@@ -154,6 +158,10 @@ namespace InteractivitySample.ViewModels
                 if (IsTranslate == true)
                 {
                     decorator = new TranslateDecorator(feature);
+                }
+                if (IsRotate == true)
+                {
+                    decorator = new RotateDecorator(feature);
                 }
 
                 if (decorator == null)
