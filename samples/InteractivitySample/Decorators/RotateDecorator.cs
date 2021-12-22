@@ -2,7 +2,6 @@
 using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace InteractivitySample.Decorators
 {
@@ -13,7 +12,7 @@ namespace InteractivitySample.Decorators
         private Point _startRotateRight;
         private Point _startOffsetToVertex;
         private IGeometry? _startGeometry;
-        private double _halfDiagonal; 
+        private double _halfDiagonal;
         // HACK: without this locker Moving() passing not his order
         private bool _isRotating = false;
 
@@ -41,7 +40,7 @@ namespace InteractivitySample.Decorators
 
         public override void Moving(Point worldPosition)
         {
-            if (_isRotating == true)
+            if (_isRotating == true && _startGeometry != null)
             {
                 var p1 = worldPosition - _startOffsetToVertex;
 
@@ -49,7 +48,7 @@ namespace InteractivitySample.Decorators
 
                 var sign = (p1 - _startRotateRight).Y >= 0 ? -1 : 1;
 
-                var geometry = _startGeometry.Copy();
+                var geometry = Copy(_startGeometry);
 
                 var degrees = sign * (distance * 360.0 / _halfDiagonal);
 
@@ -69,7 +68,7 @@ namespace InteractivitySample.Decorators
 
             _startOffsetToVertex = worldPosition - _startRotateRight;
 
-            _startGeometry = FeatureSource.Geometry.Copy();
+            _startGeometry = Copy(FeatureSource.Geometry);
 
             _halfDiagonal = Diagonal(FeatureSource.Geometry.BoundingBox) / 2.0;
 

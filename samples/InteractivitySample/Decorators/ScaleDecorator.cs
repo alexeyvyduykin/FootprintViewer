@@ -35,13 +35,13 @@ namespace InteractivitySample.Decorators
 
         public override void Moving(Point worldPosition)
         {
-            if (_isScaling == true)
+            if (_isScaling == true && _startGeometry != null)
             {
                 var p1 = worldPosition - _startOffsetToVertex;
 
                 var scale = _center.Distance(p1);
 
-                var geometry = _startGeometry.Copy();
+                var geometry = Copy(_startGeometry);
 
                 Geomorpher.Scale(geometry, scale / _startScale, _center);
 
@@ -59,7 +59,7 @@ namespace InteractivitySample.Decorators
 
             _startOffsetToVertex = worldPosition - _startSizeNE;
 
-            _startGeometry = FeatureSource.Geometry.Copy();
+            _startGeometry = Copy(FeatureSource.Geometry);
 
             _startScale = _center.Distance(_startSizeNE);
 
