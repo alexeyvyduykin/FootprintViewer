@@ -12,6 +12,8 @@ namespace InteractivitySample.FeatureBuilders
         IList<IFeature> ExtraFeatures { get; }
 
         event EventHandler? InvalidateLayer;
+        
+        event EventHandler? Creating;
 
         void Starting(Point worldPosition);
 

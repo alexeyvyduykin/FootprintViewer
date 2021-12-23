@@ -95,7 +95,16 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) => ResetExclude(s, nameof(IsCircle)));
+            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) => 
+            {
+                ResetExclude(s, nameof(IsCircle));
+                
+                if (s == true)
+                {
+                    ActualController = new CircleController();
+                    DrawingCircleCommand();
+                }
+            });
 
             this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) => ResetExclude(s, nameof(IsPolygon)));
 
@@ -275,6 +284,27 @@ namespace InteractivitySample.ViewModels
 
             MapObserver = new MapObserver(builder);
         }
+
+        private void DrawingCircleCommand()
+        {
+            InteractiveLayerRemove();
+
+            var builder = new CircleBuilder();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+
+            builder.Creating += (s, e) =>
+            {
+                _provider.AddFeature(builder.Feature.Copy());
+
+                IsCircle = false;
+            };
+
+            MapObserver = new MapObserver(builder);
+        }
+
 
         public static Map CreateMap()
         {

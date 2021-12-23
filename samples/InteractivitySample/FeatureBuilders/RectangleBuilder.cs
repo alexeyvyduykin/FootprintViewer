@@ -12,9 +12,7 @@ namespace InteractivitySample.FeatureBuilders
 
         private bool _skip;
         private int _counter;
-
-        public event EventHandler Creating;
-
+  
         public RectangleBuilder() : base() { }
 
         public override void Starting(Point worldPosition)
@@ -71,7 +69,7 @@ namespace InteractivitySample.FeatureBuilders
 
                 _firstClick = true;
 
-                Creating?.Invoke(this, EventArgs.Empty);
+                CreateCallback();
 
                 return;
             }

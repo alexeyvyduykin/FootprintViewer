@@ -14,9 +14,16 @@ namespace InteractivitySample.FeatureBuilders
 
         public event EventHandler? InvalidateLayer;
 
+        public event EventHandler? Creating;
+
         protected void Invalidate()
         {
             InvalidateLayer?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected void CreateCallback()
+        {
+            Creating?.Invoke(this, EventArgs.Empty);
         }
 
         public abstract void Starting(Point worldPosition);
