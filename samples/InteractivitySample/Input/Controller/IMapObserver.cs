@@ -18,6 +18,8 @@ namespace InteractivitySample.Input.Controller
     public class CompletedEventArgs : EventArgs
     {
         public Point WorldPosition { get; set; } = new Point();
+
+        public Predicate<Point>? IsEnd { get; set; }
     }
 
     public class HoverEventArgs : EventArgs
@@ -43,6 +45,8 @@ namespace InteractivitySample.Input.Controller
         void OnStarted(Point worldPosition, double screenDistance);
 
         void OnDelta(Point worldPosition);
+
+        void OnCompleted(Point worldPosition, Predicate<Point> isEnd);
 
         void OnCompleted(Point worldPosition);
 

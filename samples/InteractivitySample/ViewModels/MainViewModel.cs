@@ -106,7 +106,16 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) => ResetExclude(s, nameof(IsPolygon)));
+            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) => 
+            {
+                ResetExclude(s, nameof(IsPolygon));
+                
+                if (s == true)
+                {
+                    ActualController = new PolygonController();
+                    DrawingPolygonCommand();
+                }
+            });
 
             this.WhenAnyValue(s => s.IsRoute).Subscribe((s) => ResetExclude(s, nameof(IsRoute)));
 
@@ -305,6 +314,25 @@ namespace InteractivitySample.ViewModels
             MapObserver = new MapObserver(builder);
         }
 
+        private void DrawingPolygonCommand()
+        {
+            InteractiveLayerRemove();
+
+            var builder = new PolygonBuilder();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+
+            builder.Creating += (s, e) =>
+            {
+                _provider.AddFeature(builder.Feature.Copy());
+
+                IsPolygon = false;
+            };
+
+            MapObserver = new MapObserver(builder);
+        }
 
         public static Map CreateMap()
         {

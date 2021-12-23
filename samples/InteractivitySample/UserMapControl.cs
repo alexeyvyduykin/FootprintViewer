@@ -261,5 +261,10 @@ namespace InteractivitySample
         {
             return Viewport.ScreenToWorld(screenPosition);
         }
+
+        public Mapsui.Geometries.Point WorldToScreen(Mapsui.Geometries.Point worldPosition)
+        {
+            return Viewport.WorldToScreen(worldPosition);
+        }
     }
 }

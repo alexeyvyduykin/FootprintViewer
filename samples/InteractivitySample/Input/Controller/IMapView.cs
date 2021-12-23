@@ -11,6 +11,8 @@ namespace InteractivitySample.Input.Controller
 
         Point ScreenToWorld(Point screenPosition);
 
+        Point WorldToScreen(Point worldPosition);
+
         MapInfo GetMapInfo(Point screenPosition, int margin = 0);
     }
 }

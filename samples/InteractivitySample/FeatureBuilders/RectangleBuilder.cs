@@ -29,7 +29,7 @@ namespace InteractivitySample.FeatureBuilders
             }
         }
 
-        public override void Ending(Point worldPosition)
+        public override void Ending(Point worldPosition, Predicate<Point> isEnd)
         {
             if (_skip == false)
             {

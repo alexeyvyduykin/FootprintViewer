@@ -30,7 +30,7 @@ namespace InteractivitySample.FeatureBuilders
 
         public abstract void Moving(Point worldPosition);
 
-        public abstract void Ending(Point worldPosition);
+        public abstract void Ending(Point worldPosition, Predicate<Point> isEnd);
 
         public abstract void Hover(Point worldPosition);
     }

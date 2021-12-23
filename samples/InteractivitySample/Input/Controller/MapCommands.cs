@@ -14,6 +14,9 @@ namespace InteractivitySample.Input.Controller
 
             DrawingCircle = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingCircleManipulator(view), args));
             HoverDrawingCircle = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingCircleManipulator(view), args));
+
+            DrawingPolygon = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingPolygonManipulator(view), args));
+            HoverDrawingPolygon = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingPolygonManipulator(view), args));
         }
 
         public static IViewCommand<MouseDownEventArgs> Editing { get; private set; }
@@ -27,5 +30,9 @@ namespace InteractivitySample.Input.Controller
         public static IViewCommand<MouseDownEventArgs> DrawingCircle { get; private set; }
 
         public static IViewCommand<MouseEventArgs> HoverDrawingCircle { get; private set; }
+
+        public static IViewCommand<MouseDownEventArgs> DrawingPolygon { get; private set; }
+
+        public static IViewCommand<MouseEventArgs> HoverDrawingPolygon { get; private set; }
     }
 }

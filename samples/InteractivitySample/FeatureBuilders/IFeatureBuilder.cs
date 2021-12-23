@@ -19,7 +19,7 @@ namespace InteractivitySample.FeatureBuilders
 
         void Moving(Point worldPosition);
 
-        void Ending(Point worldPosition);
+        void Ending(Point worldPosition, Predicate<Point>? isEnd);
 
         void Hover(Point worldPosition);
     }

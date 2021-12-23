@@ -56,6 +56,15 @@ namespace InteractivitySample.Layers
                 var feature = _builder.Feature;
 
                 yield return feature;
+
+                if (_builder.ExtraFeatures.Count != 0)
+                {
+                    foreach (var item in _builder.ExtraFeatures)
+                    {
+                        yield return item;
+                    }
+                }
+
             }
         }
 

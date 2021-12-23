@@ -33,7 +33,7 @@ namespace InteractivitySample.Input.Controller
 
             Completed += (s, e) =>
             {
-                builder.Ending(e.WorldPosition);
+                builder.Ending(e.WorldPosition, e.IsEnd);
             };
 
             Hover += (s, e) =>
@@ -52,9 +52,14 @@ namespace InteractivitySample.Input.Controller
             Started?.Invoke(this, new StartedEventArgs() { WorldPosition = worldPosition, ScreenDistance = screenDistance });
         }
 
+        public void OnCompleted(Point worldPosition, Predicate<Point> isEnd)
+        {
+            Completed?.Invoke(this, new CompletedEventArgs() { WorldPosition = worldPosition, IsEnd = isEnd });
+        }
+
         public void OnCompleted(Point worldPosition)
         {
-            Completed?.Invoke(this, new CompletedEventArgs() { WorldPosition = worldPosition });
+            Completed?.Invoke(this, new CompletedEventArgs() { WorldPosition = worldPosition, IsEnd = null });
         }
 
         public void OnHover(Point worldPosition)

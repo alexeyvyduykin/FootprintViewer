@@ -7,7 +7,7 @@ namespace InteractivitySample.FeatureBuilders
 {
     public class RouteBuilder : BaseFeatureBuilder
     {
-        public override void Ending(Point worldPosition)
+        public override void Ending(Point worldPosition, Predicate<Point> isEnd)
         {
             throw new NotImplementedException();
         }
