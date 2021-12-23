@@ -117,7 +117,16 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsRoute).Subscribe((s) => ResetExclude(s, nameof(IsRoute)));
+            this.WhenAnyValue(s => s.IsRoute).Subscribe((s) =>
+            {
+                ResetExclude(s, nameof(IsRoute));
+
+                if (s == true)
+                {
+                    ActualController = new RouteController();
+                    DrawingRouteCommand();
+                }
+            });
 
             ActualController = new EditController();
         }
@@ -309,6 +318,26 @@ namespace InteractivitySample.ViewModels
                 _provider.AddFeature(builder.Feature.Copy());
 
                 IsCircle = false;
+            };
+
+            MapObserver = new MapObserver(builder);
+        }
+
+        private void DrawingRouteCommand()
+        {
+            InteractiveLayerRemove();
+
+            var builder = new RouteBuilder();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+
+            builder.Creating += (s, e) =>
+            {
+                _provider.AddFeature(builder.Feature.Copy());
+
+                IsRoute = false;
             };
 
             MapObserver = new MapObserver(builder);
