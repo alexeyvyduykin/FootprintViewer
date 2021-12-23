@@ -18,7 +18,9 @@ namespace InteractivitySample.Input.Controller
 
             if (_isEditing == true)
             {
-                MapView.MapObserver.OnCompleted();
+                var worldPosition = MapView.ScreenToWorld(e.Position);
+
+                MapView.MapObserver.OnCompleted(worldPosition);
 
                 MapView.Map.PanLock = false;
 

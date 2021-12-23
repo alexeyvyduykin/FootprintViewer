@@ -20,6 +20,13 @@ namespace InteractivitySample.ViewModels
 
         }
 
+        public void AddFeature(IFeature feature)
+        {
+            _features.Add(feature);
+
+            ReplaceFeatures(_features);
+        }
+
         public void AddFeature(string name, string wkt, IStyle? style = null)
         {
             var g = GeometryFromWKT.Parse(wkt);

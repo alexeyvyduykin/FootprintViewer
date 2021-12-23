@@ -1,4 +1,5 @@
 ﻿using InteractivitySample.Decorators;
+using InteractivitySample.FeatureBuilders;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
@@ -11,7 +12,8 @@ namespace InteractivitySample.Layers
     public class InteractiveLayer : BaseLayer
     {
         private readonly ILayer _source;
-        private readonly IDecorator _decorator;
+        private IDecorator? _decorator;
+        private IFeatureBuilder? _builder;
 
         public override BoundingBox Envelope => _source.Envelope;
 
@@ -22,21 +24,38 @@ namespace InteractivitySample.Layers
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
+        public InteractiveLayer(ILayer source, IFeatureBuilder builder)
+        {
+            _source = source;
+            _builder = builder;
+            _builder.InvalidateLayer += (s, e) => DataHasChanged();
+            _source.DataChanged += (sender, args) => OnDataChanged(args);
+        }
+
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
-            var feature = _decorator.FeatureSource;
-
-            if (feature == null)
+            if (_decorator != null)
             {
-                yield break;
-            }
+                var feature = _decorator.FeatureSource;
 
-            if (box.Intersects(feature.Geometry.BoundingBox) == true)
-            {
-                foreach (var point in _decorator.GetActiveVertices())
+                if (feature == null)
                 {
-                    yield return new Feature { Geometry = point };
+                    yield break;
                 }
+
+                if (box.Intersects(feature.Geometry.BoundingBox) == true)
+                {
+                    foreach (var point in _decorator.GetActiveVertices())
+                    {
+                        yield return new Feature { Geometry = point };
+                    }
+                }
+            }
+            else if (_builder != null)                    
+            {
+                var feature = _builder.Feature;
+
+                yield return feature;
             }
         }
 

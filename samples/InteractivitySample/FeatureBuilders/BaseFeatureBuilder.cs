@@ -1,10 +1,30 @@
-﻿using System;
+﻿using Mapsui.Geometries;
+using Mapsui.Providers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace InteractivitySample.FeatureBuilders
 {
-    public class BaseFeatureBuilder : IFeatureBuilder
+    public abstract class BaseFeatureBuilder : IFeatureBuilder
     {
+        public IFeature Feature { get; protected set; } = new Feature();
+
+        public IList<IFeature> ExtraFeatures { get; protected set; } = new List<IFeature>();
+
+        public event EventHandler? InvalidateLayer;
+
+        protected void Invalidate()
+        {
+            InvalidateLayer?.Invoke(this, EventArgs.Empty);
+        }
+
+        public abstract void Starting(Point worldPosition);
+
+        public abstract void Moving(Point worldPosition);
+
+        public abstract void Ending(Point worldPosition);
+
+        public abstract void Hover(Point worldPosition);
     }
 }
