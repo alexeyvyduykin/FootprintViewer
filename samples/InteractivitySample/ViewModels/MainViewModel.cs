@@ -2,7 +2,6 @@
 using InteractivitySample.Input.Controller;
 using InteractivitySample.Layers;
 using Mapsui;
-using Mapsui.Geometries.WellKnownText;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
@@ -27,18 +26,6 @@ namespace InteractivitySample.ViewModels
         private static readonly Color PolygonLineColor = new Color(20, 120, 120, 255);
         private static readonly Color PolygonOutlineColor = new Color(20, 20, 20, 255);
 
-        private static readonly Color CircleBackgroundColor = new Color(20, 120, 120, 40);
-        private static readonly Color CircleLineColor = new Color(20, 120, 120, 255);
-        private static readonly Color CircleOutlineColor = new Color(20, 20, 20, 255);
-
-        private static readonly Color RectangleBackgroundColor = new Color(20, 120, 120, 40);
-        private static readonly Color RectangleLineColor = new Color(20, 120, 120, 255);
-        private static readonly Color RectangleOutlineColor = new Color(20, 20, 20, 255);
-
-        private static readonly Color RouteBackgroundColor = new Color(20, 120, 120, 40);
-        private static readonly Color RouteLineColor = new Color(20, 120, 120, 255);
-        private static readonly Color RouteOutlineColor = new Color(20, 20, 20, 255);
-
         public MainViewModel()
         {
             Map = CreateMap();
@@ -46,82 +33,80 @@ namespace InteractivitySample.ViewModels
 
             MapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
 
-            this.WhenAnyValue(s => s.IsSelect).Subscribe((_) =>
-            {
-                _currentFeature = null;
+            this.WhenAnyValue(s => s.IsSelect).Subscribe((s) => ResetExclude(s, nameof(IsSelect)));
 
-                InteractiveLayerRemove();
+            this.WhenAnyValue(s => s.IsTranslate).Subscribe((s) => ResetExclude(s, nameof(IsTranslate)));
 
-                if (IsSelect == true)
-                {
-                    IsTranslate = false;
-                    IsRotate = false;
-                    IsScale = false;
-                    IsEdit = false;
-                }
-            });
+            this.WhenAnyValue(s => s.IsRotate).Subscribe((s) => ResetExclude(s, nameof(IsRotate)));
 
-            this.WhenAnyValue(s => s.IsTranslate).Subscribe((_) =>
-            {
-                _currentFeature = null;
+            this.WhenAnyValue(s => s.IsScale).Subscribe((s) => ResetExclude(s, nameof(IsScale)));
 
-                InteractiveLayerRemove();
+            this.WhenAnyValue(s => s.IsEdit).Subscribe((s) => ResetExclude(s, nameof(IsEdit)));
 
-                if (IsTranslate == true)
-                {
-                    IsSelect = false;
-                    IsRotate = false;
-                    IsScale = false;
-                    IsEdit = false;
-                }
-            });
+            this.WhenAnyValue(s => s.IsRectangle).Subscribe((s) => ResetExclude(s, nameof(IsRectangle)));
 
-            this.WhenAnyValue(s => s.IsRotate).Subscribe((_) =>
-            {
-                _currentFeature = null;
+            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) => ResetExclude(s, nameof(IsCircle)));
 
-                InteractiveLayerRemove();
+            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) => ResetExclude(s, nameof(IsPolygon)));
 
-                if (IsRotate == true)
-                {
-                    IsTranslate = false;
-                    IsSelect = false;
-                    IsScale = false;
-                    IsEdit = false;
-                }
-            });
-
-            this.WhenAnyValue(s => s.IsScale).Subscribe((_) =>
-            {
-                _currentFeature = null;
-
-                InteractiveLayerRemove();
-
-                if (IsScale == true)
-                {
-                    IsTranslate = false;
-                    IsRotate = false;
-                    IsSelect = false;
-                    IsEdit = false;
-                }
-            });
-
-            this.WhenAnyValue(s => s.IsEdit).Subscribe((_) =>
-            {
-                _currentFeature = null;
-
-                InteractiveLayerRemove();
-
-                if (IsEdit == true)
-                {
-                    IsTranslate = false;
-                    IsRotate = false;
-                    IsScale = false;
-                    IsSelect = false;
-                }
-            });
+            this.WhenAnyValue(s => s.IsRoute).Subscribe((s) => ResetExclude(s, nameof(IsRoute)));
 
             ActualController = new EditController();
+        }
+
+        private void ResetExclude(bool propertyValue, string propertyName)
+        {
+            _currentFeature = null;
+
+            InteractiveLayerRemove();
+
+            if (propertyValue == true)
+            {
+                if (nameof(MainViewModel.IsSelect) != propertyName)
+                {
+                    IsSelect = false;
+                }
+
+                if (nameof(MainViewModel.IsScale) != propertyName)
+                {
+                    IsScale = false;
+                }
+
+                if (nameof(MainViewModel.IsRotate) != propertyName)
+                {
+                    IsRotate = false;
+                }
+
+                if (nameof(MainViewModel.IsTranslate) != propertyName)
+                {
+                    IsTranslate = false;
+                }
+
+                if (nameof(MainViewModel.IsEdit) != propertyName)
+                {
+                    IsEdit = false;
+                }
+
+                if (nameof(MainViewModel.IsRectangle) != propertyName)
+                {
+                    IsRectangle = false;
+                }
+
+                if (nameof(MainViewModel.IsCircle) != propertyName)
+                {
+                    IsCircle = false;
+                }
+
+                if (nameof(MainViewModel.IsPolygon) != propertyName)
+                {
+                    IsPolygon = false;
+                }
+
+                if (nameof(MainViewModel.IsRoute) != propertyName)
+                {
+                    IsRoute = false;
+                }
+            }
         }
 
         private void InteractiveLayerRemove()
@@ -317,6 +302,18 @@ namespace InteractivitySample.ViewModels
 
         [Reactive]
         public bool IsEdit { get; set; } = false;
+
+        [Reactive]
+        public bool IsRectangle { get; set; } = false;
+
+        [Reactive]
+        public bool IsCircle { get; set; } = false;
+
+        [Reactive]
+        public bool IsPolygon { get; set; } = false;
+
+        [Reactive]
+        public bool IsRoute { get; set; } = false;
 
         [Reactive]
         public IController ActualController { get; set; }

@@ -33,6 +33,11 @@
             <ToggleButton IsChecked="{Binding IsRotate}">Rotate</ToggleButton>
             <ToggleButton IsChecked="{Binding IsScale}">Scale</ToggleButton>
             <ToggleButton IsChecked="{Binding IsEdit}">Edit</ToggleButton>
+            <ToggleButton Visibility="Hidden">Separator</ToggleButton>
+            <ToggleButton IsChecked="{Binding IsRectangle}">Rectangle</ToggleButton>
+            <ToggleButton IsChecked="{Binding IsCircle}">Circle</ToggleButton>
+            <ToggleButton IsChecked="{Binding IsPolygon}">Polygon</ToggleButton>
+            <ToggleButton IsChecked="{Binding IsRoute}">Route</ToggleButton>
         </StackPanel>
         
     </Grid>
