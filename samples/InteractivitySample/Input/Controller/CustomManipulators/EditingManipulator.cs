@@ -8,7 +8,6 @@ namespace InteractivitySample.Input.Controller
     {
         private bool _isEditing = false;
         private readonly int _vertexRadius = 4;
-        private ILayer? _layer = null;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
 
@@ -44,8 +43,6 @@ namespace InteractivitySample.Input.Controller
 
                 MapView.SetCursor(CursorType.HandGrab);
 
-                _layer?.DataHasChanged();
-
                 e.Handled = true;
             }
 
@@ -63,8 +60,6 @@ namespace InteractivitySample.Input.Controller
             if (mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
-
-                _layer = mapInfo.Layer;
 
                 MapView.MapObserver.OnStarted(mapInfo.WorldPosition, distance);
 

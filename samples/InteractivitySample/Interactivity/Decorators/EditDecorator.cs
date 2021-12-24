@@ -92,6 +92,8 @@ namespace InteractivitySample.Interactivity.Decorators
 
                     FeatureSource.RenderedGeometry.Clear();
                 }
+
+                Invalidate();
             }
         }
 
