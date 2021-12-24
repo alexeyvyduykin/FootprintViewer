@@ -13,6 +13,8 @@ namespace InteractivitySample.Interactivity.Designers
         private bool _isDrawing = false;
         protected Point? _center;
 
+        public override IEnumerable<Point> GetActiveVertices() => new List<Point>();
+
         public override void Starting(Point worldPosition)
         {
             _skip = false;

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace InteractivitySample.Interactivity.Designers
 {
     public interface IDesigner : IInteractiveObject
-    {
+    {  
         IFeature Feature { get; }
 
         IList<IFeature> ExtraFeatures { get; }

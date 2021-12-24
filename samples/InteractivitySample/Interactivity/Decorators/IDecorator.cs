@@ -6,8 +6,6 @@ namespace InteractivitySample.Interactivity.Decorators
 {
     public interface IDecorator : IInteractiveObject
     {
-        IEnumerable<Point> GetActiveVertices();
-
         IFeature FeatureSource { get; }
     }
 }

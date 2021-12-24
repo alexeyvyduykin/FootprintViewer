@@ -14,8 +14,6 @@ namespace InteractivitySample.Interactivity.Decorators
             _featureSource = featureSource;
         }
 
-        public abstract IEnumerable<Point> GetActiveVertices();
-
         public IFeature FeatureSource => _featureSource;
     }
 }

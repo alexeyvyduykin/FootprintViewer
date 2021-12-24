@@ -24,9 +24,9 @@ namespace InteractivitySample.ViewModels
         private static readonly string wktRectangle = "POLYGON ((1199513.0851808232 5265186.30704513, 1707054.9529943874 5265186.30704513, 1707054.9529943874 5158785.963672167, 1199513.0851808232 5158785.963672167))";
         private static readonly string wktRoute = "LINESTRING (1042158.9502034901 5321132.10610815, 1154674.2558392682 5217177.747640314, 966333.4181445962 5190271.913683931, 1025037.0558676108 5066749.675975089, 922305.6898523355 4964018.309959814, 1080071.7162329375 4973802.249580316, 951657.508713843 4740210.691140819, 1236614.7501609768 5054519.751449459, 1072733.761517561 5145021.192939107)";
 
-        private static readonly Color PolygonBackgroundColor = new Color(20, 120, 120, 40);
-        private static readonly Color PolygonLineColor = new Color(20, 120, 120, 255);
-        private static readonly Color PolygonOutlineColor = new Color(20, 20, 20, 255);
+        private static readonly Color backgroundColor = new Color(20, 120, 120, 40);
+        private static readonly Color lineColor = new Color(20, 120, 120);
+        private static readonly Color outlineColor = new Color(20, 20, 20);
 
         public MainViewModel()
         {
@@ -249,7 +249,7 @@ namespace InteractivitySample.ViewModels
 
                 if (feature != _currentFeature)
                 {
-                    Map.Layers.Add(CreateDecoratorLayer(mapInfo.Layer, decorator));
+                    Map.Layers.Add(new InteractiveLayer(mapInfo.Layer, decorator) { Name = "InteractiveLayer" });
 
                     MapObserver = new MapObserver(decorator);
 
@@ -270,7 +270,7 @@ namespace InteractivitySample.ViewModels
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, designer));
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
 
             designer.Creating += (s, e) =>
             {
@@ -290,7 +290,7 @@ namespace InteractivitySample.ViewModels
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, designer));
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
 
             designer.Creating += (s, e) =>
             {
@@ -310,7 +310,7 @@ namespace InteractivitySample.ViewModels
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, designer));
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
 
             designer.Creating += (s, e) =>
             {
@@ -330,7 +330,7 @@ namespace InteractivitySample.ViewModels
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, designer));
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
 
             designer.Creating += (s, e) =>
             {
@@ -381,58 +381,21 @@ namespace InteractivitySample.ViewModels
             };
         }
 
-        private static ILayer CreateDecoratorLayer(ILayer source, IDecorator decorator)
-        {
-            return new InteractiveLayer(source, decorator)
-            {
-                Name = "InteractiveLayer",
-                IsMapInfoLayer = true,
-                Style = new SymbolStyle()
-                {
-                    Fill = new Brush(Color.White),
-                    Outline = new Pen(Color.Black, 2 / 0.3),
-                    Line = null,//new Pen(Color.Black, 2),
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.3,
-                },
-            };
-        }
-
-        private static ILayer CreateBuilderLayer(ILayer source, IDesigner designer)
-        {
-            return new InteractiveLayer(source, designer)
-            {
-                Name = "InteractiveLayer",
-                IsMapInfoLayer = true,
-                Style = new VectorStyle()
-                {
-                    Fill = new Brush(Color.Transparent),
-                    Outline = new Pen(Color.Blue, 2 / 0.3),
-                    Line = new Pen(Color.Blue, 2 / 0.3),
-                },
-            };
-        }
-
         private static ILayer CreateLayer(IProvider provider)
         {
             var polygonLayer = new Layer
             {
                 DataSource = provider,
                 IsMapInfoLayer = true,
-                Style = CreateStyle(),
+                Style = new VectorStyle
+                {
+                    Fill = new Brush(new Color(backgroundColor)),
+                    Line = new Pen(lineColor, 3),
+                    Outline = new Pen(outlineColor, 3)
+                },
             };
 
             return polygonLayer;
-        }
-
-        private static IStyle CreateStyle()
-        {
-            return new VectorStyle
-            {
-                Fill = new Brush(new Color(PolygonBackgroundColor)),
-                Line = new Pen(PolygonLineColor, 3),
-                Outline = new Pen(PolygonOutlineColor, 3)
-            };
         }
 
         [Reactive]

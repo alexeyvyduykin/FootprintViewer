@@ -1,4 +1,5 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Geometries;
+using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 

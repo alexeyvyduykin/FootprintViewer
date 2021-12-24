@@ -13,6 +13,8 @@ namespace InteractivitySample.Interactivity.Designers
         private bool _isCreating = false;
         private IFeature? _extraLineString;
 
+        public override IEnumerable<Point> GetActiveVertices() => Feature.Geometry.MainVertices();
+
         public override void Starting(Point worldPosition)
         {
             _skip = false;
@@ -131,6 +133,7 @@ namespace InteractivitySample.Interactivity.Designers
             _extraLineString = new Feature
             {
                 Geometry = new LineString(new[] { p0, p1 }),
+                ["Name"] = "ExtraRouteHoverLine",
             };
 
             Feature = new Feature() { Geometry = geometry };

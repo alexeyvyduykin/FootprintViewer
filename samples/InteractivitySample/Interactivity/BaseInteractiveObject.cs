@@ -1,5 +1,6 @@
 ﻿using Mapsui.Geometries;
 using System;
+using System.Collections.Generic;
 
 namespace InteractivitySample.Interactivity
 {
@@ -11,6 +12,8 @@ namespace InteractivitySample.Interactivity
         {
             InvalidateLayer?.Invoke(this, EventArgs.Empty);
         }
+
+        public abstract IEnumerable<Point> GetActiveVertices();
 
         protected IGeometry Copy(IGeometry geometry)
         {

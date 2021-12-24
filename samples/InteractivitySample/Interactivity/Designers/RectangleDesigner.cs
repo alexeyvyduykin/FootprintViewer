@@ -15,6 +15,8 @@ namespace InteractivitySample.Interactivity.Designers
 
         public RectangleDesigner() : base() { }
 
+        public override IEnumerable<Point> GetActiveVertices() => new List<Point>();
+
         public override void Starting(Point worldPosition)
         {
             _skip = false;

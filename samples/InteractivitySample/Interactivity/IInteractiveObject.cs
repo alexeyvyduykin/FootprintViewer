@@ -1,11 +1,14 @@
 ﻿using Mapsui.Geometries;
 using System;
+using System.Collections.Generic;
 
 namespace InteractivitySample.Interactivity
 {
     public interface IInteractiveObject
     {
         event EventHandler? InvalidateLayer;
+
+        IEnumerable<Point> GetActiveVertices();
 
         void Starting(Point worldPosition);
 

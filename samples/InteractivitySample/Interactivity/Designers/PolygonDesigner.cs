@@ -15,6 +15,8 @@ namespace InteractivitySample.Interactivity.Designers
         private IFeature? _extraLineString;
         private IFeature? _extraPolygon;
 
+        public override IEnumerable<Point> GetActiveVertices() => Feature.Geometry.MainVertices();
+
         public override void Starting(Point worldPosition)
         {
             _skip = false;
@@ -131,6 +133,7 @@ namespace InteractivitySample.Interactivity.Designers
             _extraLineString = new Feature
             {
                 Geometry = new LineString(new[] { p0, p1 }),
+                ["Name"] = "ExtraPolygonHoverLine",
             };
 
             _extraPolygon = new Feature
@@ -139,6 +142,7 @@ namespace InteractivitySample.Interactivity.Designers
                 {
                     ExteriorRing = new LinearRing(new[] { p0 })
                 },
+                ["Name"] = "ExtraPolygonArea",
             };
 
             Feature = new Feature() { Geometry = geometry };
