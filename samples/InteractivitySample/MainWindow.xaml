@@ -39,7 +39,28 @@
             <ToggleButton IsChecked="{Binding IsPolygon}">Polygon</ToggleButton>
             <ToggleButton IsChecked="{Binding IsRoute}">Route</ToggleButton>
         </StackPanel>
-        
+
+        <Border x:Name="tipBorder"
+                HorizontalAlignment="Center" 
+                Width="200"
+                VerticalAlignment="Bottom" 
+                Padding="8" 
+                Background="AliceBlue"
+                BorderThickness="1"
+                BorderBrush="Black">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Tip}" Value="">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            
+            <TextBlock TextWrapping="Wrap" Text="{Binding Tip}"></TextBlock>
+        </Border>
+              
     </Grid>
     
 </Window>

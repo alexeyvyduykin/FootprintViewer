@@ -10,7 +10,13 @@ namespace InteractivitySample.Interactivity.Designers
         IFeature Feature { get; }
 
         IList<IFeature> ExtraFeatures { get; }
-     
+
+        event EventHandler? BeginCreating; 
+        
         event EventHandler? Creating;
+
+        event EventHandler? HoverCreating;
+
+        event EventHandler? EndCreating;
     }
 }

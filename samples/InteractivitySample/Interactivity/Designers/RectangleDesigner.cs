@@ -8,8 +8,6 @@ namespace InteractivitySample.Interactivity.Designers
     public class RectangleDesigner : BaseDesigner
     {
         private bool _isDrawing = false;
-        private bool _isCreating = false;
-
         private bool _skip;
         private int _counter;
 
@@ -57,9 +55,9 @@ namespace InteractivitySample.Interactivity.Designers
             {
                 BeginDrawing(worldPosition);
 
-                _isCreating = true;
-
                 _firstClick = false;
+
+                BeginCreatingCallback();
 
                 return;
             }
@@ -67,11 +65,9 @@ namespace InteractivitySample.Interactivity.Designers
             {
                 EndDrawing();
 
-                _isCreating = false;
-
                 _firstClick = true;
 
-                CreateCallback();
+                EndCreatingCallback();
 
                 return;
             }
@@ -82,6 +78,8 @@ namespace InteractivitySample.Interactivity.Designers
             if (_firstClick == false)
             {
                 DrawingHover(worldPosition);
+
+                HoverCreatingCallback();
 
                 Invalidate();
             }

@@ -1,10 +1,13 @@
-﻿using InteractivitySample.Input.Controller;
+﻿using InteractivitySample.Helpers;
+using InteractivitySample.Input.Controller;
 using InteractivitySample.Interactivity;
 using InteractivitySample.Interactivity.Decorators;
 using InteractivitySample.Interactivity.Designers;
 using InteractivitySample.Layers;
 using Mapsui;
+using Mapsui.Geometries;
 using Mapsui.Layers;
+using Mapsui.Projection;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.UI;
@@ -85,49 +88,13 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsRectangle).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsRectangle));
+            this.WhenAnyValue(s => s.IsRectangle).Subscribe(v => DrawingRectangleCommand(v));
 
-                if (s == true)
-                {
-                    ActualController = new DrawingController();
-                    DrawingRectangleCommand();
-                }
-            });
+            this.WhenAnyValue(s => s.IsCircle).Subscribe(v => DrawingCircleCommand(v));
 
-            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsCircle));
+            this.WhenAnyValue(s => s.IsPolygon).Subscribe(v => DrawingPolygonCommand(v));
 
-                if (s == true)
-                {
-                    ActualController = new DrawingController();
-                    DrawingCircleCommand();
-                }
-            });
-
-            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsPolygon));
-
-                if (s == true)
-                {
-                    ActualController = new DrawingController();
-                    DrawingPolygonCommand();
-                }
-            });
-
-            this.WhenAnyValue(s => s.IsRoute).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsRoute));
-
-                if (s == true)
-                {
-                    ActualController = new DrawingController();
-                    DrawingRouteCommand();
-                }
-            });
+            this.WhenAnyValue(s => s.IsRoute).Subscribe(v => DrawingRouteCommand(v));
 
             ActualController = new EditController();
         }
@@ -262,84 +229,170 @@ namespace InteractivitySample.ViewModels
             }
         }
 
-        private void DrawingRectangleCommand()
+        private void DrawingRectangleCommand(bool value)
         {
-            InteractiveLayerRemove();
+            ResetExclude(value, nameof(IsRectangle));
 
-            var designer = new RectangleDesigner();
-
-            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
-
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
-
-            designer.Creating += (s, e) =>
+            if (value == true)
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                InteractiveLayerRemove();
 
-                IsRectangle = false;
-            };
+                var designer = new RectangleDesigner();
 
-            MapObserver = new MapObserver(designer);
+                var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+                Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+                designer.HoverCreating += (s, e) =>
+                {
+                    var feature = designer.Feature;
+
+                    var area = GetFeatureArea(feature);
+
+                    Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
+                };
+
+                designer.EndCreating += (s, e) =>
+                {
+                    _provider.AddFeature(designer.Feature.Copy());
+
+                    Tip = string.Empty;
+
+                    IsRectangle = false;
+                };
+
+                Tip = "Нажмите и перетащите, чтобы нарисовать прямоугольник";
+
+                MapObserver = new MapObserver(designer);
+
+                ActualController = new DrawingController();
+            }
         }
 
-        private void DrawingCircleCommand()
+        private void DrawingCircleCommand(bool value)
         {
-            InteractiveLayerRemove();
+            ResetExclude(value, nameof(IsCircle));
 
-            var designer = new CircleDesigner();
-
-            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
-
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
-
-            designer.Creating += (s, e) =>
+            if (value == true)
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                InteractiveLayerRemove();
 
-                IsCircle = false;
-            };
+                var designer = new CircleDesigner();
 
-            MapObserver = new MapObserver(designer);
+                var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+                Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+                designer.HoverCreating += (s, e) =>
+                {
+                    var feature = designer.Feature;
+
+                    var area = GetFeatureArea(feature);
+
+                    Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
+                };
+
+                designer.EndCreating += (s, e) =>
+                {
+                    _provider.AddFeature(designer.Feature.Copy());
+
+                    Tip = string.Empty;
+
+                    IsCircle = false;
+                };
+
+                Tip = "Нажмите и перетащите, чтобы нарисовать круг";
+
+                MapObserver = new MapObserver(designer);
+
+                ActualController = new DrawingController();
+            }
         }
 
-        private void DrawingRouteCommand()
+        private void DrawingRouteCommand(bool value)
         {
-            InteractiveLayerRemove();
+            ResetExclude(value, nameof(IsRoute));
 
-            var designer = new RouteDesigner();
-
-            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
-
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
-
-            designer.Creating += (s, e) =>
+            if (value == true)
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                InteractiveLayerRemove();
 
-                IsRoute = false;
-            };
+                var designer = new RouteDesigner();
 
-            MapObserver = new MapObserver(designer);
+                var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+                Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+                designer.HoverCreating += (s, e) =>
+                {
+                    var distance = GetRouteLength(designer);
+
+                    var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
+
+                    Tip = $"Расстояние: {res}";
+                };
+
+                designer.EndCreating += (s, e) =>
+                {
+                    _provider.AddFeature(designer.Feature.Copy());
+
+                    Tip = string.Empty;
+
+                    IsRoute = false;
+                };
+
+                Tip = "Кликните, чтобы начать измерение";
+
+                MapObserver = new MapObserver(designer);
+
+                ActualController = new DrawingController();
+            }
         }
 
-        private void DrawingPolygonCommand()
+        private void DrawingPolygonCommand(bool value)
         {
-            InteractiveLayerRemove();
+            ResetExclude(value, nameof(IsPolygon));
 
-            var designer = new PolygonDesigner();
-
-            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
-
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
-
-            designer.Creating += (s, e) =>
+            if (value == true)
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                InteractiveLayerRemove();
 
-                IsPolygon = false;
-            };
+                var designer = new PolygonDesigner();
 
-            MapObserver = new MapObserver(designer);
+                var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+                Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+                designer.BeginCreating += (s, e) =>
+                {
+                    Tip = "Нажмите, чтобы продолжить рисовать фигуру";
+                };
+
+                designer.Creating += (s, e) =>
+                {
+                    if (designer.Feature.Geometry.AllVertices().Count() > 2)
+                    {
+                        var area = GetFeatureArea(designer.Feature);
+
+                        Tip = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²";
+                    }
+                };
+
+                designer.EndCreating += (s, e) =>
+                {
+                    _provider.AddFeature(designer.Feature.Copy());
+
+                    Tip = string.Empty;
+
+                    IsPolygon = false;
+                };
+
+                Tip = "Нажмите и перетащите, чтобы нарисовать полигон";
+
+                MapObserver = new MapObserver(designer);
+
+                ActualController = new DrawingController();
+            }
         }
 
         public static Map CreateMap()
@@ -398,6 +451,24 @@ namespace InteractivitySample.ViewModels
             return polygonLayer;
         }
 
+        private static double GetFeatureArea(IFeature feature)
+        {
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            return Math.Abs(area);
+        }
+
+        private static double GetRouteLength(RouteDesigner designer)
+        {
+            var geometry = (LineString)designer.Feature.Geometry;
+            var fHelp = designer.ExtraFeatures.Single();
+            var verts0 = geometry.AllVertices();
+            var verts1 = fHelp.Geometry.AllVertices();
+            var verts = verts0.Union(verts1);
+            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            return SphericalUtil.ComputeDistance(vertices);
+        }
+
         [Reactive]
         public Map Map { get; set; }
 
@@ -436,5 +507,8 @@ namespace InteractivitySample.ViewModels
 
         [Reactive]
         public IMapObserver? MapObserver { get; set; }
+
+        [Reactive]
+        public string Tip { get; set; } = string.Empty;
     }
 }

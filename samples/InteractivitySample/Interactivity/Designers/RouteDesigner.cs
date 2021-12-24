@@ -9,8 +9,7 @@ namespace InteractivitySample.Interactivity.Designers
     {
         private bool _skip;
         private int _counter;
-        private bool _isDrawing = false;
-        private bool _isCreating = false;
+        private bool _isDrawing = false;      
         private IFeature? _extraLineString;
 
         public override IEnumerable<Point> GetActiveVertices() => Feature.Geometry.MainVertices();
@@ -55,8 +54,6 @@ namespace InteractivitySample.Interactivity.Designers
             {
                 BeginDrawing(worldPosition);
 
-                _isCreating = true;
-
                 _firstClick = false;
 
                 return;
@@ -69,11 +66,9 @@ namespace InteractivitySample.Interactivity.Designers
                 {
                     EndDrawing();
 
-                    _isCreating = false;
-
                     _firstClick = true;
 
-                    CreateCallback();
+                    EndCreatingCallback();
 
                     return;
                 }
@@ -91,6 +86,8 @@ namespace InteractivitySample.Interactivity.Designers
             if (_firstClick == false)
             {
                 DrawingHover(worldPosition);
+
+                HoverCreatingCallback();
 
                 Invalidate();
             }

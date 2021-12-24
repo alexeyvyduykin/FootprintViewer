@@ -8,8 +8,7 @@ namespace InteractivitySample.Interactivity.Designers
     public class PolygonDesigner : BaseDesigner
     {
         private bool _skip;
-        private int _counter;
-        private bool _isCreating = false;
+        private int _counter; 
         private bool _isDrawing = false;
 
         private IFeature? _extraLineString;
@@ -57,7 +56,7 @@ namespace InteractivitySample.Interactivity.Designers
             {
                 BeginDrawing(worldPosition);
 
-                _isCreating = true;
+                BeginCreatingCallback();
 
                 _firstClick = false;
 
@@ -71,17 +70,17 @@ namespace InteractivitySample.Interactivity.Designers
                 {
                     EndDrawing();
 
-                    _isCreating = false;
-
                     _firstClick = true;
 
-                    CreateCallback();
+                    EndCreatingCallback();
 
                     return;
                 }
                 else
                 {
                     Drawing(worldPosition);
+
+                    CreatingCallback();
 
                     return;
                 }
@@ -93,6 +92,8 @@ namespace InteractivitySample.Interactivity.Designers
             if (_firstClick == false)
             {
                 DrawingHover(worldPosition);
+
+                HoverCreatingCallback();
 
                 Invalidate();
             }
