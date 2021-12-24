@@ -3,16 +3,16 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.FeatureBuilders
+namespace InteractivitySample.Interactivity.Designers
 {
-    public interface IFeatureBuilder
+    public interface IDesigner
     {
         IFeature Feature { get; }
 
         IList<IFeature> ExtraFeatures { get; }
 
         event EventHandler? InvalidateLayer;
-        
+
         event EventHandler? Creating;
 
         void Starting(Point worldPosition);

@@ -1,4 +1,4 @@
-﻿using InteractivitySample.FeatureBuilders;
+﻿using InteractivitySample.Interactivity.Designers;
 using Mapsui.Geometries;
 using System;
 
@@ -19,7 +19,7 @@ namespace InteractivitySample.Input.Controller
 
         }
 
-        public MapObserver(IFeatureBuilder builder)
+        public MapObserver(IDesigner builder)
         {
             Started += (s, e) =>
             {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace InteractivitySample.Decorators
+namespace InteractivitySample.Interactivity.Decorators
 {
     public class EditDecorator : BaseDecorator
     {

@@ -1,4 +1,4 @@
-﻿using InteractivitySample.Layers;
+﻿using InteractivitySample.Interactivity;
 using Mapsui.Layers;
 using InteractivitySample.Input.Controller.Core;
 

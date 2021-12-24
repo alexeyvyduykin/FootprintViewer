@@ -2,14 +2,14 @@
 using Mapsui.Providers;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Decorators
+namespace InteractivitySample.Interactivity.Decorators
 {
     public class TranslateDecorator : BaseDecorator
     {
         private Point _center;
         private Point _startCenter;
         private Point _startOffsetToVertex;
-        private IGeometry? _startGeometry;     
+        private IGeometry? _startGeometry;
         // HACK: without this locker Moving() passing not his order
         private bool _isTranslating = false;
 

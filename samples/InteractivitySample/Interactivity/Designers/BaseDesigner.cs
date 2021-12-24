@@ -2,11 +2,10 @@
 using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace InteractivitySample.FeatureBuilders
+namespace InteractivitySample.Interactivity.Designers
 {
-    public abstract class BaseFeatureBuilder : IFeatureBuilder
+    public abstract class BaseDesigner : IDesigner
     {
         public IFeature Feature { get; protected set; } = new Feature();
 

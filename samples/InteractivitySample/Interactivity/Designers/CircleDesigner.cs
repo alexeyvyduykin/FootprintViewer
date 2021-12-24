@@ -3,17 +3,15 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.FeatureBuilders
+namespace InteractivitySample.Interactivity.Designers
 {
-    public class RectangleBuilder : BaseFeatureBuilder
+    public class CircleDesigner : BaseDesigner
     {
-        private bool _isDrawing = false;
-        private bool _isCreating = false;
-
         private bool _skip;
         private int _counter;
-  
-        public RectangleBuilder() : base() { }
+        private bool _isCreating;
+        private bool _isDrawing = false;
+        protected Point? _center;
 
         public override void Starting(Point worldPosition)
         {
@@ -47,7 +45,7 @@ namespace InteractivitySample.FeatureBuilders
             CreatingFeature(worldPosition, point => true);
         }
 
-        bool _firstClick = true;
+        private bool _firstClick = true;
 
         public void CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
         {
@@ -85,22 +83,19 @@ namespace InteractivitySample.FeatureBuilders
             }
         }
 
-
-
         public void BeginDrawing(Point worldPosition)
         {
             if (_isDrawing == false)
             {
                 _isDrawing = true;
 
-                var p0 = worldPosition.Clone();
-                var p1 = worldPosition.Clone();
-                var p2 = worldPosition.Clone();
-                var p3 = worldPosition.Clone();
+                _center = worldPosition.Clone();
+
+                var vertices = GetCircle(_center, 0.0, 3);
 
                 var geometry = new Polygon()
                 {
-                    ExteriorRing = new LinearRing(new[] { p0, p1, p2, p3 })
+                    ExteriorRing = new LinearRing(vertices)
                 };
 
                 Feature = new Feature() { Geometry = geometry };
@@ -108,24 +103,39 @@ namespace InteractivitySample.FeatureBuilders
             }
         }
 
+        private IList<Point> GetCircle(Point center, double radius, double quality)
+        {
+            var centerX = center.X;
+            var centerY = center.Y;
+
+            //var radius = Radius.Meters / Math.Cos(Center.Latitude / 180.0 * Math.PI);
+            var increment = 360.0 / (quality < 3.0 ? 3.0 : (quality > 360.0 ? 360.0 : quality));
+            var vertices = new List<Point>();
+
+            for (double angle = 0; angle < 360; angle += increment)
+            {
+                var angleRad = angle / 180.0 * Math.PI;
+                vertices.Add(new Point(radius * Math.Sin(angleRad) + centerX, radius * Math.Cos(angleRad) + centerY));
+            }
+
+            return vertices;
+        }
+
         public void DrawingHover(Point worldPosition)
         {
-            if (_isDrawing == true)
+            if (_isDrawing == true && _center != null)
             {
                 var geometry = Feature.Geometry;
-                var p2 = worldPosition.Clone();
-                var rectangle = (Polygon)geometry;
-                var p0 = rectangle.ExteriorRing.Vertices[0];
 
-                var p1 = new Point(p2.X, p0.Y);
-                var p3 = new Point(p0.X, p2.Y);
+                var p1 = worldPosition.Clone();
 
-                ((Polygon)geometry).ExteriorRing.Vertices[0] = p0;
-                ((Polygon)geometry).ExteriorRing.Vertices[1] = p1;
-                ((Polygon)geometry).ExteriorRing.Vertices[2] = p2;
-                ((Polygon)geometry).ExteriorRing.Vertices[3] = p3;
+                var radius = _center.Distance(p1);
 
-                Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
+                var vertices = GetCircle(_center, radius, 180);
+
+                ((Polygon)geometry).ExteriorRing = new LinearRing(vertices);
+
+                Feature.RenderedGeometry?.Clear();
             }
         }
 
@@ -135,27 +145,8 @@ namespace InteractivitySample.FeatureBuilders
             {
                 _isDrawing = false;
 
-                var geometry = Feature.Geometry;
-
-                var vertices = ((Polygon)geometry).ExteriorRing.Vertices;
-
-                Feature.Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
-
                 Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
-
-        //public IList<Point> EditVertices()
-        //{
-        //    if (Geometry != null && _isDrawing == false)
-        //    {
-        //        return ((Polygon)Geometry).ExteriorRing.Vertices;
-        //    }
-
-        //    return new List<Point>();
-        //}
     }
 }

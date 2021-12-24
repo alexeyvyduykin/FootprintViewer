@@ -2,7 +2,7 @@
 using Mapsui.Providers;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Decorators
+namespace InteractivitySample.Interactivity.Decorators
 {
     public class ScaleDecorator : BaseDecorator
     {

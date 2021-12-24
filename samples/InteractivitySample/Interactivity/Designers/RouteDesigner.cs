@@ -2,11 +2,10 @@
 using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace InteractivitySample.FeatureBuilders
+namespace InteractivitySample.Interactivity.Designers
 {
-    public class RouteBuilder : BaseFeatureBuilder
+    public class RouteDesigner : BaseDesigner
     {
         private bool _skip;
         private int _counter;
@@ -46,7 +45,7 @@ namespace InteractivitySample.FeatureBuilders
             CreatingFeature(worldPosition, point => true);
         }
 
-        bool _firstClick = true;
+        private bool _firstClick = true;
 
         public void CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
         {
@@ -131,11 +130,11 @@ namespace InteractivitySample.FeatureBuilders
 
             _extraLineString = new Feature
             {
-                Geometry = new LineString(new[] { p0, p1 }),       
+                Geometry = new LineString(new[] { p0, p1 }),
             };
 
             Feature = new Feature() { Geometry = geometry };
-            ExtraFeatures = new List<IFeature>() { _extraLineString };            
+            ExtraFeatures = new List<IFeature>() { _extraLineString };
         }
 
         public void Drawing(Point worldPosition)

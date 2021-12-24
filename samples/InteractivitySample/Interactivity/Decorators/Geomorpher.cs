@@ -1,11 +1,8 @@
-﻿using Mapsui.Geometries.Utilities;
-using Mapsui.Geometries;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Mapsui.Geometries;
+using Mapsui.Geometries.Utilities;
 using Mapsui.Projection;
 
-namespace InteractivitySample.Decorators
+namespace InteractivitySample.Interactivity.Decorators
 {
     public static class Geomorpher
     {

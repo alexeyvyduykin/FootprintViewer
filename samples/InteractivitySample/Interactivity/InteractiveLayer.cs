@@ -1,5 +1,5 @@
-﻿using InteractivitySample.Decorators;
-using InteractivitySample.FeatureBuilders;
+﻿using InteractivitySample.Interactivity.Decorators;
+using InteractivitySample.Interactivity.Designers;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
@@ -7,13 +7,13 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Layers
+namespace InteractivitySample.Interactivity
 {
     public class InteractiveLayer : BaseLayer
     {
         private readonly ILayer _source;
-        private IDecorator? _decorator;
-        private IFeatureBuilder? _builder;
+        private readonly IDecorator? _decorator;
+        private readonly IDesigner? _builder;
 
         public override BoundingBox Envelope => _source.Envelope;
 
@@ -24,7 +24,7 @@ namespace InteractivitySample.Layers
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
-        public InteractiveLayer(ILayer source, IFeatureBuilder builder)
+        public InteractiveLayer(ILayer source, IDesigner builder)
         {
             _source = source;
             _builder = builder;
@@ -51,7 +51,7 @@ namespace InteractivitySample.Layers
                     }
                 }
             }
-            else if (_builder != null)                    
+            else if (_builder != null)
             {
                 var feature = _builder.Feature;
 

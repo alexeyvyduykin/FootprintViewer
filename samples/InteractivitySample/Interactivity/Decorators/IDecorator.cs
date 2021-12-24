@@ -1,10 +1,8 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace InteractivitySample.Decorators
+namespace InteractivitySample.Interactivity.Decorators
 {
     public interface IDecorator
     {
