@@ -1,7 +1,7 @@
 ﻿using Mapsui.Geometries;
 using System;
 
-namespace InteractivitySample.Input.Controller
+namespace InteractivitySample.Interactivity
 {
     public class DeltaEventArgs : EventArgs
     {

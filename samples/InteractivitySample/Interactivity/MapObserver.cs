@@ -1,8 +1,10 @@
-﻿using InteractivitySample.Interactivity.Designers;
+﻿using InteractivitySample.Interactivity.Decorators;
+using InteractivitySample.Interactivity.Designers;
 using Mapsui.Geometries;
 using System;
+using System.Linq;
 
-namespace InteractivitySample.Input.Controller
+namespace InteractivitySample.Interactivity
 {
     public class MapObserver : IMapObserver
     {
@@ -14,31 +16,47 @@ namespace InteractivitySample.Input.Controller
 
         public event HoverEventHandler? Hover;
         
-        public MapObserver()
+        public MapObserver(IInteractiveObject interactiveObject)
         {
-
-        }
-
-        public MapObserver(IDesigner builder)
-        {
-            Started += (s, e) =>
+            if (interactiveObject is IDesigner)
             {
-                builder.Starting(e.WorldPosition);
-            };
+                Started += (s, e) =>
+                {
+                    interactiveObject.Starting(e.WorldPosition);
+                };
+            }
+            else if (interactiveObject is IDecorator)
+            {
+                Started += (s, e) =>
+                {
+                    var vertices = ((IDecorator)interactiveObject).GetActiveVertices();
+
+                    var vertexTouched = vertices.OrderBy(v => v.Distance(e.WorldPosition)).FirstOrDefault(v => v.Distance(e.WorldPosition) < e.ScreenDistance);
+
+                    if (vertexTouched != null)
+                    {
+                        interactiveObject.Starting(e.WorldPosition);
+                    }
+                };
+            }
+            else
+            {
+                throw new Exception();
+            }
 
             Delta += (s, e) =>
             {
-                builder.Moving(e.WorldPosition);
+                interactiveObject.Moving(e.WorldPosition);
             };
 
             Completed += (s, e) =>
             {
-                builder.Ending(e.WorldPosition, e.IsEnd);
+                interactiveObject.Ending(e.WorldPosition, e.IsEnd);
             };
 
             Hover += (s, e) =>
             {
-                builder.Hover(e.WorldPosition);
+                interactiveObject.Hovering(e.WorldPosition);
             };
         }
 

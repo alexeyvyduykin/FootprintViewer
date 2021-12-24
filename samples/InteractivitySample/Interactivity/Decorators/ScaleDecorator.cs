@@ -1,5 +1,6 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
+using System;
 using System.Collections.Generic;
 
 namespace InteractivitySample.Interactivity.Decorators
@@ -26,7 +27,7 @@ namespace InteractivitySample.Interactivity.Decorators
             _startOffsetToVertex = new Point();
         }
 
-        public override void Ending()
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             _isScaling = false;
         }
@@ -64,6 +65,11 @@ namespace InteractivitySample.Interactivity.Decorators
             _startScale = _center.Distance(_startSizeNE);
 
             _isScaling = true;
+        }
+
+        public override void Hovering(Point worldPosition)
+        {
+
         }
     }
 }

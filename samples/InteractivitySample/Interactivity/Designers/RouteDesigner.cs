@@ -27,7 +27,7 @@ namespace InteractivitySample.Interactivity.Designers
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point> isEnd)
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             if (_skip == false)
             {
@@ -35,7 +35,7 @@ namespace InteractivitySample.Interactivity.Designers
             }
         }
 
-        public override void Hover(Point worldPosition)
+        public override void Hovering(Point worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }
@@ -47,7 +47,7 @@ namespace InteractivitySample.Interactivity.Designers
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
+        public void CreatingFeature(Point worldPosition, Predicate<Point>? isEnd)
         {
             if (_firstClick == true)
             {
@@ -94,7 +94,7 @@ namespace InteractivitySample.Interactivity.Designers
             }
         }
 
-        public bool IsEndDrawing(Point worldPosition, Predicate<Point> isEnd)
+        public bool IsEndDrawing(Point worldPosition, Predicate<Point>? isEnd)
         {
             var routeGeometry = (LineString)Feature.Geometry;
 
@@ -102,7 +102,7 @@ namespace InteractivitySample.Interactivity.Designers
             {
                 foreach (var item in routeGeometry.Vertices)
                 {
-                    var click = isEnd.Invoke(item);
+                    var click = isEnd?.Invoke(item);
                     if (click == true)
                     {
                         return true;

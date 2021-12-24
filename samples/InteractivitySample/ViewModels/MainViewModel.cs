@@ -1,6 +1,7 @@
-﻿using InteractivitySample.Decorators;
-using InteractivitySample.FeatureBuilders;
-using InteractivitySample.Input.Controller;
+﻿using InteractivitySample.Input.Controller;
+using InteractivitySample.Interactivity;
+using InteractivitySample.Interactivity.Decorators;
+using InteractivitySample.Interactivity.Designers;
 using InteractivitySample.Layers;
 using Mapsui;
 using Mapsui.Layers;
@@ -34,47 +35,47 @@ namespace InteractivitySample.ViewModels
 
             MapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
 
-            this.WhenAnyValue(s => s.IsSelect).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsSelect).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsSelect));
-                
+
                 if (s == true)
                 {
-                    ActualController = new EditController();            
+                    ActualController = new EditController();
                 }
             });
 
-            this.WhenAnyValue(s => s.IsTranslate).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsTranslate).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsTranslate));
-                
+
                 if (s == true)
                 {
                     ActualController = new EditController();
                 }
             });
 
-            this.WhenAnyValue(s => s.IsRotate).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsRotate).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsRotate));
-                
+
                 if (s == true)
                 {
                     ActualController = new EditController();
                 }
             });
 
-            this.WhenAnyValue(s => s.IsScale).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsScale).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsScale));
-                
+
                 if (s == true)
                 {
                     ActualController = new EditController();
                 }
             });
 
-            this.WhenAnyValue(s => s.IsEdit).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsEdit).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsEdit));
 
@@ -95,10 +96,10 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsCircle).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsCircle));
-                
+
                 if (s == true)
                 {
                     ActualController = new DrawingController();
@@ -106,10 +107,10 @@ namespace InteractivitySample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) => 
+            this.WhenAnyValue(s => s.IsPolygon).Subscribe((s) =>
             {
                 ResetExclude(s, nameof(IsPolygon));
-                
+
                 if (s == true)
                 {
                     ActualController = new DrawingController();
@@ -250,29 +251,7 @@ namespace InteractivitySample.ViewModels
                 {
                     Map.Layers.Add(CreateDecoratorLayer(mapInfo.Layer, decorator));
 
-                    MapObserver = new MapObserver();
-
-                    MapObserver.Started += (s, e) =>
-                    {
-                        var vertices = decorator.GetActiveVertices();
-
-                        var vertexTouched = vertices.OrderBy(v => v.Distance(e.WorldPosition)).FirstOrDefault(v => v.Distance(e.WorldPosition) < e.ScreenDistance);
-
-                        if (vertexTouched != null)
-                        {
-                            decorator.Starting(e.WorldPosition);
-                        }
-                    };
-
-                    MapObserver.Delta += (s, e) =>
-                    {
-                        decorator.Moving(e.WorldPosition);
-                    };
-
-                    MapObserver.Completed += (s, e) =>
-                    {
-                        decorator.Ending();
-                    };
+                    MapObserver = new MapObserver(decorator);
 
                     _currentFeature = feature;
                 }
@@ -287,80 +266,80 @@ namespace InteractivitySample.ViewModels
         {
             InteractiveLayerRemove();
 
-            var builder = new RectangleBuilder();
+            var designer = new RectangleDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+            Map.Layers.Add(CreateBuilderLayer(layer, designer));
 
-            builder.Creating += (s, e) => 
+            designer.Creating += (s, e) =>
             {
-                _provider.AddFeature(builder.Feature.Copy());
+                _provider.AddFeature(designer.Feature.Copy());
 
                 IsRectangle = false;
             };
 
-            MapObserver = new MapObserver(builder);
+            MapObserver = new MapObserver(designer);
         }
 
         private void DrawingCircleCommand()
         {
             InteractiveLayerRemove();
 
-            var builder = new CircleBuilder();
+            var designer = new CircleDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+            Map.Layers.Add(CreateBuilderLayer(layer, designer));
 
-            builder.Creating += (s, e) =>
+            designer.Creating += (s, e) =>
             {
-                _provider.AddFeature(builder.Feature.Copy());
+                _provider.AddFeature(designer.Feature.Copy());
 
                 IsCircle = false;
             };
 
-            MapObserver = new MapObserver(builder);
+            MapObserver = new MapObserver(designer);
         }
 
         private void DrawingRouteCommand()
         {
             InteractiveLayerRemove();
 
-            var builder = new RouteBuilder();
+            var designer = new RouteDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+            Map.Layers.Add(CreateBuilderLayer(layer, designer));
 
-            builder.Creating += (s, e) =>
+            designer.Creating += (s, e) =>
             {
-                _provider.AddFeature(builder.Feature.Copy());
+                _provider.AddFeature(designer.Feature.Copy());
 
                 IsRoute = false;
             };
 
-            MapObserver = new MapObserver(builder);
+            MapObserver = new MapObserver(designer);
         }
 
         private void DrawingPolygonCommand()
         {
             InteractiveLayerRemove();
 
-            var builder = new PolygonBuilder();
+            var designer = new PolygonDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(CreateBuilderLayer(layer, builder));
+            Map.Layers.Add(CreateBuilderLayer(layer, designer));
 
-            builder.Creating += (s, e) =>
+            designer.Creating += (s, e) =>
             {
-                _provider.AddFeature(builder.Feature.Copy());
+                _provider.AddFeature(designer.Feature.Copy());
 
                 IsPolygon = false;
             };
 
-            MapObserver = new MapObserver(builder);
+            MapObserver = new MapObserver(designer);
         }
 
         public static Map CreateMap()
@@ -419,9 +398,9 @@ namespace InteractivitySample.ViewModels
             };
         }
 
-        private static ILayer CreateBuilderLayer(ILayer source, IFeatureBuilder builder)
+        private static ILayer CreateBuilderLayer(ILayer source, IDesigner designer)
         {
-            return new InteractiveLayer(source, builder)
+            return new InteractiveLayer(source, designer)
             {
                 Name = "InteractiveLayer",
                 IsMapInfoLayer = true,

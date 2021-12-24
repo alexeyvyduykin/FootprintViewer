@@ -3,6 +3,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace InteractivitySample.Interactivity.Decorators
 {
@@ -26,7 +27,7 @@ namespace InteractivitySample.Interactivity.Decorators
             _isRectangle = IsRectangle(_points);
         }
 
-        public override void Ending()
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             _isEditing = false;
         }
@@ -105,6 +106,11 @@ namespace InteractivitySample.Interactivity.Decorators
             _startGeometry = Copy(FeatureSource.Geometry);
 
             _isEditing = true;
+        }
+
+        public override void Hovering(Point worldPosition)
+        {
+
         }
 
         private bool IsRectangle(IList<Point> points)

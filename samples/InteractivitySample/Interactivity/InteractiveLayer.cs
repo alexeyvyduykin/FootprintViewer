@@ -12,31 +12,24 @@ namespace InteractivitySample.Interactivity
     public class InteractiveLayer : BaseLayer
     {
         private readonly ILayer _source;
-        private readonly IDecorator? _decorator;
-        private readonly IDesigner? _builder;
-
+        private readonly IInteractiveObject? _interactiveObject;
+   
         public override BoundingBox Envelope => _source.Envelope;
 
-        public InteractiveLayer(ILayer source, IDecorator decorator)
+        public InteractiveLayer(ILayer source, IInteractiveObject interactiveObject)
         {
             _source = source;
-            _decorator = decorator;
+            _interactiveObject = interactiveObject;
             _source.DataChanged += (sender, args) => OnDataChanged(args);
-        }
 
-        public InteractiveLayer(ILayer source, IDesigner builder)
-        {
-            _source = source;
-            _builder = builder;
-            _builder.InvalidateLayer += (s, e) => DataHasChanged();
-            _source.DataChanged += (sender, args) => OnDataChanged(args);
+            _interactiveObject.InvalidateLayer += (s, e) => DataHasChanged();
         }
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
-            if (_decorator != null)
+            if (_interactiveObject is IDecorator decorator)
             {
-                var feature = _decorator.FeatureSource;
+                var feature = decorator.FeatureSource;
 
                 if (feature == null)
                 {
@@ -45,21 +38,21 @@ namespace InteractivitySample.Interactivity
 
                 if (box.Intersects(feature.Geometry.BoundingBox) == true)
                 {
-                    foreach (var point in _decorator.GetActiveVertices())
+                    foreach (var point in decorator.GetActiveVertices())
                     {
                         yield return new Feature { Geometry = point };
                     }
                 }
             }
-            else if (_builder != null)
+            else if (_interactiveObject is IDesigner designer)
             {
-                var feature = _builder.Feature;
+                var feature = designer.Feature;
 
                 yield return feature;
 
-                if (_builder.ExtraFeatures.Count != 0)
+                if (designer.ExtraFeatures.Count != 0)
                 {
-                    foreach (var item in _builder.ExtraFeatures)
+                    foreach (var item in designer.ExtraFeatures)
                     {
                         yield return item;
                     }

@@ -1,6 +1,9 @@
 ﻿using Mapsui.Geometries;
 using Mapsui.Providers;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace InteractivitySample.Interactivity.Decorators
 {
@@ -22,7 +25,7 @@ namespace InteractivitySample.Interactivity.Decorators
             _startOffsetToVertex = new Point();
         }
 
-        public override void Ending()
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             _isTranslating = false;
         }
@@ -58,6 +61,11 @@ namespace InteractivitySample.Interactivity.Decorators
             _startGeometry = Copy(FeatureSource.Geometry);
 
             _isTranslating = true;
+        }
+
+        public override void Hovering(Point worldPosition)
+        {
+
         }
     }
 }

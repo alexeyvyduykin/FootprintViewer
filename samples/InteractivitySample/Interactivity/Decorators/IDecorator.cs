@@ -4,15 +4,9 @@ using System.Collections.Generic;
 
 namespace InteractivitySample.Interactivity.Decorators
 {
-    public interface IDecorator
+    public interface IDecorator : IInteractiveObject
     {
         IEnumerable<Point> GetActiveVertices();
-
-        void Starting(Point worldPosition);
-
-        void Moving(Point worldPosition);
-
-        void Ending();
 
         IFeature FeatureSource { get; }
     }

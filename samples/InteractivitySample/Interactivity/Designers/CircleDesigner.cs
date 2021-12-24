@@ -27,7 +27,7 @@ namespace InteractivitySample.Interactivity.Designers
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point> isEnd)
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             if (_skip == false)
             {
@@ -35,7 +35,7 @@ namespace InteractivitySample.Interactivity.Designers
             }
         }
 
-        public override void Hover(Point worldPosition)
+        public override void Hovering(Point worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }

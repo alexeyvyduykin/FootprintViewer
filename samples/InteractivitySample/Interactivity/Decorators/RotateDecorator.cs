@@ -2,6 +2,7 @@
 using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace InteractivitySample.Interactivity.Decorators
 {
@@ -29,7 +30,7 @@ namespace InteractivitySample.Interactivity.Decorators
             _startOffsetToVertex = new Point();
         }
 
-        public override void Ending()
+        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
         {
             _rotateRight = new Point(FeatureSource.Geometry.BoundingBox.Right, FeatureSource.Geometry.BoundingBox.Centroid.Y);
 
@@ -73,6 +74,11 @@ namespace InteractivitySample.Interactivity.Decorators
             _halfDiagonal = Diagonal(FeatureSource.Geometry.BoundingBox) / 2.0;
 
             _isRotating = true;
+        }
+
+        public override void Hovering(Point worldPosition)
+        {
+
         }
 
         private double Diagonal(BoundingBox boundingBox)
