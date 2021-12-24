@@ -1,13 +1,15 @@
 ﻿using InteractivitySample.Input.Controller.Core;
+using Mapsui.Geometries;
 
 namespace InteractivitySample.Input.Controller
 {
-    public class DrawingRectangleManipulator : MouseManipulator
+    public class DrawingManipulator : MouseManipulator
     {
-        public DrawingRectangleManipulator(IMapView mapView) : base(mapView) { }
+        public DrawingManipulator(IMapView view) : base(view) { }
 
         private bool _skip;
         private int _counter;
+        private const int _minPixelsMovedForDrag = 4;
 
         public override void Completed(MouseEventArgs e)
         {
@@ -18,9 +20,21 @@ namespace InteractivitySample.Input.Controller
                 var screenPosition = e.Position;
                 var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-                MapView.MapObserver.OnCompleted(worldPosition);
-                                  
-                MapView.SetCursor(CursorType.Default);                
+                bool isClick(Point worldPosition)
+                {
+                    var p0 = MapView.WorldToScreen(worldPosition);
+
+                    var res = IsClick(p0, screenPosition);
+
+                    if (res == true)
+                    {
+                        MapView.SetCursor(CursorType.Default);
+                    }
+
+                    return res;
+                }
+
+                MapView.MapObserver.OnCompleted(worldPosition, isClick);         
             }
 
             e.Handled = true;
@@ -55,11 +69,24 @@ namespace InteractivitySample.Input.Controller
 
             e.Handled = true;
         }
+
+        private static bool IsClick(Point screenPosition, Point mouseDownScreenPosition)
+        {
+            if (mouseDownScreenPosition == null || screenPosition == null)
+            {
+                return false;
+            }
+
+            return mouseDownScreenPosition.Distance(screenPosition) < _minPixelsMovedForDrag;
+        }
     }
 
-    public class HoverDrawingRectangleManipulator : MouseManipulator
+    public class HoverDrawingManipulator : MouseManipulator
     {
-        public HoverDrawingRectangleManipulator(IMapView plotView) : base(plotView) { }
+        public HoverDrawingManipulator(IMapView view) : base(view)
+        {
+
+        }
 
         public override void Delta(MouseEventArgs e)
         {

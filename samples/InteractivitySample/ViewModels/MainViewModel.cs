@@ -90,7 +90,7 @@ namespace InteractivitySample.ViewModels
 
                 if (s == true)
                 {
-                    ActualController = new RectangleController();
+                    ActualController = new DrawingController();
                     DrawingRectangleCommand();
                 }
             });
@@ -101,7 +101,7 @@ namespace InteractivitySample.ViewModels
                 
                 if (s == true)
                 {
-                    ActualController = new CircleController();
+                    ActualController = new DrawingController();
                     DrawingCircleCommand();
                 }
             });
@@ -112,7 +112,7 @@ namespace InteractivitySample.ViewModels
                 
                 if (s == true)
                 {
-                    ActualController = new PolygonController();
+                    ActualController = new DrawingController();
                     DrawingPolygonCommand();
                 }
             });
@@ -123,7 +123,7 @@ namespace InteractivitySample.ViewModels
 
                 if (s == true)
                 {
-                    ActualController = new RouteController();
+                    ActualController = new DrawingController();
                     DrawingRouteCommand();
                 }
             });
