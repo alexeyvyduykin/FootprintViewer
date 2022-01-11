@@ -119,24 +119,6 @@ namespace FootprintViewer.ViewModels
             return SphericalUtil.ComputeDistance(vertices);
         }
 
-        private void CloseInfoPanelAOI()
-        {
-            _editLayer.ResetAOI();
-            _editLayer.DataHasChanged();
-
-            AOIChanged?.Invoke(null, EventArgs.Empty);
-
-            ToolManager.ResetAllTools();
-        }
-
-        private void CloseInfoPanelRoute()
-        {
-            _editLayer.ClearRoute();
-            _editLayer.DataHasChanged();
-
-            ToolManager.ResetAllTools();
-        }
-
         private void ZoomInCommand()
         {
             if (Map == null)
@@ -190,9 +172,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                var descr = FeatureAreaEndCreating(feature);
-
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -214,9 +194,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = (Feature)e.Feature;
 
-                var descr = FeatureAreaEndCreating(feature);
-
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
             };
@@ -261,11 +239,11 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+                var feature = (Feature)e.AddInfo.Feature;
 
                 AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
 
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 ToolManager.ResetAllTools();
             };
@@ -279,14 +257,54 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = (Feature)e.Feature;
 
-                var descr = FeatureAreaEndCreating(feature);
-
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
             };
 
             ActualController = new DrawPolygonController();
+        }
+
+        private AOIInfoPanel CreateAOIPanel(Feature feature)
+        {
+            var descr = FeatureAreaEndCreating(feature);
+
+            var panel = new AOIInfoPanel()
+            {
+                Text = descr,
+            };
+
+            panel.Close.Subscribe(_ =>
+            {
+                _editLayer.ResetAOI();
+                _editLayer.DataHasChanged();
+
+                AOIChanged?.Invoke(null, EventArgs.Empty);
+
+                ToolManager.ResetAllTools();
+            });
+
+            return panel;
+        }
+
+        private RouteInfoPanel CreateRoutePanel(AddInfo addInfo)
+        {
+            var distance = GetRouteLength(addInfo);
+
+            var panel = new RouteInfoPanel()
+            {
+                Text = FormatHelper.ToDistance(distance),
+            };
+
+            panel.Close.Subscribe(_ =>
+            {
+                _editLayer.ClearRoute();
+                _editLayer.DataHasChanged();
+
+                ToolManager.ResetAllTools();
+            });
+
+            return panel;
         }
 
         private void CircleCommand()
@@ -314,11 +332,11 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                var descr = FeatureAreaEndCreating((Feature)e.AddInfo.Feature);
+                var feature = (Feature)e.AddInfo.Feature;
 
                 AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
 
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, CloseInfoPanelAOI);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 ToolManager.ResetAllTools();
             };
@@ -337,17 +355,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = (Feature)e.Feature;
 
-                var descr = FeatureAreaEndCreating(feature);
-
-                void Closing()
-                {
-                    _editLayer.ResetAOI();
-                    _editLayer.DataHasChanged();
-
-                    AOIChanged?.Invoke(null, EventArgs.Empty);
-                }
-
-                InfoPanel?.Open(nameof(InfoPanelType.AOI), descr, Closing);
+                InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
             };
@@ -364,7 +372,7 @@ namespace FootprintViewer.ViewModels
 
             _editLayer.ClearRoute();
 
-            InfoPanel?.Close(nameof(InfoPanelType.Route));
+            InfoPanel?.CloseAll(typeof(RouteInfoPanel));
 
             Plotter = new Plotter(InteractiveRoute.Build());
 
@@ -383,9 +391,7 @@ namespace FootprintViewer.ViewModels
 
             Plotter.Creating += (s, e) =>
             {
-                var distance = GetRouteLength(e.AddInfo);
-
-                InfoPanel?.Open(nameof(InfoPanelType.Route), FormatHelper.ToDistance(distance), CloseInfoPanelRoute);
+                InfoPanel?.Show(CreateRoutePanel(e.AddInfo));
 
                 _editLayer.DataHasChanged();
             };

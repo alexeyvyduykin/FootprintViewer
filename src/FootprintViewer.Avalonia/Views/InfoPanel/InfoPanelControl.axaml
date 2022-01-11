@@ -1,0 +1,38 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.InfoPanel.InfoPanelControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
+             mc:Ignorable="d"
+             d:Background="LightBlue">
+
+  <Design.DataContext>
+    <vm:InfoPanelDesigner/>
+  </Design.DataContext>
+  
+  <Grid>
+
+    <ItemsControl Items="{Binding Panels}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Vertical"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+
+      <ItemsControl.ItemTemplate>        
+          <DataTemplate DataType="vm:CustomInfoPanel">
+            <panels:GeometryInfoPanel DataContext="{Binding}"/>
+          </DataTemplate>                    
+      </ItemsControl.ItemTemplate>
+
+    </ItemsControl>
+
+  </Grid>
+
+</UserControl>

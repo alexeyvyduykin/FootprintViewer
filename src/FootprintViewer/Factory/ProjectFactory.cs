@@ -74,19 +74,19 @@ namespace FootprintViewer
 
         public static InfoPanel CreateInfoPanel()
         {
-            InfoPanelItem routeItem = new InfoPanelItem()
-            {
-                Title = "Route",
-                Text = "Description",
-                CommandTitle = "X",
-            };
+            //InfoPanelItem routeItem = new InfoPanelItem()
+            //{
+            //    Title = "Route",
+            //    Text = "Description",
+            //    CommandTitle = "X",
+            //};
 
-            InfoPanelItem aoiItem = new InfoPanelItem()
-            {
-                Title = "AOI",
-                Text = "Description",
-                CommandTitle = "X",
-            };
+            //InfoPanelItem aoiItem = new InfoPanelItem()
+            //{
+            //    Title = "AOI",
+            //    Text = "Description",
+            //    CommandTitle = "X",
+            //};
 
             var infoPanel = new InfoPanel();
 

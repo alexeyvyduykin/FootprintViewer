@@ -89,16 +89,16 @@
                                      AOITemplate="{StaticResource AOIItemTemplate}"/>
 
     </UserControl.Resources>
-        
+
     <Grid>
 
-        <ItemsControl ItemsSource="{Binding Items}">
+        <ItemsControl ItemsSource="{Binding Panels}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -118,7 +118,7 @@
                                         HorizontalAlignment="Right">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Click">
-                                            <i:InvokeCommandAction Command="{Binding Command}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Close}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <Button.ToolTip>
@@ -134,8 +134,8 @@
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-            
+
         </ItemsControl>
-        
+
     </Grid>
 </UserControl>

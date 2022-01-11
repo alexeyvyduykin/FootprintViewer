@@ -14,16 +14,14 @@ namespace FootprintViewer.WPF
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is InfoPanelItem infoPanelItem)
+            if (item is AOIInfoPanel)
             {
-                if (infoPanelItem.Title == "Route")
-                {
-                    return RouteTemplate;
-                }
-                else if (infoPanelItem.Title == "AOI")
-                {
-                    return AOITemplate;
-                }
+                return AOITemplate;
+            }
+
+            if (item is RouteInfoPanel)
+            {
+                return RouteTemplate;
             }
 
             return default;

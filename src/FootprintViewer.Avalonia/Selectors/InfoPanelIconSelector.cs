@@ -14,7 +14,7 @@ namespace FootprintViewer.Avalonia
 
         public IControl Build(object param)
         {
-            var key = ((InfoPanelItem)param).Title;
+            var key = ((CustomInfoPanel)param).Title;
 
             if (key != null)
             {

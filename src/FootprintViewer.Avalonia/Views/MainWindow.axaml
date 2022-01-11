@@ -7,6 +7,7 @@
         xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
         xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
         xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+        xmlns:infoPanel="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
         xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
         xmlns:local="clr-namespace:FootprintViewer.Avalonia"
         xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"           
@@ -93,7 +94,7 @@
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Center"
               Margin="0,0,0,60">
-          <views:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+          <infoPanel:InfoPanelControl DataContext="{Binding InfoPanel}"/>
         </Grid>
 
         <Border BorderBrush="White"
