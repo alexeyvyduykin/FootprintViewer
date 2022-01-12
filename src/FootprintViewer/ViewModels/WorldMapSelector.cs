@@ -54,26 +54,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public LayerSource SelectedLayer { get; set; }
     }
-
-    public class WorldMapSelectorDesigner : WorldMapSelector
-    {
-        public static readonly IList<LayerSource> _list;
-
-        static WorldMapSelectorDesigner()
-        {
-            var arr = new[] 
-            {
-                new LayerSource() { Name = "WorldMapDefault" },
-                new LayerSource() { Name = "OAM-World-1-8-min-J70" }, 
-                new LayerSource() { Name = "OAM-World-1-10-J70" } 
-            };
-
-            _list = new List<LayerSource>(arr);
-        }
-
-        public WorldMapSelectorDesigner() : base(_list)
-        {
-
-        }
-    }
 }

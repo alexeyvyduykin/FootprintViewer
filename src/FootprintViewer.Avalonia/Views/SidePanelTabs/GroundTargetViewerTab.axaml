@@ -9,20 +9,22 @@
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:reactive="using:System.Reactive"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             x:Name="userControl"
-             d:DataContext="{d:DesignInstance vm:GroundTargetViewerDesigner, IsDesignTimeCreatable=True}"
-             MinWidth="380"             
-             mc:Ignorable="d" 
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             x:Name="userControl"        
+             MinWidth="380"  
+             mc:Ignorable="d"            
+             d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewer}"           
+             x:DataType="vm:GroundTargetViewer" x:CompileBindings="True"                                                
              d:DesignWidth="380" d:DesignHeight="450">
 
   <UserControl.Resources>
     <converters:TargetViewerContentTypeConverter x:Key="targetViewerContentTypeConverter"/>
     <converters:GroundTargetTypeConverter x:Key="groundTargetTypeConverter"/>
-    <vm:ObservableGroundTargetCollection x:Key="coll">
+    <vmd:ObservableGroundTargetCollection x:Key="coll">
       <vm:GroundTargetInfo Name="g1"></vm:GroundTargetInfo>
       <vm:GroundTargetInfo Name="g2"></vm:GroundTargetInfo>
       <vm:GroundTargetInfo Name="g3"></vm:GroundTargetInfo>
-    </vm:ObservableGroundTargetCollection>
+    </vmd:ObservableGroundTargetCollection>
     <vm:GroundTargetViewer x:Key="DesignDataTargetViewer" Type="Show" GroundTargetInfos="{StaticResource coll}" />
   </UserControl.Resources>
 
@@ -103,15 +105,15 @@
                         <!-- Avalonia.Behavior error -->
                         <i:Interaction.Behaviors>
 
-                          <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #brdr}">
+                          <!--<ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding Border.brdr}">
                             <ia:InvokeCommandAction Command="{Binding #userControl.DataContext.MouseOverEnterCommand}"
                                                     CommandParameter="{Binding}"/>
                           </ia:EventTriggerBehavior>
 
-                          <ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #brdr}">
+                          <ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding Border.brdr}">
                             <ia:InvokeCommandAction Command="{Binding #userControl.DataContext.MouseOverLeaveCommand}"
                                                     CommandParameter="{x:Static reactive:Unit.Default}"/>
-                          </ia:EventTriggerBehavior>
+                          </ia:EventTriggerBehavior>-->
 
                         </i:Interaction.Behaviors>
                         

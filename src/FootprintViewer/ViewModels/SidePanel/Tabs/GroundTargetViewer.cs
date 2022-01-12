@@ -199,14 +199,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public ObservableCollection<GroundTargetInfo> GroundTargetInfos { get; set; }
     }
-
-    public class GroundTargetViewerDesigner : GroundTargetViewer
-    {
-        public GroundTargetViewerDesigner() : base()
-        {
-            Type = TargetViewerContentType.Show;
-        }
-    }
-
-    public class ObservableGroundTargetCollection : ObservableCollection<GroundTargetInfo> { }
 }

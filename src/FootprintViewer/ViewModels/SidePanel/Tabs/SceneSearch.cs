@@ -231,48 +231,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public bool IsUpdating { get; set; } = false;
     }
-
-    public class SceneSearchDesigner : SceneSearch
-    {
-        public SceneSearchDesigner() : base()
-        {
-            var list = new List<FootprintImage>();
-
-            Random random = new Random();
-
-            var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
-            var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
-
-            foreach (var item in names)
-            {
-                var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
-                var date = DateTime.UtcNow;
-
-                list.Add(new FootprintImage()
-                {
-                    Date = date.Date.ToShortDateString(),
-                    SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
-                    SunElevation = random.Next(0, 90),
-                    CloudCoverFull = random.Next(0, 100),
-                    TileNumber = name.ToUpper(),
-                });
-            }
-
-            AddFootprints(list);
-        }
-
-        public void AddFootprints(IEnumerable<FootprintImage> footprints)
-        {
-            //  _sourceFootprints.Clear();
-            //  _sourceFootprints.AddRange(footprints);
-
-            Footprints.Clear();
-            Footprints.AddRange(footprints);
-
-            var sortNames = Footprints.Select(s => s.SatelliteName).Distinct().ToList();
-            sortNames.Sort();
-
-            Filter.AddSensors(sortNames);
-        }
-    }
 }

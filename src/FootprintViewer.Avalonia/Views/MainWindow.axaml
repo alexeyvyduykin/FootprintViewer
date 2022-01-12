@@ -55,11 +55,8 @@
   </Window.Styles>
   
   <Grid>
-    <Grid x:Name="GridOverlay">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"></ColumnDefinition>
-        <ColumnDefinition Width="Auto"></ColumnDefinition>
-      </Grid.ColumnDefinitions>
+    <Grid x:Name="GridOverlay" 
+          ColumnDefinitions="*,Auto">
 
       <Grid Grid.Column="0">
 
@@ -102,12 +99,8 @@
                 Background="{StaticResource MainBrush}"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch">
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="180"></ColumnDefinition>
-              <ColumnDefinition Width="150"></ColumnDefinition>            
-              <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+          
+          <Grid ColumnDefinitions="180,150,Auto">
 
             <TextBlock x:Name="TextBlockCoordinates"
                        Grid.Column="0"

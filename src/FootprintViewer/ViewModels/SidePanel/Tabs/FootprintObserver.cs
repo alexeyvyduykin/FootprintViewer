@@ -312,29 +312,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         private bool PreviewMouseLeftButtonCommandChecker { get; set; } = false;
     }
-
-    public class FootprintObserverDesigner : FootprintObserver
-    {
-        public FootprintObserverDesigner() : base()
-        {
-            Type = FootprintViewerContentType.Show;
-
-            FootprintInfos = new ObservableCollection<FootprintInfo>()
-            {
-                new FootprintInfo(){ Name = "Footrpint0001", IsShowInfo = false },
-                new FootprintInfo()
-                {
-                    Name = "Footrpint0002",
-                    SatelliteName = "Satellite1",
-                    IsShowInfo = true,
-                    Center = new Coordinate(54.434545, -12.435454),
-                    Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                    Duration = 35,
-                    Node = 11,
-                    Direction = SatelliteStripDirection.Left,
-                },
-                new FootprintInfo(){ Name = "Footrpint0003", IsShowInfo = false },
-            };
-        }
-    }
 }

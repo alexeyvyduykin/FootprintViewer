@@ -2,14 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
-             xmlns:panels="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"                 
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"        
+             d:DataContext="{x:Static vmd:DesignerContext.RouteInfoPanel}"           
+             x:DataType="vm:RouteInfoPanel" x:CompileBindings="True"                   
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.InfoPanel.GeometryInfoPanel">
 
-  <Design.DataContext>
-    <panels:GeometryInfoPanel/>
-  </Design.DataContext>
+  <!--<Design.DataContext>
+    <vm:GeometryInfoPanel/>
+  </Design.DataContext>-->
 
   <UserControl.Resources>
     <local:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">

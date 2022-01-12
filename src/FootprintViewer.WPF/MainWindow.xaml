@@ -6,6 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:FootprintViewer.WPF"  
         xmlns:views="clr-namespace:FootprintViewer.WPF.Views"           
+        xmlns:infoPanel="clr-namespace:FootprintViewer.WPF.Views.InfoPanel"           
         xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"
         xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -89,7 +90,7 @@
             <Grid VerticalAlignment="Bottom"                        
                   HorizontalAlignment="Center"                                            
                   Margin="0,0,0,60">
-                <views:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+                    <infoPanel:InfoPanelControl DataContext="{Binding InfoPanel}"/>
             </Grid>
             
             <Border BorderBrush="White" 

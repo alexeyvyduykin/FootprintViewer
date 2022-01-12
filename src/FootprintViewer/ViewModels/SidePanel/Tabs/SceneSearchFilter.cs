@@ -173,21 +173,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public bool IsOpen { get; set; }
     }
-
-    public class SceneSearchFilterDesigner : SceneSearchFilter
-    {
-        public SceneSearchFilterDesigner()
-        {
-            var sensor1 = new Sensor() { Name = "Satellite1 SNS-1" };
-            var sensor2 = new Sensor() { Name = "Satellite1 SNS-2" };
-            var sensor3 = new Sensor() { Name = "Satellite2 SNS-1" };
-            var sensor4 = new Sensor() { Name = "Satellite3 SNS-1" };
-            var sensor5 = new Sensor() { Name = "Satellite3 SNS-2" };
-
-            FromDate = DateTime.Today.AddDays(-1);
-            ToDate = DateTime.Today.AddDays(1);
-
-            Sensors = new ObservableCollection<Sensor>(new[] { sensor1, sensor2, sensor3, sensor4, sensor5 });
-        }
-    }
 }

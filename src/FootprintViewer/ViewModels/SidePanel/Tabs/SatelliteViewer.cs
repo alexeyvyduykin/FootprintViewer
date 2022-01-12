@@ -143,22 +143,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public ObservableCollection<SatelliteInfo> SatelliteInfos { get; protected set; }
     }
-
-    public class SatelliteViewerDesigner : SatelliteViewer
-    {
-        public SatelliteViewerDesigner() : base()
-        {
-            var dt = new DateTime(2000, 6, 1, 12, 0, 0);
-            var sat1 = new Satellite() { Semiaxis = 6945.03, Eccentricity = 0.0, InclinationDeg = 97.65, ArgumentOfPerigeeDeg = 0.0, LongitudeAscendingNodeDeg = 0.0, RightAscensionAscendingNodeDeg = 0.0, Period = 5760.0, Epoch = dt, InnerHalfAngleDeg = 32, OuterHalfAngleDeg = 48 };
-
-            SatelliteInfos = new ObservableCollection<SatelliteInfo>()
-            {
-                new SatelliteInfo() { Name = "Satellite1", Satellite = sat1, IsShow = true,  IsShowInfo = false, MaxNode = 15 },
-                new SatelliteInfo() { Name = "Satellite2", Satellite = sat1, IsShow = false, IsShowInfo = true, MaxNode = 15 },
-                new SatelliteInfo() { Name = "Satellite3", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
-                new SatelliteInfo() { Name = "Satellite4", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
-                new SatelliteInfo() { Name = "Satellite5", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
-            };
-        }
-    }
 }

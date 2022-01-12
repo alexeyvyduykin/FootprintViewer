@@ -40,7 +40,7 @@ namespace FootprintViewer.ViewModels
             });
         }
 
-        protected void AddPanel(InfoPanelItem panel)
+        private void AddPanel(InfoPanelItem panel)
         {
             _items.Add(panel);
 
@@ -64,26 +64,5 @@ namespace FootprintViewer.ViewModels
         }
 
         public ReadOnlyObservableCollection<InfoPanelItem> Panels => _panels;
-    }
-
-    public class InfoPanelDesigner : InfoPanel
-    {
-        public InfoPanelDesigner()
-        {
-            var routeItem = new RouteInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            var aoiItem = new AOIInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            AddPanel(routeItem);
-            AddPanel(aoiItem);
-
-            //Panels.Add(new InfoPanelItem[] { routeItem, aoiItem });
-        }
     }
 }

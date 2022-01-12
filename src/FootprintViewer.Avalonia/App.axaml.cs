@@ -13,6 +13,8 @@ using Mapsui.Geometries;
 using System.Linq;
 using Avalonia.Controls;
 using System.Collections.Generic;
+using Avalonia.Themes.Default;
+using FootprintViewer.Designer;
 
 namespace FootprintViewer.Avalonia
 {
@@ -21,6 +23,19 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        static App()
+        {          
+            InitializeDesigner();
+        }
+
+        public static void InitializeDesigner()
+        {
+            if (Design.IsDesignMode)
+            {
+                DesignerContext.InitializeContext();
+            }
         }
 
         public override void OnFrameworkInitializationCompleted()

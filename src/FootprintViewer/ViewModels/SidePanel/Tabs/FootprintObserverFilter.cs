@@ -136,21 +136,4 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public bool IsOpen { get; set; }
     }
-
-    public class FootprintObserverFilterDesigner : FootprintObserverFilter
-    {
-        public FootprintObserverFilterDesigner()
-        {
-            var sat1 = new SatelliteItem() { Name = "Satellite1" };
-            var sat2 = new SatelliteItem() { Name = "Satellite2" };
-            var sat3 = new SatelliteItem() { Name = "Satellite3" };
-            var sat4 = new SatelliteItem() { Name = "Satellite4" };
-            var sat5 = new SatelliteItem() { Name = "Satellite5" };
-
-            FromNode = 1;
-            ToNode = 15;
-
-            Satellites = new ObservableCollection<SatelliteItem>(new[] { sat1, sat2, sat3, sat4, sat5 });
-        }
-    }
 }
