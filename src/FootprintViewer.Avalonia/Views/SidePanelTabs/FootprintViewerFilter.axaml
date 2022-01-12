@@ -6,9 +6,11 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
-             d:DataContext="{d:DesignInstance vm:FootprintObserverFilterDesigner, IsDesignTimeCreatable=True}"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             d:DataContext="{x:Static vmd:DesignerContext.FootprintObserverFilter}"           
+             x:DataType="vm:FootprintObserverFilter" x:CompileBindings="True"                    
              mc:Ignorable="d"
-             d:DesignWidth="400" d:DesignHeight="360">
+             d:DesignWidth="400" d:DesignHeight="640">
 
   <Border Background="{StaticResource MainBackgroundBrush}">
     <StackPanel>

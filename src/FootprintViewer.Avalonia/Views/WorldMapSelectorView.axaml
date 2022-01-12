@@ -4,19 +4,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             d:DataContext="{d:DesignInstance vm:WorldMapSelectorDesigner, IsDesignTimeCreatable=True}"                          
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             d:DataContext="{x:Static vmd:DesignerContext.WorldMapSelector}"           
+             x:DataType="vm:WorldMapSelector" x:CompileBindings="False"                            
              mc:Ignorable="d">
 
+  <UserControl.Styles>
+
+    <Style Selector="ListBox > ListBoxItem /template/ Border">
+      <Setter Property="Margin" Value="8,2,8,2"></Setter>
+    </Style>
+    
+  </UserControl.Styles>
+  
   <Grid>
     <ListBox Background="{StaticResource MainBackgroundBrush}"
              Foreground="{StaticResource MainForegroundBrush}"
              BorderThickness="0"
-             Items="{Binding Layers}"
+             Items="{Binding Layers}"             
              SelectedItem="{Binding SelectedLayer}">
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <TextBlock Text="{Binding Name}" Margin="8,2,8,2">
-          </TextBlock>
+          <TextBlock Text="{Binding Name}"/>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>

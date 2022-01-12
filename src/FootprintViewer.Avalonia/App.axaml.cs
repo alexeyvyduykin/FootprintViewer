@@ -1,20 +1,20 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using FootprintViewer.Avalonia.Views;
 using FootprintViewer.Data;
+using FootprintViewer.Designer;
 using FootprintViewer.ViewModels;
+using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System;
-using Mapsui.Geometries;
 using System.Linq;
-using Avalonia.Controls;
-using System.Collections.Generic;
-using Avalonia.Themes.Default;
-using FootprintViewer.Designer;
+using System.Text;
 
 namespace FootprintViewer.Avalonia
 {
@@ -26,7 +26,7 @@ namespace FootprintViewer.Avalonia
         }
 
         static App()
-        {          
+        {
             InitializeDesigner();
         }
 
@@ -40,7 +40,30 @@ namespace FootprintViewer.Avalonia
 
         public override void OnFrameworkInitializationCompleted()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            {
+                InitializationClassicDesktopStyle(desktopLifetime, out var mainViewModel);
+
+                if (mainViewModel != null)
+                {
+                    desktopLifetime.MainWindow = new MainWindow()
+                    {
+                        DataContext = mainViewModel
+                    };
+                }
+            }
+            else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewLifetime)
+            {
+                throw new Exception();
+            }
+
+            base.OnFrameworkInitializationCompleted();
+        }
+
+        public static void InitializationClassicDesktopStyle(IClassicDesktopStyleApplicationLifetime? desktopLifetime, out MainViewModel viewModel)
+        {
             var mapListener = new MapListener();
 
             var userDataSource = new UserDataSource();
@@ -118,7 +141,6 @@ namespace FootprintViewer.Avalonia
                 }
             };
 
-
             mainViewModel.AOIChanged += (s, e) =>
             {
                 if (s != null)
@@ -134,15 +156,7 @@ namespace FootprintViewer.Avalonia
                 }
             };
 
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {              
-                desktop.MainWindow = new MainWindow() 
-                {
-                    DataContext = mainViewModel 
-                };                
-            }
-
-            base.OnFrameworkInitializationCompleted();
+            viewModel = mainViewModel;
         }
 
         private static IDataSource CreateFromRandom()
@@ -180,9 +194,9 @@ namespace FootprintViewer.Avalonia
 
             return options;
         }
-      
+
         public static Window? GetWindow()
-        {       
+        {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 return desktopLifetime.MainWindow;

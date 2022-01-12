@@ -8,12 +8,14 @@
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"  
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             x:Name="userControl"
-             d:DataContext="{d:DesignInstance vm:FootprintObserverDesigner, IsDesignTimeCreatable=True}"
+             x:Name="userControl"                        
+             d:DataContext="{x:Static vmd:DesignerContext.FootprintObserver}"           
+             x:DataType="vm:FootprintObserver" x:CompileBindings="False"                 
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="450">
@@ -58,19 +60,14 @@
   
   <Grid>
 
-    <controls:Flyout Placement="Left"
+    <controls:Flyout 
+                     Placement="Left"
                      Margin="0,10,0,0"
                      Target="{Binding ElementName=btnSearch}"
                      Background="{StaticResource MainBackgroundBrush}"
                      IsOpen="{Binding Filter.IsOpen}"
                      IsVisible="{Binding Filter.IsOpen}"
-                     Content="{Binding Filter}">
-      <controls:Flyout.FlyoutTemplate>
-        <DataTemplate>
-          <views:FootprintViewerFilter DataContext="{Binding}" Width="400"/>
-        </DataTemplate>
-      </controls:Flyout.FlyoutTemplate>
-    </controls:Flyout>
+                     Content="{Binding Filter}"/>
 
     <Grid RowDefinitions="Auto,*,50"
           Background="{StaticResource MainBackgroundBrush}">
@@ -90,7 +87,8 @@
             <ia:ChangePropertyAction TargetObject="{Binding #contentControl2}" PropertyName="Content">
               <ia:ChangePropertyAction.Value>
                 <Grid>
-                  <ListBox x:Name="listBox"                       
+                  <ListBox x:Name="listBox"   
+                           x:CompileBindings="False"                   
                            BorderThickness="0"                      
                            Background="Transparent"                     
                            Items="{Binding FootprintInfos}"                      

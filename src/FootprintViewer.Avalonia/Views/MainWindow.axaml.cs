@@ -26,19 +26,16 @@ namespace FootprintViewer.Avalonia.Views
             _textBlockCoordinates = this.FindControl<TextBlock>("TextBlockCoordinates");
             _scaleBarControl = this.FindControl<ScaleBarControl>("ScaleBarControl");
 
-            _mapControl.FeatureInfo += MapControlFeatureInfo;
+            //_mapControl.FeatureInfo += MapControlFeatureInfo;
 
             _mapControl.PointerMoved += MapControlOnMouseMove;
             _mapControl.PointerWheelChanged += MapControl_MouseWheel;
             _mapControl.PropertyChanged += MapControl_PropertyChanged;
-  
+
             _textBlockResolution.Text = GetCurrentResolution();
-
-            //  ListBoxFootprints.SelectionChanged += ListBoxFootprints_SelectionChanged;
-
+                
             _mapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
-
-
+            
 #if DEBUG
             this.AttachDevTools();
 #endif
@@ -61,7 +58,10 @@ namespace FootprintViewer.Avalonia.Views
         {
             if (sender is Viewport viewport)
             {
-                _scaleBarControl.Update(_mapControl.Map, viewport);
+                if (_mapControl.Map != null)
+                {
+                    _scaleBarControl.Update(_mapControl.Map, viewport);
+                }
             }
         }
 

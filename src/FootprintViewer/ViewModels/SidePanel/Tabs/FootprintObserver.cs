@@ -18,7 +18,7 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintInfo : ReactiveObject
     {
-        private readonly Footprint _footprint;
+        private readonly Footprint? _footprint;
 
         public FootprintInfo() { }
 
@@ -34,7 +34,7 @@ namespace FootprintViewer.ViewModels
             Direction = footprint.Direction;
         }
 
-        public Footprint Footprint => _footprint;
+        public Footprint? Footprint => _footprint;
 
         [Reactive]
         public string? Name { get; set; }
@@ -69,19 +69,19 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserver : SidePanelTab
     {
-        private readonly FootprintLayer _footrpintLayer;
+        private readonly FootprintLayer? _footrpintLayer;
         private readonly Map? _map;
-
-        protected FootprintObserver() { }
 
         public FootprintObserver(Map map)
         {
+            Type = FootprintViewerContentType.Update;
+
             _map = map;
 
             _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
 
             FootprintInfos = new ObservableCollection<FootprintInfo>();
-          
+
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
             ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);
@@ -142,8 +142,6 @@ namespace FootprintViewer.ViewModels
             });
 
             this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
-
-            Type = FootprintViewerContentType.Update;
         }
 
         private void FilterChanged()
@@ -162,25 +160,28 @@ namespace FootprintViewer.ViewModels
 
         public void SelectFootprintInfo(string name)
         {
-            var isSelect = _footrpintLayer.IsSelect(name);
-
-            if (isSelect == true)
+            if (_footrpintLayer != null)
             {
-                _footrpintLayer.UnselectFeature(name);
+                var isSelect = _footrpintLayer.IsSelect(name);
 
-                FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
-
-                SelectedFootprintInfo = null;
-            }
-            else
-            {         
-                _footrpintLayer.SelectFeature(name);
-
-                var item = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
-
-                if (item != null)
+                if (isSelect == true)
                 {
-                    ScrollCollectionToCenter(item);
+                    _footrpintLayer.UnselectFeature(name);
+
+                    FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+
+                    SelectedFootprintInfo = null;
+                }
+                else
+                {
+                    _footrpintLayer.SelectFeature(name);
+
+                    var item = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
+
+                    if (item != null)
+                    {
+                        ScrollCollectionToCenter(item);
+                    }
                 }
             }
         }
@@ -266,32 +267,35 @@ namespace FootprintViewer.ViewModels
 
         private async void FootprintsChanged()
         {
-            var footprints = await LoadDataAsync(_footrpintLayer);
-
-            if (footprints != null)
+            if (_footrpintLayer != null)
             {
-                if (Filter == null)
-                {
-                    FootprintInfos = new ObservableCollection<FootprintInfo>(footprints.Select(s => new FootprintInfo(s)));
-                }
+                var footprints = await LoadDataAsync(_footrpintLayer);
 
-                if (Filter != null)
+                if (footprints != null)
                 {
-                    var list = new List<FootprintInfo>();
-
-                    foreach (var item in footprints)
+                    if (Filter == null)
                     {
-                        if (Filter.Filtering(item) == true)
-                        {
-                            list.Add(new FootprintInfo(item));
-                        }
+                        FootprintInfos = new ObservableCollection<FootprintInfo>(footprints.Select(s => new FootprintInfo(s)));
                     }
 
-                    FootprintInfos = new ObservableCollection<FootprintInfo>(list);
-                }
-            }
+                    if (Filter != null)
+                    {
+                        var list = new List<FootprintInfo>();
 
-            Type = FootprintViewerContentType.Show;
+                        foreach (var item in footprints)
+                        {
+                            if (Filter.Filtering(item) == true)
+                            {
+                                list.Add(new FootprintInfo(item));
+                            }
+                        }
+
+                        FootprintInfos = new ObservableCollection<FootprintInfo>(list);
+                    }
+                }
+
+                Type = FootprintViewerContentType.Show;
+            }
         }
 
         [Reactive]

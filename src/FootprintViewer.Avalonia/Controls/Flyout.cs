@@ -62,7 +62,7 @@ namespace FootprintViewer.Avalonia.Controls
             _border.Child = new ContentControl()
             {
                 Content = Content,
-                ContentTemplate = FlyoutTemplate
+                ContentTemplate = ContentTemplate,// FlyoutTemplate
             };
 
             InvalidateData();

@@ -5,27 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             d:DataContext="{d:DesignInstance vm:SidePanelDesigner, IsDesignTimeCreatable=True}"
+             xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"   
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             d:DataContext="{x:Static vmd:DesignerContext.SidePanel}"           
+             x:DataType="vm:SidePanel" x:CompileBindings="True"             
              mc:Ignorable="d" 
-             d:DesignHeight="450">
-
-  <UserControl.Resources>
-    <local:SidePanelSelector x:Key="sidePanelSelector">
-      <DataTemplate x:Key="SceneSearch">
-        <tabs:SceneSearchTab Width="380"/>
-      </DataTemplate>
-      <DataTemplate x:Key="SatelliteViewer">
-        <tabs:SatelliteViewerTab Width="380"/>
-      </DataTemplate>
-      <DataTemplate x:Key="GroundTargetViewer">
-        <tabs:GroundTargetViewerTab Width="380"/>
-      </DataTemplate>
-      <DataTemplate x:Key="FootprintObserver">
-        <tabs:FootprintViewerTab Width="380"/>
-      </DataTemplate>
-    </local:SidePanelSelector>
-  </UserControl.Resources>
+             d:DesignHeight="450"
+             d:DesignWidth="420">
 
   <UserControl.Styles>
 
@@ -94,16 +80,12 @@
 
   </UserControl.Styles>
 
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"></RowDefinition>
-      <RowDefinition Height="*"></RowDefinition>
-    </Grid.RowDefinitions>
+  <Grid RowDefinitions="Auto,*">
     
     <StackPanel x:Name="Header">
       <Border Padding="15,8,0,8" Background="{StaticResource AccentBackgroundBrush}">
         <DockPanel LastChildFill="True">
-          <TextBlock Text="{Binding SelectedItem.Title, ElementName=SidePanel}"
+          <TextBlock Text="{Binding SelectedTab.Title}"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Center"
                      Classes="sidePanelHeaderTextBlock"/>
@@ -120,9 +102,8 @@
     <TabControl x:Name="SidePanel"
                 Grid.Row="1"
                 HorizontalAlignment="Right"
-                Items="{Binding Tabs}"             
-                SelectedItem="{Binding SelectedTab}"
-                ContentTemplate="{StaticResource sidePanelSelector}">
+                Items="{Binding Tabs}"
+                SelectedItem="{Binding SelectedTab}">
       <TabControl.ItemTemplate>
         <DataTemplate>
           <Viewbox Margin="8">

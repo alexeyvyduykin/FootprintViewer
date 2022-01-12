@@ -12,29 +12,29 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static RouteInfoPanel RouteInfoPanel { get; private set; }
+        public static RouteInfoPanel? RouteInfoPanel { get; private set; }
 
-        public static AOIInfoPanel AoiInfoPanel { get; private set; }
+        public static AOIInfoPanel? AoiInfoPanel { get; private set; }
 
-        public static InfoPanel InfoPanel { get; private set; }
+        public static InfoPanel? InfoPanel { get; private set; }
 
-        public static FootprintObserver FootprintObserver { get; private set; }
+        public static FootprintObserver? FootprintObserver { get; private set; }
 
-        public static FootprintObserverFilter FootprintObserverFilter { get; private set; }
+        public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
-        public static GroundTargetViewer GroundTargetViewer { get; private set; }
+        public static GroundTargetViewer? GroundTargetViewer { get; private set; }
 
-        public static SatelliteViewer SatelliteViewer { get; private set; }
+        public static SatelliteViewer? SatelliteViewer { get; private set; }
 
-        public static SceneSearch SceneSearch { get; private set; }
+        public static SceneSearch? SceneSearch { get; private set; }
 
-        public static SceneSearchFilter SceneSearchFilter { get; private set; }
+        public static SceneSearchFilter? SceneSearchFilter { get; private set; }
 
-        public static SidePanel SidePanel { get; private set; }
+        public static SidePanel? SidePanel { get; private set; }
 
-        public static ToolManager ToolManager { get; private set; }
+        public static ToolManager? ToolManager { get; private set; }
 
-        public static WorldMapSelector WorldMapSelector { get; private set; }
+        public static WorldMapSelector? WorldMapSelector { get; private set; }
 
         public static void InitializeContext()
         {
@@ -107,11 +107,20 @@ namespace FootprintViewer.Designer
                     })
             };
 
+            var coll = new ObservableCollection<GroundTargetInfo>(new[]
+                {
+                    new GroundTargetInfo(){ Name = "g1" },
+                    new GroundTargetInfo(){ Name = "g1" },
+                    new GroundTargetInfo(){ Name = "g1" },
+                });
+
             GroundTargetViewer = new GroundTargetViewer()
             {
                 Type = TargetViewerContentType.Show,
+                GroundTargetInfos = coll,
+                SelectedGroundTargetInfo = coll.FirstOrDefault(),
             };
-
+                             
             var dt = new DateTime(2000, 6, 1, 12, 0, 0);
             var sat1 = new Satellite()
             {
@@ -127,13 +136,14 @@ namespace FootprintViewer.Designer
                 OuterHalfAngleDeg = 48
             };
 
-            SatelliteViewer = new SatelliteViewer();
-
-            SatelliteViewer.SatelliteInfos.Add(new SatelliteInfo() { Name = "Satellite1", Satellite = sat1, IsShow = true, IsShowInfo = false, MaxNode = 15 });
-            SatelliteViewer.SatelliteInfos.Add(new SatelliteInfo() { Name = "Satellite2", Satellite = sat1, IsShow = false, IsShowInfo = true, MaxNode = 15 });
-            SatelliteViewer.SatelliteInfos.Add(new SatelliteInfo() { Name = "Satellite3", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 });
-            SatelliteViewer.SatelliteInfos.Add(new SatelliteInfo() { Name = "Satellite4", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 });
-            SatelliteViewer.SatelliteInfos.Add(new SatelliteInfo() { Name = "Satellite5", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 });
+            SatelliteViewer = new SatelliteViewer(new[]            
+            {           
+                new SatelliteInfo() { Name = "Satellite1", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },           
+                new SatelliteInfo() { Name = "Satellite2", Satellite = sat1, IsShow = true, IsShowInfo = false, MaxNode = 15 },           
+                new SatelliteInfo() { Name = "Satellite3", Satellite = sat1, IsShow = false, IsShowInfo = true, MaxNode = 15 },           
+                new SatelliteInfo() { Name = "Satellite4", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },           
+                new SatelliteInfo() { Name = "Satellite5", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
+            });
 
             SceneSearch = CreateSceneSearch();
 
@@ -153,24 +163,25 @@ namespace FootprintViewer.Designer
 
             // SidePanel
 
+            var tabs = new SidePanelTab[]
+            {
+               
+                new GroundTargetViewer()                   
+                {                       
+                    Name = "Test1",                        
+                    Title = "Default test title1"                  
+                },
+                new GroundTargetViewer()                   
+                {                       
+                    Name = "Test2",                       
+                    Title = "Default test title2"                   
+                }
+            };
+
             SidePanel = new SidePanel()
             {
-                Tabs = new ObservableCollection<SidePanelTab>(new[]
-                {
-                    SceneSearch,
-                    new SceneSearch()
-                    {
-                        Name = "Test1",
-                        Title = "Default test title1"
-                    },
-
-                    new SceneSearch()
-                    {
-                        Name = "Test2",
-                        Title = "Default test title2"
-                    }
-                }),
-                SelectedTab = SceneSearch,
+                Tabs = new ObservableCollection<SidePanelTab>(tabs),
+                SelectedTab = tabs.FirstOrDefault(),
             };
 
             // ToolManager

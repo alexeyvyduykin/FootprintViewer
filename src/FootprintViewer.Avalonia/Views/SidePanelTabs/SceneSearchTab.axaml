@@ -10,8 +10,10 @@
              xmlns:reactive="using:System.Reactive"
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             d:DataContext="{d:DesignInstance vm:SceneSearchDesigner, IsDesignTimeCreatable=True}"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"                  
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                     
+             d:DataContext="{x:Static vmd:DesignerContext.SceneSearch}"           
+             x:DataType="vm:SceneSearch" x:CompileBindings="False"                      
              x:Name="SceneSearchTabName"
              MinWidth="380"
              mc:Ignorable="d"
@@ -49,13 +51,7 @@
                      Background="{StaticResource MainBackgroundBrush}"
                      IsOpen="{Binding Filter.IsOpen}"
                      IsVisible="{Binding Filter.IsOpen}"                   
-                     Content="{Binding Filter}">
-      <controls:Flyout.FlyoutTemplate>
-        <DataTemplate>
-          <views:SceneSearchFilter DataContext="{Binding}"/>
-        </DataTemplate>
-      </controls:Flyout.FlyoutTemplate>
-    </controls:Flyout>
+                     Content="{Binding Filter}"/>
 
     <Grid RowDefinitions="Auto,*,50" 
           Background="{StaticResource MainBackgroundBrush}">
@@ -95,7 +91,7 @@
                   <i:Interaction.Behaviors>
 
                     <ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #brdr}">
-                      <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.MouseOverEnterCommand}" 
+                      <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.MouseOverEnterCommand}"
                                               CommandParameter="{Binding}"/>
                     </ia:EventTriggerBehavior>
 
@@ -103,7 +99,7 @@
                       <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.MouseOverLeaveCommand}"
                                               CommandParameter="{x:Static reactive:Unit.Default}"/>
                     </ia:EventTriggerBehavior>
-                    
+
                   </i:Interaction.Behaviors>
                                  
                   <Viewbox Width="155" Height="155">

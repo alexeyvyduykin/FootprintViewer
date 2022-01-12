@@ -14,18 +14,12 @@
              MinWidth="380"  
              mc:Ignorable="d"            
              d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewer}"           
-             x:DataType="vm:GroundTargetViewer" x:CompileBindings="True"                                                
+             x:DataType="vm:GroundTargetViewer" x:CompileBindings="False"                                                
              d:DesignWidth="380" d:DesignHeight="450">
 
   <UserControl.Resources>
     <converters:TargetViewerContentTypeConverter x:Key="targetViewerContentTypeConverter"/>
     <converters:GroundTargetTypeConverter x:Key="groundTargetTypeConverter"/>
-    <vmd:ObservableGroundTargetCollection x:Key="coll">
-      <vm:GroundTargetInfo Name="g1"></vm:GroundTargetInfo>
-      <vm:GroundTargetInfo Name="g2"></vm:GroundTargetInfo>
-      <vm:GroundTargetInfo Name="g3"></vm:GroundTargetInfo>
-    </vmd:ObservableGroundTargetCollection>
-    <vm:GroundTargetViewer x:Key="DesignDataTargetViewer" Type="Show" GroundTargetInfos="{StaticResource coll}" />
   </UserControl.Resources>
 
   <UserControl.Styles>
@@ -54,9 +48,8 @@
   
   <Grid Background="{StaticResource MainBackgroundBrush}">
     <ContentControl x:Name="contentControl"
-                    Margin="10" 
-                    d:DataContext="{StaticResource DesignDataTargetViewer}">
-
+                    Margin="10">
+              
       <i:Interaction.Behaviors>
         
         <ia:DataTriggerBehavior Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}"

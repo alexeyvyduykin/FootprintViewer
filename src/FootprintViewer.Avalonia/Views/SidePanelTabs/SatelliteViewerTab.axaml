@@ -6,11 +6,13 @@
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"   
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             d:DataContext="{d:DesignInstance vm:SatelliteViewerDesigner, IsDesignTimeCreatable=True}"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             d:DataContext="{x:Static vmd:DesignerContext.SatelliteViewer}"           
+             x:DataType="vm:SatelliteViewer" x:CompileBindings="True"
              MinWidth="380"             
              mc:Ignorable="d" 
-             d:DesignWidth="380" d:DesignHeight="450">
+             d:DesignHeight="450">
   
   <UserControl.Styles>
 
@@ -62,15 +64,7 @@
                   </DockPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="stackPanel1">
-                  <i:Interaction.Behaviors>
-                    <ia:DataTriggerBehavior Binding="{Binding IsShow}" ComparisonCondition="Equal" Value="True">
-                      <ia:ChangePropertyAction TargetObject="{Binding #stackPanel1}" PropertyName="IsVisible" Value="True"/>
-                    </ia:DataTriggerBehavior>
-                    <ia:DataTriggerBehavior Binding="{Binding IsShow}" ComparisonCondition="Equal" Value="False">
-                      <ia:ChangePropertyAction TargetObject="{Binding #stackPanel1}" PropertyName="IsVisible" Value="False"/>
-                    </ia:DataTriggerBehavior>
-                  </i:Interaction.Behaviors>
+                <StackPanel x:Name="stackPanel1" IsVisible="{Binding IsShow}">
 
                   <Slider Minimum="{Binding MinNode}" Maximum="{Binding MaxNode}" Value="{Binding CurrentNode}"
                   TickPlacement="TopLeft"
@@ -90,16 +84,7 @@
                   </DockPanel>
                 </StackPanel>
 
-                <StackPanel x:Name="stackPanel2">
-                  <i:Interaction.Behaviors>
-                    <ia:DataTriggerBehavior Binding="{Binding IsShowInfo}" ComparisonCondition="Equal" Value="True">
-                      <ia:ChangePropertyAction TargetObject="{Binding #stackPanel2}" PropertyName="IsVisible" Value="True"/>
-                    </ia:DataTriggerBehavior>
-                    <ia:DataTriggerBehavior Binding="{Binding IsShowInfo}" ComparisonCondition="Equal" Value="False">
-                      <ia:ChangePropertyAction TargetObject="{Binding #stackPanel2}" PropertyName="IsVisible" Value="False"/>
-                    </ia:DataTriggerBehavior>
-                  </i:Interaction.Behaviors>
-
+                <StackPanel x:Name="stackPanel2" IsVisible="{Binding IsShowInfo}">
                   <Grid ShowGridLines="False" 
                         ColumnDefinitions="*,Auto"
                         RowDefinitions="*,*,*,*,*,*,*,*,*,*">

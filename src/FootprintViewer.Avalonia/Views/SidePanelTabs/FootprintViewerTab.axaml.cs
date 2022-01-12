@@ -11,9 +11,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
         {
             InitializeComponent();
 
-            var listBox = this.FindControl<ListBox>("listBox");
+           // var listBox = this.FindControl<ListBox>("listBox");
 
-            listBox.SelectionChanged += ListBox_SelectionChanged; //PointerPressed += ListBox_PointerPressed;
+           // listBox.SelectionChanged += ListBox_SelectionChanged; //PointerPressed += ListBox_PointerPressed;
         }
 
         private void ListBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)

@@ -33,39 +33,44 @@ namespace FootprintViewer.Avalonia.Views
 
         public void Update(Map map, Viewport viewport)
         {
-            var unitConverter = MetricUnitConverter.Instance;
-
-            // We have to calc the angle difference to the equator (angle = 0), 
-            // because EPSG:3857 is only there 1 m. At othere angles, we
-            // should calculate the correct length.
-            var position = (Mapsui.Geometries.Point)map.Transformation.Transform(map.CRS, "EPSG:4326", ((Mapsui.Geometries.Point)viewport.Center).Clone()); // clone or else you will transform the orginal viewport center
-
-            // Calc ground resolution in meters per pixel of viewport for this latitude
-            double groundResolution = viewport.Resolution * Math.Cos(position.Y / 180.0 * Math.PI);
-
-            // Convert in units of UnitConverter
-            groundResolution = groundResolution / unitConverter.MeterRatio;
-
-            var scaleBarValues = unitConverter.ScaleBarValues;
-
-            double scaleBarLength = 0;
-            int scaleBarValue = 0;
-
-            foreach (int value in scaleBarValues)
+            if (Design.IsDesignMode == false)
             {
-                scaleBarValue = value;
-                scaleBarLength = (float)(scaleBarValue / groundResolution);
-                if (scaleBarLength < MaxWidthScaleBar - 10)
+                var unitConverter = MetricUnitConverter.Instance;
+
+                var center = new Mapsui.Geometries.Point(viewport.Center.X, viewport.Center.Y);
+
+                // We have to calc the angle difference to the equator (angle = 0), 
+                // because EPSG:3857 is only there 1 m. At othere angles, we
+                // should calculate the correct length.                       
+                var position = (Mapsui.Geometries.Point)map.Transformation.Transform(map.CRS, "EPSG:4326", center); // clone or else you will transform the orginal viewport center
+
+                // Calc ground resolution in meters per pixel of viewport for this latitude
+                double groundResolution = viewport.Resolution * Math.Cos(position.Y / 180.0 * Math.PI);
+
+                // Convert in units of UnitConverter
+                groundResolution = groundResolution / unitConverter.MeterRatio;
+
+                var scaleBarValues = unitConverter.ScaleBarValues;
+
+                double scaleBarLength = 0;
+                int scaleBarValue = 0;
+
+                foreach (int value in scaleBarValues)
                 {
-                    break;
+                    scaleBarValue = value;
+                    scaleBarLength = (float)(scaleBarValue / groundResolution);
+                    if (scaleBarLength < MaxWidthScaleBar - 10)
+                    {
+                        break;
+                    }
                 }
-            }
 
-            var scaleBarText = unitConverter.GetScaleText(scaleBarValue);
+                var scaleBarText = unitConverter.GetScaleText(scaleBarValue);
 
-            _textBlockScale.Text = scaleBarText;
+                _textBlockScale.Text = scaleBarText;
 
-            DrawScaleBar(scaleBarLength);
+                DrawScaleBar(scaleBarLength);
+            }            
         }
 
         public void DrawScaleBar(double scaleBarLength)

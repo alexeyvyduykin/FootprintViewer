@@ -9,8 +9,10 @@
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"                          
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             d:DataContext="{x:Static vmd:DesignerContext.ToolManager}"           
+             x:DataType="vm:ToolManager" x:CompileBindings="False"                         
              mc:Ignorable="d" 
              x:Name="userControl"
              d:DesignWidth="800" d:DesignHeight="450"
@@ -254,13 +256,7 @@
                        Background="{StaticResource MainBackgroundBrush}"
                        IsOpen="{Binding WorldMapSelector.IsOpen}"        
                        IsVisible="{Binding WorldMapSelector.IsOpen}"                    
-                       Content="{Binding WorldMapSelector}">
-        <controls:Flyout.FlyoutTemplate>
-          <DataTemplate>
-            <views:WorldMapSelectorView DataContext="{Binding}"/>
-          </DataTemplate>
-        </controls:Flyout.FlyoutTemplate>
-      </controls:Flyout>
+                       Content="{Binding WorldMapSelector}"/>
 
       <StackPanel DataContext="{Binding WorldMaps}"              
                   HorizontalAlignment="Left">

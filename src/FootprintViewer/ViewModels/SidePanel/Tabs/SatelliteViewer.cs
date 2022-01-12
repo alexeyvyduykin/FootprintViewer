@@ -68,7 +68,10 @@ namespace FootprintViewer.ViewModels
         private readonly TrackLayer _trackLayer;
         private readonly SensorLayer _sensorLayer;
 
-        public SatelliteViewer() { }
+        public SatelliteViewer(IEnumerable<SatelliteInfo> satelliteInfos) 
+        {
+            SatelliteInfos = new ObservableCollection<SatelliteInfo>(satelliteInfos);
+        }
 
         public SatelliteViewer(Map map)
         {
