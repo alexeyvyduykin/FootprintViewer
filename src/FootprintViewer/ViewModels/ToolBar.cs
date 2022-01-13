@@ -4,9 +4,9 @@ using System;
 
 namespace FootprintViewer.ViewModels
 {
-    public class ToolManager : ReactiveObject
+    public class ToolBar : ReactiveObject
     {
-        public ToolManager()
+        public ToolBar()
         {
             this.WhenAnyValue(x => x.RouteDistance.IsActive).Subscribe(isActive =>
             {

@@ -30,7 +30,7 @@ namespace FootprintViewer.ViewModels
 
             ActualController = new EditController();
 
-            ToolManager = CreateToolManager();
+            ToolBar = CreateToolBar();
         }
 
         public event EventHandler? AOIChanged;
@@ -53,7 +53,7 @@ namespace FootprintViewer.ViewModels
 
                 WorldMapSelector.SelectLayer += (layer) => { Map?.SetWorldMapLayer(layer); };
 
-                ToolManager.WorldMapSelector = WorldMapSelector;
+                ToolBar.WorldMapSelector = WorldMapSelector;
             }
         }
 
@@ -176,7 +176,7 @@ namespace FootprintViewer.ViewModels
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             };
 
             Plotter.Hover += (s, e) =>
@@ -245,7 +245,7 @@ namespace FootprintViewer.ViewModels
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             };
 
             Plotter.Hover += (s, e) =>
@@ -281,7 +281,7 @@ namespace FootprintViewer.ViewModels
 
                 AOIChanged?.Invoke(null, EventArgs.Empty);
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             });
 
             return panel;
@@ -301,7 +301,7 @@ namespace FootprintViewer.ViewModels
                 _editLayer.ClearRoute();
                 _editLayer.DataHasChanged();
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             });
 
             return panel;
@@ -338,7 +338,7 @@ namespace FootprintViewer.ViewModels
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             };
 
             Plotter.Hover += (s, e) =>
@@ -403,7 +403,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                ToolManager.ResetAllTools();
+                ToolBar.ResetAllTools();
             };
 
             Plotter.Hover += (s, e) =>
@@ -430,7 +430,7 @@ namespace FootprintViewer.ViewModels
             WorldMapSelector?.Click();
         }
 
-        private ToolManager CreateToolManager()
+        private ToolBar CreateToolBar()
         {
             var toolZoomIn = new Tool()
             {
@@ -489,16 +489,16 @@ namespace FootprintViewer.ViewModels
                 Command = ReactiveCommand.Create(WorldMapCommand),
             };
 
-            var toolManager = new ToolManager();
+            var toolBar = new ToolBar();
 
-            toolManager.ZoomIn = toolZoomIn;
-            toolManager.ZoomOut = toolZoomOut;
-            toolManager.AOICollection = aoiCollection;
-            toolManager.RouteDistance = toolRouteDistance;
-            toolManager.Edit = toolEdit;
-            toolManager.WorldMaps = toolWorldMaps;
+            toolBar.ZoomIn = toolZoomIn;
+            toolBar.ZoomOut = toolZoomOut;
+            toolBar.AOICollection = aoiCollection;
+            toolBar.RouteDistance = toolRouteDistance;
+            toolBar.Edit = toolEdit;
+            toolBar.WorldMaps = toolWorldMaps;
 
-            return toolManager;
+            return toolBar;
         }
 
         [Reactive]
@@ -523,7 +523,7 @@ namespace FootprintViewer.ViewModels
         public Plotter? Plotter { get; set; }
 
         [Reactive]
-        public ToolManager ToolManager { get; set; }
+        public ToolBar ToolBar { get; set; }
 
         [Reactive]
         public InfoPanel? InfoPanel { get; set; }

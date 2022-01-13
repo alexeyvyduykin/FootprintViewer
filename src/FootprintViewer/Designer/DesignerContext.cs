@@ -32,7 +32,7 @@ namespace FootprintViewer.Designer
 
         public static SidePanel? SidePanel { get; private set; }
 
-        public static ToolManager? ToolManager { get; private set; }
+        public static ToolBar? ToolBar { get; private set; }
 
         public static WorldMapSelector? WorldMapSelector { get; private set; }
 
@@ -201,7 +201,7 @@ namespace FootprintViewer.Designer
                 Title = "AddCircle",
             };
 
-            ToolManager = new ToolManager()
+            ToolBar = new ToolBar()
             {
                 AOICollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle }) { Visible = true },
                 RouteDistance = new Tool()
