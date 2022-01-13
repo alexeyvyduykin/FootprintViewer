@@ -17,8 +17,12 @@ namespace FootprintViewer.Designer
         public static AOIInfoPanel? AoiInfoPanel { get; private set; }
 
         public static InfoPanel? InfoPanel { get; private set; }
+        
+        public static PreviewMainContent? PreviewMainContent { get; private set; }
 
         public static FootprintObserver? FootprintObserver { get; private set; }
+
+        public static FootprintObserverList? FootprintObserverList { get; private set; }
 
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
@@ -41,6 +45,10 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = new Mapsui.Map();
+
+            // PreviewMainContent
+
+            PreviewMainContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             // CustomInfoPanels
 
@@ -91,6 +99,8 @@ namespace FootprintViewer.Designer
                     },
                 },
             };
+
+            FootprintObserverList = new FootprintObserverList(null);
 
             FootprintObserverFilter = new FootprintObserverFilter()
             {

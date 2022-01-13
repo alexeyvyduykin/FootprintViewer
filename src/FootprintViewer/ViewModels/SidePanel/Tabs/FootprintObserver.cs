@@ -261,7 +261,7 @@ namespace FootprintViewer.ViewModels
             return await Task.Run(() =>
             {
                 Thread.Sleep(500);
-                return layer.GetFootprints().ToList();
+                return layer.GetFootprintsAsync();
             });
         }
 

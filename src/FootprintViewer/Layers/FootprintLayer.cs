@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
@@ -9,10 +10,11 @@ using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayer : MemoryLayer
+    public class FootprintLayer : MemoryLayer, IFootprintDataSource
     {
         private IStyle _previewStyle;
         private IStyle _style;
@@ -37,7 +39,7 @@ namespace FootprintViewer.Layers
 
         public bool IsSelect(string name) => _provider.IsSelect(name);
 
-        public IEnumerable<Footprint> GetFootprints() => _provider.GetFootprints();        
+        public Task<List<Footprint>> GetFootprintsAsync() => _provider.GetFootprintsAsync();        
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {

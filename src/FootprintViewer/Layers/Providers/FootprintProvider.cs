@@ -6,6 +6,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
@@ -28,9 +29,9 @@ namespace FootprintViewer.Layers
             return _source.Footprints.Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
-        public IEnumerable<Footprint> GetFootprints()
+        public async Task<List<Footprint>> GetFootprintsAsync()
         {
-            return _source.Footprints;
+            return await Task.Run(() => _source.Footprints.ToList());
         }
 
         public void SelectFeature(string name)
