@@ -107,16 +107,7 @@
                           <StackPanel>
                             <TextBlock Text="{Binding Name}"/>
 
-                            <StackPanel x:Name="stackPanel">
-
-                              <i:Interaction.Behaviors>
-                                <ia:DataTriggerBehavior Binding="{Binding IsShowInfo}" ComparisonCondition="Equal" Value="True">
-                                  <ia:ChangePropertyAction TargetObject="{Binding #stackPanel}" PropertyName="IsVisible" Value="True"/>
-                                </ia:DataTriggerBehavior>
-                                <ia:DataTriggerBehavior Binding="{Binding IsShowInfo}" ComparisonCondition="Equal" Value="False">
-                                  <ia:ChangePropertyAction TargetObject="{Binding #stackPanel}" PropertyName="IsVisible" Value="False"/>
-                                </ia:DataTriggerBehavior>
-                              </i:Interaction.Behaviors>
+                            <StackPanel IsVisible="{Binding IsShowInfo}">
 
                               <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,*,*,*,*,*">
 

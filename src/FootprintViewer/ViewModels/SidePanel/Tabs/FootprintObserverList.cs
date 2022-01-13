@@ -48,7 +48,7 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _footprints = LoadFootprints.Throttle(TimeSpan.FromSeconds(2)).Select(s => s.Select(t => new FootprintInfo(t)).ToList()).ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
+            _footprints = LoadFootprints.ObserveOn(RxApp.TaskpoolScheduler).Throttle(TimeSpan.FromSeconds(2)).Select(s => s.Select(t => new FootprintInfo(t)).ToList()).ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
         }
 
         public IObservable<bool> PreviewMouseLeftButtonCommandCheckerObserver => this.WhenAnyValue(s => s.PreviewMouseLeftButtonCommandChecker);

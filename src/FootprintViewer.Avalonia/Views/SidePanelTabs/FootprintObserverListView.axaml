@@ -1,8 +1,110 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+                                       
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"       
+             d:DataContext="{x:Static vmd:DesignerContext.FootprintObserverList}"           
+             x:DataType="vm:FootprintObserverList" x:CompileBindings="True"      
+             
+             mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FootprintObserverListView">
-  Welcome to Avalonia!
+
+  <UserControl.Resources>  
+    <converters:NTSCoordinateConverter x:Key="ntsCoordinateConverter"/>
+    <converters:DateTimeConverter x:Key="dateTimeConverter"/>
+    <converters:SatelliteStripDirectionConverter x:Key="satelliteStripDirectionConverter"/>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.txtHeaderNameKey">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="15"></Setter>
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+    <Style Selector="TextBlock.txtBodyNameKey">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Margin" Value="0,0,4,0"></Setter>
+    </Style>
+    <Style Selector="TextBlock.txtInfoNameKey">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+    </Style>
+    <Style Selector="TextBlock.txtInfoValueKey">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Margin" Value="0,0,4,0"></Setter>
+    </Style>
+    <Style Selector="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="Margin" Value="1"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Grid>
+    <ListBox x:Name="listBox"
+             x:CompileBindings="False"
+             BorderThickness="0"
+             Background="Transparent"
+             Items="{Binding FootprintInfos}"
+             SelectedItem="{Binding SelectedFootprintInfo}"
+             behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
+
+      <ListBox.ItemTemplate>
+        <DataTemplate DataType="{x:Type vm:FootprintInfo}">
+          <Border Background="{StaticResource LightBackgroundBrush}" Padding="8,4,8,4">
+
+            <i:Interaction.Behaviors>
+              <behaviors:CommandOnClickBehavior Command="{Binding #userControl.DataContext.ClickOnItem}"
+                                                CommandParameter="{Binding}"></behaviors:CommandOnClickBehavior>
+            </i:Interaction.Behaviors>
+
+            <StackPanel>
+              <TextBlock Text="{Binding Name}"/>
+
+              <StackPanel x:Name="stackPanel" IsVisible="{Binding IsShowInfo}">
+
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,*,*,*,*,*">
+
+                  <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SatelliteName}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="0" Text="Satellite" Classes="txtInfoNameKey"/>
+
+                  <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Center, Converter={StaticResource ntsCoordinateConverter}}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="1" Text="Center" Classes="txtInfoNameKey"/>
+
+                  <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Begin, Converter={StaticResource dateTimeConverter}}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="2" Text="Begin" Classes="txtInfoNameKey"/>
+
+                  <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Duration, StringFormat={}{0} sec}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="3" Text="Duration" Classes="txtInfoNameKey"/>
+
+                  <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Node}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="4" Text="Node" Classes="txtInfoNameKey"/>
+
+                  <TextBlock Grid.Column="0" Grid.Row="5" Text="{Binding Direction, Converter={StaticResource satelliteStripDirectionConverter}}" Classes="txtInfoValueKey"/>
+                  <TextBlock Grid.Column="1" Grid.Row="5" Text="Direction" Classes="txtInfoNameKey"/>
+
+                </Grid>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Grid>
+  
 </UserControl>

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
@@ -100,7 +101,9 @@ namespace FootprintViewer.Designer
                 },
             };
 
-            FootprintObserverList = new FootprintObserverList(null);
+            FootprintObserverList = new FootprintObserverList(new FootprintDataSource());
+
+            FootprintObserverList.LoadFootprints.Execute().Subscribe();
 
             FootprintObserverFilter = new FootprintObserverFilter()
             {
@@ -277,6 +280,47 @@ namespace FootprintViewer.Designer
             sceneSearch.Filter.AddSensors(sortNames);
 
             return sceneSearch;
+        }
+
+        private class FootprintDataSource : IFootprintDataSource
+        {
+            public Task<List<Footprint>> GetFootprintsAsync() 
+            {
+                return Task.Run(() => new List<Footprint>()
+                {
+                    new Footprint()
+                    {
+                        Name = "Footrpint0001",
+                        SatelliteName = "Satellite1",
+                        Center = new Point(54.434545, -12.435454),
+                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
+                        Duration = 35,
+                        Node = 11,
+                        Direction = SatelliteStripDirection.Left,
+                    },
+
+                    new Footprint()
+                    {
+                        Name = "Footrpint0002",
+                        SatelliteName = "Satellite1",                      
+                        Center = new Point(54.434545, -12.435454),
+                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
+                        Duration = 35,
+                        Node = 11,
+                        Direction = SatelliteStripDirection.Left,
+                    },
+                   new Footprint()
+                    {
+                        Name = "Footrpint0003",
+                        SatelliteName = "Satellite1",
+                        Center = new Point(54.434545, -12.435454),
+                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
+                        Duration = 35,
+                        Node = 11,
+                        Direction = SatelliteStripDirection.Left,
+                    },
+                });
+            }
         }
     }
 
