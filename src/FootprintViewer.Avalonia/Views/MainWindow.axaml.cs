@@ -13,7 +13,7 @@ namespace FootprintViewer.Avalonia.Views
         private readonly MapControl _mapControl;
         private readonly TextBlock _textBlockResolution;
         private readonly TextBlock _textBlockCoordinates;
-        private readonly ScaleBarControl _scaleBarControl;
+        private readonly ScaleBarView _scaleBarView;
 
         public MainWindow()
         {
@@ -24,7 +24,7 @@ namespace FootprintViewer.Avalonia.Views
             _mapControl = this.FindControl<MapControl>("MapControl");
             _textBlockResolution = this.FindControl<TextBlock>("TextBlockResolution");
             _textBlockCoordinates = this.FindControl<TextBlock>("TextBlockCoordinates");
-            _scaleBarControl = this.FindControl<ScaleBarControl>("ScaleBarControl");
+            _scaleBarView = this.FindControl<ScaleBarView>("ScaleBarView");
 
             //_mapControl.FeatureInfo += MapControlFeatureInfo;
 
@@ -60,7 +60,7 @@ namespace FootprintViewer.Avalonia.Views
             {
                 if (_mapControl.Map != null)
                 {
-                    _scaleBarControl.Update(_mapControl.Map, viewport);
+                    _scaleBarView.Update(_mapControl.Map, viewport);
                 }
             }
         }

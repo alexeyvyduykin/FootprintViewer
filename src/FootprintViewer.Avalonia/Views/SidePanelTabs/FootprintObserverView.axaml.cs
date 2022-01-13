@@ -5,9 +5,9 @@ using System.Diagnostics;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class FootprintViewerTab : UserControl
+    public partial class FootprintObserverView : UserControl
     {
-        public FootprintViewerTab()
+        public FootprintObserverView()
         {
             InitializeComponent();
 

@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class SatelliteViewerTab : UserControl
+    public partial class GroundTargetViewerView : UserControl
     {
-        public SatelliteViewerTab()
+        public GroundTargetViewerView()
         {
             InitializeComponent();
         }

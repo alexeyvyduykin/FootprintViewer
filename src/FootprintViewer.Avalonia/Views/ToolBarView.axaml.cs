@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace FootprintViewer.Avalonia.Views.SidePanelTabs
+namespace FootprintViewer.Avalonia.Views
 {
-    public partial class SceneSearchTab : UserControl
+    public partial class ToolBarView : UserControl
     {
-        public SceneSearchTab()
+        public ToolBarView()
         {
             InitializeComponent();
         }

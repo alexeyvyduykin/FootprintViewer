@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace FootprintViewer.Avalonia.Views.InfoPanel
+namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class InfoPanelControl : UserControl
+    public partial class FootprintObserverFilterView : UserControl
     {
-        public InfoPanelControl()
+        public FootprintObserverFilterView()
         {
             InitializeComponent();
         }

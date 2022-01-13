@@ -9,7 +9,7 @@ using System;
 
 namespace FootprintViewer.Avalonia.Views
 {
-    public partial class ScaleBarControl : UserControl
+    public partial class ScaleBarView : UserControl
     {
         private readonly IBrush _brushScaleBar = Brushes.WhiteSmoke;
         private readonly double MaxWidthScaleBar = 100;
@@ -18,7 +18,7 @@ namespace FootprintViewer.Avalonia.Views
         private readonly TextBlock _textBlockScale;
         private readonly Canvas _canvasScale;
 
-        public ScaleBarControl()
+        public ScaleBarView()
         {
             InitializeComponent();
 

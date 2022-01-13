@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class SceneSearchFilter : UserControl
+    public partial class SceneSearchView : UserControl
     {
-        public SceneSearchFilter()
+        public SceneSearchView()
         {
             InitializeComponent();
         }

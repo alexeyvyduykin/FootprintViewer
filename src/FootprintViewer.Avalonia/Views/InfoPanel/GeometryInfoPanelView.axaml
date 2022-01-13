@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="460"
              d:DesignHeight="250"
-             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.GeometryInfoPanel">
+             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.GeometryInfoPanelView">
   
   <UserControl.Resources>
     <local:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">

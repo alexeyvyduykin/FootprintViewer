@@ -85,13 +85,13 @@
         <Grid VerticalAlignment="Center"
               HorizontalAlignment="Left"
               Margin="8">
-          <views:ToolControl DataContext="{Binding ToolManager}"/>
+          <views:ToolBarView DataContext="{Binding ToolBar}"/>
         </Grid>
 
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Center"
               Margin="0,0,0,60">
-          <infoPanel:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+          <infoPanel:InfoPanelView DataContext="{Binding InfoPanel}"/>
         </Grid>
 
         <Border BorderBrush="White"
@@ -112,7 +112,7 @@
                        HorizontalAlignment="Center"
                        Foreground="WhiteSmoke"/>
 
-            <views:ScaleBarControl x:Name="ScaleBarControl"                                  
+            <views:ScaleBarView x:Name="ScaleBarView"                                  
                                    Grid.Column="2" />
 
           </Grid>
@@ -120,8 +120,8 @@
       </Grid>
 
 
-       <views:SidePanelControl Grid.Column="1"
-                               DataContext="{Binding SidePanel}" />
+       <views:SidePanelView Grid.Column="1"
+                            DataContext="{Binding SidePanel}" />
     </Grid>
   </Grid>
 </Window>

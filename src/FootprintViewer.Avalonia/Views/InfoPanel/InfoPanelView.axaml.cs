@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace FootprintViewer.Avalonia.Views.InfoPanel
 {
-    public partial class GeometryInfoPanel : UserControl
+    public partial class InfoPanelView : UserControl
     {
-        public GeometryInfoPanel()
+        public InfoPanelView()
         {
             InitializeComponent();
         }
