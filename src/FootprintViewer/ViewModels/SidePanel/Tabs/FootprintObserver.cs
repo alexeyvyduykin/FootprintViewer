@@ -71,10 +71,12 @@ namespace FootprintViewer.ViewModels
     {
         private readonly FootprintLayer? _footrpintLayer;
         private readonly Map? _map;
+        private FootprintObserverList _footprintObserverList;
+        private PreviewMainContent _previewMainContent;
 
         public FootprintObserver(Map map)
         {
-            Type = FootprintViewerContentType.Update;
+          //  Type = FootprintViewerContentType.Update;
 
             _map = map;
 
@@ -82,25 +84,34 @@ namespace FootprintViewer.ViewModels
 
             FootprintInfos = new ObservableCollection<FootprintInfo>();
 
+            _previewMainContent = new PreviewMainContent("Загрузка...");
+
+            _footprintObserverList = new FootprintObserverList(_footrpintLayer);
+
+         //   _footprintObserverList.LoadFootprints.Subscribe(_ => MainContent = _footprintObserverList);
+
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
             ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);
 
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
-            this.WhenAnyValue(s => s.Type).Subscribe(type =>
-            {
-                if (type == FootprintViewerContentType.Update)
-                {
-                    FootprintsChanged();
-                }
-            });
+            //this.WhenAnyValue(s => s.Type).Subscribe(type =>
+            //{
+            //    if (type == FootprintViewerContentType.Update)
+            //    {
+            //        UpdateList();
+
+            //        //FootprintsChanged();
+            //    }
+            //});
 
             this.WhenAnyValue(s => s.IsActive).Subscribe(active =>
             {
                 if (active == true)
                 {
-                    Type = FootprintViewerContentType.Update;
+                    UpdateList();
+                    //Type = FootprintViewerContentType.Update;
                 }
             });
 
@@ -142,13 +153,24 @@ namespace FootprintViewer.ViewModels
             });
 
             this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
+
+            MainContent = _previewMainContent;
+        }
+
+        private void UpdateList()
+        {
+         //   MainContent = _previewMainContent;
+
+            _footprintObserverList.LoadFootprints.Execute().Subscribe();
+
+            MainContent = _footprintObserverList;
         }
 
         private void FilterChanged()
         {
             if (Filter != null)
             {
-                Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
+             //   Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
             }
         }
 
@@ -294,16 +316,19 @@ namespace FootprintViewer.ViewModels
                     }
                 }
 
-                Type = FootprintViewerContentType.Show;
+          //      Type = FootprintViewerContentType.Show;
             }
         }
 
         [Reactive]
         public FootprintObserverFilter? Filter { get; set; }
 
-        [Reactive]
-        public FootprintViewerContentType Type { get; set; }
+      //  [Reactive]
+     //   public FootprintViewerContentType Type { get; set; }
 
+        [Reactive]
+        public ReactiveObject MainContent { get; private set; }
+        
         [Reactive]
         public FootprintInfo? SelectedFootprintInfo { get; set; }
 

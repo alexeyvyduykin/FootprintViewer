@@ -74,7 +74,7 @@ namespace FootprintViewer.Designer
 
             FootprintObserver = new FootprintObserver(map)
             {
-                Type = FootprintViewerContentType.Show,
+              //  Type = FootprintViewerContentType.Show,
                 FootprintInfos = new ObservableCollection<FootprintInfo>()
                 {
                     new FootprintInfo()

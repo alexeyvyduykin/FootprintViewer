@@ -2,16 +2,10 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
-             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"  
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"       
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              x:Name="userControl"                        
              d:DataContext="{x:Static vmd:DesignerContext.FootprintObserver}"           
@@ -19,44 +13,6 @@
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="450">
-
-  <UserControl.Resources>
-    <converters:FootprintViewerContentTypeConverter x:Key="footprintViewerContentTypeConverter"/>
-    <converters:NTSCoordinateConverter x:Key="ntsCoordinateConverter"/>
-    <converters:DateTimeConverter x:Key="dateTimeConverter"/>
-    <converters:SatelliteStripDirectionConverter x:Key="satelliteStripDirectionConverter"/>
-  </UserControl.Resources>
-
-  <UserControl.Styles>
-    <Style Selector="TextBlock.txtHeaderNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="FontSize" Value="15"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtBodyNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,4,0"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtInfoNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtInfoValueKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,4,0"></Setter>
-    </Style>
-    <Style Selector="ListBoxItem">
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="Margin" Value="1"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-    </Style>
-    
-  </UserControl.Styles>
   
   <Grid>
 
@@ -78,88 +34,7 @@
                     Command="{Binding FilterClickCommand}"                  
                     Content="Настройки поиска"/>
       
-      <ContentControl x:Name="contentControl2" Grid.Row="1" Margin="10">
-
-        <i:Interaction.Behaviors>
-
-          <ia:DataTriggerBehavior Binding="{Binding Type, Converter={StaticResource footprintViewerContentTypeConverter}}"
-                                  ComparisonCondition="Equal" Value="Show">
-            <ia:ChangePropertyAction TargetObject="{Binding #contentControl2}" PropertyName="Content">
-              <ia:ChangePropertyAction.Value>
-                <Grid>
-                  <ListBox x:Name="listBox"   
-                           x:CompileBindings="False"                   
-                           BorderThickness="0"                      
-                           Background="Transparent"                     
-                           Items="{Binding FootprintInfos}"                      
-                           SelectedItem="{Binding SelectedFootprintInfo}"                   
-                           behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
-
-                    <ListBox.ItemTemplate>
-                      <DataTemplate DataType="{x:Type vm:FootprintInfo}">
-                        <Border Background="{StaticResource LightBackgroundBrush}" Padding="8,4,8,4">
-
-                          <i:Interaction.Behaviors>
-                            <behaviors:CommandOnClickBehavior Command="{Binding #userControl.DataContext.ClickOnItem}"
-                                                              CommandParameter="{Binding}"></behaviors:CommandOnClickBehavior>
-                          </i:Interaction.Behaviors>
-
-                          <StackPanel>
-                            <TextBlock Text="{Binding Name}"/>
-
-                            <StackPanel IsVisible="{Binding IsShowInfo}">
-
-                              <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,*,*,*,*,*">
-
-                                <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SatelliteName}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="0" Text="Satellite" Classes="txtInfoNameKey"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Center, Converter={StaticResource ntsCoordinateConverter}}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="1" Text="Center" Classes="txtInfoNameKey"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Begin, Converter={StaticResource dateTimeConverter}}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="2" Text="Begin" Classes="txtInfoNameKey"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Duration, StringFormat={}{0} sec}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="3" Text="Duration" Classes="txtInfoNameKey"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Node}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="4" Text="Node" Classes="txtInfoNameKey"/>
-
-                                <TextBlock Grid.Column="0" Grid.Row="5" Text="{Binding Direction, Converter={StaticResource satelliteStripDirectionConverter}}" Classes="txtInfoValueKey"/>
-                                <TextBlock Grid.Column="1" Grid.Row="5" Text="Direction" Classes="txtInfoNameKey"/>
-
-                              </Grid>
-                            </StackPanel>
-                          </StackPanel>
-                        </Border>
-                      </DataTemplate>
-                    </ListBox.ItemTemplate>
-                  </ListBox>
-                </Grid>
-              </ia:ChangePropertyAction.Value>
-            </ia:ChangePropertyAction>
-          </ia:DataTriggerBehavior>
-
-          <ia:DataTriggerBehavior Binding="{Binding Type, Converter={StaticResource footprintViewerContentTypeConverter}}"
-                                  ComparisonCondition="Equal" Value="Update">
-            <ia:ChangePropertyAction TargetObject="{Binding #contentControl2}" PropertyName="Content">
-              <ia:ChangePropertyAction.Value>
-                <Grid>
-                  <TextBlock VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         FontSize="30"
-                         TextWrapping="Wrap"
-                         Margin="10"
-                         TextAlignment="Center"
-                         Text="Загрузка..."/>
-                </Grid>
-              </ia:ChangePropertyAction.Value>
-            </ia:ChangePropertyAction>
-          </ia:DataTriggerBehavior>
-        </i:Interaction.Behaviors>
-
-      </ContentControl>
+      <ContentControl Content="{Binding MainContent}" Grid.Row="1" Margin="10"/>
 
     </Grid>
 
