@@ -3,6 +3,7 @@ using FootprintViewer.Layers;
 using Mapsui;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -73,8 +74,19 @@ namespace FootprintViewer.ViewModels
             SatelliteInfos = new ObservableCollection<SatelliteInfo>(satelliteInfos);
         }
 
-        public SatelliteViewer(Map map)
-        {
+        public SatelliteViewer()
+        { 
+            var map = Locator.Current.GetService<Map>();
+            var dataSource = Locator.Current.GetService<IDataSource>();
+
+            Title = "Просмотр спутников";
+            Name = "SatelliteViewer";
+
+            if (map == null)
+            {
+                return;
+            }
+
             _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
             _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
 
@@ -82,6 +94,8 @@ namespace FootprintViewer.ViewModels
             SatelliteInfos.CollectionChanged += items_CollectionChanged;
 
             this.WhenAnyValue(s => s.DataSource).Subscribe(_ => DataSourceChanged());
+
+            DataSource = dataSource;
         }
 
         private void DataSourceChanged()

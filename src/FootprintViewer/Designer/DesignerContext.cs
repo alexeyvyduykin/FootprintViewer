@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using NetTopologySuite.Geometries;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -72,7 +73,7 @@ namespace FootprintViewer.Designer
 
             // Tabs
 
-            FootprintObserver = new FootprintObserver(map)
+            FootprintObserver = new FootprintObserver()
             {
               //  Type = FootprintViewerContentType.Show,
                 FootprintInfos = new ObservableCollection<FootprintInfo>()
@@ -191,11 +192,7 @@ namespace FootprintViewer.Designer
                 }
             };
 
-            SidePanel = new SidePanel()
-            {
-                Tabs = new ObservableCollection<SidePanelTab>(tabs),
-                SelectedTab = tabs.FirstOrDefault(),
-            };
+            SidePanel = new SidePanel(tabs);
 
             // ToolManager
 

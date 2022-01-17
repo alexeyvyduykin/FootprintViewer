@@ -18,6 +18,7 @@ using Mapsui.Providers;
 using DynamicData;
 using System.Threading;
 using System.Xml.Linq;
+using Splat;
 
 namespace FootprintViewer.ViewModels
 {
@@ -56,11 +57,19 @@ namespace FootprintViewer.ViewModels
         private double _resolution;
         private IEnumerable<IFeature>? _features;
 
-        public GroundTargetViewer() { }
-
-        public GroundTargetViewer(Map map)
+        public GroundTargetViewer()
         {
+            var map = Locator.Current.GetService<Map>();
+
             GroundTargetInfos = new ObservableCollection<GroundTargetInfo>();
+
+            Title = "Просмотр наземных целей";
+            Name = "GroundTargetViewer";
+
+            if (map == null)
+            {
+                return;
+            }
 
             _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 

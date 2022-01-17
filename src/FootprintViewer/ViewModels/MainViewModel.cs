@@ -8,6 +8,7 @@ using Mapsui.Projection;
 using Mapsui.Providers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,15 +23,30 @@ namespace FootprintViewer.ViewModels
 
         private EditLayer _editLayer = new EditLayer();
 
+        private readonly Map? _map;
+        private readonly UserDataSource? _userDataSource;
+        private readonly IDataSource? _dataSource;
+        private readonly InfoPanel? _infoPanel;
+        private readonly SidePanel? _sidePanel;
+        private readonly ProjectFactory? _factory;
+
         public MainViewModel()
         {
-            this.WhenAnyValue(s => s.Map).Subscribe(_ => MapChanged());
-
-            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
+            _dataSource = Locator.Current.GetService<IDataSource>();
+            _factory = Locator.Current.GetService<ProjectFactory>();
+            _userDataSource = Locator.Current.GetService<UserDataSource>();
+            _sidePanel = Locator.Current.GetService<SidePanel>();     
+            _map = Locator.Current.GetService<Map>();
 
             ActualController = new EditController();
 
+            _infoPanel = _factory?.CreateInfoPanel();
+
             ToolBar = CreateToolBar();
+
+            this.WhenAnyValue(s => s.Map).Subscribe(_ => MapChanged());
+
+            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
         }
 
         public event EventHandler? AOIChanged;
@@ -500,18 +516,14 @@ namespace FootprintViewer.ViewModels
 
             return toolBar;
         }
+ 
+        public IUserDataSource? UserDataSource => _userDataSource;
+  
+        public IDataSource? DataSource => _dataSource;
 
-        [Reactive]
-        public IUserDataSource? UserDataSource { get; set; }
+        public Map? Map => _map;
 
-        [Reactive]
-        public IDataSource? DataSource { get; set; }
-
-        [Reactive]
-        public Map? Map { get; set; }
-
-        [Reactive]
-        public SidePanel? SidePanel { get; set; }
+        public SidePanel? SidePanel => _sidePanel;
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }
@@ -524,9 +536,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public ToolBar ToolBar { get; set; }
-
-        [Reactive]
-        public InfoPanel? InfoPanel { get; set; }
+  
+        public InfoPanel? InfoPanel => _infoPanel;
 
         [Reactive]
         public Tip? Tip { get; set; }
@@ -534,7 +545,6 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public WorldMapSelector? WorldMapSelector { get; set; }
 
-        [Reactive]
         public MapListener? MapListener { get; set; }
     }
 

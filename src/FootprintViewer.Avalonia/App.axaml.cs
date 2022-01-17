@@ -1,3 +1,4 @@
+#nullable disable
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -9,6 +10,7 @@ using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +25,8 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            RegisterSplat();
         }
 
         static App()
@@ -38,13 +42,45 @@ namespace FootprintViewer.Avalonia
             }
         }
 
+        private void RegisterSplat()
+        {
+            Locator.CurrentMutable.InitializeSplat();
+
+            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
+            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
+            //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
+            Locator.CurrentMutable.RegisterLazySingleton<UserDataSource>(() => new UserDataSource());
+
+            var locator = Locator.Current;
+
+            var map = locator.GetService<ProjectFactory>().CreateMap();
+
+            Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
+
+            Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch());
+            Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer());
+            Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer());
+            Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver());
+
+            var tab1 = locator.GetService<SceneSearch>();
+            var tab2 = locator.GetService<SatelliteViewer>();
+            var tab3 = locator.GetService<GroundTargetViewer>();
+            var tab4 = locator.GetService<FootprintObserver>();
+
+            Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel(new SidePanelTab[] { tab1, tab2, tab3, tab4 }));
+            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel());
+        }
+
+
         public override void OnFrameworkInitializationCompleted()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                InitializationClassicDesktopStyle(desktopLifetime, out var mainViewModel);
+                InitializationClassicDesktopStyle(desktopLifetime);
+
+                var mainViewModel = Locator.Current.GetService<MainViewModel>();
 
                 if (mainViewModel != null)
                 {
@@ -62,84 +98,28 @@ namespace FootprintViewer.Avalonia
             base.OnFrameworkInitializationCompleted();
         }
 
-        public static void InitializationClassicDesktopStyle(IClassicDesktopStyleApplicationLifetime? desktopLifetime, out MainViewModel viewModel)
-        {
+        public static void InitializationClassicDesktopStyle(IClassicDesktopStyleApplicationLifetime? desktopLifetime)
+        {  
+            var mainViewModel = Locator.Current.GetService<MainViewModel>();        
+            var footprintObserver = Locator.Current.GetService<FootprintObserver>();
+            var sceneSearch = Locator.Current.GetService<SceneSearch>();
+
             var mapListener = new MapListener();
-
-            var userDataSource = new UserDataSource();
-
-            var dataSource = CreateFromDatabase();
-
-            var map = ProjectFactory.CreateMap(dataSource);
-
-            map.SetWorldMapLayer(userDataSource.WorldMapSources.FirstOrDefault());
-
-            var sceneSearchTab = new SceneSearch()
-            {
-                Title = "Поиск сцены",
-                Name = "Scene",
-                Map = map,
-                UserDataSource = userDataSource,
-            };
-
-            var satelliteViewerTab = new SatelliteViewer(map)
-            {
-                Title = "Просмотр спутников",
-                Name = "SatelliteViewer",
-                DataSource = dataSource,
-            };
-
-            var groundTargetViewerTab = new GroundTargetViewer(map)
-            {
-                Title = "Просмотр наземных целей",
-                Name = "GroundTargetViewer",
-            };
-
-            var footprintObserverTab = new FootprintObserver(map)
-            {
-                Title = "Просмотр рабочей программы",
-                Name = "FootprintViewer",
-                Filter = new FootprintObserverFilter(dataSource),
-            };
-
-            sceneSearchTab.Filter.FromDate = DateTime.Today.AddDays(-1);
-            sceneSearchTab.Filter.ToDate = DateTime.Today.AddDays(1);
-
-            var sidePanel = new SidePanel()
-            {
-                Tabs = new ObservableCollection<SidePanelTab>(new SidePanelTab[]
-                {
-                    sceneSearchTab,
-                    satelliteViewerTab,
-                    groundTargetViewerTab,
-                    footprintObserverTab,
-                }),
-
-                SelectedTab = sceneSearchTab
-            };
-
-            var mainViewModel = new MainViewModel()
-            {
-                Map = map,
-                MapListener = mapListener,
-                UserDataSource = userDataSource,
-                DataSource = dataSource,
-                InfoPanel = ProjectFactory.CreateInfoPanel(),
-                SidePanel = sidePanel,
-            };
-
+                 
             mapListener.LeftClickOnMap += (s, e) =>
             {
-                if (s is string name && footprintObserverTab.IsActive == true)
+                if (s is string name && footprintObserver.IsActive == true)
                 {
                     if (mainViewModel.Plotter != null && (mainViewModel.Plotter.IsCreating == true || mainViewModel.Plotter.IsEditing == true))
                     {
                         return;
                     }
 
-                    footprintObserverTab.SelectFootprintInfo(name);
+                    footprintObserver.SelectFootprintInfo(name);
                 }
             };
+
+            mainViewModel.MapListener = mapListener;
 
             mainViewModel.AOIChanged += (s, e) =>
             {
@@ -147,16 +127,14 @@ namespace FootprintViewer.Avalonia
                 {
                     if (s is IGeometry geometry)
                     {
-                        sceneSearchTab.SetAOI(geometry);
+                        sceneSearch.SetAOI(geometry);
                     }
                 }
                 else
                 {
-                    sceneSearchTab.ResetAOI();
+                    sceneSearch.ResetAOI();
                 }
             };
-
-            viewModel = mainViewModel;
         }
 
         private static IDataSource CreateFromRandom()

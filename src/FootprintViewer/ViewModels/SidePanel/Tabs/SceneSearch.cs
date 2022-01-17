@@ -7,6 +7,7 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,6 +27,12 @@ namespace FootprintViewer.ViewModels
 
         public SceneSearch()
         {
+            var map = Locator.Current.GetService<Map>();
+            var userDataSource = Locator.Current.GetService<UserDataSource>();
+
+            Title = "Поиск сцены";
+            Name = "Scene";
+
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
             {
                 if (footprint != null && Map != null && footprint.Path != null)
@@ -50,6 +57,9 @@ namespace FootprintViewer.ViewModels
 
             Filter = new SceneSearchFilter();
 
+            Filter.FromDate = DateTime.Today.AddDays(-1);
+            Filter.ToDate = DateTime.Today.AddDays(1);
+
             Filter.Update += Filter_Update;
 
             //_sourceFootprints = new SourceList<Footprint>();
@@ -62,6 +72,9 @@ namespace FootprintViewer.ViewModels
             //    {
             //        Task.Run(() => longRunningRoutine());
             //    });        
+
+            UserDataSource = userDataSource;
+            Map = map;
         }
 
         private void Filter_Update(object? sender, EventArgs e)

@@ -5,6 +5,7 @@ using Mapsui.Projection;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -74,13 +75,22 @@ namespace FootprintViewer.ViewModels
         private FootprintObserverList _footprintObserverList;
         private PreviewMainContent _previewMainContent;
 
-        public FootprintObserver(Map map)
+        public FootprintObserver()
         {
-          //  Type = FootprintViewerContentType.Update;
+            _map = Locator.Current.GetService<Map>();
+            var dataSource = Locator.Current.GetService<IDataSource>();
 
-            _map = map;
+            //  Type = FootprintViewerContentType.Update;
 
-            _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            Title = "Просмотр рабочей программы";
+            Name = "FootprintViewer";
+
+            if (_map == null || dataSource == null)
+            {
+                return;
+            }
+        
+            _footrpintLayer = _map.GetLayer<FootprintLayer>(LayerType.Footprint);
 
             FootprintInfos = new ObservableCollection<FootprintInfo>();
 
@@ -155,6 +165,8 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
 
             MainContent = _previewMainContent;
+
+            Filter = new FootprintObserverFilter(dataSource);
         }
 
         private void UpdateList()

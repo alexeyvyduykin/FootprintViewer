@@ -1,51 +1,49 @@
-﻿using BruTile;
-using BruTile.FileSystem;
-using BruTile.MbTiles;
-using BruTile.Predefined;
-using BruTile.Web;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
-using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
-using Mapsui.Geometries.WellKnownText;
 using Mapsui.Layers;
 using Mapsui.Projection;
-using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
-using Mapsui.UI;
-using NetTopologySuite.Triangulate.QuadEdge;
-using SQLite;
+using Splat;
 using System;
-using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FootprintViewer
 {
-    public static class ProjectFactory
+    public class ProjectFactory
     {
-        private static readonly Color EditModeColor = new Color(124, 22, 111, 180);
+        private readonly Color EditModeColor = new Color(124, 22, 111, 180);
 
-        private static readonly SymbolStyle SelectedStyle = new SymbolStyle
+        private readonly SymbolStyle SelectedStyle = new SymbolStyle
         {
             Fill = null,
             Outline = new Pen(Color.Red, 3),
             Line = new Pen(Color.Red, 3)
         };
 
-        private static readonly SymbolStyle DisableStyle = new SymbolStyle { Enabled = false };
+        private readonly SymbolStyle DisableStyle = new SymbolStyle { Enabled = false };
 
-        public static Map CreateMap(IDataSource source)
-        {    
+        public Map CreateMap()
+        {        
+            var source = Locator.Current.GetService<IDataSource>();
+            var userSource = Locator.Current.GetService<UserDataSource>();
+
             var map = new Map()
             {
                 CRS = "EPSG:3857",
-                Transformation = new MinimalTransformation(),        
+                Transformation = new MinimalTransformation(),
             };
 
             map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) }); // WorldMap
             map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) }); // FootprintImage
+
+            if (source == null)
+            {
+                return map;
+            }
 
             map.Layers.Add(new TargetLayer(new TargetProvider(source)));       // GroundTarget
             map.Layers.Add(new SensorLayer(new SensorProvider(source)));       // Sensor
@@ -60,10 +58,17 @@ namespace FootprintViewer
 
             //map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
+            if (userSource == null)
+            {
+                return map;
+            }
+
+            map.SetWorldMapLayer(userSource.WorldMapSources.FirstOrDefault());
+
             return map;
         }
 
-        public static Map CreateEmptyMap()
+        public Map CreateEmptyMap()
         {
             return new Map()
             {
@@ -72,7 +77,7 @@ namespace FootprintViewer
             };
         }
 
-        public static InfoPanel CreateInfoPanel()
+        public InfoPanel CreateInfoPanel()
         {
             //InfoPanelItem routeItem = new InfoPanelItem()
             //{
@@ -95,9 +100,9 @@ namespace FootprintViewer
             return infoPanel;
         }
 
-        public static readonly Random random = new System.Random();
+        public readonly Random random = new System.Random();
 
-        private static EditLayer CreateEmptyEditLayer()
+        private EditLayer CreateEmptyEditLayer()
         {
             var editLayer = new EditLayer
             {
@@ -109,7 +114,7 @@ namespace FootprintViewer
             return editLayer;
         }
 
-        public static void Scale(IGeometry geometry, double scale, Point center)
+        public void Scale(IGeometry geometry, double scale, Point center)
         {
             foreach (var vertex in geometry.AllVertices())
             {
@@ -117,13 +122,13 @@ namespace FootprintViewer
             }
         }
 
-        private static void Scale(Point vertex, double scale, Point center)
+        private void Scale(Point vertex, double scale, Point center)
         {
             vertex.X = center.X + (vertex.X - center.X) * scale;
             vertex.Y = center.Y + (vertex.Y - center.Y) * scale;
         }
 
-        private static WritableLayer CreateFootprintBorderLayer()
+        private WritableLayer CreateFootprintBorderLayer()
         {
             Color color = new Color() { R = 76, G = 185, B = 247, A = 255 };
 
@@ -142,7 +147,7 @@ namespace FootprintViewer
             return layer;
         }
 
-        private static IStyle CreateSelectedStyle()
+        private IStyle CreateSelectedStyle()
         {
             // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
             // depending on a "Selected" attribute.
@@ -173,7 +178,7 @@ namespace FootprintViewer
             });
         }
 
-        private static IStyle CreateEditLayerBasicStyle()
+        private IStyle CreateEditLayerBasicStyle()
         {
             var editStyle = new VectorStyle
             {
