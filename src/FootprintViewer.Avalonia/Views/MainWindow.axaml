@@ -6,8 +6,7 @@
         xmlns:i="using:Avalonia.Xaml.Interactivity"
         xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
         xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"     
-        xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
-        xmlns:infoPanel="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
+        xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"       
         xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
         xmlns:local="clr-namespace:FootprintViewer.Avalonia"
         xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"    
@@ -59,7 +58,7 @@
 
       <Grid Grid.Column="0">
 
-        <!--<local:UserMapControl x:Name="MapControl"
+        <local:UserMapControl x:Name="MapControl"
                           MapSource="{Binding Map}"
                           Plotter="{Binding Plotter}"
                           Controller="{Binding ActualController}"
@@ -77,18 +76,18 @@
               </Border>
             </DataTemplate>
           </local:UserMapControl.TipDataTemplate>
-        </local:UserMapControl>-->
+        </local:UserMapControl>
 
         <Grid VerticalAlignment="Center"
               HorizontalAlignment="Left"
               Margin="8">
-          <views:ToolBarView DataContext="{Binding ToolBar}"/>
+          <ContentControl Content="{Binding ToolBar}"/>
         </Grid>
 
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Center"
               Margin="0,0,0,60">
-          <infoPanel:InfoPanelView DataContext="{Binding InfoPanel}"/>
+          <ContentControl Content="{Binding InfoPanel}"/>        
         </Grid>
 
         <Border BorderBrush="White"
@@ -116,9 +115,8 @@
         </Border>
       </Grid>
 
-
-       <views:SidePanelView Grid.Column="1"
-                            DataContext="{Binding SidePanel}" />
+      <ContentControl Grid.Column="1" 
+                      Content="{Binding SidePanel}"/>
     </Grid>
   </Grid>
 </Window>

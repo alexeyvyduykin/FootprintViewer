@@ -15,7 +15,6 @@ using Mapsui.Providers;
 using Mapsui.Geometries.Utilities;
 using Mapsui.Geometries;
 using Splat;
-//sing NetTopologySuite.Geometries;
 
 namespace FootprintViewer.ViewModels
 {

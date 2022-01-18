@@ -9,12 +9,10 @@ using System.Text;
 namespace FootprintViewer.ViewModels
 {
     public class SidePanel : ReactiveObject
-    {
-        private readonly ObservableCollection<SidePanelTab> _tabs;
-
+    {       
         public SidePanel()
         {
-            _tabs = new ObservableCollection<SidePanelTab>();
+            Tabs = new List<SidePanelTab>();
 
             this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
             {
@@ -32,10 +30,10 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            SelectedTab = _tabs.FirstOrDefault();
+            SelectedTab = Tabs.FirstOrDefault();
         }
 
-        public ObservableCollection<SidePanelTab> Tabs => _tabs;
+        public List<SidePanelTab> Tabs { get; set; }
 
         [Reactive]
         public SidePanelTab? SelectedTab { get; set; }

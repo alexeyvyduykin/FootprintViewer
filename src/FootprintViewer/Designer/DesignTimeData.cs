@@ -13,16 +13,16 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeData : IReadonlyDependencyResolver
     {
-        private Mapsui.Map? _map;
+        private Mapsui.Map _map = new Mapsui.Map();
         private readonly ProjectFactory _projectFactory = new ProjectFactory();
         private readonly IDataSource _dataSource = new DesignTimeDataSource();
         private readonly IUserDataSource _userDataSource = new DesignTimeUserDataSource();
+        private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
+        private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource(); 
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
         private SceneSearch? _sceneSearch;
-        private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
-        private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource();
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
 
@@ -34,8 +34,7 @@ namespace FootprintViewer.Designer
             }
             else if (serviceType == typeof(Mapsui.Map))
             {
-                return _map ??= new Mapsui.Map();
-                ;//_projectFactory.CreateMap(this);// new Mapsui.Map();
+                return _map;//_projectFactory.CreateMap(this);
             }
             else if (serviceType == typeof(IDataSource))
             {

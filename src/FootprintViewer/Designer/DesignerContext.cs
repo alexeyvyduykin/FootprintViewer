@@ -135,9 +135,7 @@ namespace FootprintViewer.Designer
                 }
             };
 
-            SidePanel = new SidePanel();
-
-            SidePanel.Tabs.AddRange(tabs);
+            SidePanel = new SidePanel() { Tabs = new List<SidePanelTab>(tabs) };
 
             // ToolManager
 
@@ -179,7 +177,9 @@ namespace FootprintViewer.Designer
 
             // MainViewModel
 
-            MainViewModel = dependencyResolver.GetService<MainViewModel>();    
+            MainViewModel = dependencyResolver.GetService<MainViewModel>();
+
+            MainViewModel?.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
         }
 
         public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)

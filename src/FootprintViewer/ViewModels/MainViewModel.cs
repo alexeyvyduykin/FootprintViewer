@@ -23,12 +23,12 @@ namespace FootprintViewer.ViewModels
 
         private EditLayer _editLayer = new EditLayer();
 
-        private readonly Map? _map;
-        private readonly UserDataSource? _userDataSource;
-        private readonly IDataSource? _dataSource;
-        private readonly InfoPanel? _infoPanel;
-        private readonly SidePanel? _sidePanel;
-        private readonly ProjectFactory? _factory;
+        private readonly Map _map;
+        private readonly IUserDataSource _userDataSource;
+        private readonly IDataSource _dataSource;
+        private readonly InfoPanel _infoPanel;
+        private readonly SidePanel _sidePanel;
+        private readonly ProjectFactory _factory;
 
         private readonly IReadonlyDependencyResolver _dependencyResolver;
 
@@ -36,46 +36,30 @@ namespace FootprintViewer.ViewModels
         {
             _dependencyResolver = dependencyResolver;
 
-            //_dataSource = Locator.Current.GetService<IDataSource>();
-            //_factory = Locator.Current.GetService<ProjectFactory>();
-            //_userDataSource = Locator.Current.GetService<UserDataSource>();
-            //_sidePanel = Locator.Current.GetService<SidePanel>();     
-            //_map = Locator.Current.GetService<Map>();
+            _dataSource = dependencyResolver.GetService<IDataSource>() ?? throw ServiceException.IsNull();
+            _userDataSource = dependencyResolver.GetService<IUserDataSource>() ?? throw ServiceException.IsNull();
+            _factory = dependencyResolver.GetService<ProjectFactory>() ?? throw ServiceException.IsNull();
+            _map = dependencyResolver.GetService<Map>() ?? throw ServiceException.IsNull();
+            _sidePanel = dependencyResolver.GetService<SidePanel>() ?? throw ServiceException.IsNull();
+                 
+            ActualController = new EditController();
 
-            //ActualController = new EditController();
-
-            //_infoPanel = _factory?.CreateInfoPanel();
+            _infoPanel = _factory.CreateInfoPanel();
 
             ToolBar = CreateToolBar();
 
-            //this.WhenAnyValue(s => s.Map).Subscribe(_ => MapChanged());
+            WorldMapSelector = new WorldMapSelector(_dependencyResolver);
 
-            //this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
+            _editLayer = Map.GetLayer<EditLayer>(LayerType.Edit);
+
+            Map.DataChanged += Map_DataChanged;
+         
+            WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
+
+            ToolBar.WorldMapSelector = WorldMapSelector;
         }
 
         public event EventHandler? AOIChanged;
-
-        private void MapChanged()
-        {
-            if (Map != null)
-            {
-                _editLayer = Map.GetLayer<EditLayer>(LayerType.Edit);
-
-                Map.DataChanged += Map_DataChanged;
-            }
-        }
-
-        private void UserDataSourceChanged()
-        {
-            if (UserDataSource != null)
-            {
-                WorldMapSelector = new WorldMapSelector(_dependencyResolver);
-
-                WorldMapSelector.SelectLayer += (layer) => { Map?.SetWorldMapLayer(layer); };
-
-                ToolBar.WorldMapSelector = WorldMapSelector;
-            }
-        }
 
         private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
         {
@@ -521,15 +505,15 @@ namespace FootprintViewer.ViewModels
             return toolBar;
         }
  
-        public IUserDataSource? UserDataSource => _userDataSource;
-  
-        public IDataSource? DataSource => _dataSource;
+        public IUserDataSource UserDataSource => _userDataSource;
 
-        public Map? Map => _map;
+        public IDataSource DataSource => _dataSource;
 
-        public SidePanel? SidePanel => _sidePanel; 
+        public Map Map => _map;
+
+        public SidePanel SidePanel => _sidePanel; 
         
-        public InfoPanel? InfoPanel => _infoPanel; 
+        public InfoPanel InfoPanel => _infoPanel; 
         
         public MapListener? MapListener { get; set; }
 

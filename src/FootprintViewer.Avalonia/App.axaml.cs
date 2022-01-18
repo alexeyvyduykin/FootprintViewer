@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using FootprintViewer.Avalonia.Views;
 using FootprintViewer.Data;
 using FootprintViewer.Designer;
+using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,6 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-
-            RegisterSplat();
         }
 
         static App()
@@ -47,30 +46,40 @@ namespace FootprintViewer.Avalonia
         private static void RegisterSplat()
         {
             Locator.CurrentMutable.InitializeSplat();
-
-            //Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
-            //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
+          
+            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());         
+            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
             //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
-            //Locator.CurrentMutable.RegisterLazySingleton<UserDataSource>(() => new UserDataSource());
+            Locator.CurrentMutable.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
 
             var locator = Locator.Current;
 
-            //var map = locator.GetService<ProjectFactory>().CreateMap(locator);
+            var factory = locator.GetService<ProjectFactory>();
 
-            //Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
+            var map = factory.CreateMap(locator);
 
-            //Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch());
-            //Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer());
-            //Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer());
-            //Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver());
+            Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
 
-            //var tab1 = locator.GetService<SceneSearch>();
-            //var tab2 = locator.GetService<SatelliteViewer>();
-            //var tab3 = locator.GetService<GroundTargetViewer>();
-            //var tab4 = locator.GetService<FootprintObserver>();
+            var footprintDataSource =(IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            var groundTargetDataSource = (IGroundTargetDataSource)map.GetLayer<TargetLayer>(LayerType.GroundTarget);
+            
+            Locator.CurrentMutable.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
+            Locator.CurrentMutable.RegisterLazySingleton<IGroundTargetDataSource>(() => groundTargetDataSource);
 
-            //Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel(new SidePanelTab[] { tab1, tab2, tab3, tab4 }));
+            Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(locator));
+            Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(locator));
+            Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(locator));
+            Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(locator));
 
+            var tabs = new SidePanelTab[]
+            {
+                locator.GetService<SceneSearch>(),
+                locator.GetService<SatelliteViewer>(),
+                locator.GetService<GroundTargetViewer>(),
+                locator.GetService<FootprintObserver>(),
+            };
+
+            Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
 
             Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(locator));
         }
@@ -79,10 +88,12 @@ namespace FootprintViewer.Avalonia
         public override void OnFrameworkInitializationCompleted()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
+         
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-            //    InitializationClassicDesktopStyle(desktopLifetime);
+            {              
+                RegisterSplat();
+
+                InitializationClassicDesktopStyle(desktopLifetime);
 
                 var mainViewModel = Locator.Current.GetService<MainViewModel>();
 
