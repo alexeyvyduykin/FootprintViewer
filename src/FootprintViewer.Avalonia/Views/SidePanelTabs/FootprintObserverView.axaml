@@ -16,8 +16,7 @@
   
   <Grid>
 
-    <controls:Flyout 
-                     Placement="Left"
+    <controls:Flyout Placement="Left"
                      Margin="0,10,0,0"
                      Target="{Binding ElementName=btnSearch}"
                      Background="{StaticResource MainBackgroundBrush}"

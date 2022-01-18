@@ -4,6 +4,7 @@ using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,8 +16,12 @@ namespace FootprintViewer.ViewModels
 {
     public class WorldMapSelector : ReactiveObject
     {
-        public WorldMapSelector(IEnumerable<LayerSource> layers)
+        public WorldMapSelector(IReadonlyDependencyResolver dependencyResolver)
         {
+            var userDataSource = dependencyResolver.GetService<IUserDataSource>();
+
+            var layers = userDataSource?.WorldMapSources;
+
             Layers = new ObservableCollection<LayerSource>(layers);
 
             SelectedLayer = layers.FirstOrDefault();

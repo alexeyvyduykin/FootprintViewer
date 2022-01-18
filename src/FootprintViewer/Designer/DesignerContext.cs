@@ -19,7 +19,7 @@ namespace FootprintViewer.Designer
         public static AOIInfoPanel? AoiInfoPanel { get; private set; }
 
         public static InfoPanel? InfoPanel { get; private set; }
-        
+
         public static PreviewMainContent? PreviewMainContent { get; private set; }
 
         public static FootprintObserver? FootprintObserver { get; private set; }
@@ -42,11 +42,13 @@ namespace FootprintViewer.Designer
 
         public static WorldMapSelector? WorldMapSelector { get; private set; }
 
-        public static void InitializeContext()
-        {
+        public static MainViewModel? MainViewModel { get; private set; }
+
+        public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
+        {               
             // Map
 
-            var map = new Mapsui.Map();
+            var map = dependencyResolver.GetService<Mapsui.Map>();
 
             // PreviewMainContent
 
@@ -72,96 +74,37 @@ namespace FootprintViewer.Designer
             InfoPanel.Show(AoiInfoPanel);
 
             // Tabs
+            // Tabs: FootprintObserver
 
-            FootprintObserver = new FootprintObserver()
-            {
-              //  Type = FootprintViewerContentType.Show,
-                FootprintInfos = new ObservableCollection<FootprintInfo>()
-                {
-                    new FootprintInfo()
-                    {
-                        Name = "Footrpint0001",
-                        IsShowInfo = false
-                    },
-                    new FootprintInfo()
-                    {
-                        Name = "Footrpint0002",
-                        SatelliteName = "Satellite1",
-                        IsShowInfo = true,
-                        Center = new Coordinate(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-                    new FootprintInfo()
-                    {
-                        Name = "Footrpint0003",
-                        IsShowInfo = false
-                    },
-                },
-            };
+            FootprintObserver = dependencyResolver.GetService<FootprintObserver>();
 
-            FootprintObserverList = new FootprintObserverList(new FootprintDataSource());
+            // Tabs: FootprintObserverList
 
-            FootprintObserverList.LoadFootprints.Execute().Subscribe();
+            FootprintObserverList = new FootprintObserverList(dependencyResolver);
 
-            FootprintObserverFilter = new FootprintObserverFilter()
-            {
-                FromNode = 1,
-                ToNode = 15,
-                Satellites = new ObservableCollection<SatelliteItem>(
-                    new[]
-                    {
-                        new SatelliteItem() { Name = "Satellite1" },
-                        new SatelliteItem() { Name = "Satellite2" },
-                        new SatelliteItem() { Name = "Satellite3" },
-                        new SatelliteItem() { Name = "Satellite4" },
-                        new SatelliteItem() { Name = "Satellite5" }
-                    })
-            };
+            FootprintObserverList?.LoadFootprints.Execute().Subscribe();
 
-            var coll = new ObservableCollection<GroundTargetInfo>(new[]
-                {
-                    new GroundTargetInfo(){ Name = "g1" },
-                    new GroundTargetInfo(){ Name = "g1" },
-                    new GroundTargetInfo(){ Name = "g1" },
-                });
+            // Tabs: FootprintObserverFilter
 
-            GroundTargetViewer = new GroundTargetViewer()
-            {
-                Type = TargetViewerContentType.Show,
-                GroundTargetInfos = coll,
-                SelectedGroundTargetInfo = coll.FirstOrDefault(),
-            };
-                             
-            var dt = new DateTime(2000, 6, 1, 12, 0, 0);
-            var sat1 = new Satellite()
-            {
-                Semiaxis = 6945.03,
-                Eccentricity = 0.0,
-                InclinationDeg = 97.65,
-                ArgumentOfPerigeeDeg = 0.0,
-                LongitudeAscendingNodeDeg = 0.0,
-                RightAscensionAscendingNodeDeg = 0.0,
-                Period = 5760.0,
-                Epoch = dt,
-                InnerHalfAngleDeg = 32,
-                OuterHalfAngleDeg = 48
-            };
+            FootprintObserverFilter = new FootprintObserverFilter(dependencyResolver);
 
-            SatelliteViewer = new SatelliteViewer(new[]            
-            {           
-                new SatelliteInfo() { Name = "Satellite1", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },           
-                new SatelliteInfo() { Name = "Satellite2", Satellite = sat1, IsShow = true, IsShowInfo = false, MaxNode = 15 },           
-                new SatelliteInfo() { Name = "Satellite3", Satellite = sat1, IsShow = false, IsShowInfo = true, MaxNode = 15 },           
-                new SatelliteInfo() { Name = "Satellite4", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },           
-                new SatelliteInfo() { Name = "Satellite5", Satellite = sat1, IsShow = false, IsShowInfo = false, MaxNode = 15 },
-            });
+            // Tabs: GroundTargetViewer
 
-            SceneSearch = CreateSceneSearch();
+            GroundTargetViewer = dependencyResolver.GetService<GroundTargetViewer>();
 
-            SceneSearchFilter = new SceneSearchFilter()
+            GroundTargetViewer?.UpdateAll();
+
+            // Tabs: SatelliteViewer
+
+            SatelliteViewer = dependencyResolver.GetService<SatelliteViewer>();
+
+            // Tabs: SceneSearch
+
+            SceneSearch = CreateSceneSearch(dependencyResolver);
+
+            // Tabs: SceneSearchFilter
+
+            SceneSearchFilter = new SceneSearchFilter(dependencyResolver)
             {
                 FromDate = DateTime.Today.AddDays(-1),
                 ToDate = DateTime.Today.AddDays(1),
@@ -179,20 +122,22 @@ namespace FootprintViewer.Designer
 
             var tabs = new SidePanelTab[]
             {
-               
-                new GroundTargetViewer()                   
-                {                       
-                    Name = "Test1",                        
-                    Title = "Default test title1"                  
+
+                new GroundTargetViewer(dependencyResolver)
+                {
+                    Name = "Test1",
+                    Title = "Default test title1"
                 },
-                new GroundTargetViewer()                   
-                {                       
-                    Name = "Test2",                       
-                    Title = "Default test title2"                   
+                new GroundTargetViewer(dependencyResolver)
+                {
+                    Name = "Test2",
+                    Title = "Default test title2"
                 }
             };
 
-            SidePanel = new SidePanel(tabs);
+            SidePanel = new SidePanel();
+
+            SidePanel.Tabs.AddRange(tabs);
 
             // ToolManager
 
@@ -230,17 +175,16 @@ namespace FootprintViewer.Designer
 
             // WorldMapSelector
 
-            WorldMapSelector = new WorldMapSelector(new[]
-            {
-                new LayerSource() { Name = "WorldMapDefault" },
-                new LayerSource() { Name = "OAM-World-1-8-min-J70" },
-                new LayerSource() { Name = "OAM-World-1-10-J70" }
-            });
+            WorldMapSelector = new WorldMapSelector(dependencyResolver);
+
+            // MainViewModel
+
+            MainViewModel = dependencyResolver.GetService<MainViewModel>();    
         }
 
-        public static SceneSearch CreateSceneSearch()
+        public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var sceneSearch = new SceneSearch()
+            var sceneSearch = new SceneSearch(dependencyResolver)
             {
                 Name = "Scene",
                 Title = "Поиск сцены",
@@ -277,47 +221,6 @@ namespace FootprintViewer.Designer
             sceneSearch.Filter.AddSensors(sortNames);
 
             return sceneSearch;
-        }
-
-        private class FootprintDataSource : IFootprintDataSource
-        {
-            public Task<List<Footprint>> GetFootprintsAsync() 
-            {
-                return Task.Run(() => new List<Footprint>()
-                {
-                    new Footprint()
-                    {
-                        Name = "Footrpint0001",
-                        SatelliteName = "Satellite1",
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-
-                    new Footprint()
-                    {
-                        Name = "Footrpint0002",
-                        SatelliteName = "Satellite1",                      
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-                   new Footprint()
-                    {
-                        Name = "Footrpint0003",
-                        SatelliteName = "Satellite1",
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-                });
-            }
         }
     }
 

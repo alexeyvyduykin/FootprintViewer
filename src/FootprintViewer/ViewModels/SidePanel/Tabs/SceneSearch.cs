@@ -25,10 +25,10 @@ namespace FootprintViewer.ViewModels
 
         public event EventHandler? CurrentFootprint;
 
-        public SceneSearch()
+        public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = Locator.Current.GetService<Map>();
-            var userDataSource = Locator.Current.GetService<UserDataSource>();
+            var map = dependencyResolver.GetService<Map>();
+            var userDataSource = dependencyResolver.GetService<IUserDataSource>();
 
             Title = "Поиск сцены";
             Name = "Scene";
@@ -55,7 +55,7 @@ namespace FootprintViewer.ViewModels
 
             SelectedItemChangedCommand = ReactiveCommand.Create<FootprintImage>(SelectionChanged);
 
-            Filter = new SceneSearchFilter();
+            Filter = new SceneSearchFilter(dependencyResolver);
 
             Filter.FromDate = DateTime.Today.AddDays(-1);
             Filter.ToDate = DateTime.Today.AddDays(1);

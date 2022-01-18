@@ -387,7 +387,8 @@ namespace FootprintViewer.Avalonia.Controls
 
                 if (parentWindow == null)
                 {
-                    throw new Exception("Not find parent Window.");
+                    return;
+                    //throw new Exception("Not find parent Window.");
                 }
 
                 //Window parentWindow = Window.GetWindow(flyout.Target);

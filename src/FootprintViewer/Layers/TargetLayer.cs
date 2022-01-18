@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -18,7 +19,7 @@ namespace FootprintViewer.Layers
 
     public delegate void TargetLayerEventHandler(object? sender, TargetLayerEventArgs e);
 
-    public class TargetLayer : MemoryLayer
+    public class TargetLayer : MemoryLayer, IGroundTargetDataSource
     {
         private IStyle _style;
         private readonly TargetProvider _provider;
@@ -97,6 +98,11 @@ namespace FootprintViewer.Layers
         public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features)
         {
             return _provider.FromDataSource(features);
+        }
+
+        public IEnumerable<GroundTarget> GetTargets()
+        {
+            return _provider.FromDataSource();
         }
 
         private static ThemeStyle CreateTargetHighlightThemeStyle()

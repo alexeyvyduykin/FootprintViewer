@@ -69,18 +69,14 @@ namespace FootprintViewer.ViewModels
         private readonly TrackLayer _trackLayer;
         private readonly SensorLayer _sensorLayer;
 
-        public SatelliteViewer(IEnumerable<SatelliteInfo> satelliteInfos) 
-        {
-            SatelliteInfos = new ObservableCollection<SatelliteInfo>(satelliteInfos);
-        }
-
-        public SatelliteViewer()
+        public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         { 
-            var map = Locator.Current.GetService<Map>();
-            var dataSource = Locator.Current.GetService<IDataSource>();
+            var map = dependencyResolver.GetService<Map>();
+            var dataSource = dependencyResolver.GetService<IDataSource>();
 
             Title = "Просмотр спутников";
             Name = "SatelliteViewer";
+            SatelliteInfos = new ObservableCollection<SatelliteInfo>();
 
             if (map == null)
             {
@@ -89,8 +85,7 @@ namespace FootprintViewer.ViewModels
 
             _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
             _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
-
-            SatelliteInfos = new ObservableCollection<SatelliteInfo>();
+          
             SatelliteInfos.CollectionChanged += items_CollectionChanged;
 
             this.WhenAnyValue(s => s.DataSource).Subscribe(_ => DataSourceChanged());

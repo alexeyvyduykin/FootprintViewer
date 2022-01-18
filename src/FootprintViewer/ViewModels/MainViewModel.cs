@@ -30,23 +30,27 @@ namespace FootprintViewer.ViewModels
         private readonly SidePanel? _sidePanel;
         private readonly ProjectFactory? _factory;
 
-        public MainViewModel()
+        private readonly IReadonlyDependencyResolver _dependencyResolver;
+
+        public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = Locator.Current.GetService<IDataSource>();
-            _factory = Locator.Current.GetService<ProjectFactory>();
-            _userDataSource = Locator.Current.GetService<UserDataSource>();
-            _sidePanel = Locator.Current.GetService<SidePanel>();     
-            _map = Locator.Current.GetService<Map>();
+            _dependencyResolver = dependencyResolver;
 
-            ActualController = new EditController();
+            //_dataSource = Locator.Current.GetService<IDataSource>();
+            //_factory = Locator.Current.GetService<ProjectFactory>();
+            //_userDataSource = Locator.Current.GetService<UserDataSource>();
+            //_sidePanel = Locator.Current.GetService<SidePanel>();     
+            //_map = Locator.Current.GetService<Map>();
 
-            _infoPanel = _factory?.CreateInfoPanel();
+            //ActualController = new EditController();
+
+            //_infoPanel = _factory?.CreateInfoPanel();
 
             ToolBar = CreateToolBar();
 
-            this.WhenAnyValue(s => s.Map).Subscribe(_ => MapChanged());
+            //this.WhenAnyValue(s => s.Map).Subscribe(_ => MapChanged());
 
-            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
+            //this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
         }
 
         public event EventHandler? AOIChanged;
@@ -65,7 +69,7 @@ namespace FootprintViewer.ViewModels
         {
             if (UserDataSource != null)
             {
-                WorldMapSelector = new WorldMapSelector(UserDataSource.WorldMapSources);
+                WorldMapSelector = new WorldMapSelector(_dependencyResolver);
 
                 WorldMapSelector.SelectLayer += (layer) => { Map?.SetWorldMapLayer(layer); };
 
@@ -523,7 +527,11 @@ namespace FootprintViewer.ViewModels
 
         public Map? Map => _map;
 
-        public SidePanel? SidePanel => _sidePanel;
+        public SidePanel? SidePanel => _sidePanel; 
+        
+        public InfoPanel? InfoPanel => _infoPanel; 
+        
+        public MapListener? MapListener { get; set; }
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }
@@ -536,16 +544,12 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public ToolBar ToolBar { get; set; }
-  
-        public InfoPanel? InfoPanel => _infoPanel;
-
+      
         [Reactive]
         public Tip? Tip { get; set; }
 
         [Reactive]
-        public WorldMapSelector? WorldMapSelector { get; set; }
-
-        public MapListener? MapListener { get; set; }
+        public WorldMapSelector? WorldMapSelector { get; set; }    
     }
 
     public class MapLayer

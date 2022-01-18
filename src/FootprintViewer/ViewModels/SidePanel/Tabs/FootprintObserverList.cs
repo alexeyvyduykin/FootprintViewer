@@ -14,6 +14,7 @@ using FootprintViewer.Data;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using Splat;
 
 namespace FootprintViewer.ViewModels
 {
@@ -24,14 +25,14 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserverList : ReactiveObject
     {  
-        private readonly IFootprintDataSource _dataSource;
+        private readonly IFootprintDataSource? _dataSource;
 
         private readonly ObservableAsPropertyHelper<List<FootprintInfo>> _footprints;
 
-        public FootprintObserverList(IFootprintDataSource dataSource)
-        {          
-            _dataSource = dataSource;
-
+        public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
+        {
+            _dataSource = dependencyResolver.GetService<IFootprintDataSource>();
+         
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
             ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);

@@ -38,37 +38,41 @@ namespace FootprintViewer.Avalonia
         {
             if (Design.IsDesignMode)
             {
-                DesignerContext.InitializeContext();
+                var designTimeData = new Designer.DesignTimeData();
+
+                DesignerContext.InitializeContext(designTimeData);
             }
         }
 
-        private void RegisterSplat()
+        private static void RegisterSplat()
         {
             Locator.CurrentMutable.InitializeSplat();
 
-            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
-            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
+            //Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
+            //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
             //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
-            Locator.CurrentMutable.RegisterLazySingleton<UserDataSource>(() => new UserDataSource());
+            //Locator.CurrentMutable.RegisterLazySingleton<UserDataSource>(() => new UserDataSource());
 
             var locator = Locator.Current;
 
-            var map = locator.GetService<ProjectFactory>().CreateMap();
+            //var map = locator.GetService<ProjectFactory>().CreateMap(locator);
 
-            Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
+            //Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
 
-            Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch());
-            Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer());
-            Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer());
-            Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver());
+            //Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch());
+            //Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer());
+            //Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer());
+            //Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver());
 
-            var tab1 = locator.GetService<SceneSearch>();
-            var tab2 = locator.GetService<SatelliteViewer>();
-            var tab3 = locator.GetService<GroundTargetViewer>();
-            var tab4 = locator.GetService<FootprintObserver>();
+            //var tab1 = locator.GetService<SceneSearch>();
+            //var tab2 = locator.GetService<SatelliteViewer>();
+            //var tab3 = locator.GetService<GroundTargetViewer>();
+            //var tab4 = locator.GetService<FootprintObserver>();
 
-            Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel(new SidePanelTab[] { tab1, tab2, tab3, tab4 }));
-            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel());
+            //Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel(new SidePanelTab[] { tab1, tab2, tab3, tab4 }));
+
+
+            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(locator));
         }
 
 
@@ -78,7 +82,7 @@ namespace FootprintViewer.Avalonia
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                InitializationClassicDesktopStyle(desktopLifetime);
+            //    InitializationClassicDesktopStyle(desktopLifetime);
 
                 var mainViewModel = Locator.Current.GetService<MainViewModel>();
 

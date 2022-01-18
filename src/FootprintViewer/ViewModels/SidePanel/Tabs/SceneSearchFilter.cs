@@ -14,6 +14,7 @@ using DynamicData;
 using Mapsui.Providers;
 using Mapsui.Geometries.Utilities;
 using Mapsui.Geometries;
+using Splat;
 //sing NetTopologySuite.Geometries;
 
 namespace FootprintViewer.ViewModels
@@ -34,7 +35,7 @@ namespace FootprintViewer.ViewModels
 
         public event EventHandler? Update;
 
-        public SceneSearchFilter()
+        public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             Cloudiness = 0.0;
             MinSunElevation = 0.0;

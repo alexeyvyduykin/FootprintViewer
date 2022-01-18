@@ -1,24 +1,16 @@
-﻿using FootprintViewer.Layers;
-using Mapsui;
-using ReactiveUI.Fody.Helpers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
+using Mapsui.Providers;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Text;
-using System.Reactive;
-using FootprintViewer.Data;
-using FootprintViewer.Models;
-using Mapsui.Layers;
 using System.Linq;
-using System.Threading.Tasks;
-using Mapsui.Providers;
-using DynamicData;
+using System.Reactive;
 using System.Threading;
-using System.Xml.Linq;
-using Splat;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -30,7 +22,7 @@ namespace FootprintViewer.ViewModels
 
         public GroundTargetInfo(GroundTarget groundTarget)
         {
-            _groundTarget = groundTarget;              
+            _groundTarget = groundTarget;
             Type = groundTarget.Type;
             Name = groundTarget.Name;
         }
@@ -51,27 +43,36 @@ namespace FootprintViewer.ViewModels
         Update
     }
 
+    public interface IGroundTargetDataSource
+    {
+        IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features);
+
+        IEnumerable<GroundTarget> GetTargets();
+
+        void ShowHighlight(string name);
+
+        void HideHighlight();
+
+        void SelectGroundTarget(string name);
+
+        event TargetLayerEventHandler OnRefreshData;
+    }
+
     public class GroundTargetViewer : SidePanelTab
     {
-        private readonly TargetLayer _targetLayer;
+        //  private readonly TargetLayer _targetLayer;
         private double _resolution;
         private IEnumerable<IFeature>? _features;
+        private readonly IGroundTargetDataSource? _dataSource;
 
-        public GroundTargetViewer()
+        public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = Locator.Current.GetService<Map>();
+            _dataSource = dependencyResolver.GetService<IGroundTargetDataSource>();
 
             GroundTargetInfos = new ObservableCollection<GroundTargetInfo>();
 
             Title = "Просмотр наземных целей";
             Name = "GroundTargetViewer";
-
-            if (map == null)
-            {
-                return;
-            }
-
-            _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
             MouseOverEnterCommand = ReactiveCommand.Create<GroundTargetInfo>(ShowHighlightTarget);
 
@@ -81,10 +82,10 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
             {
-                if (type == TargetViewerContentType.Update) 
+                if (type == TargetViewerContentType.Update)
                 {
                     GroundTargetsChanged();
-                } 
+                }
             });
 
             this.WhenAnyValue(s => s.IsActive).Subscribe(active =>
@@ -102,7 +103,7 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _targetLayer.OnRefreshData += _targetLayer_OnRefreshData;
+            _dataSource.OnRefreshData += _targetLayer_OnRefreshData;
         }
 
         private void _targetLayer_OnRefreshData(object? sender, TargetLayerEventArgs e)
@@ -123,12 +124,12 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private static async Task<IList<GroundTarget>> LoadDataAsync(TargetLayer layer, IEnumerable<IFeature> features)
+        private static async Task<IList<GroundTarget>> LoadDataAsync(IGroundTargetDataSource dataSource, IEnumerable<IFeature> features)
         {
-            return await Task.Run(() => 
+            return await Task.Run(() =>
             {
                 Thread.Sleep(500);
-                return layer.GetTargets(features).ToList();
+                return dataSource.GetTargets(features).ToList();
             });
         }
 
@@ -136,7 +137,7 @@ namespace FootprintViewer.ViewModels
         {
             if (_features != null)
             {
-                var targets = await LoadDataAsync(_targetLayer, _features);
+                var targets = await LoadDataAsync(_dataSource, _features);
 
                 //GroundTargetInfos.Clear();
 
@@ -151,6 +152,19 @@ namespace FootprintViewer.ViewModels
             }
         }
 
+        public async void UpdateAll()
+        {
+            var targets = await Task.Run(() =>
+            {              
+                return _dataSource?.GetTargets().ToList();
+            });
+
+            GroundTargetInfos = new ObservableCollection<GroundTargetInfo>(targets.Select(s => new GroundTargetInfo(s)));
+
+            SelectedGroundTargetInfo = GroundTargetInfos.FirstOrDefault();
+
+            Type = TargetViewerContentType.Show;
+        }
 
         public ReactiveCommand<GroundTargetInfo, Unit> MouseOverEnterCommand { get; }
 
@@ -160,20 +174,20 @@ namespace FootprintViewer.ViewModels
 
         private void ShowHighlightTarget(GroundTargetInfo groundTarget)
         {
-            if(groundTarget != null)
+            if (groundTarget != null)
             {
                 var name = groundTarget.Name;
 
                 if (name != null)
                 {
-                    _targetLayer.ShowHighlight(name);
+                    _dataSource?.ShowHighlight(name);
                 }
             }
         }
 
         private void HideHighlightTarget()
         {
-            _targetLayer.HideHighlight();
+            _dataSource?.HideHighlight();
         }
 
         private void SelectionChanged(GroundTargetInfo groundTarget)
@@ -193,8 +207,8 @@ namespace FootprintViewer.ViewModels
                 var name = SelectedGroundTargetInfo.Name;
                 if (name != null)
                 {
-                    _targetLayer.SelectGroundTarget(name);
-                }           
+                    _dataSource.SelectGroundTarget(name);
+                }
             }
 
         }

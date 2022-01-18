@@ -108,6 +108,11 @@ namespace FootprintViewer.Layers
             return _source.Targets.Where(s => names.Contains(s.Name));
         }
 
+        public IEnumerable<GroundTarget> FromDataSource()
+        {
+            return _source.Targets;
+        }
+
         private IGeometry AreaCutting(IList<Point> points)
         {
             var count = points.Count;

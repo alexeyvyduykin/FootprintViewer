@@ -12,9 +12,9 @@ namespace FootprintViewer.ViewModels
     {
         private readonly ObservableCollection<SidePanelTab> _tabs;
 
-        public SidePanel(IEnumerable<SidePanelTab> tabs)
+        public SidePanel()
         {
-            _tabs = new ObservableCollection<SidePanelTab>(tabs);
+            _tabs = new ObservableCollection<SidePanelTab>();
 
             this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
             {

@@ -10,6 +10,7 @@ using FootprintViewer.Data;
 using DynamicData.Binding;
 using DynamicData;
 using System.Linq;
+using Splat;
 
 namespace FootprintViewer.ViewModels
 {
@@ -26,8 +27,10 @@ namespace FootprintViewer.ViewModels
     {
         private int _counter = 0;
 
-        public FootprintObserverFilter()
+        public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
+            var source = dependencyResolver.GetService<IDataSource>();
+
             IsLeftStrip = true;
             IsRightStrip = true;
             IsAllSatelliteActive = true;
@@ -36,12 +39,11 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Counter).
                 Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
-        }
 
-        public FootprintObserverFilter(IDataSource source) : this()
-        {
-            var satelliteNames = source.Satellites.Select(s => s.Name).ToList(); 
-            satelliteNames.Sort();
+            var satelliteNames = source?.Satellites.Select(s => s.Name).ToList(); 
+            
+            satelliteNames?.Sort();
+
             AddSatellites(satelliteNames);
         }
 

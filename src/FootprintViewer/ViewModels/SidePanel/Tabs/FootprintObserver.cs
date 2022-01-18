@@ -13,7 +13,6 @@ using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -72,33 +71,31 @@ namespace FootprintViewer.ViewModels
     {
         private readonly FootprintLayer? _footrpintLayer;
         private readonly Map? _map;
-        private FootprintObserverList _footprintObserverList;
-        private PreviewMainContent _previewMainContent;
+        private readonly FootprintObserverList? _footprintObserverList;
+        private readonly PreviewMainContent _previewMainContent;
 
-        public FootprintObserver()
+        public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
-            _map = Locator.Current.GetService<Map>();
-            var dataSource = Locator.Current.GetService<IDataSource>();
+            var map = dependencyResolver.GetService<Map>();
 
-            //  Type = FootprintViewerContentType.Update;
+            _map = map;
 
             Title = "Просмотр рабочей программы";
+
             Name = "FootprintViewer";
-
-            if (_map == null || dataSource == null)
-            {
-                return;
-            }
-        
-            _footrpintLayer = _map.GetLayer<FootprintLayer>(LayerType.Footprint);
-
+                
+            _footrpintLayer = map?.GetLayer<FootprintLayer>(LayerType.Footprint);
+                    
+            _footprintObserverList = new FootprintObserverList(dependencyResolver);
+                                            
+            Filter = new FootprintObserverFilter(dependencyResolver);
+            
             FootprintInfos = new ObservableCollection<FootprintInfo>();
 
             _previewMainContent = new PreviewMainContent("Загрузка...");
 
-            _footprintObserverList = new FootprintObserverList(_footrpintLayer);
 
-         //   _footprintObserverList.LoadFootprints.Subscribe(_ => MainContent = _footprintObserverList);
+            //   _footprintObserverList.LoadFootprints.Subscribe(_ => MainContent = _footprintObserverList);
 
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
@@ -106,22 +103,11 @@ namespace FootprintViewer.ViewModels
 
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
-            //this.WhenAnyValue(s => s.Type).Subscribe(type =>
-            //{
-            //    if (type == FootprintViewerContentType.Update)
-            //    {
-            //        UpdateList();
-
-            //        //FootprintsChanged();
-            //    }
-            //});
-
             this.WhenAnyValue(s => s.IsActive).Subscribe(active =>
             {
                 if (active == true)
                 {
-                    UpdateList();
-                    //Type = FootprintViewerContentType.Update;
+                    UpdateList();           
                 }
             });
 
@@ -135,7 +121,7 @@ namespace FootprintViewer.ViewModels
 
                     if (ScrollToCenter == false)
                     {
-                        if (string.IsNullOrEmpty(footprint.Name) == false)
+                        if (string.IsNullOrEmpty(footprint.Name) == false && _footrpintLayer != null)
                         {
                             _footrpintLayer.SelectFeature(footprint.Name);
                         }
@@ -145,44 +131,48 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.PreviewMouseLeftButtonCommandChecker).Subscribe(_ => 
+            this.WhenAnyValue(s => s.PreviewMouseLeftButtonCommandChecker).Subscribe(_ =>
             {
                 if (SelectedFootprintInfo != null && string.IsNullOrEmpty(SelectedFootprintInfo.Name) == false)
                 {
-                    if (SelectedFootprintInfo.IsShowInfo == true)
+                    if (_footrpintLayer != null)
                     {
-                        _footrpintLayer.SelectFeature(SelectedFootprintInfo.Name);                    
-                    }
-                    else
-                    {
-                        _footrpintLayer.UnselectFeature(SelectedFootprintInfo.Name);                        
-                    }
+                        if (SelectedFootprintInfo.IsShowInfo == true)
+                        {
+                            _footrpintLayer.SelectFeature(SelectedFootprintInfo.Name);
+                        }
+                        else
+                        {
+                            _footrpintLayer.UnselectFeature(SelectedFootprintInfo.Name);
+                        }
 
-                    _footrpintLayer.DataHasChanged();
+                        _footrpintLayer.DataHasChanged();
+                    }
                 }
             });
 
             this.WhenAnyValue(s => s.Filter).Subscribe(_ => FilterChanged());
 
             MainContent = _previewMainContent;
-
-            Filter = new FootprintObserverFilter(dataSource);
         }
 
         private void UpdateList()
         {
-         //   MainContent = _previewMainContent;
+            //   MainContent = _previewMainContent;
 
-            _footprintObserverList.LoadFootprints.Execute().Subscribe();
+            if (_footprintObserverList != null)
+            {
+                _footprintObserverList.LoadFootprints.Execute().Subscribe();
 
-            MainContent = _footprintObserverList;
+                MainContent = _footprintObserverList;
+            }
         }
 
         private void FilterChanged()
         {
             if (Filter != null)
             {
-             //   Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
+                //   Filter.Update += (s, e) => Type = FootprintViewerContentType.Update;
             }
         }
 
@@ -328,19 +318,21 @@ namespace FootprintViewer.ViewModels
                     }
                 }
 
-          //      Type = FootprintViewerContentType.Show;
+                //      Type = FootprintViewerContentType.Show;
             }
         }
 
         [Reactive]
         public FootprintObserverFilter? Filter { get; set; }
 
-      //  [Reactive]
-     //   public FootprintViewerContentType Type { get; set; }
+        public FootprintObserverList? FootprintObserverList => _footprintObserverList;
+
+        //  [Reactive]
+        //   public FootprintViewerContentType Type { get; set; }
 
         [Reactive]
         public ReactiveObject MainContent { get; private set; }
-        
+
         [Reactive]
         public FootprintInfo? SelectedFootprintInfo { get; set; }
 

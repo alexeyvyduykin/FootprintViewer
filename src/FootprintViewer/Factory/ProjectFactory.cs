@@ -26,10 +26,10 @@ namespace FootprintViewer
 
         private readonly SymbolStyle DisableStyle = new SymbolStyle { Enabled = false };
 
-        public Map CreateMap()
+        public Map CreateMap(IReadonlyDependencyResolver dependencyResolver)
         {        
-            var source = Locator.Current.GetService<IDataSource>();
-            var userSource = Locator.Current.GetService<UserDataSource>();
+            var source = dependencyResolver.GetService<IDataSource>();
+            var userSource = dependencyResolver.GetService<UserDataSource>();
 
             var map = new Map()
             {
@@ -37,24 +37,24 @@ namespace FootprintViewer
                 Transformation = new MinimalTransformation(),
             };
 
-            map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) }); // WorldMap
-            map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) }); // FootprintImage
+  //          map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) }); // WorldMap
+  //          map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) }); // FootprintImage
 
             if (source == null)
             {
                 return map;
             }
 
-            map.Layers.Add(new TargetLayer(new TargetProvider(source)));       // GroundTarget
-            map.Layers.Add(new SensorLayer(new SensorProvider(source)));       // Sensor
-            map.Layers.Add(new TrackLayer(new TrackProvider(source)));         // Track
+  //          map.Layers.Add(new TargetLayer(new TargetProvider(source)));       // GroundTarget
+  //          map.Layers.Add(new SensorLayer(new SensorProvider(source)));       // Sensor
+  //          map.Layers.Add(new TrackLayer(new TrackProvider(source)));         // Track
             map.Layers.Add(new FootprintLayer(new FootprintProvider(source))); // Footprint
 
-            map.Layers.Add(CreateFootprintBorderLayer()); // FootprintImageBorder
+  //          map.Layers.Add(CreateFootprintBorderLayer()); // FootprintImageBorder
 
-            var editLayer = CreateEmptyEditLayer();
-            map.Layers.Add(editLayer); // Edit
-            map.Layers.Add(new VertexOnlyLayer(editLayer) { Name = nameof(LayerType.Vertex) }); // Vertex
+  //          var editLayer = CreateEmptyEditLayer();
+  //          map.Layers.Add(editLayer); // Edit
+  //          map.Layers.Add(new VertexOnlyLayer(editLayer) { Name = nameof(LayerType.Vertex) }); // Vertex
 
             //map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
