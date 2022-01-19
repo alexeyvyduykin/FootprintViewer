@@ -12,58 +12,7 @@ using System.ComponentModel;
 using System.Reactive;
 
 namespace FootprintViewer.ViewModels
-{
-    public class SatelliteInfo : ReactiveObject
-    {
-        public SatelliteInfo() { }
-
-        public SatelliteInfo(Satellite satellite)
-        {
-            Satellite = satellite;
-            Name = satellite.Name;
-
-            var count = satellite.ToPRDCTSatellite().Nodes().Count;
-     
-            MaxNode = count;
-
-            ShowInfoClickCommand = ReactiveCommand.Create(ShowInfoClick);            
-        }
-
-        private void ShowInfoClick() => IsShowInfo = !IsShowInfo;
-
-        public ReactiveCommand<Unit, Unit> ShowInfoClickCommand { get; }
-
-        [Reactive]
-        public string? Name { get; set; }
-
-        [Reactive]
-        public Satellite Satellite { get; set; }
-
-        [Reactive]
-        public int MinNode { get; set; } = 1;
-
-        [Reactive]
-        public int MaxNode { get; set; }
-
-        [Reactive]
-        public int CurrentNode { get; set; } = 1;
-
-        [Reactive]
-        public bool IsShow { get; set; } = false;
-
-        [Reactive]
-        public bool IsShowInfo { get; set; } = false;
-
-        [Reactive]
-        public bool IsTrack { get; set; } = true;
-
-        [Reactive]
-        public bool IsLeftStrip { get; set; } = true;
-
-        [Reactive]
-        public bool IsRightStrip { get; set; } = false;
-    }
-
+{  
     public class SatelliteViewer : SidePanelTab
     {
         private readonly TrackLayer _trackLayer;

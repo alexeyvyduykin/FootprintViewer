@@ -3,128 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:i="using:Avalonia.Xaml.Interactivity"
-             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"   
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              d:DataContext="{x:Static vmd:DesignerContext.SatelliteViewer}"           
              x:DataType="vm:SatelliteViewer" x:CompileBindings="True"
-             MinWidth="380"             
-             mc:Ignorable="d" 
-             d:DesignHeight="450">
-  
+             MinWidth="380" mc:Ignorable="d">
+
   <UserControl.Styles>
 
-    <Style Selector="Button">
-      <Setter Property="Background" Value="{StaticResource AccentBackgroundBrush}"></Setter>
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+    <Style Selector="Border">
+      <Setter Property="Margin" Value="4"></Setter>
     </Style>
-    <Style Selector="TextBlock.txtHeaderNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="FontSize" Value="15"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtBodyNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,4,0"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtInfoNameKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtInfoValueKey">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,4,0"></Setter>
-    </Style>
+
   </UserControl.Styles>
-
+  
   <Grid Background="{StaticResource MainBackgroundBrush}">
-    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-      <ItemsControl Items="{Binding SatelliteInfos}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Border Margin="8,4,8,4" Padding="4" Background="{StaticResource LightBackgroundBrush}">
-              <StackPanel>
-                <StackPanel>
-                  <DockPanel>
-                    <TextBlock Text="{Binding Name}" Classes="txtHeaderNameKey"/>
-                    <Button Width="18" Height="18" 
-                            FontSize="8" 
-                            Margin="4,0,0,0"
-                            Content="info"
-                            Command="{Binding ShowInfoClickCommand}">
-                    </Button>
-                    <CheckBox IsChecked="{Binding IsShow}" DockPanel.Dock="Right" VerticalAlignment="Center"/>
-                    <TextBlock Text="Show/Hide" Classes="txtBodyNameKey"/>
-                  </DockPanel>
-                </StackPanel>
-
-                <StackPanel x:Name="stackPanel1" IsVisible="{Binding IsShow}">
-
-                  <Slider Minimum="{Binding MinNode}" Maximum="{Binding MaxNode}" Value="{Binding CurrentNode}"
-                  TickPlacement="TopLeft"
-                  TickFrequency="1" />
-                  <!--AutoToolTipPlacement="TopLeft"-->
-                  <DockPanel>
-                    <CheckBox IsChecked="{Binding IsTrack}" DockPanel.Dock="Right"/>
-                    <TextBlock Text="IsTrack" Classes="txtBodyNameKey"/>
-                  </DockPanel>
-                  <DockPanel>
-                    <CheckBox IsChecked="{Binding IsLeftStrip}" DockPanel.Dock="Right"/>
-                    <TextBlock Text="IsLeftStrip" Classes="txtBodyNameKey"/>
-                  </DockPanel>
-                  <DockPanel>
-                    <CheckBox IsChecked="{Binding IsRightStrip}" DockPanel.Dock="Right"/>
-                    <TextBlock Text="IsRightStrip" Classes="txtBodyNameKey"/>
-                  </DockPanel>
-                </StackPanel>
-
-                <StackPanel x:Name="stackPanel2" IsVisible="{Binding IsShowInfo}">
-                  <Grid ShowGridLines="False" 
-                        ColumnDefinitions="*,Auto"
-                        RowDefinitions="*,*,*,*,*,*,*,*,*,*">
-
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Satellite.Semiaxis}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="0" Text="Semiaxis" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="1"  Text="{Binding Satellite.Eccentricity}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1"  Text="Eccentricity" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="2"  Text="{Binding Satellite.InclinationDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="2"  Text="Inclination" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="3"  Text="{Binding Satellite.ArgumentOfPerigeeDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="3"  Text="ArgOfPerigee" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="4"  Text="{Binding Satellite.RightAscensionAscendingNodeDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="4"  Text="RAAN" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="5"  Text="{Binding Satellite.LongitudeAscendingNodeDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="5"  Text="LonAN" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="6"  Text="{Binding Satellite.Period}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="6"  Text="Period" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="7"  Text="{Binding Satellite.Epoch}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="7"  Text="Epoch" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="8"  Text="{Binding Satellite.InnerHalfAngleDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="8"  Text="InnerHalfAngle" Classes="txtInfoNameKey"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="9"  Text="{Binding Satellite.OuterHalfAngleDeg}" Classes="txtInfoValueKey"/>
-                    <TextBlock Grid.Column="1" Grid.Row="9"  Text="OuterHalfAngle" Classes="txtInfoNameKey"/>
-                  </Grid>
-                </StackPanel>
-              </StackPanel>
-            </Border>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+    <ScrollViewer HorizontalScrollBarVisibility="Hidden" 
+                  VerticalScrollBarVisibility="Auto">
+      <ItemsControl Items="{Binding SatelliteInfos}"/>
     </ScrollViewer>
   </Grid>
   

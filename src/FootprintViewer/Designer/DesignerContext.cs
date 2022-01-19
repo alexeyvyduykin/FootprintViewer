@@ -48,6 +48,8 @@ namespace FootprintViewer.Designer
 
         public static GroundTargetInfo? GroundTargetInfo { get; private set; }
 
+        public static SatelliteInfo? SatelliteInfo { get; private set; }
+
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {               
             // Map
@@ -208,6 +210,27 @@ namespace FootprintViewer.Designer
                 Name = "GroundTarget001",
                 Type = GroundTargetType.Route,              
             });
+
+            // SatelliteInfo
+
+            SatelliteInfo = new SatelliteInfo(new Satellite()
+            {
+                Name = "Satellite1",
+                Semiaxis = 6945.03,
+                Eccentricity = 0.0,
+                InclinationDeg = 97.65,
+                ArgumentOfPerigeeDeg = 0.0,
+                LongitudeAscendingNodeDeg = 0.0,
+                RightAscensionAscendingNodeDeg = 0.0,
+                Period = 5760.0,
+                Epoch = new DateTime(2000, 6, 1, 12, 0, 0),
+                InnerHalfAngleDeg = 32,
+                OuterHalfAngleDeg = 48
+            })
+            {
+                IsShow = true,
+                IsShowInfo = true,
+            };
         }
 
         public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)
