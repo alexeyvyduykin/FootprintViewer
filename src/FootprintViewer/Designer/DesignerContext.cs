@@ -46,6 +46,8 @@ namespace FootprintViewer.Designer
 
         public static FootprintInfo? FootprintInfo { get; private set; }
 
+        public static GroundTargetInfo? GroundTargetInfo { get; private set; }
+
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {               
             // Map
@@ -198,6 +200,14 @@ namespace FootprintViewer.Designer
             {           
                 IsShowInfo = true
             };
+
+            // GroundTargetInfo
+
+            GroundTargetInfo = new GroundTargetInfo(new GroundTarget() 
+            {
+                Name = "GroundTarget001",
+                Type = GroundTargetType.Route,              
+            });
         }
 
         public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)

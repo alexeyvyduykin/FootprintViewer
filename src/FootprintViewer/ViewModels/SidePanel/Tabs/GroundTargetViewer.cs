@@ -14,28 +14,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundTargetInfo : ReactiveObject
-    {
-        private readonly GroundTarget _groundTarget;
-
-        public GroundTargetInfo() { }
-
-        public GroundTargetInfo(GroundTarget groundTarget)
-        {
-            _groundTarget = groundTarget;
-            Type = groundTarget.Type;
-            Name = groundTarget.Name;
-        }
-
-        public GroundTarget GroundTarget => _groundTarget;
-
-        [Reactive]
-        public string? Name { get; set; }
-
-        [Reactive]
-        public GroundTargetType Type { get; set; }
-    }
-
     public enum TargetViewerContentType
     {
         Empty,
@@ -63,22 +41,23 @@ namespace FootprintViewer.ViewModels
         //  private readonly TargetLayer _targetLayer;
         private double _resolution;
         private IEnumerable<IFeature>? _features;
-        private readonly IGroundTargetDataSource? _dataSource;
+        private readonly IGroundTargetDataSource _dataSource;
+        private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetService<IGroundTargetDataSource>();
+            _dataSource = dependencyResolver.GetExistingService<IGroundTargetDataSource>();
 
             GroundTargetInfos = new ObservableCollection<GroundTargetInfo>();
 
             Title = "Просмотр наземных целей";
             Name = "GroundTargetViewer";
 
-            MouseOverEnterCommand = ReactiveCommand.Create<GroundTargetInfo>(ShowHighlightTarget);
+            ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
 
-            MouseOverLeaveCommand = ReactiveCommand.Create(HideHighlightTarget);
+            HideHighlight = ReactiveCommand.Create(HideHighlightImpl);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<GroundTargetInfo>(SelectionChanged);
+            _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
             this.WhenAnyValue(s => s.Type).Subscribe(type =>
             {
@@ -102,6 +81,8 @@ namespace FootprintViewer.ViewModels
                     }
                 }
             });
+
+            this.WhenAnyValue(s => s.SelectedGroundTargetInfo).InvokeCommand(this, s => s._selectedItem);
 
             _dataSource.OnRefreshData += _targetLayer_OnRefreshData;
         }
@@ -156,23 +137,21 @@ namespace FootprintViewer.ViewModels
         {
             var targets = await Task.Run(() =>
             {              
-                return _dataSource?.GetTargets().ToList();
+                return _dataSource.GetTargets().ToList();
             });
 
             GroundTargetInfos = new ObservableCollection<GroundTargetInfo>(targets.Select(s => new GroundTargetInfo(s)));
 
-            SelectedGroundTargetInfo = GroundTargetInfos.FirstOrDefault();
+            //SelectedGroundTargetInfo = GroundTargetInfos.FirstOrDefault();
 
             Type = TargetViewerContentType.Show;
         }
 
-        public ReactiveCommand<GroundTargetInfo, Unit> MouseOverEnterCommand { get; }
+        public ReactiveCommand<GroundTargetInfo?, Unit> ShowHighlight { get; }
 
-        public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
-
-        public ReactiveCommand<GroundTargetInfo, Unit> SelectedItemChangedCommand { get; }
-
-        private void ShowHighlightTarget(GroundTargetInfo groundTarget)
+        public ReactiveCommand<Unit, Unit> HideHighlight { get; }
+    
+        private void ShowHighlightImpl(GroundTargetInfo? groundTarget)
         {
             if (groundTarget != null)
             {
@@ -180,37 +159,27 @@ namespace FootprintViewer.ViewModels
 
                 if (name != null)
                 {
-                    _dataSource?.ShowHighlight(name);
+                    _dataSource.ShowHighlight(name);
                 }
             }
         }
 
-        private void HideHighlightTarget()
+        private void HideHighlightImpl()
         {
-            _dataSource?.HideHighlight();
+            _dataSource.HideHighlight();
         }
 
-        private void SelectionChanged(GroundTargetInfo groundTarget)
+        private void SelectedItemIml(GroundTargetInfo? groundTarget)
         {
-            //if (groundTarget != null)
-            //{
-            //    var name = groundTarget.Name;
-
-            //    if (name != null)
-            //    {
-            //        _targetLayer.SelectGroundTarget(name);
-            //    }
-            //}
-
-            if (SelectedGroundTargetInfo != null)
+            if (groundTarget != null)
             {
-                var name = SelectedGroundTargetInfo.Name;
-                if (name != null)
+                var name = groundTarget.Name;
+                
+                if (string.IsNullOrEmpty(name) == false)
                 {
                     _dataSource.SelectGroundTarget(name);
                 }
             }
-
         }
 
         [Reactive]
