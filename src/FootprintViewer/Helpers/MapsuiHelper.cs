@@ -1,7 +1,6 @@
 ﻿using BruTile;
 using BruTile.MbTiles;
 using FootprintViewer.Layers;
-using FootprintViewer.Models;
 using Mapsui.Layers;
 using SQLite;
 

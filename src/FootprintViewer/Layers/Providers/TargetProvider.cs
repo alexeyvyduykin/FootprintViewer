@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Models;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;

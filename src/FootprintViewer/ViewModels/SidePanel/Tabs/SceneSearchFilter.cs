@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Models;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -89,7 +88,7 @@ namespace FootprintViewer.ViewModels
             Cloudiness = temp;
         }
 
-        public bool Filtering(FootprintImage footprint)
+        public bool Filtering(FootprintPreview footprint)
         {
             bool isAoiCondition = false; 
 
@@ -124,7 +123,7 @@ namespace FootprintViewer.ViewModels
 
         //public IObservable<Func<Footprint, bool>> Observable => _observableFilter;
 
-        private Func<FootprintImage, bool> MakeFilter()
+        private Func<FootprintPreview, bool> MakeFilter()
         {
             return footprint => 
             {

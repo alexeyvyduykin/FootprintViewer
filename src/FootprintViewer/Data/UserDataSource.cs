@@ -2,7 +2,7 @@
 using BruTile.MbTiles;
 using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
-using FootprintViewer.Models;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Projection;
@@ -26,7 +26,7 @@ namespace FootprintViewer.Data
 
     public interface IUserDataSource
     {
-        IEnumerable<FootprintImage> GetFootprints();
+        IEnumerable<FootprintPreview> GetFootprints();
 
         IList<LayerSource> WorldMapSources { get; }
     }
@@ -35,7 +35,7 @@ namespace FootprintViewer.Data
     {
         private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();
         private readonly List<LayerSource> _worldMapSources;
-        private readonly List<FootprintImage> _footprints;
+        private readonly List<FootprintPreview> _footprints;
         private readonly Random _random = new Random();
         private readonly string[] _satellites;
         private readonly DateTime _date;
@@ -45,7 +45,7 @@ namespace FootprintViewer.Data
         public UserDataSource()
         {
             _worldMapSources = new List<LayerSource>();
-            _footprints = new List<FootprintImage>();
+            _footprints = new List<FootprintPreview>();
 
             _satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
             _date = DateTime.UtcNow;
@@ -73,7 +73,7 @@ namespace FootprintViewer.Data
             }
         }
 
-        public IEnumerable<FootprintImage> GetFootprints()
+        public IEnumerable<FootprintPreview> GetFootprints()
         {
             BuildFootprintBorders();
             BuildFootprints();
@@ -131,9 +131,9 @@ namespace FootprintViewer.Data
             }
         }
 
-        private FootprintImage CreateFootprint(string tile, string path, Geometry poly)
+        private FootprintPreview CreateFootprint(string tile, string path, Geometry poly)
         {
-            return new FootprintImage()
+            return new FootprintPreview()
             {
                 Date = _date.Date.ToShortDateString(),
                 SatelliteName = _satellites[_random.Next(0, _satellites.Length)],
@@ -141,7 +141,7 @@ namespace FootprintViewer.Data
                 CloudCoverFull = _random.Next(0, 100),
                 TileNumber = tile,
                 Path = path,
-                Preview = CreatePreviewImage(path),
+                Image = CreatePreviewImage(path),
                 Geometry = poly
             };
         }

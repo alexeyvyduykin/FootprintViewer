@@ -1,0 +1,90 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.FootprintPreviewView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                         
+             d:DataContext="{x:Static vmd:DesignerContext.FootprintPreview}"           
+             x:DataType="vm:FootprintPreview" x:CompileBindings="True"                 
+             mc:Ignorable="d" d:DesignWidth="280">
+
+  <UserControl.Styles>
+
+    <Style Selector="TextBlock.sceneDateTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="13"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.sceneInfoTextBlock">
+      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
+      <Setter Property="FontSize" Value="12"></Setter>
+      <Setter Property="FontFamily" Value="Roboto"></Setter>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Border Padding="10" Cursor="Hand" Background="Transparent">
+    <Grid ColumnDefinitions="Auto,*">
+
+      <Border x:Name="FootprintImageBorder">
+        <Viewbox Width="155" Height="155">
+          <Image x:Name="FootprintImageImage"/>
+        </Viewbox>
+      </Border>
+
+      <Border Grid.Column="1">
+        <Panel>
+          <TextBlock Text="{Binding Date}"
+                     Classes="sceneDateTextBlock"
+                     VerticalAlignment="Top" 
+                     HorizontalAlignment="Right"/>
+
+          <StackPanel VerticalAlignment="Bottom" 
+                      HorizontalAlignment="Right" >
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+              <TextBlock Text="{Binding SatelliteName}"
+                         Margin="0,4,8,4"
+                         Classes="sceneInfoTextBlock"/>
+              <Viewbox Width="16" Height="16">
+                <Image Source="{DynamicResource IconSatellite}"/>
+              </Viewbox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+              <TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
+                         Margin="0,4,8,4"
+                         Classes="sceneInfoTextBlock"/>
+              <Viewbox Width="16" Height="16">
+                <Image Source="{DynamicResource IconSunElevation}"/>
+              </Viewbox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+              <TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
+                         Margin="0,4,8,4"
+                         Classes="sceneInfoTextBlock"/>
+              <Viewbox Width="16" Height="16">
+                <Image Source="{DynamicResource IconCloudy}"/>
+              </Viewbox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+              <TextBlock Text="{Binding TileNumber}"
+                         Margin="0,4,8,4"
+                         Classes="sceneInfoTextBlock"/>
+              <Viewbox Width="16" Height="16">
+                <Image Source="{DynamicResource IconGrid}"/>
+              </Viewbox>
+            </StackPanel>
+          </StackPanel>
+        </Panel>
+      </Border>
+      
+    </Grid>
+  </Border>
+
+
+</UserControl>

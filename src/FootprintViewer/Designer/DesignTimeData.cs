@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
-using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using Mapsui.Providers;
 using NetTopologySuite.Geometries;
@@ -164,9 +163,9 @@ namespace FootprintViewer.Designer
                 };
             }
 
-            public IEnumerable<FootprintImage> GetFootprints()
+            public IEnumerable<FootprintPreview> GetFootprints()
             {
-                return new List<FootprintImage>();
+                return new List<FootprintPreview>();
             }
 
             public IList<LayerSource> WorldMapSources => _layerSources;

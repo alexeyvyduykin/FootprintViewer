@@ -1,14 +1,15 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
-using FootprintViewer.Models;
 using FootprintViewer.ViewModels;
 using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FootprintViewer.Designer
 {
@@ -49,6 +50,8 @@ namespace FootprintViewer.Designer
         public static GroundTargetInfo? GroundTargetInfo { get; private set; }
 
         public static SatelliteInfo? SatelliteInfo { get; private set; }
+
+        public static FootprintPreview? FootprintPreview { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {               
@@ -231,6 +234,21 @@ namespace FootprintViewer.Designer
                 IsShow = true,
                 IsShowInfo = true,
             };
+
+            // FootprintPreview
+
+            var unitBitmap = new System.Drawing.Bitmap(1, 1);
+            unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
+
+            FootprintPreview = new FootprintPreview() 
+            {
+                Date = new DateTime(2001, 6, 1, 12, 0, 0).ToShortDateString(),
+                SatelliteName = "Satellite1",
+                SunElevation = 71.0,
+                CloudCoverFull = 84.0,
+                TileNumber = "38-50-lr_3857",
+                Image = new System.Drawing.Bitmap(unitBitmap)          
+            };
         }
 
         public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)
@@ -241,7 +259,7 @@ namespace FootprintViewer.Designer
                 Title = "Поиск сцены",
             };
 
-            var list = new List<FootprintImage>();
+            var list = new List<FootprintPreview>();
 
             Random random = new Random();
 
@@ -253,7 +271,7 @@ namespace FootprintViewer.Designer
                 var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
                 var date = DateTime.UtcNow;
 
-                list.Add(new FootprintImage()
+                list.Add(new FootprintPreview()
                 {
                     Date = date.Date.ToShortDateString(),
                     SatelliteName = satellites[random.Next(0, satellites.Length - 1)],

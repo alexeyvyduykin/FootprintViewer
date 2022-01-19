@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Models;
-using Mapsui.Geometries;
+﻿using Mapsui.Geometries;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI;
 using System;

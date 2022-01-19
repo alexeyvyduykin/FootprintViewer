@@ -1,20 +1,12 @@
-﻿using BruTile;
-using BruTile.MbTiles;
-using Mapsui;
-using Mapsui.Rendering.Skia;
-using Mapsui.Utilities;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using SQLite;
-using System;
+﻿using ReactiveUI;
 using System.Drawing;
 
-namespace FootprintViewer.Models
+namespace FootprintViewer.ViewModels
 {
-    public class FootprintImage : ReactiveObject
+    public class FootprintPreview : ReactiveObject
     {
-        public FootprintImage()
-        {                    
+        public FootprintPreview()
+        {
         }
 
         public string Date { get; set; }
@@ -31,7 +23,6 @@ namespace FootprintViewer.Models
 
         public Mapsui.Geometries.Geometry? Geometry { get; set; }
 
-        [Reactive]
-        public Image Preview { get; set; }
+        public Image Image { get; set; }
     }
 }

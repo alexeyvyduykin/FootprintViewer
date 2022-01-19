@@ -1,6 +1,5 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
-using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -19,7 +18,7 @@ namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
     {
-        private readonly IList<FootprintImage> _sourceFootprints = new List<FootprintImage>();
+        private readonly IList<FootprintPreview> _sourceFootprints = new List<FootprintPreview>();
         // protected readonly SourceList<Footprint> _sourceFootprints;
         // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
 
@@ -47,13 +46,13 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
 
-            MouseOverEnterCommand = ReactiveCommand.Create<FootprintImage>(ShowFootprintBorder);
+            MouseOverEnter = ReactiveCommand.Create<FootprintPreview?>(ShowFootprintBorder);
 
-            MouseOverLeaveCommand = ReactiveCommand.Create(HideFootprintBorder);
+            MouseOverLeave = ReactiveCommand.Create(HideFootprintBorder);
 
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<FootprintImage>(SelectionChanged);
+            SelectedItemChangedCommand = ReactiveCommand.Create<FootprintPreview>(SelectionChanged);
 
             Filter = new SceneSearchFilter(dependencyResolver);
 
@@ -120,7 +119,7 @@ namespace FootprintViewer.ViewModels
             IsUpdating = false;
         }
 
-        private static async Task<IEnumerable<FootprintImage>> LoadDataAsync(IUserDataSource dataSource)
+        private static async Task<IEnumerable<FootprintPreview>> LoadDataAsync(IUserDataSource dataSource)
         {
             return await Task.Run(() =>
             {
@@ -143,9 +142,9 @@ namespace FootprintViewer.ViewModels
                // Footprints.Clear();
                // Footprints.AddRange(footprints);
 
-                Footprints = new ObservableCollection<FootprintImage>(footprints);
+                Footprints = new ObservableCollection<FootprintPreview>(footprints);
 
-                var sortNames = new List<FootprintImage>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
+                var sortNames = new List<FootprintPreview>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
                 sortNames.Sort();
 
                 Filter.AddSensors(sortNames);
@@ -154,15 +153,15 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
-        public ReactiveCommand<FootprintImage, Unit> MouseOverEnterCommand { get; }
+        public ReactiveCommand<FootprintPreview?, Unit> MouseOverEnter { get; }
 
-        public ReactiveCommand<Unit, Unit> MouseOverLeaveCommand { get; }
+        public ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
 
-        public ReactiveCommand<FootprintImage, Unit> SelectedItemChangedCommand { get; }
+        public ReactiveCommand<FootprintPreview, Unit> SelectedItemChangedCommand { get; }
 
-        private void ShowFootprintBorder(FootprintImage footprint)
+        private void ShowFootprintBorder(FootprintPreview? footprint)
         {
-            if (Map != null)
+            if (Map != null && footprint != null)
             {
                 var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
 
@@ -204,7 +203,7 @@ namespace FootprintViewer.ViewModels
             Filter.Click();
         }
 
-        private void SelectionChanged(FootprintImage footprint)
+        private void SelectionChanged(FootprintPreview footprint)
         {
             if (Map != null && footprint != null && footprint.Geometry != null)
             {
@@ -233,10 +232,10 @@ namespace FootprintViewer.ViewModels
         // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
 
         [Reactive]
-        public ObservableCollection<FootprintImage> Footprints { get; private set; } = new ObservableCollection<FootprintImage>();
+        public ObservableCollection<FootprintPreview> Footprints { get; private set; } = new ObservableCollection<FootprintPreview>();
 
         [Reactive]
-        public FootprintImage? SelectedFootprint { get; set; }
+        public FootprintPreview? SelectedFootprint { get; set; }
 
         [Reactive]
         public SceneSearchFilter Filter { get; set; }
