@@ -16,50 +16,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintInfo : ReactiveObject
-    {
-        private readonly Footprint? _footprint;
-
-        public FootprintInfo() { }
-
-        public FootprintInfo(Footprint footprint)
-        {
-            _footprint = footprint;
-            Name = footprint.Name;
-            SatelliteName = footprint.SatelliteName;
-            Center = footprint.Center.Coordinate.Copy();
-            Begin = footprint.Begin;
-            Duration = footprint.Duration;
-            Node = footprint.Node;
-            Direction = footprint.Direction;
-        }
-
-        public Footprint? Footprint => _footprint;
-
-        [Reactive]
-        public string? Name { get; set; }
-
-        [Reactive]
-        public bool IsShowInfo { get; set; } = false;
-
-        [Reactive]
-        public string? SatelliteName { get; set; }
-
-        [Reactive]
-        public Coordinate Center { get; set; } = new Coordinate();
-
-        [Reactive]
-        public DateTime Begin { get; set; }
-
-        [Reactive]
-        public double Duration { get; set; }
-
-        [Reactive]
-        public int Node { get; set; }
-
-        [Reactive]
-        public SatelliteStripDirection Direction { get; set; }
-    }
 
     public enum FootprintViewerContentType
     {
@@ -99,7 +55,7 @@ namespace FootprintViewer.ViewModels
 
             PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
 
-            ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);
+            ClickOnItem = ReactiveCommand.Create<FootprintInfo?>(ClickOnItemImpl);
 
             FilterClickCommand = ReactiveCommand.Create(FilterClick);
 
@@ -178,7 +134,7 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
 
-        public ReactiveCommand<FootprintInfo, Unit> ClickOnItemCommand { get; }
+        public ReactiveCommand<FootprintInfo?, Unit> ClickOnItem { get; }
 
         public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
 
@@ -256,7 +212,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void ClickOnItem(FootprintInfo item)
+        private void ClickOnItemImpl(FootprintInfo? item)
         {
             if (SelectedFootprintInfo != null)
             {

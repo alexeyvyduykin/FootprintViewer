@@ -16,6 +16,7 @@
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.10" />
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.10" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.10.4" />
   </ItemGroup>
 

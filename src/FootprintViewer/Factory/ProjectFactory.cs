@@ -28,8 +28,8 @@ namespace FootprintViewer
 
         public Map CreateMap(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetService<IDataSource>() ?? throw ServiceException.IsNull();
-            var userSource = dependencyResolver.GetService<IUserDataSource>() ?? throw ServiceException.IsNull();
+            var source = dependencyResolver.GetExistingService<IDataSource>();
+            var userSource = dependencyResolver.GetExistingService<IUserDataSource>();
 
             var map = new Map()
             {

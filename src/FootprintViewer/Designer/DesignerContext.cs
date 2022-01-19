@@ -25,7 +25,7 @@ namespace FootprintViewer.Designer
         public static FootprintObserver? FootprintObserver { get; private set; }
 
         public static FootprintObserverList? FootprintObserverList { get; private set; }
-
+      
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
         public static GroundTargetViewer? GroundTargetViewer { get; private set; }
@@ -43,6 +43,8 @@ namespace FootprintViewer.Designer
         public static WorldMapSelector? WorldMapSelector { get; private set; }
 
         public static MainViewModel? MainViewModel { get; private set; }
+
+        public static FootprintInfo? FootprintInfo { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {               
@@ -180,6 +182,22 @@ namespace FootprintViewer.Designer
             MainViewModel = dependencyResolver.GetService<MainViewModel>();
 
             MainViewModel?.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
+
+            // FootprintInfo
+
+            FootprintInfo = new FootprintInfo(new Footprint()
+            {
+                Name = "Footrpint001",
+                SatelliteName = "Satellite1",
+                Center = new Point(54.434545, -12.435454),
+                Begin = new DateTime(2001, 6, 1, 12, 0, 0),
+                Duration = 35,
+                Node = 11,
+                Direction = SatelliteStripDirection.Left,
+            })
+            {           
+                IsShowInfo = true
+            };
         }
 
         public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)

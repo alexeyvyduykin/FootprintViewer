@@ -36,11 +36,11 @@ namespace FootprintViewer.ViewModels
         {
             _dependencyResolver = dependencyResolver;
 
-            _dataSource = dependencyResolver.GetService<IDataSource>() ?? throw ServiceException.IsNull();
-            _userDataSource = dependencyResolver.GetService<IUserDataSource>() ?? throw ServiceException.IsNull();
-            _factory = dependencyResolver.GetService<ProjectFactory>() ?? throw ServiceException.IsNull();
-            _map = dependencyResolver.GetService<Map>() ?? throw ServiceException.IsNull();
-            _sidePanel = dependencyResolver.GetService<SidePanel>() ?? throw ServiceException.IsNull();
+            _dataSource = dependencyResolver.GetExistingService<IDataSource>();
+            _userDataSource = dependencyResolver.GetExistingService<IUserDataSource>();
+            _factory = dependencyResolver.GetExistingService<ProjectFactory>();
+            _map = dependencyResolver.GetExistingService<Map>();
+            _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
                  
             ActualController = new EditController();
 
