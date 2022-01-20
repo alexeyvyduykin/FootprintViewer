@@ -87,13 +87,15 @@ namespace FootprintViewer.Designer
             // Tabs
             // Tabs: FootprintObserver
 
-            FootprintObserver = dependencyResolver.GetService<FootprintObserver>();
+            FootprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
+
+            FootprintObserver.IsActive = true;
 
             // Tabs: FootprintObserverList
 
             FootprintObserverList = new FootprintObserverList(dependencyResolver);
 
-            FootprintObserverList?.LoadFootprints.Execute().Subscribe();
+            FootprintObserverList.Update();
 
             // Tabs: FootprintObserverFilter
 

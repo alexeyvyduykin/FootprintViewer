@@ -33,7 +33,9 @@
                     Command="{Binding FilterClickCommand}"                  
                     Content="Настройки поиска"/>
       
-      <ContentControl Content="{Binding MainContent}" Grid.Row="1" Margin="10"/>
+      <ContentControl Content="{Binding MainContent}" 
+                      Grid.Row="1" 
+                      Margin="10"/>
 
     </Grid>
 

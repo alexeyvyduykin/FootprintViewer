@@ -39,7 +39,9 @@ namespace FootprintViewer.Layers
 
         public bool IsSelect(string name) => _provider.IsSelect(name);
 
-        public Task<List<Footprint>> GetFootprintsAsync() => _provider.GetFootprintsAsync();        
+        public Task<List<Footprint>> GetFootprintsAsync() => _provider.GetFootprintsAsync();
+
+        public List<Footprint> GetFootprints() => _provider.GetFootprints();
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {

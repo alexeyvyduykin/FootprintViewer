@@ -1,60 +1,68 @@
-﻿using FootprintViewer.Layers;
-using Mapsui.Projection;
-using Mapsui;
-using NetTopologySuite.Geometries;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
-using FootprintViewer.Data;
 using System.Linq;
-using System.Reactive.Concurrency;
+using System.Reactive;
 using System.Reactive.Linq;
-using Splat;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public interface IFootprintDataSource
     {
         Task<List<Footprint>> GetFootprintsAsync();
+
+        List<Footprint> GetFootprints();
     }
 
     public class FootprintObserverList : ReactiveObject
-    {  
-        private readonly IFootprintDataSource? _dataSource;
-
-        private readonly ObservableAsPropertyHelper<List<FootprintInfo>> _footprints;
-
+    {
+        private readonly IFootprintDataSource _dataSource;
+        private readonly ReactiveCommand<Unit, Unit> begin;
+        private readonly ReactiveCommand<Unit, Unit> end;
+     
         public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetService<IFootprintDataSource>();
-         
-            PreviewMouseLeftButtonDownCommand = ReactiveCommand.Create(PreviewMouseLeftButtonDown);
+            _dataSource = dependencyResolver.GetExistingService<IFootprintDataSource>();
 
-            ClickOnItemCommand = ReactiveCommand.Create<FootprintInfo>(ClickOnItem);
+            FootprintInfos = new ObservableCollection<FootprintInfo>();
 
-            LoadFootprints = ReactiveCommand.CreateFromTask(_dataSource.GetFootprintsAsync);
-
-            this.WhenAnyValue(s => s.SelectedFootprintInfo).Subscribe(footprint =>
+            this.WhenAnyValue(s => s.SelectedFootprintInfo).WhereNotNull().Subscribe(footprint =>
             {
-                if (footprint != null)
-                {
-                    FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+                CloseItems();
 
-                    footprint.IsShowInfo = true;
-                }
+                footprint.IsShowInfo = true;
             });
 
-            _footprints = LoadFootprints.Throttle(TimeSpan.FromSeconds(2)).Select(s => s.Select(t => new FootprintInfo(t)).ToList()).ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
+            begin = ReactiveCommand.Create(() => { });
+
+            end = ReactiveCommand.Create(() => { });
         }
 
-        public IObservable<bool> PreviewMouseLeftButtonCommandCheckerObserver => this.WhenAnyValue(s => s.PreviewMouseLeftButtonCommandChecker);
+        public IObservable<Unit> BeginUpdate => begin;
+
+        public IObservable<Unit> EndUpdate => end;
 
         public IObservable<FootprintInfo?> SelectedFootprintInfoObserver => this.WhenAnyValue(s => s.SelectedFootprintInfo);
+
+        public void Update() => FootprintsChanged();
+
+        public void CloseItems() => FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+
+        private static async Task<IList<FootprintInfo>> LoadDataAsync(IFootprintDataSource dataSource)
+        {
+            return await Task.Run(() =>
+            {
+                Thread.Sleep(500);
+                return dataSource.GetFootprints().Select(s => new FootprintInfo(s)).ToList();
+            });
+        }
 
         //public void SelectFootprintInfo(string name)
         //{
@@ -84,49 +92,24 @@ namespace FootprintViewer.ViewModels
         //    }
         //}
 
-        private void ScrollCollectionToCenter(FootprintInfo item)
+        //private void ScrollCollectionToCenter(FootprintInfo item)
+        //{
+        //    ScrollToCenter = true;
+
+        //    SelectedFootprintInfo = item;
+
+        //    ScrollToCenter = false;
+        //}
+
+        private async void FootprintsChanged()
         {
-            ScrollToCenter = true;
+            begin.Execute().Subscribe();
 
-            SelectedFootprintInfo = item;
+            var footprints = await LoadDataAsync(_dataSource);
 
-            ScrollToCenter = false;
-        }
+            FootprintInfos = new ObservableCollection<FootprintInfo>(footprints);
 
-        private void PreviewMouseLeftButtonDown()
-        {
-            if (SelectedFootprintInfo != null)
-            {
-                if (SelectedFootprintInfo.IsShowInfo == true)
-                {
-                    SelectedFootprintInfo.IsShowInfo = false;
-                }
-                else
-                {
-                    SelectedFootprintInfo.IsShowInfo = true;
-                }
-
-                PreviewMouseLeftButtonCommandChecker = !PreviewMouseLeftButtonCommandChecker;
-            }
-        }
-
-        private void ClickOnItem(FootprintInfo item)
-        {
-            if (SelectedFootprintInfo != null)
-            {
-                if (SelectedFootprintInfo.IsShowInfo == true)
-                {
-                    SelectedFootprintInfo.IsShowInfo = false;
-                }
-                else
-                {
-                    SelectedFootprintInfo.IsShowInfo = true;
-                }
-
-                PreviewMouseLeftButtonCommandChecker = !PreviewMouseLeftButtonCommandChecker;
-            }
-
-            SelectedFootprintInfo = item;
+            end.Execute().Subscribe();
         }
 
         //private async void FootprintsChanged()
@@ -160,21 +143,13 @@ namespace FootprintViewer.ViewModels
         //    }
         //}
 
-        public ReactiveCommand<Unit, Unit> PreviewMouseLeftButtonDownCommand { get; }
-
-        public ReactiveCommand<FootprintInfo, Unit> ClickOnItemCommand { get; }
-
-        public ReactiveCommand<Unit, List<Footprint>> LoadFootprints { get; }
+        //[Reactive]
+        //public bool ScrollToCenter { get; set; } = false;
 
         [Reactive]
         public FootprintInfo? SelectedFootprintInfo { get; set; }
-      
-        public List<FootprintInfo> FootprintInfos => _footprints.Value;
 
         [Reactive]
-        public bool ScrollToCenter { get; set; } = false;
-
-        [Reactive]
-        private bool PreviewMouseLeftButtonCommandChecker { get; set; } = false;
+        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }
     }
 }

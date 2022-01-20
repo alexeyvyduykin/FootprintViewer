@@ -34,6 +34,11 @@ namespace FootprintViewer.Layers
             return await Task.Run(() => _source.Footprints.ToList());
         }
 
+        public List<Footprint> GetFootprints()
+        {
+            return _source.Footprints.ToList();
+        }
+
         public void SelectFeature(string name)
         {
             var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();

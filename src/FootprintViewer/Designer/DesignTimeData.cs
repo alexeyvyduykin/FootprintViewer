@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui.Providers;
 using NetTopologySuite.Geometries;
@@ -15,12 +14,12 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeData : IReadonlyDependencyResolver
     {
-        private Mapsui.Map _map = new Mapsui.Map();
+        private readonly Mapsui.Map _map = new Mapsui.Map();
         private readonly ProjectFactory _projectFactory = new ProjectFactory();
         private readonly IDataSource _dataSource = new DesignTimeDataSource();
         private readonly IUserDataSource _userDataSource = new DesignTimeUserDataSource();
         private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
-        private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource(); 
+        private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource();
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -216,10 +215,9 @@ namespace FootprintViewer.Designer
                 };
             }
 
-            public Task<List<Footprint>> GetFootprintsAsync()
-            {
-                return Task.Run(() => _footprints);
-            }
+            public List<Footprint> GetFootprints() => _footprints;
+
+            public Task<List<Footprint>> GetFootprintsAsync() => Task.Run(() => _footprints);
         }
 
         private class GroundTargetDataSource : IGroundTargetDataSource
@@ -249,9 +247,9 @@ namespace FootprintViewer.Designer
                 };
             }
 
-            public IObservable<IEnumerable<IFeature>?> RefreshDataObservable => 
+            public IObservable<IEnumerable<IFeature>?> RefreshDataObservable =>
                 ReactiveCommand.CreateFromObservable<Unit, IEnumerable<IFeature>?>(_ => Observable.Return<IEnumerable<IFeature>?>(null));
-         
+
             public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features) => _groundTarget;
 
             public IEnumerable<GroundTarget> GetTargets() => _groundTarget;
