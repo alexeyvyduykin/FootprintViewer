@@ -31,6 +31,8 @@ namespace FootprintViewer.Designer
 
         public static GroundTargetViewer? GroundTargetViewer { get; private set; }
 
+        public static GroundTargetViewerList? GroundTargetViewerList { get; private set; }
+
         public static SatelliteViewer? SatelliteViewer { get; private set; }
 
         public static SceneSearch? SceneSearch { get; private set; }
@@ -99,9 +101,15 @@ namespace FootprintViewer.Designer
 
             // Tabs: GroundTargetViewer
 
-            GroundTargetViewer = dependencyResolver.GetService<GroundTargetViewer>();
+            GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
 
-            GroundTargetViewer?.UpdateAll();
+            GroundTargetViewer.Update();
+
+            // Tabs: GroundTargetViewerList
+
+            GroundTargetViewerList = new GroundTargetViewerList(dependencyResolver);
+
+            GroundTargetViewerList.Reset();
 
             // Tabs: SatelliteViewer
 

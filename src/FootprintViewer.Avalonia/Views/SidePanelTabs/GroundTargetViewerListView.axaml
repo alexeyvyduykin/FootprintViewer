@@ -1,0 +1,44 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.GroundTargetViewerListView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"       
+             d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewerList}"           
+             x:DataType="vm:GroundTargetViewerList" x:CompileBindings="True"                                        
+             mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="450">
+
+  <UserControl.Styles>
+
+    <Style Selector="ListBoxItem">
+      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"></Setter>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="Margin" Value="1"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"></Setter>
+    </Style>
+
+    <Style Selector="ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}"></Setter>
+    </Style>
+
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}"></Setter>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Border Background="{StaticResource MainBackgroundBrush}"
+          Padding="10">      
+    <ListBox BorderThickness="0"
+             Background="Transparent"               
+             Items="{Binding GroundTargetInfos}"               
+             SelectedItem="{Binding SelectedGroundTargetInfo}"/>  
+  </Border>
+
+</UserControl>

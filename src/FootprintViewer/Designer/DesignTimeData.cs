@@ -3,9 +3,12 @@ using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui.Providers;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
@@ -246,8 +249,9 @@ namespace FootprintViewer.Designer
                 };
             }
 
-            public event TargetLayerEventHandler? OnRefreshData;
-
+            public IObservable<IEnumerable<IFeature>?> RefreshDataObservable => 
+                ReactiveCommand.CreateFromObservable<Unit, IEnumerable<IFeature>?>(_ => Observable.Return<IEnumerable<IFeature>?>(null));
+         
             public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features) => _groundTarget;
 
             public IEnumerable<GroundTarget> GetTargets() => _groundTarget;

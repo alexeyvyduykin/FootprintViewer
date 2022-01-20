@@ -6,8 +6,10 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
@@ -21,13 +23,14 @@ namespace FootprintViewer.Layers
 
     public class TargetLayer : MemoryLayer, IGroundTargetDataSource
     {
-        private IStyle _style;
+        private readonly IStyle _style;
         private readonly TargetProvider _provider;
         private const int _maxVisible = 5000;
         private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
+        private readonly ReactiveCommand<IEnumerable<IFeature>?, IEnumerable<IFeature>?> refresh;
 
         public TargetLayer(IProvider provider)
-        {        
+        {
             _provider = (TargetProvider)provider;
 
             var style1 = CreateTargetHighlightThemeStyle();
@@ -40,9 +43,11 @@ namespace FootprintViewer.Layers
 
             DataSource = provider;
             IsMapInfoLayer = false;
+
+            refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, IEnumerable<IFeature>?>(s => s);
         }
 
-        public event TargetLayerEventHandler OnRefreshData;
+        public IObservable<IEnumerable<IFeature>?> RefreshDataObservable => refresh;
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
@@ -53,26 +58,18 @@ namespace FootprintViewer.Layers
                 if (extent.Left != _lastExtent.Left && extent.Top != _lastExtent.Top && extent.Right != _lastExtent.Right && extent.Bottom != _lastExtent.Bottom)
                 {
                     if (resolution < _maxVisible && extent.Equals(new BoundingBox(0, 0, 0, 0)) == false)
-                    {            
+                    {
                         // HACK: change size extent to viewport of view control
                         var box = extent.Grow(-SymbolStyle.DefaultWidth * 2 * resolution, -SymbolStyle.DefaultHeight * 2 * resolution);
 
-                        OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
-                        {
-                            Resolution = resolution,
-                            Features = GetFeaturesInView(box, resolution),
-                        });
+                        refresh.Execute(GetFeaturesInView(box, resolution)).Subscribe();
                     }
                     else
                     {
-                        OnRefreshData?.Invoke(this, new TargetLayerEventArgs()
-                        {
-                            Resolution = resolution,
-                            Features = null
-                        });
+                        refresh.Execute(null).Subscribe();
                     }
 
-                    _lastExtent = extent.Copy();                    
+                    _lastExtent = extent.Copy();
                 }
             }
         }
