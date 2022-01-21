@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -26,34 +25,62 @@ namespace FootprintViewer.ViewModels
         private readonly IFootprintDataSource _dataSource;
         private readonly ReactiveCommand<Unit, Unit> begin;
         private readonly ReactiveCommand<Unit, Unit> end;
-     
+        private readonly ReactiveCommand<FootprintInfo, FootprintInfo> select;
+        private readonly ReactiveCommand<FootprintInfo, FootprintInfo> unselect;
+        private FootprintInfo? _prevSelectedItem;
+
         public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
         {
             _dataSource = dependencyResolver.GetExistingService<IFootprintDataSource>();
 
             FootprintInfos = new ObservableCollection<FootprintInfo>();
 
-            this.WhenAnyValue(s => s.SelectedFootprintInfo).WhereNotNull().Subscribe(footprint =>
-            {
-                CloseItems();
-
-                footprint.IsShowInfo = true;
-            });
-
             begin = ReactiveCommand.Create(() => { });
-
             end = ReactiveCommand.Create(() => { });
+            select = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
+            unselect = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
         }
 
         public IObservable<Unit> BeginUpdate => begin;
 
         public IObservable<Unit> EndUpdate => end;
 
-        public IObservable<FootprintInfo?> SelectedFootprintInfoObserver => this.WhenAnyValue(s => s.SelectedFootprintInfo);
+        public IObservable<FootprintInfo> SelectItem => select;
+
+        public IObservable<FootprintInfo> UnselectItem => unselect;
 
         public void Update() => FootprintsChanged();
 
         public void CloseItems() => FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
+
+        public void ClickOnItem(FootprintInfo? item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            if (_prevSelectedItem != null && _prevSelectedItem != item)
+            {
+                if (_prevSelectedItem.IsShowInfo == true)
+                {
+                    _prevSelectedItem.IsShowInfo = false;
+                }
+            }
+
+            item.IsShowInfo = !item.IsShowInfo;
+
+            if (item.IsShowInfo == true)
+            {
+                select.Execute(item).Subscribe();
+            }
+            else
+            {
+                unselect.Execute(item).Subscribe();
+            }
+
+            _prevSelectedItem = item;
+        }
 
         private static async Task<IList<FootprintInfo>> LoadDataAsync(IFootprintDataSource dataSource)
         {
@@ -145,9 +172,6 @@ namespace FootprintViewer.ViewModels
 
         //[Reactive]
         //public bool ScrollToCenter { get; set; } = false;
-
-        [Reactive]
-        public FootprintInfo? SelectedFootprintInfo { get; set; }
 
         [Reactive]
         public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }

@@ -21,12 +21,10 @@
   </UserControl.Styles>
 
   <Panel>
-    <ListBox x:Name="listBox"
-             x:CompileBindings="False"
+    <ListBox x:CompileBindings="False"
              BorderThickness="0"
              Background="Transparent"
-             Items="{Binding FootprintInfos}"
-             SelectedItem="{Binding SelectedFootprintInfo}"
+             Items="{Binding FootprintInfos}"    
              behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}"/>
   </Panel>
   
