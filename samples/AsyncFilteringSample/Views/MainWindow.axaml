@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AsyncFilteringSample.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
+        x:Class="AsyncFilteringSample.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="AsyncFilteringSample">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+  <Border Padding="8,4,8,4">
+    <Grid RowDefinitions="Auto,Auto,*">
+      <Slider Grid.Row="0" Value="{Binding CurrentWidth}"></Slider>
+      <CheckBox Grid.Row="1" IsChecked="{Binding IsUpdating}">Updating</CheckBox>
+      <ListBox Grid.Row="2" Items="{Binding Users}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Description}"/>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+
+    </Grid>
+  </Border>
+  
+</Window>
