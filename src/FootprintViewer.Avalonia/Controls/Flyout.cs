@@ -32,8 +32,8 @@ namespace FootprintViewer.Avalonia.Controls
 
             TargetProperty.Changed.Subscribe(OnTargetChanged);
             IsOpenProperty.Changed.Subscribe(OnDataChanged);
-
-            Initialized += Flyout_Loaded;
+            
+            Initialized += Flyout_Loaded;           
         }
 
         private void Flyout_Loaded(object? sender, EventArgs e)
@@ -65,7 +65,7 @@ namespace FootprintViewer.Avalonia.Controls
                 ContentTemplate = ContentTemplate,// FlyoutTemplate
             };
 
-            InvalidateData();
+          //  InvalidateData();
         }
 
         //private void _border_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -426,10 +426,13 @@ namespace FootprintViewer.Avalonia.Controls
             AvaloniaProperty.Register<Flyout, bool>("IsOpen", false);
 
         private static void OnDataChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            var flyout = (Flyout)e.Sender;
+        {          
+            if (e.Sender is Flyout flyout)
+            {
+                flyout.InvalidateData();
 
-            flyout.InvalidateData();
+                flyout.IsVisible = flyout.IsOpen;
+            }
         }
 
         public bool IsAnchor

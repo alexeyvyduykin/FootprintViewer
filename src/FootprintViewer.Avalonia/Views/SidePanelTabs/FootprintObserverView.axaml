@@ -9,31 +9,31 @@
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              x:Name="userControl"                        
              d:DataContext="{x:Static vmd:DesignerContext.FootprintObserver}"           
-             x:DataType="vm:FootprintObserver" x:CompileBindings="False"                 
+             x:DataType="vm:FootprintObserver"               
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="450">
   
   <Grid>
 
-    <controls:Flyout Placement="Left"
-                     Margin="0,10,0,0"
-                     Target="{Binding ElementName=btnSearch}"
-                     Background="{StaticResource MainBackgroundBrush}"
-                     IsOpen="{Binding Filter.IsOpen}"
-                     IsVisible="{Binding Filter.IsOpen}"
-                     Content="{Binding Filter}"/>
+    <controls:Flyout x:Name="Flyout" 
+                     Placement="Left"
+                     Margin="0,10,0,0"     
+           Target="{Binding #SearchToggleButton}"
+                     IsOpen="{Binding Filter.IsOpen}"                  
+                     Content="{Binding Filter}"
+                     Background="{StaticResource MainBackgroundBrush}"/>
 
     <Grid RowDefinitions="Auto,*,50"
           Background="{StaticResource MainBackgroundBrush}">
 
       <ToggleButton Grid.Row="0"
-                    x:Name="btnSearch"
-                    Classes="searchToggleButton"
-                    Command="{Binding FilterClickCommand}"                  
+                    x:Name="SearchToggleButton"
+                    Classes="searchToggleButton"      
+                    Command="{Binding FilterClick}"
                     Content="Настройки поиска"/>
       
-      <ContentControl Content="{Binding MainContent}" 
+      <ContentControl x:Name="MainContentControl"                    
                       Grid.Row="1" 
                       Margin="10"/>
 
