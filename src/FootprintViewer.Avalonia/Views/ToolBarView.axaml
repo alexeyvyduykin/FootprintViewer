@@ -254,10 +254,9 @@
                        Placement="Right"
                        Target="{Binding ElementName=LayerSelectorButton}"
                        IsAnchor="True"
-                       Background="{StaticResource MainBackgroundBrush}"                                                      
+                       IsOpen="{Binding IsWorldMapSelectorOpen}"
+                       Background="{StaticResource MainBackgroundBrush}"
                        ContentSource="{Binding WorldMapSelector}"/>
-
-      <!--IsOpen="{Binding WorldMapSelector.IsOpen}"-->
             
       <StackPanel DataContext="{Binding WorldMaps}"              
                   HorizontalAlignment="Left">

@@ -22,22 +22,22 @@ namespace FootprintViewer.Avalonia.Views
         {
             InitializeComponent();
 
-            _click = ReactiveCommand.Create(ClickImpl);
+          //  _click = ReactiveCommand.Create(ClickImpl);
 
             this.WhenActivated(disposables =>
             {
                 // LayerSelectorButton               
-                this.LayerSelectorButton.Events().Click.Select(args => Unit.Default).InvokeCommand(this, v => v._click).DisposeWith(disposables);
+             //   this.LayerSelectorButton.Events().Click.Select(args => Unit.Default).InvokeCommand(this, v => v._click).DisposeWith(disposables);
             });
         }
 
-        private readonly ReactiveCommand<Unit, Unit> _click;
+       // private readonly ReactiveCommand<Unit, Unit> _click;
 
         private void ClickImpl()
         {
             //Flyout.Click();
 
-            Flyout.IsOpen = !Flyout.IsOpen;
+         //   Flyout.IsOpen = !Flyout.IsOpen;
         }
 
         private void InitializeComponent()

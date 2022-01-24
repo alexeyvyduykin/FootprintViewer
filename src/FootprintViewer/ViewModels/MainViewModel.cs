@@ -29,34 +29,33 @@ namespace FootprintViewer.ViewModels
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
-
-        private readonly IReadonlyDependencyResolver _dependencyResolver;
+        private readonly ToolBar _toolBar;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dependencyResolver = dependencyResolver;
-
             _dataSource = dependencyResolver.GetExistingService<IDataSource>();
             _userDataSource = dependencyResolver.GetExistingService<IUserDataSource>();
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
-                 
+            _toolBar = dependencyResolver.GetExistingService<ToolBar>();
+
             ActualController = new EditController();
 
             _infoPanel = _factory.CreateInfoPanel();
 
-            ToolBar = CreateToolBar();
+            _toolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
+            _toolBar.ZoomOutClick.Subscribe(_ => ZoomOutCommand());
+            _toolBar.RectangleClick.Subscribe(_ => RectangleCommand());
+            _toolBar.PolygonClick.Subscribe(_ => PolygonCommand());
+            _toolBar.CircleClick.Subscribe(_ => CircleCommand());
+            _toolBar.RouteDistanceClick.Subscribe(_ => RouteDistanceCommand());
+            _toolBar.EditClick.Subscribe(_ => EditCommand());
+            _toolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
-            WorldMapSelector = new WorldMapSelector(_dependencyResolver);
+            _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-            _editLayer = Map.GetLayer<EditLayer>(LayerType.Edit);
-
-            Map.DataChanged += Map_DataChanged;
-         
-            WorldMapSelector.SelectLayer += (layer) => { Map.SetWorldMapLayer(layer); };
-
-            ToolBar.WorldMapSelector = WorldMapSelector;
+            _map.DataChanged += Map_DataChanged;
         }
 
         public event EventHandler? AOIChanged;
@@ -428,82 +427,6 @@ namespace FootprintViewer.ViewModels
             Tip = null;
             ActualController = new EditController();
         }
-
-        private void WorldMapCommand()
-        {
-            WorldMapSelector?.Click();
-        }
-
-        private ToolBar CreateToolBar()
-        {
-            var toolZoomIn = new Tool()
-            {
-                Title = "+",
-                Tooltip = "Приблизить",
-                Command = ReactiveCommand.Create(ZoomInCommand),
-            };
-
-            var toolZoomOut = new Tool()
-            {
-                Title = "-",
-                Tooltip = "Отдалить",
-                Command = ReactiveCommand.Create(ZoomOutCommand),
-            };
-
-            var toolRectangle = new Tool()
-            {
-                Title = "AddRectangle",
-                Tooltip = "Нарисуйте прямоугольную AOI",
-                Command = ReactiveCommand.Create(RectangleCommand),
-            };
-
-            var toolPolygon = new Tool()
-            {
-                Title = "AddPolygon",
-                Tooltip = "Нарисуйте полигональную AOI",
-                Command = ReactiveCommand.Create(PolygonCommand),
-            };
-
-            var toolCircle = new Tool()
-            {
-                Title = "AddCircle",
-                Tooltip = "Нарисуйте круговую AOI",
-                Command = ReactiveCommand.Create(CircleCommand),
-            };
-
-            var aoiCollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle });
-
-            var toolRouteDistance = new Tool()
-            {
-                Title = "Route",
-                Tooltip = "Измерить расстояние",
-                Command = ReactiveCommand.Create(RouteDistanceCommand),
-            };
-
-            var toolEdit = new Tool()
-            {
-                Title = "Edit",
-                Command = ReactiveCommand.Create(EditCommand),
-            };
-
-            var toolWorldMaps = new Tool()
-            {
-                Title = "WorldMaps",
-                Tooltip = "Список слоев",
-                Command = ReactiveCommand.Create(WorldMapCommand),
-            };
-
-            var toolBar = new ToolBar();
-
-            toolBar.ZoomIn = toolZoomIn;
-            toolBar.ZoomOut = toolZoomOut;
-            toolBar.AOICollection = aoiCollection;
-            toolBar.RouteDistance = toolRouteDistance;
-            toolBar.Edit = toolEdit;
-            toolBar.WorldMaps = toolWorldMaps;
-
-            return toolBar;
-        }
  
         public IUserDataSource UserDataSource => _userDataSource;
 
@@ -517,6 +440,8 @@ namespace FootprintViewer.ViewModels
         
         public MapListener? MapListener { get; set; }
 
+        public ToolBar ToolBar => _toolBar;
+
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }
 
@@ -525,15 +450,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Plotter? Plotter { get; set; }
-
-        [Reactive]
-        public ToolBar ToolBar { get; set; }
-      
+     
         [Reactive]
         public Tip? Tip { get; set; }
-
-        [Reactive]
-        public WorldMapSelector? WorldMapSelector { get; set; }    
     }
 
     public class MapLayer

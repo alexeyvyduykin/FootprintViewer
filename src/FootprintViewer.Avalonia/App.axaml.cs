@@ -1,4 +1,3 @@
-#nullable disable
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -14,9 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace FootprintViewer.Avalonia
@@ -46,23 +43,23 @@ namespace FootprintViewer.Avalonia
         private static void RegisterSplat()
         {
             Locator.CurrentMutable.InitializeSplat();
-          
-            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());         
+
+            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
             Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
             //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
             Locator.CurrentMutable.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
 
             var locator = Locator.Current;
 
-            var factory = locator.GetService<ProjectFactory>();
+            var factory = locator.GetExistingService<ProjectFactory>();
 
             var map = factory.CreateMap(locator);
 
             Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
 
-            var footprintDataSource =(IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            var footprintDataSource = (IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
             var groundTargetDataSource = (IGroundTargetDataSource)map.GetLayer<TargetLayer>(LayerType.GroundTarget);
-            
+
             Locator.CurrentMutable.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
             Locator.CurrentMutable.RegisterLazySingleton<IGroundTargetDataSource>(() => groundTargetDataSource);
 
@@ -71,12 +68,14 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(locator));
             Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(locator));
 
+            Locator.CurrentMutable.RegisterLazySingleton<ToolBar>(() => new ToolBar(locator));
+
             var tabs = new SidePanelTab[]
             {
-                locator.GetService<SceneSearch>(),
-                locator.GetService<SatelliteViewer>(),
-                locator.GetService<GroundTargetViewer>(),
-                locator.GetService<FootprintObserver>(),
+                locator.GetExistingService<SceneSearch>(),
+                locator.GetExistingService<SatelliteViewer>(),
+                locator.GetExistingService<GroundTargetViewer>(),
+                locator.GetExistingService<FootprintObserver>(),
             };
 
             Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
@@ -88,14 +87,14 @@ namespace FootprintViewer.Avalonia
         public override void OnFrameworkInitializationCompleted()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-         
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {              
+            {
                 RegisterSplat();
 
-                InitializationClassicDesktopStyle(desktopLifetime);
+                InitializationClassicDesktopStyle();
 
-                var mainViewModel = Locator.Current.GetService<MainViewModel>();
+                var mainViewModel = Locator.Current.GetExistingService<MainViewModel>();
 
                 if (mainViewModel != null)
                 {
@@ -105,7 +104,7 @@ namespace FootprintViewer.Avalonia
                     };
                 }
             }
-            else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewLifetime)
+            else if (ApplicationLifetime is ISingleViewApplicationLifetime)
             {
                 throw new Exception();
             }
@@ -113,14 +112,14 @@ namespace FootprintViewer.Avalonia
             base.OnFrameworkInitializationCompleted();
         }
 
-        public static void InitializationClassicDesktopStyle(IClassicDesktopStyleApplicationLifetime? desktopLifetime)
-        {  
-            var mainViewModel = Locator.Current.GetService<MainViewModel>();        
-            var footprintObserver = Locator.Current.GetService<FootprintObserver>();
-            var sceneSearch = Locator.Current.GetService<SceneSearch>();
+        public static void InitializationClassicDesktopStyle()
+        {
+            var mainViewModel = Locator.Current.GetExistingService<MainViewModel>();
+            var footprintObserver = Locator.Current.GetExistingService<FootprintObserver>();
+            var sceneSearch = Locator.Current.GetExistingService<SceneSearch>();
 
             var mapListener = new MapListener();
-                 
+
             mapListener.LeftClickOnMap += (s, e) =>
             {
                 if (s is string name && footprintObserver.IsActive == true)

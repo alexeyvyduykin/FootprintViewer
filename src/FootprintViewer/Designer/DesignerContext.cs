@@ -156,49 +156,19 @@ namespace FootprintViewer.Designer
 
             SidePanel = new SidePanel() { Tabs = new List<SidePanelTab>(tabs) };
 
-            // ToolManager
+            // ToolBar
 
-            var toolRectangle = new Tool()
-            {
-                Title = "AddRectangle",
-            };
-
-            var toolPolygon = new Tool()
-            {
-                Title = "AddPolygon",
-            };
-
-            var toolCircle = new Tool()
-            {
-                Title = "AddCircle",
-            };
-
-            ToolBar = new ToolBar()
-            {
-                AOICollection = new ToolCollection(new[] { toolRectangle, toolPolygon, toolCircle }) { Visible = true },
-                RouteDistance = new Tool()
-                {
-                    Title = "Route",
-                },
-                Edit = new Tool()
-                {
-                    Title = "Edit",
-                },
-                WorldMaps = new Tool()
-                {
-                    Title = "WorldMaps",
-                },
-            };
-
+            ToolBar = dependencyResolver.GetService<ToolBar>();
+          
             // WorldMapSelector
 
             WorldMapSelector = new WorldMapSelector(dependencyResolver);
 
             // MainViewModel
 
-            MainViewModel = dependencyResolver.GetService<MainViewModel>();
+            MainViewModel = dependencyResolver.GetExistingService<MainViewModel>();
 
-            MainViewModel?.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
+            MainViewModel.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
 
             // FootprintInfo
 

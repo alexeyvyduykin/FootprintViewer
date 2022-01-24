@@ -48,11 +48,13 @@ namespace FootprintViewer.Avalonia.Controls
                     _overlay.PropertyChanged -= _overlay_SizeChanged;
                 }
 
-                Window? parentWindow = WindowsManager.AllWindows.FirstOrDefault();
+                var parentWindow = WindowsManager.AllWindows.FirstOrDefault();
 
                 if (parentWindow == null)
                 {
-                    throw new Exception("Not find parent Window.");
+                    // HACK: exception in designer mode
+                    //throw new Exception("Not find parent Window.");
+                    return;
                 }
 
                 _overlay = (Grid)parentWindow.Content;

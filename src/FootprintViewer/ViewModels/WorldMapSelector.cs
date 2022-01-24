@@ -1,15 +1,9 @@
 ﻿using FootprintViewer.Data;
-using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
-using System.Text;
 
 namespace FootprintViewer.ViewModels
 {
@@ -25,32 +19,12 @@ namespace FootprintViewer.ViewModels
 
             SelectedLayer = layers.FirstOrDefault();
 
-            SelectedLayerObserver = this.WhenAnyValue(x => x.SelectedLayer);
+            LayerChanged = ReactiveCommand.Create<LayerSource, LayerSource>(s => s);
 
-            SelectedLayerObserver.Subscribe(layerSource =>
-            {
-                SelectLayer?.Invoke(layerSource);
-                    
-                IsOpen = false;                
-            });
-
-            ClickCommand = ReactiveCommand.Create(Click);
+            this.WhenAnyValue(x => x.SelectedLayer).InvokeCommand(LayerChanged);
         }
 
-        public void Click()
-        {
-            IsOpen = !IsOpen;
-        }
-
-        public IObservable<LayerSource> SelectedLayerObserver { get; private set; }
-
-
-        public Action<LayerSource>? SelectLayer;
-
-        public ReactiveCommand<Unit, Unit> ClickCommand { get; }
-
-        [Reactive]
-        public bool IsOpen { get; set; }
+        public ReactiveCommand<LayerSource, LayerSource> LayerChanged { get; }
 
         [Reactive]
         public ObservableCollection<LayerSource> Layers { get; set; }
