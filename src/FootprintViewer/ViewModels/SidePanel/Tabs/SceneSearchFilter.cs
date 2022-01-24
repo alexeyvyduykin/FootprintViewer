@@ -3,15 +3,10 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Linq;
-using System.Threading.Tasks;
 using DynamicData.Binding;
 using System.Reactive.Linq;
-using System.Threading;
 using DynamicData;
-using Mapsui.Providers;
-using Mapsui.Geometries.Utilities;
 using Mapsui.Geometries;
 using Splat;
 
@@ -51,11 +46,6 @@ namespace FootprintViewer.ViewModels
             //_observableFilter = 
             //    this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation).
             //    Select(_ => MakeFilter());
-        }
-
-        public void Click()
-        {
-            IsOpen = !IsOpen;
         }
 
         public void ForceUpdate()
@@ -168,8 +158,5 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public IGeometry? AOI { get; set; }
-
-        [Reactive]
-        public bool IsOpen { get; set; }
     }
 }

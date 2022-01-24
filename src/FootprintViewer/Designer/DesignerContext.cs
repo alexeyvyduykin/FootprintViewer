@@ -95,7 +95,7 @@ namespace FootprintViewer.Designer
 
             FootprintObserverList = new FootprintObserverList(dependencyResolver);
 
-            FootprintObserverList.Update();
+            FootprintObserverList.Update.Execute(null).Subscribe();
 
             // Tabs: FootprintObserverFilter
 

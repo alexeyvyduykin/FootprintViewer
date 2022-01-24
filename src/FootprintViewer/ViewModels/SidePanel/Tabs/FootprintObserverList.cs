@@ -1,14 +1,11 @@
 ﻿using FootprintViewer.Data;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
@@ -28,17 +25,20 @@ namespace FootprintViewer.ViewModels
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> select;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> unselect;
         private FootprintInfo? _prevSelectedItem;
+        private readonly ObservableAsPropertyHelper<List<FootprintInfo>> _footprintInfos;
 
         public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
         {
             _dataSource = dependencyResolver.GetExistingService<IFootprintDataSource>();
 
-            FootprintInfos = new ObservableCollection<FootprintInfo>();
-
             begin = ReactiveCommand.Create(() => { });
             end = ReactiveCommand.Create(() => { });
             select = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
             unselect = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
+
+            Update = ReactiveCommand.CreateFromTask<FootprintObserverFilter?, List<FootprintInfo>>(FootprintsChangedAsync);
+
+            _footprintInfos = Update.ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
         }
 
         public IObservable<Unit> BeginUpdate => begin;
@@ -49,7 +49,7 @@ namespace FootprintViewer.ViewModels
 
         public IObservable<FootprintInfo> UnselectItem => unselect;
 
-        public void Update() => FootprintsChanged();
+        public ReactiveCommand<FootprintObserverFilter?, List<FootprintInfo>> Update { get; }
 
         public void CloseItems() => FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
 
@@ -82,13 +82,30 @@ namespace FootprintViewer.ViewModels
             _prevSelectedItem = item;
         }
 
-        private static async Task<IList<FootprintInfo>> LoadDataAsync(IFootprintDataSource dataSource)
+        private static async Task<List<FootprintInfo>> LoadDataAsync(IFootprintDataSource dataSource, FootprintObserverFilter? filter = null)
         {
             return await Task.Run(() =>
             {
-                Thread.Sleep(500);
+                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+
+                if (filter != null)
+                {
+                    return dataSource.GetFootprints().Select(s => new FootprintInfo(s)).Where(f => filter.Filtering(f) == true).ToList();
+                }
+
                 return dataSource.GetFootprints().Select(s => new FootprintInfo(s)).ToList();
             });
+        }
+
+        private async Task<List<FootprintInfo>> FootprintsChangedAsync(FootprintObserverFilter? filter)
+        {
+            begin.Execute().Subscribe();
+
+            var footprints = await LoadDataAsync(_dataSource, filter);
+
+            end.Execute().Subscribe();
+
+            return footprints;
         }
 
         //public void SelectFootprintInfo(string name)
@@ -128,52 +145,9 @@ namespace FootprintViewer.ViewModels
         //    ScrollToCenter = false;
         //}
 
-        private async void FootprintsChanged()
-        {
-            begin.Execute().Subscribe();
-
-            var footprints = await LoadDataAsync(_dataSource);
-
-            FootprintInfos = new ObservableCollection<FootprintInfo>(footprints);
-
-            end.Execute().Subscribe();
-        }
-
-        //private async void FootprintsChanged()
-        //{
-        //    if (_footrpintLayer != null)
-        //    {
-        //        var footprints = await LoadDataAsync(_footrpintLayer);
-
-        //        if (footprints != null)
-        //        {
-        //            if (Filter == null)
-        //            {
-        //                FootprintInfos = new ObservableCollection<FootprintInfo>(footprints.Select(s => new FootprintInfo(s)));
-        //            }
-
-        //            if (Filter != null)
-        //            {
-        //                var list = new List<FootprintInfo>();
-
-        //                foreach (var item in footprints)
-        //                {
-        //                    if (Filter.Filtering(item) == true)
-        //                    {
-        //                        list.Add(new FootprintInfo(item));
-        //                    }
-        //                }
-
-        //                FootprintInfos = new ObservableCollection<FootprintInfo>(list);
-        //            }
-        //        }
-        //    }
-        //}
-
         //[Reactive]
         //public bool ScrollToCenter { get; set; } = false;
 
-        [Reactive]
-        public ObservableCollection<FootprintInfo> FootprintInfos { get; set; }
+        public List<FootprintInfo> FootprintInfos => _footprintInfos.Value;
     }
 }

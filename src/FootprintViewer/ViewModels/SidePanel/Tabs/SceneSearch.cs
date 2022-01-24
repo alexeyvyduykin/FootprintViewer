@@ -50,7 +50,7 @@ namespace FootprintViewer.ViewModels
 
             MouseOverLeave = ReactiveCommand.Create(HideFootprintBorder);
 
-            FilterClickCommand = ReactiveCommand.Create(FilterClick);
+            FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
             SelectedItemChangedCommand = ReactiveCommand.Create<FootprintPreview>(SelectionChanged);
 
@@ -151,7 +151,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> FilterClickCommand { get; }
+        public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
         public ReactiveCommand<FootprintPreview?, Unit> MouseOverEnter { get; }
 
@@ -198,9 +198,9 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void FilterClick()
+        private void FilterClickImpl()
         {
-            Filter.Click();
+            IsFilterOpen = !IsFilterOpen;
         }
 
         private void SelectionChanged(FootprintPreview footprint)
@@ -239,6 +239,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public SceneSearchFilter Filter { get; set; }
+
+        [Reactive]
+        public bool IsFilterOpen { get; private set; }
 
         [Reactive]
         public bool IsUpdating { get; set; } = false;

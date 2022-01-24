@@ -16,12 +16,12 @@
   
   <Grid>
 
-    <controls:Flyout x:Name="Flyout" 
+    <controls:Flyout x:Name="FlyoutObserverView" 
                      Placement="Left"
-                     Margin="0,10,0,0"     
-           Target="{Binding #SearchToggleButton}"
-                     IsOpen="{Binding Filter.IsOpen}"                  
-                     Content="{Binding Filter}"
+                     Margin="0,10,0,0"               
+                     Target="{Binding ElementName=SearchToggleButton}"
+                     IsOpen="{Binding IsFilterOpen}"
+                     ContentSource="{Binding Filter}"
                      Background="{StaticResource MainBackgroundBrush}"/>
 
     <Grid RowDefinitions="Auto,*,50"

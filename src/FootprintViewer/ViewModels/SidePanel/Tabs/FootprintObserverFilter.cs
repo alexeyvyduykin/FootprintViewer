@@ -1,22 +1,23 @@
-﻿using Mapsui.Geometries;
-using ReactiveUI.Fody.Helpers;
+﻿using DynamicData;
+using DynamicData.Binding;
+using FootprintViewer.Data;
+using Mapsui.Geometries;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using FootprintViewer.Data;
-using DynamicData.Binding;
-using DynamicData;
 using System.Linq;
-using Splat;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class SatelliteItem : ReactiveObject
     {
-        [Reactive]
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; }
 
         [Reactive]
         public bool IsActive { get; set; } = true;
@@ -24,11 +25,13 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserverFilter : ReactiveObject
     {
-        private int _counter = 0;
+        private readonly ReactiveCommand<FootprintObserverFilter, FootprintObserverFilter> update;
 
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetService<IDataSource>();
+            var source = dependencyResolver.GetExistingService<IDataSource>();
+
+            Satellites = new ObservableCollection<SatelliteItem>();
 
             IsLeftStrip = true;
             IsRightStrip = true;
@@ -36,60 +39,44 @@ namespace FootprintViewer.ViewModels
             FromNode = 1;
             ToNode = 15;
 
-            this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Counter).
-                Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
+            update = ReactiveCommand.Create<FootprintObserverFilter, FootprintObserverFilter>(s => s);
 
-            var satelliteNames = source?.Satellites.Select(s => s.Name).ToList(); 
-            
-            satelliteNames?.Sort();
+            this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Switcher)
+                .Select(_ => this)
+                .Throttle(TimeSpan.FromSeconds(1))
+                .Subscribe(f => update.Execute(f).Subscribe());
 
-            AddSatellites(satelliteNames);
+            CreateSatelliteList(source);
         }
 
-        public event EventHandler? Update;
-
-        public void Click()
-        {
-            IsOpen = !IsOpen;
-        }
+        public IObservable<FootprintObserverFilter> Update => update;
 
         public void ForceUpdate()
         {
-            Update?.Invoke(this, EventArgs.Empty);
+            update.Execute().Subscribe();
         }
 
-        private void AddSatellites(IEnumerable<string> satellites)
+        private void CreateSatelliteList(IDataSource dataSource)
         {
-            var list = new List<SatelliteItem>();
+            var satelliteNames = dataSource.Satellites.Select(s => s.Name).ToList();
 
-            foreach (var item in satellites)
-            {
-                list.Add(new SatelliteItem() { Name = item });
-            }
+            satelliteNames?.Sort();
+
+            var list = satelliteNames.Select(s => new SatelliteItem() { Name = s });
 
             Satellites = new ObservableCollection<SatelliteItem>(list);
 
-            var databasesValid = Satellites
-                .ToObservableChangeSet()
-                .AutoRefresh(model => model.IsActive)
-                .Subscribe(s =>
-                {
-                    //var temp = FromNode;
-                    //FromNode = temp + 1;
-                    //FromNode = temp;
+            Satellites.ToObservableChangeSet()
+                      .AutoRefresh(model => model.IsActive)
+                      .Subscribe(s =>
+                      {
+                          Switcher = !Switcher;
+                      });
 
-                    Counter = ++_counter;
-                });
-
-            // HACK: call observable
-            //var temp = FromNode;
-            //FromNode = temp + 1;
-            //FromNode = temp;
-            
-            Counter = ++_counter;
+            Switcher = !Switcher;
         }
 
-        public bool Filtering(Footprint footprint)
+        public bool Filtering(FootprintInfo footprint)
         {
             if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
             {
@@ -111,7 +98,7 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        private int Counter { get; set; }
+        private bool Switcher { get; set; }
 
         [Reactive]
         public int FromNode { get; set; }
@@ -129,12 +116,9 @@ namespace FootprintViewer.ViewModels
         public bool IsAllSatelliteActive { get; set; }
 
         [Reactive]
-        public ObservableCollection<SatelliteItem> Satellites { get; set; } = new ObservableCollection<SatelliteItem>();
+        public ObservableCollection<SatelliteItem> Satellites { get; private set; }
 
         [Reactive]
         public IGeometry? AOI { get; set; }
-
-        [Reactive]
-        public bool IsOpen { get; set; }
     }
 }

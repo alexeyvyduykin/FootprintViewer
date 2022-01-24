@@ -250,14 +250,15 @@
 
       <StackPanel Height="10"/>
 
-      <controls:Flyout Placement="Right"
+      <controls:Flyout x:Name="FlyoutToolBar" 
+                       Placement="Right"
                        Target="{Binding ElementName=LayerSelectorButton}"
                        IsAnchor="True"
-                       Background="{StaticResource MainBackgroundBrush}"
-                       IsOpen="{Binding WorldMapSelector.IsOpen}"        
-                       IsVisible="{Binding WorldMapSelector.IsOpen}"                    
-                       Content="{Binding WorldMapSelector}"/>
+                       Background="{StaticResource MainBackgroundBrush}"                                                      
+                       ContentSource="{Binding WorldMapSelector}"/>
 
+      <!--IsOpen="{Binding WorldMapSelector.IsOpen}"-->
+            
       <StackPanel DataContext="{Binding WorldMaps}"              
                   HorizontalAlignment="Left">
         <Button x:Name="LayerSelectorButton"
