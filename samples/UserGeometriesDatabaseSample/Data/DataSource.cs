@@ -1,25 +1,47 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace UserGeometriesDatabaseSample.Data
 {
     public interface IDataSource
     {
-        IEnumerable<UserGeometry> UserGeometries { get; }
+        void Add(UserGeometry geometry);
+
+        Task<List<UserGeometry>> LoadUsersAsync();
+
+        ReactiveCommand<Unit, Unit> Update { get; }
     }
 
-    public class DataSource : IDataSource
+    public class DataSource : ReactiveObject, IDataSource
     {
-        private readonly CustomDbContext _db;
+        private readonly CustomDbContext _context;
 
         public DataSource(CustomDbContext db)
         {
-            _db = db;
+            _context = db;
+
+            Update = ReactiveCommand.Create(() => { });
         }
 
-        public IEnumerable<UserGeometry> UserGeometries => _db.UserGeometries;
+        public ReactiveCommand<Unit, Unit> Update { get; }
+
+        public void Add(UserGeometry geometry)
+        {
+            _context.UserGeometries.Add(geometry);
+            _context.SaveChanges();
+
+            Update.Execute().Subscribe();
+        }
+
+        public async Task<List<UserGeometry>> LoadUsersAsync()
+        {
+            await Task.Delay(4000);
+
+            return await Task.Run(() => _context.UserGeometries.ToList());
+        }
     }
 }

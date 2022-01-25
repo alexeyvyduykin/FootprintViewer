@@ -34,7 +34,7 @@ namespace UserGeometriesDatabaseSample
             {
                 RegisterSplat();
 
-                var mainViewModel = new MainWindowViewModel(new Designer.DesignTimeLocator()/*Locator.Current*/);
+                var mainViewModel = new MainWindowViewModel(/*new Designer.DesignTimeLocator()*/Locator.Current);
 
                 if (mainViewModel != null)
                 {

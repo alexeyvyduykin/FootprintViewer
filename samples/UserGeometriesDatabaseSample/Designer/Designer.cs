@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using UserGeometriesDatabaseSample.Data;
@@ -61,8 +62,22 @@ namespace UserGeometriesDatabaseSample.Designer
             };
 
             UserGeometries = new List<UserGeometry>(arr);
+
+            Update = ReactiveCommand.Create(() => { });
         }
 
-        public IEnumerable<UserGeometry> UserGeometries { get; }
+        private List<UserGeometry> UserGeometries { get; }
+
+        public ReactiveCommand<Unit, Unit> Update { get; }
+
+        public void Add(UserGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<UserGeometry>> LoadUsersAsync()
+        {
+            return await Task.Run(() => UserGeometries);
+        }
     }
 }
