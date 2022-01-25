@@ -24,13 +24,6 @@ namespace FootprintViewer.Data
         public string Path { get; set; }
     }
 
-    public interface IUserDataSource
-    {
-        IEnumerable<FootprintPreview> GetFootprints();
-
-        IList<LayerSource> WorldMapSources { get; }
-    }
-
     public class UserDataSource : IUserDataSource
     {
         private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();
