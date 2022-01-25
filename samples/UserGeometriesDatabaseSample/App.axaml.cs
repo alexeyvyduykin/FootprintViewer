@@ -22,7 +22,7 @@ namespace UserGeometriesDatabaseSample
         {
             Locator.CurrentMutable.InitializeSplat();
 
-            Locator.CurrentMutable.RegisterLazySingleton<DataSource>(() => CreateDataSource());
+            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateDataSource());
         }
 
 
@@ -34,7 +34,7 @@ namespace UserGeometriesDatabaseSample
             {
                 RegisterSplat();
 
-                var mainViewModel = new MainWindowViewModel();
+                var mainViewModel = new MainWindowViewModel(new Designer.DesignTimeLocator()/*Locator.Current*/);
 
                 if (mainViewModel != null)
                 {
@@ -52,9 +52,9 @@ namespace UserGeometriesDatabaseSample
             base.OnFrameworkInitializationCompleted();
         }
 
-        private static DataSource CreateDataSource()
+        private static IDataSource CreateDataSource()
         {
-            CustomDbContext db = new CustomDbContext(GetOptions());
+            var db = new CustomDbContext(GetOptions());
 
             return new DataSource(db);
         }

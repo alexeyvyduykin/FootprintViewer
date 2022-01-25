@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace UserGeometriesDatabaseSample.Data
 {
-    public class DataSource
+    public interface IDataSource
+    {
+        IEnumerable<UserGeometry> UserGeometries { get; }
+    }
+
+    public class DataSource : IDataSource
     {
         private readonly CustomDbContext _db;
 
