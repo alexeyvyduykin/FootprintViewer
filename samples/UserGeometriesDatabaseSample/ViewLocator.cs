@@ -4,7 +4,9 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reflection;
+using UserGeometriesDatabaseSample.Data;
 using UserGeometriesDatabaseSample.ViewModels;
+using UserGeometriesDatabaseSample.Views;
 
 namespace UserGeometriesDatabaseSample
 {
@@ -27,6 +29,23 @@ namespace UserGeometriesDatabaseSample
         }
 
         public bool SupportsRecycling => false;
+
+
+        //public IControl Build(object data)
+        //{
+        //    var type = data.GetType();
+
+        //    if (type == typeof(MainWindowViewModel))
+        //    {
+        //        return (Control)Activator.CreateInstance(typeof(MainWindow))!;
+        //    }
+        //    else if (type == typeof(UserGeometry))
+        //    {
+        //        return (Control)Activator.CreateInstance(typeof(UserGeometryView))!;
+        //    }
+
+        //    throw new Exception();
+        //}
 
         public IControl Build(object data)
         {

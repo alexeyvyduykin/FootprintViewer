@@ -1,24 +1,26 @@
 <Window x:Class="UserGeometriesDatabaseSample.Views.MainWindow"
         xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vmd="using:UserGeometriesDatabaseSample.Designer"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"        
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"     
+        xmlns:vmd="using:UserGeometriesDatabaseSample.Designer"      
+        xmlns:local="using:UserGeometriesDatabaseSample"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Icon="/Assets/avalonia-logo.ico"
         Title="UserGeometriesDatabaseSample">
 
-    <Design.DataContext>
-      <vmd:DesignTimeMainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>
+    <vmd:DesignTimeMainWindowViewModel/>
+  </Design.DataContext>
 
   <Grid RowDefinitions="Auto,Auto,*">
     <StackPanel Orientation="Horizontal">
-      <Button Command="{Binding Create}" IsEnabled="{Binding Can}">Create</Button>
-      <Button Command="{Binding Update}" IsEnabled="{Binding Can}">Update</Button>
+      <Button x:Name="CreateButton">Create</Button>
+      <Button x:Name="UpdateButton">Update</Button>
+      <Button x:Name="RemoveButton">Remove</Button>
     </StackPanel>
     <TextBlock Grid.Row="1" Text="{Binding Can}"/>
-    <ListBox Grid.Row="2" Items="{Binding UserGeometries}"/>
+    <ListBox x:Name="MainListBox" Grid.Row="2"/>
   </Grid>
-  
+
 </Window>

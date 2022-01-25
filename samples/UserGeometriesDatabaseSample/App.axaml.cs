@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Text;
@@ -21,8 +22,16 @@ namespace UserGeometriesDatabaseSample
         private static void RegisterSplat()
         {
             Locator.CurrentMutable.InitializeSplat();
+            //Locator.CurrentMutable.InitializeReactiveUI();
 
             Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateDataSource());
+
+            var locator = Locator.Current;
+
+            Locator.CurrentMutable.RegisterLazySingleton<MainWindowViewModel>(() => new MainWindowViewModel(locator));
+
+            Locator.CurrentMutable.Register(() => new MainWindow(), typeof(IViewFor<MainWindowViewModel>));
+            Locator.CurrentMutable.Register(() => new UserGeometryView(), typeof(IViewFor<UserGeometry>));
         }
 
 
@@ -34,7 +43,7 @@ namespace UserGeometriesDatabaseSample
             {
                 RegisterSplat();
 
-                var mainViewModel = new MainWindowViewModel(/*new Designer.DesignTimeLocator()*/Locator.Current);
+                var mainViewModel = Locator.Current.GetService<MainWindowViewModel>();
 
                 if (mainViewModel != null)
                 {

@@ -14,6 +14,7 @@ namespace UserGeometriesDatabaseSample.ViewModels
         private readonly IDataSource _dataSource;
         private readonly Random _random = new Random();
         private readonly ObservableAsPropertyHelper<List<UserGeometry>> _users;
+        private readonly ObservableAsPropertyHelper<bool> _canRemove;
 
         public MainWindowViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -23,6 +24,8 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
             Create = ReactiveCommand.Create(CreateImpl);
 
+            Remove = ReactiveCommand.Create<UserGeometry?>(RemoveImpl);
+
             Update = ReactiveCommand.Create(InvalidateData);
 
             LoadUsers = ReactiveCommand.CreateFromTask(_dataSource.LoadUsersAsync);
@@ -31,17 +34,30 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
             LoadUsers.IsExecuting.Subscribe(can => Can = !can);
 
+            _canRemove = this.WhenAnyValue(x => x.SelectedUserGeometry).Select((g) => g != null).ToProperty(this, x => x.CanRemove);
+
+            //   _canRemove = this.WhenAnyValue(s => s.SelectedUserGeometry).Select(g => g != null).ToProperty(out _canRemove);
+
             InvalidateData();
         }
 
         public ReactiveCommand<Unit, Unit> Create { get; }
+
+        public ReactiveCommand<UserGeometry?, Unit> Remove { get; }
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
         [Reactive]
         public bool Can { get; set; }
 
+        public bool CanRemove => _canRemove.Value;
+
         private void CreateImpl()
+        {
+            _dataSource.Add(CreateRandomUserGeometry());
+        }
+
+        private UserGeometry CreateRandomUserGeometry()
         {
             string[] names = new[] { "Point", "Rectangle", "Polygon", "Circle" };
             UserGeometryType[] types = new[] { UserGeometryType.Point, UserGeometryType.Rectangle, UserGeometryType.Polygon, UserGeometryType.Circle };
@@ -50,13 +66,19 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
             var id = Guid.NewGuid();
 
-            var g = new UserGeometry()
+            return new UserGeometry()
             {
                 Name = $"{names[index]}_{id}",
                 Type = types[index],
             };
+        }
 
-            _dataSource.Add(g);
+        private void RemoveImpl(UserGeometry? geometry)
+        {
+            if (geometry != null)
+            {
+                _dataSource.Remove(geometry);
+            }
         }
 
         private void InvalidateData()
@@ -66,7 +88,9 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
         public ReactiveCommand<Unit, List<UserGeometry>> LoadUsers { get; }
 
-
         public List<UserGeometry> UserGeometries => _users.Value;
+
+        [Reactive]
+        public UserGeometry? SelectedUserGeometry { get; set; }
     }
 }

@@ -11,6 +11,8 @@ namespace UserGeometriesDatabaseSample.Data
     {
         void Add(UserGeometry geometry);
 
+        void Remove(UserGeometry geometry);
+
         Task<List<UserGeometry>> LoadUsersAsync();
 
         ReactiveCommand<Unit, Unit> Update { get; }
@@ -32,6 +34,14 @@ namespace UserGeometriesDatabaseSample.Data
         public void Add(UserGeometry geometry)
         {
             _context.UserGeometries.Add(geometry);
+            _context.SaveChanges();
+
+            Update.Execute().Subscribe();
+        }
+
+        public void Remove(UserGeometry geometry)
+        {
+            _context.UserGeometries.Remove(geometry);
             _context.SaveChanges();
 
             Update.Execute().Subscribe();

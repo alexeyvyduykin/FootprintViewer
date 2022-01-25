@@ -79,5 +79,10 @@ namespace UserGeometriesDatabaseSample.Designer
         {
             return await Task.Run(() => UserGeometries);
         }
+
+        public void Remove(UserGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

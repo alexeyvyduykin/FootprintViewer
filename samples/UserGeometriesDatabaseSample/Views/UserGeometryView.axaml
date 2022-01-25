@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                                      
              xmlns:vmd="clr-namespace:UserGeometriesDatabaseSample.Designer"                        
-             mc:Ignorable="d" d:DesignWidth="200">
+             mc:Ignorable="d">
   
   <Design.DataContext>
     <vmd:DesignTimeUserGeometry/>
