@@ -1,19 +1,18 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
 namespace UserGeometriesDatabaseSample.Data
 {
-    public class DataSource : ReactiveObject, IDataSource
+    public class LocalDataSource : ReactiveObject, IDataSource
     {
-        private readonly CustomDbContext _context;
+        private readonly List<UserGeometry> _userGeometries;
 
-        public DataSource(CustomDbContext db)
+        public LocalDataSource()
         {
-            _context = db;
+            _userGeometries = new List<UserGeometry>();
 
             Update = ReactiveCommand.Create(() => { });
         }
@@ -22,25 +21,26 @@ namespace UserGeometriesDatabaseSample.Data
 
         public void Add(UserGeometry geometry)
         {
-            _context.UserGeometries.Add(geometry);
-            _context.SaveChanges();
+            _userGeometries.Add(geometry);
 
             Update.Execute().Subscribe();
         }
 
         public void Remove(UserGeometry geometry)
         {
-            _context.UserGeometries.Remove(geometry);
-            _context.SaveChanges();
+            _userGeometries.Remove(geometry);
 
             Update.Execute().Subscribe();
         }
 
         public async Task<List<UserGeometry>> LoadUsersAsync()
         {
-            await Task.Delay(2000);
+            //await Task.Delay(2000);
 
-            return await Task.Run(() => _context.UserGeometries.ToList());
+            return await Task.Run(() =>
+            {
+                return new List<UserGeometry>(_userGeometries);
+            });
         }
     }
 }

@@ -62,7 +62,7 @@ namespace UserGeometriesDatabaseSample.ViewModels
             string[] names = new[] { "Point", "Rectangle", "Polygon", "Circle" };
             UserGeometryType[] types = new[] { UserGeometryType.Point, UserGeometryType.Rectangle, UserGeometryType.Polygon, UserGeometryType.Circle };
 
-            var index = _random.Next(0, 3);
+            var index = _random.Next(0, 4);
 
             var id = Guid.NewGuid();
 
