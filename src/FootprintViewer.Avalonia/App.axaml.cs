@@ -10,6 +10,7 @@ using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -40,62 +41,69 @@ namespace FootprintViewer.Avalonia
             }
         }
 
-        private static void RegisterSplat()
+        private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
-            Locator.CurrentMutable.InitializeSplat();
+            services.InitializeSplat();
 
-            Locator.CurrentMutable.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
-            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
-            //Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
-            Locator.CurrentMutable.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
+            services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
+           
+            if (IsConnectionValid() == true)
+            {
+                services.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
+            }
+            else
+            {
+                services.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
+            }
 
-            var locator = Locator.Current;
+            services.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
 
-            var factory = locator.GetExistingService<ProjectFactory>();
+            var factory = resolver.GetExistingService<ProjectFactory>();
 
-            var map = factory.CreateMap(locator);
+            var map = factory.CreateMap(resolver);
 
-            Locator.CurrentMutable.RegisterLazySingleton<Mapsui.Map>(() => map);
+            services.RegisterLazySingleton<Mapsui.Map>(() => map);
 
             var footprintDataSource = (IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
             var groundTargetDataSource = (IGroundTargetDataSource)map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
-            Locator.CurrentMutable.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
-            Locator.CurrentMutable.RegisterLazySingleton<IGroundTargetDataSource>(() => groundTargetDataSource);
+            services.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
+            services.RegisterLazySingleton<IGroundTargetDataSource>(() => groundTargetDataSource);
 
-            Locator.CurrentMutable.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(locator));
-            Locator.CurrentMutable.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(locator));
-            Locator.CurrentMutable.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(locator));
-            Locator.CurrentMutable.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(locator));
+            services.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(resolver));
+            services.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(resolver));
+            services.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(resolver));
+            services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
 
-            Locator.CurrentMutable.RegisterLazySingleton<ToolBar>(() => new ToolBar(locator));
+            Locator.CurrentMutable.RegisterLazySingleton<ToolBar>(() => new ToolBar(resolver));
 
             var tabs = new SidePanelTab[]
             {
-                locator.GetExistingService<SceneSearch>(),
-                locator.GetExistingService<SatelliteViewer>(),
-                locator.GetExistingService<GroundTargetViewer>(),
-                locator.GetExistingService<FootprintObserver>(),
+                resolver.GetExistingService<SceneSearch>(),
+                resolver.GetExistingService<SatelliteViewer>(),
+                resolver.GetExistingService<GroundTargetViewer>(),
+                resolver.GetExistingService<FootprintObserver>(),
             };
 
             Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
 
-            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(locator));
+            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
         }
 
+        private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
 
         public override void OnFrameworkInitializationCompleted()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                RegisterSplat();
+            {                          
+                RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
 
                 InitializationClassicDesktopStyle();
 
-                var mainViewModel = Locator.Current.GetExistingService<MainViewModel>();
-
+                var mainViewModel = GetExistingService<MainViewModel>();
+                
                 if (mainViewModel != null)
                 {
                     desktopLifetime.MainWindow = new MainWindow()
@@ -161,6 +169,33 @@ namespace FootprintViewer.Avalonia
             FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
 
             return new DatabaseDataSource(db);
+        }
+
+        private static bool IsConnectionValid()
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+
+                    connection.Close();
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static string GetConnectionString()
+        {
+            var builder = new ConfigurationBuilder();          
+            builder.SetBasePath(Directory.GetCurrentDirectory());          
+            builder.AddJsonFile("appsettings.json");                            
+            return builder.Build().GetConnectionString("DefaultConnection");
         }
 
         private static DbContextOptions<FootprintViewerDbContext> GetOptions()
