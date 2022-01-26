@@ -7,7 +7,7 @@ namespace UserGeometriesDatabaseSample.Data
 {
     public interface IDataSource
     {
-        void Add(UserGeometry geometry);
+        Task AddAsync(UserGeometry geometry);
 
         void Remove(UserGeometry geometry);
 

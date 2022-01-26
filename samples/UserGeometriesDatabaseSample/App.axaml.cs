@@ -2,8 +2,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 using ReactiveUI;
 using Splat;
@@ -39,11 +37,11 @@ namespace UserGeometriesDatabaseSample
             {
                 services.RegisterLazySingleton<IDataSource>(() => new LocalDataSource());
             }
-         
+
             services.RegisterLazySingleton<MainWindowViewModel>(() => new MainWindowViewModel(resolver));
 
-            services.Register(() => new MainWindow(), typeof(IViewFor<MainWindowViewModel>));         
-            services.Register(() => new UserGeometryView(), typeof(IViewFor<UserGeometry>));            
+            services.Register(() => new MainWindow(), typeof(IViewFor<MainWindowViewModel>));
+            services.Register(() => new UserGeometryView(), typeof(IViewFor<UserGeometry>));
         }
 
         private static T GetRequiredService<T>() => Locator.Current.GetRequiredService<T>();
@@ -71,7 +69,7 @@ namespace UserGeometriesDatabaseSample
 
         private static CustomDbContext CreateDatabase()
         {
-           return new CustomDbContext(GetOptions());
+            return new CustomDbContext(GetOptions());
         }
 
         private static bool DatabaseExists()
@@ -87,19 +85,19 @@ namespace UserGeometriesDatabaseSample
 
                 return true;
             }
-            catch (Exception)           
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        //private static string ConnectionString => "Host=localhost;Port=5432;Database=FootprintViewerDatabase;Username=postgres;Password=user";
-        private static string ConnectionString => "Host=654;Port=675;Database=gfdgfgdfgdfgdfgdf;Username=fghhgf;Password=fghhgf";
+        private static string ConnectionString => "Host=localhost;Port=5432;Database=FootprintViewerDatabase;Username=postgres;Password=user";
+        //private static string ConnectionString => "Host=654;Port=675;Database=gfdgfgdfgdfgdfgdf;Username=fghhgf;Password=fghhgf";
 
         private static DbContextOptions<CustomDbContext> GetOptions()
-        {            
+        {
             var optionsBuilder = new DbContextOptionsBuilder<CustomDbContext>();
-            
+
             var options = optionsBuilder.UseNpgsql(ConnectionString, options =>
             {
                 options.SetPostgresVersion(new Version(14, 1));

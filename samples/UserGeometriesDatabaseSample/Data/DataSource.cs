@@ -20,10 +20,20 @@ namespace UserGeometriesDatabaseSample.Data
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
-        public void Add(UserGeometry geometry)
+        //public void Add(UserGeometry geometry)
+        //{
+        //    _context.UserGeometries.Add(geometry);
+        //    _context.SaveChanges();
+
+        //    Update.Execute().Subscribe();
+        //}
+
+        public async Task AddAsync(UserGeometry geometry)
         {
-            _context.UserGeometries.Add(geometry);
-            _context.SaveChanges();
+            await Task.Delay(3000);
+
+            await _context.UserGeometries.AddAsync(geometry);
+            await _context.SaveChangesAsync();
 
             Update.Execute().Subscribe();
         }

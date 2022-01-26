@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using UserGeometriesDatabaseSample.Data;
 
 namespace UserGeometriesDatabaseSample.ViewModels
@@ -22,7 +23,8 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
             _dataSource.Update.Subscribe(_ => InvalidateData());
 
-            Create = ReactiveCommand.Create(CreateImpl);
+            //Create = ReactiveCommand.Create(CreateImpl);
+            Create = ReactiveCommand.CreateFromTask(CreateImpl);
 
             Remove = ReactiveCommand.Create<UserGeometry?>(RemoveImpl);
 
@@ -52,9 +54,9 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
         public bool CanRemove => _canRemove.Value;
 
-        private void CreateImpl()
+        private async Task CreateImpl()
         {
-            _dataSource.Add(CreateRandomUserGeometry());
+            await _dataSource.AddAsync(CreateRandomUserGeometry());
         }
 
         private UserGeometry CreateRandomUserGeometry()

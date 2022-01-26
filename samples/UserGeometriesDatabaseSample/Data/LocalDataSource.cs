@@ -19,12 +19,19 @@ namespace UserGeometriesDatabaseSample.Data
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
-        public void Add(UserGeometry geometry)
+        public async Task AddAsync(UserGeometry geometry)
         {
-            _userGeometries.Add(geometry);
-
+            await Task.Run(() => { _userGeometries.Add(geometry); });
+        
             Update.Execute().Subscribe();
         }
+
+        //public void Add(UserGeometry geometry)
+        //{
+        //    _userGeometries.Add(geometry);
+
+        //    Update.Execute().Subscribe();
+        //}
 
         public void Remove(UserGeometry geometry)
         {

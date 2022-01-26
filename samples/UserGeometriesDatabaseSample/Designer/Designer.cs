@@ -65,7 +65,7 @@ namespace UserGeometriesDatabaseSample.Designer
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
-        public void Add(UserGeometry geometry)
+        public Task AddAsync(UserGeometry geometry)
         {
             throw new NotImplementedException();
         }
