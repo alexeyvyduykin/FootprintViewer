@@ -18,7 +18,7 @@ namespace UserGeometriesDatabaseSample.ViewModels
 
         public MainWindowViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetService<IDataSource>() ?? throw new Exception();
+            _dataSource = dependencyResolver.GetRequiredService<IDataSource>();
 
             _dataSource.Update.Subscribe(_ => InvalidateData());
 

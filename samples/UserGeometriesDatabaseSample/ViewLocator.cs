@@ -31,45 +31,45 @@ namespace UserGeometriesDatabaseSample
         public bool SupportsRecycling => false;
 
 
-        //public IControl Build(object data)
-        //{
-        //    var type = data.GetType();
-
-        //    if (type == typeof(MainWindowViewModel))
-        //    {
-        //        return (Control)Activator.CreateInstance(typeof(MainWindow))!;
-        //    }
-        //    else if (type == typeof(UserGeometry))
-        //    {
-        //        return (Control)Activator.CreateInstance(typeof(UserGeometryView))!;
-        //    }
-
-        //    throw new Exception();
-        //}
-
         public IControl Build(object data)
         {
-            var name = data.GetType().FullName!.Replace("ViewModel", "View");
-            var type = Type.GetType(name);
+            var type = data.GetType();
 
-            //if (type != null)
-            //{
-            //    return (Control)Activator.CreateInstance(type)!;
-            //}
-            //else
+            if (type == typeof(MainWindowViewModel))
             {
-                var name2 = data.GetType().Name! + "View";
-
-                var res = _classes?.Where(type => type.Name.Equals(name2)).FirstOrDefault();
-
-                if (res != null)
-                {
-                    return (Control)Activator.CreateInstance(res)!;
-                }
-
-                return new TextBlock { Text = "Not Found: " + name };
+                return (Control)Activator.CreateInstance(typeof(MainWindow))!;
             }
+            else if (type == typeof(UserGeometry))
+            {
+                return (Control)Activator.CreateInstance(typeof(UserGeometryView))!;
+            }
+
+            throw new Exception();
         }
+
+        //public IControl Build(object data)
+        //{
+        //    var name = data.GetType().FullName!.Replace("ViewModel", "View");
+        //    var type = Type.GetType(name);
+
+        //    //if (type != null)
+        //    //{
+        //    //    return (Control)Activator.CreateInstance(type)!;
+        //    //}
+        //    //else
+        //    {
+        //        var name2 = data.GetType().Name! + "View";
+
+        //        var res = _classes?.Where(type => type.Name.Equals(name2)).FirstOrDefault();
+
+        //        if (res != null)
+        //        {
+        //            return (Control)Activator.CreateInstance(res)!;
+        //        }
+
+        //        return new TextBlock { Text = "Not Found: " + name };
+        //    }
+        //}
 
         public bool Match(object data)
         {

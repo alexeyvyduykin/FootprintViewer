@@ -1,14 +1,9 @@
-﻿using Avalonia;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive;
-using System.Text;
 using System.Threading.Tasks;
 using UserGeometriesDatabaseSample.Data;
 using UserGeometriesDatabaseSample.ViewModels;
@@ -17,11 +12,11 @@ namespace UserGeometriesDatabaseSample.Designer
 {
     public class DesignTimeUserGeometry : UserGeometry
     {
-        public DesignTimeUserGeometry()
+        public DesignTimeUserGeometry() : base()
         {
             Name = "Rectangle032";
             Type = UserGeometryType.Rectangle;
-            Geometry = new Polygon(new LinearRing(new Coordinate[] { }));
+            Geometry = new Polygon(new LinearRing(Array.Empty<Coordinate>()));
         }
     }
 

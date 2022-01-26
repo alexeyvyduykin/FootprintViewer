@@ -19,21 +19,24 @@ namespace UserGeometriesDatabaseSample
             AvaloniaXamlLoader.Load(this);
         }
 
-        private static void RegisterSplat()
+        static App()
         {
             Locator.CurrentMutable.InitializeSplat();
             //Locator.CurrentMutable.InitializeReactiveUI();
-
-            Locator.CurrentMutable.RegisterLazySingleton<IDataSource>(() => CreateDataSource());
-
-            var locator = Locator.Current;
-
-            Locator.CurrentMutable.RegisterLazySingleton<MainWindowViewModel>(() => new MainWindowViewModel(locator));
-
-            Locator.CurrentMutable.Register(() => new MainWindow(), typeof(IViewFor<MainWindowViewModel>));
-            Locator.CurrentMutable.Register(() => new UserGeometryView(), typeof(IViewFor<UserGeometry>));
+            RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
         }
 
+        private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        {
+            services.RegisterLazySingleton<IDataSource>(() => CreateDataSource());
+
+            services.RegisterLazySingleton<MainWindowViewModel>(() => new MainWindowViewModel(resolver));
+
+            services.Register(() => new MainWindow(), typeof(IViewFor<MainWindowViewModel>));         
+            services.Register(() => new UserGeometryView(), typeof(IViewFor<UserGeometry>));            
+        }
+
+        private static T GetRequiredService<T>() => Locator.Current.GetRequiredService<T>();
 
         public override void OnFrameworkInitializationCompleted()
         {
@@ -41,17 +44,12 @@ namespace UserGeometriesDatabaseSample
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                RegisterSplat();
+                var mainViewModel = GetRequiredService<MainWindowViewModel>();
 
-                var mainViewModel = Locator.Current.GetService<MainWindowViewModel>();
-
-                if (mainViewModel != null)
+                desktopLifetime.MainWindow = new MainWindow()
                 {
-                    desktopLifetime.MainWindow = new MainWindow()
-                    {
-                        DataContext = mainViewModel
-                    };
-                }
+                    DataContext = mainViewModel
+                };
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime)
             {
