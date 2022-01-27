@@ -56,14 +56,26 @@ namespace FootprintViewer.Avalonia
                 services.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
             }
 
-            services.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
-
             // Map data provider
 
             var mapProvider = new MapProvider();
             mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "data", "world"));
             mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "userData", "world"));
             services.RegisterLazySingleton<MapProvider>(() => mapProvider);
+
+            // Footprint preview provider
+
+            var footprintPreviewProvider = new FootprintPreviewProvider();
+            footprintPreviewProvider.AddSource(new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "data", "footprints"));
+            footprintPreviewProvider.AddSource(new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "userData", "footprints"));
+            services.RegisterLazySingleton<FootprintPreviewProvider>(() => footprintPreviewProvider);
+
+            // Footprint preview geometry provider
+
+            var footprintPreviewGeometryProvider = new FootprintPreviewGeometryProvider();
+            footprintPreviewGeometryProvider.AddSource(new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"));
+            services.RegisterLazySingleton<FootprintPreviewGeometryProvider>(() => footprintPreviewGeometryProvider);
+
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 

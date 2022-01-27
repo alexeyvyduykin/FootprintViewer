@@ -23,8 +23,7 @@ namespace FootprintViewer.ViewModels
 
         private EditLayer _editLayer = new EditLayer();
 
-        private readonly Map _map;
-        private readonly IUserDataSource _userDataSource;
+        private readonly Map _map;      
         private readonly IDataSource _dataSource;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
@@ -33,8 +32,7 @@ namespace FootprintViewer.ViewModels
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetExistingService<IDataSource>();
-            _userDataSource = dependencyResolver.GetExistingService<IUserDataSource>();
+            _dataSource = dependencyResolver.GetExistingService<IDataSource>();        
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
@@ -428,8 +426,6 @@ namespace FootprintViewer.ViewModels
             ActualController = new EditController();
         }
  
-        public IUserDataSource UserDataSource => _userDataSource;
-
         public IDataSource DataSource => _dataSource;
 
         public Map Map => _map;

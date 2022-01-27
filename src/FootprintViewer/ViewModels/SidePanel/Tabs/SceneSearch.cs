@@ -19,32 +19,35 @@ namespace FootprintViewer.ViewModels
     public class SceneSearch : SidePanelTab
     {
         private readonly IList<FootprintPreview> _sourceFootprints = new List<FootprintPreview>();
-        // protected readonly SourceList<Footprint> _sourceFootprints;
-        // private readonly ReadOnlyObservableCollection<Footprint> _footprints;
+        private readonly FootprintPreviewProvider _footprintPreviewProvider;
+        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
+        private readonly Map _map;
+        private readonly IDictionary<string, IGeometry> _geometries;
 
         public event EventHandler? CurrentFootprint;
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = dependencyResolver.GetService<Map>();
-            var userDataSource = dependencyResolver.GetService<IUserDataSource>();
+            _map = dependencyResolver.GetExistingService<Map>();       
+            _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
+            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
 
             Title = "Поиск сцены";
             Name = "Scene";
 
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
             {
-                if (footprint != null && Map != null && footprint.Path != null)
+                if (footprint != null && _map != null && footprint.Path != null)
                 {
                     var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
 
-                    Map.Layers.Replace(nameof(LayerType.FootprintImage), layer);
+                    _map.Layers.Replace(nameof(LayerType.FootprintImage), layer);
 
                     CurrentFootprint?.Invoke(this, EventArgs.Empty);
                 }
             });
 
-            this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
+            //this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
 
             MouseOverEnter = ReactiveCommand.Create<FootprintPreview?>(ShowFootprintBorder);
 
@@ -61,19 +64,9 @@ namespace FootprintViewer.ViewModels
 
             Filter.Update += Filter_Update;
 
-            //_sourceFootprints = new SourceList<Footprint>();
+            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
 
-            //var cancellation = _sourceFootprints.Connect()
-            //    .Filter(Filter.Observable)
-            //    .Bind(out _footprints)
-            //    .DisposeMany()
-            //    .Subscribe(_ =>
-            //    {
-            //        Task.Run(() => longRunningRoutine());
-            //    });        
-
-            UserDataSource = userDataSource;
-            Map = map;
+            UserDataSourceChanged();
         }
 
         private void Filter_Update(object? sender, EventArgs e)
@@ -110,45 +103,31 @@ namespace FootprintViewer.ViewModels
             Filter.ForceUpdate();
         }
 
-        private void longRunningRoutine()
-        {
-            IsUpdating = true;
-
-            //  System.Threading.Thread.Sleep(1000);
-
-            IsUpdating = false;
-        }
-
-        private static async Task<IEnumerable<FootprintPreview>> LoadDataAsync(IUserDataSource dataSource)
+        private static async Task<IEnumerable<FootprintPreview>> LoadDataAsync(FootprintPreviewProvider provider)
         {
             return await Task.Run(() =>
-            {
-                //Thread.Sleep(5000);
-                return dataSource.GetFootprints();
+            {              
+                return provider.GetFootprintPreviews();
             });
+        }
+
+        private static IEnumerable<FootprintPreview> LoadData(FootprintPreviewProvider provider)
+        {               
+            return provider.GetFootprintPreviews();        
         }
 
         private async void UserDataSourceChanged()
         {
-            if (UserDataSource != null)
-            {
-                var footprints = await LoadDataAsync(UserDataSource);
+            var footprints = await LoadDataAsync(_footprintPreviewProvider);
 
-                // _sourceFootprints.Clear();
-                // _sourceFootprints.AddRange(footprints);
+            _sourceFootprints.AddRange(footprints);
 
-                _sourceFootprints.AddRange(footprints);
+            Footprints = new ObservableCollection<FootprintPreview>(footprints);
 
-               // Footprints.Clear();
-               // Footprints.AddRange(footprints);
+            var sortNames = new List<FootprintPreview>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
+            sortNames.Sort();
 
-                Footprints = new ObservableCollection<FootprintPreview>(footprints);
-
-                var sortNames = new List<FootprintPreview>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
-                sortNames.Sort();
-
-                Filter.AddSensors(sortNames);
-            }
+            Filter.AddSensors(sortNames);
         }
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
@@ -161,9 +140,9 @@ namespace FootprintViewer.ViewModels
 
         private void ShowFootprintBorder(FootprintPreview? footprint)
         {
-            if (Map != null && footprint != null)
+            if (footprint != null && IsGeometry(footprint) == true)
             {
-                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
+                var layers = _map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
 
                 if (layers != null)
                 {
@@ -172,28 +151,40 @@ namespace FootprintViewer.ViewModels
                     if (layer != null && layer is WritableLayer writableLayer)
                     {
                         writableLayer.Clear();
-                        writableLayer.Add(new Feature() { Geometry = footprint.Geometry });
+                        writableLayer.Add(new Feature() { Geometry = ToGeometry(footprint) });
                         writableLayer.DataHasChanged();
                     }
                 }
             }
         }
 
+        private bool IsGeometry(FootprintPreview footprint)
+        {
+            return _geometries.ContainsKey(footprint.Name);
+        }
+
+        private IGeometry ToGeometry(FootprintPreview footprint)
+        {
+            return _geometries[footprint.Name];
+        }
+
+        private Point GetCenter(FootprintPreview footprint)
+        {
+            return _geometries[footprint.Name].BoundingBox.Centroid;
+        }
+
         private void HideFootprintBorder()
         {
-            if (Map != null)
+            var layers = _map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
+
+            if (layers != null)
             {
-                var layers = Map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
+                var layer = layers.SingleOrDefault();
 
-                if (layers != null)
+                if (layer != null && layer is WritableLayer writableLayer)
                 {
-                    var layer = layers.SingleOrDefault();
-
-                    if (layer != null && layer is WritableLayer writableLayer)
-                    {
-                        writableLayer.Clear();
-                        writableLayer.DataHasChanged();
-                    }
+                    writableLayer.Clear();
+                    writableLayer.DataHasChanged();
                 }
             }
         }
@@ -205,31 +196,23 @@ namespace FootprintViewer.ViewModels
 
         private void SelectionChanged(FootprintPreview footprint)
         {
-            if (Map != null && footprint != null && footprint.Geometry != null)
+            if (footprint != null && IsGeometry(footprint) == true)
             {
-                var point = footprint.Geometry.BoundingBox.Centroid;
+                var point = GetCenter(footprint);
 
-                Map.Initialized = false;
+                _map.Initialized = false;
 
-                Map.Home = (navigator) =>
+                _map.Home = (navigator) =>
                 {
                     navigator.CenterOn(point);
                 };
 
                 // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
                 var layer = new Mapsui.Layers.Layer();
-                Map.Layers.Add(layer);
-                Map.Layers.Remove(layer);
+                _map.Layers.Add(layer);
+                _map.Layers.Remove(layer);
             }
         }
-
-        [Reactive]
-        public IUserDataSource? UserDataSource { get; set; }
-
-        [Reactive]
-        public Map? Map { get; set; }
-
-        // public ReadOnlyObservableCollection<Footprint> Footprints => _footprints;
 
         [Reactive]
         public ObservableCollection<FootprintPreview> Footprints { get; private set; } = new ObservableCollection<FootprintPreview>();

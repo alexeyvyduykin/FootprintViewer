@@ -17,10 +17,11 @@ namespace FootprintViewer.Designer
         private readonly Mapsui.Map _map = new Mapsui.Map();
         private readonly ProjectFactory _projectFactory = new ProjectFactory();
         private readonly IDataSource _dataSource = new DesignTimeDataSource();
-        private readonly IUserDataSource _userDataSource = new DesignTimeUserDataSource();
         private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
         private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource();
         private readonly MapProvider _mapProvider = new DesignTimeMapProvider();
+        private readonly FootprintPreviewProvider _footprintPreviewProvider = new DesignTimeFootprintPreviewProvider();
+        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider = new DesignTimeFootprintPreviewGeometryProvider();
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -43,13 +44,17 @@ namespace FootprintViewer.Designer
             {
                 return _dataSource;
             }
-            else if (serviceType == typeof(IUserDataSource))
-            {
-                return _userDataSource;
-            }
             else if (serviceType == typeof(MapProvider))
             {
                 return _mapProvider;
+            }
+            else if (serviceType == typeof(FootprintPreviewProvider))
+            {
+                return _footprintPreviewProvider;
+            }
+            else if (serviceType == typeof(FootprintPreviewGeometryProvider))
+            {
+                return _footprintPreviewGeometryProvider;
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -161,17 +166,14 @@ namespace FootprintViewer.Designer
             public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GroundTracks => _groundTracks;
         }
 
-        private class DesignTimeUserDataSource : IUserDataSource
+        private class DesignTimeFootprintPreviewProvider : FootprintPreviewProvider
         {
-            public DesignTimeUserDataSource()
-            {
+            public DesignTimeFootprintPreviewProvider() : base() { }
+        }
 
-            }
-
-            public IEnumerable<FootprintPreview> GetFootprints()
-            {
-                return new List<FootprintPreview>();
-            }
+        private class DesignTimeFootprintPreviewGeometryProvider : FootprintPreviewGeometryProvider
+        {
+            public DesignTimeFootprintPreviewGeometryProvider() : base() { }
         }
 
         private class DesignTimeMapProvider : MapProvider
@@ -186,9 +188,9 @@ namespace FootprintViewer.Designer
                 public IEnumerable<MapResource> GetMapResources()
                 {
                     return new[]
-                    {                    
-                        new MapResource("WorldMapDefault", ""),                    
-                        new MapResource("OAM-World-1-8-min-J70", ""),                   
+                    {
+                        new MapResource("WorldMapDefault", ""),
+                        new MapResource("OAM-World-1-8-min-J70", ""),
                         new MapResource("OAM-World-1-10-J70", "")
                     };
                 }

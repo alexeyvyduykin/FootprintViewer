@@ -9,6 +9,8 @@ namespace FootprintViewer.ViewModels
         {
         }
 
+        public string Name { get; set; }
+
         public string Date { get; set; }
 
         public string SatelliteName { get; set; }
@@ -20,8 +22,6 @@ namespace FootprintViewer.ViewModels
         public string TileNumber { get; set; }
 
         public string? Path { get; set; }
-
-        public Mapsui.Geometries.Geometry? Geometry { get; set; }
 
         public Image Image { get; set; }
     }

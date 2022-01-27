@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using DynamicData;
 using Mapsui.Geometries;
 using Splat;
+using FootprintViewer.Data;
 
 namespace FootprintViewer.ViewModels
 {
@@ -22,14 +23,17 @@ namespace FootprintViewer.ViewModels
     }
 
     public class SceneSearchFilter : ReactiveObject
-    {
-        //private readonly IObservable<Func<Footprint, bool>> _observableFilter;
-
+    {    
+        private readonly IDictionary<string, IGeometry> _geometries;
 
         public event EventHandler? Update;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
+            var footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
+
+            _geometries = footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
+
             Cloudiness = 0.0;
             MinSunElevation = 0.0;
             MaxSunElevation = 90.0;
@@ -88,10 +92,13 @@ namespace FootprintViewer.ViewModels
             }
             else
             {
-                var footprintPolygon = (Polygon)footprint.Geometry;
-                var aoiPolygon = (Polygon)AOI;
+                if (_geometries.ContainsKey(footprint.Name))
+                {
+                    var footprintPolygon = (Polygon)_geometries[footprint.Name];
+                    var aoiPolygon = (Polygon)AOI;
 
-                isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);                       
+                    isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);
+                }                   
             }
 
             if (isAoiCondition == true)
