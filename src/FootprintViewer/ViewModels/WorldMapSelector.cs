@@ -4,32 +4,34 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
     public class WorldMapSelector : ReactiveObject
-    {
+    {     
         public WorldMapSelector(IReadonlyDependencyResolver dependencyResolver)
         {
-            var userDataSource = dependencyResolver.GetService<IUserDataSource>();
+            var provider = dependencyResolver.GetExistingService<MapProvider>();
 
-            var layers = userDataSource?.WorldMapSources;
+            WorldMaps = new ObservableCollection<MapResource>();
 
-            Layers = new ObservableCollection<LayerSource>(layers);
+            WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
+        
+            var resources = provider.GetMapResources();
 
-            SelectedLayer = layers.FirstOrDefault();
+            WorldMaps = new ObservableCollection<MapResource>(resources);
 
-            LayerChanged = ReactiveCommand.Create<LayerSource, LayerSource>(s => s);
+            SelectedWorldMap = WorldMaps.FirstOrDefault();
 
-            this.WhenAnyValue(x => x.SelectedLayer).InvokeCommand(LayerChanged);
+            this.WhenAnyValue(x => x.SelectedWorldMap).InvokeCommand(WorldMapChanged);
         }
 
-        public ReactiveCommand<LayerSource, LayerSource> LayerChanged { get; }
+        public ReactiveCommand<MapResource, MapResource> WorldMapChanged { get; }
+
+        public ObservableCollection<MapResource> WorldMaps { get; }
 
         [Reactive]
-        public ObservableCollection<LayerSource> Layers { get; set; }
-
-        [Reactive]
-        public LayerSource SelectedLayer { get; set; }
+        public MapResource SelectedWorldMap { get; set; }
     }
 }

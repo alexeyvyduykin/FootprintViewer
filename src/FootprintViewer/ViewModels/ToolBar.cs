@@ -80,7 +80,7 @@ namespace FootprintViewer.ViewModels
                 Command = worldMapsClick,
             };
         
-            _worldMapSelector.LayerChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
+            _worldMapSelector.WorldMapChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
 
             worldMapsClick.Subscribe(_ => { IsWorldMapSelectorOpen = !IsWorldMapSelectorOpen; });
 
@@ -148,7 +148,7 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> EditClick { get; }
 
-        public ReactiveCommand<LayerSource, LayerSource> LayerChanged => _worldMapSelector.LayerChanged;
+        public ReactiveCommand<MapResource, MapResource> LayerChanged => _worldMapSelector.WorldMapChanged;
 
         public Tool ZoomIn { get; }
 

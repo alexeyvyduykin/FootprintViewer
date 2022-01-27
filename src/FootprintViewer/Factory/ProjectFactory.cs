@@ -28,8 +28,8 @@ namespace FootprintViewer
 
         public Map CreateMap(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetExistingService<IDataSource>();
-            var userSource = dependencyResolver.GetExistingService<IUserDataSource>();
+            var source = dependencyResolver.GetExistingService<IDataSource>();       
+            var mapProvider = dependencyResolver.GetExistingService<MapProvider>();
 
             var map = new Map()
             {
@@ -53,7 +53,7 @@ namespace FootprintViewer
 
             //map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
-            map.SetWorldMapLayer(userSource.WorldMapSources.FirstOrDefault());
+            map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault());
 
             return map;
         }

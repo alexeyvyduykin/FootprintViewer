@@ -58,6 +58,13 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterLazySingleton<IUserDataSource>(() => new UserDataSource());
 
+            // Map data provider
+
+            var mapProvider = new MapProvider();
+            mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "data", "world"));
+            mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "userData", "world"));
+            services.RegisterLazySingleton<MapProvider>(() => mapProvider);
+
             var factory = resolver.GetExistingService<ProjectFactory>();
 
             var map = factory.CreateMap(resolver);

@@ -20,6 +20,7 @@ namespace FootprintViewer.Designer
         private readonly IUserDataSource _userDataSource = new DesignTimeUserDataSource();
         private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
         private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource();
+        private readonly MapProvider _mapProvider = new DesignTimeMapProvider();
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -45,6 +46,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(IUserDataSource))
             {
                 return _userDataSource;
+            }
+            else if (serviceType == typeof(MapProvider))
+            {
+                return _mapProvider;
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -158,24 +163,36 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeUserDataSource : IUserDataSource
         {
-            private readonly IList<LayerSource> _layerSources;
-
             public DesignTimeUserDataSource()
             {
-                _layerSources = new[]
-                {
-                    new LayerSource() { Name = "WorldMapDefault" },
-                    new LayerSource() { Name = "OAM-World-1-8-min-J70" },
-                    new LayerSource() { Name = "OAM-World-1-10-J70" }
-                };
+
             }
 
             public IEnumerable<FootprintPreview> GetFootprints()
             {
                 return new List<FootprintPreview>();
             }
+        }
 
-            public IList<LayerSource> WorldMapSources => _layerSources;
+        private class DesignTimeMapProvider : MapProvider
+        {
+            public DesignTimeMapProvider() : base()
+            {
+                AddSource(new DesignTimeMapDataSource());
+            }
+
+            private class DesignTimeMapDataSource : Data.Sources.IMapDataSource
+            {
+                public IEnumerable<MapResource> GetMapResources()
+                {
+                    return new[]
+                    {                    
+                        new MapResource("WorldMapDefault", ""),                    
+                        new MapResource("OAM-World-1-8-min-J70", ""),                   
+                        new MapResource("OAM-World-1-10-J70", "")
+                    };
+                }
+            }
         }
 
         private class FootprintDataSource : IFootprintDataSource

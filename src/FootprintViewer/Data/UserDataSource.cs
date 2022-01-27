@@ -17,17 +17,9 @@ using System.Linq;
 
 namespace FootprintViewer.Data
 {
-    public class LayerSource
-    {
-        public string Name { get; set; }
-
-        public string Path { get; set; }
-    }
-
     public class UserDataSource : IUserDataSource
     {
-        private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();
-        private readonly List<LayerSource> _worldMapSources;
+        private readonly SortedDictionary<string, NetTopologySuite.Geometries.Geometry> _dict = new SortedDictionary<string, NetTopologySuite.Geometries.Geometry>();     
         private readonly List<FootprintPreview> _footprints;
         private readonly Random _random = new Random();
         private readonly string[] _satellites;
@@ -36,34 +28,11 @@ namespace FootprintViewer.Data
         private readonly SolutionFolder _userDataFolder = new SolutionFolder("userData");
 
         public UserDataSource()
-        {
-            _worldMapSources = new List<LayerSource>();
+        {      
             _footprints = new List<FootprintPreview>();
 
             _satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
             _date = DateTime.UtcNow;
-
-            BuildWorldMaps();
-        }
-
-        public IList<LayerSource> WorldMapSources => _worldMapSources;
-
-        private void BuildWorldMaps()
-        {
-            var layerPath = _dataFolder.GetPath("world.mbtiles", "world");
-
-            var userLayerPath = _userDataFolder.GetPaths("*.mbtiles", "world");
-
-            if (layerPath != null)
-            {
-                _worldMapSources.Add(new LayerSource() { Name = "WorldDefault", Path = layerPath });
-            }
-
-            foreach (var path in userLayerPath)
-            {
-                var name = Path.GetFileNameWithoutExtension(path);
-                _worldMapSources.Add(new LayerSource() { Name = name, Path = path });
-            }
         }
 
         public IEnumerable<FootprintPreview> GetFootprints()

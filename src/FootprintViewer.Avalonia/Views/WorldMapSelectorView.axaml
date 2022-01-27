@@ -21,8 +21,8 @@
     <ListBox Background="{StaticResource MainBackgroundBrush}"
              Foreground="{StaticResource MainForegroundBrush}"
              BorderThickness="0"
-             Items="{Binding Layers}"             
-             SelectedItem="{Binding SelectedLayer}">
+             Items="{Binding WorldMaps}"             
+             SelectedItem="{Binding SelectedWorldMap}">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <TextBlock Text="{Binding Name}"/>

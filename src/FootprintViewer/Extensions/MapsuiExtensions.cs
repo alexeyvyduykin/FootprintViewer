@@ -17,9 +17,9 @@ namespace FootprintViewer
 {
     public static class MapsuiExtensions
     {
-        public static void SetWorldMapLayer(this Map map, LayerSource source)
+        public static void SetWorldMapLayer(this Map map, MapResource resource)
         { 
-            var layer = CreateWorldMapLayer(source);
+            var layer = CreateWorldMapLayer(resource);
             map.Layers.Replace(nameof(LayerType.WorldMap), layer);
             map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Envelope };
         }
@@ -56,9 +56,9 @@ namespace FootprintViewer
             }
         }
 
-        private static ILayer CreateWorldMapLayer(LayerSource source)
+        private static ILayer CreateWorldMapLayer(MapResource resource)
         {
-            string path = source.Path;
+            string path = resource.Path;
 
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
