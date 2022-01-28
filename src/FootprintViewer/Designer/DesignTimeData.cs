@@ -19,6 +19,7 @@ namespace FootprintViewer.Designer
         private readonly MapProvider _mapProvider = new DesignTimeMapProvider();
         private readonly FootprintPreviewProvider _footprintPreviewProvider = new DesignTimeFootprintPreviewProvider();
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider = new DesignTimeFootprintPreviewGeometryProvider();
+        private readonly GroundTargetProvider _groundTargetProvider = new DesignDataGroundTargetProvider();
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -52,6 +53,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(FootprintPreviewGeometryProvider))
             {
                 return _footprintPreviewGeometryProvider;
+            }
+            else if (serviceType == typeof(GroundTargetProvider))
+            {
+                return _groundTargetProvider;
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -242,18 +247,31 @@ namespace FootprintViewer.Designer
         }
 
         private class DesignTimeTargetLayer : Layers.TargetLayer
-        {
-            private readonly List<GroundTarget> _groundTarget;
-
-            public DesignTimeTargetLayer() : base()
+        {         
+            public DesignTimeTargetLayer() : base(new TargetProvider(new DesignDataGroundTargetProvider()))
             {
-                _groundTarget = new List<GroundTarget>()
+
+            }
+        }
+       
+        private class DesignDataGroundTargetProvider : GroundTargetProvider
+        {
+            public DesignDataGroundTargetProvider() : base()
+            {
+                AddSource(new DesignTimeGroundTargetDataSource());
+            }
+
+            private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
+            {
+                public IEnumerable<GroundTarget> GetGroundTargets()
                 {
-                    new GroundTarget()
+                    return new List<GroundTarget>()
                     {
-                        Name = "GroundTarget0001",
-                        Type = GroundTargetType.Point,
-                    },
+                        new GroundTarget()
+                        {
+                            Name = "GroundTarget0001",
+                            Type = GroundTargetType.Point,
+                        },
 
                     new GroundTarget()
                     {
@@ -266,9 +284,8 @@ namespace FootprintViewer.Designer
                        Type = GroundTargetType.Area,
                    },
                 };
+                }
             }
-
-            public override IEnumerable<GroundTarget> GetTargets() => _groundTarget;
         }
     }
 }

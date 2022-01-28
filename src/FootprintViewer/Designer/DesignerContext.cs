@@ -103,17 +103,17 @@ namespace FootprintViewer.Designer
             FootprintObserverFilter = new FootprintObserverFilter(dependencyResolver);
 
             // Tabs: GroundTargetViewer
-    //        var ds = dependencyResolver.GetExistingService<TargetLayer>();
+            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
 
-    //        GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
+            GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
 
-   //         GroundTargetViewer.UpdateAsync(ds.GetTargets);
+            GroundTargetViewer.UpdateAsync(groundTargetProvider.GetGroundTargets);
 
             // Tabs: GroundTargetViewerList
 
-    //        GroundTargetViewerList = new GroundTargetViewerList();
+            GroundTargetViewerList = new GroundTargetViewerList();
 
-     //       GroundTargetViewerList.InvalidateData(ds.GetTargets);
+            GroundTargetViewerList.InvalidateData(groundTargetProvider.GetGroundTargets);
 
             // Tabs: SatelliteViewer
 

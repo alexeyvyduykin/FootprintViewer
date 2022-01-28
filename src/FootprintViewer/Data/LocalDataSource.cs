@@ -11,8 +11,7 @@ namespace FootprintViewer.Data
         private readonly IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> _tracks;
         private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _leftStrips;
         private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _rightStrips;     
-        private readonly IEnumerable<Footprint> _footprints; 
-        private readonly IEnumerable<GroundTarget> _targets;
+        private readonly IEnumerable<Footprint> _footprints;      
 
         public LocalDataSource()
         {
@@ -23,8 +22,6 @@ namespace FootprintViewer.Data
             (_leftStrips, _rightStrips) = StripBuilder.Create(_satellites);
 
             _footprints = FootprintBuilder.Create(_satellites);
-
-            _targets = GroundTargetBuilder.Create(_footprints.ToList());
         }
 
         public IEnumerable<Satellite> Satellites => _satellites;
@@ -36,7 +33,5 @@ namespace FootprintViewer.Data
         public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;
 
         public IEnumerable<Footprint> Footprints => _footprints;
-
-        public IEnumerable<GroundTarget> Targets => _targets;
     }
 }

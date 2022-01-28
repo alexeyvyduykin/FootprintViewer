@@ -46,15 +46,29 @@ namespace FootprintViewer.Avalonia
             services.InitializeSplat();
 
             services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
-           
+
+            Data.Sources.IGroundTargetDataSource groundTargetDataSource;
+
             if (IsConnectionValid() == true)
             {
-                services.RegisterLazySingleton<IDataSource>(() => CreateFromDatabase());
+                FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
+
+                services.RegisterLazySingleton<IDataSource>(() => new DatabaseDataSource(db));
+
+                groundTargetDataSource = new Data.Sources.GroundTargetDataSource(db);
             }
             else
             {
-                services.RegisterLazySingleton<IDataSource>(() => CreateFromRandom());
+                services.RegisterLazySingleton<IDataSource>(() => new LocalDataSource());
+
+                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(new List<Footprint>());
             }
+        
+            // GroundTaregt provider
+        
+            var groundTargetProvider = new GroundTargetProvider();
+            groundTargetProvider.AddSource(groundTargetDataSource);
+            services.RegisterLazySingleton<GroundTargetProvider>(() => groundTargetProvider);
 
             // Map data provider
 
@@ -75,7 +89,6 @@ namespace FootprintViewer.Avalonia
             var footprintPreviewGeometryProvider = new FootprintPreviewGeometryProvider();
             footprintPreviewGeometryProvider.AddSource(new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"));
             services.RegisterLazySingleton<FootprintPreviewGeometryProvider>(() => footprintPreviewGeometryProvider);
-
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 
@@ -176,18 +189,6 @@ namespace FootprintViewer.Avalonia
                     sceneSearch.ResetAOI();
                 }
             };
-        }
-
-        private static IDataSource CreateFromRandom()
-        {
-            return new LocalDataSource();
-        }
-
-        private static IDataSource CreateFromDatabase()
-        {
-            FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
-
-            return new DatabaseDataSource(db);
         }
 
         private static bool IsConnectionValid()

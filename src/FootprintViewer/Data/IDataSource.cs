@@ -9,7 +9,6 @@ namespace FootprintViewer.Data
         IEnumerable<Footprint> Footprints { get; }
         IDictionary<string, Dictionary<int, List<List<Point>>>> LeftStrips { get; }
         IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips { get; }
-        IEnumerable<GroundTarget> Targets { get; }
         IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GroundTracks { get; }
     }
 }

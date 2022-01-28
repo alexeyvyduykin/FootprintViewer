@@ -30,8 +30,6 @@ namespace FootprintViewer.Layers
         private IFeature? _lastSelected;
         private IEnumerable<IFeature>? _activeFeatures;
 
-        public TargetLayer() { }
-
         public TargetLayer(IProvider provider)
         {
             _provider = (TargetProvider)provider;

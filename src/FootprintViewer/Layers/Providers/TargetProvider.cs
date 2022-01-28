@@ -11,13 +11,13 @@ namespace FootprintViewer.Layers
     public class TargetProvider : MemoryProvider
     {
         private readonly List<IFeature> _featuresCache;
-        private readonly IDataSource _source;
+        private readonly GroundTargetProvider _provider;
 
-        public TargetProvider(IDataSource source)
+        public TargetProvider(GroundTargetProvider provider)
         {
-            _source = source;
+            _provider = provider;
 
-            _featuresCache = Build(source.Targets);
+            _featuresCache = Build(provider.GetGroundTargets());
 
             ReplaceFeatures(_featuresCache);
         }
@@ -77,10 +77,10 @@ namespace FootprintViewer.Layers
             {
                 var names = features.Select(s => (string)s["Name"]).ToList();
 
-                return _source.Targets.Where(s => names.Contains(s.Name));
+                return _provider.GetGroundTargets().Where(s => names.Contains(s.Name));
             }
 
-            return _source.Targets;
+            return _provider.GetGroundTargets();
         }
 
         private IGeometry AreaCutting(IList<Point> points)
