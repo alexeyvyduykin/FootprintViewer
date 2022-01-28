@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -9,6 +8,7 @@ using Mapsui.Styles.Thematics;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
@@ -21,13 +21,16 @@ namespace FootprintViewer.Layers
 
     public delegate void TargetLayerEventHandler(object? sender, TargetLayerEventArgs e);
 
-    public class TargetLayer : MemoryLayer, IGroundTargetDataSource
+    public class TargetLayer : MemoryLayer
     {
         private readonly IStyle _style;
         private readonly TargetProvider _provider;
         private const int _maxVisible = 5000;
         private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
-        private readonly ReactiveCommand<IEnumerable<IFeature>?, IEnumerable<IFeature>?> refresh;
+        private IFeature? _lastSelected;
+        private IEnumerable<IFeature>? _activeFeatures;
+
+        public TargetLayer() { }
 
         public TargetLayer(IProvider provider)
         {
@@ -44,10 +47,18 @@ namespace FootprintViewer.Layers
             DataSource = provider;
             IsMapInfoLayer = false;
 
-            refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, IEnumerable<IFeature>?>(s => s);
+            Refresh = ReactiveCommand.Create<IEnumerable<IFeature>, IEnumerable<IFeature>>(s => s);
+
+            _isEnabled = ReactiveCommand.Create<bool, bool>(s => IsEnable = s);
         }
 
-        public IObservable<IEnumerable<IFeature>?> RefreshDataObservable => refresh;
+        public IObservable<bool> IsEnabledObserver => _isEnabled;
+
+        private ReactiveCommand<IEnumerable<IFeature>, IEnumerable<IFeature>> Refresh { get; }
+
+        private readonly ReactiveCommand<bool, bool> _isEnabled;
+
+        public bool IsEnable { get; private set; }
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
@@ -62,11 +73,17 @@ namespace FootprintViewer.Layers
                         // HACK: change size extent to viewport of view control
                         var box = extent.Grow(-SymbolStyle.DefaultWidth * 2 * resolution, -SymbolStyle.DefaultHeight * 2 * resolution);
 
-                        refresh.Execute(GetFeaturesInView(box, resolution)).Subscribe();
+                        _activeFeatures = GetFeaturesInView(box, resolution);
+
+                        Refresh.Execute(_activeFeatures).Subscribe();
+
+                        _isEnabled.Execute(true).Subscribe();
                     }
                     else
                     {
-                        refresh.Execute(null).Subscribe();
+                        _activeFeatures = null;
+
+                        _isEnabled.Execute(false).Subscribe();
                     }
 
                     _lastExtent = extent.Copy();
@@ -76,30 +93,39 @@ namespace FootprintViewer.Layers
 
         public void SelectGroundTarget(string name)
         {
-            _provider.SelectFeature(name);
+            var feature = _provider.FeaturesCache.Where(s => name.Equals((string)s["Name"])).First();
+
+            if (_lastSelected != null)
+            {
+                _lastSelected["State"] = "Unselected";
+            }
+
+            feature["State"] = "Selected";
+
+            _lastSelected = feature;
+
             DataHasChanged();
         }
 
         public void ShowHighlight(string name)
         {
-            _provider.ShowHighlight(name);
+            var feature = _provider.FeaturesCache.Where(s => name.Equals((string)s["Name"])).First();
+
+            feature["Highlight"] = true;
+
             DataHasChanged();
         }
 
         public void HideHighlight()
         {
-            _provider.HideHighlight();
+            _provider.FeaturesCache.ForEach(s => s["Highlight"] = false);
+
             DataHasChanged();
         }
 
-        public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features)
+        public virtual IEnumerable<GroundTarget> GetTargets()
         {
-            return _provider.FromDataSource(features);
-        }
-
-        public IEnumerable<GroundTarget> GetTargets()
-        {
-            return _provider.FromDataSource();
+            return _provider.FromDataSource(_activeFeatures);
         }
 
         private static ThemeStyle CreateTargetHighlightThemeStyle()

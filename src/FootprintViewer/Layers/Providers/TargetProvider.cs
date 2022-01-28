@@ -3,34 +3,31 @@ using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 
 namespace FootprintViewer.Layers
 {
     public class TargetProvider : MemoryProvider
-    {      
-        private readonly List<IFeature> _list;
-        //private readonly IDictionary<string, GroundTarget> _cache = new Dictionary<string, GroundTarget>();
+    {
+        private readonly List<IFeature> _featuresCache;
         private readonly IDataSource _source;
-        private IFeature _lastSelected;
 
         public TargetProvider(IDataSource source)
         {
             _source = source;
 
-            _list = Build(source.Targets);
-            
-            ReplaceFeatures(_list);
+            _featuresCache = Build(source.Targets);
+
+            ReplaceFeatures(_featuresCache);
         }
+
+        public List<IFeature> FeaturesCache => _featuresCache;
 
         private List<IFeature> Build(IEnumerable<GroundTarget> groundTargets)
         {
             List<IFeature> list = new List<IFeature>();
-        
+
             foreach (var item in groundTargets)
             {
                 var feature = new Feature()
@@ -43,9 +40,9 @@ namespace FootprintViewer.Layers
                 switch (item.Type)
                 {
                     case GroundTargetType.Point:
-                    {                      
-                        var p = (NetTopologySuite.Geometries.Point)item.Points;                                                    
-                        var point = SphericalMercator.FromLonLat(p.X, p.Y);                                                
+                    {
+                        var p = (NetTopologySuite.Geometries.Point)item.Points;
+                        var point = SphericalMercator.FromLonLat(p.X, p.Y);
                         feature.Geometry = point;
                         feature["Type"] = "Point";
                     }
@@ -55,12 +52,12 @@ namespace FootprintViewer.Layers
                         feature.Geometry = RouteCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Route";
                     }
-                        break;
+                    break;
                     case GroundTargetType.Area:
                     {
                         feature.Geometry = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Area";
-                    }                        
+                    }
                     break;
                     default:
                         throw new Exception();
@@ -74,41 +71,15 @@ namespace FootprintViewer.Layers
             return list;
         }
 
-        public void SelectFeature(string name)
+        public IEnumerable<GroundTarget> FromDataSource(IEnumerable<IFeature>? features = null)
         {
-            var feature = _list.Where(s => name.Equals((string)s["Name"])).First();
-
-            if (_lastSelected != null)
+            if (features != null)
             {
-                _lastSelected["State"] = "Unselected";
+                var names = features.Select(s => (string)s["Name"]).ToList();
+
+                return _source.Targets.Where(s => names.Contains(s.Name));
             }
 
-            feature["State"] = "Selected";
-
-            _lastSelected = feature;
-        }
-
-        public void ShowHighlight(string name)
-        {
-            var feature = _list.Where(s => name.Equals((string)s["Name"])).First();
-
-            feature["Highlight"] = true;
-        }
-
-        public void HideHighlight()
-        {
-            _list.ForEach(s => s["Highlight"] = false);
-        }
-
-        public IEnumerable<GroundTarget> FromDataSource(IEnumerable<IFeature> features)
-        {
-            var names = features.Select(s => (string)s["Name"]).ToList();
-
-            return _source.Targets.Where(s => names.Contains(s.Name));
-        }
-
-        public IEnumerable<GroundTarget> FromDataSource()
-        {
             return _source.Targets;
         }
 
@@ -117,7 +88,7 @@ namespace FootprintViewer.Layers
             var count = points.Count;
             var ring1 = new LinearRing();
             var ring2 = new LinearRing();
-           
+
             var ring = ring1;
 
             for (int i = 0; i < count; i++)
@@ -132,7 +103,7 @@ namespace FootprintViewer.Layers
                 {
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
                         ring.Vertices.Add(pp1);
 
@@ -144,7 +115,7 @@ namespace FootprintViewer.Layers
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(180, cutLat);
                         ring.Vertices.Add(pp1);
 
@@ -170,7 +141,7 @@ namespace FootprintViewer.Layers
             else
             {
                 return new Polygon() { ExteriorRing = ring1 };
-            }             
+            }
         }
 
         private IGeometry RouteCutting(IList<Point> points)
@@ -193,7 +164,7 @@ namespace FootprintViewer.Layers
                 {
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
                         line.Vertices.Add(pp1);
 
@@ -205,7 +176,7 @@ namespace FootprintViewer.Layers
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(180, cutLat);
                         line.Vertices.Add(pp1);
 
@@ -234,13 +205,13 @@ namespace FootprintViewer.Layers
             }
         }
 
-        private double linearInterpDiscontLat(Point p1, Point p2)
-        {     
+        private double LinearInterpDiscontLat(Point p1, Point p2)
+        {
             // one longitude should be negative one positive, make them both positive
             double lon1 = p1.X, lat1 = p1.Y, lon2 = p2.X, lat2 = p2.Y;
             if (lon1 > lon2)
             {
-                lon2 += 360; 
+                lon2 += 360;
             }
             else
             {

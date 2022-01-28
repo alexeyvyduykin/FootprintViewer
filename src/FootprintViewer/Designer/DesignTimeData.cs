@@ -1,13 +1,10 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
-using Mapsui.Providers;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
@@ -18,7 +15,7 @@ namespace FootprintViewer.Designer
         private readonly ProjectFactory _projectFactory = new ProjectFactory();
         private readonly IDataSource _dataSource = new DesignTimeDataSource();
         private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
-        private readonly IGroundTargetDataSource _groundTargetDataSource = new GroundTargetDataSource();
+        private readonly TargetLayer _groundTargetDataSource = new DesignTimeTargetLayer();
         private readonly MapProvider _mapProvider = new DesignTimeMapProvider();
         private readonly FootprintPreviewProvider _footprintPreviewProvider = new DesignTimeFootprintPreviewProvider();
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider = new DesignTimeFootprintPreviewGeometryProvider();
@@ -84,7 +81,7 @@ namespace FootprintViewer.Designer
             {
                 return _footprintDataSource;
             }
-            else if (serviceType == typeof(IGroundTargetDataSource))
+            else if (serviceType == typeof(TargetLayer))
             {
                 return _groundTargetDataSource;
             }
@@ -162,7 +159,7 @@ namespace FootprintViewer.Designer
             public IEnumerable<Footprint> Footprints => _footprints;
             public IDictionary<string, Dictionary<int, List<List<Point>>>> LeftStrips => _leftStrips;
             public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;
-            public IEnumerable<GroundTarget> Targets { get; }
+            public IEnumerable<GroundTarget> Targets => new List<GroundTarget>();
             public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GroundTracks => _groundTracks;
         }
 
@@ -244,11 +241,11 @@ namespace FootprintViewer.Designer
             public Task<List<Footprint>> GetFootprintsAsync() => Task.Run(() => _footprints);
         }
 
-        private class GroundTargetDataSource : IGroundTargetDataSource
+        private class DesignTimeTargetLayer : Layers.TargetLayer
         {
             private readonly List<GroundTarget> _groundTarget;
 
-            public GroundTargetDataSource()
+            public DesignTimeTargetLayer() : base()
             {
                 _groundTarget = new List<GroundTarget>()
                 {
@@ -271,27 +268,7 @@ namespace FootprintViewer.Designer
                 };
             }
 
-            public IObservable<IEnumerable<IFeature>?> RefreshDataObservable =>
-                ReactiveCommand.CreateFromObservable<Unit, IEnumerable<IFeature>?>(_ => Observable.Return<IEnumerable<IFeature>?>(null));
-
-            public IEnumerable<GroundTarget> GetTargets(IEnumerable<IFeature> features) => _groundTarget;
-
-            public IEnumerable<GroundTarget> GetTargets() => _groundTarget;
-
-            public void HideHighlight()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void SelectGroundTarget(string name)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void ShowHighlight(string name)
-            {
-                throw new NotImplementedException();
-            }
+            public override IEnumerable<GroundTarget> GetTargets() => _groundTarget;
         }
     }
 }

@@ -84,10 +84,10 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<Mapsui.Map>(() => map);
 
             var footprintDataSource = (IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
-            var groundTargetDataSource = (IGroundTargetDataSource)map.GetLayer<TargetLayer>(LayerType.GroundTarget);
+            var targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
             services.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
-            services.RegisterLazySingleton<IGroundTargetDataSource>(() => groundTargetDataSource);
+            services.RegisterLazySingleton<TargetLayer>(() => targetLayer);
 
             services.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(resolver));
             services.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(resolver));

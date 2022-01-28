@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using NetTopologySuite.Geometries;
 using Splat;
@@ -102,17 +103,17 @@ namespace FootprintViewer.Designer
             FootprintObserverFilter = new FootprintObserverFilter(dependencyResolver);
 
             // Tabs: GroundTargetViewer
-            var ds = dependencyResolver.GetExistingService<IGroundTargetDataSource>();
+    //        var ds = dependencyResolver.GetExistingService<TargetLayer>();
 
-            GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
+    //        GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
 
-            GroundTargetViewer.UpdateAsync(ds.GetTargets);
+   //         GroundTargetViewer.UpdateAsync(ds.GetTargets);
 
             // Tabs: GroundTargetViewerList
 
-            GroundTargetViewerList = new GroundTargetViewerList();
+    //        GroundTargetViewerList = new GroundTargetViewerList();
 
-            GroundTargetViewerList.InvalidateData(ds.GetTargets);
+     //       GroundTargetViewerList.InvalidateData(ds.GetTargets);
 
             // Tabs: SatelliteViewer
 
