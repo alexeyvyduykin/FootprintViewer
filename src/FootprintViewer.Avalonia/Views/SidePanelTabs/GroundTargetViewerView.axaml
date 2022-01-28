@@ -7,10 +7,16 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              MinWidth="380"  
              mc:Ignorable="d"            
-             d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewer}"           
-             x:DataType="vm:GroundTargetViewer" x:CompileBindings="False"                                                
+                                             
              d:DesignWidth="380" d:DesignHeight="450">
 
+  <!--d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewer}"
+  x:DataType="vm:GroundTargetViewer" x:CompileBindings="False"-->
+
+  <Design.DataContext>
+    <vmd:DesignTimeGroundTargetViewer/>
+  </Design.DataContext>
+  
     <ContentControl x:Name="contentControl"
                     Width="380"
                     Content="{Binding MainContent}"/>

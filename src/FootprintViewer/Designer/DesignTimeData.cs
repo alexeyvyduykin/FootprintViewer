@@ -11,15 +11,15 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeData : IReadonlyDependencyResolver
     {
-        private readonly Mapsui.Map _map = new Mapsui.Map();
-        private readonly ProjectFactory _projectFactory = new ProjectFactory();
-        private readonly IDataSource _dataSource = new DesignTimeDataSource();
-        private readonly IFootprintDataSource _footprintDataSource = new FootprintDataSource();
-        private readonly TargetLayer _groundTargetDataSource = new DesignTimeTargetLayer();
-        private readonly MapProvider _mapProvider = new DesignTimeMapProvider();
-        private readonly FootprintPreviewProvider _footprintPreviewProvider = new DesignTimeFootprintPreviewProvider();
-        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider = new DesignTimeFootprintPreviewGeometryProvider();
-        private readonly GroundTargetProvider _groundTargetProvider = new DesignDataGroundTargetProvider();
+        private Mapsui.Map? _map;
+        private ProjectFactory? _projectFactory;
+        private IDataSource? _dataSource;
+        private IFootprintDataSource? _footprintDataSource;
+        private TargetLayer? _groundTargetDataSource;
+        private MapProvider? _mapProvider;
+        private FootprintPreviewProvider? _footprintPreviewProvider;
+        private FootprintPreviewGeometryProvider? _footprintPreviewGeometryProvider;
+        private GroundTargetProvider? _groundTargetProvider;
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -32,31 +32,31 @@ namespace FootprintViewer.Designer
         {
             if (serviceType == typeof(ProjectFactory))
             {
-                return _projectFactory;
+                return _projectFactory ??= new ProjectFactory();
             }
             else if (serviceType == typeof(Mapsui.Map))
             {
-                return _map;//_projectFactory.CreateMap(this);
+                return _map ??= new Mapsui.Map();
             }
             else if (serviceType == typeof(IDataSource))
             {
-                return _dataSource;
+                return _dataSource ??= new DesignTimeDataSource();
             }
             else if (serviceType == typeof(MapProvider))
             {
-                return _mapProvider;
+                return _mapProvider ??= new DesignTimeMapProvider();
             }
             else if (serviceType == typeof(FootprintPreviewProvider))
             {
-                return _footprintPreviewProvider;
+                return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
             }
             else if (serviceType == typeof(FootprintPreviewGeometryProvider))
             {
-                return _footprintPreviewGeometryProvider;
+                return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
             }
             else if (serviceType == typeof(GroundTargetProvider))
             {
-                return _groundTargetProvider;
+                return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -84,11 +84,11 @@ namespace FootprintViewer.Designer
             }
             else if (serviceType == typeof(IFootprintDataSource))
             {
-                return _footprintDataSource;
+                return _footprintDataSource ??= new FootprintDataSource();
             }
             else if (serviceType == typeof(TargetLayer))
             {
-                return _groundTargetDataSource;
+                return _groundTargetDataSource ??= new DesignTimeTargetLayer();
             }
             else if (serviceType == typeof(MainViewModel))
             {
@@ -163,8 +163,7 @@ namespace FootprintViewer.Designer
             public IEnumerable<Satellite> Satellites => _satellites;
             public IEnumerable<Footprint> Footprints => _footprints;
             public IDictionary<string, Dictionary<int, List<List<Point>>>> LeftStrips => _leftStrips;
-            public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;
-            public IEnumerable<GroundTarget> Targets => new List<GroundTarget>();
+            public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;       
             public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GroundTracks => _groundTracks;
         }
 
@@ -253,19 +252,21 @@ namespace FootprintViewer.Designer
 
             }
         }
-       
-        private class DesignDataGroundTargetProvider : GroundTargetProvider
-        {
-            public DesignDataGroundTargetProvider() : base()
-            {
-                AddSource(new DesignTimeGroundTargetDataSource());
-            }
 
-            private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
+
+    }
+    public class DesignDataGroundTargetProvider : GroundTargetProvider
+    {
+        public DesignDataGroundTargetProvider() : base()
+        {
+            AddSource(new DesignTimeGroundTargetDataSource());
+        }
+
+        private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
+        {
+            public IEnumerable<GroundTarget> GetGroundTargets()
             {
-                public IEnumerable<GroundTarget> GetGroundTargets()
-                {
-                    return new List<GroundTarget>()
+                return new List<GroundTarget>()
                     {
                         new GroundTarget()
                         {
@@ -284,7 +285,6 @@ namespace FootprintViewer.Designer
                        Type = GroundTargetType.Area,
                    },
                 };
-                }
             }
         }
     }

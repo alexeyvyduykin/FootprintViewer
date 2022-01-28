@@ -21,7 +21,7 @@ namespace FootprintViewer.ViewModels
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _targetLayer = dependencyResolver.GetExistingService<TargetLayer>();
+            //_targetLayer = dependencyResolver.GetExistingService<TargetLayer>();
 
             Title = "Просмотр наземных целей";
 
@@ -39,7 +39,7 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
+            //this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
@@ -55,17 +55,17 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _targetLayer.IsEnabledObserver.Subscribe(isEnabled =>
-            {
-                if (isEnabled == true)
-                {
-                    GroundTargetsChanged();
-                }
-                else
-                {
-                    MainContent = _emptyMainContent;
-                }
-            });
+            //_targetLayer.IsEnabledObserver.Subscribe(isEnabled =>
+            //{
+            //    if (isEnabled == true)
+            //    {
+            //        GroundTargetsChanged();
+            //    }
+            //    else
+            //    {
+            //        MainContent = _emptyMainContent;
+            //    }
+            //});
         }
 
         private void GroundTargetsChanged()

@@ -35,9 +35,9 @@ namespace FootprintViewer.Avalonia
         {
             if (Design.IsDesignMode)
             {
-                var designTimeData = new Designer.DesignTimeData();
+             //   var designTimeData = new Designer.DesignTimeData();
 
-                DesignerContext.InitializeContext(designTimeData);
+             //   DesignerContext.InitializeContext(designTimeData);
             }
         }
 
