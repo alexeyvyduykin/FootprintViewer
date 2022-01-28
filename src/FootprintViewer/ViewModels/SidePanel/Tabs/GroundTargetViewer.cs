@@ -42,7 +42,7 @@ namespace FootprintViewer.ViewModels
 
             Name = "GroundTargetViewer";
 
-            _groundTargetViewerList = new GroundTargetViewerList(dependencyResolver);
+            _groundTargetViewerList = new GroundTargetViewerList();
 
             _emptyMainContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
@@ -54,18 +54,42 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => _groundTargetViewerList.Update());
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged(_features)/* _groundTargetViewerList.Update()*/);
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
-            _groundTargetViewerList.BeginUpdate.Subscribe(_ => MainContent = _updateMainContent);
+            //  _groundTargetViewerList.BeginUpdate.Subscribe(_ => MainContent = _updateMainContent);
 
-            _groundTargetViewerList.EndUpdate.Subscribe(_ => MainContent = _groundTargetViewerList);
+            //  _groundTargetViewerList.EndUpdate.Subscribe(_ => MainContent = _groundTargetViewerList);
 
-            _groundTargetViewerList.Disable.Subscribe(_ => MainContent = _emptyMainContent);
+            _groundTargetViewerList.UpdateAsync.IsExecuting.Where(s => s == true).Subscribe(_ => MainContent = _updateMainContent);
+            _groundTargetViewerList.UpdateAsync.IsExecuting.Where(s => s == false).Subscribe(_ => MainContent = _groundTargetViewerList);
+
+
+            //   _groundTargetViewerList.Disable.Subscribe(_ => MainContent = _emptyMainContent);
+
+            _dataSource.RefreshDataObservable.Subscribe(f => GroundTargetsChanged(f));
         }
 
-        public void Update() => _groundTargetViewerList.Reset();
+        private IEnumerable<IFeature>? _features;
+
+        private void GroundTargetsChanged(IEnumerable<IFeature>? features)
+        {
+            _features = features;
+
+            if (features != null)
+            {
+                _groundTargetViewerList.InvalidateData(() => _dataSource.GetTargets(features));
+            }
+            else
+            {
+                MainContent = _emptyMainContent;
+            }
+        }
+
+        public void UpdateAsync(Func<IEnumerable<GroundTargetInfo>> load) => _groundTargetViewerList.InvalidateData(load);
+
+        public void UpdateAsync(Func<IEnumerable<GroundTarget>> load) => _groundTargetViewerList.InvalidateData(load);
 
         private void SelectedItemIml(GroundTargetInfo? groundTarget)
         {
