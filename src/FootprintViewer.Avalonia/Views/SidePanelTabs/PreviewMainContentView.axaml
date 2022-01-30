@@ -3,12 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"       
-             d:DataContext="{x:Static vmd:DesignerContext.PreviewMainContent}"           
-             x:DataType="vm:PreviewMainContent" x:CompileBindings="True"                                                                          
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                                                              
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.PreviewMainContentView">
 
+  <Design.DataContext>
+    <vmd:DesignTimePreviewMainContent/>
+  </Design.DataContext>
+  
   <Grid>
     <TextBlock VerticalAlignment="Center"
                HorizontalAlignment="Center"
@@ -18,6 +20,5 @@
                TextAlignment="Center"
                Text="{Binding Text}"/>
   </Grid>
-
 
 </UserControl>
