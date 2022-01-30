@@ -28,8 +28,6 @@ namespace FootprintViewer.Designer
 
         public static ToolBar? ToolBar { get; private set; }
 
-        public static WorldMapSelector? WorldMapSelector { get; private set; }
-
         public static MainViewModel? MainViewModel { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
@@ -104,10 +102,6 @@ namespace FootprintViewer.Designer
             // ToolBar
 
             ToolBar = dependencyResolver.GetService<ToolBar>();
-
-            // WorldMapSelector
-
-            WorldMapSelector = new WorldMapSelector(dependencyResolver);
 
             // MainViewModel
 
