@@ -8,12 +8,6 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static RouteInfoPanel? RouteInfoPanel { get; private set; }
-
-        public static AOIInfoPanel? AoiInfoPanel { get; private set; }
-
-        public static InfoPanel? InfoPanel { get; private set; }
-
         public static FootprintObserver? FootprintObserver { get; private set; }
 
         public static FootprintObserverList? FootprintObserverList { get; private set; }
@@ -33,25 +27,6 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
-
-            // CustomInfoPanels
-
-            RouteInfoPanel = new RouteInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            AoiInfoPanel = new AOIInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            // InfoPanel
-
-            InfoPanel = new InfoPanel();
-
-            InfoPanel.Show(RouteInfoPanel);
-            InfoPanel.Show(AoiInfoPanel);
 
             // Tabs
             // Tabs: FootprintObserver

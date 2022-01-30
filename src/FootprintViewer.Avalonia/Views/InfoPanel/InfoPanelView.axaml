@@ -8,12 +8,14 @@
              xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             d:DataContext="{x:Static vmd:DesignerContext.InfoPanel}"           
-             x:DataType="vm:InfoPanel" x:CompileBindings="True"                    
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"            
              mc:Ignorable="d">
 
+  <Design.DataContext>
+    <vmd:DesignTimeInfoPanel/>
+  </Design.DataContext>
+  
   <UserControl.Styles>
 
     <Style Selector="ItemsControl > ContentPresenter">

@@ -4,13 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"                 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             d:DataContext="{x:Static vmd:DesignerContext.RouteInfoPanel}"           
-             x:DataType="vm:RouteInfoPanel" x:CompileBindings="True"                   
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              mc:Ignorable="d" 
              d:DesignWidth="460"
              d:DesignHeight="250"
              x:Class="FootprintViewer.Avalonia.Views.InfoPanel.GeometryInfoPanelView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeInfoPanelItem/>
+  </Design.DataContext>
   
   <UserControl.Resources>
     <local:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">
@@ -106,6 +108,5 @@
     </Button>
 
   </Grid>
-
-    
+   
 </UserControl>
