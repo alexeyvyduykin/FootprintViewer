@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
-using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -33,8 +32,6 @@ namespace FootprintViewer.Designer
         public static WorldMapSelector? WorldMapSelector { get; private set; }
 
         public static MainViewModel? MainViewModel { get; private set; }
-
-        public static FootprintInfo? FootprintInfo { get; private set; }
 
         public static GroundTargetInfo? GroundTargetInfo { get; private set; }
 
@@ -122,22 +119,6 @@ namespace FootprintViewer.Designer
             MainViewModel = dependencyResolver.GetExistingService<MainViewModel>();
 
             MainViewModel.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
-
-            // FootprintInfo
-
-            FootprintInfo = new FootprintInfo(new Footprint()
-            {
-                Name = "Footrpint001",
-                SatelliteName = "Satellite1",
-                Center = new Point(54.434545, -12.435454),
-                Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                Duration = 35,
-                Node = 11,
-                Direction = SatelliteStripDirection.Left,
-            })
-            {
-                IsShowInfo = true
-            };
 
             // GroundTargetInfo
 

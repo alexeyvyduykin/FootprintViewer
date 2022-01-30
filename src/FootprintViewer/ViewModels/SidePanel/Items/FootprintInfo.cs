@@ -16,9 +16,7 @@ namespace FootprintViewer.ViewModels
         private readonly double _duration;
         private readonly int _node;
         private readonly SatelliteStripDirection _direction;
-
-        public FootprintInfo() { }
-
+      
         public FootprintInfo(Footprint footprint)
         {
             _footprint = footprint;
