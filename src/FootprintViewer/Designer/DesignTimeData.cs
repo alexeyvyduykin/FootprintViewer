@@ -178,33 +178,10 @@ namespace FootprintViewer.Designer
             {
                 public IEnumerable<FootprintPreview> GetFootprintPreviews()
                 {
-                    var list = new List<FootprintPreview>();
-
-                    Random random = new Random();
-
-                    var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
-                    var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
-
-                    foreach (var item in names)
+                    for (int i = 0; i < 8; i++)
                     {
-                        var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
-                        var date = DateTime.UtcNow;
-
-                        var unitBitmap = new System.Drawing.Bitmap(1, 1);
-                        unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
-
-                        list.Add(new FootprintPreview()
-                        {
-                            Date = date.Date.ToShortDateString(),
-                            SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
-                            SunElevation = random.Next(0, 90),
-                            CloudCoverFull = random.Next(0, 100),
-                            TileNumber = name.ToUpper(),
-                            Image = new System.Drawing.Bitmap(unitBitmap)
-                        });
+                        yield return DesignTimeFootprintPreview.Build();
                     }
-
-                    return list;
                 }
             }
         }

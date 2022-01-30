@@ -40,8 +40,6 @@ namespace FootprintViewer.Designer
 
         public static SatelliteInfo? SatelliteInfo { get; private set; }
 
-        public static FootprintPreview? FootprintPreview { get; private set; }
-
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {
             // Map
@@ -168,21 +166,6 @@ namespace FootprintViewer.Designer
             {
                 IsShow = true,
                 IsShowInfo = true,
-            };
-
-            // FootprintPreview
-
-            var unitBitmap = new System.Drawing.Bitmap(1, 1);
-            unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
-
-            FootprintPreview = new FootprintPreview()
-            {
-                Date = new DateTime(2001, 6, 1, 12, 0, 0).ToShortDateString(),
-                SatelliteName = "Satellite1",
-                SunElevation = 71.0,
-                CloudCoverFull = 84.0,
-                TileNumber = "38-50-lr_3857",
-                Image = new System.Drawing.Bitmap(unitBitmap)
             };
         }
     }
