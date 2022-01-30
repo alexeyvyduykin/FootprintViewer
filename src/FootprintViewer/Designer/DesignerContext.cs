@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
+﻿using FootprintViewer.ViewModels;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -32,8 +31,6 @@ namespace FootprintViewer.Designer
         public static WorldMapSelector? WorldMapSelector { get; private set; }
 
         public static MainViewModel? MainViewModel { get; private set; }
-
-        public static GroundTargetInfo? GroundTargetInfo { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -117,14 +114,6 @@ namespace FootprintViewer.Designer
             MainViewModel = dependencyResolver.GetExistingService<MainViewModel>();
 
             MainViewModel.SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
-
-            // GroundTargetInfo
-
-            GroundTargetInfo = new GroundTargetInfo(new GroundTarget()
-            {
-                Name = "GroundTarget001",
-                Type = GroundTargetType.Route,
-            });
         }
     }
 

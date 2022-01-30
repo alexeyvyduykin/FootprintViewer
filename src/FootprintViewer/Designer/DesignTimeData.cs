@@ -266,9 +266,8 @@ namespace FootprintViewer.Designer
 
             }
         }
-
-
     }
+
     public class DesignDataGroundTargetProvider : GroundTargetProvider
     {
         public DesignDataGroundTargetProvider() : base()
@@ -280,25 +279,10 @@ namespace FootprintViewer.Designer
         {
             public IEnumerable<GroundTarget> GetGroundTargets()
             {
-                return new List<GroundTarget>()
-                    {
-                        new GroundTarget()
-                        {
-                            Name = "GroundTarget0001",
-                            Type = GroundTargetType.Point,
-                        },
-
-                    new GroundTarget()
-                    {
-                        Name = "GroundTarget0002",
-                        Type = GroundTargetType.Route,
-                    },
-                   new GroundTarget()
-                   {
-                       Name = "GroundTarget0003",
-                       Type = GroundTargetType.Area,
-                   },
-                };
+                for (int i = 0; i < 10; i++)
+                {
+                    yield return DesignTimeGroundTargetInfo.BuildModel();
+                }
             }
         }
     }
