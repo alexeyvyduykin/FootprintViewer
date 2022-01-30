@@ -30,8 +30,6 @@ namespace FootprintViewer.Designer
 
         public static SceneSearch? SceneSearch { get; private set; }
 
-        public static SceneSearchFilter? SceneSearchFilter { get; private set; }
-
         public static SidePanel? SidePanel { get; private set; }
 
         public static ToolBar? ToolBar { get; private set; }
@@ -101,22 +99,6 @@ namespace FootprintViewer.Designer
             // Tabs: SceneSearch
 
             SceneSearch = CreateSceneSearch(dependencyResolver);
-
-            // Tabs: SceneSearchFilter
-
-            SceneSearchFilter = new SceneSearchFilter(dependencyResolver)
-            {
-                FromDate = DateTime.Today.AddDays(-1),
-                ToDate = DateTime.Today.AddDays(1),
-                Sensors = new ObservableCollection<Sensor>(new[]
-                {
-                    new Sensor() { Name = "Satellite1 SNS-1" },
-                    new Sensor() { Name = "Satellite1 SNS-2" },
-                    new Sensor() { Name = "Satellite2 SNS-1" },
-                    new Sensor() { Name = "Satellite3 SNS-1" },
-                    new Sensor() { Name = "Satellite3 SNS-2" },
-                }),
-            };
 
             // SidePanel
 
