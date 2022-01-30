@@ -1,12 +1,10 @@
-﻿using DynamicData;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace FootprintViewer.Designer
 {
@@ -27,8 +25,6 @@ namespace FootprintViewer.Designer
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
         public static SatelliteViewer? SatelliteViewer { get; private set; }
-
-        public static SceneSearch? SceneSearch { get; private set; }
 
         public static SidePanel? SidePanel { get; private set; }
 
@@ -95,10 +91,6 @@ namespace FootprintViewer.Designer
             // Tabs: SatelliteViewer
 
             SatelliteViewer = dependencyResolver.GetService<SatelliteViewer>();
-
-            // Tabs: SceneSearch
-
-            SceneSearch = CreateSceneSearch(dependencyResolver);
 
             // SidePanel
 
@@ -192,47 +184,6 @@ namespace FootprintViewer.Designer
                 TileNumber = "38-50-lr_3857",
                 Image = new System.Drawing.Bitmap(unitBitmap)
             };
-        }
-
-        public static SceneSearch CreateSceneSearch(IReadonlyDependencyResolver dependencyResolver)
-        {
-            var sceneSearch = new SceneSearch(dependencyResolver)
-            {
-                Name = "Scene",
-                Title = "Поиск сцены",
-            };
-
-            var list = new List<FootprintPreview>();
-
-            Random random = new Random();
-
-            var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
-            var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
-
-            foreach (var item in names)
-            {
-                var name = item.Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
-                var date = DateTime.UtcNow;
-
-                list.Add(new FootprintPreview()
-                {
-                    Date = date.Date.ToShortDateString(),
-                    SatelliteName = satellites[random.Next(0, satellites.Length - 1)],
-                    SunElevation = random.Next(0, 90),
-                    CloudCoverFull = random.Next(0, 100),
-                    TileNumber = name.ToUpper(),
-                });
-            }
-
-            sceneSearch.Footprints.Clear();
-            sceneSearch.Footprints.AddRange(list);
-
-            var sortNames = sceneSearch.Footprints.Select(s => s.SatelliteName).Distinct().ToList();
-            sortNames.Sort();
-
-            sceneSearch.Filter.AddSensors(sortNames);
-
-            return sceneSearch;
         }
     }
 
