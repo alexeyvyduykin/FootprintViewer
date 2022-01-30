@@ -18,7 +18,6 @@ namespace FootprintViewer.Layers
             _provider = provider;
 
             _featuresCache = Build(provider.GetGroundTargets());
-            ???????????????????????????
 
             ReplaceFeatures(_featuresCache);
         }
@@ -65,8 +64,6 @@ namespace FootprintViewer.Layers
                 }
 
                 list.Add(feature);
-
-                //_cache.Add(item.Name, item);
             }
 
             return list;

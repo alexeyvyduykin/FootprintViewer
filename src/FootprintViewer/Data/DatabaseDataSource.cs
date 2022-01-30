@@ -22,8 +22,6 @@ namespace FootprintViewer.Data
         
         public IEnumerable<Satellite> Satellites => _db.Satellites.OrderBy(s => s.Name);
         
-        public IEnumerable<GroundTarget> Targets => _db.GroundTargets;
-
         public IDictionary<string, Dictionary<int, List<List<Point>>>> LeftStrips => _leftStrips;
 
         public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;

@@ -13,7 +13,7 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundTargetViewer : SidePanelTab
     {
-        private readonly TargetLayer _targetLayer;
+        private readonly TargetLayer? _targetLayer;
         private readonly GroundTargetViewerList _groundTargetViewerList;
         private readonly PreviewMainContent _emptyMainContent;
         private readonly PreviewMainContent _updateMainContent;
@@ -21,6 +21,10 @@ namespace FootprintViewer.ViewModels
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
+            var map = dependencyResolver.GetExistingService<Mapsui.Map>();
+
+            _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
+
             //_targetLayer = dependencyResolver.GetExistingService<TargetLayer>();
 
             Title = "Просмотр наземных целей";
@@ -39,7 +43,7 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            //this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
@@ -55,22 +59,25 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            //_targetLayer.IsEnabledObserver.Subscribe(isEnabled =>
-            //{
-            //    if (isEnabled == true)
-            //    {
-            //        GroundTargetsChanged();
-            //    }
-            //    else
-            //    {
-            //        MainContent = _emptyMainContent;
-            //    }
-            //});
+            if (_targetLayer != null)
+            {
+                _targetLayer.IsEnabledObserver.Subscribe(isEnabled =>
+                {
+                    if (isEnabled == true)
+                    {
+                        GroundTargetsChanged();
+                    }
+                    else
+                    {
+                        MainContent = _emptyMainContent;
+                    }
+                });
+            }
         }
 
         private void GroundTargetsChanged()
         {
-            if (_targetLayer.IsEnable == true)
+            if (_targetLayer != null && _targetLayer.IsEnable == true)
             {
                 _groundTargetViewerList.InvalidateData(() => _targetLayer.GetTargets());
             }
@@ -88,7 +95,7 @@ namespace FootprintViewer.ViewModels
 
                 if (string.IsNullOrEmpty(name) == false)
                 {
-                    _targetLayer.SelectGroundTarget(name);
+                    _targetLayer?.SelectGroundTarget(name);
                 }
             }
         }
@@ -101,14 +108,14 @@ namespace FootprintViewer.ViewModels
 
                 if (name != null)
                 {
-                    _targetLayer.ShowHighlight(name);
+                    _targetLayer?.ShowHighlight(name);
                 }
             }
         }
 
         private void HideHighlightImpl()
         {
-            _targetLayer.HideHighlight();
+            _targetLayer?.HideHighlight();
         }
 
         public ReactiveCommand<GroundTargetInfo?, Unit> ShowHighlight { get; }

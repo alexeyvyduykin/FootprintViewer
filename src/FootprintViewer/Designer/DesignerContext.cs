@@ -1,16 +1,12 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
-using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FootprintViewer.Designer
 {
@@ -27,12 +23,8 @@ namespace FootprintViewer.Designer
         public static FootprintObserver? FootprintObserver { get; private set; }
 
         public static FootprintObserverList? FootprintObserverList { get; private set; }
-      
+
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
-
-        public static GroundTargetViewer? GroundTargetViewer { get; private set; }
-
-        public static GroundTargetViewerList? GroundTargetViewerList { get; private set; }
 
         public static SatelliteViewer? SatelliteViewer { get; private set; }
 
@@ -57,7 +49,7 @@ namespace FootprintViewer.Designer
         public static FootprintPreview? FootprintPreview { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
-        {               
+        {
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
@@ -101,19 +93,6 @@ namespace FootprintViewer.Designer
             // Tabs: FootprintObserverFilter
 
             FootprintObserverFilter = new FootprintObserverFilter(dependencyResolver);
-
-            // Tabs: GroundTargetViewer
-            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-
-            GroundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
-
-            GroundTargetViewer.UpdateAsync(groundTargetProvider.GetGroundTargets);
-
-            // Tabs: GroundTargetViewerList
-
-            GroundTargetViewerList = new GroundTargetViewerList();
-
-            GroundTargetViewerList.InvalidateData(groundTargetProvider.GetGroundTargets);
 
             // Tabs: SatelliteViewer
 
@@ -161,7 +140,7 @@ namespace FootprintViewer.Designer
             // ToolBar
 
             ToolBar = dependencyResolver.GetService<ToolBar>();
-          
+
             // WorldMapSelector
 
             WorldMapSelector = new WorldMapSelector(dependencyResolver);
@@ -184,16 +163,16 @@ namespace FootprintViewer.Designer
                 Node = 11,
                 Direction = SatelliteStripDirection.Left,
             })
-            {           
+            {
                 IsShowInfo = true
             };
 
             // GroundTargetInfo
 
-            GroundTargetInfo = new GroundTargetInfo(new GroundTarget() 
+            GroundTargetInfo = new GroundTargetInfo(new GroundTarget()
             {
                 Name = "GroundTarget001",
-                Type = GroundTargetType.Route,              
+                Type = GroundTargetType.Route,
             });
 
             // SatelliteInfo
@@ -222,14 +201,14 @@ namespace FootprintViewer.Designer
             var unitBitmap = new System.Drawing.Bitmap(1, 1);
             unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
 
-            FootprintPreview = new FootprintPreview() 
+            FootprintPreview = new FootprintPreview()
             {
                 Date = new DateTime(2001, 6, 1, 12, 0, 0).ToShortDateString(),
                 SatelliteName = "Satellite1",
                 SunElevation = 71.0,
                 CloudCoverFull = 84.0,
                 TileNumber = "38-50-lr_3857",
-                Image = new System.Drawing.Bitmap(unitBitmap)          
+                Image = new System.Drawing.Bitmap(unitBitmap)
             };
         }
 

@@ -6,12 +6,8 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              MinWidth="380"  
-             mc:Ignorable="d"            
-                                             
+             mc:Ignorable="d"                                                         
              d:DesignWidth="380" d:DesignHeight="450">
-
-  <!--d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewer}"
-  x:DataType="vm:GroundTargetViewer" x:CompileBindings="False"-->
 
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetViewer/>

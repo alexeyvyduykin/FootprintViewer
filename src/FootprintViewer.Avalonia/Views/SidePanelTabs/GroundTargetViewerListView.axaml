@@ -4,13 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-                
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                
              mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="450">
-
-
-  <!--d:DataContext="{x:Static vmd:DesignerContext.GroundTargetViewerList}"
-  x:DataType="vm:GroundTargetViewerList" x:CompileBindings="True"-->
 
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetViewerList/>
