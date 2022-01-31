@@ -28,7 +28,7 @@ namespace FootprintViewer
 
         public Map CreateMap(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetExistingService<IDataSource>();       
+            var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();       
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();       
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();       
             var mapProvider = dependencyResolver.GetExistingService<MapProvider>();
@@ -39,15 +39,15 @@ namespace FootprintViewer
                 Transformation = new MinimalTransformation(),
             };
 
-            map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) }); // WorldMap
-            map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) }); // FootprintImage
+            map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) });                 // WorldMap
+            map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) });     // FootprintImage
 
-            map.Layers.Add(new TargetLayer(new TargetLayerProvider(groundTargetProvider)));       // GroundTarget
-            map.Layers.Add(new SensorLayer(new SensorLayerProvider(source)));       // Sensor
-            map.Layers.Add(new TrackLayer(new TrackLayerProvider(source)));         // Track
+            map.Layers.Add(new TargetLayer(new TargetLayerProvider(groundTargetProvider)));    // GroundTarget
+            map.Layers.Add(new SensorLayer(new SensorLayerProvider(satelliteProvider)));       // Sensor
+            map.Layers.Add(new TrackLayer(new TrackLayerProvider(satelliteProvider)));         // Track
             map.Layers.Add(new FootprintLayer(new FootprintLayerProvider(footprintProvider))); // Footprint
 
-            map.Layers.Add(CreateFootprintBorderLayer()); // FootprintImageBorder
+            map.Layers.Add(CreateFootprintBorderLayer());                                      // FootprintImageBorder
 
             var editLayer = CreateEmptyEditLayer();
             map.Layers.Add(editLayer); // Edit

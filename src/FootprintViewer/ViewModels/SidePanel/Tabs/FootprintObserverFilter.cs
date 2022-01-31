@@ -26,7 +26,7 @@ namespace FootprintViewer.ViewModels
 
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetExistingService<IDataSource>();
+            var provider = dependencyResolver.GetExistingService<SatelliteProvider>();
 
             Satellites = new ObservableCollection<SatelliteItem>();
 
@@ -43,7 +43,7 @@ namespace FootprintViewer.ViewModels
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Subscribe(f => update.Execute(f).Subscribe());
 
-            CreateSatelliteList(source);
+            CreateSatelliteList(provider);
         }
 
         public IObservable<FootprintObserverFilter> Update => update;
@@ -53,9 +53,9 @@ namespace FootprintViewer.ViewModels
             update.Execute().Subscribe();
         }
 
-        private void CreateSatelliteList(IDataSource dataSource)
+        private void CreateSatelliteList(SatelliteProvider provider)
         {
-            var satelliteNames = dataSource.Satellites.Select(s => s.Name).ToList();
+            var satelliteNames = provider.GetSatellites().Select(s => s.Name).ToList();
 
             satelliteNames?.Sort();
 

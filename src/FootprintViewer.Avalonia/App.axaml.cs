@@ -49,23 +49,28 @@ namespace FootprintViewer.Avalonia
 
             Data.Sources.IGroundTargetDataSource groundTargetDataSource;
             Data.Sources.IFootprintDataSource footprintDataSource;
+            Data.Sources.ISatelliteDataSource satelliteDataSource;
 
             if (IsConnectionValid() == true)
             {
                 FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
 
-                services.RegisterLazySingleton<IDataSource>(() => new DatabaseDataSource(db));
-
+                satelliteDataSource = new Data.Sources.SatelliteDataSource(db);
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(db);
                 footprintDataSource = new Data.Sources.FootprintDataSource(db);
             }
             else
-            {
-                services.RegisterLazySingleton<IDataSource>(() => new LocalDataSource());
-                
-                footprintDataSource = new Data.Sources.RandomFootprintDataSource(new List<Satellite>());
+            {             
+                satelliteDataSource = new Data.Sources.RandomSatelliteDataSource();
+                footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
                 groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);              
             }
+
+            // Satellites provider
+
+            var satelliteProvider = new SatelliteProvider();
+            satelliteProvider.AddSource(satelliteDataSource);
+            services.RegisterLazySingleton<SatelliteProvider>(() => satelliteProvider);
 
             // Footprints provider
 

@@ -15,14 +15,14 @@ namespace FootprintViewer.Layers
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
 
-        public SensorLayerProvider(IDataSource source)
+        public SensorLayerProvider(SatelliteProvider provider)
         {
-            var satellites = source.LeftStrips.Keys;
+            var satellites = provider.GetLeftStrips().Keys;
 
             foreach (var name in satellites)
             {                             
-                var dictLeft = FromStrips(source.LeftStrips[name]);
-                var dictRight = FromStrips(source.RightStrips[name]);
+                var dictLeft = FromStrips(provider.GetLeftStrips()[name]);
+                var dictRight = FromStrips(provider.GetRightStrips()[name]);
 
                 _dictLeft.Add(name, dictLeft);
                 _dictright.Add(name, dictRight);

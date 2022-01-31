@@ -5,57 +5,44 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Reactive;
 
 namespace FootprintViewer.ViewModels
-{  
+{
     public class SatelliteViewer : SidePanelTab
     {
-        private readonly TrackLayer _trackLayer;
-        private readonly SensorLayer _sensorLayer;
+        private readonly TrackLayer? _trackLayer;
+        private readonly SensorLayer? _sensorLayer;
+        private readonly SatelliteProvider _provider;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
-        { 
-            var map = dependencyResolver.GetService<Map>();
-            var dataSource = dependencyResolver.GetService<IDataSource>();
+        {
+            var map = dependencyResolver.GetExistingService<Map>();
+            _provider = dependencyResolver.GetExistingService<SatelliteProvider>();
 
             Title = "Просмотр спутников";
             Name = "SatelliteViewer";
             SatelliteInfos = new ObservableCollection<SatelliteInfo>();
 
-            if (map == null)
-            {
-                return;
-            }
-
             _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
             _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
-          
+
             SatelliteInfos.CollectionChanged += items_CollectionChanged;
 
-            this.WhenAnyValue(s => s.DataSource).Subscribe(_ => DataSourceChanged());
-
-            DataSource = dataSource;
+            this.WhenAnyValue(s => s.IsActive).Subscribe(_ => DataSourceChanged());
         }
 
         private void DataSourceChanged()
         {
-            if (DataSource != null)
+            var satellites = _provider.GetSatellites();
+
+            SatelliteInfos.Clear();
+
+            foreach (var item in satellites)
             {
-                var satellites = DataSource.Satellites;
-
-                SatelliteInfos.Clear();
-
-                foreach (var item in satellites)
-                {
-                    SatelliteInfos.Add(new SatelliteInfo(item));
-                }
-
-                //SatelliteInfos.AddRange(satellites.Select(s => new SatelliteInfo(s)));
+                SatelliteInfos.Add(new SatelliteInfo(item));
             }
         }
 
@@ -63,16 +50,23 @@ namespace FootprintViewer.ViewModels
         {
             if (e.OldItems != null)
             {
-                foreach (INotifyPropertyChanged item in e.OldItems)
+                foreach (INotifyPropertyChanged? item in e.OldItems)
                 {
-                    item.PropertyChanged -= item_PropertyChanged;
+                    if (item != null)
+                    {
+                        item.PropertyChanged -= item_PropertyChanged;
+                    }
                 }
             }
+
             if (e.NewItems != null)
             {
-                foreach (INotifyPropertyChanged item in e.NewItems)
+                foreach (INotifyPropertyChanged? item in e.NewItems)
                 {
-                    item.PropertyChanged += item_PropertyChanged;
+                    if (item != null)
+                    {
+                        item.PropertyChanged += item_PropertyChanged;
+                    }
                 }
             }
         }
@@ -85,7 +79,7 @@ namespace FootprintViewer.ViewModels
                     e.PropertyName == nameof(SatelliteInfo.CurrentNode) ||
                     e.PropertyName == nameof(SatelliteInfo.IsTrack))
                 {
-                    _trackLayer.Update(info);
+                    _trackLayer?.Update(info);
                 }
 
                 if (e.PropertyName == nameof(SatelliteInfo.IsShow) ||
@@ -93,13 +87,10 @@ namespace FootprintViewer.ViewModels
                     e.PropertyName == nameof(SatelliteInfo.IsLeftStrip) ||
                     e.PropertyName == nameof(SatelliteInfo.IsRightStrip))
                 {
-                    _sensorLayer.Update(info);
+                    _sensorLayer?.Update(info);
                 }
             }
         }
-
-        [Reactive]
-        public IDataSource? DataSource { get; set; }
 
         [Reactive]
         public ObservableCollection<SatelliteInfo> SatelliteInfos { get; protected set; }

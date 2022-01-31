@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Interactivity;
+﻿using FootprintViewer.Interactivity;
 using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;
@@ -21,10 +20,9 @@ namespace FootprintViewer.ViewModels
     {
         private enum InfoPanelType { AOI, Route }
 
-        private EditLayer _editLayer = new EditLayer();
+        private readonly EditLayer _editLayer = new EditLayer();
 
-        private readonly Map _map;      
-        private readonly IDataSource _dataSource;
+        private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
@@ -32,7 +30,6 @@ namespace FootprintViewer.ViewModels
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetExistingService<IDataSource>();        
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
@@ -425,15 +422,13 @@ namespace FootprintViewer.ViewModels
             Tip = null;
             ActualController = new EditController();
         }
- 
-        public IDataSource DataSource => _dataSource;
 
         public Map Map => _map;
 
-        public SidePanel SidePanel => _sidePanel; 
-        
-        public InfoPanel InfoPanel => _infoPanel; 
-        
+        public SidePanel SidePanel => _sidePanel;
+
+        public InfoPanel InfoPanel => _infoPanel;
+
         public MapListener? MapListener { get; set; }
 
         public ToolBar ToolBar => _toolBar;
@@ -446,7 +441,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Plotter? Plotter { get; set; }
-     
+
         [Reactive]
         public Tip? Tip { get; set; }
     }

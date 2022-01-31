@@ -6,17 +6,19 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeSatelliteInfo : SatelliteInfo
     {
+        private readonly static Random _random = new Random();
+
         public DesignTimeSatelliteInfo() : base(BuildModel())
         {
             IsShow = true;
             IsShowInfo = true;
         }
 
-        private static Satellite BuildModel()
+        public static Satellite BuildModel()
         {
             return new Satellite()
             {
-                Name = "Satellite1",
+                Name = $"Satellite{_random.Next(1, 10):00}",
                 Semiaxis = 6945.03,
                 Eccentricity = 0.0,
                 InclinationDeg = 97.65,
@@ -24,7 +26,7 @@ namespace FootprintViewer.Designer
                 LongitudeAscendingNodeDeg = 0.0,
                 RightAscensionAscendingNodeDeg = 0.0,
                 Period = 5760.0,
-                Epoch = new DateTime(2000, 6, 1, 12, 0, 0),
+                Epoch = DateTime.Now,
                 InnerHalfAngleDeg = 32,
                 OuterHalfAngleDeg = 48
             };

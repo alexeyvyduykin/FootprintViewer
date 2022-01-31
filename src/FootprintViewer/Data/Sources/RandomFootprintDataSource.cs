@@ -6,9 +6,9 @@ namespace FootprintViewer.Data.Sources
     {
         private readonly IEnumerable<Footprint> _footprints;
 
-        public RandomFootprintDataSource(IEnumerable<Satellite> satellites)
+        public RandomFootprintDataSource(ISatelliteDataSource source)
         {
-            _footprints = FootprintBuilder.Create(satellites);
+            _footprints = FootprintBuilder.Create(source.GetSatellites());
         }
         
         public IEnumerable<Footprint> GetFootprints() => _footprints;

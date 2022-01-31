@@ -13,15 +13,15 @@ namespace FootprintViewer.Layers
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
 
-        public TrackLayerProvider(IDataSource source)
+        public TrackLayerProvider(SatelliteProvider provider)
         {
-            var satellites = source.GroundTracks.Keys;
+            var satellites = provider.GetGroundTracks().Keys;
 
             foreach (var name in satellites)
             {        
                 var dict = new Dictionary<int, List<IFeature>>();
 
-                foreach (var item in source.GroundTracks[name])
+                foreach (var item in provider.GetGroundTracks()[name])
                 {
                     var list = new List<IFeature>();
 

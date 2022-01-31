@@ -12,7 +12,7 @@ namespace FootprintViewer.Designer
     {
         private Mapsui.Map? _map;
         private ProjectFactory? _projectFactory;
-        private IDataSource? _dataSource;
+        private SatelliteProvider? _satelliteProvider;
         private FootprintLayer? _footprintDataSource;
         private TargetLayer? _groundTargetDataSource;
         private MapProvider? _mapProvider;
@@ -37,9 +37,9 @@ namespace FootprintViewer.Designer
             {
                 return _map ??= new Mapsui.Map();
             }
-            else if (serviceType == typeof(IDataSource))
+            else if (serviceType == typeof(SatelliteProvider))
             {
-                return _dataSource ??= new DesignTimeDataSource();
+                return _satelliteProvider ??= new DesignTimeSatelliteProvider();
             }
             else if (serviceType == typeof(MapProvider))
             {
@@ -102,68 +102,35 @@ namespace FootprintViewer.Designer
             throw new Exception();
         }
 
-        private class DesignTimeDataSource : IDataSource
+        private class DesignTimeSatelliteProvider : SatelliteProvider
         {
-            private readonly IList<Satellite> _satellites;
-            private readonly IList<Footprint> _footprints;
-            private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _leftStrips;
-            private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _rightStrips;
-            private readonly IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> _groundTracks;
-
-            public DesignTimeDataSource()
+            public DesignTimeSatelliteProvider() : base()
             {
-                var dt = new DateTime(2000, 6, 1, 12, 0, 0);
-
-                _satellites = new List<Satellite>();
-
-                for (int i = 0; i < 5; i++)
-                {
-                    var sat = new Satellite()
-                    {
-                        Name = $"Satellite{i + 1}",
-                        Semiaxis = 6945.03,
-                        Eccentricity = 0.0,
-                        InclinationDeg = 97.65,
-                        ArgumentOfPerigeeDeg = 0.0,
-                        LongitudeAscendingNodeDeg = 0.0,
-                        RightAscensionAscendingNodeDeg = 0.0,
-                        Period = 5760.0,
-                        Epoch = dt,
-                        InnerHalfAngleDeg = 32,
-                        OuterHalfAngleDeg = 48
-                    };
-
-                    _satellites.Add(sat);
-                }
-
-                _footprints = new List<Footprint>();
-
-                for (int i = 0; i < 3; i++)
-                {
-                    var footprint = new Footprint()
-                    {
-                        Name = $"Footrpint000{i + 1}",
-                        SatelliteName = "Satellite1",
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    };
-
-                    _footprints.Add(footprint);
-                }
-
-                _leftStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
-                _rightStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
-                _groundTracks = new Dictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>>();
+                AddSource(new DesignTimeSatelliteSource());
             }
 
-            public IEnumerable<Satellite> Satellites => _satellites;
-            public IEnumerable<Footprint> Footprints => _footprints;
-            public IDictionary<string, Dictionary<int, List<List<Point>>>> LeftStrips => _leftStrips;
-            public IDictionary<string, Dictionary<int, List<List<Point>>>> RightStrips => _rightStrips;
-            public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GroundTracks => _groundTracks;
+            private class DesignTimeSatelliteSource : Data.Sources.ISatelliteDataSource
+            {
+                private readonly IList<Satellite> _satellites;
+
+                public DesignTimeSatelliteSource()
+                {
+                    _satellites = new List<Satellite>();
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        _satellites.Add(DesignTimeSatelliteInfo.BuildModel());
+                    }
+                }
+
+                public IEnumerable<Satellite> GetSatellites() => _satellites;
+
+                public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => throw new Exception();
+
+                public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => throw new Exception();
+
+                public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => throw new Exception();
+            }
         }
 
         private class DesignTimeFootprintPreviewProvider : FootprintPreviewProvider
@@ -218,6 +185,7 @@ namespace FootprintViewer.Designer
 
             }
         }
+
         private class DesignTimeFootprintLayer : Layers.FootprintLayer
         {
             public DesignTimeFootprintLayer() : base(new FootprintLayerProvider(new DesignDataFootprintProvider()))
@@ -227,7 +195,7 @@ namespace FootprintViewer.Designer
         }
     }
 
-    public class DesignDataGroundTargetProvider : GroundTargetProvider
+    internal class DesignDataGroundTargetProvider : GroundTargetProvider
     {
         public DesignDataGroundTargetProvider() : base()
         {
@@ -246,7 +214,7 @@ namespace FootprintViewer.Designer
         }
     }
 
-    public class DesignDataFootprintProvider : FootprintProvider
+    internal class DesignDataFootprintProvider : FootprintProvider
     {
         public DesignDataFootprintProvider() : base()
         {
