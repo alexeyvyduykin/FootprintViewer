@@ -5,14 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"   
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             d:DataContext="{x:Static vmd:DesignerContext.SidePanel}"           
-             x:DataType="vm:SidePanel" x:CompileBindings="True"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                           
              mc:Ignorable="d" 
-             d:DesignHeight="450"
-             d:DesignWidth="420">
+             d:DesignHeight="450" d:DesignWidth="420">
 
+  <Design.DataContext>
+    <vmd:DesignTimeSidePanel/>
+  </Design.DataContext>  
+  
   <UserControl.Styles>
 
     <Style Selector="TextBlock.sidePanelHeaderTextBlock">
