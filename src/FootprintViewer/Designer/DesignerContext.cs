@@ -7,8 +7,6 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
-
         public static SatelliteViewer? SatelliteViewer { get; private set; }
 
         public static SidePanel? SidePanel { get; private set; }
@@ -22,10 +20,6 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
-
-            // Tabs: FootprintObserverFilter
-
-            FootprintObserverFilter = new FootprintObserverFilter(dependencyResolver);
 
             // Tabs: SatelliteViewer
 
