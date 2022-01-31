@@ -17,27 +17,42 @@ namespace FootprintViewer.Avalonia.Views
         private controls.Flyout Flyout => this.FindControl<controls.Flyout>("FlyoutToolBar");
         
         private Button LayerSelectorButton => this.FindControl<Button>("LayerSelectorButton");
+
+        private StackPanel CollectionStackPanel => this.FindControl<StackPanel>("CollectionStackPanel");
         
         public ToolBarView()
         {
             InitializeComponent();
-
-          //  _click = ReactiveCommand.Create(ClickImpl);
+                     
+            _enter = ReactiveCommand.Create(EnterImpl);
+            _leave = ReactiveCommand.Create(LeaveImpl);
 
             this.WhenActivated(disposables =>
             {
-                // LayerSelectorButton               
-             //   this.LayerSelectorButton.Events().Click.Select(args => Unit.Default).InvokeCommand(this, v => v._click).DisposeWith(disposables);
+                CollectionStackPanel.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
+                
+                CollectionStackPanel.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);          
             });
         }
 
-       // private readonly ReactiveCommand<Unit, Unit> _click;
+        private readonly ReactiveCommand<Unit, Unit> _enter;
 
-        private void ClickImpl()
+        private readonly ReactiveCommand<Unit, Unit> _leave;
+     
+        private void EnterImpl()
         {
-            //Flyout.Click();
+            if (ViewModel != null)
+            {
+                ViewModel.AOICollection.Visible = true;
+            }
+        }
 
-         //   Flyout.IsOpen = !Flyout.IsOpen;
+        private void LeaveImpl()
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.AOICollection.Visible = false;
+            }
         }
 
         private void InitializeComponent()

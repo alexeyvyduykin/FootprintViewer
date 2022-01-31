@@ -6,8 +6,6 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static ToolBar? ToolBar { get; private set; }
-
         public static MainViewModel? MainViewModel { get; private set; }
 
         public static void InitializeContext(IReadonlyDependencyResolver dependencyResolver)
@@ -15,10 +13,6 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
-
-            // ToolBar
-
-            ToolBar = dependencyResolver.GetService<ToolBar>();
 
             // MainViewModel
 
