@@ -5,26 +5,21 @@ namespace FootprintViewer.Data.Sources
 {
     public class RandomSatelliteDataSource : ISatelliteDataSource
     {
-        private readonly IEnumerable<Satellite> _satellites;
-        private readonly IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> _tracks;
-        private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _leftStrips;
-        private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _rightStrips;
+        private IEnumerable<Satellite>? _satellites;
+        private IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>>? _tracks;
+        private IDictionary<string, Dictionary<int, List<List<Point>>>>? _leftStrips;
+        private IDictionary<string, Dictionary<int, List<List<Point>>>>? _rightStrips;
 
-        public RandomSatelliteDataSource()
-        {
-            _satellites = SatelliteBuilder.Create();
+        public IEnumerable<Satellite> GetSatellites() => 
+            _satellites ??= SatelliteBuilder.Create();
 
-            _tracks = TrackBuilder.Create(_satellites);
+        public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => 
+            _tracks ??= TrackBuilder.Create(GetSatellites());
 
-            (_leftStrips, _rightStrips) = StripBuilder.Create(_satellites);
-        }
+        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => 
+            _leftStrips ??= StripBuilder.CreateLeft(GetSatellites());
 
-        public IEnumerable<Satellite> GetSatellites() => _satellites;
-
-        public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => _tracks;
-
-        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => _leftStrips;
-
-        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => _rightStrips;
+        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => 
+            _rightStrips ??= StripBuilder.CreateRight(GetSatellites());
     }
 }

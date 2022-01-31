@@ -4,13 +4,15 @@ namespace FootprintViewer.Data.Sources
 {
     public class RandomFootprintDataSource : IFootprintDataSource
     {
-        private readonly IEnumerable<Footprint> _footprints;
+        private IEnumerable<Footprint>? _footprints;
+        private readonly ISatelliteDataSource _source;
 
         public RandomFootprintDataSource(ISatelliteDataSource source)
         {
-            _footprints = FootprintBuilder.Create(source.GetSatellites());
+            _source = source;
         }
-        
-        public IEnumerable<Footprint> GetFootprints() => _footprints;
+
+        public IEnumerable<Footprint> GetFootprints() => 
+            _footprints ??= FootprintBuilder.Create(_source.GetSatellites());
     }
 }

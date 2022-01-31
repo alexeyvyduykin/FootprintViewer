@@ -11,9 +11,6 @@ namespace FootprintViewer.Data.Sources
             _db = db;
         }
 
-        public IEnumerable<GroundTarget> GetGroundTargets()
-        {
-            return _db.GroundTargets;
-        }
+        public IEnumerable<GroundTarget> GetGroundTargets() => _db.GroundTargets;        
     }
 }

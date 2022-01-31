@@ -5,14 +5,15 @@ namespace FootprintViewer.Data.Sources
 {
     public class RandomGroundTargetDataSource : IGroundTargetDataSource
     {
-        private readonly IEnumerable<GroundTarget> _groundTargets;
+        private IEnumerable<GroundTarget>? _groundTargets;
+        private readonly IFootprintDataSource _source;
 
-        public RandomGroundTargetDataSource(IFootprintDataSource footprintDataSource)
+        public RandomGroundTargetDataSource(IFootprintDataSource source)
         {
-            var footprints = footprintDataSource.GetFootprints().ToList();
-            _groundTargets = GroundTargetBuilder.Create(footprints);
+            _source = source;      
         }
 
-        public IEnumerable<GroundTarget> GetGroundTargets() => _groundTargets;
+        public IEnumerable<GroundTarget> GetGroundTargets() => 
+            _groundTargets ??= GroundTargetBuilder.Create(_source.GetFootprints().ToList());
     }
 }

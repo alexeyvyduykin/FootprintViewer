@@ -7,23 +7,24 @@ namespace FootprintViewer.Data.Sources
     public class SatelliteDataSource : ISatelliteDataSource
     {
         private readonly FootprintViewerDbContext _db;
-        private readonly IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> _tracks;
-        private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _leftStrips;
-        private readonly IDictionary<string, Dictionary<int, List<List<Point>>>> _rightStrips;
+        private IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>>? _tracks;
+        private IDictionary<string, Dictionary<int, List<List<Point>>>>? _leftStrips;
+        private IDictionary<string, Dictionary<int, List<List<Point>>>>? _rightStrips;
 
         public SatelliteDataSource(FootprintViewerDbContext db)
         {
-            _db = db;
-            _tracks = TrackBuilder.Create(db.Satellites);
-            (_leftStrips, _rightStrips) = StripBuilder.Create(db.Satellites);
+            _db = db;                 
         }
 
         public IEnumerable<Satellite> GetSatellites() => _db.Satellites.OrderBy(s => s.Name);
 
-        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => _leftStrips;
+        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => 
+            _leftStrips ??= StripBuilder.CreateLeft(GetSatellites());
 
-        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => _rightStrips;
+        public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => 
+            _rightStrips ??= StripBuilder.CreateRight(GetSatellites());
 
-        public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => _tracks;
+        public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => 
+            _tracks ??= TrackBuilder.Create(GetSatellites());
     }
 }

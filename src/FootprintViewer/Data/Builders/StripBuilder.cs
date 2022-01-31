@@ -7,28 +7,68 @@ namespace FootprintViewer.Data
 {
     internal static class StripBuilder
     {
-        public static (Dictionary<string, Dictionary<int, List<List<Point>>>> left, Dictionary<string, Dictionary<int, List<List<Point>>>> right) Create(IEnumerable<Satellite> satellites)
+        //public static (Dictionary<string, Dictionary<int, List<List<Point>>>> left, Dictionary<string, Dictionary<int, List<List<Point>>>> right) Create(IEnumerable<Satellite> satellites)
+        //{
+        //    var leftStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
+        //    var rightStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
+
+        //    foreach (var satellite in satellites)
+        //    {
+        //        var sat = satellite.ToPRDCTSatellite();
+        //        var sensorLeft = satellite.ToPRDCTSensor(SatelliteStripDirection.Left);
+        //        var sensorRight = satellite.ToPRDCTSensor(SatelliteStripDirection.Right);
+
+        //        var band1 = new Band(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
+        //        var band2 = new Band(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
+
+        //        var left = BuildStrips(sat, band1);
+        //        var right = BuildStrips(sat, band2);
+
+        //        leftStrips.Add(satellite.Name, left);
+        //        rightStrips.Add(satellite.Name, right);
+        //    }
+
+        //    return (leftStrips, rightStrips);
+        //}
+
+        public static Dictionary<string, Dictionary<int, List<List<Point>>>> CreateLeft(IEnumerable<Satellite> satellites)
         {
             var leftStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
+          
+            foreach (var satellite in satellites)
+            {
+                var sat = satellite.ToPRDCTSatellite();
+
+                var sensorLeft = satellite.ToPRDCTSensor(SatelliteStripDirection.Left);
+           
+                var band = new Band(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
+            
+                var left = BuildStrips(sat, band);
+              
+                leftStrips.Add(satellite.Name, left);              
+            }
+
+            return leftStrips;
+        }
+
+        public static Dictionary<string, Dictionary<int, List<List<Point>>>> CreateRight(IEnumerable<Satellite> satellites)
+        {          
             var rightStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
 
             foreach (var satellite in satellites)
             {
                 var sat = satellite.ToPRDCTSatellite();
-                var sensorLeft = satellite.ToPRDCTSensor(SatelliteStripDirection.Left);
+                
                 var sensorRight = satellite.ToPRDCTSensor(SatelliteStripDirection.Right);
-
-                var band1 = new Band(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
-                var band2 = new Band(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
-
-                var left = BuildStrips(sat, band1);
-                var right = BuildStrips(sat, band2);
-
-                leftStrips.Add(satellite.Name, left);
+              
+                var band = new Band(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
+             
+                var right = BuildStrips(sat, band);
+             
                 rightStrips.Add(satellite.Name, right);
             }
 
-            return (leftStrips, rightStrips);
+            return rightStrips;
         }
 
         private static Dictionary<int, List<List<Point>>> BuildStrips(PRDCTSatellite satellite, Band band)
