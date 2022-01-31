@@ -7,8 +7,6 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static SatelliteViewer? SatelliteViewer { get; private set; }
-
         public static SidePanel? SidePanel { get; private set; }
 
         public static ToolBar? ToolBar { get; private set; }
@@ -20,10 +18,6 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
-
-            // Tabs: SatelliteViewer
-
-            SatelliteViewer = dependencyResolver.GetService<SatelliteViewer>();
 
             // SidePanel
 
