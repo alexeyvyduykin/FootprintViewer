@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using FootprintViewer.Avalonia.Views;
 using FootprintViewer.Data;
-using FootprintViewer.Designer;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
@@ -24,21 +23,6 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        static App()
-        {
-            InitializeDesigner();
-        }
-
-        public static void InitializeDesigner()
-        {
-            if (Design.IsDesignMode)
-            {
-             //   var designTimeData = new Designer.DesignTimeData();
-
-             //   DesignerContext.InitializeContext(designTimeData);
-            }
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
