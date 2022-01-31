@@ -11,11 +11,11 @@ namespace FootprintViewer.Layers
     public class SensorLayer : MemoryLayer
     {
         private IStyle _style;
-        private SensorProvider _provider;
+        private SensorLayerProvider _provider;
 
         public SensorLayer(IProvider provider)
         {
-            _provider = (SensorProvider)provider;
+            _provider = (SensorLayerProvider)provider;
             _style = CreateSensorStyle();
 
             Name = nameof(LayerType.Sensor);

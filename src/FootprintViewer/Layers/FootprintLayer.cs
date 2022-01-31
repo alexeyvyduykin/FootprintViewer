@@ -1,28 +1,23 @@
-﻿using DynamicData;
-using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
-using Mapsui;
-using Mapsui.Fetcher;
+﻿using FootprintViewer.Data;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayer : MemoryLayer, IFootprintDataSource
+    public class FootprintLayer : MemoryLayer
     {
-        private IStyle _previewStyle;
-        private IStyle _style;
-        private FootprintProvider _provider;
+        private readonly IStyle _previewStyle;
+        private readonly IStyle _style;
+        private readonly FootprintLayerProvider _provider;
 
         public FootprintLayer(IProvider provider)
         {
-            _provider = (FootprintProvider)provider;
+            _provider = (FootprintLayerProvider)provider;
             _previewStyle = CreateFootprintPreviewThemeStyle();
             _style = CreateFootprintThemeStyle();
 
@@ -53,7 +48,7 @@ namespace FootprintViewer.Layers
                     var center = feature.Geometry.BoundingBox.Centroid;
 
                     yield return new Feature()
-                    {                    
+                    {
                         ["Name"] = feature["Name"],
                         ["State"] = feature["State"],
                         Geometry = center,

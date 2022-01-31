@@ -8,12 +8,12 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TrackProvider : MemoryProvider
+    public class TrackLayerProvider : MemoryProvider
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
 
-        public TrackProvider(IDataSource source)
+        public TrackLayerProvider(IDataSource source)
         {
             var satellites = source.GroundTracks.Keys;
 

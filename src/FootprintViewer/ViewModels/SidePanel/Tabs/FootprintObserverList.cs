@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Layers;
 using ReactiveUI;
 using Splat;
 using System;
@@ -10,16 +10,9 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public interface IFootprintDataSource
-    {
-        Task<List<Footprint>> GetFootprintsAsync();
-
-        List<Footprint> GetFootprints();
-    }
-
     public class FootprintObserverList : ReactiveObject
     {
-        private readonly IFootprintDataSource _dataSource;
+        private readonly FootprintLayer _footprintLayer;
         private readonly ReactiveCommand<Unit, Unit> begin;
         private readonly ReactiveCommand<Unit, Unit> end;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> select;
@@ -29,7 +22,7 @@ namespace FootprintViewer.ViewModels
 
         public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dataSource = dependencyResolver.GetExistingService<IFootprintDataSource>();
+            _footprintLayer = dependencyResolver.GetExistingService<FootprintLayer>();
 
             begin = ReactiveCommand.Create(() => { });
             end = ReactiveCommand.Create(() => { });
@@ -82,7 +75,7 @@ namespace FootprintViewer.ViewModels
             _prevSelectedItem = item;
         }
 
-        private static async Task<List<FootprintInfo>> LoadDataAsync(IFootprintDataSource dataSource, FootprintObserverFilter? filter = null)
+        private static async Task<List<FootprintInfo>> LoadDataAsync(FootprintLayer dataSource, FootprintObserverFilter? filter = null)
         {
             return await Task.Run(() =>
             {
@@ -101,7 +94,7 @@ namespace FootprintViewer.ViewModels
         {
             begin.Execute().Subscribe();
 
-            var footprints = await LoadDataAsync(_dataSource, filter);
+            var footprints = await LoadDataAsync(_footprintLayer, filter);
 
             end.Execute().Subscribe();
 

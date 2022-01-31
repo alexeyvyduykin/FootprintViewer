@@ -30,6 +30,7 @@ namespace FootprintViewer
         {
             var source = dependencyResolver.GetExistingService<IDataSource>();       
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();       
+            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();       
             var mapProvider = dependencyResolver.GetExistingService<MapProvider>();
 
             var map = new Map()
@@ -41,10 +42,10 @@ namespace FootprintViewer
             map.Layers.Add(new Layer() { Name = nameof(LayerType.WorldMap) }); // WorldMap
             map.Layers.Add(new WritableLayer { Name = nameof(LayerType.FootprintImage) }); // FootprintImage
 
-            map.Layers.Add(new TargetLayer(new TargetProvider(groundTargetProvider)));       // GroundTarget
-            map.Layers.Add(new SensorLayer(new SensorProvider(source)));       // Sensor
-            map.Layers.Add(new TrackLayer(new TrackProvider(source)));         // Track
-            map.Layers.Add(new FootprintLayer(new FootprintProvider(source))); // Footprint
+            map.Layers.Add(new TargetLayer(new TargetLayerProvider(groundTargetProvider)));       // GroundTarget
+            map.Layers.Add(new SensorLayer(new SensorLayerProvider(source)));       // Sensor
+            map.Layers.Add(new TrackLayer(new TrackLayerProvider(source)));         // Track
+            map.Layers.Add(new FootprintLayer(new FootprintLayerProvider(footprintProvider))); // Footprint
 
             map.Layers.Add(CreateFootprintBorderLayer()); // FootprintImageBorder
 

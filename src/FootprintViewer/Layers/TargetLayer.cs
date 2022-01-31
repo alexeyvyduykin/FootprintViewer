@@ -24,7 +24,7 @@ namespace FootprintViewer.Layers
     public class TargetLayer : MemoryLayer
     {
         private readonly IStyle _style;
-        private readonly TargetProvider _provider;
+        private readonly TargetLayerProvider _provider;
         private const int _maxVisible = 5000;
         private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
         private IFeature? _lastSelected;
@@ -32,7 +32,7 @@ namespace FootprintViewer.Layers
 
         public TargetLayer(IProvider provider)
         {
-            _provider = (TargetProvider)provider;
+            _provider = (TargetLayerProvider)provider;
 
             var style1 = CreateTargetHighlightThemeStyle();
             var style2 = CreateTargetThemeStyle();

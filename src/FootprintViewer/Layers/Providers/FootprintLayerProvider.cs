@@ -1,5 +1,4 @@
-﻿#nullable enable
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
@@ -10,38 +9,35 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintProvider : MemoryProvider
+    public class FootprintLayerProvider : MemoryProvider
     {
         private IFeature? _lastSelected;
-        private readonly List<IFeature> _dict = new List<IFeature>();
-        private readonly IDataSource _source;
+        private readonly List<IFeature> _featuresCache;
+        private readonly FootprintProvider _provider;
 
-        public FootprintProvider(IDataSource source)
+        public FootprintLayerProvider(FootprintProvider provider)
         {
-            _source = source;
-            _dict = Build(source.Footprints);
+            _provider = provider;
+            _featuresCache = Build(provider.GetFootprints());
 
-            ReplaceFeatures(_dict);
+            ReplaceFeatures(_featuresCache);
         }
 
         public Footprint GetFootprint(string name)
         {
-            return _source.Footprints.Where(s => s.Name.Equals(name)).FirstOrDefault();
+            return _provider.GetFootprints().Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
         public async Task<List<Footprint>> GetFootprintsAsync()
         {
-            return await Task.Run(() => _source.Footprints.ToList());
+            return await Task.Run(() => _provider.GetFootprints().ToList());
         }
 
-        public List<Footprint> GetFootprints()
-        {
-            return _source.Footprints.ToList();
-        }
+        public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();        
 
         public void SelectFeature(string name)
         {
-            var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
 
             if (_lastSelected != null)
             {
@@ -63,11 +59,11 @@ namespace FootprintViewer.Layers
 
         public bool IsSelect(string name)
         {
-            var feature = _dict.Where(s => name.Equals((string)s["Name"])).First();
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
 
             if (feature != null)
             {
-                return ((string)feature["State"] == "Select") ? true : false;
+                return (string)feature["State"] == "Select";
             }
 
             throw new Exception();
@@ -112,7 +108,7 @@ namespace FootprintViewer.Layers
                 {
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
                         ring.Vertices.Add(pp1);
 
@@ -124,7 +120,7 @@ namespace FootprintViewer.Layers
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
-                        var cutLat = linearInterpDiscontLat(p1, p2);
+                        var cutLat = LinearInterpDiscontLat(p1, p2);
                         var pp1 = SphericalMercator.FromLonLat(180, cutLat);
                         ring.Vertices.Add(pp1);
 
@@ -153,7 +149,7 @@ namespace FootprintViewer.Layers
             }
         }
 
-        private double linearInterpDiscontLat(Point p1, Point p2)
+        private double LinearInterpDiscontLat(Point p1, Point p2)
         {
             // one longitude should be negative one positive, make them both positive
             double lon1 = p1.X, lat1 = p1.Y, lon2 = p2.X, lat2 = p2.Y;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Data.Sources
 {
@@ -6,8 +7,9 @@ namespace FootprintViewer.Data.Sources
     {
         private readonly IEnumerable<GroundTarget> _groundTargets;
 
-        public RandomGroundTargetDataSource(IList<Footprint> footprints)
+        public RandomGroundTargetDataSource(IFootprintDataSource footprintDataSource)
         {
+            var footprints = footprintDataSource.GetFootprints().ToList();
             _groundTargets = GroundTargetBuilder.Create(footprints);
         }
 

@@ -12,11 +12,11 @@ namespace FootprintViewer.Layers
     public class TrackLayer : MemoryLayer
     {     
         private IStyle _style;
-        private TrackProvider _provider;
+        private TrackLayerProvider _provider;
 
         public TrackLayer(IProvider provider)
         {
-            _provider = (TrackProvider)provider;           
+            _provider = (TrackLayerProvider)provider;           
             _style = CreateTrackStyle();
           
             Name = nameof(LayerType.Track);

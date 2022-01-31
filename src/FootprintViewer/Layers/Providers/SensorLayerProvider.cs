@@ -9,13 +9,13 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class SensorProvider : MemoryProvider
+    public class SensorLayerProvider : MemoryProvider
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
 
-        public SensorProvider(IDataSource source)
+        public SensorLayerProvider(IDataSource source)
         {
             var satellites = source.LeftStrips.Keys;
 

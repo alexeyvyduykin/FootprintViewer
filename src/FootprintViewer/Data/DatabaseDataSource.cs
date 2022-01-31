@@ -17,8 +17,6 @@ namespace FootprintViewer.Data
             _tracks = TrackBuilder.Create(db.Satellites);
             (_leftStrips, _rightStrips) = StripBuilder.Create(db.Satellites);       
         }
-
-        public IEnumerable<Footprint> Footprints => _db.Footprints; 
         
         public IEnumerable<Satellite> Satellites => _db.Satellites.OrderBy(s => s.Name);
         

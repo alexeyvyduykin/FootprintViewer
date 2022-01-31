@@ -7,22 +7,24 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeFootprintInfo : FootprintInfo
     {
+        private readonly static Random _random = new Random();
+
         public DesignTimeFootprintInfo() : base(BuildModel())
         {
             IsShowInfo = true;
         }
 
-        private static Footprint BuildModel()
+        public static Footprint BuildModel()
         {
             return new Footprint()
             {
-                Name = "Footrpint001",
-                SatelliteName = "Satellite1",
-                Center = new Point(54.434545, -12.435454),
-                Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                Duration = 35,
-                Node = 11,
-                Direction = SatelliteStripDirection.Left,
+                Name = $"Footrpint{_random.Next(1, 101):000}",
+                SatelliteName = $"Satellite{_random.Next(1, 10):00}",
+                Center = new Point(_random.Next(-180, 180), _random.Next(-90, 90)),
+                Begin = DateTime.Now,
+                Duration = _random.Next(20, 40),
+                Node = _random.Next(1, 16),
+                Direction = (SatelliteStripDirection)_random.Next(0, 2),
             };
         }
     }

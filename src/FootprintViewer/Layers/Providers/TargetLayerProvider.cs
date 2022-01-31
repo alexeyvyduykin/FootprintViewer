@@ -8,12 +8,12 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetProvider : MemoryProvider
+    public class TargetLayerProvider : MemoryProvider
     {
         private readonly List<IFeature> _featuresCache;
         private readonly GroundTargetProvider _provider;
 
-        public TargetProvider(GroundTargetProvider provider)
+        public TargetLayerProvider(GroundTargetProvider provider)
         {
             _provider = provider;
 

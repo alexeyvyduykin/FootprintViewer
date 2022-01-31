@@ -48,6 +48,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
 
             Data.Sources.IGroundTargetDataSource groundTargetDataSource;
+            Data.Sources.IFootprintDataSource footprintDataSource;
 
             if (IsConnectionValid() == true)
             {
@@ -56,16 +57,24 @@ namespace FootprintViewer.Avalonia
                 services.RegisterLazySingleton<IDataSource>(() => new DatabaseDataSource(db));
 
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(db);
+                footprintDataSource = new Data.Sources.FootprintDataSource(db);
             }
             else
             {
                 services.RegisterLazySingleton<IDataSource>(() => new LocalDataSource());
-
-                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(new List<Footprint>());
+                
+                footprintDataSource = new Data.Sources.RandomFootprintDataSource(new List<Satellite>());
+                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);              
             }
-        
+
+            // Footprints provider
+
+            var footprintProvider = new FootprintProvider();
+            footprintProvider.AddSource(footprintDataSource);
+            services.RegisterLazySingleton<FootprintProvider>(() => footprintProvider);
+
             // GroundTaregt provider
-        
+
             var groundTargetProvider = new GroundTargetProvider();
             groundTargetProvider.AddSource(groundTargetDataSource);
             services.RegisterLazySingleton<GroundTargetProvider>(() => groundTargetProvider);
@@ -96,10 +105,10 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterLazySingleton<Mapsui.Map>(() => map);
 
-            var footprintDataSource = (IFootprintDataSource)map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            var footprintLayer = (FootprintLayer)map.GetLayer<FootprintLayer>(LayerType.Footprint);
             var targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
-            services.RegisterLazySingleton<IFootprintDataSource>(() => footprintDataSource);
+            services.RegisterLazySingleton<FootprintLayer>(() => footprintLayer);
             services.RegisterLazySingleton<TargetLayer>(() => targetLayer);
 
             services.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(resolver));

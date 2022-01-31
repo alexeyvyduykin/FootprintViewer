@@ -5,7 +5,6 @@ using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
@@ -14,7 +13,7 @@ namespace FootprintViewer.Designer
         private Mapsui.Map? _map;
         private ProjectFactory? _projectFactory;
         private IDataSource? _dataSource;
-        private IFootprintDataSource? _footprintDataSource;
+        private FootprintLayer? _footprintDataSource;
         private TargetLayer? _groundTargetDataSource;
         private MapProvider? _mapProvider;
         private FootprintPreviewProvider? _footprintPreviewProvider;
@@ -82,9 +81,9 @@ namespace FootprintViewer.Designer
             {
                 return _sidePanel ??= new SidePanel();
             }
-            else if (serviceType == typeof(IFootprintDataSource))
+            else if (serviceType == typeof(FootprintLayer))
             {
-                return _footprintDataSource ??= new FootprintDataSource();
+                return _footprintDataSource ??= new DesignTimeFootprintLayer();
             }
             else if (serviceType == typeof(TargetLayer))
             {
@@ -212,56 +211,16 @@ namespace FootprintViewer.Designer
             }
         }
 
-        private class FootprintDataSource : IFootprintDataSource
-        {
-            private readonly List<Footprint> _footprints;
-
-            public FootprintDataSource()
-            {
-                _footprints = new List<Footprint>()
-                {
-                    new Footprint()
-                    {
-                        Name = "Footrpint0001",
-                        SatelliteName = "Satellite1",
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-
-                    new Footprint()
-                    {
-                        Name = "Footrpint0002",
-                        SatelliteName = "Satellite1",
-                        Center = new Point(54.434545, -12.435454),
-                        Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                        Duration = 35,
-                        Node = 11,
-                        Direction = SatelliteStripDirection.Left,
-                    },
-                   new Footprint()
-                   {
-                       Name = "Footrpint0003",
-                       SatelliteName = "Satellite1",
-                       Center = new Point(54.434545, -12.435454),
-                       Begin = new DateTime(2001, 6, 1, 12, 0, 0),
-                       Duration = 35,
-                       Node = 11,
-                       Direction = SatelliteStripDirection.Left,
-                   },
-                };
-            }
-
-            public List<Footprint> GetFootprints() => _footprints;
-
-            public Task<List<Footprint>> GetFootprintsAsync() => Task.Run(() => _footprints);
-        }
-
         private class DesignTimeTargetLayer : Layers.TargetLayer
         {
-            public DesignTimeTargetLayer() : base(new TargetProvider(new DesignDataGroundTargetProvider()))
+            public DesignTimeTargetLayer() : base(new TargetLayerProvider(new DesignDataGroundTargetProvider()))
+            {
+
+            }
+        }
+        private class DesignTimeFootprintLayer : Layers.FootprintLayer
+        {
+            public DesignTimeFootprintLayer() : base(new FootprintLayerProvider(new DesignDataFootprintProvider()))
             {
 
             }
@@ -282,6 +241,25 @@ namespace FootprintViewer.Designer
                 for (int i = 0; i < 10; i++)
                 {
                     yield return DesignTimeGroundTargetInfo.BuildModel();
+                }
+            }
+        }
+    }
+
+    public class DesignDataFootprintProvider : FootprintProvider
+    {
+        public DesignDataFootprintProvider() : base()
+        {
+            AddSource(new DesignTimeFootprintDataSource());
+        }
+
+        private class DesignTimeFootprintDataSource : Data.Sources.IFootprintDataSource
+        {
+            public IEnumerable<Footprint> GetFootprints()
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    yield return DesignTimeFootprintInfo.BuildModel();
                 }
             }
         }
