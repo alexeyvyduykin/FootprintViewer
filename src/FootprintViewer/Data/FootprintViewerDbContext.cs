@@ -9,6 +9,7 @@ namespace FootprintViewer.Data
         public DbSet<Satellite> Satellites { get; set; }
         public DbSet<GroundTarget> GroundTargets { get; set; }
         public DbSet<Footprint> Footprints { get; set; }
+        public DbSet<UserGeometry> UserGeometries { get; set; }
 
         public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
         {       
@@ -33,7 +34,10 @@ namespace FootprintViewer.Data
             modelBuilder.Entity<GroundTarget>(GroundTargetConfigure);
 
             // Footprints
-            modelBuilder.Entity<Footprint>(FootprintConfigure);
+            modelBuilder.Entity<Footprint>(FootprintConfigure);            
+            
+            // UserGeometries
+            modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
         }
 
         protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
@@ -58,6 +62,15 @@ namespace FootprintViewer.Data
             builder.Property(e => e.Direction).HasConversion(
                 v => v.ToString(),
                 v => (SatelliteStripDirection)Enum.Parse(typeof(SatelliteStripDirection), v));
+        }
+
+        protected void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)
+        {
+            builder.Property(b => b.Name).IsRequired();
+            builder.HasKey(b => b.Name);
+            builder.Property(e => e.Type).HasConversion(
+                v => v.ToString(),
+                v => (UserGeometryType)Enum.Parse(typeof(UserGeometryType), v));
         }
     }
 }
