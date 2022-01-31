@@ -1,48 +1,36 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
 using ReactiveUI;
-using Splat;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class FootprintObserverList : ReactiveObject
     {
-        private readonly FootprintLayer _footprintLayer;
-        private readonly ReactiveCommand<Unit, Unit> begin;
-        private readonly ReactiveCommand<Unit, Unit> end;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> select;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> unselect;
         private FootprintInfo? _prevSelectedItem;
-        private readonly ObservableAsPropertyHelper<List<FootprintInfo>> _footprintInfos;
 
-        public FootprintObserverList(IReadonlyDependencyResolver dependencyResolver)
+        public FootprintObserverList()
         {
-            _footprintLayer = dependencyResolver.GetExistingService<FootprintLayer>();
-
-            begin = ReactiveCommand.Create(() => { });
-            end = ReactiveCommand.Create(() => { });
             select = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
             unselect = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
 
-            Update = ReactiveCommand.CreateFromTask<FootprintObserverFilter?, List<FootprintInfo>>(FootprintsChangedAsync);
+            FootprintInfos = new ObservableCollection<FootprintInfo>();
 
-            _footprintInfos = Update.ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
+            UpdateAsync = ReactiveCommand.CreateFromTask<Func<IEnumerable<FootprintInfo>>>(UpdateAsyncImpl);
         }
-
-        public IObservable<Unit> BeginUpdate => begin;
-
-        public IObservable<Unit> EndUpdate => end;
 
         public IObservable<FootprintInfo> SelectItem => select;
 
         public IObservable<FootprintInfo> UnselectItem => unselect;
-
-        public ReactiveCommand<FootprintObserverFilter?, List<FootprintInfo>> Update { get; }
 
         public void CloseItems() => FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
 
@@ -75,30 +63,15 @@ namespace FootprintViewer.ViewModels
             _prevSelectedItem = item;
         }
 
-        private static async Task<List<FootprintInfo>> LoadDataAsync(FootprintLayer dataSource, FootprintObserverFilter? filter = null)
+        private async Task UpdateAsyncImpl(Func<IEnumerable<FootprintInfo>> load)
         {
-            return await Task.Run(() =>
+            var footprints = await Task.Run(() =>
             {
-                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
-
-                if (filter != null)
-                {
-                    return dataSource.GetFootprints().Select(s => new FootprintInfo(s)).Where(f => filter.Filtering(f) == true).ToList();
-                }
-
-                return dataSource.GetFootprints().Select(s => new FootprintInfo(s)).ToList();
+                Thread.Sleep(500);
+                return load();
             });
-        }
 
-        private async Task<List<FootprintInfo>> FootprintsChangedAsync(FootprintObserverFilter? filter)
-        {
-            begin.Execute().Subscribe();
-
-            var footprints = await LoadDataAsync(_footprintLayer, filter);
-
-            end.Execute().Subscribe();
-
-            return footprints;
+            FootprintInfos = new ObservableCollection<FootprintInfo>(footprints);
         }
 
         //public void SelectFootprintInfo(string name)
@@ -141,6 +114,22 @@ namespace FootprintViewer.ViewModels
         //[Reactive]
         //public bool ScrollToCenter { get; set; } = false;
 
-        public List<FootprintInfo> FootprintInfos => _footprintInfos.Value;
+        public ReactiveCommand<Func<IEnumerable<FootprintInfo>>, Unit> UpdateAsync { get; }
+
+        [Reactive]
+        public ObservableCollection<FootprintInfo> FootprintInfos { get; private set; }
+    }
+
+    public static class FootprintObserverListExtensions
+    {
+        public static void InvalidateData(this FootprintObserverList list, Func<IEnumerable<Footprint>> load)
+        {
+            list.UpdateAsync.Execute(() => load().Select(s => new FootprintInfo(s))).Subscribe();
+        }
+
+        public static void InvalidateData(this FootprintObserverList list, Func<IEnumerable<FootprintInfo>> load)
+        {
+            list.UpdateAsync.Execute(() => load()).Subscribe();
+        }
     }
 }

@@ -25,14 +25,10 @@ namespace FootprintViewer.ViewModels
 
             _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
-            //_targetLayer = dependencyResolver.GetExistingService<TargetLayer>();
-
             Title = "Просмотр наземных целей";
 
             Name = "GroundTargetViewer";
-
-            _groundTargetViewerList = new GroundTargetViewerList();
-
+       
             _emptyMainContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             _updateMainContent = new PreviewMainContent("Загрузка...");
@@ -44,6 +40,8 @@ namespace FootprintViewer.ViewModels
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
             this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
+
+            _groundTargetViewerList = new GroundTargetViewerList();
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
