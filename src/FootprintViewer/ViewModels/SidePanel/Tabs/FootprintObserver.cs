@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Projection;
 using NetTopologySuite.Geometries;
@@ -6,6 +7,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -88,6 +90,10 @@ namespace FootprintViewer.ViewModels
                 }
             }
         }
+
+        public void UpdateAsync(Func<IEnumerable<FootprintInfo>> load) => _footprintObserverList.InvalidateData(load);
+
+        public void UpdateAsync(Func<IEnumerable<Footprint>> load) => _footprintObserverList.InvalidateData(load);
 
         public ReactiveCommand<FootprintInfo?, Unit> ClickOnItem { get; }
 

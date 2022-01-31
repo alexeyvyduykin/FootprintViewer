@@ -7,12 +7,14 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"       
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             x:Name="userControl"                        
-             d:DataContext="{x:Static vmd:DesignerContext.FootprintObserver}"           
-             x:DataType="vm:FootprintObserver"               
+             x:Name="userControl"                                    
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="450">
+
+  <Design.DataContext>
+    <vmd:DesignTimeFootprintObserver/>
+  </Design.DataContext>
   
   <Grid>
 

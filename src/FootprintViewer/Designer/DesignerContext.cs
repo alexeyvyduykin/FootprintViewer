@@ -7,8 +7,6 @@ namespace FootprintViewer.Designer
 {
     public class DesignerContext
     {
-        public static FootprintObserver? FootprintObserver { get; private set; }
-
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
         public static SatelliteViewer? SatelliteViewer { get; private set; }
@@ -24,13 +22,6 @@ namespace FootprintViewer.Designer
             // Map
 
             var map = dependencyResolver.GetService<Mapsui.Map>();
-
-            // Tabs
-            // Tabs: FootprintObserver
-
-            FootprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
-
-            FootprintObserver.IsActive = true;
 
             // Tabs: FootprintObserverFilter
 
