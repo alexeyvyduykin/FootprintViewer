@@ -1,25 +1,11 @@
 ﻿using FootprintViewer.Data.Sources;
 using NetTopologySuite.Geometries;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Data
 {
-    public class SatelliteProvider
+    public class SatelliteProvider : BaseProvider<ISatelliteDataSource>
     {
-        private readonly List<ISatelliteDataSource> _sources;
-
-        public SatelliteProvider()
-        {
-            _sources = new List<ISatelliteDataSource>();
-        }
-
-        public void AddSource(ISatelliteDataSource source)
-        {
-            _sources.Add(source);
-        }
-
         public IEnumerable<Satellite> GetSatellites()
         {
             var list = new List<Satellite>();
@@ -41,7 +27,7 @@ namespace FootprintViewer.Data
                 foreach (var item in source.GetLeftStrips())
                 {
                     dict.TryAdd(item.Key, item.Value);
-                }              
+                }
             }
 
             return dict;
@@ -76,7 +62,5 @@ namespace FootprintViewer.Data
 
             return dict;
         }
-
-        public IEnumerable<ISatelliteDataSource> Sources => _sources;
     }
 }

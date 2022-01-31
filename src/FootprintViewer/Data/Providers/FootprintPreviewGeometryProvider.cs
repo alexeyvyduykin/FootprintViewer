@@ -4,20 +4,8 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintPreviewGeometryProvider
-    {
-        private readonly List<IFootprintPreviewGeometryDataSource> _sources;
-
-        public FootprintPreviewGeometryProvider()
-        {
-            _sources = new List<IFootprintPreviewGeometryDataSource>();
-        }
-
-        public void AddSource(IFootprintPreviewGeometryDataSource source)
-        {
-            _sources.Add(source);
-        }
-
+    public class FootprintPreviewGeometryProvider : BaseProvider<IFootprintPreviewGeometryDataSource>
+    {     
         public virtual IDictionary<string, IGeometry> GetFootprintPreviewGeometries()
         {
             var dict = new Dictionary<string, IGeometry>();
@@ -32,7 +20,5 @@ namespace FootprintViewer.Data
 
             return dict;
         }
-
-        public IEnumerable<IFootprintPreviewGeometryDataSource> Sources => _sources;
     }
 }

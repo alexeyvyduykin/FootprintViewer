@@ -1,24 +1,10 @@
 ﻿using FootprintViewer.Data.Sources;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Data
 {
-    public class MapProvider
+    public class MapProvider : BaseProvider<IMapDataSource>
     {
-        private readonly List<IMapDataSource> _sources;
-
-        public MapProvider()
-        {
-            _sources = new List<IMapDataSource>();
-        }
-
-        public void AddSource(IMapDataSource source)
-        {
-            _sources.Add(source);
-        }
-
         public IEnumerable<MapResource> GetMapResources()
         {
             var list = new List<MapResource>();
@@ -30,7 +16,5 @@ namespace FootprintViewer.Data
 
             return list;
         }
-
-        public IEnumerable<IMapDataSource> Sources => _sources;
     }
 }

@@ -3,20 +3,8 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Data
 {
-    public class GroundTargetProvider
+    public class GroundTargetProvider : BaseProvider<IGroundTargetDataSource>
     {
-        private readonly List<IGroundTargetDataSource> _sources;
-
-        public GroundTargetProvider()
-        {
-            _sources = new List<IGroundTargetDataSource>();
-        }
-
-        public void AddSource(IGroundTargetDataSource source)
-        {
-            _sources.Add(source);
-        }
-
         public IEnumerable<GroundTarget> GetGroundTargets()
         {
             var list = new List<GroundTarget>();
@@ -28,7 +16,5 @@ namespace FootprintViewer.Data
 
             return list;
         }
-
-        public IEnumerable<IGroundTargetDataSource> Sources => _sources;
     }
 }

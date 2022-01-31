@@ -1,25 +1,10 @@
-﻿using DynamicData;
-using FootprintViewer.Data.Sources;
-using System;
+﻿using FootprintViewer.Data.Sources;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintProvider
+    public class FootprintProvider : BaseProvider<IFootprintDataSource>
     {
-        private readonly List<IFootprintDataSource> _sources;
-
-        public FootprintProvider()
-        {
-            _sources = new List<IFootprintDataSource>();
-        }
-
-        public void AddSource(IFootprintDataSource source)
-        {
-            _sources.Add(source);
-        }
-
         public IEnumerable<Footprint> GetFootprints()
         {
             var list = new List<Footprint>();
@@ -31,7 +16,5 @@ namespace FootprintViewer.Data
 
             return list;
         }
-
-        public IEnumerable<IFootprintDataSource> Sources => _sources;
     }
 }

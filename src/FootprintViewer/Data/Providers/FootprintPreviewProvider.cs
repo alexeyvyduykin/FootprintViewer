@@ -4,20 +4,8 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintPreviewProvider
+    public class FootprintPreviewProvider : BaseProvider<IFootprintPreviewDataSource>
     {
-        private readonly List<IFootprintPreviewDataSource> _sources;
-
-        public FootprintPreviewProvider()
-        {
-            _sources = new List<IFootprintPreviewDataSource>();
-        }
-
-        public void AddSource(IFootprintPreviewDataSource source)
-        {
-            _sources.Add(source);
-        }
-
         public IEnumerable<FootprintPreview> GetFootprintPreviews()
         {
             var list = new List<FootprintPreview>();
@@ -29,7 +17,5 @@ namespace FootprintViewer.Data
 
             return list;
         }
-
-        public IEnumerable<IFootprintPreviewDataSource> Sources => _sources;
     }
 }
