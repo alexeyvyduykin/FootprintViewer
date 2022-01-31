@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.ViewModels;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -9,8 +8,6 @@ namespace FootprintViewer.Designer
     public class DesignerContext
     {
         public static FootprintObserver? FootprintObserver { get; private set; }
-
-        public static FootprintObserverList? FootprintObserverList { get; private set; }
 
         public static FootprintObserverFilter? FootprintObserverFilter { get; private set; }
 
@@ -34,12 +31,6 @@ namespace FootprintViewer.Designer
             FootprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
 
             FootprintObserver.IsActive = true;
-
-            // Tabs: FootprintObserverList
-
-            //FootprintObserverList = new FootprintObserverList(dependencyResolver);
-
-            //FootprintObserverList.Update.Execute(null).Subscribe();
 
             // Tabs: FootprintObserverFilter
 
