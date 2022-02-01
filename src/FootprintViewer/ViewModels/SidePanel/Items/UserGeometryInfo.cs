@@ -5,17 +5,17 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryInfo : ReactiveObject
     {
-        private readonly string? _name;
-        private readonly UserGeometryType _type;
+        private readonly UserGeometry _geometry;
 
         public UserGeometryInfo(UserGeometry geometry)
         {
-            _name = geometry.Name;
-            _type = geometry.Type;
+            _geometry = geometry;
         }
 
-        public string? Name => _name;
+        public UserGeometry Geometry => _geometry;
 
-        public UserGeometryType Type => _type;
+        public string? Name => _geometry.Name;
+
+        public UserGeometryType Type => _geometry.Type;
     }
 }

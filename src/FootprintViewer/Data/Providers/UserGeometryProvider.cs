@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data.Sources;
+using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -47,6 +49,23 @@ namespace FootprintViewer.Data
                 foreach (var source in Sources)
                 {
                     list.AddRange(source.GetUserGeometries());
+                }
+
+                return list;
+            });
+        }
+
+        public async Task<List<UserGeometryInfo>> LoadUserGeometriesAsync()
+        {
+            await Task.Delay(2000);
+
+            return await Task.Run(() =>
+            {
+                var list = new List<UserGeometryInfo>();
+
+                foreach (var source in Sources)
+                {
+                    list.AddRange(source.GetUserGeometries().Select(s => new UserGeometryInfo(s)));
                 }
 
                 return list;

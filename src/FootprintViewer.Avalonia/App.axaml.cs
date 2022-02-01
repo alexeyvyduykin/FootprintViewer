@@ -10,6 +10,7 @@ using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,15 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        static App()
+        {
+            Locator.CurrentMutable.InitializeSplat();
+
+            // IViewFor
+
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
@@ -105,7 +115,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(resolver));
             services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
 
-            Locator.CurrentMutable.RegisterLazySingleton<ToolBar>(() => new ToolBar(resolver));
+            services.RegisterLazySingleton<ToolBar>(() => new ToolBar(resolver));
 
             var tabs = new SidePanelTab[]
             {
@@ -115,9 +125,9 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<FootprintObserver>(),
             };
 
-            Locator.CurrentMutable.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
+            services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
 
-            Locator.CurrentMutable.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
+            services.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
         }
 
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();

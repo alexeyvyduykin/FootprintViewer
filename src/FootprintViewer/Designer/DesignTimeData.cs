@@ -5,6 +5,7 @@ using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
@@ -19,6 +20,7 @@ namespace FootprintViewer.Designer
         private FootprintPreviewProvider? _footprintPreviewProvider;
         private FootprintPreviewGeometryProvider? _footprintPreviewGeometryProvider;
         private GroundTargetProvider? _groundTargetProvider;
+        private UserGeometryProvider? _userGeometryProvider;
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -56,6 +58,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(GroundTargetProvider))
             {
                 return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
+            }
+            else if (serviceType == typeof(UserGeometryProvider))
+            {
+                return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -155,6 +161,37 @@ namespace FootprintViewer.Designer
         private class DesignTimeFootprintPreviewGeometryProvider : FootprintPreviewGeometryProvider
         {
             public DesignTimeFootprintPreviewGeometryProvider() : base() { }
+        }
+
+        private class DesignTimeUserGeometryProvider : UserGeometryProvider
+        {
+            public DesignTimeUserGeometryProvider() : base()
+            {
+                AddSource(new DesignTimeUserGeometrySource());
+            }
+
+            private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
+            {
+                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();                
+
+                public IEnumerable<FootprintPreview> GetFootprintPreviews()
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        yield return DesignTimeFootprintPreview.Build();
+                    }
+                }
+
+                public IEnumerable<UserGeometry> GetUserGeometries() 
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        yield return DesignTimeUserGeometryInfo.BuildModel();
+                    }
+                }              
+
+                public void Remove(UserGeometry geometry) => throw new NotImplementedException();                
+            }
         }
 
         private class DesignTimeMapProvider : MapProvider
