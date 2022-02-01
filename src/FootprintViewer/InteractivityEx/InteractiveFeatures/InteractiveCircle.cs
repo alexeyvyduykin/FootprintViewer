@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
     public class InteractiveCircle : InteractiveFeature
     {

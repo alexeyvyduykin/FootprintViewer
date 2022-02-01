@@ -1,7 +1,7 @@
 ﻿using Mapsui.Geometries;
 using System;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
     public class Plotter
     {

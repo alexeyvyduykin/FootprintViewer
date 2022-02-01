@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
     public class FeatureEventArgs : EventArgs
     {

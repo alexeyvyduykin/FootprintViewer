@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Platform;
 using Avalonia.Styling;
-using FootprintViewer.Interactivity;
+using FootprintViewer.InteractivityEx;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;

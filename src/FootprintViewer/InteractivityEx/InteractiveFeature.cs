@@ -3,7 +3,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
     public abstract class InteractiveFeature : Feature, IInteractiveFeature
     {

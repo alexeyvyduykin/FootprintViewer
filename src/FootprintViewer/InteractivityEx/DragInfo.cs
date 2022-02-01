@@ -1,6 +1,6 @@
 ﻿using Mapsui.Geometries;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
     public class DragInfo
     {

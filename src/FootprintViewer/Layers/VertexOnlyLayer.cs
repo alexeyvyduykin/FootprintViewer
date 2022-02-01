@@ -8,7 +8,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FootprintViewer.Interactivity;
+using FootprintViewer.InteractivityEx;
 
 namespace FootprintViewer.Layers
 {

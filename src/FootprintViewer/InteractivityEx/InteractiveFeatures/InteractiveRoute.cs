@@ -4,41 +4,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer.Interactivity
+namespace FootprintViewer.InteractivityEx
 {
-    public class InteractivePolygon : InteractiveFeature
+    public class InteractiveRoute : InteractiveFeature
     {
         private bool _isDrawing = false;
         private Feature _helpLineString;
-        private Feature _helpPolygon;
 
         private bool _isEditing = false;
         private Point _vertex;
         private Point _startOffsetToVertex;
 
-        protected InteractivePolygon() : base() { }
+        protected InteractiveRoute() : base() { }
 
-        public static InteractivePolygon Build()
+        public static InteractiveRoute Build()
         {
-            return new InteractivePolygon();           
-        }
-
-        public static InteractivePolygon Build(IGeometry geometry)
-        {
-            return new InteractivePolygon() { Geometry = geometry };
+            return new InteractiveRoute();
         }
 
         public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isEnd)
         {
-            var polygonGeometry = (LineString)Geometry;
+            var routeGeometry = (LineString)Geometry;
 
-            if (polygonGeometry.Vertices.Count > 2)
-            {
-                var click = isEnd.Invoke(polygonGeometry.Vertices[0]);
-
-                if (click == true)
+            if (routeGeometry.Vertices.Count > 1)
+            {         
+                foreach (var item in routeGeometry.Vertices)
                 {
-                    return true;
+                    var click = isEnd.Invoke(item);              
+                    if (click == true)
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -59,27 +55,19 @@ namespace FootprintViewer.Interactivity
             var p1 = worldPosition.Clone();
 
             Geometry = new LineString(new[] { p0 });
-            this["Name"] = FeatureType.AOIPolygonBorderDrawing.ToString();
+
+            this["Name"] = FeatureType.Route.ToString();
 
             _helpLineString = new Feature
             {
                 Geometry = new LineString(new[] { p0, p1 }),
-                ["Name"] = FeatureType.AOIPolygonDrawing.ToString(),
-            };
-
-            _helpPolygon = new Feature
-            {
-                Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(new[] { p0 })
-                },
-                ["Name"] = FeatureType.AOIPolygonAreaDrawing.ToString(),
+                ["Name"] = FeatureType.RouteDrawing.ToString(),
             };
 
             return new AddInfo()
             {
                 Feature = this,
-                HelpFeatures = new List<IFeature>() { _helpLineString, _helpPolygon },
+                HelpFeatures = new List<IFeature>() { _helpLineString },
             };
         }
 
@@ -91,13 +79,11 @@ namespace FootprintViewer.Interactivity
                 var p1 = worldPosition.Clone();
                 var p2 = worldPosition.Clone();
 
-                ((Polygon)_helpPolygon.Geometry).ExteriorRing.Vertices.Add(p0);
                 ((LineString)Geometry).Vertices.Add(p0); // and add it to the geometry
                 ((LineString)_helpLineString.Geometry).Vertices = new[] { p1, p2 };
 
                 RenderedGeometry?.Clear();
                 _helpLineString.RenderedGeometry?.Clear();
-                _helpPolygon.RenderedGeometry?.Clear();
             }
         }
 
@@ -117,15 +103,6 @@ namespace FootprintViewer.Interactivity
             if (_isDrawing == true)
             {
                 _isDrawing = false;
-
-                var vertices = ((LineString)Geometry).Vertices;
-
-                Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
-
-                this["Name"] = FeatureType.AOIPolygon.ToString();
             }
         }
 
@@ -133,14 +110,7 @@ namespace FootprintViewer.Interactivity
         {
             if (Geometry != null)
             {
-                if (_isDrawing == true)
-                {
-                    return ((LineString)Geometry).Vertices;
-                }
-                else
-                {
-                    return ((Polygon)Geometry).ExteriorRing.Vertices;
-                }
+                return ((LineString)Geometry).Vertices;
             }
 
             return new List<Point>();
@@ -156,7 +126,7 @@ namespace FootprintViewer.Interactivity
             var vertices = EditVertices();
 
             var vertexTouched = vertices.OrderBy(v => v.Distance(worldPosition)).FirstOrDefault(v => v.Distance(worldPosition) < screenDistance);
-
+            
             if (vertexTouched != null)
             {
                 _vertex = vertexTouched;
@@ -181,32 +151,8 @@ namespace FootprintViewer.Interactivity
             _vertex.X = position.X;
             _vertex.Y = position.Y;
 
-            //if (Geometry is Polygon polygon) // Not this only works correctly it the feature is in the outerring.
-            //{
-            //    var count = polygon.ExteriorRing.Vertices.Count;
-            //    var vertices = polygon.ExteriorRing.Vertices;
-            //    var index = vertices.IndexOf(_vertex);
-
-            //    if (index >= 0)
-            //    {
-            //        // It is a ring where the first should be the same as the last.
-            //        // So if the first was removed than set the last to the value of the new first
-            //        if (index == 0)
-            //        {
-            //            vertices[count - 1].X = vertices[0].X;
-            //            vertices[count - 1].Y = vertices[0].Y;
-            //        }
-            //        // If the last was removed then set the first to the value of the new last
-            //        else if (index == vertices.Count)
-            //        {
-            //            vertices[0].X = vertices[count - 1].X;
-            //            vertices[0].Y = vertices[count - 1].Y;
-            //        }
-            //    }
-            //}
-
             RenderedGeometry.Clear();
-     
+
             return true;
         }
 

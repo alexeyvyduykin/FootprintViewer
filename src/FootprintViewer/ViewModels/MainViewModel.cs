@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Interactivity;
+﻿using FootprintViewer.InteractivityEx;
 using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;
