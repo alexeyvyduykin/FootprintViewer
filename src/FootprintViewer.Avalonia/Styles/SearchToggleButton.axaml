@@ -3,6 +3,7 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
+          <ToggleButton Classes="searchToggleButton">Description</ToggleButton>
         </Border>
     </Design.PreviewWith>
 
@@ -11,7 +12,7 @@
   <Style Selector="ContentControl.searchToggleButtonIconPresenter">
     <Setter Property="Width" Value="34"/>
     <Setter Property="Height" Value="34"/>
-    <Setter Property="Margin" Value="10"/>
+    <Setter Property="Margin" Value="0,0,10,0"/>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate>
@@ -40,7 +41,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate>
-          <Border x:Name="PART_Border"            
+          <Border x:Name="PART_Border"   
+                  Padding="10"
                   BorderThickness="0"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
@@ -48,8 +50,7 @@
             <Grid ColumnDefinitions="Auto,*">
           
               <ContentControl x:Name="PART_ContentControlIcon"       
-                              Classes="searchToggleButtonIconPresenter">  
-              </ContentControl>
+                              Classes="searchToggleButtonIconPresenter"/>
                      
               <ContentPresenter x:Name="PART_ContentPresenter"                            
                                 Grid.Column="1"               
