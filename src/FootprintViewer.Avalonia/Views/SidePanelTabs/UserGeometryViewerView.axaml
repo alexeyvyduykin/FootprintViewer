@@ -12,6 +12,12 @@
     <vmd:DesignTimeUserGeometryViewer/>
   </Design.DataContext>
 
+  <UserControl.Styles>
+    <Style Selector="ListBoxItem">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+    </Style>
+  </UserControl.Styles>
+  
   <Grid RowDefinitions="Auto,Auto,*">
     <StackPanel Orientation="Horizontal">
       <Button x:Name="CreateButton">Create</Button>

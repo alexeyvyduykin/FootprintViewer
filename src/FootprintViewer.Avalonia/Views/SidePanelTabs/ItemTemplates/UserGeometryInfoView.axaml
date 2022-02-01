@@ -3,17 +3,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
-             mc:Ignorable="d" d:DesignWidth="280"
+             mc:Ignorable="d" d:DesignWidth="380"  
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView">
 
   <Design.DataContext>
     <vmd:DesignTimeUserGeometryInfo/>
   </Design.DataContext>
 
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+  </UserControl.Styles>
+  
   <Border x:Name="MainBorder" Padding="8,4,8,4">
-    <Grid ColumnDefinitions="80,*">
+    <Grid ColumnDefinitions="80,*,Auto">
       <TextBlock x:Name="TypeTextBlock"/>
       <TextBlock x:Name="NameTextBlock" Grid.Column="1"/>
+      <Button x:Name="RemoveButton" Grid.Column="2" HorizontalAlignment="Right">Remove</Button>
     </Grid>
   </Border>
   
