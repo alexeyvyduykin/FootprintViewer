@@ -4,6 +4,7 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -68,9 +69,12 @@ namespace FootprintViewer.ViewModels
 
             var id = Guid.NewGuid();
 
+            var idStr = $"{id}";
+            idStr = new string(idStr.Replace("-", "").Take(10).ToArray());
+
             return new UserGeometry()
             {
-                Name = $"{names[index]}_{id}",
+                Name = $"{names[index]}_{idStr}",
                 Type = types[index],
             };
         }

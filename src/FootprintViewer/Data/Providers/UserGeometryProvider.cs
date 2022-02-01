@@ -18,8 +18,6 @@ namespace FootprintViewer.Data
 
         public async Task AddAsync(UserGeometry geometry)
         {
-            await Task.Delay(3000);
-
             foreach (var source in Sources)
             {
                 await source.AddAsync(geometry);
@@ -40,8 +38,6 @@ namespace FootprintViewer.Data
 
         public async Task<List<UserGeometry>> LoadUsersAsync()
         {
-            await Task.Delay(2000);
-
             return await Task.Run(() =>
             {
                 var list = new List<UserGeometry>();
@@ -57,8 +53,6 @@ namespace FootprintViewer.Data
 
         public async Task<List<UserGeometryInfo>> LoadUserGeometriesAsync()
         {
-            await Task.Delay(2000);
-
             return await Task.Run(() =>
             {
                 var list = new List<UserGeometryInfo>();

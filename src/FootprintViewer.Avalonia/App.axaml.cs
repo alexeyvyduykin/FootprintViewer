@@ -44,6 +44,7 @@ namespace FootprintViewer.Avalonia
             Data.Sources.IGroundTargetDataSource groundTargetDataSource;
             Data.Sources.IFootprintDataSource footprintDataSource;
             Data.Sources.ISatelliteDataSource satelliteDataSource;
+            Data.Sources.IUserGeometryDataSource userGeometryDataSource;
 
             if (IsConnectionValid() == true)
             {
@@ -52,12 +53,14 @@ namespace FootprintViewer.Avalonia
                 satelliteDataSource = new Data.Sources.SatelliteDataSource(db);
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(db);
                 footprintDataSource = new Data.Sources.FootprintDataSource(db);
+                userGeometryDataSource = new Data.Sources.UserGeometryDataSource(db);
             }
             else
             {             
                 satelliteDataSource = new Data.Sources.RandomSatelliteDataSource();
                 footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
-                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);              
+                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);
+                userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
             }
 
             // Satellites provider
@@ -98,6 +101,13 @@ namespace FootprintViewer.Avalonia
             footprintPreviewGeometryProvider.AddSource(new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"));
             services.RegisterLazySingleton<FootprintPreviewGeometryProvider>(() => footprintPreviewGeometryProvider);
 
+            // User geometry provider
+
+            var userGeometryProvider = new UserGeometryProvider();
+            userGeometryProvider.AddSource(userGeometryDataSource);
+            services.RegisterLazySingleton<UserGeometryProvider>(() => userGeometryProvider);
+
+
             var factory = resolver.GetExistingService<ProjectFactory>();
 
             var map = factory.CreateMap(resolver);
@@ -114,6 +124,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(resolver));
             services.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(resolver));
             services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
+            services.RegisterLazySingleton<UserGeometryViewer>(() => new UserGeometryViewer(resolver));
 
             services.RegisterLazySingleton<ToolBar>(() => new ToolBar(resolver));
 
@@ -123,6 +134,7 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<SatelliteViewer>(),
                 resolver.GetExistingService<GroundTargetViewer>(),
                 resolver.GetExistingService<FootprintObserver>(),
+                resolver.GetExistingService<UserGeometryViewer>(),
             };
 
             services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
