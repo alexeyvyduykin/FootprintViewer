@@ -24,17 +24,26 @@ namespace FootprintViewer.ViewModels
             EditClick = ReactiveCommand.Create(() => { });
             var worldMapsClick = ReactiveCommand.Create(() => { });
 
+            SelectGeometryClick = ReactiveCommand.Create(() => { });
+            RectangleGeometryClick = ReactiveCommand.Create(() => { });       
+            CircleGeometryClick = ReactiveCommand.Create(() => { });
+            PolygonGeometryClick = ReactiveCommand.Create(() => { });
+            TranslateGeometryClick = ReactiveCommand.Create(() => { });
+            RotateGeometryClick = ReactiveCommand.Create(() => { });
+            ScaleGeometryClick = ReactiveCommand.Create(() => { });
+            EditGeometryClick = ReactiveCommand.Create(() => { });
+
             ZoomIn = new Tool()
             {
                 Title = "+",
-                Tooltip = "Приблизить",     
+                Tooltip = "Приблизить",
                 Command = ZoomInClick,
             };
 
             ZoomOut = new Tool()
             {
                 Title = "-",
-                Tooltip = "Отдалить",    
+                Tooltip = "Отдалить",
                 Command = ZoomOutClick,
             };
 
@@ -47,14 +56,14 @@ namespace FootprintViewer.ViewModels
                     Command = RectangleClick,
                 },
                 new Tool()
-                {              
-                    Title = "AddPolygon",                
+                {
+                    Title = "AddPolygon",
                     Tooltip = "Нарисуйте полигональную AOI",
                     Command = PolygonClick,
                 },
                 new Tool()
-                {               
-                    Title = "AddCircle",               
+                {
+                    Title = "AddCircle",
                     Tooltip = "Нарисуйте круговую AOI",
                     Command = CircleClick,
                 }
@@ -76,11 +85,68 @@ namespace FootprintViewer.ViewModels
             WorldMaps = new Tool()
             {
                 Title = "WorldMaps",
-                Tooltip = "Список слоев",  
+                Tooltip = "Список слоев",
                 Command = worldMapsClick,
             };
-        
+
             _worldMapSelector.WorldMapChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
+
+            SelectGeometry = new Tool()
+            {
+                Title = "Select",
+                Tooltip = "SelectGeometry",
+                Command = SelectGeometryClick,
+            };
+
+            GeometryCollection = new ToolCollection(new[]
+            {
+                new Tool()
+                {
+                    Title = "Rectangle",
+                    Tooltip = "RectangleGeometry",
+                    Command = RectangleGeometryClick,
+                },                                
+                new Tool()
+                {
+                    Title = "Circle",
+                    Tooltip = "CircleGeometry",
+                    Command = CircleGeometryClick,
+                },               
+                new Tool()
+                {
+                    Title = "Polygon",
+                    Tooltip = "PolygonGeometry",
+                    Command = PolygonGeometryClick,
+                },
+            });
+
+            TranslateGeometry = new Tool()
+            {
+                Title = "Translate",
+                Tooltip = "TranslateGeometry",
+                Command = TranslateGeometryClick,
+            };
+
+            RotateGeometry = new Tool() 
+            {
+                Title = "Rotate",
+                Tooltip = "RotateGeometry",
+                Command = RotateGeometryClick,
+            };
+
+            ScaleGeometry = new Tool() 
+            {
+                Title = "Scale",
+                Tooltip = "ScaleGeometry",
+                Command = ScaleGeometryClick,
+            };
+
+            EditGeometry = new Tool()
+            {
+                Title = "Edit",
+                Tooltip = "EditGeometry",
+                Command = EditGeometryClick,
+            };
 
             worldMapsClick.Subscribe(_ => { IsWorldMapSelectorOpen = !IsWorldMapSelectorOpen; });
 
@@ -148,6 +214,22 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> EditClick { get; }
 
+        public ReactiveCommand<Unit, Unit> SelectGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> RectangleGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> CircleGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> PolygonGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> TranslateGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> RotateGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> ScaleGeometryClick { get; }
+
+        public ReactiveCommand<Unit, Unit> EditGeometryClick { get; }
+
         public ReactiveCommand<MapResource, MapResource> LayerChanged => _worldMapSelector.WorldMapChanged;
 
         public Tool ZoomIn { get; }
@@ -163,6 +245,18 @@ namespace FootprintViewer.ViewModels
         public Tool WorldMaps { get; }
 
         public WorldMapSelector WorldMapSelector => _worldMapSelector;
+
+        public Tool SelectGeometry { get; }
+
+        public ToolCollection GeometryCollection { get; }
+
+        public Tool TranslateGeometry { get; }
+
+        public Tool RotateGeometry { get; }
+
+        public Tool ScaleGeometry { get; }
+
+        public Tool EditGeometry { get; }
 
         [Reactive]
         public bool IsWorldMapSelectorOpen { get; set; }

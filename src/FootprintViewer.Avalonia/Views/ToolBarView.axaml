@@ -64,7 +64,7 @@
         </Setter.Value>
       </Setter>
     </Style>
-
+    
     <Style Selector="Button.toolButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
       <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />           
     </Style>
@@ -140,7 +140,29 @@
     <Style Selector="ItemsControl > ContentPresenter:nth-child(1) > ToggleButton">                          
       <Setter Property="CornerRadius" Value="4,4,0,0"/>           
     </Style>
+
+    <Style Selector="ToggleButton.textButton">
+      <Setter Property="Width" Value="80" />
+      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
+      <Setter Property="Opacity" Value="0.75" />
+    </Style>
     
+    <Style Selector="ToggleButton.textButton > ContentPresenter">
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    
+    <Style Selector="ToggleButton.textButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton.textButton:pressed  /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />     
+    </Style>
+
+    <Style Selector="ToggleButton.textButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#4c9ae7" />
+    </Style>
+
   </UserControl.Styles>
   
   <Grid>
@@ -250,6 +272,60 @@
         </Button>
       </StackPanel>
 
+      <StackPanel Margin="0,10,0,0" 
+                  DataContext="{Binding SelectGeometry}">
+        <ToggleButton Classes="textButton"
+                      Content="{Binding Title}"/>
+      </StackPanel>
+
+      <StackPanel x:Name="GeometryCollectionStackPanel" 
+                  HorizontalAlignment="Left"
+                  Background="Transparent"
+                  Margin="0,1,0,0"
+                  DataContext="{Binding GeometryCollection}">
+        <ItemsControl Items="{Binding Items}">
+
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <ToggleButton IsChecked="{Binding IsActive, Mode=TwoWay}"
+                            Command="{Binding Command}"
+                            Content="{Binding Title}"
+                            Classes="textButton"/>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+      
+      <StackPanel Margin="0,1,0,0"
+                  DataContext="{Binding TranslateGeometry}">
+        <ToggleButton Classes="textButton"
+                      Content="{Binding Title}"/>
+      </StackPanel>
+
+      <StackPanel Margin="0,1,0,0"            
+                  DataContext="{Binding RotateGeometry}">
+        <ToggleButton Classes="textButton"
+                      Content="{Binding Title}"/>
+      </StackPanel>
+
+      <StackPanel Margin="0,1,0,0"           
+                  DataContext="{Binding ScaleGeometry}">
+        <ToggleButton Classes="textButton"
+                      Content="{Binding Title}"/>
+      </StackPanel>
+
+      <StackPanel Margin="0,1,0,0"
+            DataContext="{Binding EditGeometry}">
+        <ToggleButton Classes="textButton"
+                      Content="{Binding Title}"/>
+      </StackPanel>
+      
     </StackPanel>
   </Grid>
   

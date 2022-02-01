@@ -19,6 +19,8 @@ namespace FootprintViewer.Avalonia.Views
         private Button LayerSelectorButton => this.FindControl<Button>("LayerSelectorButton");
 
         private StackPanel CollectionStackPanel => this.FindControl<StackPanel>("CollectionStackPanel");
+
+        private StackPanel GeometryCollectionStackPanel => this.FindControl<StackPanel>("GeometryCollectionStackPanel");
         
         public ToolBarView()
         {
@@ -27,18 +29,29 @@ namespace FootprintViewer.Avalonia.Views
             _enter = ReactiveCommand.Create(EnterImpl);
             _leave = ReactiveCommand.Create(LeaveImpl);
 
+            _enter2 = ReactiveCommand.Create(EnterImpl2);
+            _leave2 = ReactiveCommand.Create(LeaveImpl2);
+
             this.WhenActivated(disposables =>
             {
                 CollectionStackPanel.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
                 
-                CollectionStackPanel.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);          
+                CollectionStackPanel.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
+
+                GeometryCollectionStackPanel.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter2).DisposeWith(disposables);
+
+                GeometryCollectionStackPanel.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave2).DisposeWith(disposables);
             });
         }
 
         private readonly ReactiveCommand<Unit, Unit> _enter;
 
         private readonly ReactiveCommand<Unit, Unit> _leave;
-     
+
+        private readonly ReactiveCommand<Unit, Unit> _enter2;
+
+        private readonly ReactiveCommand<Unit, Unit> _leave2;
+
         private void EnterImpl()
         {
             if (ViewModel != null)
@@ -52,6 +65,22 @@ namespace FootprintViewer.Avalonia.Views
             if (ViewModel != null)
             {
                 ViewModel.AOICollection.Visible = false;
+            }
+        }
+
+        private void EnterImpl2()
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.GeometryCollection.Visible = true;
+            }
+        }
+
+        private void LeaveImpl2()
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.GeometryCollection.Visible = false;
             }
         }
 
