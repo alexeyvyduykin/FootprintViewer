@@ -1,4 +1,5 @@
-﻿using Mapsui;
+﻿using InteractivitySample.Interactivity;
+using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Layers;
