@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
              xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
 
@@ -24,6 +25,17 @@
 
       <v:ToolCheckView DataContext="{Binding RouteDistance}"/>
 
+      <controls:Flyout Placement="Right"                 
+                       Target="{Binding #LayerSelectorButton}"                 
+                       IsAnchor="True"                 
+                       IsOpen="{Binding IsWorldMapSelectorOpen}"                
+                       Background="{StaticResource MainBackgroundBrush}"                 
+                       ContentSource="{Binding WorldMapSelector}"/>
+       
+      <v:ToolClickView x:Name="LayerSelectorButton" 
+                       DataContext="{Binding WorldMaps}"
+                       Margin="0,10,0,0"/>
+        
       <v:ToolCheckView DataContext="{Binding SelectGeometry}"
                        Margin="0,10,0,0"/>
 
@@ -44,5 +56,5 @@
 
     </StackPanel>
   </Panel>
-  
+
 </UserControl>
