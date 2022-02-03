@@ -86,9 +86,6 @@
     <Compile Update="Views\SidePanelTabs\SceneSearchView.axaml.cs">
       <DependentUpon>SceneSearchView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ToolBarView.axaml.cs">
-      <DependentUpon>ToolBarView.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

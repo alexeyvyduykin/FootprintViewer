@@ -2,7 +2,7 @@
 using ReactiveUI;
 using System.Reactive;
 
-namespace FootprintViewer.ViewModels.ToolBars
+namespace FootprintViewer.ViewModels
 {
     public class ToolClick : ReactiveObject, IToolClick
     {

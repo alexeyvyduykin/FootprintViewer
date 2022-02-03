@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
              xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"     
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
@@ -11,6 +12,7 @@
   <Design.DataContext>
     <vmd:DesignTimeCustomToolBar/>
   </Design.DataContext>
+
 
   <Panel>
     <StackPanel>
@@ -23,7 +25,8 @@
       <v:ToolCollectionView DataContext="{Binding AOICollection}"
                             Margin="0,10,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding RouteDistance}"/>
+      <v:ToolCheckView DataContext="{Binding RouteDistance}" 
+                       Margin="0,1,0,0"/>
 
       <controls:Flyout Placement="Right"                 
                        Target="{Binding #LayerSelectorButton}"                 

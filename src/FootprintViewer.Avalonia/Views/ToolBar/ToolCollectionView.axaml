@@ -23,7 +23,8 @@
 
   </UserControl.Styles>
 
-  <StackPanel x:Name="CollectionStackPanel">
+  <StackPanel x:Name="CollectionStackPanel"
+              Background="Transparent">
     <ItemsControl Items="{Binding Items}">
 
       <ItemsControl.ItemsPanel>

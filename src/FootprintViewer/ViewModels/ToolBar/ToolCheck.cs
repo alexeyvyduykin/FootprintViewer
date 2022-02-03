@@ -2,7 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace FootprintViewer.ViewModels.ToolBars
+namespace FootprintViewer.ViewModels
 {
     public class ToolCheck : ReactiveObject, IToolCheck
     {

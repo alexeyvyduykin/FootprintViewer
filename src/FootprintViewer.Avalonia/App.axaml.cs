@@ -126,7 +126,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
             services.RegisterLazySingleton<UserGeometryViewer>(() => new UserGeometryViewer(resolver));
 
-            services.RegisterLazySingleton<ToolBar>(() => new ToolBar(resolver));
+            services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
 
             var tabs = new SidePanelTab[]
             {

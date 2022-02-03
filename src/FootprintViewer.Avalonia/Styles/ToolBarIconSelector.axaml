@@ -1,0 +1,108 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FootprintViewer.Avalonia"     >
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+
+  <Styles.Resources>
+    <local:ToolIconSelector x:Key="ToolIconDataSelector">
+
+      <DataTemplate x:Key="AddRectangle">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="AddPolygon">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="AddCircle">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Route">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconScale}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="ZoomIn">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="ZoomOut">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomOut}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="WorldMaps">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
+        </Viewbox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Select">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Rectangle">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Circle">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Polygon">
+        <TextBlock Text="{Binding Title}"                   
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Translate">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Rotate">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Scale">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="Edit">
+        <TextBlock Text="{Binding Title}"
+                   Margin="8"
+                   Width="80"/>
+      </DataTemplate>
+
+    </local:ToolIconSelector>
+  </Styles.Resources>
+
+</Styles>

@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Models;
 using System;
 using System.Collections.Generic;
 
@@ -14,11 +14,18 @@ namespace FootprintViewer.Avalonia
 
         public IControl Build(object param)
         {
-            var key = ((Tool)param).Title;
+            var key = ((ITool)param).Title;
 
             if (key != null)
             {
-                return Templates[key].Build(param);
+                if (Templates.ContainsKey(key) == true)
+                {
+                    return Templates[key].Build(param);
+                }
+                else
+                {
+                    return new TextBlock() { Text = "ToolIconSelector not find template" };
+                }
             }
 
             throw new Exception();
@@ -26,7 +33,7 @@ namespace FootprintViewer.Avalonia
 
         public bool Match(object data)
         {
-            return data is Tool;
+            return data is ITool;
         }
     }
 }

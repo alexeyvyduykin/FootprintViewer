@@ -5,7 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.ViewModels.ToolBars
+namespace FootprintViewer.ViewModels
 {
     public class ToolBar : ReactiveObject
     {

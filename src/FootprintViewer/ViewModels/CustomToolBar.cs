@@ -4,11 +4,12 @@ using ReactiveUI.Fody.Helpers;
 using ReactiveUI;
 using Splat;
 using System;
-using FootprintViewer.ViewModels.ToolBars;
+using FootprintViewer.ViewModels;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class CustomToolBar : ToolBars.ToolBar
+    public class CustomToolBar : ToolBar
     {
         private readonly WorldMapSelector _worldMapSelector;
 
@@ -58,7 +59,7 @@ namespace FootprintViewer.ViewModels
                 Group = "Group1",
             };
 
-            AOICollection = new ToolBars.ToolCollection();
+            AOICollection = new ToolCollection();
             AOICollection.AddItem(_addRectangle);
             AOICollection.AddItem(_addPolygon);
             AOICollection.AddItem(_addCircle);
@@ -106,7 +107,7 @@ namespace FootprintViewer.ViewModels
                 Group = "Group2",
             };
 
-            GeometryCollection = new ToolBars.ToolCollection();
+            GeometryCollection = new ToolCollection();
             GeometryCollection.AddItem(_rectangle);
             GeometryCollection.AddItem(_circle);
             GeometryCollection.AddItem(_polygon);
@@ -154,13 +155,13 @@ namespace FootprintViewer.ViewModels
 
             ZoomOutClick = ZoomOut.Click;
 
-            AddRectangleCheck = _addRectangle.Check;
+            AddRectangleCheck = _addRectangle.Check.Where(s => s.IsCheck == true);
 
-            AddPolygonCheck = _addPolygon.Check;
+            AddPolygonCheck = _addPolygon.Check.Where(s => s.IsCheck == true);
 
-            AddCircleCheck = _addCircle.Check;
+            AddCircleCheck = _addCircle.Check.Where(s => s.IsCheck == true);
 
-            RouteDistanceCheck = RouteDistance.Check;
+            RouteDistanceCheck = RouteDistance.Check.Where(s => s.IsCheck == true);
 
             SelectGeometryCheck = SelectGeometry.Check;
 
@@ -177,6 +178,30 @@ namespace FootprintViewer.ViewModels
             ScaleGeometryCheck = ScaleGeometry.Check;
 
             EditGeometryCheck = EditGeometry.Check;
+        }
+
+        public void Uncheck()
+        {
+            foreach (var item in Tools)
+            {
+                if (item is IToolCheck check)
+                {
+                    if (check.IsCheck == true)
+                    {
+                        check.Check.Execute(false).Subscribe();
+                    }
+                }
+                else if (item is IToolCollection collection)
+                {
+                    foreach (var itemCheck in collection.Items)
+                    {
+                        if (itemCheck.IsCheck == true)
+                        {
+                            itemCheck.Check.Execute(false).Subscribe();
+                        }
+                    }
+                }
+            }
         }
 
         public IObservable<IToolClick> ZoomInClick { get; }
@@ -214,7 +239,7 @@ namespace FootprintViewer.ViewModels
         public IToolCollection AOICollection { get; }
 
         public ToolCheck RouteDistance { get; }
-
+        
         public ToolClick WorldMaps { get; }
 
         public ToolCheck SelectGeometry { get; }

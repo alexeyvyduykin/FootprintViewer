@@ -27,8 +27,8 @@ namespace FootprintViewer.Designer
         private SceneSearch? _sceneSearch;
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
-        private ViewModels.ToolBar? _toolBar;
-
+        //private ViewModels.ToolBar? _toolBar;
+        private CustomToolBar? _customToolBar;
         public object? GetService(Type? serviceType, string? contract = null)
         {
             if (serviceType == typeof(ProjectFactory))
@@ -79,9 +79,9 @@ namespace FootprintViewer.Designer
             {
                 return _sceneSearch ??= new SceneSearch(this);
             }
-            else if (serviceType == typeof(ViewModels.ToolBar))
+            else if (serviceType == typeof(CustomToolBar))
             {
-                return _toolBar ??= new ViewModels.ToolBar(this);
+                return _customToolBar ??= new CustomToolBar(this);
             }
             else if (serviceType == typeof(SidePanel))
             {

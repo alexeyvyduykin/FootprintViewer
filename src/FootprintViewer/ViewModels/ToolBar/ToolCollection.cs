@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.ViewModels.ToolBars
+namespace FootprintViewer.ViewModels
 {
     public class ToolCollection : ReactiveObject, IToolCollection
     {

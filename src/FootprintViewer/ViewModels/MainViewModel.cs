@@ -26,27 +26,26 @@ namespace FootprintViewer.ViewModels
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
-        private readonly ToolBar _toolBar;
+        private readonly CustomToolBar _customToolBar;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
-            _toolBar = dependencyResolver.GetExistingService<ToolBar>();
+            _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
 
             ActualController = new EditController();
 
             _infoPanel = _factory.CreateInfoPanel();
 
-            _toolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
-            _toolBar.ZoomOutClick.Subscribe(_ => ZoomOutCommand());
-            _toolBar.RectangleClick.Subscribe(_ => RectangleCommand());
-            _toolBar.PolygonClick.Subscribe(_ => PolygonCommand());
-            _toolBar.CircleClick.Subscribe(_ => CircleCommand());
-            _toolBar.RouteDistanceClick.Subscribe(_ => RouteDistanceCommand());
-            _toolBar.EditClick.Subscribe(_ => EditCommand());
-            _toolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
+            _customToolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
+            _customToolBar.ZoomOutClick.Subscribe(_ => ZoomOutCommand());
+            _customToolBar.AddRectangleCheck.Subscribe(_ => RectangleCommand());
+            _customToolBar.AddPolygonCheck.Subscribe(_ => PolygonCommand());
+            _customToolBar.AddCircleCheck.Subscribe(_ => CircleCommand());
+            _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());        
+            _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -174,7 +173,9 @@ namespace FootprintViewer.ViewModels
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-                ToolBar.ResetAllTools();
+                ToolBar.Uncheck();
+
+                ActualController = new EditController();
             };
 
             Plotter.Hover += (s, e) =>
@@ -243,7 +244,9 @@ namespace FootprintViewer.ViewModels
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
 
-                ToolBar.ResetAllTools();
+                ToolBar.Uncheck();
+
+                ActualController = new EditController();
             };
 
             Plotter.Hover += (s, e) =>
@@ -279,7 +282,11 @@ namespace FootprintViewer.ViewModels
 
                 AOIChanged?.Invoke(null, EventArgs.Empty);
 
-                ToolBar.ResetAllTools();
+                Tip = null;
+
+                ToolBar.Uncheck();
+
+                ActualController = new EditController();
             });
 
             return panel;
@@ -298,8 +305,12 @@ namespace FootprintViewer.ViewModels
             {
                 _editLayer.ClearRoute();
                 _editLayer.DataHasChanged();
-
-                ToolBar.ResetAllTools();
+                
+                Tip = null;
+                            
+                ToolBar.Uncheck();
+           
+                ActualController = new EditController();
             });
 
             return panel;
@@ -335,8 +346,10 @@ namespace FootprintViewer.ViewModels
                 AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
+              
+                ToolBar.Uncheck();
 
-                ToolBar.ResetAllTools();
+                ActualController = new EditController();
             };
 
             Plotter.Hover += (s, e) =>
@@ -400,8 +413,10 @@ namespace FootprintViewer.ViewModels
                 _editLayer.DataHasChanged();
 
                 Tip = null;
-
-                ToolBar.ResetAllTools();
+                
+                ToolBar.Uncheck();
+                
+                ActualController = new EditController();
             };
 
             Plotter.Hover += (s, e) =>
@@ -417,12 +432,6 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawRouteController();
         }
 
-        private void EditCommand()
-        {
-            Tip = null;
-            ActualController = new EditController();
-        }
-
         public Map Map => _map;
 
         public SidePanel SidePanel => _sidePanel;
@@ -431,7 +440,7 @@ namespace FootprintViewer.ViewModels
 
         public MapListener? MapListener { get; set; }
 
-        public ToolBar ToolBar => _toolBar;
+        public CustomToolBar ToolBar => _customToolBar;
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }
