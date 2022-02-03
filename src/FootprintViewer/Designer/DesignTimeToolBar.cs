@@ -2,7 +2,7 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeToolBar : ToolBar
+    public class DesignTimeToolBar : ViewModels.ToolBar
     {
         public DesignTimeToolBar() : base(new DesignTimeData())
         {

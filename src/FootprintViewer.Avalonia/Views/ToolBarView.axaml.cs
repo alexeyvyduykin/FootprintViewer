@@ -12,7 +12,7 @@ using controls = FootprintViewer.Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views
 {
-    public partial class ToolBarView : ReactiveUserControl<ToolBar>
+    public partial class ToolBarView : ReactiveUserControl<FootprintViewer.ViewModels.ToolBar>
     {
         private controls.Flyout Flyout => this.FindControl<controls.Flyout>("FlyoutToolBar");
         

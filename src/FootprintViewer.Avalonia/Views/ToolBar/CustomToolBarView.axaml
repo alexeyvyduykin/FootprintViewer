@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
+             xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeCustomToolBar/>
+  </Design.DataContext>
+
+  <Panel>
+    <StackPanel>
+
+      <v:ToolClickView DataContext="{Binding ZoomIn}"/>
+
+      <v:ToolClickView DataContext="{Binding ZoomOut}"
+                       Margin="0,1,0,0"/>
+
+      <v:ToolCollectionView DataContext="{Binding AOICollection}"
+                            Margin="0,10,0,0"/>
+
+      <v:ToolCheckView DataContext="{Binding RouteDistance}"/>
+
+      <v:ToolCheckView DataContext="{Binding SelectGeometry}"
+                       Margin="0,10,0,0"/>
+
+      <v:ToolCollectionView DataContext="{Binding GeometryCollection}"
+                            Margin="0,1,0,0"/>
+
+      <v:ToolCheckView DataContext="{Binding TranslateGeometry}"
+                       Margin="0,1,0,0"/>
+
+      <v:ToolCheckView DataContext="{Binding RotateGeometry}"
+                       Margin="0,1,0,0"/>
+
+      <v:ToolCheckView DataContext="{Binding ScaleGeometry}"
+                       Margin="0,1,0,0"/>
+
+      <v:ToolCheckView DataContext="{Binding EditGeometry}"
+                       Margin="0,1,0,0"/>
+
+    </StackPanel>
+  </Panel>
+  
+</UserControl>

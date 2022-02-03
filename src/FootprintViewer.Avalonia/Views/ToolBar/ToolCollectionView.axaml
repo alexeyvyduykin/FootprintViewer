@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"  
+             xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolCollectionView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeToolCollection/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Margin" Value="4,0,0,0"/>
+    </Style>
+
+    <Style Selector="ItemsControl > ContentPresenter:nth-child(1)">
+      <Setter Property="Margin" Value="0,0,0,0"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <StackPanel x:Name="CollectionStackPanel">
+    <ItemsControl Items="{Binding Items}">
+
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <v:ToolCheckView DataContext="{Binding}"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+  
+</UserControl>

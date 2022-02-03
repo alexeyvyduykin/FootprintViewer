@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                   
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolCheckView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeToolCheck/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+
+    <Style Selector="ToggleButton">
+      <Setter Property="Width" Value="80" />
+      <Setter Property="Opacity" Value="0.75" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton > ContentPresenter">
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
+    </Style>
+
+    <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#4c9ae7" />
+    </Style>
+
+  </UserControl.Styles>
+
+  <ToggleButton x:Name="ToggleButton"
+                IsChecked="{Binding IsCheck}"
+                Content="{Binding Title}">
+    <ToolTip.Tip>
+      <ToolTip Content="{Binding Tooltip}"/>
+    </ToolTip.Tip>
+  </ToggleButton>
+  
+</UserControl>
