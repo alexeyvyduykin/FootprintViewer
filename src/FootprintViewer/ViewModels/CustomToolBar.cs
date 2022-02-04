@@ -157,7 +157,7 @@ namespace FootprintViewer.ViewModels
 
             AddRectangleCheck = _addRectangle.Check;
 
-            AddPolygonCheck = _addPolygon.Check.Where(s => s.IsCheck == true);
+            AddPolygonCheck = _addPolygon.Check;
 
             AddCircleCheck = _addCircle.Check;
 

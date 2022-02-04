@@ -63,7 +63,18 @@ namespace FootprintViewer.ViewModels
                     InteractiveLayerRemove();
                 }         
             });
-            _customToolBar.AddPolygonCheck.Subscribe(_ => PolygonCommand());
+            _customToolBar.AddPolygonCheck.Subscribe(tool => 
+            {
+                if (tool.IsCheck == true)
+                {
+                    PolygonCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }            
+            });
             _customToolBar.AddCircleCheck.Subscribe(tool =>
             {
                 if (tool.IsCheck == true)
@@ -465,68 +476,58 @@ namespace FootprintViewer.ViewModels
         }
 
         private void PolygonCommand()
-        {
-            Plotter = new Plotter(InteractivePolygon.Build());
+        {         
+            var designer = new PolygonDesigner();
+          
+            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
 
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
-            Plotter.BeginCreating += (s, e) =>
+            designer.BeginCreating += (s, e) =>
             {
                 Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
-
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
             };
 
-            Plotter.Creating += (s, e) =>
+            designer.Creating += (s, e) =>
             {
-                if (e.AddInfo.Feature.Geometry.AllVertices().Count() > 2)
+                if (designer.Feature.Geometry.AllVertices().Count() > 2)
                 {
-                    var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+                    var area = GetFeatureArea(designer.Feature);
 
                     Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
                     Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                 }
-
-                _editLayer.DataHasChanged();
             };
 
-            Plotter.EndCreating += (s, e) =>
+            designer.EndCreating += (s, e) =>
             {
-                _editLayer.ClearAOIHelpers();
+                var feature = designer.Feature;
 
-                _editLayer.ResetAOI();
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
+                _editLayer.AddAOI(new InteractiveRectangle(feature), FeatureType.AOIPolygon.ToString());
 
                 Tip = null;
-
-                var feature = (Feature)e.AddInfo.Feature;
-
-                AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
-
-                InfoPanel?.Show(CreateAOIPanel(feature));
-
-                ToolBar.Uncheck();
-
-                ActualController = new EditController();
-            };
-
-            Plotter.Hover += (s, e) =>
-            {
-                _editLayer.DataHasChanged();
-            };
-
-            Plotter.EndEditing += (s, e) =>
-            {
-                var feature = (Feature)e.Feature;
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+
+                _customToolBar.Uncheck();
+
+                ActualController = new EditController();
             };
 
-            ActualController = new DrawPolygonController();
+            //Plotter.EndEditing += (s, e) =>
+            //{
+            //    var feature = (Feature)e.Feature;
+
+            //    InfoPanel?.Show(CreateAOIPanel(feature));
+
+            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            //};
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
         }
 
         private AOIInfoPanel CreateAOIPanel(IFeature feature)

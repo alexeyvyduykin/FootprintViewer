@@ -7,9 +7,6 @@
             DrawingLine = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingRouteManipulator(view), args));
             HoverDrawingLine = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingLineManipulator(view), args));
 
-            DrawingPolygon = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingPolygonManipulator(view), args));
-            HoverDrawingPolygon = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingPolygonManipulator(view), args));
-
             Editing = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new EditingManipulator(view), args));
             HoverEditing = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverEditingManipulator(view), args));
 
@@ -24,10 +21,6 @@
 
         public static IViewCommand<MouseEventArgs> HoverDrawingLine { get; private set; }
         
-        public static IViewCommand<MouseDownEventArgs> DrawingPolygon { get; private set; }
-
-        public static IViewCommand<MouseEventArgs> HoverDrawingPolygon { get; private set; }
-
         public static IViewCommand<MouseDownEventArgs> Editing { get; private set; }
         
         public static IViewCommand<MouseEventArgs> HoverEditing { get; private set; }
