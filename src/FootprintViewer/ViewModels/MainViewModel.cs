@@ -1,16 +1,24 @@
-﻿using FootprintViewer.InteractivityEx;
+﻿using FootprintViewer.Interactivity;
+using FootprintViewer.Interactivity.Decorators;
+using FootprintViewer.Interactivity.Designers;
+using FootprintViewer.InteractivityEx;
 using FootprintViewer.Layers;
+using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using Mapsui.Styles;
+using Mapsui.UI;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -27,6 +35,10 @@ namespace FootprintViewer.ViewModels
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
+        private readonly MapListener? _mapListener;
+
+        private readonly CustomProvider _provider;
+        private IFeature? _currentFeature;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -34,6 +46,7 @@ namespace FootprintViewer.ViewModels
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
+            _provider = dependencyResolver.GetExistingService<CustomProvider>();
 
             ActualController = new EditController();
 
@@ -50,7 +63,256 @@ namespace FootprintViewer.ViewModels
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
             _map.DataChanged += Map_DataChanged;
+
+            _mapListener = new MapListener();
+
+            _mapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
+
+            InitFromApp(dependencyResolver);
+
+            ActualController = new EditController2();
+
+            _customToolBar.SelectGeometryCheck.Subscribe(tool => 
+            {               
+                if (tool.IsCheck == true)
+                {
+                    ActualController = new EditController2();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }
+            });
+
+            _customToolBar.TranslateGeometryCheck.Subscribe(tool =>
+            {         
+                if (tool.IsCheck == true)
+                {
+                    ActualController = new EditController2();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }
+            });
+
+            _customToolBar.RotateGeometryCheck.Subscribe(tool => 
+            {              
+                if (tool.IsCheck == true)
+                {
+                    ActualController = new EditController2();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }
+            });
+
+            _customToolBar.ScaleGeometryCheck.Subscribe(tool => 
+            {            
+                if (tool.IsCheck == true)
+                {
+                    ActualController = new EditController2();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }
+            });
+
+            _customToolBar.EditGeometryCheck.Subscribe(tool => 
+            {            
+                if (tool.IsCheck == true)
+                {
+                    ActualController = new EditController2();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }
+            });
+
+            _customToolBar.RectangleGeometryCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    DrawingRectangleCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }             
+            });
+
+            _customToolBar.CircleGeometryCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    DrawingCircleCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }            
+            });
+
+            _customToolBar.PolygonGeometryCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    DrawingPolygonCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }              
+            });
+
+            _customToolBar.RouteDistanceCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    DrawingRouteCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }             
+            });
         }
+
+        private void InitFromApp(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var footprintObserver = Locator.Current.GetExistingService<FootprintObserver>();          
+            var sceneSearch = Locator.Current.GetExistingService<SceneSearch>();
+
+            _mapListener!.LeftClickOnMap += (s, e) =>
+            {
+                if (s is string name && footprintObserver.IsActive == true)
+                {
+                    if (Plotter != null && (Plotter.IsCreating == true || Plotter.IsEditing == true))
+                    {
+                        return;
+                    }
+
+                    footprintObserver.SelectFootprintInfo(name);
+                }
+            };
+
+            AOIChanged += (s, e) =>
+            {
+                if (s != null)
+                {
+                    if (s is IGeometry geometry)
+                    {
+                        sceneSearch.SetAOI(geometry);
+                    }
+                }
+                else
+                {
+                    sceneSearch.ResetAOI();
+                }
+            };
+        }
+
+        private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
+        {
+            if (sender is MapInfo mapInfo)
+            {
+                var feature = mapInfo.Feature;
+
+                IDecorator? decorator = null;
+
+                if (_customToolBar.SelectGeometry.IsCheck == true)
+                {
+                    InteractiveLayerRemove();
+
+                    if (feature != _currentFeature)
+                    {
+                        Map.Layers.Add(CreateSelectLayer(mapInfo.Layer, mapInfo.Feature));
+
+                        _currentFeature = feature;
+                    }
+                    else
+                    {
+                        _currentFeature = null;
+                    }
+
+                    return;
+                }               
+                else if (_customToolBar.ScaleGeometry.IsCheck == true)
+                {
+                    decorator = new ScaleDecorator(feature);
+                }
+                else if (_customToolBar.TranslateGeometry.IsCheck == true)
+                {
+                    decorator = new TranslateDecorator(feature);
+                }
+                else if (_customToolBar.RotateGeometry.IsCheck == true)
+                {
+                    decorator = new RotateDecorator(feature);
+                }
+                else if (_customToolBar.EditGeometry.IsCheck == true)
+                {
+                    decorator = new EditDecorator(feature);
+                }
+
+                if (decorator == null)
+                {
+                    return;
+                }
+
+                InteractiveLayerRemove();
+
+                if (feature != _currentFeature)
+                {
+                    Map.Layers.Add(new InteractiveLayer(mapInfo.Layer, decorator) { Name = "InteractiveLayer" });
+
+                    MapObserver = new MapObserver(decorator);
+
+                    _currentFeature = feature;
+                }
+                else
+                {
+                    _currentFeature = null;
+                }
+            }
+        }
+
+        private static ILayer CreateSelectLayer(ILayer source, IFeature feature)
+        {
+            return new SelectLayer(source, feature)
+            {
+                Name = "InteractiveLayer",
+                IsMapInfoLayer = true,
+                Style = new VectorStyle()
+                {
+                    Fill = new Mapsui.Styles.Brush(Mapsui.Styles.Color.Transparent),
+                    Outline = new Mapsui.Styles.Pen(Mapsui.Styles.Color.Green, 4),
+                    Line = new Mapsui.Styles.Pen(Mapsui.Styles.Color.Green, 4),
+                },
+            };
+        }
+
+        private void InteractiveLayerRemove()
+        {
+            var layer = Map.Layers.FindLayer("InteractiveLayer").FirstOrDefault();
+
+            if (layer != null)
+            {
+                Map.Layers.Remove(layer);
+            }
+        }
+
 
         public event EventHandler? AOIChanged;
 
@@ -107,7 +369,7 @@ namespace FootprintViewer.ViewModels
 
         private double GetRouteLength(AddInfo addInfo)
         {
-            var geometry = (LineString)addInfo.Feature.Geometry;
+            var geometry = (Mapsui.Geometries.LineString)addInfo.Feature.Geometry;
             var fHelp = addInfo.HelpFeatures.Single();
             var verts0 = geometry.AllVertices();
             var verts1 = fHelp.Geometry.AllVertices();
@@ -432,13 +694,177 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawRouteController();
         }
 
+        private void DrawingRectangleCommand()
+        {
+            InteractiveLayerRemove();
+
+            var designer = new RectangleDesigner();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+            designer.HoverCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                var area = GetFeatureArea2(feature);
+
+                Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                _provider.AddFeature(designer.Feature.Copy());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();
+            };
+
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private void DrawingCircleCommand()
+        {
+            InteractiveLayerRemove();
+
+            var designer = new CircleDesigner();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+            designer.HoverCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                var area = GetFeatureArea2(feature);
+
+                Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                _provider.AddFeature(designer.Feature.Copy());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();              
+            };
+
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private void DrawingRouteCommand()
+        {
+            InteractiveLayerRemove();
+
+            var designer = new RouteDesigner();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+            designer.HoverCreating += (s, e) =>
+            {
+                var distance = GetRouteLength2(designer);
+
+                var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
+
+                Tip = new Tip() { Text = $"Расстояние: {res}" };
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                _provider.AddFeature(designer.Feature.Copy());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();          
+            };
+
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private void DrawingPolygonCommand()
+        {
+            InteractiveLayerRemove();
+
+            var designer = new PolygonDesigner();
+
+            var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
+
+            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+
+            designer.BeginCreating += (s, e) =>
+            {
+                Tip = new Tip() { Text = "Нажмите, чтобы продолжить рисовать фигуру" };
+            };
+
+            designer.Creating += (s, e) =>
+            {
+                if (designer.Feature.Geometry.AllVertices().Count() > 2)
+                {
+                    var area = GetFeatureArea2(designer.Feature);
+
+                    Tip = new Tip() { Text = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²" };
+                }
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                _provider.AddFeature(designer.Feature.Copy());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();
+            };
+
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private static double GetFeatureArea2(IFeature feature)
+        {
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var area = SphericalUtil.ComputeSignedArea(vertices);
+            return Math.Abs(area);
+        }
+
+        private static double GetRouteLength2(RouteDesigner designer)
+        {
+            var geometry = (Mapsui.Geometries.LineString)designer.Feature.Geometry;
+            var fHelp = designer.ExtraFeatures.Single();
+            var verts0 = geometry.AllVertices();
+            var verts1 = fHelp.Geometry.AllVertices();
+            var verts = verts0.Union(verts1);
+            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            return SphericalUtil.ComputeDistance(vertices);
+        }
+
         public Map Map => _map;
 
         public SidePanel SidePanel => _sidePanel;
 
         public InfoPanel InfoPanel => _infoPanel;
 
-        public MapListener? MapListener { get; set; }
+        public MapListener? MapListener => _mapListener;
 
         public CustomToolBar ToolBar => _customToolBar;
 
@@ -453,6 +879,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Tip? Tip { get; set; }
+
+        [Reactive]
+        public IMapObserver? MapObserver { get; set; }
     }
 
     public class MapLayer

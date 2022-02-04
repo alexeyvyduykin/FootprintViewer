@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Mapsui.UI;
+using ReactiveUI;
 using System;
 
 namespace FootprintViewer.ViewModels
@@ -15,6 +16,10 @@ namespace FootprintViewer.ViewModels
         public void LeftClick(string name)
         {
             LeftClickOnMap?.Invoke(name, EventArgs.Empty);
+        }
+        public void LeftClick(MapInfo? mapInfo)
+        {
+            LeftClickOnMap?.Invoke(mapInfo, EventArgs.Empty);
         }
     }
 }

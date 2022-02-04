@@ -5,6 +5,7 @@ using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Projection;
+using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using Splat;
@@ -32,6 +33,7 @@ namespace FootprintViewer
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();       
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();       
             var mapProvider = dependencyResolver.GetExistingService<MapProvider>();
+            var customProvider = dependencyResolver.GetExistingService<CustomProvider>();
 
             var map = new Map()
             {
@@ -55,9 +57,34 @@ namespace FootprintViewer
 
             //map.Home = (n) => n.NavigateTo(editLayer.Envelope.Grow(editLayer.Envelope.Width * 0.2));
 
+            var userLayer = CreateLayer(customProvider);
+            userLayer.Name = "FeatureLayer";         
+            map.Layers.Add(userLayer);
+
             map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault());
 
             return map;
+        }
+
+        private static ILayer CreateLayer(IProvider provider)
+        {        
+            Color backgroundColor = new Color(20, 120, 120, 40);
+            Color lineColor = new Color(20, 120, 120);
+            Color outlineColor = new Color(20, 20, 20);
+        
+            var polygonLayer = new Layer
+            {
+                DataSource = provider,
+                IsMapInfoLayer = true,
+                Style = new VectorStyle
+                {
+                    Fill = new Brush(new Color(backgroundColor)),
+                    Line = new Pen(lineColor, 3),
+                    Outline = new Pen(outlineColor, 3)
+                },
+            };
+
+            return polygonLayer;
         }
 
         public InfoPanel CreateInfoPanel()

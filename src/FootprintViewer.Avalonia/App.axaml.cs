@@ -107,6 +107,11 @@ namespace FootprintViewer.Avalonia
             userGeometryProvider.AddSource(userGeometryDataSource);
             services.RegisterLazySingleton<UserGeometryProvider>(() => userGeometryProvider);
 
+            // Custom provider for user draw/edit
+
+            CustomProvider customProvider = new CustomProvider();
+            services.RegisterLazySingleton<CustomProvider>(() => customProvider);
+
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 
@@ -152,8 +157,6 @@ namespace FootprintViewer.Avalonia
             {                          
                 RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
 
-                InitializationClassicDesktopStyle();
-
                 var mainViewModel = GetExistingService<MainViewModel>();
                 
                 if (mainViewModel != null)
@@ -170,45 +173,6 @@ namespace FootprintViewer.Avalonia
             }
 
             base.OnFrameworkInitializationCompleted();
-        }
-
-        public static void InitializationClassicDesktopStyle()
-        {
-            var mainViewModel = Locator.Current.GetExistingService<MainViewModel>();
-            var footprintObserver = Locator.Current.GetExistingService<FootprintObserver>();
-            var sceneSearch = Locator.Current.GetExistingService<SceneSearch>();
-
-            var mapListener = new MapListener();
-
-            mapListener.LeftClickOnMap += (s, e) =>
-            {
-                if (s is string name && footprintObserver.IsActive == true)
-                {
-                    if (mainViewModel.Plotter != null && (mainViewModel.Plotter.IsCreating == true || mainViewModel.Plotter.IsEditing == true))
-                    {
-                        return;
-                    }
-
-                    footprintObserver.SelectFootprintInfo(name);
-                }
-            };
-
-            mainViewModel.MapListener = mapListener;
-
-            mainViewModel.AOIChanged += (s, e) =>
-            {
-                if (s != null)
-                {
-                    if (s is IGeometry geometry)
-                    {
-                        sceneSearch.SetAOI(geometry);
-                    }
-                }
-                else
-                {
-                    sceneSearch.ResetAOI();
-                }
-            };
         }
 
         private static bool IsConnectionValid()

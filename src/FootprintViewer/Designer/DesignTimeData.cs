@@ -21,6 +21,7 @@ namespace FootprintViewer.Designer
         private FootprintPreviewGeometryProvider? _footprintPreviewGeometryProvider;
         private GroundTargetProvider? _groundTargetProvider;
         private UserGeometryProvider? _userGeometryProvider;
+        private CustomProvider? _customProvider;
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
@@ -62,6 +63,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(UserGeometryProvider))
             {
                 return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
+            }
+            else if (serviceType == typeof(CustomProvider))
+            {
+                return _customProvider ??= new DesignTimeCustomProvider();
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -156,6 +161,10 @@ namespace FootprintViewer.Designer
                     }
                 }
             }
+        }
+        private class DesignTimeCustomProvider : CustomProvider
+        {
+            public DesignTimeCustomProvider() : base() { }
         }
 
         private class DesignTimeFootprintPreviewGeometryProvider : FootprintPreviewGeometryProvider
