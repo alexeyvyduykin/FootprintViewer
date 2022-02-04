@@ -18,6 +18,11 @@ namespace FootprintViewer.InteractivityEx
 
         protected InteractiveCircle() : base() { }
 
+        public InteractiveCircle(IFeature feature) : base(feature)
+        {
+            _center = feature.Geometry.BoundingBox.Centroid;
+        }
+
         public static InteractiveCircle Build()
         {
             return new InteractiveCircle();      

@@ -64,7 +64,18 @@ namespace FootprintViewer.ViewModels
                 }         
             });
             _customToolBar.AddPolygonCheck.Subscribe(_ => PolygonCommand());
-            _customToolBar.AddCircleCheck.Subscribe(_ => CircleCommand());
+            _customToolBar.AddCircleCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    CircleCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }             
+            });
             _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());
             _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
@@ -359,12 +370,7 @@ namespace FootprintViewer.ViewModels
             return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";
         }
 
-        private double GetFeatureArea(Feature feature)
-        {
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            return Math.Abs(area);
-        }
+
 
         private double GetRouteLength(AddInfo addInfo)
         {
@@ -420,7 +426,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                var area = GetFeatureArea2(feature);
+                var area = GetFeatureArea(feature);
 
                 Tip.Text = "Отпустите клавишу мыши для завершения рисования";
 
@@ -574,61 +580,52 @@ namespace FootprintViewer.ViewModels
         }
 
         private void CircleCommand()
-        {
-            if (Map == null)
-            {
-                return;
-            }
-
-            Plotter = new Plotter(InteractiveCircle.Build());
-
+        {         
+            var designer = new CircleDesigner();
+        
+            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+           
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
-            Plotter.BeginCreating += (s, e) =>
+            designer.HoverCreating += (s, e) =>
             {
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
-            };
+                var feature = designer.Feature;
 
-            Plotter.EndCreating += (s, e) =>
-            {
-                _editLayer.ResetAOI();
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
-
-                Tip = null;
-
-                var feature = (Feature)e.AddInfo.Feature;
-
-                AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
-
-                InfoPanel?.Show(CreateAOIPanel(feature));
-
-                ToolBar.Uncheck();
-
-                ActualController = new EditController();
-            };
-
-            Plotter.Hover += (s, e) =>
-            {
-                var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+                var area = GetFeatureArea(feature);
 
                 Tip.Text = "Отпустите клавишу мыши для завершения рисования";
                 Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-
-                _editLayer.DataHasChanged();
             };
 
-            Plotter.EndEditing += (s, e) =>
+            designer.EndCreating += (s, e) =>
             {
-                var feature = (Feature)e.Feature;
+                var feature = designer.Feature;
+
+                _editLayer.AddAOI(new InteractiveCircle(feature), FeatureType.AOICircle.ToString());
+
+                Tip = null;
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+
+                _customToolBar.Uncheck();
+
+                ActualController = new EditController();
             };
 
-            ActualController = new DrawCircleController();
+            //Plotter.EndEditing += (s, e) =>
+            //{
+            //    var feature = (Feature)e.Feature;
+
+            //    InfoPanel?.Show(CreateAOIPanel(feature));
+
+            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            //};
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
         }
 
         private void RouteDistanceCommand()
@@ -703,7 +700,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                var area = GetFeatureArea2(feature);
+                var area = GetFeatureArea(feature);
 
                 Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
             };
@@ -738,7 +735,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                var area = GetFeatureArea2(feature);
+                var area = GetFeatureArea(feature);
 
                 Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
             };
@@ -813,7 +810,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (designer.Feature.Geometry.AllVertices().Count() > 2)
                 {
-                    var area = GetFeatureArea2(designer.Feature);
+                    var area = GetFeatureArea(designer.Feature);
 
                     Tip = new Tip() { Text = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²" };
                 }
@@ -835,7 +832,7 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private static double GetFeatureArea2(IFeature feature)
+        private double GetFeatureArea(IFeature feature)
         {
             var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);

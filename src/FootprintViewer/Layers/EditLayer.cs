@@ -1,30 +1,27 @@
-﻿using Mapsui;
-using Mapsui.Fetcher;
+﻿using FootprintViewer.InteractivityEx;
+using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
-using Mapsui.Styles;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using FootprintViewer.InteractivityEx;
 
 namespace FootprintViewer.Layers
 {
     public class EditLayer : BaseLayer
-    {   
-        private List<AddInfo> _aoiInfos = new List<AddInfo>();
+    {
+        private readonly List<AddInfo> _aoiInfos = new List<AddInfo>();
         private AddInfo _routeInfo = new AddInfo();
 
-        private WritableLayer _layer = new WritableLayer();
+        private readonly WritableLayer _layer = new WritableLayer();
 
         public EditLayer() : base()
         {
-        
+
         }
 
         public List<Point> GetVertices()
-        {                
+        {
             var features = _layer.GetFeatures();
 
             List<Point> list = new List<Point>();
@@ -72,8 +69,8 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void AddAOI(InteractiveRectangle feature, string name)
-        {         
+        public void AddAOI(InteractiveFeature feature, string name)
+        {
             feature["Name"] = name;
 
             ResetAOI();
@@ -94,7 +91,7 @@ namespace FootprintViewer.Layers
         public void ClearAOIHelpers()
         {
             var aoiInfo = GetCurrentInfo();
-            
+
             if (aoiInfo.HelpFeatures != null && aoiInfo.HelpFeatures.Count > 0)
             {
                 foreach (var item in aoiInfo.HelpFeatures)

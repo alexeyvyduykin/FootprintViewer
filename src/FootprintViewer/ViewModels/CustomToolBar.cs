@@ -159,7 +159,7 @@ namespace FootprintViewer.ViewModels
 
             AddPolygonCheck = _addPolygon.Check.Where(s => s.IsCheck == true);
 
-            AddCircleCheck = _addCircle.Check.Where(s => s.IsCheck == true);
+            AddCircleCheck = _addCircle.Check;
 
             RouteDistanceCheck = RouteDistance.Check.Where(s => s.IsCheck == true);
 
