@@ -72,6 +72,15 @@ namespace FootprintViewer.Layers
             }
         }
 
+        public void AddAOI(InteractiveRectangle feature, string name)
+        {         
+            feature["Name"] = name;
+
+            ResetAOI();
+            AddAOI(new AddInfo() { Feature = feature });
+            DataHasChanged();
+        }
+
         public void ResetAOI()
         {
             foreach (var item in _aoiInfos)

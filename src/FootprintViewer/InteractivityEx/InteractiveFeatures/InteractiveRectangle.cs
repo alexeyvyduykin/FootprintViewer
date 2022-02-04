@@ -15,7 +15,9 @@ namespace FootprintViewer.InteractivityEx
         private Point _startOffsetToVertex;
 
         protected InteractiveRectangle() : base() { }
-        
+
+        public InteractiveRectangle(IFeature feature) : base(feature) { }
+
         public static InteractiveRectangle Build()
         {
             return new InteractiveRectangle();          

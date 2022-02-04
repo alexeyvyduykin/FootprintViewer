@@ -155,7 +155,7 @@ namespace FootprintViewer.ViewModels
 
             ZoomOutClick = ZoomOut.Click;
 
-            AddRectangleCheck = _addRectangle.Check.Where(s => s.IsCheck == true);
+            AddRectangleCheck = _addRectangle.Check;
 
             AddPolygonCheck = _addPolygon.Check.Where(s => s.IsCheck == true);
 

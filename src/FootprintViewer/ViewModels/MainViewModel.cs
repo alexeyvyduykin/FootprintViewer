@@ -25,8 +25,7 @@ namespace FootprintViewer.ViewModels
     {
         private enum InfoPanelType { AOI, Route }
 
-        private readonly EditLayer _editLayer = new EditLayer();
-
+        private readonly EditLayer? _editLayer;
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
@@ -52,7 +51,18 @@ namespace FootprintViewer.ViewModels
 
             _customToolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
             _customToolBar.ZoomOutClick.Subscribe(_ => ZoomOutCommand());
-            _customToolBar.AddRectangleCheck.Subscribe(_ => RectangleCommand());
+            _customToolBar.AddRectangleCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    RectangleCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }         
+            });
             _customToolBar.AddPolygonCheck.Subscribe(_ => PolygonCommand());
             _customToolBar.AddCircleCheck.Subscribe(_ => CircleCommand());
             _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());
@@ -339,7 +349,7 @@ namespace FootprintViewer.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
-        private string FeatureAreaEndCreating(Feature feature)
+        private string FeatureAreaEndCreating(IFeature feature)
         {
             var bb = feature.Geometry.BoundingBox;
             var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y);
@@ -399,24 +409,29 @@ namespace FootprintViewer.ViewModels
         }
 
         private void RectangleCommand()
-        {
-            Plotter = new Plotter(InteractiveRectangle.Build());
+        {        
+            var designer = new RectangleDesigner();
 
+            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+       
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
-            Plotter.BeginCreating += (s, e) =>
+            designer.HoverCreating += (s, e) =>
             {
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
+                var feature = designer.Feature;
+
+                var area = GetFeatureArea2(feature);
+
+                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
             };
 
-            Plotter.EndCreating += (s, e) =>
+            designer.EndCreating += (s, e) =>
             {
-                var feature = (Feature)e.AddInfo.Feature;
+                var feature = designer.Feature;
 
-                _editLayer.ResetAOI();
-                _editLayer.AddAOI(e.AddInfo);
-                _editLayer.DataHasChanged();
+                _editLayer.AddAOI(new InteractiveRectangle(feature), FeatureType.AOIRectangle.ToString());
 
                 Tip = null;
 
@@ -424,32 +439,23 @@ namespace FootprintViewer.ViewModels
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-                ToolBar.Uncheck();
+                _customToolBar.Uncheck();
 
-                ActualController = new EditController();
+                ActualController = new EditController();             
             };
 
-            Plotter.Hover += (s, e) =>
-            {
-                var area = GetFeatureArea((Feature)e.AddInfo.Feature);
+            //Plotter.EndEditing += (s, e) =>
+            //{
+            //    var feature = (Feature)e.Feature;
 
-                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            //    InfoPanel?.Show(CreateAOIPanel(feature));
 
-                _editLayer.DataHasChanged();
-            };
+            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            //};
 
+            MapObserver = new MapObserver(designer);
 
-            Plotter.EndEditing += (s, e) =>
-            {
-                var feature = (Feature)e.Feature;
-
-                InfoPanel?.Show(CreateAOIPanel(feature));
-
-                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-            };
-
-            ActualController = new DrawRectangleController();
+            ActualController = new DrawingController2();
         }
 
         private void PolygonCommand()
@@ -517,7 +523,7 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawPolygonController();
         }
 
-        private AOIInfoPanel CreateAOIPanel(Feature feature)
+        private AOIInfoPanel CreateAOIPanel(IFeature feature)
         {
             var descr = FeatureAreaEndCreating(feature);
 
