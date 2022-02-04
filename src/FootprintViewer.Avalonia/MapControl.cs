@@ -114,8 +114,10 @@ namespace FootprintViewer.Avalonia
             e.Pointer.Capture(this);
 
             if (IsClick(_currentMousePosition, _downMousePosition))
-            {
+            {              
                 HandleFeatureInfo(e);
+                var mapInfoEventArgs = InvokeInfo(touchPosition, _downMousePosition, e.ClickCount);
+                OnInfo(mapInfoEventArgs);
             }
         }
 
@@ -124,13 +126,17 @@ namespace FootprintViewer.Avalonia
             if (FeatureInfo == null)
                 return; // don't fetch if you the call back is not set.
 
-            if (Map != null && _downMousePosition == e.GetPosition(this).ToOldMapsui())
-foreach (var layer in Map.Layers)
+            var pos = e.GetPosition(this).ToOldMapsui();
+
+            if (Map != null && _downMousePosition!.Equals(pos) == true)
+            {
+                foreach (var layer in Map.Layers)
                 {
                     // ReSharper disable once SuspiciousTypeConversion.Global
                     (layer as IFeatureInfo)?.GetFeatureInfo(Viewport, _downMousePosition.X, _downMousePosition.Y,
                         OnFeatureInfo);
                 }
+            }
         }
 
         private void OnFeatureInfo(IDictionary<string, IEnumerable<IFeature>> features)

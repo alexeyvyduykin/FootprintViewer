@@ -555,28 +555,29 @@ namespace FootprintViewer.Avalonia
             }
         }
 
-        //private void OnInfo(MapInfoEventArgs? mapInfoEventArgs)
-        //{
-        //    if (mapInfoEventArgs == null)
-        //        return;
+        private void OnInfo(MapInfoEventArgs mapInfoEventArgs)
+        {
+            if (mapInfoEventArgs == null)
+                return;
+           
+           // Map?.OnInfo(mapInfoEventArgs); // Also propagate to Map
+            
+            Info?.Invoke(this, mapInfoEventArgs);
+        }
 
-        //    Map?.OnInfo(mapInfoEventArgs); // Also propagate to Map
-        //    Info?.Invoke(this, mapInfoEventArgs);
-        //}
+        private bool WidgetTouched(IWidget widget, mg.Point screenPosition)
+        {
+            var result = widget.HandleWidgetTouched(Navigator, screenPosition);
 
-        //private bool WidgetTouched(IWidget widget, MPoint screenPosition)
-        //{
-        //    var result = widget.HandleWidgetTouched(Navigator, screenPosition);
+            if (!result && widget is Hyperlink hyperlink && !string.IsNullOrWhiteSpace(hyperlink.Url))
+            {
+                OpenBrowser(hyperlink.Url!);
 
-        //    if (!result && widget is Hyperlink hyperlink && !string.IsNullOrWhiteSpace(hyperlink.Url))
-        //    {
-        //        OpenBrowser(hyperlink.Url!);
+                return true;
+            }
 
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
+            return false;
+        }
 
         /// <inheritdoc />
         public MapInfo? GetMapInfo(mg.Point? screenPosition, int margin = 0)
@@ -608,15 +609,15 @@ namespace FootprintViewer.Avalonia
         /// <param name="startScreenPosition">Screen position of Viewport/MapControl</param>
         /// <param name="numTaps">Number of clickes/taps</param>
         /// <returns>True, if something done </returns>
-        //private MapInfoEventArgs? InvokeInfo(MPoint? screenPosition, MPoint? startScreenPosition, int numTaps)
-        //{
-        //    return InvokeInfo(
-        //        Map?.GetWidgetsOfMapAndLayers() ?? new List<IWidget>(),
-        //        screenPosition,
-        //        startScreenPosition,
-        //        WidgetTouched,
-        //        numTaps);
-        //}
+        private MapInfoEventArgs? InvokeInfo(mg.Point? screenPosition, mg.Point? startScreenPosition, int numTaps)
+        {
+            return InvokeInfo(
+                Map?.GetWidgetsOfMapAndLayers() ?? new List<IWidget>(),
+                screenPosition,
+                startScreenPosition,
+                WidgetTouched,
+                numTaps);
+        }
 
         /// <summary>
         /// Check if a widget or feature at a given screen position is clicked/tapped
@@ -627,43 +628,43 @@ namespace FootprintViewer.Avalonia
         /// <param name="widgetCallback">Callback, which is called when Widget is hit</param>
         /// <param name="numTaps">Number of clickes/taps</param>
         /// <returns>True, if something done </returns>
-        //private MapInfoEventArgs? InvokeInfo(IEnumerable<IWidget> widgets, MPoint? screenPosition,
-        //    MPoint? startScreenPosition, Func<IWidget, MPoint, bool> widgetCallback, int numTaps)
-        //{
-        //    if (screenPosition == null || startScreenPosition == null)
-        //        return null;
+        private MapInfoEventArgs? InvokeInfo(IEnumerable<IWidget> widgets, mg.Point? screenPosition,
+            mg.Point? startScreenPosition, Func<IWidget, mg.Point, bool> widgetCallback, int numTaps)
+        {
+            if (screenPosition == null || startScreenPosition == null)
+                return null;
 
-        //    // Check if a Widget is tapped. In the current design they are always on top of the map.
-        //    var touchedWidgets = WidgetTouch.GetTouchedWidget(screenPosition, startScreenPosition, widgets);
+            // Check if a Widget is tapped. In the current design they are always on top of the map.
+            var touchedWidgets = WidgetTouch.GetTouchedWidget(screenPosition, startScreenPosition, widgets);
 
-        //    foreach (var widget in touchedWidgets)
-        //    {
-        //        var result = widgetCallback(widget, screenPosition);
+            foreach (var widget in touchedWidgets)
+            {
+                var result = widgetCallback(widget, screenPosition);
 
-        //        if (result)
-        //        {
-        //            return new MapInfoEventArgs
-        //            {
-        //                Handled = true
-        //            };
-        //        }
-        //    }
+                if (result)
+                {
+                    return new MapInfoEventArgs
+                    {
+                        Handled = true
+                    };
+                }
+            }
 
-        //    // Check which features in the map were tapped.
-        //    var mapInfo = Renderer?.GetMapInfo(screenPosition.X, screenPosition.Y, Viewport, Map?.Layers ?? new LayerCollection());
+            // Check which features in the map were tapped.
+            var mapInfo = Renderer?.GetMapInfo(screenPosition.X, screenPosition.Y, Viewport, Map?.Layers ?? new LayerCollection());
 
-        //    if (mapInfo != null)
-        //    {
-        //        return new MapInfoEventArgs
-        //        {
-        //            MapInfo = mapInfo,
-        //            NumTaps = numTaps,
-        //            Handled = false
-        //        };
-        //    }
+            if (mapInfo != null)
+            {
+                return new MapInfoEventArgs
+                {
+                    MapInfo = mapInfo,
+                    NumTaps = numTaps,
+                    Handled = false
+                };
+            }
 
-        //    return null;
-        //}
+            return null;
+        }
 
         private void SetViewportSize()
         {
