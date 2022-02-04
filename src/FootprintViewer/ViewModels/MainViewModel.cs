@@ -3,7 +3,6 @@ using FootprintViewer.Interactivity.Decorators;
 using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.InteractivityEx;
 using FootprintViewer.Layers;
-using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -11,14 +10,12 @@ using Mapsui.Projection;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.UI;
-using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -36,7 +33,8 @@ namespace FootprintViewer.ViewModels
         private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
         private readonly MapListener? _mapListener;
-
+        private readonly FootprintObserver? _footprintObserver;
+        private readonly SceneSearch? _sceneSearch;
         private readonly CustomProvider _provider;
         private IFeature? _currentFeature;
 
@@ -47,9 +45,9 @@ namespace FootprintViewer.ViewModels
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
             _provider = dependencyResolver.GetExistingService<CustomProvider>();
-
-            ActualController = new EditController();
-
+            _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
+            _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
+      
             _infoPanel = _factory.CreateInfoPanel();
 
             _customToolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
@@ -57,7 +55,7 @@ namespace FootprintViewer.ViewModels
             _customToolBar.AddRectangleCheck.Subscribe(_ => RectangleCommand());
             _customToolBar.AddPolygonCheck.Subscribe(_ => PolygonCommand());
             _customToolBar.AddCircleCheck.Subscribe(_ => CircleCommand());
-            _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());        
+            _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());
             _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
@@ -68,12 +66,25 @@ namespace FootprintViewer.ViewModels
 
             _mapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
 
-            InitFromApp(dependencyResolver);
+            AOIChanged += (s, e) =>
+            {
+                if (s != null)
+                {
+                    if (s is IGeometry geometry)
+                    {
+                        _sceneSearch?.SetAOI(geometry);
+                    }
+                }
+                else
+                {
+                    _sceneSearch?.ResetAOI();
+                }
+            };
 
             ActualController = new EditController2();
 
-            _customToolBar.SelectGeometryCheck.Subscribe(tool => 
-            {               
+            _customToolBar.SelectGeometryCheck.Subscribe(tool =>
+            {
                 if (tool.IsCheck == true)
                 {
                     ActualController = new EditController2();
@@ -86,7 +97,7 @@ namespace FootprintViewer.ViewModels
             });
 
             _customToolBar.TranslateGeometryCheck.Subscribe(tool =>
-            {         
+            {
                 if (tool.IsCheck == true)
                 {
                     ActualController = new EditController2();
@@ -98,8 +109,8 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _customToolBar.RotateGeometryCheck.Subscribe(tool => 
-            {              
+            _customToolBar.RotateGeometryCheck.Subscribe(tool =>
+            {
                 if (tool.IsCheck == true)
                 {
                     ActualController = new EditController2();
@@ -111,8 +122,8 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _customToolBar.ScaleGeometryCheck.Subscribe(tool => 
-            {            
+            _customToolBar.ScaleGeometryCheck.Subscribe(tool =>
+            {
                 if (tool.IsCheck == true)
                 {
                     ActualController = new EditController2();
@@ -124,8 +135,8 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            _customToolBar.EditGeometryCheck.Subscribe(tool => 
-            {            
+            _customToolBar.EditGeometryCheck.Subscribe(tool =>
+            {
                 if (tool.IsCheck == true)
                 {
                     ActualController = new EditController2();
@@ -147,7 +158,7 @@ namespace FootprintViewer.ViewModels
                 {
                     _currentFeature = null;
                     InteractiveLayerRemove();
-                }             
+                }
             });
 
             _customToolBar.CircleGeometryCheck.Subscribe(tool =>
@@ -160,7 +171,7 @@ namespace FootprintViewer.ViewModels
                 {
                     _currentFeature = null;
                     InteractiveLayerRemove();
-                }            
+                }
             });
 
             _customToolBar.PolygonGeometryCheck.Subscribe(tool =>
@@ -173,7 +184,7 @@ namespace FootprintViewer.ViewModels
                 {
                     _currentFeature = null;
                     InteractiveLayerRemove();
-                }              
+                }
             });
 
             _customToolBar.RouteDistanceCheck.Subscribe(tool =>
@@ -186,42 +197,8 @@ namespace FootprintViewer.ViewModels
                 {
                     _currentFeature = null;
                     InteractiveLayerRemove();
-                }             
+                }
             });
-        }
-
-        private void InitFromApp(IReadonlyDependencyResolver dependencyResolver)
-        {
-            var footprintObserver = Locator.Current.GetExistingService<FootprintObserver>();          
-            var sceneSearch = Locator.Current.GetExistingService<SceneSearch>();
-
-            _mapListener!.LeftClickOnMap += (s, e) =>
-            {
-                if (s is string name && footprintObserver.IsActive == true)
-                {
-                    if (Plotter != null && (Plotter.IsCreating == true || Plotter.IsEditing == true))
-                    {
-                        return;
-                    }
-
-                    footprintObserver.SelectFootprintInfo(name);
-                }
-            };
-
-            AOIChanged += (s, e) =>
-            {
-                if (s != null)
-                {
-                    if (s is IGeometry geometry)
-                    {
-                        sceneSearch.SetAOI(geometry);
-                    }
-                }
-                else
-                {
-                    sceneSearch.ResetAOI();
-                }
-            };
         }
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
@@ -248,7 +225,7 @@ namespace FootprintViewer.ViewModels
                     }
 
                     return;
-                }               
+                }
                 else if (_customToolBar.ScaleGeometry.IsCheck == true)
                 {
                     decorator = new ScaleDecorator(feature);
@@ -284,6 +261,18 @@ namespace FootprintViewer.ViewModels
                 else
                 {
                     _currentFeature = null;
+                }
+            }
+            else if (sender is string name)
+            {
+                if (_footprintObserver != null && _footprintObserver.IsActive == true)
+                {
+                    if (Plotter != null && (Plotter.IsCreating == true || Plotter.IsEditing == true))
+                    {
+                        return;
+                    }
+
+                    _footprintObserver.SelectFootprintInfo(name);
                 }
             }
         }
@@ -567,11 +556,11 @@ namespace FootprintViewer.ViewModels
             {
                 _editLayer.ClearRoute();
                 _editLayer.DataHasChanged();
-                
+
                 Tip = null;
-                            
+
                 ToolBar.Uncheck();
-           
+
                 ActualController = new EditController();
             });
 
@@ -608,7 +597,7 @@ namespace FootprintViewer.ViewModels
                 AOIChanged?.Invoke(e.AddInfo.Feature.Geometry, EventArgs.Empty);
 
                 InfoPanel?.Show(CreateAOIPanel(feature));
-              
+
                 ToolBar.Uncheck();
 
                 ActualController = new EditController();
@@ -675,9 +664,9 @@ namespace FootprintViewer.ViewModels
                 _editLayer.DataHasChanged();
 
                 Tip = null;
-                
+
                 ToolBar.Uncheck();
-                
+
                 ActualController = new EditController();
             };
 
@@ -754,7 +743,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                _customToolBar.Uncheck();              
+                _customToolBar.Uncheck();
             };
 
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
@@ -789,7 +778,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                _customToolBar.Uncheck();          
+                _customToolBar.Uncheck();
             };
 
             Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
