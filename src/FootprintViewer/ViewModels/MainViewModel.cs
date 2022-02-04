@@ -87,7 +87,18 @@ namespace FootprintViewer.ViewModels
                     InteractiveLayerRemove();
                 }             
             });
-            _customToolBar.RouteDistanceCheck.Subscribe(_ => RouteDistanceCommand());
+            _customToolBar.RouteDistanceCheck.Subscribe(tool =>
+            {
+                if (tool.IsCheck == true)
+                {
+                    RouteCommand();
+                }
+                else
+                {
+                    _currentFeature = null;
+                    InteractiveLayerRemove();
+                }        
+            });
             _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
@@ -381,19 +392,6 @@ namespace FootprintViewer.ViewModels
             return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";
         }
 
-
-
-        private double GetRouteLength(AddInfo addInfo)
-        {
-            var geometry = (Mapsui.Geometries.LineString)addInfo.Feature.Geometry;
-            var fHelp = addInfo.HelpFeatures.Single();
-            var verts0 = geometry.AllVertices();
-            var verts1 = fHelp.Geometry.AllVertices();
-            var verts = verts0.Union(verts1);
-            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
-            return SphericalUtil.ComputeDistance(vertices);
-        }
-
         private void ZoomInCommand()
         {
             if (Map == null)
@@ -503,7 +501,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractiveRectangle(feature), FeatureType.AOIPolygon.ToString());
+                _editLayer.AddAOI(new InteractivePolygon(feature), FeatureType.AOIPolygon.ToString());
 
                 Tip = null;
 
@@ -556,9 +554,9 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        private RouteInfoPanel CreateRoutePanel(AddInfo addInfo)
+        private RouteInfoPanel CreateRoutePanel(RouteDesigner designer)
         {
-            var distance = GetRouteLength(addInfo);
+            var distance = GetRouteLength(designer);
 
             var panel = new RouteInfoPanel()
             {
@@ -629,62 +627,55 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void RouteDistanceCommand()
+        private void RouteCommand()
         {
-            if (Map == null)
-            {
-                return;
-            }
+            var designer = new RouteDesigner();
+         
+            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
 
             _editLayer.ClearRoute();
 
             InfoPanel?.CloseAll(typeof(RouteInfoPanel));
 
-            Plotter = new Plotter(InteractiveRoute.Build());
-
             Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
 
-            Plotter.BeginCreating += (s, e) =>
+            designer.BeginCreating += (s, e) => 
             {
-                var distance = GetRouteLength(e.AddInfo);
+                var distance = GetRouteLength(designer);
 
                 Tip.Text = "";
                 Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-
-                _editLayer.AddRoute(e.AddInfo);
-                _editLayer.DataHasChanged();
             };
 
-            Plotter.Creating += (s, e) =>
+            designer.Creating += (s, e) => 
             {
-                InfoPanel?.Show(CreateRoutePanel(e.AddInfo));
-
-                _editLayer.DataHasChanged();
+                InfoPanel?.Show(CreateRoutePanel(designer));
             };
 
-            Plotter.EndCreating += (s, e) =>
+            designer.HoverCreating += (s, e) =>
             {
-                _editLayer.ClearRouteHelpers();
-                _editLayer.DataHasChanged();
+                var distance = GetRouteLength(designer);
+
+                Tip.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                _editLayer.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
 
                 Tip = null;
 
-                ToolBar.Uncheck();
+                _customToolBar.Uncheck();
 
                 ActualController = new EditController();
             };
 
-            Plotter.Hover += (s, e) =>
-            {
-                var distance = GetRouteLength(e.AddInfo);
+            MapObserver = new MapObserver(designer);
 
-                Tip.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-
-                _editLayer.DataHasChanged();
-            };
-
-            ActualController = new DrawRouteController();
+            ActualController = new DrawingController2();
         }
 
         private void DrawingRectangleCommand()
@@ -769,7 +760,7 @@ namespace FootprintViewer.ViewModels
 
             designer.HoverCreating += (s, e) =>
             {
-                var distance = GetRouteLength2(designer);
+                var distance = GetRouteLength(designer);
 
                 var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
 
@@ -833,14 +824,14 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private double GetFeatureArea(IFeature feature)
+        private static double GetFeatureArea(IFeature feature)
         {
             var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
             return Math.Abs(area);
         }
 
-        private static double GetRouteLength2(RouteDesigner designer)
+        private static double GetRouteLength(RouteDesigner designer)
         {
             var geometry = (Mapsui.Geometries.LineString)designer.Feature.Geometry;
             var fHelp = designer.ExtraFeatures.Single();

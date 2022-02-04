@@ -17,6 +17,8 @@ namespace FootprintViewer.InteractivityEx
 
         protected InteractiveRoute() : base() { }
 
+        public InteractiveRoute(IFeature feature) : base(feature) { }
+
         public static InteractiveRoute Build()
         {
             return new InteractiveRoute();

@@ -76,6 +76,8 @@ namespace FootprintViewer.Interactivity.Designers
                 {
                     Drawing(worldPosition);
 
+                    CreatingCallback();
+
                     return;
                 }
             }

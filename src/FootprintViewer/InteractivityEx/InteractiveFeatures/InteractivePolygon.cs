@@ -16,6 +16,8 @@ namespace FootprintViewer.InteractivityEx
         private Point _vertex;
         private Point _startOffsetToVertex;
 
+        public InteractivePolygon(IFeature feature) : base(feature) { }
+
         protected InteractivePolygon() : base() { }
 
         public static InteractivePolygon Build()

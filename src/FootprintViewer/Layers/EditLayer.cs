@@ -146,6 +146,14 @@ namespace FootprintViewer.Layers
             }
         }
 
+        public void AddRoute(InteractiveRoute feature, string name)
+        {
+            feature["Name"] = name;
+
+            ClearRoute();
+            AddRoute(new AddInfo() { Feature = feature });
+            DataHasChanged();
+        }
 
     }
 }

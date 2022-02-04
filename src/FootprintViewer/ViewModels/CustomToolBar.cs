@@ -161,7 +161,7 @@ namespace FootprintViewer.ViewModels
 
             AddCircleCheck = _addCircle.Check;
 
-            RouteDistanceCheck = RouteDistance.Check.Where(s => s.IsCheck == true);
+            RouteDistanceCheck = RouteDistance.Check;
 
             SelectGeometryCheck = SelectGeometry.Check;
 

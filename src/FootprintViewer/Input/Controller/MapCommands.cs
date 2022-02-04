@@ -4,9 +4,6 @@
     {
         static MapCommands()
         {
-            DrawingLine = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingRouteManipulator(view), args));
-            HoverDrawingLine = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingLineManipulator(view), args));
-
             Editing = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new EditingManipulator(view), args));
             HoverEditing = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverEditingManipulator(view), args));
 
@@ -16,11 +13,7 @@
             Drawing2 = new DelegateMapCommand<MouseDownEventArgs>((view, controller, args) => controller.AddMouseManipulator(view, new DrawingManipulator2(view), args));
             HoverDrawing2 = new DelegateMapCommand<MouseEventArgs>((view, controller, args) => controller.AddHoverManipulator(view, new HoverDrawingManipulator2(view), args));
         }
-
-        public static IViewCommand<MouseDownEventArgs> DrawingLine { get; private set; }
-
-        public static IViewCommand<MouseEventArgs> HoverDrawingLine { get; private set; }
-        
+    
         public static IViewCommand<MouseDownEventArgs> Editing { get; private set; }
         
         public static IViewCommand<MouseEventArgs> HoverEditing { get; private set; }
