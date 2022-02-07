@@ -1,9 +1,12 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Interactivity;
+using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projection;
+using Mapsui.UI;
 using Splat;
 using System.Linq;
 
@@ -158,6 +161,26 @@ namespace FootprintViewer
         public InfoPanel CreateInfoPanel()
         {
             return new InfoPanel();
+        }
+
+        public ILayer CreateInteractiveLayer(IReadonlyDependencyResolver dependencyResolver, ILayer layer, IInteractiveObject obj)
+        {
+            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+
+            if (obj is IDesigner designer)
+            {
+                return new InteractiveLayer(layer, designer)
+                {
+                    Name = "InteractiveLayer",
+                    Style = styleManager.DesignerStyle,
+                };
+            }
+
+            return new InteractiveLayer(layer, obj)
+            {
+                Name = "InteractiveLayer",
+                Style = styleManager.DecoratorStyle,
+            };
         }
     }
 }

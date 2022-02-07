@@ -1,4 +1,5 @@
-﻿using Mapsui.Geometries;
+﻿using FootprintViewer.Interactivity;
+using Mapsui.Geometries;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
@@ -16,6 +17,8 @@ namespace FootprintViewer.Layers
         private IStyle? _editStyle;
         private IStyle? _userStyle;
         private IStyle? _footprintImageBorderStyle;
+        private IStyle? _designerStyle;
+        private IStyle? _decoratorStyle;
 
         private const int _maxVisibleTargetStyle = 5000;
         private const int _maxVisibleFootprintStyle = 10000;
@@ -37,6 +40,10 @@ namespace FootprintViewer.Layers
         public IStyle UserStyle => _userStyle ??= CreateUserLayerStyle();
 
         public IStyle FootprintImageBorderStyle => _footprintImageBorderStyle ??= CreateFootprintImageBorderStyle();
+        
+        public IStyle DesignerStyle => _designerStyle ??= CreateInteractiveLayerDesignerStyle();
+        
+        public IStyle DecoratorStyle => _decoratorStyle ??= CreateInteractiveLayerDecoratorStyle();
 
         public int MaxVisibleFootprintStyle => _maxVisibleFootprintStyle;
 
@@ -406,6 +413,98 @@ namespace FootprintViewer.Layers
                 Outline = new Pen(color, 1.0),
                 Enabled = true
             };
+        }
+
+        private static IStyle CreateInteractiveLayerDesignerStyle()
+        {
+            // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
+            // depending on a "Selected" attribute.
+            return new ThemeStyle(f =>
+            {
+                if (f.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.White),
+                        Outline = new Pen(Color.Black, 2 / 0.3),
+                        Line = null,//new Pen(Color.Black, 2),
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.3,
+                    };
+                }
+
+                Color _color = new Color(76, 154, 231);
+                //Color _darkColor = new Color(67, 135, 202);
+
+                if (f.Fields != null)
+                {
+                    foreach (var item in f.Fields)
+                    {
+                        if (item.Equals("Name") == true)
+                        {
+                            if ((string)f["Name"] == "ExtraPolygonHoverLine")
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
+                                };
+                            }
+                            else if ((string)f["Name"] == "ExtraPolygonArea")
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = new Brush(Color.Opacity(_color, 0.25f)),
+                                    Line = null,
+                                    Outline = null,
+                                };
+                            }
+                            else if ((string)f["Name"] == "ExtraRouteHoverLine")
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(_color, 3) { PenStyle = PenStyle.Dash },
+                                };
+                            }
+                        }
+                    }
+                }
+
+                if (f.Geometry is Polygon || f.Geometry is LineString)
+                {        
+                    return new VectorStyle
+                    {
+                        Fill = new Brush(Color.Transparent),
+                        Line = new Pen(_color, 3),
+                        Outline = new Pen(_color, 3)
+                    };
+                }
+
+                return null;
+            });
+        }
+
+        private static IStyle CreateInteractiveLayerDecoratorStyle()
+        {
+            // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
+            // depending on a "Selected" attribute.
+            return new ThemeStyle(f =>
+            {
+                if (f.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.White),
+                        Outline = new Pen(Color.Black, 2 / 0.3),
+                        Line = null,//new Pen(Color.Black, 2),
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.3,
+                    };
+                }
+
+                return null;
+            });
         }
     }
 

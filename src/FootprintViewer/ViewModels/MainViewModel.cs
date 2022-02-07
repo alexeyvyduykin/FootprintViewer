@@ -36,9 +36,11 @@ namespace FootprintViewer.ViewModels
         private readonly SceneSearch? _sceneSearch;
         private readonly CustomProvider _provider;
         private IFeature? _currentFeature;
+        private readonly IReadonlyDependencyResolver _dependencyResolver;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
+            _dependencyResolver = dependencyResolver;
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
@@ -55,7 +57,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    RectangleCommand();
+                    RectangleCommand(dependencyResolver);
                 }
                 else
                 {
@@ -67,7 +69,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    PolygonCommand();
+                    PolygonCommand(dependencyResolver);
                 }
                 else
                 {
@@ -79,7 +81,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    CircleCommand();
+                    CircleCommand(dependencyResolver);
                 }
                 else
                 {
@@ -91,7 +93,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    RouteCommand();
+                    RouteCommand(dependencyResolver);
                 }
                 else
                 {
@@ -195,7 +197,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    DrawingRectangleCommand();
+                    DrawingRectangleCommand(dependencyResolver);
                 }
                 else
                 {
@@ -208,7 +210,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    DrawingCircleCommand();
+                    DrawingCircleCommand(dependencyResolver);
                 }
                 else
                 {
@@ -221,7 +223,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    DrawingPolygonCommand();
+                    DrawingPolygonCommand(dependencyResolver);
                 }
                 else
                 {
@@ -234,7 +236,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (tool.IsCheck == true)
                 {
-                    DrawingRouteCommand();
+                    DrawingRouteCommand(dependencyResolver);
                 }
                 else
                 {
@@ -295,7 +297,9 @@ namespace FootprintViewer.ViewModels
 
                 if (feature != _currentFeature)
                 {
-                    Map.Layers.Add(new InteractiveLayer(mapInfo.Layer, decorator) { Name = "InteractiveLayer" });
+                    var factory = _dependencyResolver.GetExistingService<ProjectFactory>();
+
+                    Map.Layers.Add(factory.CreateInteractiveLayer(_dependencyResolver, mapInfo.Layer, decorator));
 
                     MapObserver = new MapObserver(decorator);
 
@@ -423,11 +427,13 @@ namespace FootprintViewer.ViewModels
             Map.Layers.Remove(layer);
         }
 
-        private void RectangleCommand()
-        {        
+        private void RectangleCommand(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+     
             var designer = new RectangleDesigner();
 
-            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, _editLayer, designer));
        
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
@@ -473,11 +479,13 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void PolygonCommand()
-        {         
+        private void PolygonCommand(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+     
             var designer = new PolygonDesigner();
-          
-            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, _editLayer, designer));
 
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
@@ -578,11 +586,13 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        private void CircleCommand()
-        {         
+        private void CircleCommand(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+       
             var designer = new CircleDesigner();
-        
-            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, _editLayer, designer));
            
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
@@ -627,11 +637,13 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void RouteCommand()
+        private void RouteCommand(IReadonlyDependencyResolver dependencyResolver)
         {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+    
             var designer = new RouteDesigner();
-         
-            Map.Layers.Add(new InteractiveLayer(_editLayer, designer) { Name = "InteractiveLayer" });
+
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, _editLayer, designer));
 
             _editLayer.ClearRoute();
 
@@ -678,15 +690,17 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void DrawingRectangleCommand()
+        private void DrawingRectangleCommand(IReadonlyDependencyResolver dependencyResolver)
         {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+
             InteractiveLayerRemove();
 
             var designer = new RectangleDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, layer, designer));
 
             designer.HoverCreating += (s, e) =>
             {
@@ -713,15 +727,17 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void DrawingCircleCommand()
+        private void DrawingCircleCommand(IReadonlyDependencyResolver dependencyResolver)
         {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+
             InteractiveLayerRemove();
 
             var designer = new CircleDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, layer, designer));
 
             designer.HoverCreating += (s, e) =>
             {
@@ -748,15 +764,17 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void DrawingRouteCommand()
+        private void DrawingRouteCommand(IReadonlyDependencyResolver dependencyResolver)
         {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+
             InteractiveLayerRemove();
 
             var designer = new RouteDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, layer, designer));
 
             designer.HoverCreating += (s, e) =>
             {
@@ -783,15 +801,17 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController2();
         }
 
-        private void DrawingPolygonCommand()
+        private void DrawingPolygonCommand(IReadonlyDependencyResolver dependencyResolver)
         {
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
+
             InteractiveLayerRemove();
 
             var designer = new PolygonDesigner();
 
             var layer = Map.Layers.FindLayer("FeatureLayer").FirstOrDefault();
 
-            Map.Layers.Add(new InteractiveLayer(layer, designer) { Name = "InteractiveLayer" });
+            Map.Layers.Add(factory.CreateInteractiveLayer(dependencyResolver, layer, designer));
 
             designer.BeginCreating += (s, e) =>
             {
