@@ -91,6 +91,7 @@ namespace FootprintViewer.ViewModels
                 if (tool.IsCheck == true)
                 {
                     RouteCommand();
+                    //DrawingRouteCommand();
                 }
                 else
                 {
@@ -221,19 +222,6 @@ namespace FootprintViewer.ViewModels
                 if (tool.IsCheck == true)
                 {
                     DrawingPolygonCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
-
-            _customToolBar.RouteDistanceCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    DrawingRouteCommand();
                 }
                 else
                 {
