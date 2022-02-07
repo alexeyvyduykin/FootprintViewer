@@ -6,6 +6,8 @@ using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projection;
+using Mapsui.Providers;
+using Mapsui.Styles;
 using Mapsui.UI;
 using Splat;
 using System.Linq;
@@ -180,6 +182,18 @@ namespace FootprintViewer
             {
                 Name = "InteractiveLayer",
                 Style = styleManager.DecoratorStyle,
+            };
+        }
+
+        public ILayer CreateInteractiveSelectLayer(IReadonlyDependencyResolver dependencyResolver, ILayer source, IFeature feature)
+        {
+            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+
+            return new SelectLayer(source, feature)
+            {
+                Name = "InteractiveLayer",
+                IsMapInfoLayer = true,
+                Style = styleManager.SelectStyle,
             };
         }
     }

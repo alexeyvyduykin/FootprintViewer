@@ -19,6 +19,7 @@ namespace FootprintViewer.Layers
         private IStyle? _footprintImageBorderStyle;
         private IStyle? _designerStyle;
         private IStyle? _decoratorStyle;
+        private IStyle? _selectStyle;
 
         private const int _maxVisibleTargetStyle = 5000;
         private const int _maxVisibleFootprintStyle = 10000;
@@ -44,6 +45,8 @@ namespace FootprintViewer.Layers
         public IStyle DesignerStyle => _designerStyle ??= CreateInteractiveLayerDesignerStyle();
         
         public IStyle DecoratorStyle => _decoratorStyle ??= CreateInteractiveLayerDecoratorStyle();
+        
+        public IStyle SelectStyle => _selectStyle ??= CreateInteractiveSelectLayerStyle();
 
         public int MaxVisibleFootprintStyle => _maxVisibleFootprintStyle;
 
@@ -505,6 +508,16 @@ namespace FootprintViewer.Layers
 
                 return null;
             });
+        }
+
+        private static IStyle CreateInteractiveSelectLayerStyle()
+        {
+            return new VectorStyle()
+            {
+                Fill = new Brush(Color.Transparent),
+                Outline = new Pen(Color.Green, 4),
+                Line = new Pen(Color.Green, 4),
+            };
         }
     }
 
