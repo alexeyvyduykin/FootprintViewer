@@ -1,45 +1,23 @@
 ﻿using FootprintViewer.ViewModels;
 using Mapsui.Layers;
-using Mapsui.Providers;
-using Mapsui.Styles;
-using Mapsui.Styles.Thematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Layers
 {
     public class TrackLayer : MemoryLayer
-    {     
-        private IStyle _style;
-        private TrackLayerProvider _provider;
+    {         
+        private readonly TrackLayerProvider _provider;
 
-        public TrackLayer(IProvider provider)
+        public TrackLayer(TrackLayerProvider provider)
         {
-            _provider = (TrackLayerProvider)provider;           
-            _style = CreateTrackStyle();
-          
-            Name = nameof(LayerType.Track);
-            Style = _style;
-            DataSource = provider;
-            IsMapInfoLayer = false;
+            _provider = provider;           
+    
+            DataSource = provider;     
         }
 
         public void Update(SatelliteInfo info) 
         {
             _provider.Update(info);
             DataHasChanged();
-        }
-
-        private static IStyle CreateTrackStyle()
-        {
-            var stl = new VectorStyle
-            {
-                Fill = null,
-                Line = new Pen(Color.Green, 1),
-            };
-
-            return stl;
         }
     }
 }

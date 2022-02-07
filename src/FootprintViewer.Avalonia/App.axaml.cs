@@ -112,6 +112,11 @@ namespace FootprintViewer.Avalonia
             CustomProvider customProvider = new CustomProvider();
             services.RegisterLazySingleton<CustomProvider>(() => customProvider);
 
+            // Layer style manager
+
+            LayerStyleManager layerStyleManager = new LayerStyleManager();
+            services.RegisterLazySingleton<LayerStyleManager>(() => layerStyleManager);
+
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 

@@ -22,12 +22,6 @@ namespace FootprintViewer.Layers
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
-        //public SelectLayer(ILayer source)
-        //{
-        //    _source = source;
-        //    _source.DataChanged += (sender, args) => OnDataChanged(args);         
-        //}
-
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
             if (box.Intersects(_feature.Geometry?.BoundingBox) == true)

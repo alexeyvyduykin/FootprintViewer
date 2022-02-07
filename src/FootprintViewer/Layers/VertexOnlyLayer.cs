@@ -3,8 +3,6 @@ using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
-using Mapsui.Styles;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,22 +13,13 @@ namespace FootprintViewer.Layers
     public class VertexOnlyLayer : BaseLayer
     {
         private readonly ILayer _source;
-
-        private static readonly SymbolStyle PointStyle = new SymbolStyle
-        {
-            Fill = new Brush(Color.White),
-            Outline = new Pen(Color.Black, 2 / 0.3),
-            SymbolType = SymbolType.Ellipse,
-            SymbolScale = 0.3,       
-        };
        
         public override BoundingBox Envelope => _source.Envelope;
 
         public VertexOnlyLayer(ILayer source)
         {
             _source = source;
-            _source.DataChanged += (sender, args) => OnDataChanged(args);
-            Style = PointStyle;
+            _source.DataChanged += (sender, args) => OnDataChanged(args);    
         }
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
