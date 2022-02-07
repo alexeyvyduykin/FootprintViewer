@@ -472,7 +472,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel?.Show(CreateAOIPanel(feature));
+                InfoPanel.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -527,7 +527,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel?.Show(CreateAOIPanel(feature));
+                InfoPanel.Show(CreateAOIPanel(feature));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -544,6 +544,106 @@ namespace FootprintViewer.ViewModels
 
             //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
             //};
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private void CircleCommand()
+        {
+            var designer = new CircleDesigner();
+
+            CreateInteractiveOnEditLayer(designer);
+
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+
+            designer.HoverCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                var area = GetFeatureArea(feature);
+
+                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                _editLayer.AddAOI(new InteractiveCircle(feature), FeatureType.AOICircle.ToString());
+
+                Tip = null;
+
+                InfoPanel.Show(CreateAOIPanel(feature));
+
+                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+
+                _customToolBar.Uncheck();
+
+                ActualController = new EditController();
+            };
+
+            //Plotter.EndEditing += (s, e) =>
+            //{
+            //    var feature = (Feature)e.Feature;
+
+            //    InfoPanel?.Show(CreateAOIPanel(feature));
+
+            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            //};
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController2();
+        }
+
+        private void RouteCommand()
+        {
+            var designer = new RouteDesigner();
+
+            CreateInteractiveOnEditLayer(designer);
+
+            _editLayer.ClearRoute();
+
+            InfoPanel.CloseAll(typeof(RouteInfoPanel));
+
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+
+            designer.BeginCreating += (s, e) =>
+            {
+                var distance = GetRouteLength(designer);
+
+                Tip.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
+
+            designer.Creating += (s, e) =>
+            {
+                InfoPanel.Show(CreateRoutePanel(designer));
+            };
+
+            designer.HoverCreating += (s, e) =>
+            {
+                var distance = GetRouteLength(designer);
+
+                Tip.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
+
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature;
+
+                _editLayer.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();
+
+                ActualController = new EditController();
+            };
 
             MapObserver = new MapObserver(designer);
 
@@ -598,106 +698,6 @@ namespace FootprintViewer.ViewModels
             });
 
             return panel;
-        }
-
-        private void CircleCommand()
-        {
-            var designer = new CircleDesigner();
-
-            CreateInteractiveOnEditLayer(designer);
-
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
-
-            designer.HoverCreating += (s, e) =>
-            {
-                var feature = designer.Feature;
-
-                var area = GetFeatureArea(feature);
-
-                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                var feature = designer.Feature;
-
-                _editLayer.AddAOI(new InteractiveCircle(feature), FeatureType.AOICircle.ToString());
-
-                Tip = null;
-
-                InfoPanel?.Show(CreateAOIPanel(feature));
-
-                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-
-                _customToolBar.Uncheck();
-
-                ActualController = new EditController();
-            };
-
-            //Plotter.EndEditing += (s, e) =>
-            //{
-            //    var feature = (Feature)e.Feature;
-
-            //    InfoPanel?.Show(CreateAOIPanel(feature));
-
-            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-            //};
-
-            MapObserver = new MapObserver(designer);
-
-            ActualController = new DrawingController2();
-        }
-
-        private void RouteCommand()
-        {
-            var designer = new RouteDesigner();
-
-            CreateInteractiveOnEditLayer(designer);
-
-            _editLayer.ClearRoute();
-
-            InfoPanel?.CloseAll(typeof(RouteInfoPanel));
-
-            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
-
-            designer.BeginCreating += (s, e) =>
-            {
-                var distance = GetRouteLength(designer);
-
-                Tip.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-            };
-
-            designer.Creating += (s, e) =>
-            {
-                InfoPanel?.Show(CreateRoutePanel(designer));
-            };
-
-            designer.HoverCreating += (s, e) =>
-            {
-                var distance = GetRouteLength(designer);
-
-                Tip.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                var feature = designer.Feature;
-
-                _editLayer.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
-
-                Tip = null;
-
-                _customToolBar.Uncheck();
-
-                ActualController = new EditController();
-            };
-
-            MapObserver = new MapObserver(designer);
-
-            ActualController = new DrawingController2();
         }
 
         private void DrawingRectangleCommand()
