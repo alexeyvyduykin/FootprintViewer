@@ -706,13 +706,17 @@ namespace FootprintViewer.ViewModels
 
             CreateInteractiveOnUserLayer(designer);
 
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+
             designer.HoverCreating += (s, e) =>
             {
                 var feature = designer.Feature;
 
                 var area = GetFeatureArea(feature);
 
-                Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
+                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
             };
 
             designer.EndCreating += (s, e) =>
@@ -724,7 +728,6 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
             MapObserver = new MapObserver(designer);
 
@@ -737,13 +740,16 @@ namespace FootprintViewer.ViewModels
 
             CreateInteractiveOnUserLayer(designer);
 
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+
             designer.HoverCreating += (s, e) =>
             {
                 var feature = designer.Feature;
 
                 var area = GetFeatureArea(feature);
 
-                Tip = new Tip() { Text = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²" };
+                Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
             };
 
             designer.EndCreating += (s, e) =>
@@ -754,8 +760,6 @@ namespace FootprintViewer.ViewModels
 
                 _customToolBar.Uncheck();
             };
-
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
             MapObserver = new MapObserver(designer);
 
@@ -768,13 +772,14 @@ namespace FootprintViewer.ViewModels
 
             CreateInteractiveOnUserLayer(designer);
 
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+
             designer.HoverCreating += (s, e) =>
             {
                 var distance = GetRouteLength(designer);
 
-                var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
-
-                Tip = new Tip() { Text = $"Расстояние: {res}" };
+                Tip.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
             };
 
             designer.EndCreating += (s, e) =>
@@ -785,8 +790,6 @@ namespace FootprintViewer.ViewModels
 
                 _customToolBar.Uncheck();
             };
-
-            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
 
             MapObserver = new MapObserver(designer);
 
@@ -799,9 +802,11 @@ namespace FootprintViewer.ViewModels
 
             CreateInteractiveOnUserLayer(designer);
 
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
+
             designer.BeginCreating += (s, e) =>
-            {
-                Tip = new Tip() { Text = "Нажмите, чтобы продолжить рисовать фигуру" };
+            {                
+                Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
             };
 
             designer.Creating += (s, e) =>
@@ -810,7 +815,8 @@ namespace FootprintViewer.ViewModels
                 {
                     var area = GetFeatureArea(designer.Feature);
 
-                    Tip = new Tip() { Text = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²" };
+                    Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
+                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
                 }
             };
 
@@ -822,8 +828,6 @@ namespace FootprintViewer.ViewModels
 
                 _customToolBar.Uncheck();
             };
-
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
             MapObserver = new MapObserver(designer);
 
