@@ -12,51 +12,12 @@ namespace FootprintViewer.InteractivityEx
         private Point _center;
         private Point _sizeNE;
 
-        private bool _isEditing = false;
-        private Point _vertex;
+        private bool _isEditing = false;  
         private Point _startOffsetToVertex;
-
-        protected InteractiveCircle() : base() { }
 
         public InteractiveCircle(IFeature feature) : base(feature)
         {
             _center = feature.Geometry.BoundingBox.Centroid;
-        }
-
-        public static InteractiveCircle Build()
-        {
-            return new InteractiveCircle();      
-        }
-
-        public override bool IsEndDrawing(Point worldPosition, Predicate<Point> isClick)
-        {                
-            return true;
-        }
-
-        public override AddInfo BeginDrawing(Point worldPosition)
-        {
-            if (_isDrawing == false)
-            {
-                _isDrawing = true;
-
-                _center = worldPosition.Clone();
-                _sizeNE = _center;
-
-                var vertices = GetCircle(_center, 0.0, 3);
-
-                Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
-
-                this["Name"] = FeatureType.AOICircleDrawing.ToString();
-            }
-
-            return new AddInfo()
-            {
-                Feature = this,
-                HelpFeatures = new List<IFeature>(),
-            };
         }
 
         private IList<Point> GetCircle(Point center, double radius, double quality)
@@ -75,46 +36,6 @@ namespace FootprintViewer.InteractivityEx
             }
 
             return vertices;
-        }
-
-        public override void Drawing(Point worldPosition)
-        {
-            EndDrawing();
-        }
-
-        public override void DrawingHover(Point worldPosition)
-        {
-            if (_isDrawing == true)
-            {
-                var p1 = worldPosition.Clone();
-
-                var radius = _center.Distance(p1);
-
-                var angleRad = 45.0 / 180.0 * Math.PI;
-
-                _sizeNE = new Point(radius * Math.Sin(angleRad) + _center.X, radius * Math.Cos(angleRad) + _center.Y);
-
-                var vertices = GetCircle(_center, radius, 180);
-
-                Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
-
-                RenderedGeometry?.Clear();
-            }
-        }
-
-        public override void EndDrawing()
-        {
-            if (_isDrawing == true)
-            {
-                _isDrawing = false;
-
-                this["Name"] = FeatureType.AOICircle.ToString();
-
-                RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
-            }
         }
 
         public override IList<Point> EditVertices()
@@ -143,8 +64,7 @@ namespace FootprintViewer.InteractivityEx
             var vertexTouched = vertices.OrderBy(v => v.Distance(worldPosition)).FirstOrDefault(v => v.Distance(worldPosition) < screenDistance);
             
             if (vertexTouched != null && vertexTouched == _sizeNE)
-            {
-                _vertex = vertexTouched;
+            {                
                 _startOffsetToVertex = worldPosition - vertexTouched;
                 _isEditing = true;
 

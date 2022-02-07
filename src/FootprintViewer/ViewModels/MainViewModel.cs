@@ -310,7 +310,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (_footprintObserver != null && _footprintObserver.IsActive == true)
                 {
-                    if (Plotter != null && (Plotter.IsCreating == true || Plotter.IsEditing == true))
+                    if (Plotter != null && Plotter.IsEditing == true)
                     {
                         return;
                     }
