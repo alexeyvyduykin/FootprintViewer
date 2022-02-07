@@ -44,10 +44,17 @@ namespace FootprintViewer.Avalonia
 
             Info += UserMapControl_Info2;
 
-            TipDataTemplateProperty.Changed.Subscribe(OnTipDataTemplateChanged);
             ControllerProperty.Changed.Subscribe(OnControllerChanged);
             TipSourceProperty.Changed.Subscribe(OnTipSourceChanged);
-            MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);       
+            MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
+
+            var itemsControl = CreateTip();
+
+            if (itemsControl != null)
+            {          
+                _tipControl = itemsControl;               
+                Children.Add(itemsControl);
+            }
         }
 
         private void UserMapControl_Info(object? sender, Mapsui.UI.MapInfoEventArgs e)
@@ -105,36 +112,6 @@ namespace FootprintViewer.Avalonia
             return AvaloniaRuntimeXamlLoader.Parse<ItemsControl>(xaml);
         }
 
-        public DataTemplate TipDataTemplate
-        {
-            get { return GetValue(TipDataTemplateProperty); }
-            set { SetValue(TipDataTemplateProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly StyledProperty<DataTemplate> TipDataTemplateProperty =
-            AvaloniaProperty.Register<UserMapControl, DataTemplate>(nameof(TipDataTemplate));
-
-        private static void OnTipDataTemplateChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            var mapControl = (UserMapControl)e.Sender;
-            var template = (DataTemplate?)e.NewValue;
-            var itemsControl = CreateTip();
-
-            if (itemsControl != null)
-            {
-                itemsControl.ItemTemplate = template;
-
-                if (mapControl._tipControl != null)
-                {
-                    mapControl.Children.Remove(mapControl._tipControl);
-                }
-
-                mapControl._tipControl = itemsControl;
-                mapControl.Children.Add(itemsControl);
-            }
-        }
-
         public Plotter Plotter
         {
             get { return GetValue(PlotterProperty); }
@@ -182,6 +159,22 @@ namespace FootprintViewer.Avalonia
             else
             {
                 mapControl.ShowTip();
+            }
+        }
+
+        protected void ShowTip()
+        {
+            if (_tipControl != null && TipSource != null)
+            {
+                _tipControl.Items = new ObservableCollection<ITip>() { TipSource };
+            }
+        }
+
+        protected void HideTip()
+        {
+            if (_tipControl != null)
+            {
+                _tipControl.Items = new ObservableCollection<Tip>();
             }
         }
 
@@ -422,22 +415,6 @@ namespace FootprintViewer.Avalonia
             _currentCursorType = cursorType;
 
             Debug.WriteLine($"Set Cursor = {Cursor}, Info = {info}");
-        }
-
-        protected void ShowTip()
-        {
-            if (_tipControl != null && TipSource != null)
-            {
-                _tipControl.Items = new ObservableCollection<ITip>() { TipSource };
-            }
-        }
-
-        protected void HideTip()
-        {
-            if (_tipControl != null)
-            {
-                _tipControl.Items = new ObservableCollection<Tip>();
-            }
         }
 
         public Mapsui.Geometries.Point ScreenToWorld(Mapsui.Geometries.Point screenPosition)

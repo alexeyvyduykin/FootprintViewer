@@ -20,35 +20,7 @@
   <Window.Resources>    
     <!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
     <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-
-    <!--<Color x:Key="TipBackground" R="4" G="15" B="27" A="191"/>-->
-    <SolidColorBrush x:Key="TipBrush" Color="#040f1b" Opacity="0.65"/>
   </Window.Resources>
-
-  <Window.Styles>
-    <Style Selector="Border.TipBorder">
-      <Setter Property="Background" Value="{StaticResource TipBrush}"/>
-      <Setter Property="Padding" Value="8,4,8,4" />
-      <Setter Property="CornerRadius" Value="3" />
-    </Style>
-
-    <Style Selector="TextBlock.txt">
-      <Setter Property="FontSize" Value="13"/>
-    </Style>
-
-    <Style Selector="TextBlock.txt[Text='']">
-      <Setter Property="IsVisible" Value="False"></Setter>
-    </Style>
-    
-    <Style Selector="TextBlock.TipTitle">
-      <Setter Property="Foreground" Value="White"/>
-      <Setter Property="FontWeight" Value="Bold"/>
-    </Style>
-
-    <Style Selector="TextBlock.TipText">
-      <Setter Property="Foreground" Value="White"/>
-    </Style>
-  </Window.Styles>
   
   <Grid>
     <Grid x:Name="GridOverlay" 
@@ -64,18 +36,7 @@
                           MapListener="{Binding MapListener}"
                           MapObserver="{Binding MapObserver}"
                           VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch">
-          <local:UserMapControl.TipDataTemplate>
-            <DataTemplate DataType="{x:Type vm:Tip}">
-              <Border Classes="TipBorder">
-                <StackPanel>
-                  <TextBlock Classes="txt TipTitle" Text="{Binding Title}"/>
-                  <TextBlock Classes="txt TipText" Text="{Binding Text}"/>
-                </StackPanel>
-              </Border>
-            </DataTemplate>
-          </local:UserMapControl.TipDataTemplate>
-        </local:UserMapControl>
+                          HorizontalAlignment="Stretch"/>
 
         <Grid VerticalAlignment="Center"
               HorizontalAlignment="Left"
