@@ -14,7 +14,15 @@ namespace InteractivitySample.Interactivity.Designers
         private IFeature? _extraLineString;
         private IFeature? _extraPolygon;
 
-        public override IEnumerable<Point> GetActiveVertices() => Feature.Geometry.MainVertices();
+        public override IEnumerable<Point> GetActiveVertices() 
+        {
+            if (Feature.Geometry != null)
+            {
+                return Feature.Geometry.MainVertices();
+            }
+
+            return new Point[] { };
+        }
 
         public override void Starting(Point worldPosition)
         {

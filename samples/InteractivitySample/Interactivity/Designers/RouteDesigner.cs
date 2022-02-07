@@ -12,7 +12,15 @@ namespace InteractivitySample.Interactivity.Designers
         private bool _isDrawing = false;      
         private IFeature? _extraLineString;
 
-        public override IEnumerable<Point> GetActiveVertices() => Feature.Geometry.MainVertices();
+        public override IEnumerable<Point> GetActiveVertices()
+        {
+            if (Feature.Geometry != null)
+            {
+                return Feature.Geometry.MainVertices();
+            }
+
+            return new Point[] { };
+        }
 
         public override void Starting(Point worldPosition)
         {
