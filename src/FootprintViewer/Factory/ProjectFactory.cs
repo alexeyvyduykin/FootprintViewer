@@ -147,7 +147,7 @@ namespace FootprintViewer
 
             return new Layer()
             {
-                Name = "FeatureLayer",
+                Name = nameof(LayerType.User),
                 DataSource = customProvider,
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,

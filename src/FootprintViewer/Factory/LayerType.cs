@@ -12,5 +12,6 @@
      //   AOI = 7,
         Edit = 8,
         Vertex = 9,
+        User = 10
     }
 }
