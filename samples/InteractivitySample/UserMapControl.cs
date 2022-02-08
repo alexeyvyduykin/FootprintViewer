@@ -8,6 +8,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using InteractivitySample.Interactivity;
+using Mapsui.Projection;
 
 namespace InteractivitySample
 {
@@ -90,6 +91,9 @@ namespace InteractivitySample
                 if (e.NewValue != null && e.NewValue is Map map)
                 {
                     mapControl.Map = map;
+                    
+                    mapControl.Navigator.CenterOn(SphericalMercator.FromLonLat(13, 42));
+                    mapControl.Navigator.ZoomTo(1000);
                 }
             }
         }
