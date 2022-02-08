@@ -23,7 +23,7 @@ namespace FootprintViewer.ViewModels
     public class MainViewModel : ReactiveObject
     {
         private readonly EditLayer _editLayer;
-        private readonly ILayer _userLayer;
+        private readonly UserLayer _userLayer;
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
@@ -104,7 +104,7 @@ namespace FootprintViewer.ViewModels
 
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-            _userLayer = _map.GetLayer<ILayer>(LayerType.User);
+            _userLayer = _map.GetLayer<UserLayer>(LayerType.User);
 
             _map.DataChanged += Map_DataChanged;
 
@@ -794,7 +794,7 @@ namespace FootprintViewer.ViewModels
             Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
             designer.BeginCreating += (s, e) =>
-            {                
+            {
                 Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
             };
 

@@ -145,10 +145,10 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var customProvider = dependencyResolver.GetExistingService<CustomProvider>();
 
-            return new Layer()
+            return new UserLayer(customProvider)
             {
                 Name = nameof(LayerType.User),
-                DataSource = customProvider,
+                //DataSource = customProvider,
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,
             };

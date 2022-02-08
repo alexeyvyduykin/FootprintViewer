@@ -109,7 +109,7 @@ namespace FootprintViewer.Avalonia
 
             // Custom provider for user draw/edit
 
-            CustomProvider customProvider = new CustomProvider();
+            CustomProvider customProvider = new CustomProvider(userGeometryProvider);
             services.RegisterLazySingleton<CustomProvider>(() => customProvider);
 
             // Layer style manager

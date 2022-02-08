@@ -164,7 +164,7 @@ namespace FootprintViewer.Designer
         }
         private class DesignTimeCustomProvider : CustomProvider
         {
-            public DesignTimeCustomProvider() : base() { }
+            public DesignTimeCustomProvider() : base(new UserGeometryProvider()) { }
         }
 
         private class DesignTimeFootprintPreviewGeometryProvider : FootprintPreviewGeometryProvider
