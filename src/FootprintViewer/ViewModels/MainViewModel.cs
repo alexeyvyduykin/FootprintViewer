@@ -335,7 +335,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveLayer(_dependencyResolver, layer, designer));
+            Map.Layers.Add(factory.CreateInteractiveLayer(layer, designer));
         }
 
         private void CreateInteractiveSelectLayer(ILayer source, IFeature feature)
@@ -344,7 +344,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveSelectLayer(_dependencyResolver, source, feature));
+            Map.Layers.Add(factory.CreateInteractiveSelectLayer(source, feature));
         }
 
         private void CreateInteractiveLayer(ILayer source, IDecorator decorator)
@@ -353,7 +353,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveLayer(_dependencyResolver, source, decorator));
+            Map.Layers.Add(factory.CreateInteractiveLayer(source, decorator));
         }
 
         public event EventHandler? AOIChanged;

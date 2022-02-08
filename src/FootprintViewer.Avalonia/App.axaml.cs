@@ -39,7 +39,7 @@ namespace FootprintViewer.Avalonia
         {
             services.InitializeSplat();
 
-            services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory());
+            services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory(resolver));
 
             Data.Sources.IGroundTargetDataSource groundTargetDataSource;
             Data.Sources.IFootprintDataSource footprintDataSource;
@@ -120,7 +120,7 @@ namespace FootprintViewer.Avalonia
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 
-            var map = factory.CreateMap(resolver);
+            var map = factory.CreateMap();
 
             services.RegisterLazySingleton<Mapsui.Map>(() => map);
 

@@ -7,8 +7,6 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
-using Mapsui.Styles;
-using Mapsui.UI;
 using Splat;
 using System.Linq;
 
@@ -16,9 +14,16 @@ namespace FootprintViewer
 {
     public class ProjectFactory
     {
-        public Map CreateMap(IReadonlyDependencyResolver dependencyResolver)
+        private readonly IReadonlyDependencyResolver _dependencyResolver;
+
+        public ProjectFactory(IReadonlyDependencyResolver dependencyResolver)
         {
-            var mapProvider = dependencyResolver.GetExistingService<MapProvider>();
+            _dependencyResolver = dependencyResolver;
+        }
+
+        public Map CreateMap()
+        {
+            var mapProvider = _dependencyResolver.GetExistingService<MapProvider>();
 
             var map = new Map()
             {
@@ -26,15 +31,15 @@ namespace FootprintViewer
                 Transformation = new MinimalTransformation(),
             };
 
-            map.Layers.Add(CreateWorldMapLayer());                               // WorldMap
-            map.Layers.Add(CreateFootprintImageLayer());                         // FootprintImage
-            map.Layers.Add(CreateTargetLayer(dependencyResolver));               // GroundTarget
-            map.Layers.Add(CreateSensorLayer(dependencyResolver));               // Sensor
-            map.Layers.Add(CreateTrackLayer(dependencyResolver));                // Track
-            map.Layers.Add(CreateFootprintLayer(dependencyResolver));            // Footprint
-            map.Layers.Add(CreateFootprintImageBorderLayer(dependencyResolver)); // FootprintImageBorder      
-            map.Layers.Add(CreateEditLayers(dependencyResolver));                // Edit / VertexOnly
-            map.Layers.Add(CreateUserLayer(dependencyResolver));                 // User
+            map.Layers.Add(CreateWorldMapLayer());                                // WorldMap
+            map.Layers.Add(CreateFootprintImageLayer());                          // FootprintImage
+            map.Layers.Add(CreateTargetLayer(_dependencyResolver));               // GroundTarget
+            map.Layers.Add(CreateSensorLayer(_dependencyResolver));               // Sensor
+            map.Layers.Add(CreateTrackLayer(_dependencyResolver));                // Track
+            map.Layers.Add(CreateFootprintLayer(_dependencyResolver));            // Footprint
+            map.Layers.Add(CreateFootprintImageBorderLayer(_dependencyResolver)); // FootprintImageBorder      
+            map.Layers.Add(CreateEditLayers(_dependencyResolver));                // Edit / VertexOnly
+            map.Layers.Add(CreateUserLayer(_dependencyResolver));                 // User
 
             map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault());
 
@@ -165,9 +170,9 @@ namespace FootprintViewer
             return new InfoPanel();
         }
 
-        public ILayer CreateInteractiveLayer(IReadonlyDependencyResolver dependencyResolver, ILayer layer, IInteractiveObject obj)
+        public ILayer CreateInteractiveLayer(ILayer layer, IInteractiveObject obj)
         {
-            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+            var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
 
             if (obj is IDesigner designer)
             {
@@ -185,9 +190,9 @@ namespace FootprintViewer
             };
         }
 
-        public ILayer CreateInteractiveSelectLayer(IReadonlyDependencyResolver dependencyResolver, ILayer source, IFeature feature)
+        public ILayer CreateInteractiveSelectLayer(ILayer source, IFeature feature)
         {
-            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+            var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
 
             return new SelectLayer(source, feature)
             {

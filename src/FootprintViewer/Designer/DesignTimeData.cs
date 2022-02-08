@@ -34,7 +34,7 @@ namespace FootprintViewer.Designer
         {
             if (serviceType == typeof(ProjectFactory))
             {
-                return _projectFactory ??= new ProjectFactory();
+                return _projectFactory ??= new ProjectFactory(this);
             }
             else if (serviceType == typeof(Mapsui.Map))
             {
