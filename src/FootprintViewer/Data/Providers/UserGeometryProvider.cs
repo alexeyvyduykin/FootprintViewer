@@ -51,6 +51,18 @@ namespace FootprintViewer.Data
             });
         }
 
+        public List<UserGeometry> LoadUsers()
+        {
+            var list = new List<UserGeometry>();
+
+            foreach (var source in Sources)
+            {
+                list.AddRange(source.GetUserGeometries());
+            }
+
+            return list;
+        }
+
         public async Task<List<UserGeometryInfo>> LoadUserGeometriesAsync()
         {
             return await Task.Run(() =>

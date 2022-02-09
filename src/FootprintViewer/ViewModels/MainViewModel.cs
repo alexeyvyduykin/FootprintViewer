@@ -710,7 +710,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                _provider.AddRectangle(designer.Feature.Copy());
 
                 Tip = null;
 
@@ -743,7 +743,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                _provider.AddCircle(designer.Feature.Copy());
 
                 Tip = null;
 
@@ -811,7 +811,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                _provider.AddPolygon(designer.Feature.Copy());
 
                 Tip = null;
 
