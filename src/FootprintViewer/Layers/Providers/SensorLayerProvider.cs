@@ -4,6 +4,7 @@ using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,18 +12,39 @@ namespace FootprintViewer.Layers
 {
     public class SensorLayerProvider : MemoryProvider
     {
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-        private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
+        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft;
+        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright;
+        private readonly Dictionary<string, List<IFeature>> _cache;
+        private readonly SatelliteProvider _provider;
 
         public SensorLayerProvider(SatelliteProvider provider)
         {
-            var satellites = provider.GetLeftStrips().Keys;
+            _provider = provider;
 
-            foreach (var name in satellites)
-            {                             
-                var dictLeft = FromStrips(provider.GetLeftStrips()[name]);
-                var dictRight = FromStrips(provider.GetRightStrips()[name]);
+            _cache = new Dictionary<string, List<IFeature>>();
+
+            _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+       
+            _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+       
+            provider.Loading.Subscribe(LoadingImpl);
+        }
+
+        private void LoadingImpl(IEnumerable<Satellite> satellites)
+        {        
+            var leftStrips = StripBuilder.CreateLeft(satellites);           
+            var rightStrips = StripBuilder.CreateRight(satellites);
+
+            _dictLeft.Clear();
+            _dictright.Clear();
+
+            _cache.Clear();
+
+            foreach (var sat in satellites)
+            {
+                var name = sat.Name;
+                var dictLeft = FromStrips(leftStrips[name]);
+                var dictRight = FromStrips(rightStrips[name]);
 
                 _dictLeft.Add(name, dictLeft);
                 _dictright.Add(name, dictRight);

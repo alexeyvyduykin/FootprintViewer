@@ -5,19 +5,25 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
     public class TargetLayerProvider : MemoryProvider
     {
-        private readonly List<IFeature> _featuresCache;
+        private List<IFeature>? _featuresCache;
         private readonly GroundTargetProvider _provider;
 
         public TargetLayerProvider(GroundTargetProvider provider)
         {
             _provider = provider;
 
-            _featuresCache = Build(provider.GetGroundTargets());
+            provider.Loading.Subscribe(LoadingImpl);
+        }
+
+        private void LoadingImpl(IEnumerable<GroundTarget> groundTargets)
+        {
+            _featuresCache = Build(groundTargets);
 
             ReplaceFeatures(_featuresCache);
         }

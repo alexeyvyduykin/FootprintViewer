@@ -3,6 +3,7 @@ using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,18 @@ namespace FootprintViewer.Layers
 
             provider.Update.Subscribe(_ => Update());
 
-            Update();
+            provider.Loading.Subscribe(LoadingImpl);
+        }
+
+        private void LoadingImpl(IEnumerable<UserGeometry> userGeometries)
+        {                   
+            foreach (var item in userGeometries)
+            {
+                if (item.Geometry != null)
+                {
+                    Add(new Feature() { Geometry = NTSConverter.ToPolygon(item.Geometry) });
+                }
+            }
         }
 
         private void Update()

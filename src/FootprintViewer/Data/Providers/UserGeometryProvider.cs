@@ -14,7 +14,11 @@ namespace FootprintViewer.Data
         public UserGeometryProvider()
         {
             Update = ReactiveCommand.Create(() => { });
+            
+            Loading = ReactiveCommand.Create(LoadUsers);
         }
+
+        public ReactiveCommand<Unit, IEnumerable<UserGeometry>> Loading { get; }
 
         public async Task AddAsync(UserGeometry geometry)
         {
@@ -51,7 +55,7 @@ namespace FootprintViewer.Data
             });
         }
 
-        public List<UserGeometry> LoadUsers()
+        public IEnumerable<UserGeometry> LoadUsers()
         {
             var list = new List<UserGeometry>();
 

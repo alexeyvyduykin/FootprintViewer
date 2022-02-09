@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
@@ -72,7 +74,7 @@ namespace FootprintViewer.Avalonia
             // Footprints provider
 
             var footprintProvider = new FootprintProvider();
-            footprintProvider.AddSource(footprintDataSource);
+            footprintProvider.AddSource(footprintDataSource);          
             services.RegisterLazySingleton<FootprintProvider>(() => footprintProvider);
 
             // GroundTaregt provider
@@ -152,6 +154,29 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
         }
 
+        public void Initialization(IReadonlyDependencyResolver dependencyResolver)
+        {
+            Task.Run(async () => await LoadingAsync(dependencyResolver));         
+        }
+
+        public async Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var userGeometryProvider = dependencyResolver.GetExistingService<UserGeometryProvider>();          
+            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
+            var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
+            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+            
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            userGeometryProvider.Loading.Execute().Subscribe();
+
+            footprintProvider.Loading.Execute().Subscribe();
+
+            satelliteProvider.Loading.Execute().Subscribe();
+
+            groundTargetProvider.Loading.Execute().Subscribe();        
+        }
+
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
 
         public override void OnFrameworkInitializationCompleted()
@@ -161,6 +186,8 @@ namespace FootprintViewer.Avalonia
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {                          
                 RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
+
+                Initialization(Locator.Current);
 
                 var mainViewModel = GetExistingService<MainViewModel>();
                 

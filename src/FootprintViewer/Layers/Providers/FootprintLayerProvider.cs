@@ -5,6 +5,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
@@ -12,13 +13,19 @@ namespace FootprintViewer.Layers
     public class FootprintLayerProvider : MemoryProvider
     {
         private IFeature? _lastSelected;
-        private readonly List<IFeature> _featuresCache;
+        private List<IFeature>? _featuresCache;
         private readonly FootprintProvider _provider;
 
         public FootprintLayerProvider(FootprintProvider provider)
         {
             _provider = provider;
-            _featuresCache = Build(provider.GetFootprints());
+
+            provider.Loading.Subscribe(LoadingImpl);
+        }
+
+        private void LoadingImpl(IEnumerable<Footprint> footprints)
+        {
+            _featuresCache = Build(footprints);
 
             ReplaceFeatures(_featuresCache);
         }

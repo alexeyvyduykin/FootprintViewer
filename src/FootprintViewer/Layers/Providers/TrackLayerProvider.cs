@@ -3,6 +3,7 @@ using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,18 +11,35 @@ namespace FootprintViewer.Layers
 {
     public class TrackLayerProvider : MemoryProvider
     {
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-        private readonly Dictionary<string, List<IFeature>> _cache = new Dictionary<string, List<IFeature>>();
+        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
+        private readonly Dictionary<string, List<IFeature>> _cache;
+        private readonly SatelliteProvider _provider;
 
         public TrackLayerProvider(SatelliteProvider provider)
         {
-            var satellites = provider.GetGroundTracks().Keys;
+            _provider = provider;
+           
+            _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+           
+            _cache = new Dictionary<string, List<IFeature>>();
+       
+            provider.Loading.Subscribe(LoadingImpl);
+        }
 
-            foreach (var name in satellites)
-            {        
+        private void LoadingImpl(IEnumerable<Satellite> satellites)
+        {
+            var tracks = TrackBuilder.Create(satellites);
+
+            _dict.Clear();
+
+            _cache.Clear();
+
+            foreach (var sat in satellites)
+            {
+                var name = sat.Name;
                 var dict = new Dictionary<int, List<IFeature>>();
 
-                foreach (var item in provider.GetGroundTracks()[name])
+                foreach (var item in tracks[name])
                 {
                     var list = new List<IFeature>();
 
@@ -63,9 +81,7 @@ namespace FootprintViewer.Layers
                 }
             }
 
-            ReplaceFeatures(_cache.SelectMany(s => s.Value));
-
-            
+            ReplaceFeatures(_cache.SelectMany(s => s.Value));            
         }
     }
 }
