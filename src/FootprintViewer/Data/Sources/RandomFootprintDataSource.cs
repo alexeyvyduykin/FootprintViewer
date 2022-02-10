@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class RandomFootprintDataSource : IFootprintDataSource
     {
-        private IEnumerable<Footprint>? _footprints;
+        private List<Footprint>? _footprints;
         private readonly ISatelliteDataSource _source;
 
         public RandomFootprintDataSource(ISatelliteDataSource source)
@@ -12,7 +13,19 @@ namespace FootprintViewer.Data.Sources
             _source = source;
         }
 
-        public IEnumerable<Footprint> GetFootprints() => 
-            _footprints ??= FootprintBuilder.Create(_source.GetSatellites());
+        public async Task<List<Footprint>> GetFootprintsAsync() 
+        {            
+            return await Task.Run(async() =>
+            {
+                if (_footprints == null)
+                {
+                    var satellites = await _source.GetSatellitesAsync();
+
+                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites));
+                }
+
+                return _footprints;
+            });           
+        }  
     }
 }

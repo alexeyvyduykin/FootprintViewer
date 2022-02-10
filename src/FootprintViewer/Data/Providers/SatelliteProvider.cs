@@ -1,18 +1,20 @@
 ﻿using FootprintViewer.Data.Sources;
 using ReactiveUI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
     public class SatelliteProvider : BaseProvider<ISatelliteDataSource>
     {
         public SatelliteProvider()
-        {
-            Loading = ReactiveCommand.Create(GetSatellites);
+        {    
+            Loading = ReactiveCommand.CreateFromTask(GetSatellitesAsync);
         }
 
-        public ReactiveCommand<Unit, IEnumerable<Satellite>> Loading { get; }
+        public ReactiveCommand<Unit, List<Satellite>> Loading { get; }
 
         public IEnumerable<Satellite> GetSatellites()
         {
@@ -20,10 +22,24 @@ namespace FootprintViewer.Data
 
             foreach (var source in Sources)
             {
-                list.AddRange(source.GetSatellites());
+                list.AddRange(source.GetSatellitesAsync().Result);
             }
 
             return list;
+        }
+
+        public async Task<List<Satellite>> GetSatellitesAsync()
+        {
+            return await Sources.First().GetSatellitesAsync();
+
+            //var list = new List<Satellite>();
+
+            //foreach (var source in Sources)
+            //{              
+            //    list.AddRange(await source.GetSatellitesAsync());
+            //}
+
+            //return list;
         }
     }
 }

@@ -24,15 +24,15 @@ namespace FootprintViewer.Layers
             _cache = new Dictionary<string, List<IFeature>>();
 
             _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-       
+
             _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-       
+
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(IEnumerable<Satellite> satellites)
-        {        
-            var leftStrips = StripBuilder.CreateLeft(satellites);           
+        private void LoadingImpl(List<Satellite> satellites)
+        {
+            var leftStrips = StripBuilder.CreateLeft(satellites);
             var rightStrips = StripBuilder.CreateRight(satellites);
 
             _dictLeft.Clear();

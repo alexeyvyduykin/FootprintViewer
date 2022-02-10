@@ -15,6 +15,7 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -142,11 +143,11 @@ namespace FootprintViewer.Avalonia
 
             var tabs = new SidePanelTab[]
             {
-                resolver.GetExistingService<SceneSearch>(),
-                resolver.GetExistingService<SatelliteViewer>(),
-                resolver.GetExistingService<GroundTargetViewer>(),
-                resolver.GetExistingService<FootprintObserver>(),
-                resolver.GetExistingService<UserGeometryViewer>(),
+                //resolver.GetExistingService<SceneSearch>(),
+                //resolver.GetExistingService<SatelliteViewer>(),
+                //resolver.GetExistingService<GroundTargetViewer>(),
+                //resolver.GetExistingService<FootprintObserver>(),
+                //resolver.GetExistingService<UserGeometryViewer>(),
             };
 
             services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
@@ -166,15 +167,15 @@ namespace FootprintViewer.Avalonia
             var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
             
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(4));
 
-            userGeometryProvider.Loading.Execute().Subscribe();
+            await userGeometryProvider.Loading.Execute();
 
-            footprintProvider.Loading.Execute().Subscribe();
+            await footprintProvider.Loading.Execute();
 
-            satelliteProvider.Loading.Execute().Subscribe();
+            await satelliteProvider.Loading.Execute();
 
-            groundTargetProvider.Loading.Execute().Subscribe();        
+            await groundTargetProvider.Loading.Execute();
         }
 
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();

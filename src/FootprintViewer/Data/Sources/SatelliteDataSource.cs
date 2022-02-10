@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class SatelliteDataSource : ISatelliteDataSource
     {
-        private readonly FootprintViewerDbContext _db;
+        private readonly FootprintViewerDbContext _context;
 
-        public SatelliteDataSource(FootprintViewerDbContext db)
+        public SatelliteDataSource(FootprintViewerDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        public IEnumerable<Satellite> GetSatellites() => _db.Satellites.OrderBy(s => s.Name);
+        public async Task<List<Satellite>> GetSatellitesAsync() => await _context.Satellites.OrderBy(s => s.Name).ToListAsync();
     }
 }

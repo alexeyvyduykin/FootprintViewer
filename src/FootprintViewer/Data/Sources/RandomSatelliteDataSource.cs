@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class RandomSatelliteDataSource : ISatelliteDataSource
     {
-        private IEnumerable<Satellite>? _satellites;
+        private List<Satellite>? _satellites;
 
-        public IEnumerable<Satellite> GetSatellites() =>
-            _satellites ??= SatelliteBuilder.Create();
+        public async Task<List<Satellite>> GetSatellitesAsync()
+        {
+            return await Task.Run(() =>
+            {
+                return _satellites ??= new List<Satellite>(SatelliteBuilder.Create());                
+            });
+        }
     }
 }

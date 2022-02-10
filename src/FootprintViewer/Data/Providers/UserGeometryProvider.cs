@@ -14,11 +14,11 @@ namespace FootprintViewer.Data
         public UserGeometryProvider()
         {
             Update = ReactiveCommand.Create(() => { });
-            
-            Loading = ReactiveCommand.Create(LoadUsers);
+
+            Loading = ReactiveCommand.CreateFromTask(LoadUsersAsync);
         }
 
-        public ReactiveCommand<Unit, IEnumerable<UserGeometry>> Loading { get; }
+        public ReactiveCommand<Unit, List<UserGeometry>> Loading { get; }
 
         public async Task AddAsync(UserGeometry geometry)
         {
@@ -42,17 +42,16 @@ namespace FootprintViewer.Data
 
         public async Task<List<UserGeometry>> LoadUsersAsync()
         {
-            return await Task.Run(() =>
-            {
-                var list = new List<UserGeometry>();
+            return await Sources.First().GetUserGeometriesAsync();
 
-                foreach (var source in Sources)
-                {
-                    list.AddRange(source.GetUserGeometries());
-                }
+            //List<UserGeometry> list = new List<UserGeometry>();
 
-                return list;
-            });
+            //foreach (var source in Sources)
+            //{
+            //    list.AddRange(await source.GetUserGeometriesAsync());
+            //}
+
+            //return list;
         }
 
         public IEnumerable<UserGeometry> LoadUsers()
@@ -61,7 +60,7 @@ namespace FootprintViewer.Data
 
             foreach (var source in Sources)
             {
-                list.AddRange(source.GetUserGeometries());
+                list.AddRange(source.GetUserGeometriesAsync().Result);
             }
 
             return list;
@@ -75,7 +74,7 @@ namespace FootprintViewer.Data
 
                 foreach (var source in Sources)
                 {
-                    list.AddRange(source.GetUserGeometries().Select(s => new UserGeometryInfo(s)));
+                    list.AddRange(source.GetUserGeometriesAsync().Result.Select(s => new UserGeometryInfo(s)));
                 }
 
                 return list;

@@ -23,7 +23,7 @@ namespace FootprintViewer.Layers
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(IEnumerable<Footprint> footprints)
+        private void LoadingImpl(List<Footprint> footprints)
         {
             _featuresCache = Build(footprints);
 
@@ -40,7 +40,7 @@ namespace FootprintViewer.Layers
             return await Task.Run(() => _provider.GetFootprints().ToList());
         }
 
-        public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();        
+        public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();
 
         public void SelectFeature(string name)
         {

@@ -18,15 +18,15 @@ namespace FootprintViewer.Layers
         public TrackLayerProvider(SatelliteProvider provider)
         {
             _provider = provider;
-           
+
             _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-           
+
             _cache = new Dictionary<string, List<IFeature>>();
-       
+
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(IEnumerable<Satellite> satellites)
+        private void LoadingImpl(List<Satellite> satellites)
         {
             var tracks = TrackBuilder.Create(satellites);
 
@@ -81,7 +81,7 @@ namespace FootprintViewer.Layers
                 }
             }
 
-            ReplaceFeatures(_cache.SelectMany(s => s.Value));            
+            ReplaceFeatures(_cache.SelectMany(s => s.Value));
         }
     }
 }

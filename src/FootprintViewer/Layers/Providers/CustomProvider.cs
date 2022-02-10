@@ -24,8 +24,8 @@ namespace FootprintViewer.Layers
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(IEnumerable<UserGeometry> userGeometries)
-        {                   
+        private void LoadingImpl(List<UserGeometry> userGeometries)
+        {
             foreach (var item in userGeometries)
             {
                 if (item.Geometry != null)

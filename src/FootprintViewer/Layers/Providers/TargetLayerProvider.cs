@@ -21,7 +21,7 @@ namespace FootprintViewer.Layers
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(IEnumerable<GroundTarget> groundTargets)
+        private void LoadingImpl(List<GroundTarget> groundTargets)
         {
             _featuresCache = Build(groundTargets);
 

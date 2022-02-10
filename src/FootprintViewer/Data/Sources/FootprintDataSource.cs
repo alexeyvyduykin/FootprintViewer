@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class FootprintDataSource : IFootprintDataSource
     {
-        private readonly FootprintViewerDbContext _db;
+        private readonly FootprintViewerDbContext _context;
 
-        public FootprintDataSource(FootprintViewerDbContext db)
+        public FootprintDataSource(FootprintViewerDbContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        public IEnumerable<Footprint> GetFootprints() => _db.Footprints;
+        public async Task<List<Footprint>> GetFootprintsAsync() => await _context.Footprints.ToListAsync();
     }
 }

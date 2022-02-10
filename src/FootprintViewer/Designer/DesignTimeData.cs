@@ -5,6 +5,7 @@ using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
@@ -133,7 +134,7 @@ namespace FootprintViewer.Designer
                         _satellites.Add(DesignTimeSatelliteInfo.BuildModel());
                     }
                 }
-
+                public Task<List<Satellite>> GetSatellitesAsync() => throw new Exception();
                 public IEnumerable<Satellite> GetSatellites() => _satellites;
 
                 public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => throw new Exception();
@@ -197,7 +198,8 @@ namespace FootprintViewer.Designer
                     {
                         yield return DesignTimeUserGeometryInfo.BuildModel();
                     }
-                }              
+                }
+                public async Task<List<UserGeometry>> GetUserGeometriesAsync() => GetUserGeometries().ToList();
 
                 public void Remove(UserGeometry geometry) => throw new NotImplementedException();                
             }
@@ -257,6 +259,7 @@ namespace FootprintViewer.Designer
                     yield return DesignTimeGroundTargetInfo.BuildModel();
                 }
             }
+            public async Task<List<GroundTarget>> GetGroundTargetsAsync() => GetGroundTargets().ToList();
         }
     }
 
@@ -276,6 +279,8 @@ namespace FootprintViewer.Designer
                     yield return DesignTimeFootprintInfo.BuildModel();
                 }
             }
+
+            public async Task<List<Footprint>> GetFootprintsAsync() => GetFootprints().ToList();
         }
     }
 }

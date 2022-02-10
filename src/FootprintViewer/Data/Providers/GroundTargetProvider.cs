@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data.Sources;
 using ReactiveUI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
@@ -9,10 +11,10 @@ namespace FootprintViewer.Data
     {
         public GroundTargetProvider()
         {
-            Loading = ReactiveCommand.Create(() => GetGroundTargets());
+            Loading = ReactiveCommand.CreateFromTask(GetGroundTargetsAsync);
         }
 
-        public ReactiveCommand<Unit, IEnumerable<GroundTarget>> Loading { get; }
+        public ReactiveCommand<Unit, List<GroundTarget>> Loading { get; }
 
         public IEnumerable<GroundTarget> GetGroundTargets()
         {
@@ -20,10 +22,24 @@ namespace FootprintViewer.Data
 
             foreach (var source in Sources)
             {
-                list.AddRange(source.GetGroundTargets());
+                list.AddRange(source.GetGroundTargetsAsync().Result);
             }
 
             return list;
+        }
+
+        public async Task<List<GroundTarget>> GetGroundTargetsAsync()
+        {
+            return await Sources.First().GetGroundTargetsAsync();
+
+            //var list = new List<GroundTarget>();
+
+            //foreach (var source in Sources)
+            //{
+            //    list.AddRange(await source.GetGroundTargetsAsync());
+            //}
+
+            //return list;
         }
     }
 }

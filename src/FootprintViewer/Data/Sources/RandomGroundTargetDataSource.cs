@@ -1,19 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class RandomGroundTargetDataSource : IGroundTargetDataSource
     {
-        private IEnumerable<GroundTarget>? _groundTargets;
+        private List<GroundTarget>? _groundTargets;
         private readonly IFootprintDataSource _source;
 
         public RandomGroundTargetDataSource(IFootprintDataSource source)
         {
-            _source = source;      
+            _source = source;
         }
 
-        public IEnumerable<GroundTarget> GetGroundTargets() => 
-            _groundTargets ??= GroundTargetBuilder.Create(_source.GetFootprints().ToList());
+        public async Task<List<GroundTarget>> GetGroundTargetsAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                if (_groundTargets == null)
+                {
+                    var footprints = await _source.GetFootprintsAsync();
+
+                    _groundTargets = new List<GroundTarget>(GroundTargetBuilder.Create(footprints));
+                }
+
+                return _groundTargets;
+            });
+        }
     }
 }

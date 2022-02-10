@@ -1,10 +1,11 @@
 ﻿using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public interface ISatelliteDataSource
     {
-        IEnumerable<Satellite> GetSatellites();
+        Task<List<Satellite>> GetSatellitesAsync();
     }
 }

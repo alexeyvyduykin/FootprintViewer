@@ -43,7 +43,7 @@ namespace FootprintViewer.ViewModels
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Subscribe(f => update.Execute(f).Subscribe());
 
-            CreateSatelliteList(provider);
+        //    CreateSatelliteList(provider);
         }
 
         public IObservable<FootprintObserverFilter> Update => update;

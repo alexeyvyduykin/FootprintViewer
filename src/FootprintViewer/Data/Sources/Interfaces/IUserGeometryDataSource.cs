@@ -9,6 +9,6 @@ namespace FootprintViewer.Data.Sources
 
         void Remove(UserGeometry geometry);
 
-        IEnumerable<UserGeometry> GetUserGeometries();
+        Task<List<UserGeometry>> GetUserGeometriesAsync();
     }
 }

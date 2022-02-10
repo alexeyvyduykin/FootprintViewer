@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using ReactiveUI;
+using System.Collections.Generic;
 
 namespace FootprintViewer.Data
 {
-    public abstract class BaseProvider<T>
+    public abstract class BaseProvider<T> : ReactiveObject
     {
         private readonly IList<T> _sources = new List<T>();
 

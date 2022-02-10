@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public interface IGroundTargetDataSource
     {
-        IEnumerable<GroundTarget> GetGroundTargets();
+        Task<List<GroundTarget>> GetGroundTargetsAsync();
     }
 }

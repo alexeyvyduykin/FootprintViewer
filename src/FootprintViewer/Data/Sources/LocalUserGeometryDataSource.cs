@@ -22,6 +22,6 @@ namespace FootprintViewer.Data.Sources
             _userGeometries.Remove(geometry);
         }
 
-        public IEnumerable<UserGeometry> GetUserGeometries() => _userGeometries;
+        public async Task<List<UserGeometry>> GetUserGeometriesAsync() => await Task.Run(() => _userGeometries);
     }
 }
