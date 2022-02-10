@@ -6,7 +6,7 @@ namespace FootprintViewer.Data
 {
     public class FootprintPreviewProvider : BaseProvider<IFootprintPreviewDataSource>
     {
-        public IEnumerable<FootprintPreview> GetFootprintPreviews()
+        public List<FootprintPreview> GetFootprintPreviews()
         {
             var list = new List<FootprintPreview>();
 

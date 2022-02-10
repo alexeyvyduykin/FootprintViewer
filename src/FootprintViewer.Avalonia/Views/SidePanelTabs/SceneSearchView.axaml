@@ -15,19 +15,16 @@
     <vmd:DesignTimeSceneSearch/>
   </Design.DataContext>
   
-  <UserControl.Styles>
-        
+  <UserControl.Styles>        
     <Style Selector="ListBoxItem">
       <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-    </Style>
-    
+    </Style>    
   </UserControl.Styles>
 
   <Grid>
-
     <controls:Flyout Placement="Left"
                      Margin="0,10,0,0"
-                     Target="{Binding ElementName=btnSearch}"
+                     Target="{Binding ElementName=ToggleButtonSearch}"
                      Background="{StaticResource MainBackgroundBrush}"
                      IsOpen="{Binding IsFilterOpen}"
                      ContentSource="{Binding Filter}"/>
@@ -36,34 +33,17 @@
           Background="{StaticResource MainBackgroundBrush}">
 
       <ToggleButton Grid.Row="0"              
-                    x:Name="btnSearch"              
-                    Classes="searchToggleButton"              
-                    Command="{Binding FilterClick}"              
+                    x:Name="ToggleButtonSearch"              
+                    Classes="searchToggleButton"                                            
                     Content="Настройки поиска"/>
     
       <ListBox x:Name="ListBoxFootprints"
                Grid.Row="1"
                BorderThickness="0"
                ScrollViewer.VerticalScrollBarVisibility="Visible"
-               Background="Transparent"      
-               Items="{Binding Footprints}"
-               SelectedItem="{Binding SelectedFootprint}">
-
-        <!-- Avalonia.Behavior error -->
-        <!--<i:Interaction.Behaviors>
-
-          <ia:EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #ListBoxFootprints}">
-            <ia:InvokeCommandAction Command="{Binding #SceneSearchTabName.DataContext.SelectedItemChangedCommand}"
-                                    CommandParameter="{Binding #ListBoxFootprints.SelectedItem}"/>
-          </ia:EventTriggerBehavior>
-
-        </i:Interaction.Behaviors>-->
-        
-      </ListBox>
+               Background="Transparent"/>
     </Grid>
 
-
   </Grid>
-  
-  
+    
 </UserControl>

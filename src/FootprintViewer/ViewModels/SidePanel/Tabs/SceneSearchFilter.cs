@@ -39,6 +39,8 @@ namespace FootprintViewer.ViewModels
             MaxSunElevation = 90.0;
             IsFullCoverAOI = false;
             IsAllSensorActive = true;
+            FromDate = DateTime.Today.AddDays(-1);
+            ToDate = DateTime.Today.AddDays(1);
 
             //this.WhenAnyValue(s => s.AOI).Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
 
@@ -57,11 +59,13 @@ namespace FootprintViewer.ViewModels
             Update?.Invoke(this, EventArgs.Empty);
         }
 
-        public void AddSensors(IEnumerable<string> sensors)
+        public void AddSensors(List<string> sensors)
         {
+            //sensors.Sort();
+
             Sensors.Clear();
 
-            foreach (var item in sensors)
+            foreach (var item in sensors.OrderBy(s => s))
             {
                 Sensors.Add(new Sensor() { Name = item });
             }

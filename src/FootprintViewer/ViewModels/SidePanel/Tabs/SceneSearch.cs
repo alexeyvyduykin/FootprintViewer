@@ -1,5 +1,4 @@
-﻿using DynamicData;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -9,31 +8,39 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class SceneSearch : SidePanelTab
     {
-        private readonly IList<FootprintPreview> _sourceFootprints = new List<FootprintPreview>();
+        private readonly ObservableAsPropertyHelper<List<FootprintPreview>> _footprints;
         private readonly FootprintPreviewProvider _footprintPreviewProvider;
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
         private readonly Map _map;
         private readonly IDictionary<string, IGeometry> _geometries;
+        private bool _firstLoading = true;
 
         public event EventHandler? CurrentFootprint;
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            _map = dependencyResolver.GetExistingService<Map>();       
+            _map = dependencyResolver.GetExistingService<Map>();
             _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
 
             Title = "Поиск сцены";
+
             Name = "Scene";
+
+            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
+
+            Filter = new SceneSearchFilter(dependencyResolver);
+
+            Filter.Update += Filter_Update;
 
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
             {
@@ -47,8 +54,6 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            //this.WhenAnyValue(s => s.UserDataSource).Subscribe(_ => UserDataSourceChanged());
-
             MouseOverEnter = ReactiveCommand.Create<FootprintPreview?>(ShowFootprintBorder);
 
             MouseOverLeave = ReactiveCommand.Create(HideFootprintBorder);
@@ -57,16 +62,34 @@ namespace FootprintViewer.ViewModels
 
             SelectedItemChangedCommand = ReactiveCommand.Create<FootprintPreview>(SelectionChanged);
 
-            Filter = new SceneSearchFilter(dependencyResolver);
+            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
-            Filter.FromDate = DateTime.Today.AddDays(-1);
-            Filter.ToDate = DateTime.Today.AddDays(1);
+            Loading.Subscribe(Update);
 
-            Filter.Update += Filter_Update;
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Unit.Default).InvokeCommand(Loading);
 
-            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
+            _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
+        }
 
-            UserDataSourceChanged();
+        private ReactiveCommand<Unit, List<FootprintPreview>> Loading { get; }
+
+        private async Task<List<FootprintPreview>> LoadingAsync()
+        {
+            _firstLoading = false;
+
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            return await Task.Run(() =>
+            {
+                return _footprintPreviewProvider.GetFootprintPreviews();
+            });
+        }
+
+        private void Update(List<FootprintPreview> footprints)
+        {
+            var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
+          
+            Filter.AddSensors(sortNames);
         }
 
         private void Filter_Update(object? sender, EventArgs e)
@@ -75,15 +98,15 @@ namespace FootprintViewer.ViewModels
             {
                 IsUpdating = true;
 
-                Footprints.Clear();
+                //Footprints.Clear();
 
-                foreach (var item in _sourceFootprints)
-                {
-                    if (filter.Filtering(item) == true)
-                    {
-                        Footprints.Add(item);
-                    }
-                }
+                //foreach (var item in Footprints)
+                //{
+                //    if (filter.Filtering(item) == true)
+                //    {
+                //        Footprints.Add(item);
+                //    }
+                //}
 
                 IsUpdating = false;
             }
@@ -101,33 +124,6 @@ namespace FootprintViewer.ViewModels
             Filter.AOI = null;
 
             Filter.ForceUpdate();
-        }
-
-        private static async Task<IEnumerable<FootprintPreview>> LoadDataAsync(FootprintPreviewProvider provider)
-        {
-            return await Task.Run(() =>
-            {              
-                return provider.GetFootprintPreviews();
-            });
-        }
-
-        private static IEnumerable<FootprintPreview> LoadData(FootprintPreviewProvider provider)
-        {               
-            return provider.GetFootprintPreviews();        
-        }
-
-        private async void UserDataSourceChanged()
-        {
-            var footprints = await LoadDataAsync(_footprintPreviewProvider);
-
-            _sourceFootprints.AddRange(footprints);
-
-            Footprints = new ObservableCollection<FootprintPreview>(footprints);
-
-            var sortNames = new List<FootprintPreview>(footprints).Select(s => s.SatelliteName).Distinct().ToList();
-            sortNames.Sort();
-
-            Filter.AddSensors(sortNames);
         }
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
@@ -214,8 +210,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        [Reactive]
-        public ObservableCollection<FootprintPreview> Footprints { get; private set; } = new ObservableCollection<FootprintPreview>();
+        public List<FootprintPreview> Footprints => _footprints.Value;
 
         [Reactive]
         public FootprintPreview? SelectedFootprint { get; set; }

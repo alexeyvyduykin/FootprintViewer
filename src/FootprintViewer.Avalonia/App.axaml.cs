@@ -36,6 +36,7 @@ namespace FootprintViewer.Avalonia
             // IViewFor
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
@@ -143,7 +144,7 @@ namespace FootprintViewer.Avalonia
 
             var tabs = new SidePanelTab[]
             {
-                //resolver.GetExistingService<SceneSearch>(),
+                resolver.GetExistingService<SceneSearch>(),
                 //resolver.GetExistingService<SatelliteViewer>(),
                 //resolver.GetExistingService<GroundTargetViewer>(),
                 //resolver.GetExistingService<FootprintObserver>(),
@@ -167,7 +168,7 @@ namespace FootprintViewer.Avalonia
             var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
             
-            await Task.Delay(TimeSpan.FromSeconds(4));
+            //await Task.Delay(TimeSpan.FromSeconds(4));
 
             await userGeometryProvider.Loading.Execute();
 
