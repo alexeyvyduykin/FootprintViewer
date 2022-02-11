@@ -29,7 +29,9 @@ namespace FootprintViewer.ViewModels
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
             _map = dependencyResolver.GetExistingService<Map>();
+
             _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
+
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
 
             Title = "Поиск сцены";
@@ -66,6 +68,7 @@ namespace FootprintViewer.ViewModels
 
             Loading.Subscribe(Update);
 
+            // TODO: avoid from first loading design
             this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Unit.Default).InvokeCommand(Loading);
 
             _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
@@ -77,7 +80,7 @@ namespace FootprintViewer.ViewModels
         {
             _firstLoading = false;
 
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            //await Task.Delay(TimeSpan.FromSeconds(5));
 
             return await Task.Run(() =>
             {
@@ -88,7 +91,7 @@ namespace FootprintViewer.ViewModels
         private void Update(List<FootprintPreview> footprints)
         {
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
-          
+
             Filter.AddSensors(sortNames);
         }
 

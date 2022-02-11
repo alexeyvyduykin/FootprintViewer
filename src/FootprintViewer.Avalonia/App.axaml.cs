@@ -6,7 +6,6 @@ using FootprintViewer.Avalonia.Views;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
-using Mapsui.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -17,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
@@ -37,6 +35,7 @@ namespace FootprintViewer.Avalonia
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
@@ -52,15 +51,14 @@ namespace FootprintViewer.Avalonia
 
             if (IsConnectionValid() == true)
             {
-                FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
-
-                satelliteDataSource = new Data.Sources.SatelliteDataSource(db);
-                groundTargetDataSource = new Data.Sources.GroundTargetDataSource(db);
-                footprintDataSource = new Data.Sources.FootprintDataSource(db);
-                userGeometryDataSource = new Data.Sources.UserGeometryDataSource(db);
+                var options = GetOptions();
+                satelliteDataSource = new Data.Sources.SatelliteDataSource(options);
+                groundTargetDataSource = new Data.Sources.GroundTargetDataSource(options);
+                footprintDataSource = new Data.Sources.FootprintDataSource(options);
+                userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
             }
             else
-            {             
+            {
                 satelliteDataSource = new Data.Sources.RandomSatelliteDataSource();
                 footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
                 groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);
@@ -76,7 +74,7 @@ namespace FootprintViewer.Avalonia
             // Footprints provider
 
             var footprintProvider = new FootprintProvider();
-            footprintProvider.AddSource(footprintDataSource);          
+            footprintProvider.AddSource(footprintDataSource);
             services.RegisterLazySingleton<FootprintProvider>(() => footprintProvider);
 
             // GroundTaregt provider
@@ -145,7 +143,7 @@ namespace FootprintViewer.Avalonia
             var tabs = new SidePanelTab[]
             {
                 resolver.GetExistingService<SceneSearch>(),
-                //resolver.GetExistingService<SatelliteViewer>(),
+                resolver.GetExistingService<SatelliteViewer>(),
                 //resolver.GetExistingService<GroundTargetViewer>(),
                 //resolver.GetExistingService<FootprintObserver>(),
                 //resolver.GetExistingService<UserGeometryViewer>(),
@@ -158,16 +156,16 @@ namespace FootprintViewer.Avalonia
 
         public void Initialization(IReadonlyDependencyResolver dependencyResolver)
         {
-            Task.Run(async () => await LoadingAsync(dependencyResolver));         
+            Task.Run(async () => await LoadingAsync(dependencyResolver));
         }
 
         public async Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
         {
-            var userGeometryProvider = dependencyResolver.GetExistingService<UserGeometryProvider>();          
+            var userGeometryProvider = dependencyResolver.GetExistingService<UserGeometryProvider>();
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
             var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-            
+
             //await Task.Delay(TimeSpan.FromSeconds(4));
 
             await userGeometryProvider.Loading.Execute();
@@ -186,13 +184,13 @@ namespace FootprintViewer.Avalonia
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {                          
+            {
                 RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
 
                 Initialization(Locator.Current);
 
                 var mainViewModel = GetExistingService<MainViewModel>();
-                
+
                 if (mainViewModel != null)
                 {
                     desktopLifetime.MainWindow = new MainWindow()
@@ -230,9 +228,9 @@ namespace FootprintViewer.Avalonia
 
         private static string GetConnectionString()
         {
-            var builder = new ConfigurationBuilder();          
-            builder.SetBasePath(Directory.GetCurrentDirectory());          
-            builder.AddJsonFile("appsettings.json");                            
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+            builder.AddJsonFile("appsettings.json");
             return builder.Build().GetConnectionString("DefaultConnection");
         }
 

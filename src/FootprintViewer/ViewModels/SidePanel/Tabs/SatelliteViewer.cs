@@ -2,12 +2,12 @@
 using FootprintViewer.Layers;
 using Mapsui;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -16,83 +16,53 @@ namespace FootprintViewer.ViewModels
         private readonly TrackLayer? _trackLayer;
         private readonly SensorLayer? _sensorLayer;
         private readonly SatelliteProvider _provider;
+        private readonly ObservableAsPropertyHelper<List<SatelliteInfo>> _satellites;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
             var map = dependencyResolver.GetExistingService<Map>();
+
             _provider = dependencyResolver.GetExistingService<SatelliteProvider>();
 
             Title = "Просмотр спутников";
+
             Name = "SatelliteViewer";
-            SatelliteInfos = new ObservableCollection<SatelliteInfo>();
 
             _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
+
             _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
 
-            SatelliteInfos.CollectionChanged += items_CollectionChanged;
+            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
-            this.WhenAnyValue(s => s.IsActive).Subscribe(_ => DataSourceChanged());
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+
+            _satellites = Loading.Select(s => Convert(s)).ToProperty(this, x => x.SatelliteInfos, scheduler: RxApp.MainThreadScheduler);
         }
 
-        private void DataSourceChanged()
+        private ReactiveCommand<Unit, List<Satellite>> Loading { get; }
+
+        private async Task<List<Satellite>> LoadingAsync() => await _provider.GetSatellitesAsync();
+
+        private List<SatelliteInfo> Convert(List<Satellite> satellites)
         {
-            var satellites = _provider.GetSatellites();
-
-            SatelliteInfos.Clear();
-
-            foreach (var item in satellites)
+            if (satellites == null)
             {
-                SatelliteInfos.Add(new SatelliteInfo(item));
+                return new List<SatelliteInfo>();
             }
+
+            return satellites.Select(s => new SatelliteInfo(s)).ToList();
         }
 
-        private void items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void UpdateTrack(SatelliteInfo satelliteInfo)
         {
-            if (e.OldItems != null)
-            {
-                foreach (INotifyPropertyChanged? item in e.OldItems)
-                {
-                    if (item != null)
-                    {
-                        item.PropertyChanged -= item_PropertyChanged;
-                    }
-                }
-            }
-
-            if (e.NewItems != null)
-            {
-                foreach (INotifyPropertyChanged? item in e.NewItems)
-                {
-                    if (item != null)
-                    {
-                        item.PropertyChanged += item_PropertyChanged;
-                    }
-                }
-            }
+            _trackLayer?.Update(satelliteInfo);
         }
 
-        private void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void UpdateStrips(SatelliteInfo satelliteInfo)
         {
-            if (sender is SatelliteInfo info)
-            {
-                if (e.PropertyName == nameof(SatelliteInfo.IsShow) ||
-                    e.PropertyName == nameof(SatelliteInfo.CurrentNode) ||
-                    e.PropertyName == nameof(SatelliteInfo.IsTrack))
-                {
-                    _trackLayer?.Update(info);
-                }
-
-                if (e.PropertyName == nameof(SatelliteInfo.IsShow) ||
-                    e.PropertyName == nameof(SatelliteInfo.CurrentNode) ||
-                    e.PropertyName == nameof(SatelliteInfo.IsLeftStrip) ||
-                    e.PropertyName == nameof(SatelliteInfo.IsRightStrip))
-                {
-                    _sensorLayer?.Update(info);
-                }
-            }
+            _sensorLayer?.Update(satelliteInfo);
         }
 
-        [Reactive]
-        public ObservableCollection<SatelliteInfo> SatelliteInfos { get; protected set; }
+        public List<SatelliteInfo> SatelliteInfos => _satellites.Value;
     }
 }

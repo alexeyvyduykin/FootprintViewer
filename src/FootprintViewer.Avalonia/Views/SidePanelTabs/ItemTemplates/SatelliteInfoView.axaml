@@ -41,51 +41,59 @@
     </Style>
   </UserControl.Styles>
 
-  <Border Padding="8" Background="{StaticResource LightBackgroundBrush}">
+  <Border Padding="8" 
+          Background="{StaticResource LightBackgroundBrush}">
     <StackPanel>
       <StackPanel>
         <DockPanel>
-          <TextBlock Text="{Binding Name}" Classes="txtHeaderNameKey"/>
-          <Button Width="30" Height="18"
+          <TextBlock Text="{Binding Name}" 
+                     Classes="txtHeaderNameKey"/>
+          <Button x:Name="ShowInfoButton" 
+                  Width="30" Height="18"
                   FontSize="12"
                   Padding="0"
                   Margin="4,0,0,0"
                   Content="info"
                   HorizontalContentAlignment="Center"
-                  VerticalContentAlignment="Center"
-                  Command="{Binding ShowInfoClick}">
+                  VerticalContentAlignment="Center">
           </Button>
-          <CheckBox IsChecked="{Binding IsShow}" DockPanel.Dock="Right" VerticalAlignment="Center"/>
-          <TextBlock Text="Show/Hide" Classes="txtBodyNameKey"/>
+          <CheckBox x:Name="ShowCheckBox"                    
+                    DockPanel.Dock="Right" 
+                    VerticalAlignment="Center"/>
+          <TextBlock Text="Show/Hide" 
+                     Classes="txtBodyNameKey"/>
         </DockPanel>
       </StackPanel>
 
-      <StackPanel IsVisible="{Binding IsShow}">
+      <StackPanel IsVisible="{Binding #ShowCheckBox.IsChecked}">
 
-        <Slider Minimum="{Binding MinNode}" 
-                Maximum="{Binding MaxNode}" 
-                Value="{Binding CurrentNode}"      
+        <Slider x:Name="Slider"                            
                 TickPlacement="TopLeft"        
                 TickFrequency="1" />
         
         <DockPanel>
-          <CheckBox IsChecked="{Binding IsTrack}" DockPanel.Dock="Right"/>
-          <TextBlock Text="IsTrack" Classes="txtBodyNameKey"/>
+          <CheckBox x:Name="TrackCheckBox"                 
+                    DockPanel.Dock="Right"/>
+          <TextBlock Text="IsTrack" 
+                     Classes="txtBodyNameKey"/>
         </DockPanel>
         <DockPanel>
-          <CheckBox IsChecked="{Binding IsLeftStrip}" DockPanel.Dock="Right"/>
-          <TextBlock Text="IsLeftStrip" Classes="txtBodyNameKey"/>
+          <CheckBox x:Name="LeftStripCheckBox"                   
+                    DockPanel.Dock="Right"/>
+          <TextBlock Text="IsLeftStrip"
+                     Classes="txtBodyNameKey"/>
         </DockPanel>
         <DockPanel>
-          <CheckBox IsChecked="{Binding IsRightStrip}" DockPanel.Dock="Right"/>
-          <TextBlock Text="IsRightStrip" Classes="txtBodyNameKey"/>
+          <CheckBox x:Name="RightStripCheckBox"                  
+                    DockPanel.Dock="Right"/>
+          <TextBlock Text="IsRightStrip" 
+                     Classes="txtBodyNameKey"/>
         </DockPanel>
         
       </StackPanel>
 
-      <StackPanel IsVisible="{Binding IsShowInfo}">
+      <StackPanel x:Name="InfoStackPanel">
         <Grid ColumnDefinitions="*,Auto">
-
           <StackPanel>
             <TextBlock Text="Semiaxis" Classes="txtInfoNameKey"/>
             <TextBlock Text="Eccentricity" Classes="txtInfoNameKey"/>
@@ -98,7 +106,6 @@
             <TextBlock Text="InnerHalfAngle" Classes="txtInfoNameKey"/>
             <TextBlock Text="OuterHalfAngle" Classes="txtInfoNameKey"/>
           </StackPanel>
-
           <StackPanel Grid.Column="1">
             <TextBlock Text="{Binding Satellite.Semiaxis}" Classes="txtInfoValueKey"/>
             <TextBlock Text="{Binding Satellite.Eccentricity}" Classes="txtInfoValueKey"/>

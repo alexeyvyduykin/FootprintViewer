@@ -22,7 +22,7 @@
   <Grid Background="{StaticResource MainBackgroundBrush}">
     <ScrollViewer HorizontalScrollBarVisibility="Hidden" 
                   VerticalScrollBarVisibility="Auto">
-      <ItemsControl Items="{Binding SatelliteInfos}"/>
+      <ItemsControl x:Name="SatelliteItemsControl"/>
     </ScrollViewer>
   </Grid>
   

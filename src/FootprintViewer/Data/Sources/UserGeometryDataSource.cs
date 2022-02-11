@@ -6,25 +6,36 @@ namespace FootprintViewer.Data.Sources
 {
     public class UserGeometryDataSource : IUserGeometryDataSource
     {
-        private readonly FootprintViewerDbContext _context;
+        private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
-        public UserGeometryDataSource(FootprintViewerDbContext context)
+        public UserGeometryDataSource(DbContextOptions<FootprintViewerDbContext> options)
         {
-            _context = context;
+            _options = options;
         }
 
         public async Task AddAsync(UserGeometry geometry)
         {
-            await _context.UserGeometries.AddAsync(geometry);
-            await _context.SaveChangesAsync();
+            var context = new FootprintViewerDbContext(_options);
+
+            await context.UserGeometries.AddAsync(geometry);
+
+            await context.SaveChangesAsync();
         }
 
         public void Remove(UserGeometry geometry)
         {
-            _context.UserGeometries.Remove(geometry);
-            _context.SaveChanges();
+            var context = new FootprintViewerDbContext(_options);
+
+            context.UserGeometries.Remove(geometry);
+
+            context.SaveChanges();
         }
 
-        public async Task<List<UserGeometry>> GetUserGeometriesAsync() => await _context.UserGeometries.ToListAsync();
+        public async Task<List<UserGeometry>> GetUserGeometriesAsync()
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            return await context.UserGeometries.ToListAsync();
+        }
     }
 }

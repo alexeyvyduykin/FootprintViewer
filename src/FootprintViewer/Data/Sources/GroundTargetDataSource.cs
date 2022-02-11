@@ -6,13 +6,18 @@ namespace FootprintViewer.Data.Sources
 {
     public class GroundTargetDataSource : IGroundTargetDataSource
     {
-        private readonly FootprintViewerDbContext _context;
+        private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
-        public GroundTargetDataSource(FootprintViewerDbContext context)
+        public GroundTargetDataSource(DbContextOptions<FootprintViewerDbContext> options)
         {
-            _context = context;
+            _options = options;
         }
 
-        public async Task<List<GroundTarget>> GetGroundTargetsAsync() => await _context.GroundTargets.ToListAsync();
+        public async Task<List<GroundTarget>> GetGroundTargetsAsync()
+        {
+            FootprintViewerDbContext context = new FootprintViewerDbContext(_options);
+
+            return await context.GroundTargets.ToListAsync();
+        }
     }
 }

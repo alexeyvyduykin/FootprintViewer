@@ -60,32 +60,35 @@ namespace FootprintViewer.Layers
         {
             var name = info.Name;
 
-            _cache[name].Clear();
-
-            if (info.IsShow == true)
+            if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
-                var node = info.CurrentNode;
+                _cache[name].Clear();
 
-                if (info.IsLeftStrip == true)
+                if (info.IsShow == true)
                 {
-                    if (_dictLeft.ContainsKey(name) == true && _dictLeft[name].ContainsKey(node) == true)
+                    var node = info.CurrentNode;
+
+                    if (info.IsLeftStrip == true)
                     {
-                        var features = _dictLeft[name][node];
-                        _cache[name].AddRange(features);
+                        if (_dictLeft.ContainsKey(name) == true && _dictLeft[name].ContainsKey(node) == true)
+                        {
+                            var features = _dictLeft[name][node];
+                            _cache[name].AddRange(features);
+                        }
+                    }
+
+                    if (info.IsRightStrip == true)
+                    {
+                        if (_dictright.ContainsKey(name) == true && _dictright[name].ContainsKey(node) == true)
+                        {
+                            var features = _dictright[name][node];
+                            _cache[name].AddRange(features);
+                        }
                     }
                 }
 
-                if (info.IsRightStrip == true)
-                {
-                    if (_dictright.ContainsKey(name) == true && _dictright[name].ContainsKey(node) == true)
-                    {
-                        var features = _dictright[name][node];
-                        _cache[name].AddRange(features);
-                    }
-                }
+                ReplaceFeatures(_cache.SelectMany(s => s.Value));
             }
-
-            ReplaceFeatures(_cache.SelectMany(s => s.Value));
         }
 
         private Dictionary<int, List<IFeature>> FromStrips(Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)

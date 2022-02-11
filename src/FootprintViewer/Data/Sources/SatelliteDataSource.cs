@@ -1,19 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
     public class SatelliteDataSource : ISatelliteDataSource
     {
-        private readonly FootprintViewerDbContext _context;
+        private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
-        public SatelliteDataSource(FootprintViewerDbContext context)
+        public SatelliteDataSource(DbContextOptions<FootprintViewerDbContext> options)
         {
-            _context = context;
+            _options = options;
         }
 
-        public async Task<List<Satellite>> GetSatellitesAsync() => await _context.Satellites.OrderBy(s => s.Name).ToListAsync();
+        public async Task<List<Satellite>> GetSatellitesAsync()
+        {
+            FootprintViewerDbContext context = new FootprintViewerDbContext(_options);
+
+            return await context.Satellites.ToListAsync();
+        }
     }
 }

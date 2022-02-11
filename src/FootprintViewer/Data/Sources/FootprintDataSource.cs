@@ -6,13 +6,18 @@ namespace FootprintViewer.Data.Sources
 {
     public class FootprintDataSource : IFootprintDataSource
     {
-        private readonly FootprintViewerDbContext _context;
+        private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
-        public FootprintDataSource(FootprintViewerDbContext context)
+        public FootprintDataSource(DbContextOptions<FootprintViewerDbContext> options)
         {
-            _context = context;
+            _options = options;
         }
 
-        public async Task<List<Footprint>> GetFootprintsAsync() => await _context.Footprints.ToListAsync();
+        public async Task<List<Footprint>> GetFootprintsAsync()
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            return await context.Footprints.ToListAsync();
+        }
     }
 }

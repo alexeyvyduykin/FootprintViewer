@@ -68,20 +68,23 @@ namespace FootprintViewer.Layers
         {
             var name = info.Name;
 
-            _cache[name].Clear();
-
-            if (info.IsShow == true && info.IsTrack == true)
+            if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
-                var node = info.CurrentNode;
+                _cache[name].Clear();
 
-                if (_dict.ContainsKey(name) == true && _dict[name].ContainsKey(node) == true)
+                if (info.IsShow == true && info.IsTrack == true)
                 {
-                    var features = _dict[name][node];
-                    _cache[name].AddRange(features);
-                }
-            }
+                    var node = info.CurrentNode;
 
-            ReplaceFeatures(_cache.SelectMany(s => s.Value));
+                    if (_dict.ContainsKey(name) == true && _dict[name].ContainsKey(node) == true)
+                    {
+                        var features = _dict[name][node];
+                        _cache[name].AddRange(features);
+                    }
+                }
+
+                ReplaceFeatures(_cache.SelectMany(s => s.Value));
+            }
         }
     }
 }
