@@ -31,11 +31,24 @@ namespace FootprintViewer.Avalonia
         {
             Locator.CurrentMutable.InitializeSplat();
 
+            // I only want to hear about errors
+            var logger = new ConsoleLogger() { Level = Splat.LogLevel.Error };
+            Locator.CurrentMutable.RegisterConstant(logger, typeof(ILogger));
+
             // IViewFor
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetInfoView(), typeof(IViewFor<GroundTargetInfo>));
+            
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerListView(), typeof(IViewFor<GroundTargetViewerList>));
+
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchView(), typeof(IViewFor<SceneSearch>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SatelliteViewerView(), typeof(IViewFor<SatelliteViewer>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverView(), typeof(IViewFor<FootprintObserver>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerView(), typeof(IViewFor<GroundTargetViewer>));
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
@@ -144,7 +157,7 @@ namespace FootprintViewer.Avalonia
             {
                 resolver.GetExistingService<SceneSearch>(),
                 resolver.GetExistingService<SatelliteViewer>(),
-                //resolver.GetExistingService<GroundTargetViewer>(),
+                resolver.GetExistingService<GroundTargetViewer>(),
                 //resolver.GetExistingService<FootprintObserver>(),
                 //resolver.GetExistingService<UserGeometryViewer>(),
             };

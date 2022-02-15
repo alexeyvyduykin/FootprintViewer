@@ -4,8 +4,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -15,23 +13,21 @@ namespace FootprintViewer.ViewModels
     {
         private readonly TargetLayer? _targetLayer;
         private readonly GroundTargetViewerList _groundTargetViewerList;
-        private readonly PreviewMainContent _emptyMainContent;
-        private readonly PreviewMainContent _updateMainContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
             var map = dependencyResolver.GetExistingService<Mapsui.Map>();
 
+            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+
             _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
             Title = "Просмотр наземных целей";
 
             Name = "GroundTargetViewer";
-       
-            _emptyMainContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
-            _updateMainContent = new PreviewMainContent("Загрузка...");
+            PreviewContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
 
@@ -39,51 +35,27 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => GroundTargetsChanged());
+            _groundTargetViewerList = new GroundTargetViewerList(groundTargetProvider);
 
-            _groundTargetViewerList = new GroundTargetViewerList();
+            MainContent = _groundTargetViewerList;
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
-            _groundTargetViewerList.UpdateAsync.IsExecuting.Subscribe(isExecuting =>
-            {
-                if (isExecuting == true)
-                {
-                    MainContent = _updateMainContent;
-                }
-                else
-                {
-                    MainContent = _groundTargetViewerList;
-                }
-            });
-
             if (_targetLayer != null)
             {
-                _targetLayer.IsEnabledObserver.Subscribe(isEnabled =>
+                this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_targetLayer.Refresh);
+
+                _targetLayer.Refresh.Where(_ => IsActive == true).Subscribe(names =>
                 {
-                    if (isEnabled == true)
-                    {
-                        GroundTargetsChanged();
-                    }
-                    else
-                    {
-                        MainContent = _emptyMainContent;
-                    }
+                    IsEnable = !(names == null);
+                });
+
+                _targetLayer.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names =>
+                {
+                    _groundTargetViewerList.Update(names);
                 });
             }
         }
-
-        private void GroundTargetsChanged()
-        {
-            if (_targetLayer != null && _targetLayer.IsEnable == true)
-            {
-                _groundTargetViewerList.InvalidateData(() => _targetLayer.GetTargets());
-            }
-        }
-
-        public void UpdateAsync(Func<IEnumerable<GroundTargetInfo>> load) => _groundTargetViewerList.InvalidateData(load);
-
-        public void UpdateAsync(Func<IEnumerable<GroundTarget>> load) => _groundTargetViewerList.InvalidateData(load);
 
         private void SelectedItemIml(GroundTargetInfo? groundTarget)
         {
@@ -120,7 +92,11 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> HideHighlight { get; }
 
+        public ReactiveObject MainContent { get; }
+
+        public ReactiveObject PreviewContent { get; }
+
         [Reactive]
-        public ReactiveObject? MainContent { get; set; }
+        public bool IsEnable { get; set; }
     }
 }

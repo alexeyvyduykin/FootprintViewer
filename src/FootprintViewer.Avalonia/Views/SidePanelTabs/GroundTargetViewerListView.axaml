@@ -37,10 +37,9 @@
 
   <Border Background="{StaticResource MainBackgroundBrush}"
           Padding="10">      
-    <ListBox BorderThickness="0"
-             Background="Transparent"               
-             Items="{Binding GroundTargetInfos}"               
-             SelectedItem="{Binding SelectedGroundTargetInfo}"/>  
+    <ListBox x:Name="GroundTargetListBox" 
+             BorderThickness="0"
+             Background="Transparent"/>  
   </Border>
 
 </UserControl>

@@ -12,9 +12,10 @@
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetViewer/>
   </Design.DataContext>
+
+  <Panel Width="380">
+    <ContentControl x:Name="MainContentControl"/>
+    <ContentControl x:Name="PreviewContentControl"/>
+  </Panel>
   
-    <ContentControl x:Name="contentControl"
-                    Width="380"
-                    Content="{Binding MainContent}"/>
-   
 </UserControl>

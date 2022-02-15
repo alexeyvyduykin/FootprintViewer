@@ -6,6 +6,7 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
@@ -31,6 +32,7 @@ namespace FootprintViewer.Designer
         private SidePanel? _sidePanel;
         //private ViewModels.ToolBar? _toolBar;
         private CustomToolBar? _customToolBar;
+        
         public object? GetService(Type? serviceType, string? contract = null)
         {
             if (serviceType == typeof(ProjectFactory))
@@ -163,6 +165,7 @@ namespace FootprintViewer.Designer
                 }
             }
         }
+
         private class DesignTimeCustomProvider : CustomProvider
         {
             public DesignTimeCustomProvider() : base(new UserGeometryProvider()) { }
@@ -252,14 +255,23 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
         {
-            public IEnumerable<GroundTarget> GetGroundTargets()
+            public List<GroundTarget> GetGroundTargets()
             {
+                var list = new List<GroundTarget>();
                 for (int i = 0; i < 10; i++)
                 {
-                    yield return DesignTimeGroundTargetInfo.BuildModel();
+                    list.Add(DesignTimeGroundTargetInfo.BuildModel());
                 }
+                return list;
             }
-            public async Task<List<GroundTarget>> GetGroundTargetsAsync() => GetGroundTargets().ToList();
+
+            public async Task<List<GroundTarget>> GetGroundTargetsAsync() => await Task.Run(() => GetGroundTargets());
+
+            public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names) => await Task.Run(() => GetGroundTargets());
+
+            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
+
+            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
         }
     }
 

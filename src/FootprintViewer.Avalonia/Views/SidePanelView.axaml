@@ -101,9 +101,7 @@
 
     <TabControl x:Name="SidePanel"
                 Grid.Row="1"
-                HorizontalAlignment="Right"
-                Items="{Binding Tabs}"
-                SelectedItem="{Binding SelectedTab}">
+                HorizontalAlignment="Right">
       <TabControl.ItemTemplate>
         <DataTemplate>
           <Viewbox Margin="8">

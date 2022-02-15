@@ -1,50 +1,34 @@
-﻿using FootprintViewer.Data;
-using Mapsui;
+﻿using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetLayerEventArgs : EventArgs
-    {
-        public IEnumerable<IFeature>? Features { get; set; }
-        public double Resolution { get; set; }
-    }
-
-    public delegate void TargetLayerEventHandler(object? sender, TargetLayerEventArgs e);
-
     public class TargetLayer : MemoryLayer
-    {     
-        private readonly TargetLayerProvider _provider; 
+    {
+        private readonly TargetLayerProvider _provider;
         private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
         private IFeature? _lastSelected;
-        private IEnumerable<IFeature>? _activeFeatures;
+        private string[]? _names;
 
         public TargetLayer(TargetLayerProvider provider)
         {
             _provider = provider;
-            
-            DataSource = provider;
-         
-            Refresh = ReactiveCommand.Create<IEnumerable<IFeature>, IEnumerable<IFeature>>(s => s);
 
-            _isEnabled = ReactiveCommand.Create<bool, bool>(s => IsEnable = s);
+            DataSource = provider;
+
+            Refresh = ReactiveCommand.Create<Unit, string[]?>(_ => _names);
         }
 
-        public IObservable<bool> IsEnabledObserver => _isEnabled;
-
-        private ReactiveCommand<IEnumerable<IFeature>, IEnumerable<IFeature>> Refresh { get; }
-
-        private readonly ReactiveCommand<bool, bool> _isEnabled;
-
-        public bool IsEnable { get; private set; }
+        public ReactiveCommand<Unit, string[]?> Refresh { get; }
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
@@ -59,17 +43,25 @@ namespace FootprintViewer.Layers
                         // HACK: change size extent to viewport of view control
                         var box = extent.Grow(-SymbolStyle.DefaultWidth * 2 * resolution, -SymbolStyle.DefaultHeight * 2 * resolution);
 
-                        _activeFeatures = GetFeaturesInView(box, resolution);
+                        var activeFeatures = GetFeaturesInView(box, resolution);
 
-                        Refresh.Execute(_activeFeatures).Subscribe();
+                        _names = activeFeatures.Select(s => (string)s["Name"]).ToArray();
 
-                        _isEnabled.Execute(true).Subscribe();
+                        Debug.WriteLine("--- Start ---");
+
+                        Refresh.Execute().Subscribe();
+
+                        Debug.WriteLine("--- End ---");
                     }
                     else
                     {
-                        _activeFeatures = null;
+                        _names = null;
 
-                        _isEnabled.Execute(false).Subscribe();
+                        Debug.WriteLine("--- Start ---");
+
+                        Refresh.Execute().Subscribe();
+
+                        Debug.WriteLine("--- End ---");
                     }
 
                     _lastExtent = extent.Copy();
@@ -108,12 +100,5 @@ namespace FootprintViewer.Layers
 
             DataHasChanged();
         }
-
-        public virtual IEnumerable<GroundTarget> GetTargets()
-        {
-            return _provider.FromDataSource(_activeFeatures);
-        }
-
-
     }
 }
