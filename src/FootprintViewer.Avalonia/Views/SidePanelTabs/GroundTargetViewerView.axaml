@@ -4,7 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"   
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"  
+             xmlns:reactiveUi="http://reactiveui.net"              
              MinWidth="380"  
              mc:Ignorable="d"                                                         
              d:DesignWidth="380" d:DesignHeight="450">
@@ -12,10 +13,10 @@
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetViewer/>
   </Design.DataContext>
-
+  
   <Panel Width="380">
-    <ContentControl x:Name="MainContentControl"/>
-    <ContentControl x:Name="PreviewContentControl"/>
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>
+    <reactiveUi:ViewModelViewHost x:Name="PreviewContentControl"/>
   </Panel>
   
 </UserControl>

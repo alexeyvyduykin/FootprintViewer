@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"  
+             xmlns:reactiveUi="http://reactiveui.net"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                           
              mc:Ignorable="d" 
+             MinWidth="380"
              d:DesignHeight="450" d:DesignWidth="420">
 
   <Design.DataContext>
@@ -41,13 +43,12 @@
                               Items="{TemplateBinding Items}"                                                         
                               ItemTemplate="{TemplateBinding ItemTemplate}">                
               </ItemsPresenter>
-              <ContentPresenter Name="PART_SelectedContentHost"                  
-                                Margin="0"                 
-                                HorizontalContentAlignment="Stretch"                 
-                                VerticalContentAlignment="Stretch"                 
-                                Content="{TemplateBinding SelectedContent}"                  
-                                ContentTemplate="{TemplateBinding SelectedContentTemplate}">
-              </ContentPresenter>
+                                               
+              <reactiveUi:ViewModelViewHost Name="PART_SelectedContentHost"                               
+                                            Margin="0"                               
+                                            HorizontalContentAlignment="Stretch"                              
+                                            VerticalContentAlignment="Stretch"                               
+                                            ViewModel="{TemplateBinding SelectedContent}"/>
             </Grid>
           </Border>
         </ControlTemplate>

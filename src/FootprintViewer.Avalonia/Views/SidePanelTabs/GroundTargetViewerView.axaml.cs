@@ -10,8 +10,8 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class GroundTargetViewerView : ReactiveUserControl<GroundTargetViewer>
     {
-        private ContentControl MainContentControl => this.FindControl<ContentControl>("MainContentControl");
-        private ContentControl PreviewContentControl => this.FindControl<ContentControl>("PreviewContentControl");
+        private ViewModelViewHost MainContentControl => this.FindControl<ViewModelViewHost>("MainContentControl");
+        private ViewModelViewHost PreviewContentControl => this.FindControl<ViewModelViewHost>("PreviewContentControl");
 
         public GroundTargetViewerView()
         {
@@ -21,12 +21,12 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
             {
                 // MainContentControl
 
-                this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.Content).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.ViewModel).DisposeWith(disposables);
                 this.OneWayBind(ViewModel, vm => vm.IsEnable, v => v.MainContentControl.IsVisible).DisposeWith(disposables);
 
                 // PreviewContentControl
 
-                this.OneWayBind(ViewModel, vm => vm.PreviewContent, v => v.PreviewContentControl.Content).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.PreviewContent, v => v.PreviewContentControl.ViewModel).DisposeWith(disposables);
                 this.OneWayBind(ViewModel, vm => vm.IsEnable, v => v.PreviewContentControl.IsVisible, value => !value).DisposeWith(disposables);
             });
         }

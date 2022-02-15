@@ -37,18 +37,24 @@ namespace FootprintViewer.Avalonia
 
             // IViewFor
 
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetInfoView(), typeof(IViewFor<GroundTargetInfo>));
-            
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerListView(), typeof(IViewFor<GroundTargetViewerList>));
+            Locator.CurrentMutable.Register(() => new SidePanelView(), typeof(IViewFor<SidePanel>));
 
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchView(), typeof(IViewFor<SceneSearch>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchFilterView(), typeof(IViewFor<SceneSearchFilter>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SatelliteViewerView(), typeof(IViewFor<SatelliteViewer>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverView(), typeof(IViewFor<FootprintObserver>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverListView(), typeof(IViewFor<FootprintObserverList>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverFilterView(), typeof(IViewFor<FootprintObserverFilter>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerView(), typeof(IViewFor<GroundTargetViewer>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerListView(), typeof(IViewFor<GroundTargetViewerList>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.UserGeometryViewerView(), typeof(IViewFor<UserGeometryViewer>));
+
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintInfoView(), typeof(IViewFor<FootprintInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetInfoView(), typeof(IViewFor<GroundTargetInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
         }
 
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)

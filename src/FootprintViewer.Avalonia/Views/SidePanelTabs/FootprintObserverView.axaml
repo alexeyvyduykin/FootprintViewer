@@ -5,8 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"  
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"       
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+             xmlns:reactiveUi="http://reactiveui.net"
              x:Name="userControl"                                    
              MinWidth="380"
              mc:Ignorable="d" 
@@ -34,11 +35,11 @@
                     Classes="searchToggleButton"      
                     Command="{Binding FilterClick}"
                     Content="Настройки поиска"/>
+                 
+      <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                      
+                                    Grid.Row="1"                      
+                                    Margin="10"/>
       
-      <ContentControl x:Name="MainContentControl"                    
-                      Grid.Row="1" 
-                      Margin="10"/>
-
     </Grid>
 
   </Grid>

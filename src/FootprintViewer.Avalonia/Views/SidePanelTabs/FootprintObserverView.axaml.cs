@@ -9,7 +9,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class FootprintObserverView : ReactiveUserControl<FootprintObserver>
     {
-        private ContentControl MainContentControl => this.FindControl<ContentControl>("MainContentControl");
+        private ViewModelViewHost MainContentControl => this.FindControl<ViewModelViewHost>("MainContentControl");
 
         public FootprintObserverView()
         {
@@ -18,7 +18,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
             this.WhenActivated(disposables =>
             {
                 // MainContentControl
-                this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.Content).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.ViewModel).DisposeWith(disposables);
             });
 
         }
