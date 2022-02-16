@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"                     
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"        
+             xmlns:reactiveUi="http://reactiveui.net"    
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FootprintViewer.Avalonia.Views.MainView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeMainViewModel/>
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
+    <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid x:Name="GridOverlay"
+          ColumnDefinitions="*,Auto">
+
+      <Grid Grid.Column="0">
+
+        <local:UserMapControl x:Name="MapControl"
+                          MapSource="{Binding Map}"
+                          Plotter="{Binding Plotter}"
+                          Controller="{Binding ActualController}"
+                          TipSource="{Binding Tip}"
+                          MapListener="{Binding MapListener}"
+                          MapObserver="{Binding MapObserver}"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"/>
+
+        <Grid VerticalAlignment="Center"
+              HorizontalAlignment="Left"
+              Margin="8">
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding ToolBar}"/>
+        </Grid>
+
+        <Grid VerticalAlignment="Bottom"
+              HorizontalAlignment="Center"
+              Margin="0,0,0,60">
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding InfoPanel}">
+            <reactiveUi:ViewModelViewHost.PageTransition>
+              <CrossFade Duration="0.01"/>
+            </reactiveUi:ViewModelViewHost.PageTransition>
+          </reactiveUi:ViewModelViewHost>
+        </Grid>
+
+        <Border BorderBrush="White"
+                Opacity="0.65"
+                Background="{StaticResource MainBrush}"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Stretch">
+
+          <Grid ColumnDefinitions="180,150,Auto">
+
+            <TextBlock x:Name="TextBlockCoordinates"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       Foreground="WhiteSmoke"
+                       Text="0, 0" />
+            <TextBlock x:Name="TextBlockResolution"
+                       Grid.Column="1"
+                       HorizontalAlignment="Center"
+                       Foreground="WhiteSmoke"/>
+
+            <views:ScaleBarView x:Name="ScaleBarView"
+                                Grid.Column="2" />
+
+          </Grid>
+        </Border>
+      </Grid>
+
+      <reactiveUi:ViewModelViewHost Grid.Column="1"
+                                    ViewModel="{Binding SidePanel}"/>
+
+    </Grid>
+  </Grid>
+
+</UserControl>

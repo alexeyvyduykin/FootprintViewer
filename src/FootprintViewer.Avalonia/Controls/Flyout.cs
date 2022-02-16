@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.ReactiveUI;
 using Avalonia.VisualTree;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace FootprintViewer.Avalonia.Controls
     {
         private Grid? _overlay = null;
         private Border _arrow = new Border();
-        private ContentControl _contentControl;
+        private ViewModelViewHost _contentControl;
 
         public Flyout()
         {
@@ -84,9 +85,9 @@ namespace FootprintViewer.Avalonia.Controls
                 Background = Background,
             };
 
-            _contentControl = new ContentControl()
+            _contentControl = new ViewModelViewHost()
             {
-                Content = ContentSource,         
+                ViewModel = ContentSource,         
             };
         }
 

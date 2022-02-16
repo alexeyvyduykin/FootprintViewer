@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using FootprintViewer.Avalonia.Views;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
@@ -37,13 +36,17 @@ namespace FootprintViewer.Avalonia
 
             // IViewFor
 
+            Locator.CurrentMutable.Register(() => new Views.MainView(), typeof(IViewFor<MainViewModel>));
+
             Locator.CurrentMutable.Register(() => new Views.InfoPanel.InfoPanelView(), typeof(IViewFor<InfoPanel>));
             Locator.CurrentMutable.Register(() => new Views.InfoPanel.GeometryInfoPanelView(), typeof(IViewFor<AOIInfoPanel>));
             Locator.CurrentMutable.Register(() => new Views.InfoPanel.GeometryInfoPanelView(), typeof(IViewFor<RouteInfoPanel>));
-                   
+
             Locator.CurrentMutable.Register(() => new Views.ToolBar.CustomToolBarView(), typeof(IViewFor<CustomToolBar>));
 
-            Locator.CurrentMutable.Register(() => new SidePanelView(), typeof(IViewFor<SidePanel>));
+            Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
+
+            Locator.CurrentMutable.Register(() => new Views.SidePanelView(), typeof(IViewFor<SidePanel>));
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchView(), typeof(IViewFor<SceneSearch>));
@@ -218,10 +221,12 @@ namespace FootprintViewer.Avalonia
 
                 if (mainViewModel != null)
                 {
-                    desktopLifetime.MainWindow = new MainWindow()
+                    desktopLifetime.MainWindow = new Views.MainWindow()
                     {
                         DataContext = mainViewModel
                     };
+
+                    WindowsManager.AllWindows.Add(desktopLifetime.MainWindow);
                 }
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime)
