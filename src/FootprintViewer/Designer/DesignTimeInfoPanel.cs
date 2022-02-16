@@ -21,13 +21,11 @@ namespace FootprintViewer.Designer
         }
     }
 
-    public class DesignTimeInfoPanelItem : CustomInfoPanel
+    public class DesignTimeInfoPanelItem : RouteInfoPanel
     {
         public DesignTimeInfoPanelItem() : base()
         {
             Text = "Description";
         }
-
-        public override string Title => "Route";
     }
 }

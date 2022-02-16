@@ -42,13 +42,17 @@
         <Grid VerticalAlignment="Center"
               HorizontalAlignment="Left"
               Margin="8">
-          <ContentControl Content="{Binding ToolBar}"/>
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding ToolBar}"/>
         </Grid>
 
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Center"
               Margin="0,0,0,60">
-          <ContentControl Content="{Binding InfoPanel}"/>        
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding InfoPanel}">
+            <reactiveUi:ViewModelViewHost.PageTransition>
+              <CrossFade Duration="0.01"/>
+            </reactiveUi:ViewModelViewHost.PageTransition>
+          </reactiveUi:ViewModelViewHost>
         </Grid>
 
         <Border BorderBrush="White"

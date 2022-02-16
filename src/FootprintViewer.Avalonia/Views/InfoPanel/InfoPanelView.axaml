@@ -6,17 +6,36 @@
              xmlns:i="using:Avalonia.Xaml.Interactivity"
              xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
              xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"             
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"    
+             xmlns:reactiveUi="http://reactiveui.net"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"            
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="450">
 
   <Design.DataContext>
     <vmd:DesignTimeInfoPanel/>
   </Design.DataContext>
   
   <UserControl.Styles>
+
+    <Style Selector="ItemsControl">
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  CornerRadius="{TemplateBinding CornerRadius}"
+                  Padding="{TemplateBinding Padding}">
+            <ItemsPresenter Name="PART_ItemsPresenter"                            
+                            Items="{TemplateBinding Items}"
+                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                            ItemTemplate="{TemplateBinding ItemTemplate}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
 
     <Style Selector="ItemsControl > ContentPresenter">
       <Setter Property="Margin" Value="0,0,0,21"/>
@@ -26,26 +45,20 @@
       <Setter Property="Margin" Value="0,0,0,0"/>         
     </Style>
 
+    <Style Selector="ItemsControl">
+      <Setter Property="ItemsPanel">
+        <Setter.Value>
+          <ItemsPanelTemplate>         
+            <StackPanel Orientation="Vertical"/>
+          </ItemsPanelTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
   </UserControl.Styles>
-      
-  <Grid>
-    
-    <ItemsControl Items="{Binding Panels}">
-      
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Vertical"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-
-      <ItemsControl.ItemTemplate>        
-          <DataTemplate DataType="vm:CustomInfoPanel">
-            <panels:GeometryInfoPanelView DataContext="{Binding}"/>
-          </DataTemplate>                    
-      </ItemsControl.ItemTemplate>
-
-    </ItemsControl>
-
+  
+  <Grid>    
+    <ItemsControl x:Name="ItemsControl"/>
   </Grid>
 
 </UserControl>
