@@ -15,6 +15,7 @@ namespace FootprintViewer.ViewModels
         private readonly ObservableAsPropertyHelper<List<GroundTargetInfo>> _groundTargetInfos;
         private readonly GroundTargetProvider _groundTargetProvider;
         private string[]? _names = new string[] { };
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public GroundTargetViewerList(GroundTargetProvider provider)
         {
@@ -27,6 +28,8 @@ namespace FootprintViewer.ViewModels
             _groundTargetInfos = Loading.ToProperty(this, x => x.GroundTargetInfos, scheduler: RxApp.MainThreadScheduler);
 
             this.WhenAnyValue(s => s.Checker).Throttle(TimeSpan.FromSeconds(1)).Select(_ => _names!/*NameFilter(_names)*/).InvokeCommand(Loading);
+
+            _isLoading = Loading.IsExecuting.ToProperty(this, x => x.IsLoading, scheduler: RxApp.MainThreadScheduler);
         }
 
         public static Func<GroundTarget, bool> NameFilter(string[]? names = null)
@@ -45,11 +48,6 @@ namespace FootprintViewer.ViewModels
             return await _groundTargetProvider.GetGroundTargetInfosAsync(names);
         }
 
-        private async Task<List<GroundTargetInfo>> LoadingExAsync(Func<GroundTarget, bool> func)
-        {
-            return await _groundTargetProvider.GetGroundTargetInfosExAsync(func);
-        }
-
         public ReactiveCommand<string[], List<GroundTargetInfo>> Loading { get; }
 
         //public ReactiveCommand<Func<GroundTarget, bool>, List<GroundTargetInfo>> LoadingEx { get; }
@@ -58,6 +56,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         private bool Checker { get; set; }
+
+        public bool IsLoading => _isLoading.Value;
 
         [Reactive]
         public GroundTargetInfo? SelectedGroundTargetInfo { get; set; }

@@ -2,7 +2,8 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"     
+             xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"   
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                
              mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="450">
@@ -35,11 +36,24 @@
 
   </UserControl.Styles>
 
-  <Border Background="{StaticResource MainBackgroundBrush}"
-          Padding="10">      
-    <ListBox x:Name="GroundTargetListBox" 
-             BorderThickness="0"
-             Background="Transparent"/>  
+  <Border Background="{StaticResource MainBackgroundBrush}">
+    <Grid>
+      <ProgressBar x:Name="ProgressBar"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Center"
+             IsIndeterminate="True"/>
+
+      <ListBox x:Name="ListBox"
+               BorderThickness="0"
+               Margin="10"
+               Background="Transparent">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <items:GroundTargetInfoView DataContext="{Binding}"/>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
   </Border>
 
 </UserControl>

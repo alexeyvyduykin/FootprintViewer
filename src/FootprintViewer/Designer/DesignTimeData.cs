@@ -273,7 +273,15 @@ namespace FootprintViewer.Designer
 
             public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names) => await Task.Run(() => GetGroundTargets());
 
-            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
+            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
+            {
+                await Task.Delay(2000);
+
+                return await Task.Run(() =>
+                {
+                    return GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList();
+                });
+            }
 
             public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
         }
@@ -288,7 +296,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeFootprintDataSource : Data.Sources.IFootprintDataSource
         {
-            public IEnumerable<Footprint> GetFootprints()
+            public List<Footprint> GetFootprints()
             {
                 var list = new List<Footprint>();
                 for (int i = 0; i < 10; i++)

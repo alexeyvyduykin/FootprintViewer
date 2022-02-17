@@ -10,7 +10,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class GroundTargetViewerListView : ReactiveUserControl<GroundTargetViewerList>
     {
-        private ListBox GroundTargetListBox => this.FindControl<ListBox>("GroundTargetListBox");
+        private ProgressBar ProgressBar => this.FindControl<ProgressBar>("ProgressBar");
+
+        private ListBox ListBox => this.FindControl<ListBox>("ListBox");
 
         public GroundTargetViewerListView()
         {
@@ -18,9 +20,13 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
             this.WhenActivated(disposables =>
             {
-                // GroundTargetListBox
-                this.OneWayBind(ViewModel, vm => vm.GroundTargetInfos, v => v.GroundTargetListBox.Items).DisposeWith(disposables);
-                this.Bind(ViewModel, vm => vm.SelectedGroundTargetInfo, v => v.GroundTargetListBox.SelectedItem).DisposeWith(disposables);
+                // ProgressBar
+                this.OneWayBind(ViewModel, vm => vm.IsLoading, v => v.ProgressBar.IsVisible).DisposeWith(disposables);
+
+                // ListBox
+                this.OneWayBind(ViewModel, vm => vm.IsLoading, v => v.ListBox.IsVisible, value => !value).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.GroundTargetInfos, v => v.ListBox.Items).DisposeWith(disposables);
+                this.Bind(ViewModel, vm => vm.SelectedGroundTargetInfo, v => v.ListBox.SelectedItem).DisposeWith(disposables);
             });
         }
 
