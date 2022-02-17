@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data.Sources;
+using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace FootprintViewer.Data
             //}
 
             //return list;
+        }
+
+        public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+        {
+            return await Sources.First().GetFootprintInfosAsync();
         }
     }
 }

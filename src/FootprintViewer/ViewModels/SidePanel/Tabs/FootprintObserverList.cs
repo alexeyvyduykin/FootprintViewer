@@ -1,32 +1,44 @@
 ﻿using FootprintViewer.Data;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class FootprintObserverList : ReactiveObject
     {
+        private readonly ObservableAsPropertyHelper<List<FootprintInfo>> _footprintInfos;
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> select;
         private readonly ReactiveCommand<FootprintInfo, FootprintInfo> unselect;
         private FootprintInfo? _prevSelectedItem;
+        private readonly FootprintProvider _footprintProvider;
 
-        public FootprintObserverList()
+        public FootprintObserverList(FootprintProvider provider)
         {
+            _footprintProvider = provider;
+
+            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+
             select = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
+
             unselect = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
 
-            FootprintInfos = new ObservableCollection<FootprintInfo>();
+            _footprintInfos = Loading.ToProperty(this, x => x.FootprintInfos, scheduler: RxApp.MainThreadScheduler);
 
-            UpdateAsync = ReactiveCommand.CreateFromTask<Func<IEnumerable<FootprintInfo>>>(UpdateAsyncImpl);
+            _isLoading = Loading.IsExecuting.ToProperty(this, x => x.IsLoading, scheduler: RxApp.MainThreadScheduler);
         }
+
+        private async Task<List<FootprintInfo>> LoadingAsync()
+        {
+            return await _footprintProvider.GetFootprintInfosAsync();
+        }
+
+        public ReactiveCommand<Unit, List<FootprintInfo>> Loading { get; }
 
         public IObservable<FootprintInfo> SelectItem => select;
 
@@ -61,17 +73,6 @@ namespace FootprintViewer.ViewModels
             }
 
             _prevSelectedItem = item;
-        }
-
-        private async Task UpdateAsyncImpl(Func<IEnumerable<FootprintInfo>> load)
-        {
-            var footprints = await Task.Run(() =>
-            {
-                Thread.Sleep(500);
-                return load();
-            });
-
-            FootprintInfos = new ObservableCollection<FootprintInfo>(footprints);
         }
 
         //public void SelectFootprintInfo(string name)
@@ -114,22 +115,11 @@ namespace FootprintViewer.ViewModels
         //[Reactive]
         //public bool ScrollToCenter { get; set; } = false;
 
-        public ReactiveCommand<Func<IEnumerable<FootprintInfo>>, Unit> UpdateAsync { get; }
+        // [Reactive]
+        // public ObservableCollection<FootprintInfo> FootprintInfos { get; private set; }
 
-        [Reactive]
-        public ObservableCollection<FootprintInfo> FootprintInfos { get; private set; }
-    }
+        public List<FootprintInfo> FootprintInfos => _footprintInfos.Value;
 
-    public static class FootprintObserverListExtensions
-    {
-        public static void InvalidateData(this FootprintObserverList list, Func<IEnumerable<Footprint>> load)
-        {
-            list.UpdateAsync.Execute(() => load().Select(s => new FootprintInfo(s))).Subscribe();
-        }
-
-        public static void InvalidateData(this FootprintObserverList list, Func<IEnumerable<FootprintInfo>> load)
-        {
-            list.UpdateAsync.Execute(() => load()).Subscribe();
-        }
+        public bool IsLoading => _isLoading.Value;
     }
 }

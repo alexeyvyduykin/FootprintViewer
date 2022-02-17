@@ -6,7 +6,6 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
@@ -22,6 +21,7 @@ namespace FootprintViewer.Designer
         private FootprintPreviewProvider? _footprintPreviewProvider;
         private FootprintPreviewGeometryProvider? _footprintPreviewGeometryProvider;
         private GroundTargetProvider? _groundTargetProvider;
+        private FootprintProvider? _footprintProvider;
         private UserGeometryProvider? _userGeometryProvider;
         private CustomProvider? _customProvider;
         private SatelliteViewer? _satelliteViewer;
@@ -32,7 +32,7 @@ namespace FootprintViewer.Designer
         private SidePanel? _sidePanel;
         //private ViewModels.ToolBar? _toolBar;
         private CustomToolBar? _customToolBar;
-        
+
         public object? GetService(Type? serviceType, string? contract = null)
         {
             if (serviceType == typeof(ProjectFactory))
@@ -62,6 +62,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(GroundTargetProvider))
             {
                 return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
+            }
+            else if (serviceType == typeof(FootprintProvider))
+            {
+                return _footprintProvider ??= new DesignDataFootprintProvider();
             }
             else if (serviceType == typeof(UserGeometryProvider))
             {
@@ -185,7 +189,7 @@ namespace FootprintViewer.Designer
 
             private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
             {
-                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();                
+                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
 
                 public IEnumerable<FootprintPreview> GetFootprintPreviews()
                 {
@@ -195,7 +199,7 @@ namespace FootprintViewer.Designer
                     }
                 }
 
-                public IEnumerable<UserGeometry> GetUserGeometries() 
+                public IEnumerable<UserGeometry> GetUserGeometries()
                 {
                     for (int i = 0; i < 10; i++)
                     {
@@ -204,7 +208,7 @@ namespace FootprintViewer.Designer
                 }
                 public async Task<List<UserGeometry>> GetUserGeometriesAsync() => GetUserGeometries().ToList();
 
-                public void Remove(UserGeometry geometry) => throw new NotImplementedException();                
+                public void Remove(UserGeometry geometry) => throw new NotImplementedException();
             }
         }
 
@@ -286,13 +290,25 @@ namespace FootprintViewer.Designer
         {
             public IEnumerable<Footprint> GetFootprints()
             {
+                var list = new List<Footprint>();
                 for (int i = 0; i < 10; i++)
                 {
-                    yield return DesignTimeFootprintInfo.BuildModel();
+                    list.Add(DesignTimeFootprintInfo.BuildModel());
                 }
+                return list;
             }
 
             public async Task<List<Footprint>> GetFootprintsAsync() => GetFootprints().ToList();
+
+            public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+            {
+                await Task.Delay(2000);
+
+                return await Task.Run(() =>
+                {                  
+                    return GetFootprints().Select(s => new FootprintInfo(s)).ToList();
+                });
+            }
         }
     }
 }

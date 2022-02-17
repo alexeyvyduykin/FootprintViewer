@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                                 
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"                                          
+             xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"                                          
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                      
              mc:Ignorable="d" 
@@ -23,11 +24,23 @@
 
   </UserControl.Styles>
 
-  <Panel>
-    <ListBox BorderThickness="0"
+  <Grid>
+    <ProgressBar x:Name="ProgressBar" 
+                 VerticalAlignment="Center"    
+                 HorizontalAlignment="Center"              
+                 IsIndeterminate="True"/>
+
+    <ListBox x:Name="ListBox"
+             BorderThickness="0"
+             Margin="10"
              Background="Transparent"
-             Items="{Binding FootprintInfos}"    
-             behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}"/>
-  </Panel>
+             behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <items:FootprintInfoView DataContext="{Binding}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Grid>
   
 </UserControl>

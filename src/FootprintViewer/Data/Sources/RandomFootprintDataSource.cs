@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FootprintViewer.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -13,9 +15,9 @@ namespace FootprintViewer.Data.Sources
             _source = source;
         }
 
-        public async Task<List<Footprint>> GetFootprintsAsync() 
-        {            
-            return await Task.Run(async() =>
+        public async Task<List<Footprint>> GetFootprintsAsync()
+        {
+            return await Task.Run(async () =>
             {
                 if (_footprints == null)
                 {
@@ -25,7 +27,22 @@ namespace FootprintViewer.Data.Sources
                 }
 
                 return _footprints;
-            });           
-        }  
+            });
+        }
+
+        public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+        {
+            return await Task.Run(async () =>
+            {
+                if (_footprints == null)
+                {
+                    var satellites = await _source.GetSatellitesAsync();
+
+                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites));
+                }
+
+                return _footprints.Select(s => new FootprintInfo(s)).ToList();
+            });
+        }
     }
 }

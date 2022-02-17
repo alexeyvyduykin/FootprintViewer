@@ -132,7 +132,7 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<SceneSearch>(),
                 resolver.GetExistingService<SatelliteViewer>(),
                 resolver.GetExistingService<GroundTargetViewer>(),
-                //resolver.GetExistingService<FootprintObserver>(),
+                resolver.GetExistingService<FootprintObserver>(),
                 //resolver.GetExistingService<UserGeometryViewer>(),
             };
 

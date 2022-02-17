@@ -7,7 +7,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -20,43 +19,29 @@ namespace FootprintViewer.ViewModels
         private readonly Map _map;
         private readonly FootprintObserverList _footprintObserverList;
         private readonly FootprintObserverFilter _filter;
-        private readonly PreviewMainContent _updateMainContent;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
             var map = dependencyResolver.GetExistingService<Map>();
+            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
 
             _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
-         
+
             _filter = new FootprintObserverFilter(dependencyResolver);
 
-            _footprintObserverList = new FootprintObserverList();
+            _footprintObserverList = new FootprintObserverList(footprintProvider);
 
             _map = map;
 
             Title = "Просмотр рабочей программы";
 
             Name = "FootprintViewer";
-                
-            _updateMainContent = new PreviewMainContent("Загрузка...");
-           
+
             ClickOnItem = ReactiveCommand.Create<FootprintInfo?>(_footprintObserverList.ClickOnItem);
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ => FootprintsChanged());
-       
-            _footprintObserverList.UpdateAsync.IsExecuting.Subscribe(isExecuting =>
-            {
-                if (isExecuting == true)
-                {
-                    MainContent = _updateMainContent;
-                }
-                else
-                {
-                    MainContent = _footprintObserverList;
-                }
-            });
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_footprintObserverList.Loading);
 
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
@@ -71,29 +56,25 @@ namespace FootprintViewer.ViewModels
                 _footrpintLayer.DataHasChanged();
             });
 
-            _filter.Update.Subscribe(filter => FootprintsChanged(filter));
+            //_filter.Update.Subscribe(filter => FootprintsChanged(filter));
 
             MainContent = _footprintObserverList;
         }
 
-        private void FootprintsChanged(FootprintObserverFilter? filter = null)
-        {
-            if (_footrpintLayer != null)
-            {
-                if (filter == null)
-                {
-                    _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints());
-                }
-                else
-                {
-                    _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints().Where(s => filter.Filtering(new FootprintInfo(s))));
-                }
-            }
-        }
-
-        public void UpdateAsync(Func<IEnumerable<FootprintInfo>> load) => _footprintObserverList.InvalidateData(load);
-
-        public void UpdateAsync(Func<IEnumerable<Footprint>> load) => _footprintObserverList.InvalidateData(load);
+        //private void FootprintsChanged(FootprintObserverFilter? filter = null)
+        //{
+        //    if (_footrpintLayer != null)
+        //    {
+        //        if (filter == null)
+        //        {
+        //            _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints());
+        //        }
+        //        else
+        //        {
+        //            _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints().Where(s => filter.Filtering(new FootprintInfo(s))));
+        //        }
+        //    }
+        //}
 
         public ReactiveCommand<FootprintInfo?, Unit> ClickOnItem { get; }
 

@@ -30,15 +30,12 @@
     <Grid RowDefinitions="Auto,*,50"
           Background="{StaticResource MainBackgroundBrush}">
 
-      <ToggleButton Grid.Row="0"
-                    x:Name="SearchToggleButton"
-                    Classes="searchToggleButton"      
-                    Command="{Binding FilterClick}"
+      <ToggleButton x:Name="SearchToggleButton"
+                    Classes="searchToggleButton"                  
                     Content="Настройки поиска"/>
                  
       <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                      
-                                    Grid.Row="1"                      
-                                    Margin="10"/>
+                                    Grid.Row="1"/>
       
     </Grid>
 

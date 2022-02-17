@@ -6,9 +6,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeFootprintObserver() : base(new DesignTimeData())
         {
-            var provider = new DesignDataFootprintProvider();
-
-            UpdateAsync(provider.GetFootprints);
+            IsActive = true;
         }
     }
 }
