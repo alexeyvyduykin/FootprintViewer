@@ -17,7 +17,7 @@ namespace FootprintViewer.Designer
             
             var list = new GroundTargetViewerList(provider);
 
-           // MainContent = list;
+            MainContent = list;
 
             list.Update(targets.Select(s => s.Name).ToArray());
         }

@@ -13,6 +13,7 @@ namespace FootprintViewer.ViewModels
     {
         private readonly TargetLayer? _targetLayer;
         private readonly GroundTargetViewerList _groundTargetViewerList;
+        private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
@@ -27,7 +28,7 @@ namespace FootprintViewer.ViewModels
 
             Name = "GroundTargetViewer";
 
-            PreviewContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
+            _previewContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
 
@@ -36,8 +37,6 @@ namespace FootprintViewer.ViewModels
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
             _groundTargetViewerList = new GroundTargetViewerList(groundTargetProvider);
-
-            MainContent = _groundTargetViewerList;
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
@@ -48,6 +47,15 @@ namespace FootprintViewer.ViewModels
                 _targetLayer.Refresh.Where(_ => IsActive == true).Subscribe(names =>
                 {
                     IsEnable = !(names == null);
+
+                    if (IsEnable == true)
+                    {
+                        MainContent = _groundTargetViewerList;
+                    }
+                    else
+                    {
+                        MainContent = _previewContent;
+                    }
                 });
 
                 _targetLayer.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names =>
@@ -92,11 +100,9 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> HideHighlight { get; }
 
-        public ReactiveObject MainContent { get; }
-
-        public ReactiveObject PreviewContent { get; }
-
         [Reactive]
-        public bool IsEnable { get; set; }
+        public ReactiveObject MainContent { get; set; }
+
+        private bool IsEnable { get; set; }
     }
 }

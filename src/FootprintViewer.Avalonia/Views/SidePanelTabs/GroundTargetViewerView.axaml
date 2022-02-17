@@ -16,7 +16,6 @@
   
   <Panel Width="380">
     <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>
-    <reactiveUi:ViewModelViewHost x:Name="PreviewContentControl"/>
   </Panel>
   
 </UserControl>
