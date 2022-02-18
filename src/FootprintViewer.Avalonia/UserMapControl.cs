@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Avalonia.Markup.Xaml.Templates;
 using FootprintViewer.Interactivity;
 using FootprintViewer.InteractivityEx;
 using FootprintViewer.ViewModels;
@@ -23,7 +22,7 @@ namespace FootprintViewer.Avalonia
         private readonly Cursor? _grabHandCursor;
         private bool _isLeftMouseDown = false;
         private CursorType _currentCursorType = CursorType.Default;
-        private ItemsControl? _tipControl;       
+        private readonly ItemsControl? _tipControl;
         private string? _lastNameFeatureInfo;
         private bool _infoLeftClick = false;
 
@@ -51,8 +50,8 @@ namespace FootprintViewer.Avalonia
             var itemsControl = CreateTip();
 
             if (itemsControl != null)
-            {          
-                _tipControl = itemsControl;               
+            {
+                _tipControl = itemsControl;
                 Children.Add(itemsControl);
             }
         }
@@ -60,7 +59,7 @@ namespace FootprintViewer.Avalonia
         private void UserMapControl_Info(object? sender, Mapsui.UI.MapInfoEventArgs e)
         {
             if (MapListener != null)
-            {           
+            {
                 if (e.MapInfo != null && e.MapInfo.Feature != null)
                 {
                     var feature = e.MapInfo.Feature;
@@ -92,7 +91,8 @@ namespace FootprintViewer.Avalonia
         {
             string xaml = @"
           <ItemsControl xmlns='https://github.com/avaloniaui'
-                       xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+                        xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+                        xmlns:views='clr-namespace:FootprintViewer.Avalonia.Views'>
 
           <ItemsControl.Styles>
             <Style Selector='ItemsControl > ContentPresenter'>
@@ -107,7 +107,13 @@ namespace FootprintViewer.Avalonia
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
         
-         </ItemsControl>";
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <views:TipView DataContext='{Binding}'/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+
+</ItemsControl>";
 
             return AvaloniaRuntimeXamlLoader.Parse<ItemsControl>(xaml);
         }
@@ -174,7 +180,7 @@ namespace FootprintViewer.Avalonia
         {
             if (_tipControl != null)
             {
-                _tipControl.Items = new ObservableCollection<Tip>();
+                _tipControl.Items = new ObservableCollection<ITip>();
             }
         }
 
