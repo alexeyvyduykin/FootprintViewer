@@ -8,7 +8,9 @@ using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -22,8 +24,6 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserverFilter : ReactiveObject
     {
-        private readonly ReactiveCommand<FootprintObserverFilter, FootprintObserverFilter> update;
-
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             var provider = dependencyResolver.GetExistingService<SatelliteProvider>();
@@ -36,26 +36,21 @@ namespace FootprintViewer.ViewModels
             FromNode = 1;
             ToNode = 15;
 
-            update = ReactiveCommand.Create<FootprintObserverFilter, FootprintObserverFilter>(s => s);
+            Update = ReactiveCommand.Create(() => this);
 
             this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Switcher)
-                .Select(_ => this)
                 .Throttle(TimeSpan.FromSeconds(1))
-                .Subscribe(f => update.Execute(f).Subscribe());
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Update);
 
-        //    CreateSatelliteList(provider);
+            CreateSatelliteList(provider);
         }
 
-        public IObservable<FootprintObserverFilter> Update => update;
+        public ReactiveCommand<Unit, FootprintObserverFilter> Update { get; }
 
-        public void ForceUpdate()
+        private async Task CreateSatelliteList(SatelliteProvider provider)
         {
-            update.Execute().Subscribe();
-        }
-
-        private void CreateSatelliteList(SatelliteProvider provider)
-        {
-            var satelliteNames = provider.GetSatellites().Select(s => s.Name).ToList();
+            var satelliteNames = await Task.Run(() => provider.GetSatellitesAsync().Result.Select(s => s.Name).ToList());
 
             satelliteNames?.Sort();
 

@@ -16,18 +16,6 @@ namespace FootprintViewer.Data
 
         public ReactiveCommand<Unit, List<Satellite>> Loading { get; }
 
-        public IEnumerable<Satellite> GetSatellites()
-        {
-            var list = new List<Satellite>();
-
-            foreach (var source in Sources)
-            {
-                list.AddRange(source.GetSatellitesAsync().Result);
-            }
-
-            return list;
-        }
-
         public async Task<List<Satellite>> GetSatellitesAsync()
         {
             return await Sources.First().GetSatellitesAsync();

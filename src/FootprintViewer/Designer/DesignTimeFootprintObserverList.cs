@@ -9,7 +9,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeFootprintObserverList() : base(new DesignTimeData().GetExistingService<FootprintProvider>())
         {          
-            Loading.Execute().Subscribe();
+            Loading.Execute(null).Subscribe();
         }
     }
 }

@@ -41,7 +41,7 @@ namespace FootprintViewer.ViewModels
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_footprintObserverList.Loading);
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => _filter).InvokeCommand(_footprintObserverList.Loading);
 
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
@@ -56,7 +56,7 @@ namespace FootprintViewer.ViewModels
                 _footrpintLayer.DataHasChanged();
             });
 
-            //_filter.Update.Subscribe(filter => FootprintsChanged(filter));
+            _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);
 
             MainContent = _footprintObserverList;
         }

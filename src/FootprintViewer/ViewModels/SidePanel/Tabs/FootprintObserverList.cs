@@ -3,7 +3,6 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +21,7 @@ namespace FootprintViewer.ViewModels
         {
             _footprintProvider = provider;
 
-            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+            Loading = ReactiveCommand.CreateFromTask<FootprintObserverFilter?, List<FootprintInfo>>(LoadingAsync);
 
             select = ReactiveCommand.Create<FootprintInfo, FootprintInfo>(s => s);
 
@@ -33,12 +32,24 @@ namespace FootprintViewer.ViewModels
             _isLoading = Loading.IsExecuting.ToProperty(this, x => x.IsLoading, scheduler: RxApp.MainThreadScheduler);
         }
 
-        private async Task<List<FootprintInfo>> LoadingAsync()
+        private async Task<List<FootprintInfo>> LoadingAsync(FootprintObserverFilter? filter = null)
         {
-            return await _footprintProvider.GetFootprintInfosAsync();
+            if (filter == null)
+            {
+                return await _footprintProvider.GetFootprintInfosAsync();
+            }
+            else
+            {
+                return await Task.Run(() =>
+                {
+                    var list = _footprintProvider.GetFootprintInfosAsync().Result;
+
+                    return list.Where(s => filter.Filtering(s)).ToList();
+                });
+            }
         }
 
-        public ReactiveCommand<Unit, List<FootprintInfo>> Loading { get; }
+        public ReactiveCommand<FootprintObserverFilter?, List<FootprintInfo>> Loading { get; }
 
         public IObservable<FootprintInfo> SelectItem => select;
 
