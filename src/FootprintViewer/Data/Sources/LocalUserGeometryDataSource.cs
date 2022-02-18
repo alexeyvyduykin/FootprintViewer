@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FootprintViewer.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -23,5 +25,12 @@ namespace FootprintViewer.Data.Sources
         }
 
         public async Task<List<UserGeometry>> GetUserGeometriesAsync() => await Task.Run(() => _userGeometries);
+
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync() => await Task.Run(() => _userGeometries.Select(s => new UserGeometryInfo(s)).ToList());
+
+        public async Task RemoveAsync(UserGeometry geometry)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

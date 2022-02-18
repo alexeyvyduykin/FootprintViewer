@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FootprintViewer.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -22,13 +24,13 @@ namespace FootprintViewer.Data.Sources
             await context.SaveChangesAsync();
         }
 
-        public void Remove(UserGeometry geometry)
+        public async Task RemoveAsync(UserGeometry geometry)
         {
             var context = new FootprintViewerDbContext(_options);
 
             context.UserGeometries.Remove(geometry);
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         public async Task<List<UserGeometry>> GetUserGeometriesAsync()
@@ -36,6 +38,13 @@ namespace FootprintViewer.Data.Sources
             var context = new FootprintViewerDbContext(_options);
 
             return await context.UserGeometries.ToListAsync();
+        }
+
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            return await context.UserGeometries.Select(s => new UserGeometryInfo(s)).ToListAsync();
         }
     }
 }

@@ -133,7 +133,7 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<SatelliteViewer>(),
                 resolver.GetExistingService<GroundTargetViewer>(),
                 resolver.GetExistingService<FootprintObserver>(),
-                //resolver.GetExistingService<UserGeometryViewer>(),
+                resolver.GetExistingService<UserGeometryViewer>(),
             };
 
             services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });

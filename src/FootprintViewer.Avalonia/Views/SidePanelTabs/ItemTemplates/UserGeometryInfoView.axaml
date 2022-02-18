@@ -17,9 +17,12 @@
   </UserControl.Styles>
   
   <Border x:Name="MainBorder" Padding="8,4,8,4">
-    <Grid ColumnDefinitions="80,*,Auto">
-      <TextBlock x:Name="TypeTextBlock"/>
-      <TextBlock x:Name="NameTextBlock" Grid.Column="1"/>
+    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto, Auto">
+      <TextBlock x:Name="TypeTextBlock" FontSize="20"/>
+      <TextBlock x:Name="NameTextBlock"
+                 FontSize="16"
+                 FontStyle="Italic"
+                 Grid.ColumnSpan="2" Grid.Row="1"/>
       <Button x:Name="RemoveButton" Grid.Column="2" HorizontalAlignment="Right">Remove</Button>
     </Grid>
   </Border>

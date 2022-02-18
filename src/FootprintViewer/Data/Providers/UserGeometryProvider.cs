@@ -15,10 +15,12 @@ namespace FootprintViewer.Data
         {
             Update = ReactiveCommand.Create(() => { });
 
-            Loading = ReactiveCommand.CreateFromTask(LoadUsersAsync);
+            Loading = ReactiveCommand.CreateFromTask(GetUserGeometryInfosAsync);
         }
 
-        public ReactiveCommand<Unit, List<UserGeometry>> Loading { get; }
+        public ReactiveCommand<Unit, List<UserGeometryInfo>> Loading { get; }
+
+        public ReactiveCommand<Unit, Unit> Update { get; }
 
         public async Task AddAsync(UserGeometry geometry)
         {
@@ -30,57 +32,31 @@ namespace FootprintViewer.Data
             Update.Execute().Subscribe();
         }
 
-        public void Remove(UserGeometry geometry)
+        public async Task RemoveAsync(UserGeometry geometry)
         {
             foreach (var source in Sources)
             {
-                source.Remove(geometry);
+                await source.RemoveAsync(geometry);
             }
 
             Update.Execute().Subscribe();
         }
 
-        public async Task<List<UserGeometry>> LoadUsersAsync()
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
         {
-            return await Sources.First().GetUserGeometriesAsync();
+            return await Sources.FirstOrDefault().GetUserGeometryInfosAsync();
 
-            //List<UserGeometry> list = new List<UserGeometry>();
-
-            //foreach (var source in Sources)
+            //return await Task.Run(() =>
             //{
-            //    list.AddRange(await source.GetUserGeometriesAsync());
-            //}
+            //    var list = new List<UserGeometryInfo>();
 
-            //return list;
+            //    foreach (var source in Sources)
+            //    {
+            //        list.AddRange(source.GetUserGeometriesAsync().Result.Select(s => new UserGeometryInfo(s)));
+            //    }
+
+            //    return list;
+            //});
         }
-
-        public IEnumerable<UserGeometry> LoadUsers()
-        {
-            var list = new List<UserGeometry>();
-
-            foreach (var source in Sources)
-            {
-                list.AddRange(source.GetUserGeometriesAsync().Result);
-            }
-
-            return list;
-        }
-
-        public async Task<List<UserGeometryInfo>> LoadUserGeometriesAsync()
-        {
-            return await Task.Run(() =>
-            {
-                var list = new List<UserGeometryInfo>();
-
-                foreach (var source in Sources)
-                {
-                    list.AddRange(source.GetUserGeometriesAsync().Result.Select(s => new UserGeometryInfo(s)));
-                }
-
-                return list;
-            });
-        }
-
-        public ReactiveCommand<Unit, Unit> Update { get; }
     }
 }

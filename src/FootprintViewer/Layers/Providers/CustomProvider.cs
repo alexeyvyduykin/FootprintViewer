@@ -1,10 +1,14 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using NetTopologySuite.Index.HPRtree;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using nts = NetTopologySuite.Geometries;
@@ -19,50 +23,39 @@ namespace FootprintViewer.Layers
         {
             _provider = provider;
 
-            provider.Update.Subscribe(_ => Update());
+            Update = ReactiveCommand.CreateFromTask(UpdateAsync);
 
-            provider.Loading.Subscribe(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<UserGeometryInfo>>(LoadingImpl);
+
+            Update.Select(s => s).InvokeCommand(Loading);
+
+            provider.Update.Select(_ => Unit.Default).InvokeCommand(Update);
+
+            provider.Loading.Select(s => s).InvokeCommand(Loading);
         }
 
-        private void LoadingImpl(List<UserGeometry> userGeometries)
+        private ReactiveCommand<Unit, List<UserGeometryInfo>> Update { get; }
+
+        private ReactiveCommand<List<UserGeometryInfo>, Unit> Loading { get; }
+
+        private string GenerateName(UserGeometryType type)
         {
-            foreach (var item in userGeometries)
-            {
-                if (item.Geometry != null)
-                {
-                    Add(new Feature() { Geometry = NTSConverter.ToPolygon(item.Geometry) });
-                }
-            }
+            return $"{type}_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}";
         }
 
-        private void Update()
+        private void LoadingImpl(List<UserGeometryInfo> userGeometries)
         {
+            var arr = userGeometries
+                .Where(s => s.Geometry != null)
+                .Select(s => new Feature() { Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!) });
+            
             Clear();
-
-            var res = _provider.LoadUsers();
-
-            foreach (var item in res)
-            {
-                if (item.Geometry != null)
-                {
-                    Add(new Feature() { Geometry = NTSConverter.ToPolygon(item.Geometry) });
-                }
-            }
+            AddRange(arr);
         }
 
-        private async void UpdateImpl()
+        private async Task<List<UserGeometryInfo>> UpdateAsync()
         {
-            Clear();
-
-            var res = await _provider.LoadUsersAsync();
-
-            foreach (var item in res)
-            {
-                if (item.Geometry != null)
-                {
-                    Add(new Feature() { Geometry = NTSConverter.ToPolygon(item.Geometry) });
-                }
-            }
+            return await _provider.GetUserGeometryInfosAsync();
         }
 
         public void AddFeature(IFeature feature)
@@ -79,7 +72,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Rectangle,
-                    Name = $"Rectangle_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}",
+                    Name = GenerateName(UserGeometryType.Rectangle),
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 
@@ -96,7 +89,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Circle,
-                    Name = $"Circle_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}",
+                    Name = GenerateName(UserGeometryType.Circle),
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 
@@ -113,7 +106,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Polygon,
-                    Name = $"Polygon_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}",
+                    Name = GenerateName(UserGeometryType.Polygon),
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 

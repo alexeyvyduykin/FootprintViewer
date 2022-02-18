@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using FootprintViewer.ViewModels;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -7,8 +8,10 @@ namespace FootprintViewer.Data.Sources
     {
         Task AddAsync(UserGeometry geometry);
 
-        void Remove(UserGeometry geometry);
+        Task RemoveAsync(UserGeometry geometry);
 
         Task<List<UserGeometry>> GetUserGeometriesAsync();
+
+        Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync();
     }
 }

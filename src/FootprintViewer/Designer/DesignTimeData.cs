@@ -180,38 +180,6 @@ namespace FootprintViewer.Designer
             public DesignTimeFootprintPreviewGeometryProvider() : base() { }
         }
 
-        private class DesignTimeUserGeometryProvider : UserGeometryProvider
-        {
-            public DesignTimeUserGeometryProvider() : base()
-            {
-                AddSource(new DesignTimeUserGeometrySource());
-            }
-
-            private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
-            {
-                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
-
-                public IEnumerable<FootprintPreview> GetFootprintPreviews()
-                {
-                    for (int i = 0; i < 8; i++)
-                    {
-                        yield return DesignTimeFootprintPreview.Build();
-                    }
-                }
-
-                public IEnumerable<UserGeometry> GetUserGeometries()
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        yield return DesignTimeUserGeometryInfo.BuildModel();
-                    }
-                }
-                public async Task<List<UserGeometry>> GetUserGeometriesAsync() => GetUserGeometries().ToList();
-
-                public void Remove(UserGeometry geometry) => throw new NotImplementedException();
-            }
-        }
-
         private class DesignTimeMapProvider : MapProvider
         {
             public DesignTimeMapProvider() : base()
@@ -247,6 +215,50 @@ namespace FootprintViewer.Designer
             {
 
             }
+        }
+    }
+
+    internal class DesignTimeUserGeometryProvider : UserGeometryProvider
+    {
+        public DesignTimeUserGeometryProvider() : base()
+        {
+            AddSource(new DesignTimeUserGeometrySource());
+        }
+
+        private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
+        {
+            public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
+
+            public List<FootprintPreview> GetFootprintPreviews()
+            {
+                var list = new List<FootprintPreview>();
+                for (int i = 0; i < 8; i++)
+                {
+                    list.Add(DesignTimeFootprintPreview.Build());
+                }
+                return list;
+            }
+
+            public List<UserGeometry> GetUserGeometries()
+            {
+                var list = new List<UserGeometry>();
+                for (int i = 0; i < 10; i++)
+                {
+                    list.Add(DesignTimeUserGeometryInfo.BuildModel());
+                }
+                return list;
+            }
+
+            public async Task<List<UserGeometry>> GetUserGeometriesAsync() => GetUserGeometries().ToList();
+
+            public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
+            {
+                await Task.Delay(2000);
+
+                return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
+            }
+
+            public async Task RemoveAsync(UserGeometry geometry) => throw new NotImplementedException();
         }
     }
 

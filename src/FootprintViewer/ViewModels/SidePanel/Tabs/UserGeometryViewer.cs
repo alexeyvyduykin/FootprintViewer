@@ -13,90 +13,65 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryViewer : SidePanelTab
     {
-        private readonly UserGeometryProvider _provider;
-        private readonly Random _random = new Random();
+        private readonly UserGeometryProvider _provider;      
         private readonly ObservableAsPropertyHelper<List<UserGeometryInfo>> _userGeometries;
-        private readonly ObservableAsPropertyHelper<bool> _canRemove;
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public UserGeometryViewer(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<UserGeometryProvider>();
 
-            _provider.Update.Subscribe(_ => InvalidateData());
+            Remove = ReactiveCommand.CreateFromTask<UserGeometryInfo?>(RemoveAsync);
 
-            //Create = ReactiveCommand.Create(CreateImpl);
-            Create = ReactiveCommand.CreateFromTask(CreateImpl);
+            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
-            Remove = ReactiveCommand.Create<UserGeometryInfo?>(RemoveImpl);
+            Add = ReactiveCommand.CreateFromTask<UserGeometryInfo?>(AddAsync);
 
-            Update = ReactiveCommand.Create(InvalidateData);
+            Title = "Пользовательская геометрия";
 
-            LoadUserGeometries = ReactiveCommand.CreateFromTask(_provider.LoadUserGeometriesAsync/* LoadUsersAsync*/);
+            Name = "UserGeometryViewer";
 
-            _userGeometries = LoadUserGeometries.ToProperty(this, x => x.UserGeometries, scheduler: RxApp.MainThreadScheduler);
+            _provider.Update.Select(_ => Unit.Default).InvokeCommand(Loading);
 
-            LoadUserGeometries.IsExecuting.Subscribe(can => Can = !can);
+            _userGeometries = Loading.ToProperty(this, x => x.UserGeometries, scheduler: RxApp.MainThreadScheduler);
 
-            _canRemove = this.WhenAnyValue(x => x.SelectedUserGeometry).Select((g) => g != null).ToProperty(this, x => x.CanRemove);
+            _isLoading = Loading.IsExecuting.ToProperty(this, x => x.IsLoading, scheduler: RxApp.MainThreadScheduler);
 
-            //   _canRemove = this.WhenAnyValue(s => s.SelectedUserGeometry).Select(g => g != null).ToProperty(out _canRemove);
-
-            InvalidateData();
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(Loading);
         }
 
-        public ReactiveCommand<Unit, Unit> Create { get; }
+        public ReactiveCommand<UserGeometryInfo?, Unit> Add { get; }
 
         public ReactiveCommand<UserGeometryInfo?, Unit> Remove { get; }
 
-        public ReactiveCommand<Unit, Unit> Update { get; }
-
-        [Reactive]
-        public bool Can { get; set; }
-
-        public bool CanRemove => _canRemove.Value;
-
-        private async Task CreateImpl()
+        private async Task<List<UserGeometryInfo>> LoadingAsync()
         {
-            await _provider.AddAsync(CreateRandomUserGeometry());
+            return await _provider.GetUserGeometryInfosAsync();
         }
 
-        private UserGeometry CreateRandomUserGeometry()
-        {
-            string[] names = new[] { "Point", "Rectangle", "Polygon", "Circle" };
-            UserGeometryType[] types = new[] { UserGeometryType.Point, UserGeometryType.Rectangle, UserGeometryType.Polygon, UserGeometryType.Circle };
-
-            var index = _random.Next(0, 4);
-
-            var id = Guid.NewGuid();
-
-            var idStr = $"{id}";
-            idStr = new string(idStr.Replace("-", "").Take(10).ToArray());
-
-            return new UserGeometry()
-            {
-                Name = $"{names[index]}_{idStr}",
-                Type = types[index],
-            };
-        }
-
-        private void RemoveImpl(UserGeometryInfo? geometry)
+        private async Task AddAsync(UserGeometryInfo? geometry)
         {
             if (geometry != null)
             {
-                _provider.Remove(geometry.Geometry);
+                await _provider.AddAsync(geometry.Geometry);
             }
         }
 
-        private void InvalidateData()
+        private async Task RemoveAsync(UserGeometryInfo? geometry)
         {
-            LoadUserGeometries.Execute().Subscribe();
+            if (geometry != null)
+            {
+                await _provider.RemoveAsync(geometry.Geometry);
+            }
         }
 
-        public ReactiveCommand<Unit, List<UserGeometryInfo>> LoadUserGeometries { get; }
+        public ReactiveCommand<Unit, List<UserGeometryInfo>> Loading { get; }
 
         public List<UserGeometryInfo> UserGeometries => _userGeometries.Value;
 
         [Reactive]
         public UserGeometryInfo? SelectedUserGeometry { get; set; }
+
+        public bool IsLoading => _isLoading.Value;
     }
 }
