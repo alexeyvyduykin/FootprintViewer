@@ -38,11 +38,9 @@ namespace FootprintViewer.ViewModels
 
             Name = "Scene";
 
-            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
-
             Filter = new SceneSearchFilter(dependencyResolver);
 
-            Filter.Update += Filter_Update;
+            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
 
             this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
             {
@@ -64,9 +62,9 @@ namespace FootprintViewer.ViewModels
 
             SelectedItemChangedCommand = ReactiveCommand.Create<FootprintPreview>(SelectionChanged);
 
-            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+            Loading = ReactiveCommand.CreateFromTask<SceneSearchFilter?, List<FootprintPreview>>(LoadingAsync);
 
-            Loading.Subscribe(Update);
+            Filter.Update.Select(filter => filter).InvokeCommand(Loading);
 
             // TODO: avoid from first loading design
             this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Unit.Default).InvokeCommand(Loading);
@@ -74,60 +72,33 @@ namespace FootprintViewer.ViewModels
             _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
         }
 
-        private ReactiveCommand<Unit, List<FootprintPreview>> Loading { get; }
+        private ReactiveCommand<SceneSearchFilter?, List<FootprintPreview>> Loading { get; }
 
-        private async Task<List<FootprintPreview>> LoadingAsync()
+        private async Task<List<FootprintPreview>> LoadingAsync(SceneSearchFilter? filter = null)
         {
             _firstLoading = false;
 
-            //await Task.Delay(TimeSpan.FromSeconds(5));
-
-            return await Task.Run(() =>
+            if (filter == null)
             {
-                return _footprintPreviewProvider.GetFootprintPreviews();
-            });
-        }
-
-        private void Update(List<FootprintPreview> footprints)
-        {
-            var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
-
-            Filter.AddSensors(sortNames);
-        }
-
-        private void Filter_Update(object? sender, EventArgs e)
-        {
-            if (sender is SceneSearchFilter filter)
+                return await Task.Run(() =>
+                {
+                    return _footprintPreviewProvider.GetFootprintPreviews();
+                });
+            }
+            else
             {
-                IsUpdating = true;
+                return await Task.Run(() =>
+                {
+                    var list = _footprintPreviewProvider.GetFootprintPreviews();
 
-                //Footprints.Clear();
-
-                //foreach (var item in Footprints)
-                //{
-                //    if (filter.Filtering(item) == true)
-                //    {
-                //        Footprints.Add(item);
-                //    }
-                //}
-
-                IsUpdating = false;
+                    return list.Where(s => filter.Filtering(s)).ToList();
+                });
             }
         }
 
-        public void SetAOI(IGeometry aoi)
-        {
-            Filter.AOI = aoi;
+        public void SetAOI(IGeometry aoi) => Filter.AOI = aoi;
 
-            Filter.ForceUpdate();
-        }
-
-        public void ResetAOI()
-        {
-            Filter.AOI = null;
-
-            Filter.ForceUpdate();
-        }
+        public void ResetAOI() => Filter.AOI = null;
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
@@ -223,8 +194,5 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }
-
-        [Reactive]
-        public bool IsUpdating { get; set; } = false;
     }
 }

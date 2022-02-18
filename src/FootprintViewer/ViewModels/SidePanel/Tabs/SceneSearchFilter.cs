@@ -1,15 +1,17 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using DynamicData.Binding;
+using FootprintViewer.Data;
+using Mapsui.Geometries;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using DynamicData.Binding;
+using System.Reactive;
 using System.Reactive.Linq;
-using DynamicData;
-using Mapsui.Geometries;
-using Splat;
-using FootprintViewer.Data;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -23,14 +25,13 @@ namespace FootprintViewer.ViewModels
     }
 
     public class SceneSearchFilter : ReactiveObject
-    {    
+    {
         private readonly IDictionary<string, IGeometry> _geometries;
-
-        public event EventHandler? Update;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             var footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
+            var footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
 
             _geometries = footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
 
@@ -42,24 +43,28 @@ namespace FootprintViewer.ViewModels
             FromDate = DateTime.Today.AddDays(-1);
             ToDate = DateTime.Today.AddDays(1);
 
-            //this.WhenAnyValue(s => s.AOI).Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
+            Update = ReactiveCommand.Create(() => this);
 
-            this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation).
-                Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
+            this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI, s => s.AOI)
+                .Throttle(TimeSpan.FromSeconds(1))
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Update);
 
-            this.WhenAnyValue(s => s.IsFullCoverAOI).Subscribe(_ => Update?.Invoke(this, EventArgs.Empty));
-
-            //_observableFilter = 
-            //    this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation).
-            //    Select(_ => MakeFilter());
+            CreateSensorList(footprintPreviewProvider);
         }
 
-        public void ForceUpdate()
+        public ReactiveCommand<Unit, SceneSearchFilter> Update { get; }
+
+        private async Task CreateSensorList(FootprintPreviewProvider provider)
         {
-            Update?.Invoke(this, EventArgs.Empty);
+            var footprints = await Task.Run(() => provider.GetFootprintPreviews());
+
+            var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
+
+            AddSensors(sortNames);
         }
 
-        public void AddSensors(List<string> sensors)
+        private void AddSensors(List<string> sensors)
         {
             //sensors.Sort();
 
@@ -73,7 +78,7 @@ namespace FootprintViewer.ViewModels
             var databasesValid = Sensors
                 .ToObservableChangeSet()
                 .AutoRefresh(model => model.IsActive)
-                .Subscribe(s => 
+                .Subscribe(s =>
                 {
                     var temp = Cloudiness;
                     Cloudiness = temp + 1;
@@ -88,7 +93,7 @@ namespace FootprintViewer.ViewModels
 
         public bool Filtering(FootprintPreview footprint)
         {
-            bool isAoiCondition = false; 
+            bool isAoiCondition = false;
 
             if (AOI == null)
             {
@@ -102,7 +107,7 @@ namespace FootprintViewer.ViewModels
                     var aoiPolygon = (Polygon)AOI;
 
                     isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);
-                }                   
+                }
             }
 
             if (isAoiCondition == true)
@@ -120,27 +125,6 @@ namespace FootprintViewer.ViewModels
             }
 
             return false;
-        }
-
-        //public IObservable<Func<Footprint, bool>> Observable => _observableFilter;
-
-        private Func<FootprintPreview, bool> MakeFilter()
-        {
-            return footprint => 
-            {
-                if (Sensors.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
-                {                   
-                    if (footprint.CloudCoverFull >= Cloudiness)
-                    {
-                        if (footprint.SunElevation >= MinSunElevation && footprint.SunElevation <= MaxSunElevation)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            };
         }
 
         [Reactive]
