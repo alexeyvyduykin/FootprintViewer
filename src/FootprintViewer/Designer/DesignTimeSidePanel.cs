@@ -15,9 +15,10 @@ namespace FootprintViewer.Designer
                 new SatelliteViewer(data),
                 new GroundTargetViewer(data),
                 new FootprintObserver(data),
+                new UserGeometryViewer(data),
             };
 
-            Tabs = new List<SidePanelTab>(tabs);
+            Tabs.AddRange(new List<SidePanelTab>(tabs));          
         }
     }
 }

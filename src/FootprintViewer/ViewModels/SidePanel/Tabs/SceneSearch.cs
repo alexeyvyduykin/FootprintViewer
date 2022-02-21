@@ -67,7 +67,7 @@ namespace FootprintViewer.ViewModels
             Filter.Update.Select(filter => filter).InvokeCommand(Loading);
 
             // TODO: avoid from first loading design
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Filter).InvokeCommand(Loading);
 
             _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
         }

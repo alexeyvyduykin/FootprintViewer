@@ -13,8 +13,48 @@
 
   <Design.DataContext>
     <vmd:DesignTimeSidePanel/>
-  </Design.DataContext>  
-  
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <local:SidePanelSelector x:Key="SidePanelIconSelector">
+      <DataTemplate x:Key="SceneSearch">
+        <Grid>
+          <Viewbox>
+            <Image Source="{DynamicResource IconImage}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="SatelliteViewer">
+        <Grid>
+          <Viewbox>
+            <Image Source="{DynamicResource fg-satellite}"/>
+          </Viewbox>
+        </Grid>      
+      </DataTemplate>
+      <DataTemplate x:Key="GroundTargetViewer">
+        <Grid>
+          <Viewbox>
+            <Image Source="{DynamicResource fg-pois}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="FootprintObserver">
+        <Grid>
+          <Viewbox>
+            <Image Source="{DynamicResource fg-satellite-earth}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="UserGeometryViewer">
+        <Grid>
+          <Viewbox>
+            <Image Source="{DynamicResource fg-map-user}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
+    </local:SidePanelSelector>
+  </UserControl.Resources>
+
   <UserControl.Styles>
 
     <Style Selector="TextBlock.sidePanelHeaderTextBlock">
@@ -28,26 +68,26 @@
       <Setter Property="TabStripPlacement" Value="Right"></Setter>
       <Setter Property="Template">
         <ControlTemplate>
-          <Border BorderThickness="0"             
-                  CornerRadius="0"  Margin="0" Padding="0"            
-                  Background="{StaticResource DarkBackgroundBrush}"              
-                  HorizontalAlignment="Stretch"             
+          <Border BorderThickness="0"
+                  CornerRadius="0"  Margin="0" Padding="0"
+                  Background="{StaticResource DarkBackgroundBrush}"
+                  HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
               </Grid.ColumnDefinitions>
-              <ItemsPresenter Name="PART_ItemsPresenter"                                 
+              <ItemsPresenter Name="PART_ItemsPresenter"
                               Grid.Column="1"
-                              Items="{TemplateBinding Items}"                                                         
-                              ItemTemplate="{TemplateBinding ItemTemplate}">                
+                              Items="{TemplateBinding Items}"
+                              ItemTemplate="{TemplateBinding ItemTemplate}">
               </ItemsPresenter>
-                                               
-              <reactiveUi:ViewModelViewHost Name="PART_SelectedContentHost"                               
-                                            Margin="0"                               
-                                            HorizontalContentAlignment="Stretch"                              
-                                            VerticalContentAlignment="Stretch"                               
+
+              <reactiveUi:ViewModelViewHost Name="PART_SelectedContentHost"
+                                            Margin="0"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Stretch"
                                             ViewModel="{TemplateBinding SelectedContent}"/>
             </Grid>
           </Border>
@@ -60,21 +100,21 @@
       <Setter Property="Height" Value="50" />
       <Setter Property="Width" Value="50" />
       <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Background" Value="Transparent"/>  
+      <Setter Property="Background" Value="Transparent"/>
       <Setter Property="Template">
         <ControlTemplate>
-          <ContentPresenter Name="PART_ContentPresenter"                               
-                            Background="{TemplateBinding Background}"                       
-                            BorderThickness="0"   
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0"
                             Margin="0"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}"             
-                            Content="{TemplateBinding Header}"             
-                            HorizontalContentAlignment="Stretch"            
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            Content="{TemplateBinding Header}"
+                            HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"/>
         </ControlTemplate>
       </Setter>
     </Style>
-    
+
     <Style Selector="TabItem:selected">
       <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"/>
     </Style>
@@ -82,7 +122,7 @@
   </UserControl.Styles>
 
   <Grid RowDefinitions="Auto,*">
-    
+
     <StackPanel x:Name="Header">
       <Border Padding="15,8,0,8" Background="{StaticResource AccentBackgroundBrush}">
         <DockPanel LastChildFill="True">
@@ -106,7 +146,8 @@
       <TabControl.ItemTemplate>
         <DataTemplate>
           <Viewbox Margin="8">
-            <Image Source="{DynamicResource IconImage}"/>
+            <ContentControl Content="{Binding}"
+                            ContentTemplate="{StaticResource SidePanelIconSelector}"/>
           </Viewbox>
         </DataTemplate>
       </TabControl.ItemTemplate>
