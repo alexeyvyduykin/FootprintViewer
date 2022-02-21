@@ -52,7 +52,9 @@ namespace FootprintViewer.ViewModels
         {
             _items.Add(item);
 
-            item.Check.Subscribe(ItemChanged);
+            item.Activate.Subscribe(ActivateChanged);
+
+            item.Deactivate.Subscribe(_ => CloseImpl());
 
             if (_items.Count == 1)
             {
@@ -62,16 +64,13 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void ItemChanged(IToolCheck tool)
+        private void ActivateChanged(IToolCheck tool)
         {
-            if (tool.IsCheck == true)
-            {
-                _first = tool;
+            _first = tool;
 
-                _items.Remove(tool);
+            _items.Remove(tool);
 
-                _items.Insert(0, tool);
-            }
+            _items.Insert(0, tool);
 
             CloseImpl();
         }

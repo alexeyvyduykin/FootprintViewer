@@ -1,6 +1,9 @@
 ﻿using FootprintViewer.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System.Diagnostics;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -8,12 +11,29 @@ namespace FootprintViewer.ViewModels
     {
         public ToolCheck()
         {
-            Check = ReactiveCommand.Create<bool, IToolCheck>(check =>
+            BeforeActivate = ReactiveCommand.Create<IToolCheck>(() =>
             {
-                IsCheck = check;
-
+                Debug.WriteLine($"{Title} tool is before activate.");
                 return this;
             });
+
+            Activate = ReactiveCommand.Create<IToolCheck>(() =>
+            {
+                Debug.WriteLine($"{Title} tool  is activate.");
+                return this;
+            });
+
+            Deactivate = ReactiveCommand.Create<IToolCheck>(() =>
+            {
+                Debug.WriteLine($"{Title} tool is deactivate.");
+                return this;
+            });
+
+            var combined = ReactiveCommand.CreateCombined(new[] { BeforeActivate, Activate });
+
+            this.WhenAnyValue(s => s.IsCheck).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(combined);
+
+            this.WhenAnyValue(s => s.IsCheck).Where(s => s == false).Select(_ => Unit.Default).InvokeCommand(Deactivate);
         }
 
         [Reactive]
@@ -25,6 +45,10 @@ namespace FootprintViewer.ViewModels
 
         public string? Title { get; set; }
 
-        public ReactiveCommand<bool, IToolCheck> Check { get; }
+        public ReactiveCommand<Unit, IToolCheck> BeforeActivate { get; }
+
+        public ReactiveCommand<Unit, IToolCheck> Activate { get; }
+
+        public ReactiveCommand<Unit, IToolCheck> Deactivate { get; }
     }
 }

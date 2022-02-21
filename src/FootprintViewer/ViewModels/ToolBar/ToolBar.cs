@@ -18,25 +18,17 @@ namespace FootprintViewer.ViewModels
         {
             if (tool is IToolCheck check)
             {
-                check.Check.Subscribe(CheckChanged);
+                check.BeforeActivate.Subscribe(UncheckDisinclude);
             }
             else if (tool is IToolCollection collection)
             {
                 foreach (var item in collection.GetItems())
                 {
-                    item.Check.Subscribe(CheckChanged);
+                    item.BeforeActivate.Subscribe(UncheckDisinclude);
                 }
             }
 
             Tools.Add(tool);
-        }
-
-        private void CheckChanged(IToolCheck tool)
-        {
-            if (tool.IsCheck == true)
-            {
-                UncheckDisinclude(tool);
-            }
         }
 
         private void UncheckDisinclude(IToolCheck disinclude)
@@ -57,7 +49,7 @@ namespace FootprintViewer.ViewModels
 
                     if (check.IsCheck == true)
                     {
-                        check.Check.Execute(false).Subscribe();
+                        check.IsCheck = false;
 
                         return;
                     }
@@ -80,7 +72,7 @@ namespace FootprintViewer.ViewModels
 
                             if (toolCheck.IsCheck == true)
                             {
-                                toolCheck.Check.Execute(false).Subscribe();
+                                toolCheck.IsCheck = false;
 
                                 return;
                             }

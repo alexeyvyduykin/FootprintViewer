@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Reactive;
 
 namespace FootprintViewer.Models
 {
@@ -8,6 +9,10 @@ namespace FootprintViewer.Models
 
         bool IsCheck { get; set; }
 
-        ReactiveCommand<bool, IToolCheck> Check { get; }
+        ReactiveCommand<Unit, IToolCheck> BeforeActivate { get; }
+
+        ReactiveCommand<Unit, IToolCheck> Activate { get; }
+
+        ReactiveCommand<Unit, IToolCheck> Deactivate { get; }
     }
 }

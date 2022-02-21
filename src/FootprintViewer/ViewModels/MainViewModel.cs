@@ -49,59 +49,6 @@ namespace FootprintViewer.ViewModels
 
             _infoPanel = _factory.CreateInfoPanel();
 
-            _customToolBar.ZoomInClick.Subscribe(_ => ZoomInCommand());
-            _customToolBar.ZoomOutClick.Subscribe(_ => ZoomOutCommand());
-            _customToolBar.AddRectangleCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    RectangleCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
-            _customToolBar.AddPolygonCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    PolygonCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
-            _customToolBar.AddCircleCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    CircleCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
-            _customToolBar.RouteDistanceCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    RouteCommand();
-                    //DrawingRouteCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
-            _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
-
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
             _userLayer = _map.GetLayer<UserLayer>(LayerType.User);
@@ -129,109 +76,52 @@ namespace FootprintViewer.ViewModels
 
             ActualController = new EditController2();
 
-            _customToolBar.SelectGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    ActualController = new EditController2();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.ZoomIn.Click.Subscribe(_ => ZoomInCommand());
+            _customToolBar.ZoomOut.Click.Subscribe(_ => ZoomOutCommand());
 
-            _customToolBar.TranslateGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    ActualController = new EditController2();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.AddRectangle.Activate.Subscribe(_ => RectangleCommand());
+            _customToolBar.AddRectangle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.RotateGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    ActualController = new EditController2();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.AddPolygon.Activate.Subscribe(_ => PolygonCommand());
+            _customToolBar.AddPolygon.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.ScaleGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    ActualController = new EditController2();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.AddCircle.Activate.Subscribe(_ => CircleCommand());
+            _customToolBar.AddCircle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.EditGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    ActualController = new EditController2();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
+            _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.RectangleGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    DrawingRectangleCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController2() );
+            _customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.CircleGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    DrawingCircleCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.TranslateGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.PolygonGeometryCheck.Subscribe(tool =>
-            {
-                if (tool.IsCheck == true)
-                {
-                    DrawingPolygonCommand();
-                }
-                else
-                {
-                    _currentFeature = null;
-                    RemoveInteractiveLayer();
-                }
-            });
+            _customToolBar.RotateGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.RotateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.ScaleGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.ScaleGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
+            _customToolBar.Rectangle.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.Circle.Activate.Subscribe(_ => DrawingCircleCommand());
+            _customToolBar.Circle.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
+            _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
+
+            _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
+        }
+
+        private void ResetInteractivity()
+        {
+            _currentFeature = null;
+            RemoveInteractiveLayer();
         }
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
