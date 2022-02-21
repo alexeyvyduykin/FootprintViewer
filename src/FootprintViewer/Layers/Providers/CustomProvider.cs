@@ -47,7 +47,11 @@ namespace FootprintViewer.Layers
         {
             var arr = userGeometries
                 .Where(s => s.Geometry != null)
-                .Select(s => new Feature() { Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!) });
+                .Select(s => new Feature()
+                {
+                    ["Name"] = s.Name,
+                    Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!)
+                });
             
             Clear();
             AddRange(arr);
@@ -63,8 +67,27 @@ namespace FootprintViewer.Layers
             Add(feature);
         }
 
+        public void EditFeature(IFeature feature)
+        {
+            Task.Run(async () =>
+            {
+                if (feature.Fields.Contains("Name") == true)
+                {
+                    var name = (string)feature["Name"];
+
+                    var geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry);
+
+                    await _provider.UpdateGeometry(name, geometry);
+                }
+            });
+        }
+
         public void AddRectangle(IFeature feature)
         {
+            var name = GenerateName(UserGeometryType.Rectangle);
+
+            feature["Name"] = name;
+
             Add(feature);
 
             Task.Run(async () =>
@@ -72,7 +95,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Rectangle,
-                    Name = GenerateName(UserGeometryType.Rectangle),
+                    Name = name,
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 
@@ -82,6 +105,10 @@ namespace FootprintViewer.Layers
 
         public void AddCircle(IFeature feature)
         {
+            var name = GenerateName(UserGeometryType.Circle);
+
+            feature["Name"] = name;
+
             Add(feature);
 
             Task.Run(async () =>
@@ -89,7 +116,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Circle,
-                    Name = GenerateName(UserGeometryType.Circle),
+                    Name = name,
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 
@@ -99,6 +126,10 @@ namespace FootprintViewer.Layers
 
         public void AddPolygon(IFeature feature)
         {
+            var name = GenerateName(UserGeometryType.Polygon);
+
+            feature["Name"] = name;
+
             Add(feature);
 
             Task.Run(async () =>
@@ -106,7 +137,7 @@ namespace FootprintViewer.Layers
                 var model = new UserGeometry()
                 {
                     Type = UserGeometryType.Polygon,
-                    Name = GenerateName(UserGeometryType.Polygon),
+                    Name = name,
                     Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
                 };
 

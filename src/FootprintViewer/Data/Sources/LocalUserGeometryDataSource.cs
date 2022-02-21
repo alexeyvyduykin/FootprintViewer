@@ -32,5 +32,18 @@ namespace FootprintViewer.Data.Sources
         {
             throw new System.NotImplementedException();
         }
+
+        public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
+        {
+            await Task.Run(() =>
+            {
+                var userGeometry = _userGeometries.Where(s => s.Name == key).FirstOrDefault();
+
+                if (userGeometry != null)
+                {
+                    userGeometry.Geometry = geometry;
+                }
+            });
+        }
     }
 }

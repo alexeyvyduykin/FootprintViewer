@@ -259,6 +259,11 @@ namespace FootprintViewer.Designer
             }
 
             public async Task RemoveAsync(UserGeometry geometry) => throw new NotImplementedException();
+
+            public Task UpdateGeometry(string key, Geometry geometry)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 

@@ -15,6 +15,22 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
+        public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            var userGeometry = await context.UserGeometries
+                .Where(b => b.Name == key)
+                .FirstOrDefaultAsync();
+
+            if (userGeometry != null)
+            {
+                userGeometry.Geometry = geometry;
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task AddAsync(UserGeometry geometry)
         {
             var context = new FootprintViewerDbContext(_options);

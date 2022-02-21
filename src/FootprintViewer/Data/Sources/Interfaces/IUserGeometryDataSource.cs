@@ -13,5 +13,7 @@ namespace FootprintViewer.Data.Sources
         Task<List<UserGeometry>> GetUserGeometriesAsync();
 
         Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync();
+
+        Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry);
     }
 }

@@ -35,6 +35,7 @@ namespace FootprintViewer.ViewModels
         private readonly CustomProvider _provider;
         private IFeature? _currentFeature;
         private readonly IReadonlyDependencyResolver _dependencyResolver;
+        private bool _isDirtyDecorator = false;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -91,7 +92,7 @@ namespace FootprintViewer.ViewModels
             _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
             _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController2() );
+            _customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
             _customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _customToolBar.TranslateGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
@@ -120,8 +121,20 @@ namespace FootprintViewer.ViewModels
 
         private void ResetInteractivity()
         {
+            if (_isDirtyDecorator == true)
+            {
+                _provider.EditFeature(_currentFeature.Copy());
+
+                _isDirtyDecorator = false;
+            }
+
+            Tip = null;
+
             _currentFeature = null;
+
             RemoveInteractiveLayer();
+
+            ActualController = new EditController();
         }
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
@@ -180,10 +193,12 @@ namespace FootprintViewer.ViewModels
                     MapObserver = new MapObserver(decorator);
 
                     _currentFeature = feature;
+
+                    _isDirtyDecorator = true;
                 }
                 else
                 {
-                    _currentFeature = null;
+                    ToolBar.Uncheck();
                 }
             }
             else if (sender is string name)
