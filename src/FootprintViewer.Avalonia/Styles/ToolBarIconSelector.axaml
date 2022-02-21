@@ -55,51 +55,51 @@
       </DataTemplate>
 
       <DataTemplate x:Key="Select">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Rectangle">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Circle">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Polygon">
-        <TextBlock Text="{Binding Title}"                   
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Translate">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-move}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Rotate">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-rotate}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Scale">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-scale-poly}"/>
+        </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Edit">
-        <TextBlock Text="{Binding Title}"
-                   Margin="8"
-                   Width="80"/>
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-modify-poly-o}"/>
+        </Viewbox>
       </DataTemplate>
 
     </local:ToolIconSelector>
