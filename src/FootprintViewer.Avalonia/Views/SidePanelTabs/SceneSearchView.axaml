@@ -27,8 +27,8 @@
                      Target="{Binding ElementName=ToggleButtonSearch}"
                      Background="{StaticResource MainBackgroundBrush}"
                      IsOpen="{Binding IsFilterOpen}"
-                     ContentSource="{Binding Filter}"/>
-
+                     Content="{Binding Filter}"/>
+        
     <Grid RowDefinitions="Auto,*,50" 
           Background="{StaticResource MainBackgroundBrush}">
 
@@ -44,6 +44,7 @@
                Background="Transparent"/>
     </Grid>
 
-  </Grid>
+  
+</Grid>
     
 </UserControl>

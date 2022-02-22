@@ -28,12 +28,12 @@
       <v:ToolCheckView DataContext="{Binding RouteDistance}" 
                        Margin="0,1,0,0"/>
 
-      <controls:Flyout Placement="Right"                 
+      <!--<controls:Flyout Placement="Right"                 
                        Target="{Binding #LayerSelectorButton}"                 
                        IsAnchor="True"                 
                        IsOpen="{Binding IsWorldMapSelectorOpen}"                
                        Background="{StaticResource MainBackgroundBrush}"                 
-                       ContentSource="{Binding WorldMapSelector}"/>
+                       ContentSource="{Binding WorldMapSelector}"/>-->
        
       <v:ToolClickView x:Name="LayerSelectorButton" 
                        DataContext="{Binding WorldMaps}"

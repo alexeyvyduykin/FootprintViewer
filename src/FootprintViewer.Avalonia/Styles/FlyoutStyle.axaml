@@ -1,0 +1,49 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FootprintViewer.Avalonia.Controls"
+        xmlns:reactiveUi="http://reactiveui.net">
+
+  <Design.PreviewWith>
+    <Border Padding="120" Background="WhiteSmoke">
+      
+      <!-- Add Controls for Previewer Here -->
+
+      <Grid>
+        <local:FlyoutBase Placement="Left" ArrowOffset="60">
+          <local:FlyoutBase.Content>
+            <Border Width="140" Height="120"/>
+          </local:FlyoutBase.Content>
+        </local:FlyoutBase>
+      </Grid>
+
+    </Border>
+  </Design.PreviewWith>
+    
+  <!-- Add Styles Here -->
+
+  <Style Selector="local|FlyoutBase">   
+    <Setter Property="Background" Value="Black"/>  
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Grid Background="Transparent">
+              <Border Background="{TemplateBinding Background}"                      
+                      Width="{TemplateBinding ArrowSize}" 
+                      Height="{TemplateBinding ArrowSize}"
+                      HorizontalAlignment="{TemplateBinding HorizontalAlignment}"                      
+                      VerticalAlignment="{TemplateBinding VerticalAlignment}"   
+                      RenderTransformOrigin="{TemplateBinding ArrowOrigin}"
+                      RenderTransform="{TemplateBinding ArrowTransform}"/>
+              <ContentPresenter Background="{TemplateBinding Background}"                                
+                                BorderThickness="0"                               
+                                Content="{TemplateBinding Content}"                     
+                                HorizontalAlignment="Stretch"                      
+                                VerticalAlignment="Center"                      
+                                Margin="{TemplateBinding ArrowMargin}" />           
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</Styles>

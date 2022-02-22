@@ -1,8 +1,12 @@
 using Avalonia;
+using Avalonia.Controls.Templates;
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
+using System;
+using FootprintViewer.Avalonia.Views.SidePanelTabs;
 
 namespace FootprintViewer.Avalonia
 {
@@ -59,6 +63,34 @@ namespace FootprintViewer.Avalonia
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();
+        }
+    }
+
+    public class ViewLocator : IDataTemplate
+    {
+        public IControl Build(object data)
+        {
+            var name = data.GetType().FullName!.Replace("ViewModel", "View");
+            var type = Type.GetType(name);
+
+            if (data is SceneSearchFilter)
+            {
+                return (Control)Activator.CreateInstance(typeof(SceneSearchFilterView))!;
+            }
+
+            if (type != null)
+            {
+                return (Control)Activator.CreateInstance(type)!;
+            }
+            else
+            {
+                return new TextBlock { Text = "Not Found: " + name };
+            }
+        }
+
+        public bool Match(object data)
+        {
+            return data is ReactiveObject;
         }
     }
 }

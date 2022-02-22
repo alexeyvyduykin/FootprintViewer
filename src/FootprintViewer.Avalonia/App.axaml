@@ -2,7 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:FootprintViewer.Avalonia"
              x:Class="FootprintViewer.Avalonia.App">
-  
+
+  <Application.DataTemplates>
+    <local:ViewLocator/>
+  </Application.DataTemplates>
+
   <Application.Styles>
     
     <FluentTheme Mode="Dark"/>
@@ -12,6 +16,7 @@
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/FastToolTip.axaml"/>
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/SearchToggleButton.axaml"/>
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/ToolBarIconSelector.axaml"/>
+    <StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/FlyoutStyle.axaml"/>
 
   </Application.Styles>
   
