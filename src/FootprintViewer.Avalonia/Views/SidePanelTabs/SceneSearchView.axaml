@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"           
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"                  
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                       
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"            
              x:Name="SceneSearchTabName"
              MinWidth="380" mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
@@ -28,7 +28,7 @@
                      Background="{StaticResource MainBackgroundBrush}"
                      IsOpen="{Binding IsFilterOpen}"
                      Content="{Binding Filter}"/>
-        
+            
     <Grid RowDefinitions="Auto,*,50" 
           Background="{StaticResource MainBackgroundBrush}">
 

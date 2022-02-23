@@ -43,6 +43,8 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => _filter).InvokeCommand(_footprintObserverList.Loading);
 
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
                 _footrpintLayer.SelectFeature(item.Name);
