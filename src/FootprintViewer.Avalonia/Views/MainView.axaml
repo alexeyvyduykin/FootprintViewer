@@ -25,8 +25,7 @@
       <Grid Grid.Column="0">
 
         <local:UserMapControl x:Name="MapControl"
-                          MapSource="{Binding Map}"
-                          Plotter="{Binding Plotter}"
+                          MapSource="{Binding Map}"                     
                           Controller="{Binding ActualController}"
                           TipSource="{Binding Tip}"
                           MapListener="{Binding MapListener}"

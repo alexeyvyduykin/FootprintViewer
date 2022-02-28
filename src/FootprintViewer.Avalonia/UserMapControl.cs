@@ -4,7 +4,6 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using FootprintViewer.Input;
 using FootprintViewer.Interactivity;
-using FootprintViewer.InteractivityEx;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
@@ -118,16 +117,6 @@ namespace FootprintViewer.Avalonia
 
             return AvaloniaRuntimeXamlLoader.Parse<ItemsControl>(xaml);
         }
-
-        public Plotter Plotter
-        {
-            get { return GetValue(PlotterProperty); }
-            set { SetValue(PlotterProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
-        public static readonly StyledProperty<Plotter> PlotterProperty =
-            AvaloniaProperty.Register<UserMapControl, Plotter>(nameof(Plotter));
 
         public IController Controller
         {

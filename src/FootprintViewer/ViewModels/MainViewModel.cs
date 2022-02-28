@@ -206,11 +206,6 @@ namespace FootprintViewer.ViewModels
             {
                 if (_footprintObserver.IsActive == true)
                 {
-                    if (Plotter != null && Plotter.IsEditing == true)
-                    {
-                        return;
-                    }
-
                     _footprintObserver.SelectFootprintInfo(name);
                 }
             }
@@ -750,9 +745,6 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public IController ActualController { get; set; }
-
-        [Reactive]
-        public Plotter? Plotter { get; set; }
 
         [Reactive]
         public Tip? Tip { get; set; }
