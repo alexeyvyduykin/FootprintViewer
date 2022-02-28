@@ -2,7 +2,6 @@
 using FootprintViewer.Interactivity;
 using FootprintViewer.Interactivity.Decorators;
 using FootprintViewer.Interactivity.Designers;
-using FootprintViewer.InteractivityEx;
 using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;
@@ -358,7 +357,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractiveRectangle(feature), FeatureType.AOIRectangle.ToString());
+                _editLayer.AddAOI(new InteractivePolygon(feature), FeatureType.AOIRectangle.ToString());
 
                 Tip = null;
 
