@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using M = Mapsui.Geometries;
-using FootprintViewer;
-using Avalonia;
+﻿using Avalonia;
+using FootprintViewer.Input;
 using avalonia = Avalonia.Input;
-using Avalonia.Input;
+using M = Mapsui.Geometries;
 
 namespace FootprintViewer.Avalonia
 {
@@ -20,38 +12,38 @@ namespace FootprintViewer.Avalonia
             return new M.Point(pt.X, pt.Y);
         }
 
-        public static MouseButton Convert(this PointerUpdateKind state)
+        public static MouseButton Convert(this avalonia.PointerUpdateKind state)
         {
             switch (state)
             {
-                case PointerUpdateKind.LeftButtonPressed:
+                case avalonia.PointerUpdateKind.LeftButtonPressed:
                     return MouseButton.Left;
-                case PointerUpdateKind.MiddleButtonPressed:
+                case avalonia.PointerUpdateKind.MiddleButtonPressed:
                     return MouseButton.Middle;
-                case PointerUpdateKind.RightButtonPressed:
+                case avalonia.PointerUpdateKind.RightButtonPressed:
                     return MouseButton.Right;
-                case PointerUpdateKind.XButton1Pressed:
+                case avalonia.PointerUpdateKind.XButton1Pressed:
                     return MouseButton.XButton1;
-                case PointerUpdateKind.XButton2Pressed:
+                case avalonia.PointerUpdateKind.XButton2Pressed:
                     return MouseButton.XButton2;
-                case PointerUpdateKind.LeftButtonReleased:
+                case avalonia.PointerUpdateKind.LeftButtonReleased:
                     return MouseButton.Left;
-                case PointerUpdateKind.MiddleButtonReleased:
+                case avalonia.PointerUpdateKind.MiddleButtonReleased:
                     return MouseButton.Middle;
-                case PointerUpdateKind.RightButtonReleased:
+                case avalonia.PointerUpdateKind.RightButtonReleased:
                     return MouseButton.Right;
-                case PointerUpdateKind.XButton1Released:
+                case avalonia.PointerUpdateKind.XButton1Released:
                     return MouseButton.XButton1;
-                case PointerUpdateKind.XButton2Released:
+                case avalonia.PointerUpdateKind.XButton2Released:
                     return MouseButton.XButton2;
-                case PointerUpdateKind.Other:
+                case avalonia.PointerUpdateKind.Other:
                     return MouseButton.None;
                 default:
                     return MouseButton.None;
             }
         }
 
-        public static MouseWheelEventArgs ToMouseWheelEventArgs(this PointerWheelEventArgs e, IInputElement relativeTo)
+        public static MouseWheelEventArgs ToMouseWheelEventArgs(this avalonia.PointerWheelEventArgs e, avalonia.IInputElement relativeTo)
         {
             return new MouseWheelEventArgs
             {
@@ -61,7 +53,7 @@ namespace FootprintViewer.Avalonia
             };
         }
 
-        public static MouseEventArgs ToMouseEventArgs(this PointerEventArgs e, IInputElement relativeTo)
+        public static MouseEventArgs ToMouseEventArgs(this avalonia.PointerEventArgs e, avalonia.IInputElement relativeTo)
         {
             return new MouseEventArgs
             {
@@ -70,7 +62,7 @@ namespace FootprintViewer.Avalonia
             };
         }
 
-        public static MouseDownEventArgs ToMouseDownEventArgs(this PointerPressedEventArgs e, IInputElement relativeTo)
+        public static MouseDownEventArgs ToMouseDownEventArgs(this avalonia.PointerPressedEventArgs e, avalonia.IInputElement relativeTo)
         {
             return new MouseDownEventArgs
             {
@@ -81,7 +73,7 @@ namespace FootprintViewer.Avalonia
             };
         }
 
-        public static MouseEventArgs ToMouseReleasedEventArgs(this PointerReleasedEventArgs e, IInputElement relativeTo)
+        public static MouseEventArgs ToMouseReleasedEventArgs(this avalonia.PointerReleasedEventArgs e, avalonia.IInputElement relativeTo)
         {
             return new MouseEventArgs
             {

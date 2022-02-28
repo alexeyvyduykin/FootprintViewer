@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer
+﻿namespace FootprintViewer.Input
 {
     public abstract class MapManipulator<T> : ManipulatorBase<T> where T : InputEventArgs
     {

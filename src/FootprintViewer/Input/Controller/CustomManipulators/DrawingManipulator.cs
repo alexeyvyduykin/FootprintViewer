@@ -1,10 +1,10 @@
 ﻿using Mapsui.Geometries;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
-    public class DrawingManipulator2 : MouseManipulator
+    public class DrawingManipulator : MouseManipulator
     {
-        public DrawingManipulator2(IMapView view) : base(view) { }
+        public DrawingManipulator(IMapView view) : base(view) { }
 
         private bool _skip;
         private int _counter;
@@ -33,7 +33,7 @@ namespace FootprintViewer
                     return res;
                 }
 
-                MapView.MapObserver.OnCompleted(worldPosition, isClick);         
+                MapView.MapObserver.OnCompleted(worldPosition, isClick);
             }
 
             e.Handled = true;
@@ -80,9 +80,9 @@ namespace FootprintViewer
         }
     }
 
-    public class HoverDrawingManipulator2 : MouseManipulator
+    public class HoverDrawingManipulator : MouseManipulator
     {
-        public HoverDrawingManipulator2(IMapView view) : base(view)
+        public HoverDrawingManipulator(IMapView view) : base(view)
         {
 
         }

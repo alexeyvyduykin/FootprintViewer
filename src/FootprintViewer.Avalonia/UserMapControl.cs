@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using FootprintViewer.Input;
 using FootprintViewer.Interactivity;
 using FootprintViewer.InteractivityEx;
 using FootprintViewer.ViewModels;
@@ -136,7 +137,7 @@ namespace FootprintViewer.Avalonia
 
         // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
         public static readonly StyledProperty<IController> ControllerProperty =
-            AvaloniaProperty.Register<UserMapControl, IController>(nameof(Controller), new EditController());
+            AvaloniaProperty.Register<UserMapControl, IController>(nameof(Controller), new DefaultController());
 
         private static void OnControllerChanged(AvaloniaPropertyChangedEventArgs e)
         {

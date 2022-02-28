@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FootprintViewer.Input;
+using System;
 
 namespace FootprintViewer
 {

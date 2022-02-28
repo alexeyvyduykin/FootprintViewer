@@ -1,4 +1,6 @@
-﻿namespace FootprintViewer
+﻿using FootprintViewer.Input;
+
+namespace FootprintViewer
 {
     public interface IViewCommand<in T> : IViewCommand where T : InputEventArgs
     {

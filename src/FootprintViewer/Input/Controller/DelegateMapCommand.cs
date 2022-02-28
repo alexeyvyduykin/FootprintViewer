@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
     public class DelegateMapCommand<T> : DelegateViewCommand<T>
         where T : InputEventArgs

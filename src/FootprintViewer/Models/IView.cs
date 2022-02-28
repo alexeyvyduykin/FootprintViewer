@@ -1,4 +1,5 @@
-﻿using Mapsui;
+﻿using FootprintViewer.Input;
+using Mapsui;
 
 namespace FootprintViewer
 {

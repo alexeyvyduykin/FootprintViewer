@@ -1,4 +1,6 @@
-﻿namespace FootprintViewer
+﻿using FootprintViewer.Input;
+
+namespace FootprintViewer
 {
     public class InputCommandBinding
     {

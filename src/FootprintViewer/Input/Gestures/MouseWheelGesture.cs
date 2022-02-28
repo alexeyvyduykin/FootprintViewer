@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer
+﻿namespace FootprintViewer.Input
 {
     public class MouseWheelGesture : InputGesture
     {

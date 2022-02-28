@@ -1,22 +1,11 @@
-﻿using FootprintViewer.Layers;
-using Mapsui.Geometries;
-using Mapsui.Layers;
-using Mapsui.Styles;
-using Mapsui.UI;
-using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FootprintViewer.InteractivityEx;
+﻿using FootprintViewer.Interactivity;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
     public class EditingManipulator : MouseManipulator
     {
         private bool _isEditing = false;
-        private int _vertexRadius = 4;
-        private EditLayer _layer = null;
+        private readonly int _vertexRadius = 4;
 
         public EditingManipulator(IMapView mapView) : base(mapView) { }
 
@@ -26,19 +15,16 @@ namespace FootprintViewer
 
             if (_isEditing == true)
             {
-                var (isEnd, bb) = MapView.Plotter.EndEditingFeature();
+                var worldPosition = MapView.ScreenToWorld(e.Position);
+
+                MapView.MapObserver.OnCompleted(worldPosition);
 
                 MapView.Map.PanLock = false;
-
-                if (isEnd == true)
-                {
-                    MapView.NavigateToAOI(bb);
-                }
 
                 _isEditing = false;
             }
 
-            MapView.SetCursor(CursorType.Default, "EditingManipulator.Completed");
+            MapView.SetCursor(CursorType.Default);
 
             e.Handled = true;
         }
@@ -46,22 +32,16 @@ namespace FootprintViewer
         public override void Delta(MouseEventArgs e)
         {
             base.Delta(e);
-       
+
             if (_isEditing == true)
             {
-                var screenPosition = e.Position;
-                var worldPosition = MapView.Viewport.ScreenToWorld(screenPosition);
+                var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                MapView.Plotter.EditingFeature(worldPosition);
+                MapView.MapObserver.OnDelta(worldPosition);
 
-                MapView.SetCursor(CursorType.HandGrab, "EditingManipulator.Delta");
-                _layer.DataHasChanged();
+                MapView.SetCursor(CursorType.HandGrab);
 
                 e.Handled = true;
-            }
-            else
-            {
-               // MapView.SetCursor(CursorType.HandGrab, "EditingManipulator.Delta");
             }
 
             //e.Handled = true;
@@ -71,18 +51,15 @@ namespace FootprintViewer
         {
             base.Started(e);
 
-            var screenPosition = e.Position;
-            var mapInfo = MapView.GetMapInfo(screenPosition);
+            var mapInfo = MapView.GetMapInfo(e.Position);
 
             _isEditing = false;
 
-            if (mapInfo.Feature != null)
+            if (mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
 
-                _layer = (EditLayer)mapInfo.Layer;
-
-                MapView.Plotter.BeginEditingFeature(mapInfo.WorldPosition, distance);
+                MapView.MapObserver.OnStarted(mapInfo.WorldPosition, distance);
 
                 _isEditing = true;
             }
@@ -94,7 +71,9 @@ namespace FootprintViewer
 
             e.Handled = true;
         }
+
     }
+
     public class HoverEditingManipulator : MouseManipulator
     {
         public HoverEditingManipulator(IMapView view) : base(view) { }
@@ -102,20 +81,15 @@ namespace FootprintViewer
         public override void Delta(MouseEventArgs e)
         {
             base.Delta(e);
-                
-            if (MapView.Plotter != null && MapView.Plotter.IsEditing == false)
-            {
-                var screenPosition = e.Position;
-                var mapInfo = MapView.GetMapInfo(screenPosition);
 
-                if (mapInfo.Layer != null && mapInfo.Layer is EditLayer)
+            if (e.Handled == false)
+            {
+                var mapInfo = MapView.GetMapInfo(e.Position);
+
+                if (mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
                 {
-                    MapView.SetCursor(CursorType.Hand, "HoverEditingManipulator.Delta");
+                    MapView.SetCursor(CursorType.Hand);
                     e.Handled = true;
-                }
-                else
-                {
-                    //MapView.SetCursor(CursorType.Default, "HoverEditingManipulator.Delta");
                 }
             }
         }

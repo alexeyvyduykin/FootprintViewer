@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
     public abstract class ControllerBase : IController
     {
@@ -81,7 +81,7 @@ namespace FootprintViewer
                 var hitargs = new HitTestArguments(args.Position, 10);
                 foreach (var result in HitTest(view, hitargs))
                 {
-                    args.HitTestResult = result;
+                    //args.HitTestResult = result;
                     //result.Element.OnMouseDown(args);
                     if (args.Handled)
                     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
     public abstract class InputGesture : IEquatable<InputGesture>
     {

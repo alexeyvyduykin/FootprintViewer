@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Interactivity;
+﻿using FootprintViewer.Input;
+using FootprintViewer.Interactivity;
 using FootprintViewer.Interactivity.Decorators;
 using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.InteractivityEx;
@@ -75,7 +76,7 @@ namespace FootprintViewer.ViewModels
                 }
             };
 
-            ActualController = new EditController2();
+            ActualController = new DefaultController();
 
             _customToolBar.ZoomIn.Click.Subscribe(_ => ZoomInCommand());
             _customToolBar.ZoomOut.Click.Subscribe(_ => ZoomOutCommand());
@@ -92,19 +93,19 @@ namespace FootprintViewer.ViewModels
             _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
             _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.TranslateGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.TranslateGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.RotateGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.RotateGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.RotateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.ScaleGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.ScaleGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.ScaleGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController2());
+            _customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
@@ -134,7 +135,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            ActualController = new EditController();
+            ActualController = new DefaultController();
         }
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
@@ -371,8 +372,6 @@ namespace FootprintViewer.ViewModels
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-
-                ActualController = new EditController();
             };
 
             //Plotter.EndEditing += (s, e) =>
@@ -386,7 +385,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void PolygonCommand()
@@ -426,8 +425,6 @@ namespace FootprintViewer.ViewModels
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-
-                ActualController = new EditController();
             };
 
             //Plotter.EndEditing += (s, e) =>
@@ -441,7 +438,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void CircleCommand()
@@ -475,8 +472,6 @@ namespace FootprintViewer.ViewModels
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-
-                ActualController = new EditController();
             };
 
             //Plotter.EndEditing += (s, e) =>
@@ -490,7 +485,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void RouteCommand()
@@ -535,13 +530,11 @@ namespace FootprintViewer.ViewModels
                 Tip = null;
 
                 _customToolBar.Uncheck();
-
-                ActualController = new EditController();
             };
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private AOIInfoPanel CreateAOIPanel(IFeature feature)
@@ -563,8 +556,6 @@ namespace FootprintViewer.ViewModels
                 Tip = null;
 
                 ToolBar.Uncheck();
-
-                ActualController = new EditController();
             });
 
             return panel;
@@ -587,8 +578,6 @@ namespace FootprintViewer.ViewModels
                 Tip = null;
 
                 ToolBar.Uncheck();
-
-                ActualController = new EditController();
             });
 
             return panel;
@@ -625,7 +614,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void DrawingCircleCommand()
@@ -657,7 +646,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void DrawingRouteCommand()
@@ -687,7 +676,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private void DrawingPolygonCommand()
@@ -725,7 +714,7 @@ namespace FootprintViewer.ViewModels
 
             MapObserver = new MapObserver(designer);
 
-            ActualController = new DrawingController2();
+            ActualController = new DrawingController();
         }
 
         private static double GetFeatureArea(IFeature feature)

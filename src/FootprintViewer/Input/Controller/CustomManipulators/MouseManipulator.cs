@@ -1,6 +1,6 @@
 ﻿using Mapsui.Geometries;
 
-namespace FootprintViewer
+namespace FootprintViewer.Input
 {
     public abstract class MouseManipulator : MapManipulator<MouseEventArgs>
     {

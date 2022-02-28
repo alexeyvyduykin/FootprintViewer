@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FootprintViewer
+﻿namespace FootprintViewer.Input
 {
     public class EditController : ControllerBase, IMapController
     {
