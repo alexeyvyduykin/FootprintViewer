@@ -50,11 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="resources\GrabHand.cur" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <Compile Update="Views\InfoPanel\GeometryInfoPanelView.axaml.cs">
       <DependentUpon>GeometryInfoPanelView.axaml</DependentUpon>

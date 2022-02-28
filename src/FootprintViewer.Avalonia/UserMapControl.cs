@@ -19,7 +19,7 @@ namespace FootprintViewer.Avalonia
     public class UserMapControl : MapControl, IMapView
     {
         private Mapsui.Geometries.Point? _mouseDownPoint;
-        private readonly Cursor? _grabHandCursor;
+        private Cursor? _grabHandCursor;
         private bool _isLeftMouseDown = false;
         private CursorType _currentCursorType = CursorType.Default;
         private readonly ItemsControl? _tipControl;
@@ -389,12 +389,6 @@ namespace FootprintViewer.Avalonia
 
         public void SetCursor(CursorType cursorType, string info = "")
         {
-            if (_grabHandCursor == null)
-            {
-                //_grabHandCursor = (Cursor?)App.Current.Resources["GrabHandCursor"];
-                //_grabHandCursor = new Cursor(App.GetResourceStream(new Uri("resources/GrabHand.cur", UriKind.Relative)).Stream);
-            }
-
             if (_currentCursorType == cursorType)
             {
                 return;
@@ -409,7 +403,7 @@ namespace FootprintViewer.Avalonia
                     Cursor = new Cursor(StandardCursorType.Hand);
                     break;
                 case CursorType.HandGrab:
-                    Cursor = new Cursor(StandardCursorType.DragMove);// _grabHandCursor;
+                    Cursor = (_grabHandCursor ??= Services.CursorService.GetGrabHandCursor());
                     break;
                 case CursorType.Cross:
                     Cursor = new Cursor(StandardCursorType.Cross);
