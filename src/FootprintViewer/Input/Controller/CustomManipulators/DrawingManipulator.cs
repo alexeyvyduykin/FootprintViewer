@@ -23,14 +23,7 @@ namespace FootprintViewer.Input
                 {
                     var p0 = MapView.WorldToScreen(worldPosition);
 
-                    var res = IsClick(p0, screenPosition);
-
-                    if (res == true)
-                    {
-                        MapView.SetCursor(CursorType.Default);
-                    }
-
-                    return res;
+                    return IsClick(p0, screenPosition);
                 }
 
                 MapView.MapObserver.OnCompleted(worldPosition, isClick);

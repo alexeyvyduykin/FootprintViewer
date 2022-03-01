@@ -10,7 +10,6 @@ using Mapsui.Geometries;
 using Mapsui.UI;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -294,11 +293,11 @@ namespace FootprintViewer.Avalonia
                 if (_isLeftMouseDown == true && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == true)
                 {
                     _infoLeftClick = false;
-                    SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");
+                    SetCursor(CursorType.HandGrab);
                 }
                 else
                 {
-                    SetCursor(CursorType.Default, "UserMapControl.MyMapControl_MouseMove");
+                    SetCursor(CursorType.Default);
                 }
             }
         }
@@ -377,7 +376,7 @@ namespace FootprintViewer.Avalonia
             Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
-        public void SetCursor(CursorType cursorType, string info = "")
+        public void SetCursor(CursorType cursorType)
         {
             if (_currentCursorType == cursorType)
             {
@@ -403,8 +402,6 @@ namespace FootprintViewer.Avalonia
             }
 
             _currentCursorType = cursorType;
-
-            Debug.WriteLine($"Set Cursor = {Cursor}, Info = {info}");
         }
 
         public Mapsui.Geometries.Point ScreenToWorld(Mapsui.Geometries.Point screenPosition)

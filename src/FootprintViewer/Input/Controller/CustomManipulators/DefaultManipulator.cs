@@ -4,7 +4,7 @@
     {
         public DefaultManipulator(IMapView mapView) : base(mapView)
         {
-            MapView.SetCursor(CursorType.Default, "DefaultManipulator.ctor");
+            MapView.SetCursor(CursorType.Default);
         }
     }
 }
