@@ -97,6 +97,7 @@ namespace FootprintViewer.Avalonia
             <Style Selector='ItemsControl > ContentPresenter'>
               <Setter Property='Canvas.Left' Value='{Binding X}'/>   
               <Setter Property='Canvas.Top' Value='{Binding Y}'/>      
+              <Setter Property='IsVisible' Value='{Binding IsVisible}'/>      
             </Style>      
           </ItemsControl.Styles>
       
@@ -280,8 +281,14 @@ namespace FootprintViewer.Avalonia
             if (TipSource != null)
             {
                 var screenPosition = e.GetPosition(this);
+
                 TipSource.X = screenPosition.X + 20;
                 TipSource.Y = screenPosition.Y;
+
+                if (TipSource.IsVisible == false)
+                {
+                    TipSource.IsVisible = true;
+                }
             }
 
             //e.Handled = 
@@ -351,6 +358,11 @@ namespace FootprintViewer.Avalonia
             }
 
             _isLeftMouseDown = false;
+
+            if (TipSource != null)
+            {                                
+                TipSource.IsVisible = false;                
+            }
 
             //e.Handled = 
             Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));

@@ -8,6 +8,8 @@ namespace FootprintViewer.ViewModels
         double X { get; set; }
 
         double Y { get; set; }
+
+        bool IsVisible { get; set; }
     }
 
     public class TipBase : ReactiveObject, ITip
@@ -17,6 +19,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public double Y { get; set; }
+
+        [Reactive]
+        public bool IsVisible { get; set; }
     }
 
     public class Tip : TipBase

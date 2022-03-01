@@ -368,15 +368,6 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            //Plotter.EndEditing += (s, e) =>
-            //{
-            //    var feature = (Feature)e.Feature;
-
-            //    InfoPanel?.Show(CreateAOIPanel(feature));
-
-            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-            //};
-
             MapObserver = new MapObserver(designer);
 
             ActualController = new DrawingController();
@@ -421,15 +412,6 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            //Plotter.EndEditing += (s, e) =>
-            //{
-            //    var feature = (Feature)e.Feature;
-
-            //    InfoPanel?.Show(CreateAOIPanel(feature));
-
-            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-            //};
-
             MapObserver = new MapObserver(designer);
 
             ActualController = new DrawingController();
@@ -467,15 +449,6 @@ namespace FootprintViewer.ViewModels
 
                 _customToolBar.Uncheck();
             };
-
-            //Plotter.EndEditing += (s, e) =>
-            //{
-            //    var feature = (Feature)e.Feature;
-
-            //    InfoPanel?.Show(CreateAOIPanel(feature));
-
-            //    AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
-            //};
 
             MapObserver = new MapObserver(designer);
 
