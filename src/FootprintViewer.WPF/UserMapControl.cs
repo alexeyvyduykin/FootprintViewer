@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Interactivity;
+﻿using input = FootprintViewer.Input;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Geometries;
@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using FootprintViewer.Interactivity;
 
 namespace FootprintViewer.WPF
 {
@@ -19,7 +20,7 @@ namespace FootprintViewer.WPF
         private Mapsui.Geometries.Point? _mouseDownPoint;
         private Cursor? _grabHandCursor;
         private bool _isLeftMouseDown = false;
-        private CursorType _currentCursorType = CursorType.Default;
+        private input.CursorType _currentCursorType = input.CursorType.Default;
         private ItemsControl? _tipControl;
         private Mapsui.UI.MapInfoEventArgs? _mapInfoEventArgs;
         private string? _lastNameFeatureInfo;
@@ -111,16 +112,6 @@ namespace FootprintViewer.WPF
             }
         }
 
-        public Plotter Plotter
-        {
-            get { return (Plotter)GetValue(PlotterProperty); }
-            set { SetValue(PlotterProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlotterProperty =
-            DependencyProperty.Register("Plotter", typeof(Plotter), typeof(UserMapControl));
-
         public IController Controller
         {
             get { return (IController)GetValue(ControllerProperty); }
@@ -129,14 +120,14 @@ namespace FootprintViewer.WPF
 
         // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControllerProperty =
-            DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new EditController(), OnControllerChanged));
+            DependencyProperty.Register("Controller", typeof(IController), typeof(UserMapControl), new PropertyMetadata(new input.DefaultController(), OnControllerChanged));
 
         private static void OnControllerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var mapControl = (UserMapControl)d;
 
             // HACK: after tools check, hover manipulator not active, it call this
-            mapControl.Controller.HandleMouseEnter(mapControl, new MouseEventArgs());
+            mapControl.Controller.HandleMouseEnter(mapControl, new input.MouseEventArgs());
         }
 
         public ITip? TipSource
@@ -203,6 +194,15 @@ namespace FootprintViewer.WPF
             }
         }
 
+        public IMapObserver MapObserver
+        {
+            get { return (IMapObserver)GetValue(MapObserverProperty); }
+            set { SetValue(MapObserverProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MapObserverProperty =
+            DependencyProperty.Register("MapObserver", typeof(MapObserver), typeof(UserMapControl));
 
         private void MyMapControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -268,11 +268,11 @@ namespace FootprintViewer.WPF
                 if (_isLeftMouseDown == true && e.MouseDevice.LeftButton == MouseButtonState.Pressed)
                 {
                     _infoLeftClick = false;
-                    SetCursor(CursorType.HandGrab, "UserMapControl.MyMapControl_MouseMove");
+                    SetCursor(input.CursorType.HandGrab);
                 }
                 else
                 {
-                    SetCursor(CursorType.Default, "UserMapControl.MyMapControl_MouseMove");
+                    SetCursor(input.CursorType.Default);
                 }
             }
         }
@@ -346,7 +346,7 @@ namespace FootprintViewer.WPF
             Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
-        public void SetCursor(CursorType cursorType, string info = "")
+        public void SetCursor(input.CursorType cursorType)
         {
             if (_grabHandCursor == null)
             {
@@ -360,16 +360,16 @@ namespace FootprintViewer.WPF
 
             switch (cursorType)
             {
-                case CursorType.Default:
+                case input.CursorType.Default:
                     Cursor = Cursors.Arrow;
                     break;
-                case CursorType.Hand:
+                case input.CursorType.Hand:
                     Cursor = Cursors.Hand;
                     break;
-                case CursorType.HandGrab:
+                case input.CursorType.HandGrab:
                     Cursor = _grabHandCursor;
                     break;
-                case CursorType.Cross:
+                case input.CursorType.Cross:
                     Cursor = Cursors.Cross;
                     break;
                 default:
@@ -377,8 +377,6 @@ namespace FootprintViewer.WPF
             }
 
             _currentCursorType = cursorType;
-
-            Debug.WriteLine($"Set Cursor = {Cursor}, Info = {info}");
         }
 
         protected void ShowTip()
@@ -395,6 +393,16 @@ namespace FootprintViewer.WPF
             {
                 _tipControl.ItemsSource = new ObservableCollection<Tip>();
             }
+        }
+
+        public Mapsui.Geometries.Point ScreenToWorld(Mapsui.Geometries.Point screenPosition)
+        {
+            return Viewport.ScreenToWorld(screenPosition);
+        }
+
+        public Mapsui.Geometries.Point WorldToScreen(Mapsui.Geometries.Point worldPosition)
+        {
+            return Viewport.WorldToScreen(worldPosition);
         }
     }
 }

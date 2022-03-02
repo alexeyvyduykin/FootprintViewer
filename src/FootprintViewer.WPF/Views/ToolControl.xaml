@@ -7,12 +7,16 @@
              xmlns:local="clr-namespace:FootprintViewer.WPF"                           
              xmlns:views="clr-namespace:FootprintViewer.WPF.Views"       
              xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"      
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
-             d:DataContext="{d:DesignInstance vm:ToolManagerDesigner, IsDesignTimeCreatable=True}"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"        
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"              
              mc:Ignorable="d" 
              x:Name="userControl"
              d:DesignHeight="450" d:DesignWidth="800"
              Cursor="Hand">
+
+    <UserControl.DataContext>
+        <vmd:DesignTimeCustomToolBar/>
+    </UserControl.DataContext>
     
     <UserControl.Resources>
         
@@ -137,10 +141,10 @@
             </Viewbox>
         </DataTemplate>
 
-        <local:ToolIconSelector x:Key="ToolIconDataSelector" 
+        <!--<local:ToolIconSelector x:Key="ToolIconDataSelector" 
                                 RectangleTemplate="{StaticResource RectangleItemTemplate}"
                                 PolygonTemplate="{StaticResource PolygonItemTemplate}"
-                                CircleTemplate="{StaticResource CircleItemTemplate}"/>
+                                CircleTemplate="{StaticResource CircleItemTemplate}"/>-->
 
     </UserControl.Resources>
 
@@ -234,8 +238,8 @@
                                     <ToolTip Content="{Binding Tooltip}" Style="{StaticResource FastTooltip}"/>
                             </ToggleButton.ToolTip>
 
-                                <ContentControl Content="{Binding}"
-                                            ContentTemplateSelector="{StaticResource ToolIconDataSelector}"/>
+                                <!--<ContentControl Content="{Binding}"
+                                            ContentTemplateSelector="{StaticResource ToolIconDataSelector}"/>-->
 
                         </ToggleButton>
 
@@ -275,7 +279,7 @@
 
         <StackPanel Height="10"/>
 
-            <controls:Flyout Placement="Right"                         
+            <!--<controls:Flyout Placement="Right"                         
                              Target="{Binding ElementName=LayerSelectorButton}"                         
                              IsAnchor="True"                         
                              Background="{StaticResource MainBackgroundBrush}"                                              
@@ -287,7 +291,7 @@
                         <views:WorldMapSelectorView DataContext="{Binding}"/>
                     </DataTemplate>
                 </controls:Flyout.FlyoutTemplate>
-            </controls:Flyout>
+            </controls:Flyout>-->
 
             <StackPanel DataContext="{Binding WorldMaps}"                      
                     HorizontalAlignment="Left">

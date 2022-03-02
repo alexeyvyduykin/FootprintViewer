@@ -45,7 +45,7 @@ namespace FootprintViewer.WPF
         {
             if (sender is Viewport viewport)
             {
-                ScaleBarControl.Update(MapControl.Map, viewport);
+                //ScaleBarControl.Update(MapControl.Map, viewport);
             }
         }
 

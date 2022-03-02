@@ -5,17 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:FootprintViewer.WPF"  
-        xmlns:views="clr-namespace:FootprintViewer.WPF.Views"           
-        xmlns:infoPanel="clr-namespace:FootprintViewer.WPF.Views.InfoPanel"           
+        xmlns:views="clr-namespace:FootprintViewer.WPF.Views"                        
         xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters"
         xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"         
         mc:Ignorable="d"
         x:Name="TopLevel"
         Title="FootprintViewer" Height="600" Width="1200">
 
     <Window.DataContext>
-        <vm:MainViewModel></vm:MainViewModel>
+        <vmd:DesignTimeMainViewModel/>
     </Window.DataContext>
 
     <Window.Resources>
@@ -62,8 +61,7 @@
         <Grid Grid.Column="0">
 
                 <local:UserMapControl x:Name="MapControl"                                   
-                                  MapSource="{Binding Map}"                              
-                                  Plotter="{Binding Plotter}"
+                                  MapSource="{Binding Map}"                                                           
                                   Controller="{Binding ActualController}"  
                                   TipSource="{Binding Tip}"    
                                   MapListener="{Binding MapListener}"
@@ -90,7 +88,7 @@
             <Grid VerticalAlignment="Bottom"                        
                   HorizontalAlignment="Center"                                            
                   Margin="0,0,0,60">
-                    <infoPanel:InfoPanelControl DataContext="{Binding InfoPanel}"/>
+                    <views:InfoPanelControl DataContext="{Binding InfoPanel}"/>
             </Grid>
             
             <Border BorderBrush="White" 
@@ -115,8 +113,8 @@
                                HorizontalAlignment="Center"
                                Foreground="WhiteSmoke"/>
 
-                    <views:ScaleBarControl x:Name="ScaleBarControl"
-                                              Grid.Column="2" />
+                    <!--<views:ScaleBarControl x:Name="ScaleBarControl"
+                                              Grid.Column="2" />-->
                   
                 </Grid>
             </Border>

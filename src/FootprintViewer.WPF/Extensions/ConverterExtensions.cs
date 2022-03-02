@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
+using input = FootprintViewer.Input;
 using M = Mapsui.Geometries;
-using FootprintViewer;
 
 namespace FootprintViewer.WPF
 {
@@ -17,24 +12,24 @@ namespace FootprintViewer.WPF
             return new M.Point(pt.X, pt.Y);
         }
 
-        public static MouseButton Convert(this System.Windows.Input.MouseButton mouseButton)
+        public static input.MouseButton Convert(this System.Windows.Input.MouseButton mouseButton)
         {
             switch (mouseButton)
             {
                 case System.Windows.Input.MouseButton.Left:
-                    return MouseButton.Left;
+                    return input.MouseButton.Left;
                 case System.Windows.Input.MouseButton.Middle:
-                    return MouseButton.Middle;
+                    return input.MouseButton.Middle;
                 case System.Windows.Input.MouseButton.Right:
-                    return MouseButton.Right;
+                    return input.MouseButton.Right;
                 default:
-                    return MouseButton.None;
+                    return input.MouseButton.None;
             }
         }
 
-        public static MouseWheelEventArgs ToMouseWheelEventArgs(this System.Windows.Input.MouseWheelEventArgs e, IInputElement relativeTo)
+        public static input.MouseWheelEventArgs ToMouseWheelEventArgs(this System.Windows.Input.MouseWheelEventArgs e, IInputElement relativeTo)
         {
-            return new MouseWheelEventArgs
+            return new input.MouseWheelEventArgs
             {
                 Position = e.GetPosition(relativeTo).ToScreenPoint(),
                 //ModifierKeys = Keyboard.Instance.GetModifierKeys(),
@@ -42,18 +37,18 @@ namespace FootprintViewer.WPF
             };
         }
 
-        public static MouseEventArgs ToMouseEventArgs(this System.Windows.Input.MouseEventArgs e, IInputElement relativeTo)
+        public static input.MouseEventArgs ToMouseEventArgs(this System.Windows.Input.MouseEventArgs e, IInputElement relativeTo)
         {
-            return new MouseEventArgs
+            return new input.MouseEventArgs
             {
                 Position = e.GetPosition(relativeTo).ToScreenPoint(),
                 //ModifierKeys = e.KeyModifiers.ToModifierKeys()
             };
         }
 
-        public static MouseDownEventArgs ToMouseDownEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
+        public static input.MouseDownEventArgs ToMouseDownEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
         {
-            return new MouseDownEventArgs
+            return new input.MouseDownEventArgs
             {
                 ChangedButton = e.ChangedButton.Convert(),
                 ClickCount = e.ClickCount,
@@ -62,9 +57,9 @@ namespace FootprintViewer.WPF
             };
         }
 
-        public static MouseEventArgs ToMouseReleasedEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
+        public static input.MouseEventArgs ToMouseReleasedEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
         {
-            return new MouseEventArgs
+            return new input.MouseEventArgs
             {
                 Position = e.GetPosition(relativeTo).ToScreenPoint(),
                 //ModifierKeys = e.KeyModifiers.ToModifierKeys()

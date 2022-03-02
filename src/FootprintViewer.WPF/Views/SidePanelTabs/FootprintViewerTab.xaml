@@ -6,21 +6,25 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"            
              xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"     
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"   
              xmlns:controls="clr-namespace:FootprintViewer.WPF.Controls"   
              xmlns:behaviors="clr-namespace:FootprintViewer.WPF.Behaviors"  
              xmlns:views="clr-namespace:FootprintViewer.WPF.Views.SidePanelTabs"  
-             x:Name="userControl"
-             d:DataContext="{d:DesignInstance vm:FootprintObserverDesigner, IsDesignTimeCreatable=True}"       
+             x:Name="userControl"                 
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="380">
 
+    <UserControl.DataContext>
+        <vmd:DesignTimeFootprintObserver/>
+    </UserControl.DataContext>
+    
     <UserControl.Resources>
-        <converters:FootprintViewerContentTypeConverter x:Key="footprintViewerContentTypeConverter"/>
+        <!--<converters:FootprintViewerContentTypeConverter x:Key="footprintViewerContentTypeConverter"/>
         <converters:NTSCoordinateConverter x:Key="ntsCoordinateConverter"/>
         <converters:DateTimeConverter x:Key="dateTimeConverter"/>
-        <converters:SatelliteStripDirectionConverter x:Key="satelliteStripDirectionConverter"/>
+        <converters:SatelliteStripDirectionConverter x:Key="satelliteStripDirectionConverter"/>-->
 
         <Style x:Key="txtHeaderNameKey" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
@@ -94,7 +98,7 @@
 
     <Grid>
         
-        <controls:Flyout Placement="Left"      
+        <!--<controls:Flyout Placement="Left"      
                          Margin="0,10,0,0"                                              
                          Target="{Binding ElementName=btnSearch}"                                                                            
                          Background="{StaticResource MainBackgroundBrush}"                                              
@@ -106,7 +110,7 @@
                     <views:FootprintViewerFilter DataContext="{Binding}"/>
                 </DataTemplate>
             </controls:Flyout.FlyoutTemplate>
-        </controls:Flyout>
+        </controls:Flyout>-->
 
         <Grid Background="{StaticResource MainBackgroundBrush}">
             <Grid.RowDefinitions>
@@ -173,7 +177,7 @@
                 <ContentControl.Style>
                     <Style TargetType="ContentControl">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Type, Converter={StaticResource footprintViewerContentTypeConverter}}" Value="Show">
+                            <DataTrigger Binding="{Binding Type}" Value="Show">
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <Grid>
@@ -184,13 +188,15 @@
                                                  VerticalContentAlignment="Stretch"                                                 
                                                  ItemsSource="{Binding FootprintInfos}" 
                                                  SelectedItem="{Binding SelectedFootprintInfo}"
-                                                 behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
+                                                 >
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                                         <i:InvokeCommandAction Command="{Binding PreviewMouseLeftButtonDownCommand}"/>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
 
+                                                <!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}"-->
+                                                
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate DataType="{x:Type vm:FootprintInfo}">
                                                         <Border Background="{StaticResource LightBackgroundBrush}" 
@@ -229,10 +235,10 @@
                                                                         <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SatelliteName}" Style="{StaticResource txtInfoValueKey}"/>
                                                                         <TextBlock Grid.Column="1" Grid.Row="0" Text="Satellite" Style="{StaticResource txtInfoNameKey}"/>
 
-                                                                        <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Center, Converter={StaticResource ntsCoordinateConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                        <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding Center}" Style="{StaticResource txtInfoValueKey}"/>
                                                                         <TextBlock Grid.Column="1" Grid.Row="1" Text="Center" Style="{StaticResource txtInfoNameKey}"/>
 
-                                                                        <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Begin, Converter={StaticResource dateTimeConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                        <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding Begin}" Style="{StaticResource txtInfoValueKey}"/>
                                                                         <TextBlock Grid.Column="1" Grid.Row="2" Text="Begin" Style="{StaticResource txtInfoNameKey}"/>
 
                                                                         <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Duration, StringFormat={}{0} sec}" Style="{StaticResource txtInfoValueKey}"/>
@@ -241,7 +247,7 @@
                                                                         <TextBlock Grid.Column="0" Grid.Row="4" Text="{Binding Node}" Style="{StaticResource txtInfoValueKey}"/>
                                                                         <TextBlock Grid.Column="1" Grid.Row="4" Text="Node" Style="{StaticResource txtInfoNameKey}"/>
 
-                                                                        <TextBlock Grid.Column="0" Grid.Row="5" Text="{Binding Direction, Converter={StaticResource satelliteStripDirectionConverter}}" Style="{StaticResource txtInfoValueKey}"/>
+                                                                        <TextBlock Grid.Column="0" Grid.Row="5" Text="{Binding Direction}" Style="{StaticResource txtInfoValueKey}"/>
                                                                         <TextBlock Grid.Column="1" Grid.Row="5" Text="Direction" Style="{StaticResource txtInfoNameKey}"/>
 
                                                                     </Grid>
@@ -256,7 +262,7 @@
                                 </Setter>
                             </DataTrigger>
 
-                            <DataTrigger Binding="{Binding Type, Converter={StaticResource footprintViewerContentTypeConverter}}" Value="Update">
+                            <DataTrigger Binding="{Binding Type}" Value="Update">
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <Grid>

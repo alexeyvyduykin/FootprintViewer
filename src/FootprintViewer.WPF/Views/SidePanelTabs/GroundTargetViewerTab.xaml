@@ -3,25 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"                   
-             xmlns:converters="clr-namespace:FootprintViewer.WPF.Converters" 
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"        
-             x:Name="userControl"
-             d:DataContext="{d:DesignInstance vm:GroundTargetViewerDesigner, IsDesignTimeCreatable=True}"       
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"                                
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"      
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"             
+             x:Name="userControl"             
              MinWidth="380"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="380">
 
+    <UserControl.DataContext>
+        <vmd:DesignTimeGroundTargetViewer/>
+    </UserControl.DataContext>
+    
     <UserControl.Resources>
-        <converters:TargetViewerContentTypeConverter x:Key="targetViewerContentTypeConverter"/>
-        <converters:GroundTargetTypeConverter x:Key="groundTargetTypeConverter"/>
-        <vm:ObservableGroundTargetCollection x:Key="coll">
-            <vm:GroundTargetInfo Name="g1"></vm:GroundTargetInfo>
-            <vm:GroundTargetInfo Name="g2"></vm:GroundTargetInfo>
-            <vm:GroundTargetInfo Name="g3"></vm:GroundTargetInfo>
-        </vm:ObservableGroundTargetCollection>
-        <vm:GroundTargetViewer x:Key="DesignDataTargetViewer" Type="Show" GroundTargetInfos="{StaticResource coll}" />
-      
+
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
         </Style>
@@ -33,11 +28,11 @@
     </UserControl.Resources>
     
     <Grid Background="{StaticResource MainBackgroundBrush}">
-        <ContentControl Margin="10" d:DataContext="{StaticResource DesignDataTargetViewer}">
+        <ContentControl Margin="10">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Empty">
+                        <DataTrigger Binding="{Binding Type}" Value="Empty">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <Grid>
@@ -53,7 +48,7 @@
                             </Setter>
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Show">
+                        <DataTrigger Binding="{Binding Type}" Value="Show">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <Grid>
@@ -89,7 +84,7 @@
                                                                 <ColumnDefinition Width="36"></ColumnDefinition>
                                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Type, Converter={StaticResource groundTargetTypeConverter}}"/>
+                                                            <TextBlock Text="{Binding Type}"/>
                                                             <TextBlock Text="{Binding Name}" Grid.Column="1"/>
                                                         </Grid>
                                                     </Border>
@@ -101,7 +96,7 @@
                             </Setter>
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Type, Converter={StaticResource targetViewerContentTypeConverter}}" Value="Update">
+                        <DataTrigger Binding="{Binding Type}" Value="Update">
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <Grid>
