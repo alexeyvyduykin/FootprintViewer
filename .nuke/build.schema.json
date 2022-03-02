@@ -6,14 +6,6 @@
     "build": {
       "type": "object",
       "properties": {
-        "Configuration": {
-          "type": "string",
-          "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
-          "enum": [
-            "Debug",
-            "Release"
-          ]
-        },
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
@@ -73,7 +65,9 @@
             "enum": [
               "Clean",
               "Compile",
-              "Restore"
+              "Publish",
+              "Restore",
+              "Run"
             ]
           }
         },
@@ -89,7 +83,9 @@
             "enum": [
               "Clean",
               "Compile",
-              "Restore"
+              "Publish",
+              "Restore",
+              "Run"
             ]
           }
         },

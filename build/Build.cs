@@ -1,11 +1,10 @@
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
-using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
@@ -17,12 +16,11 @@ class Build : NukeBuild
 {
     public static int Main() => Execute<Build>(x => x.Compile);
 
-    [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
-    readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+    readonly string Configuration = "Release";
+
+    const string RunProjectName = "FootprintViewer.Avalonia";
 
     [Solution] readonly Solution Solution;
-   // [GitRepository] readonly GitRepository GitRepository;
-   // [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
@@ -38,23 +36,53 @@ class Build : NukeBuild
         });
 
     Target Restore => _ => _
-        .Executes(() =>
-        {
-            DotNetRestore(s => s
-                .SetProjectFile(Solution));
-        });
+        .Executes(() => SourceDirectory
+            .GlobFiles("**/*.Avalonia.csproj")
+            .ForEach(path =>
+            {
+                DotNetRestore(settings => settings
+                    .SetProjectFile(path));
+            }));
 
     Target Compile => _ => _
         .DependsOn(Restore)
+        .Executes(() => SourceDirectory
+            .GlobFiles("**/*.Avalonia.csproj")
+            .ForEach(path =>
+            {
+                DotNetBuild(settings => settings
+                    .SetProjectFile(path)
+                    .SetConfiguration(Configuration)
+                    .EnableNoRestore());
+            }));
+
+    Target Run => _ => _
+        .DependsOn(Compile)
+        .Executes(() => SourceDirectory
+            .GlobFiles($"**/{RunProjectName}.csproj")
+            .ForEach(path =>
+            {
+                DotNetRun(settings => settings
+                    .SetProjectFile(path)
+                    .SetConfiguration(Configuration)
+                    .EnableNoRestore()
+                    .EnableNoBuild());
+            }));
+
+    Target Publish => _ => _
+        .DependsOn(Clean)
+        .DependsOn(Compile)
         .Executes(() =>
         {
-            DotNetBuild(s => s
-                .SetProjectFile(Solution)
-                .SetConfiguration(Configuration)
-           //     .SetAssemblyVersion(GitVersion.AssemblySemVer)
-           //     .SetFileVersion(GitVersion.AssemblySemFileVer)
-           //     .SetInformationalVersion(GitVersion.InformationalVersion)
-                .EnableNoRestore());
-        });
+            var rids = new[] { "win-x64", "linux-x64" };
 
+            DotNetPublish(settings => settings
+                .SetProject(Solution.GetProject("FootprintViewer.Avalonia"))
+                .SetPublishSingleFile(true)
+                .SetSelfContained(true)
+                .SetConfiguration(Configuration)
+                .CombineWith(rids, (settings, rid) => settings
+                    .SetRuntime(rid)
+                    .SetOutput(ArtifactsDirectory / "Publish" / rid)));
+        });
 }
