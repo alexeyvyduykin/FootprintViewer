@@ -8,10 +8,19 @@
       <!-- Add Controls for Previewer Here -->
 
       <Grid>
-        <local:FlyoutBase Placement="Left" ArrowOffset="60">
-          <local:FlyoutBase.Content>
-            <Border Width="140" Height="120"/>
-          </local:FlyoutBase.Content>
+        <local:FlyoutBase Placement="Left"
+                          ArrowOffset="60" 
+                          Content="Content">
+          <local:FlyoutBase.ContentTemplate>
+            <DataTemplate>
+              <Border Width="160" 
+                      Height="120" 
+                      BorderThickness="2" BorderBrush="Red">
+                <TextBlock Text="{Binding}" 
+                           Foreground="White"/>
+              </Border>
+            </DataTemplate>
+          </local:FlyoutBase.ContentTemplate>
         </local:FlyoutBase>
       </Grid>
 
@@ -35,7 +44,8 @@
                       RenderTransform="{TemplateBinding ArrowTransform}"/>
               <ContentPresenter Background="{TemplateBinding Background}"                                
                                 BorderThickness="0"                               
-                                Content="{TemplateBinding Content}"                                                                  
+                                Content="{TemplateBinding Content}"    
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
                                 HorizontalAlignment="Stretch"                      
                                 VerticalAlignment="Center"                      
                                 Margin="{TemplateBinding ArrowMargin}" />           

@@ -119,8 +119,9 @@ namespace FootprintViewer.Avalonia.Controls
                     }
 
                     _flyoutBase = new FlyoutBase()
-                    {
-                        Content = new ViewModelViewHost() { ViewModel = Content, },                        
+                    {                        
+                        ContentTemplate = ContentTemplate,
+                        Content = Content,                     
                         Margin = margin,
                         Background = Background,
                         Placement = Placement,

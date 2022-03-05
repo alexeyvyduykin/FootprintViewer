@@ -5,6 +5,7 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
              xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"     
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"   
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
@@ -32,7 +33,13 @@
                        Target="{Binding #LayerSelectorButton}"                                                      
                        IsOpen="{Binding IsWorldMapSelectorOpen}"                
                        Background="{StaticResource MainBackgroundBrush}"                 
-                       Content="{Binding WorldMapSelector}"/>
+                       Content="{Binding WorldMapSelector}">
+        <controls:Flyout.ContentTemplate>
+          <DataTemplate>
+            <views:WorldMapSelectorView DataContext="{Binding}"/>
+          </DataTemplate>
+        </controls:Flyout.ContentTemplate>
+      </controls:Flyout>
        
       <v:ToolClickView x:Name="LayerSelectorButton" 
                        DataContext="{Binding WorldMaps}"

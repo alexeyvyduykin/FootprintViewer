@@ -25,8 +25,14 @@
                      Target="{Binding ElementName=SearchToggleButton}"
                      IsOpen="{Binding IsFilterOpen}"
                      Content="{Binding Filter}"
-                     Background="{StaticResource MainBackgroundBrush}"/>
-
+                     Background="{StaticResource MainBackgroundBrush}">
+      <controls:Flyout.ContentTemplate>
+        <DataTemplate>
+          <views:FootprintObserverFilterView DataContext="{Binding}"/>
+        </DataTemplate>
+      </controls:Flyout.ContentTemplate>
+    </controls:Flyout>
+    
     <Grid RowDefinitions="Auto,*,50"
           Background="{StaticResource MainBackgroundBrush}">
 
