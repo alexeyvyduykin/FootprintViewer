@@ -1,0 +1,185 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:FootprintViewer.Avalonia.Controls">
+  
+  <Design.PreviewWith>
+    <Border Padding="20" Height="420">
+      <Border.Resources>
+        <PathIcon x:Key="PathIconRectangle" Data="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
+        <PathIcon x:Key="PathIconPolygon" Data="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z"/>
+        <PathIcon x:Key="PathIconCircle" Data="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
+      </Border.Resources>
+      <controls:SidePanel x:Name="SidePanel">
+        <controls:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
+          <Border Width="200" Height="200" Background="Red" />
+        </controls:SidePanelItem>
+        <controls:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
+          <Border Width="200" Height="200" Background="Green" />
+        </controls:SidePanelItem>
+        <controls:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
+          <Border Width="200" Height="200" Background="Blue" />
+        </controls:SidePanelItem>
+      </controls:SidePanel>
+    </Border>
+  </Design.PreviewWith>
+
+  <Styles.Resources>
+    <PathIcon x:Key="ChevronRight" Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></PathIcon>
+    <PathIcon x:Key="ChevronLeft" Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></PathIcon>
+    <x:Double x:Key="PaneWidth">50</x:Double>
+  </Styles.Resources>
+
+  <!-- Add Styles Here -->
+
+  <Style Selector="TextBlock.TextBlockTitle">
+    <Setter Property="FontSize" Value="14"></Setter>
+    <Setter Property="FontFamily" Value="Roboto"></Setter>
+  </Style>
+  
+  <Style Selector="ToggleButton.tglbtn">
+    <Setter Property="Border.BorderThickness" Value="0"></Setter>
+    <Setter Property="CornerRadius" Value="0"></Setter>
+    <Setter Property="Width" Value="{StaticResource PaneWidth}"></Setter>
+    <Setter Property="Height" Value="{StaticResource PaneWidth}"></Setter>
+  </Style>
+
+  <Style Selector="ToggleButton.tglbtn /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+
+  <Style Selector="SplitView.splt">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <DockPanel Name="PART_Container">
+
+          <Panel Name="PART_PaneRoot"
+                 DockPanel.Dock="Right"
+                 Background="{TemplateBinding PaneBackground}"
+                 ClipToBounds="True">
+            <ContentPresenter x:Name="PART_PanePresenter"
+                              Content="{TemplateBinding Pane}"
+                              ContentTemplate="{TemplateBinding PaneTemplate}"/>
+          </Panel>
+
+          <Panel Name="PART_ContentRoot">
+            <ContentPresenter x:Name="PART_ContentPresenter"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+          </Panel>
+
+        </DockPanel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <!--SidePanel-->
+  <Style Selector="controls|SidePanel">
+    <Setter Property="TitleBackground" Value="{DynamicResource AccentBackgroundBrush}"></Setter>
+    <Setter Property="PaneBackground" Value="{DynamicResource MainBackgroundBrush}"></Setter>
+    <Setter Property="ContentBackground" Value="Transparent"></Setter>
+    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Panel>
+          <SplitView x:Name="PART_NavigationPane"
+                     PanePlacement="Right"
+                     Classes="splt"
+                     PaneBackground="{TemplateBinding PaneBackground}"
+                     CompactPaneLength="{StaticResource PaneWidth}"
+                     DisplayMode="Inline"
+                     IsPaneOpen="True"
+                     OpenPaneLength="{StaticResource PaneWidth}">
+            <SplitView.Pane>
+              <Grid RowDefinitions="Auto,*">
+                <Panel Background="{TemplateBinding TitleBackground}">
+                  <ToggleButton x:Name="PART_SidePanelButton"
+                                Classes="tglbtn"
+                                IsChecked="{TemplateBinding IsCompact, Mode=TwoWay}">
+                    <ContentPresenter x:Name="PART_IconContentPresenter"/>
+                  </ToggleButton>
+                </Panel>
+                <ItemsPresenter Name="PART_ItemsPresenter"
+                                Grid.Row="1"
+                                ItemTemplate="{TemplateBinding ItemTemplate}"
+                                Items="{TemplateBinding Items}">
+                  <ItemsPresenter.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                  </ItemsPresenter.ItemsPanel>
+                </ItemsPresenter>
+              </Grid>
+            </SplitView.Pane>
+            <SplitView.Content>
+              <DockPanel>
+                <Border Height="{StaticResource PaneWidth}"
+                        Background="{TemplateBinding TitleBackground}"
+                        Padding="15,8,0,8"
+                        DockPanel.Dock="Top">
+                  <TextBlock x:Name="HeaderHolder"
+                             Classes="TextBlockTitle"
+                             VerticalAlignment="Center"
+                             Text="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
+                </Border>
+                <Border x:Name="BackgroundBorder">
+                  <ContentPresenter Name="PART_SelectedContentHost"
+                                    Background="{TemplateBinding ContentBackground}"
+                                    Padding="{TemplateBinding Padding}"
+                                    Content="{TemplateBinding SelectedContent}"
+                                    ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
+                </Border>
+              </DockPanel>
+            </SplitView.Content>
+          </SplitView>
+        </Panel>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|SidePanel[IsCompact=True] /template/ SplitView#PART_NavigationPane Panel#PART_ContentRoot">
+    <Setter Property="IsVisible" Value="False" />
+  </Style>
+
+  <Style Selector="controls|SidePanel[IsCompact=True] /template/ ContentPresenter#PART_IconContentPresenter">
+    <Setter Property="Content" Value="{DynamicResource ChevronLeft}" />
+  </Style>
+
+  <Style Selector="controls|SidePanel[IsCompact=False] /template/ ContentPresenter#PART_IconContentPresenter">
+    <Setter Property="Content" Value="{DynamicResource ChevronRight}" />
+  </Style>
+
+  <!--SidePanelItem-->
+  <Style Selector="controls|SidePanel > controls|SidePanelItem">
+    <Setter Property="Width" Value="{StaticResource PaneWidth}" />
+    <Setter Property="Height" Value="{StaticResource PaneWidth}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_LayoutRoot"
+                Background="{TemplateBinding Background}">
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|SidePanel > controls|SidePanelItem /template/ Border#PART_LayoutRoot">
+    <Setter Property="Border.Background" Value="Transparent" />
+  </Style>
+  <Style Selector="controls|SidePanel > controls|SidePanelItem:pointerover /template/ Border#PART_LayoutRoot">
+    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
+  </Style>
+  <Style Selector="controls|SidePanel > controls|SidePanelItem:selected /template/ Border#PART_LayoutRoot">
+    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
+  </Style>
+
+</Styles>
