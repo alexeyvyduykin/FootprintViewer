@@ -1,302 +1,204 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.PreviewWith>
-        <Border Padding="20" Width="400">
-          <StackPanel>
-            <WrapPanel>
 
-              <Viewbox Width="36" Height="36" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
-                </Border>
-              </Viewbox>
+  <Style Selector="ContentPresenter.small">
+    <Setter Property="Background" Value="#373737"></Setter>
+    <Setter Property="ContentTemplate">
+      <Setter.Value>
+        <DataTemplate>
+          <Viewbox Width="36" Height="36" Margin="1">
+            <Border>           
+              <Image Margin="8.5" Width="19" Height="19" Source="{Binding}"/>
+            </Border>   
+          </Viewbox>
+        </DataTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-              <Viewbox Width="36" Height="36" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomOut}"/>
-                </Border>
-              </Viewbox>
+  <Style Selector="ContentPresenter.t1">
+    <Setter Property="ContentTemplate">
+      <Setter.Value>
+        <DataTemplate>
+          <Viewbox>
+            <Image Source="{Binding}"/>
+          </Viewbox>
+        </DataTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-              <Viewbox Width="36" Height="36" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
-                </Border>
-              </Viewbox>
+  <Design.PreviewWith>       
+    <Border Padding="20" Width="400">          
+      <StackPanel>                                                           
+        <WrapPanel>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomIn}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomOut}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconAddRectangle}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconAddPolygon}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconAddCircle}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconScale}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconChevronLeft}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconChevronRight}"/>              
+          <ContentPresenter Classes="small" Content="{DynamicResource IconImage}"/>              
+          <ContentPresenter Classes="small" Content="{DynamicResource IconTune}"/>              
+          <ContentPresenter Classes="small" Content="{DynamicResource IconClose}"/>
 
-              <Viewbox Width="36" Height="36" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Source="{DynamicResource IconAddPolygon}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="36" Height="36" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Source="{DynamicResource IconAddCircle}"/>
-                </Border>
-              </Viewbox>
-
-              <Border Width="36" Height="36"
-                      Margin="1"
-                      Background="#373737"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconScale}"/>
-                </Viewbox>
+          <Border Width="36" Height="36"
+                  Background="#373737"
+                  Margin="1"
+                  Padding="8.5">
+            <Viewbox>
+              <Border>
+                <Image Source="{DynamicResource IconSatellite}" Margin="-10,0,0,-10"/>
               </Border>
+            </Viewbox>
+          </Border>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconChevronRight}"/>
-                </Viewbox>
-              </Border>
+          <ContentPresenter Classes="small" Content="{DynamicResource IconSunElevation}"/>
+          <ContentPresenter Classes="small" Content="{DynamicResource IconCloudy}"/>
+          <ContentPresenter Classes="small" Content="{DynamicResource IconGrid}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconToday}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconSquare}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconCircle}"/>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconImage}"/>
-                </Viewbox>
-              </Border>
+          <Border Width="36" Height="36" Background="#373737" Margin="1" Padding="2">
+            <Panel>
+              <ContentPresenter Classes="t1" Content="{DynamicResource IconCircle}"/>
+              <ContentPresenter Classes="t1" Margin="8.5" Content="{DynamicResource IconSquare}"/>
+            </Panel>
+          </Border>
+          
+          <ContentPresenter Classes="small" Content="{DynamicResource IconMap}"/>           
+        </WrapPanel>
+        <WrapPanel>
+          
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconTune}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-modify-poly-o}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconClose}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-rotate}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconSatellite}" Margin="-10,0,0,-10"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-scale-poly}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconSunElevation}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-move}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconCloudy}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-polygon-pt}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconGrid}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-rectangle-pt}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconToday}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-circle-o}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconSquare}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-measure}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconCircle}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-zoom-in}"/>
+            </Border>
+          </Viewbox>
 
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-zoom-out}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="2">
-                <Grid>
-                  <Viewbox>
-                    <Image Source="{DynamicResource IconCircle}"/>
-                  </Viewbox>
-                  <Viewbox Margin="8.5">
-                    <Image Source="{DynamicResource IconSquare}"/>
-                  </Viewbox>
-                </Grid>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-route}"/>
+            </Border>
+          </Viewbox>
 
-              <Border Width="36" Height="36"
-                      Background="#373737"
-                      Margin="1"
-                      Padding="8.5">
-                <Viewbox>
-                  <Image Source="{DynamicResource IconMap}"/>
-                </Viewbox>
-              </Border>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-location-arrow}"/>
+            </Border>
+          </Viewbox>
 
-            </WrapPanel>
-            <WrapPanel>
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-modify-poly-o}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-poi-alt}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-rotate}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-pois}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-scale-poly}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-map}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-move}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-map-user}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-polygon-pt}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-satellite}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-rectangle-pt}"/>
-                </Border>
-              </Viewbox>
-              
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-circle-o}"/>
-                </Border>
-              </Viewbox>
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-satellite-earth}"/>
+            </Border>
+          </Viewbox>
 
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-measure}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-zoom-in}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-zoom-out}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-route}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-location-arrow}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-poi-alt}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-pois}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-map}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-map-user}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-satellite}"/>
-                </Border>
-              </Viewbox>
-
-              <Viewbox Width="46" Height="46" Margin="1">
-                <Border Background="#373737">
-                  <Image Margin="4.0" Width="19" Height="19" Source="{DynamicResource fg-satellite-earth}"/>
-                </Border>
-              </Viewbox>
-
-            </WrapPanel>
-          </StackPanel>
-        </Border>
-    </Design.PreviewWith>
+        </WrapPanel>
+      </StackPanel>       
+    </Border>    
+  </Design.PreviewWith>
 
   <Styles.Resources>
-
-    <!--<BitmapImage x:Key="NotLoadingFootprintImage" UriSource="resources/FootprintNotLoading.png"/>-->
 
     <SolidColorBrush x:Key="IconAccentBrush" Color="#e39400">
       <!--<SolidColorBrush.Color>
@@ -316,7 +218,6 @@
       </DrawingImage.Drawing>
     </DrawingImage>
 
-
     <DrawingImage x:Key="IconZoomOut">
       <DrawingImage.Drawing>
         <DrawingGroup>
@@ -325,12 +226,6 @@
         </DrawingGroup>
       </DrawingImage.Drawing>
     </DrawingImage>
-
-    <!--<DrawingImage x:Key="IconZoomOut">
-        <DrawingImage.Drawing>
-            <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,13H5V11H19V13Z" />
-        </DrawingImage.Drawing>
-    </DrawingImage>-->
 
     <DrawingImage x:Key="IconAddRectangle">
       <DrawingImage.Drawing>
@@ -386,6 +281,12 @@
       </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="IconChevronLeft">
+      <DrawingImage.Drawing>
+        <GeometryDrawing Brush="White" Geometry="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+      </DrawingImage.Drawing>
+    </DrawingImage>
+
     <DrawingImage x:Key="IconImage">
       <DrawingImage.Drawing>
         <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
@@ -410,18 +311,16 @@
       </DrawingImage.Drawing>
     </DrawingImage>
 
-
     <DrawingImage x:Key="IconClose">
       <DrawingImage.Drawing>
         <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
       </DrawingImage.Drawing>
     </DrawingImage>
-
     
     <!-- ClipGeometry="M0,0 V90 H90 V0 H0 Z" -->
     <DrawingImage x:Key="IconSatellite">
       <DrawingImage.Drawing>
-        <DrawingGroup >
+        <DrawingGroup>
           <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,90">
             <GeometryDrawing Brush="{StaticResource IconAccentBrush}" Geometry="F1 M90,90z M0,0z M161,766C137,742 120,715 122,707 126,685 270,530 285,530 298,530 400,637 400,651 400,666 239,810 222,810 212,810 185,790 161,766z" />
             <GeometryDrawing Brush="{StaticResource IconAccentBrush}" Geometry="F1 M90,90z M0,0z M432,585C338,491 328,478 332,450 336,423 334,420 310,420 296,420 274,413 261,404L238,387 312,313 385,239 403,261C412,273 420,295 420,310 420,334 423,337 446,332 468,328 487,342 581,436 649,504 690,552 690,565 690,594 591,690 561,690 544,690 506,659 432,585z" />
@@ -430,6 +329,8 @@
         </DrawingGroup>
       </DrawingImage.Drawing>
     </DrawingImage>
+
+    <!--Transform="0.1,0,0,-0.1,0,90"-->
 
     <!-- ClipGeometry="M0,0 V96 H96 V0 H0 Z" -->
     <DrawingImage x:Key="IconSunElevation">
@@ -604,7 +505,6 @@
         </DrawingGroup>
       </DrawingImage.Drawing>
     </DrawingImage>
-
 
     <DrawingImage x:Key="fg-scale-poly">
       <DrawingImage.Drawing>
