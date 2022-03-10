@@ -16,18 +16,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
-    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.10" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.10.4" />
+    <PackageReference Include="Avalonia" Version="0.10.13" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.13" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.13" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.13" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.13" />
+    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.13" />
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.12.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Mapsui" Version="3.0.0" />
-    <PackageReference Include="SkiaSharp" Version="2.80.3" />
+    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.178" />
     <PackageReference Include="ReactiveUI" Version="16.2.6" />
     <PackageReference Include="BruTile.MbTiles" Version="4.0.0" />    
     <PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.0.0" />  
