@@ -58,6 +58,8 @@ namespace FootprintViewer.ViewModels
 
             _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);
 
+            this.WhenAnyValue(s => s.IsCompact).Where(c => c == true).Subscribe(_ => IsFilterOpen = false);
+
             MainContent = _footprintObserverList;
         }
 

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
@@ -119,9 +118,9 @@ namespace FootprintViewer.Avalonia.Controls
                     }
 
                     _flyoutBase = new FlyoutBase()
-                    {                        
+                    {
                         ContentTemplate = ContentTemplate,
-                        Content = Content,                     
+                        Content = Content,
                         Margin = margin,
                         Background = Background,
                         Placement = Placement,

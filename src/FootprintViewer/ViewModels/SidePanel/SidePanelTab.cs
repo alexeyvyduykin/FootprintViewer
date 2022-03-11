@@ -10,5 +10,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool IsActive { get; set; } = false;
+
+        [Reactive]
+        public bool IsCompact { get; set; }
     }
 }
