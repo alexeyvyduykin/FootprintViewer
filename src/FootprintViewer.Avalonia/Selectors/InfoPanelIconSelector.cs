@@ -5,7 +5,7 @@ using FootprintViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Avalonia
+namespace FootprintViewer.Avalonia.Selectors
 {
     public class InfoPanelIconSelector : IDataTemplate
     {

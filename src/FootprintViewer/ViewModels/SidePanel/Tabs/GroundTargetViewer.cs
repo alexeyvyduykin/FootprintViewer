@@ -26,8 +26,6 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных целей";
 
-            Name = "GroundTargetViewer";
-
             _previewContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
@@ -63,6 +61,8 @@ namespace FootprintViewer.ViewModels
                     _groundTargetViewerList.Update(names);
                 });
             }
+
+            MainContent = _previewContent;
         }
 
         private void SelectedItemIml(GroundTargetInfo? groundTarget)

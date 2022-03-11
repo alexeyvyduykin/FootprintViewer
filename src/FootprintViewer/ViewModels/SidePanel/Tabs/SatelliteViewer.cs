@@ -26,8 +26,6 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр спутников";
 
-            Name = "SatelliteViewer";
-
             _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
 
             _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);

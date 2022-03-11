@@ -1,6 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:FootprintViewer.Avalonia"     >
+        xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors">
     <Design.PreviewWith>
         <Border Padding="20">
             <!-- Add Controls for Previewer Here -->
@@ -10,7 +10,7 @@
     <!-- Add Styles Here -->
 
   <Styles.Resources>
-    <local:ToolIconSelector x:Key="ToolIconDataSelector">
+    <selectors:ToolIconSelector x:Key="ToolIconDataSelector">
 
       <DataTemplate x:Key="AddRectangle">
         <Viewbox Width="36" Height="36">
@@ -102,7 +102,7 @@
         </Viewbox>
       </DataTemplate>
 
-    </local:ToolIconSelector>
+    </selectors:ToolIconSelector>
   </Styles.Resources>
 
 </Styles>

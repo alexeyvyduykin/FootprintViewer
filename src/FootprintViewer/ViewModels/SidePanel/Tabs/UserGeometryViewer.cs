@@ -2,7 +2,6 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -13,7 +12,7 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryViewer : SidePanelTab
     {
-        private readonly UserGeometryProvider _provider;      
+        private readonly UserGeometryProvider _provider;
         private readonly ObservableAsPropertyHelper<List<UserGeometryInfo>> _userGeometries;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
@@ -28,8 +27,6 @@ namespace FootprintViewer.ViewModels
             Add = ReactiveCommand.CreateFromTask<UserGeometryInfo?>(AddAsync);
 
             Title = "Пользовательская геометрия";
-
-            Name = "UserGeometryViewer";
 
             _provider.Update.Select(_ => Unit.Default).InvokeCommand(Loading);
 

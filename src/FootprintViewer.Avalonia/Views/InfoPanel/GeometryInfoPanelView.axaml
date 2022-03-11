@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"                 
+             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"                 
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              mc:Ignorable="d"       
@@ -14,7 +14,7 @@
   </Design.DataContext>
   
   <UserControl.Resources>
-    <local:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">
+    <selectors:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">
       <DataTemplate x:Key="Route">
         <Grid>
           <Viewbox>
@@ -35,7 +35,7 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-    </local:InfoPanelIconSelector>
+    </selectors:InfoPanelIconSelector>
   </UserControl.Resources>
 
   <UserControl.Styles>

@@ -35,18 +35,11 @@ namespace FootprintViewer.Avalonia
 
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
 
-            Locator.CurrentMutable.Register(() => new Views.SidePanelView(), typeof(IViewFor<SidePanel>));
-
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchView(), typeof(IViewFor<SceneSearch>));
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchFilterView(), typeof(IViewFor<SceneSearchFilter>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SatelliteViewerView(), typeof(IViewFor<SatelliteViewer>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverView(), typeof(IViewFor<FootprintObserver>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverListView(), typeof(IViewFor<FootprintObserverList>));
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverFilterView(), typeof(IViewFor<FootprintObserverFilter>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerView(), typeof(IViewFor<GroundTargetViewer>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerListView(), typeof(IViewFor<GroundTargetViewerList>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.UserGeometryViewerView(), typeof(IViewFor<UserGeometryViewer>));
 
             // TODO: this item templates freeze app
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintInfoView(), typeof(IViewFor<FootprintInfo>));

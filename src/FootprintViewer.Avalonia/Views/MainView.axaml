@@ -22,16 +22,15 @@
     <Grid x:Name="GridOverlay"
           ColumnDefinitions="*,Auto">
 
-      <Grid Grid.Column="0">
-
-        <local:UserMapControl x:Name="MapControl"
-                          MapSource="{Binding Map}"                     
-                          Controller="{Binding ActualController}"
-                          TipSource="{Binding Tip}"
-                          MapListener="{Binding MapListener}"
-                          MapObserver="{Binding MapObserver}"
-                          VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch"/>
+      <Panel>
+        <local:UserMapControl x:Name="MapControl"                          
+                              MapSource="{Binding Map}"                                                     
+                              Controller="{Binding ActualController}"                         
+                              TipSource="{Binding Tip}"                         
+                              MapListener="{Binding MapListener}"                          
+                              MapObserver="{Binding MapObserver}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"/>
 
         <Grid VerticalAlignment="Center"
               HorizontalAlignment="Left"
@@ -72,10 +71,10 @@
 
           </Grid>
         </Border>
-      </Grid>
-
-      <reactiveUi:ViewModelViewHost Grid.Column="1"
-                                    ViewModel="{Binding SidePanel}"/>
+      </Panel>
+      
+      <views:SidePanelView Grid.Column="1"
+                           DataContext="{Binding SidePanel}"/>
 
     </Grid>
   </Grid>

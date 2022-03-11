@@ -36,8 +36,6 @@ namespace FootprintViewer.ViewModels
 
             Title = "Поиск сцены";
 
-            Name = "Scene";
-
             Filter = new SceneSearchFilter(dependencyResolver);
 
             _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();

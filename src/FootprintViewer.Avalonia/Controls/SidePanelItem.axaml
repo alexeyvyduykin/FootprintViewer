@@ -24,8 +24,8 @@
 
   <!--SidePanelItem-->
   <Style Selector="controls|SidePanelItem">
-    <Setter Property="Width" Value="{StaticResource PaneWidth}" />
-    <Setter Property="Height" Value="{StaticResource PaneWidth}" />
+    <Setter Property="Width" Value="{DynamicResource PaneWidth}" />
+    <Setter Property="Height" Value="{DynamicResource PaneWidth}" />
     <Setter Property="Padding" Value="0" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="VerticalContentAlignment" Value="Stretch" />

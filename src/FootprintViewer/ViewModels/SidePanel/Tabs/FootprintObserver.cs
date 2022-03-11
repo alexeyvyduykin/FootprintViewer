@@ -35,8 +35,6 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр рабочей программы";
 
-            Name = "FootprintViewer";
-
             ClickOnItem = ReactiveCommand.Create<FootprintInfo?>(_footprintObserverList.ClickOnItem);
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);

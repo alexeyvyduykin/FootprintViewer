@@ -5,7 +5,7 @@ using FootprintViewer.Models;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Avalonia
+namespace FootprintViewer.Avalonia.Selectors
 {
     public class ToolIconSelector : IDataTemplate
     {
