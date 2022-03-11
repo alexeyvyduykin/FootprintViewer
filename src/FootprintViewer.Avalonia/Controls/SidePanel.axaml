@@ -1,7 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:FootprintViewer.Avalonia.Controls">
-  
+
   <Design.PreviewWith>
     <Border Padding="20" Height="420">
       <Border.Resources>
@@ -24,23 +24,23 @@
   </Design.PreviewWith>
 
   <Styles.Resources>
-    <PathIcon x:Key="ChevronRight" Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></PathIcon>
-    <PathIcon x:Key="ChevronLeft" Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></PathIcon>
     <x:Double x:Key="PaneWidth">50</x:Double>
   </Styles.Resources>
 
   <!-- Add Styles Here -->
 
+  <Style Selector="ToggleButton.tglbtn">
+    <Setter Property="Border.BorderThickness" Value="0"></Setter>
+    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+    <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+    <Setter Property="CornerRadius" Value="0"></Setter>
+    <Setter Property="Width" Value="{DynamicResource PaneWidth}"></Setter>
+    <Setter Property="Height" Value="{DynamicResource PaneWidth}"></Setter>
+  </Style>
+
   <Style Selector="TextBlock.TextBlockTitle">
     <Setter Property="FontSize" Value="14"></Setter>
     <Setter Property="FontFamily" Value="Roboto"></Setter>
-  </Style>
-  
-  <Style Selector="ToggleButton.tglbtn">
-    <Setter Property="Border.BorderThickness" Value="0"></Setter>
-    <Setter Property="CornerRadius" Value="0"></Setter>
-    <Setter Property="Width" Value="{StaticResource PaneWidth}"></Setter>
-    <Setter Property="Height" Value="{StaticResource PaneWidth}"></Setter>
   </Style>
 
   <Style Selector="ToggleButton.tglbtn /template/ ContentPresenter#PART_ContentPresenter">
@@ -85,17 +85,17 @@
                      PanePlacement="Right"
                      Classes="splt"
                      PaneBackground="{TemplateBinding PaneBackground}"
-                     CompactPaneLength="{StaticResource PaneWidth}"
+                     CompactPaneLength="{DynamicResource PaneWidth}"
                      DisplayMode="Inline"
                      IsPaneOpen="True"
-                     OpenPaneLength="{StaticResource PaneWidth}">
+                     OpenPaneLength="{DynamicResource PaneWidth}">
             <SplitView.Pane>
-              <Grid RowDefinitions="Auto,*">
-                <Panel Background="{TemplateBinding TitleBackground}">
+              <DockPanel>
+                <Panel DockPanel.Dock="Top" Background="{TemplateBinding TitleBackground}">
                   <ToggleButton x:Name="PART_SidePanelButton"
                                 Classes="tglbtn"
                                 IsChecked="{TemplateBinding IsCompact, Mode=TwoWay}">
-                    <ContentPresenter x:Name="PART_IconContentPresenter"/>
+                    <PathIcon x:Name="PART_PathIconChevron" />
                   </ToggleButton>
                 </Panel>
                 <ItemsPresenter Name="PART_ItemsPresenter"
@@ -108,11 +108,11 @@
                     </ItemsPanelTemplate>
                   </ItemsPresenter.ItemsPanel>
                 </ItemsPresenter>
-              </Grid>
+              </DockPanel>
             </SplitView.Pane>
             <SplitView.Content>
               <DockPanel>
-                <Border Height="{StaticResource PaneWidth}"
+                <Border Height="{DynamicResource PaneWidth}"
                         Background="{TemplateBinding TitleBackground}"
                         Padding="15,8,0,8"
                         DockPanel.Dock="Top">
@@ -140,46 +140,12 @@
     <Setter Property="IsVisible" Value="False" />
   </Style>
 
-  <Style Selector="controls|SidePanel[IsCompact=True] /template/ ContentPresenter#PART_IconContentPresenter">
-    <Setter Property="Content" Value="{DynamicResource ChevronLeft}" />
+  <Style Selector="controls|SidePanel[IsCompact=True] /template/ PathIcon#PART_PathIconChevron">
+    <Setter Property="Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
   </Style>
 
-  <Style Selector="controls|SidePanel[IsCompact=False] /template/ ContentPresenter#PART_IconContentPresenter">
-    <Setter Property="Content" Value="{DynamicResource ChevronRight}" />
+  <Style Selector="controls|SidePanel[IsCompact=False] /template/ PathIcon#PART_PathIconChevron">
+    <Setter Property="Data" Value="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
   </Style>
-
-  <!--SidePanelItem-->
-  <Style Selector="controls|SidePanel > controls|SidePanelItem">
-    <Setter Property="Width" Value="{StaticResource PaneWidth}" />
-    <Setter Property="Height" Value="{StaticResource PaneWidth}" />
-    <Setter Property="Padding" Value="0" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="ClipToBounds" Value="False" />
-    <Setter Property="Template">
-      <ControlTemplate>
-        <Border Name="PART_LayoutRoot"
-                Background="{TemplateBinding Background}">
-          <ContentPresenter Name="PART_ContentPresenter"
-                            Padding="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
-        </Border>
-      </ControlTemplate>
-    </Setter>
-  </Style>
-
-  <Style Selector="controls|SidePanel > controls|SidePanelItem /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="Transparent" />
-  </Style>
-  <Style Selector="controls|SidePanel > controls|SidePanelItem:pointerover /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
-  </Style>
-  <Style Selector="controls|SidePanel > controls|SidePanelItem:selected /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
-  </Style>
-
+  
 </Styles>
