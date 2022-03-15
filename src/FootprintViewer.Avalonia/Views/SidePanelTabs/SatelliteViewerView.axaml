@@ -5,25 +5,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates;assembly=FootprintViewer.Avalonia"
              MinWidth="380" mc:Ignorable="d">
 
   <Design.DataContext>
     <vmd:DesignTimeSatelliteViewer/>
   </Design.DataContext>
-  
-  <UserControl.Styles>
-
-    <Style Selector="Border">
-      <Setter Property="Margin" Value="4"></Setter>
-    </Style>
-
-  </UserControl.Styles>
-  
-  <Grid Background="{StaticResource MainBackgroundBrush}">
+    
+  <Panel >
     <ScrollViewer HorizontalScrollBarVisibility="Hidden" 
                   VerticalScrollBarVisibility="Auto">
-      <ItemsControl x:Name="SatelliteItemsControl"/>
+      <ItemsControl x:Name="ItemsControl"/>
     </ScrollViewer>
-  </Grid>
+  </Panel>
   
 </UserControl>

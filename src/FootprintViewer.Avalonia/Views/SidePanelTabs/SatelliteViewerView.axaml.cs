@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
@@ -10,7 +9,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class SatelliteViewerView : ReactiveUserControl<SatelliteViewer>
     {
-        private ItemsControl SatelliteItemsControl => this.FindControl<ItemsControl>("SatelliteItemsControl");
+        private ItemsControl ItemsControl => this.FindControl<ItemsControl>("ItemsControl");
 
         public SatelliteViewerView()
         {
@@ -18,8 +17,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
             this.WhenActivated(disposables =>
             {
-                // SatelliteItemsControl
-                this.OneWayBind(ViewModel, vm => vm.SatelliteInfos, v => v.SatelliteItemsControl.Items).DisposeWith(disposables);             
+                this.OneWayBind(ViewModel, vm => vm.SatelliteInfos, v => v.ItemsControl.Items).DisposeWith(disposables);
             });
         }
 
