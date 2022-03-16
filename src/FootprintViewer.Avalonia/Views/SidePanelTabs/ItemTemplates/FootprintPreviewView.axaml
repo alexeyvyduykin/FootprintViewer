@@ -4,30 +4,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                      
-             mc:Ignorable="d" d:DesignWidth="280">
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"             
+             xmlns:icons="using:Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="320">
 
   <Design.DataContext>
     <vmd:DesignTimeFootprintPreview/>
   </Design.DataContext>
   
-  <UserControl.Styles>
-
-    <Style Selector="TextBlock.sceneDateTextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="FontSize" Value="13"></Setter>
-      <Setter Property="FontFamily" Value="Roboto"></Setter>
-    </Style>
-
-    <Style Selector="TextBlock.sceneInfoTextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-      <Setter Property="FontSize" Value="12"></Setter>
-      <Setter Property="FontFamily" Value="Roboto"></Setter>
-    </Style>
-
-  </UserControl.Styles>
-
-  <Border Padding="10" Cursor="Hand" Background="Transparent">
+  <styles:Card Padding="10">
     <Grid ColumnDefinitions="Auto,*">
 
       <Border x:Name="FootprintImageBorder">
@@ -39,7 +25,7 @@
       <Border Grid.Column="1">
         <Panel>
           <TextBlock Text="{Binding Date}"
-                     Classes="sceneDateTextBlock"
+                     Classes="Subtitle1"
                      VerticalAlignment="Top" 
                      HorizontalAlignment="Right"/>
 
@@ -49,7 +35,7 @@
                         HorizontalAlignment="Right">
               <TextBlock Text="{Binding SatelliteName}"
                          Margin="0,4,8,4"
-                         Classes="sceneInfoTextBlock"/>
+                         Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
                 <Image Source="{DynamicResource IconSatellite}"/>
               </Viewbox>
@@ -58,7 +44,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
               <TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
                          Margin="0,4,8,4"
-                         Classes="sceneInfoTextBlock"/>
+                         Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
                 <Image Source="{DynamicResource IconSunElevation}"/>
               </Viewbox>
@@ -67,7 +53,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
               <TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
                          Margin="0,4,8,4"
-                         Classes="sceneInfoTextBlock"/>
+                         Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
                 <Image Source="{DynamicResource IconCloudy}"/>
               </Viewbox>
@@ -76,7 +62,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
               <TextBlock Text="{Binding TileNumber}"
                          Margin="0,4,8,4"
-                         Classes="sceneInfoTextBlock"/>
+                         Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
                 <Image Source="{DynamicResource IconGrid}"/>
               </Viewbox>
@@ -86,7 +72,7 @@
       </Border>
       
     </Grid>
-  </Border>
+  </styles:Card>
 
 
 </UserControl>

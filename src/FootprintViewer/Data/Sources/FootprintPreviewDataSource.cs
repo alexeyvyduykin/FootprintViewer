@@ -23,6 +23,8 @@ namespace FootprintViewer.Data.Sources
         private readonly string _file;
         private readonly string? _subFolder;
         private readonly string? _searchPattern;
+        //private readonly Mapsui.Styles.Color _backgroundColorMask = new Mapsui.Styles.Color() { R = 33, G = 43, B = 53, A = 255 }; // #212b35
+        private readonly Mapsui.Styles.Color _backgroundColorMask = new Mapsui.Styles.Color() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                
 
         public FootprintPreviewDataSource(string file, string folder, string? subFolder = null)
         {
@@ -110,9 +112,7 @@ namespace FootprintViewer.Data.Sources
                 Resolution = ZoomHelper.DetermineResolution(area.Width, area.Height, 200, 200)
             };
 
-            var backgroundColor = new Mapsui.Styles.Color() { R = 33, G = 43, B = 53, A = 255 }; // #212b35
-
-            var bitmap = new MapRenderer().RenderToBitmapStream(viewport, map.Layers, backgroundColor);
+            var bitmap = new MapRenderer().RenderToBitmapStream(viewport, map.Layers, _backgroundColorMask);
 
             // var imageSource = new BitmapImage();
             // imageSource.BeginInit();

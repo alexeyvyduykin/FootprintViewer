@@ -1,41 +1,85 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
     <Design.PreviewWith>
-        <Border Padding="20">
+        <Border Padding="20" Width="380">
             <!-- Add Controls for Previewer Here -->
-          <ToggleButton Classes="searchToggleButton">Description</ToggleButton>
+          <StackPanel>                                       
+            <ToggleButton Classes="searchToggleButton">Description</ToggleButton>                                                                    
+            <ToggleButton Classes="FilterToggleButton">Description</ToggleButton>
+            <Border Height="20" Background="{DynamicResource MaterialDesignCardBackground}"></Border>         
+          </StackPanel>
         </Border>
     </Design.PreviewWith>
 
-    <!-- Add Styles Here -->
+  <!-- Add Styles Here -->
 
-  <Style Selector="ContentControl.searchToggleButtonIconPresenter">
-    <Setter Property="Width" Value="34"/>
-    <Setter Property="Height" Value="34"/>
-    <Setter Property="Margin" Value="0,0,10,0"/>
+  <Style Selector="ToggleButton.FilterToggleButton">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate>
-          <Grid>
-            <Viewbox>
-              <Image Source="{DynamicResource IconTuneBack}"/>
-            </Viewbox>
-            <Viewbox Margin="8.5">
-              <Image Source="{TemplateBinding Content}"/>
-            </Viewbox>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
+      <ControlTemplate>
+        <Border Name="PART_ButtonRootBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}">
+          <Panel>
+            <Border Name="PART_HoverIndicator" BorderThickness="0"
+                    Background="{TemplateBinding assists:ButtonAssist.HoverColor}"/>
+            <Border ClipToBounds="True">
+              <ripple:RippleEffect RippleFill="{TemplateBinding assists:ButtonAssist.ClickFeedbackColor}"
+                                   RippleOpacity="{StaticResource ButtonPressedOpacity}">
+                <Grid ColumnDefinitions="Auto,10,*" Margin="10">
+                  <Panel Width="34"
+                       Height="34">
+                    <Viewbox>
+                      <Path Fill="{DynamicResource PrimaryHueMidBrush}"
+                            Stretch="Uniform"
+                            Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                    </Viewbox>
+                    <Viewbox Margin="8.5">
+                      <PathIcon x:Name="PART_PathIcon"
+                                Foreground="White"
+                                Data="M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z"/>
+                    </Viewbox>
+                  </Panel>
+
+                  <ContentPresenter x:Name="PART_ContentPresenter"
+                                  Grid.Column="2"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Center"
+                                  Padding="{TemplateBinding Padding}"
+                                  TextBlock.Foreground="{TemplateBinding Foreground}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Grid>
+              </ripple:RippleEffect>
+            </Border>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Foreground" Duration="0:0:0.1" />
+        <BrushTransition Property="Background" Duration="0:0:0.1" />
+      </Transitions>
     </Setter>
   </Style>
-  
-  
+
   <Style Selector="ToggleButton.searchToggleButton">
     <Setter Property="Cursor" Value="Hand"/>
     <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"/>
     <Setter Property="BorderBrush" Value="Transparent"/>
-    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    <Setter Property="FontSize" Value="13"></Setter>
+    <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
+    <Setter Property="FontSize" Value="13"/>
     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
     <Setter Property="HorizontalAlignment" Value="Stretch"/>
     <Setter Property="Template">
@@ -47,26 +91,37 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   Background="{TemplateBinding Background}">
-            <Grid ColumnDefinitions="Auto,*">
-          
-              <ContentControl x:Name="PART_ContentControlIcon"       
-                              Classes="searchToggleButtonIconPresenter"/>
-                     
+
+            <Grid ColumnDefinitions="Auto,10,*">
+
+              <Panel Width="34" 
+                     Height="34">
+                <Viewbox>
+                  <Path Fill="{DynamicResource PrimaryHueMidBrush}"                  
+                        Stretch="Uniform"                                
+                        Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+                </Viewbox>
+                <Viewbox Margin="8.5">                
+                  <PathIcon x:Name="PART_PathIcon"                                                                                                                      
+                            Foreground="White"                                                             
+                            Data="M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z"/>
+                </Viewbox>
+              </Panel>
+            
               <ContentPresenter x:Name="PART_ContentPresenter"                            
-                                Grid.Column="1"               
+                                Grid.Column="2"               
                                 Background="Transparent"
                                 BorderThickness="0"                                                                                     
                                 Content="{TemplateBinding Content}"                           
                                 HorizontalAlignment="Stretch"                          
-                                VerticalAlignment="Center"                           
-                                Margin="0,0,0,0" />            
+                                VerticalAlignment="Center"/>            
             </Grid>
           </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-
+    
   <Style Selector="ToggleButton.searchToggleButton:pointerover /template/ Border#PART_Border">
     <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
   </Style>
@@ -82,13 +137,13 @@
   <Style Selector="ToggleButton.searchToggleButton:checked:pointerover /template/ Border#PART_Border">
     <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}" />
   </Style>
-  
-  <Style Selector="ToggleButton.searchToggleButton /template/ ContentControl#PART_ContentControlIcon">
-    <Setter Property="Content" Value="{DynamicResource IconTune}"/>
+
+  <Style Selector="ToggleButton.searchToggleButton:checked /template/ PathIcon#PART_PathIcon /template/ Path">      
+    <Setter Property="Data" Value="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
   </Style>
 
-  <Style Selector="ToggleButton.searchToggleButton:checked /template/ ContentControl#PART_ContentControlIcon">
-    <Setter Property="Content" Value="{DynamicResource IconTuneClose}"/>
+  <Style Selector="ToggleButton.FilterToggleButton:checked /template/ PathIcon#PART_PathIcon /template/ Path">
+    <Setter Property="Data" Value="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
   </Style>
 
 </Styles>
