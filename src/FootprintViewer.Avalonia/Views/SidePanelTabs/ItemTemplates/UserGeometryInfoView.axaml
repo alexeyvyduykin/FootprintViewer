@@ -2,29 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:icons="using:Material.Icons.Avalonia"            
              mc:Ignorable="d" d:DesignWidth="380"  
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView">
 
   <Design.DataContext>
     <vmd:DesignTimeUserGeometryInfo/>
   </Design.DataContext>
-
-  <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    </Style>
-  </UserControl.Styles>
   
-  <Border x:Name="MainBorder" Padding="8,4,8,4">
-    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto, Auto">
-      <TextBlock x:Name="TypeTextBlock" FontSize="20"/>
-      <TextBlock x:Name="NameTextBlock"
-                 FontSize="16"
-                 FontStyle="Italic"
-                 Grid.ColumnSpan="2" Grid.Row="1"/>
-      <Button x:Name="RemoveButton" Grid.Column="2" HorizontalAlignment="Right">Remove</Button>
+  <styles:Card x:Name="MainCard">
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel>
+        <TextBlock x:Name="TypeTextBlock" Classes="Headline6"/>
+        <TextBlock x:Name="NameTextBlock" Classes="Body2"/>
+      </StackPanel>
+      <Button x:Name="RemoveButton"              
+              Classes="Flat"           
+              Grid.Column="1">             
+          <icons:MaterialIcon Width="20" Height="20" Foreground="Red" Kind="CloseThick" /> 
+      </Button>
     </Grid>
-  </Border>
+  </styles:Card>
   
 </UserControl>
