@@ -11,14 +11,13 @@
     <vmd:DesignTimePreviewMainContent/>
   </Design.DataContext>
   
-  <Grid>
-    <TextBlock VerticalAlignment="Center"
-               HorizontalAlignment="Center"
-               FontSize="30"
+  <Panel>
+    <TextBlock Classes="Headline4" 
+               VerticalAlignment="Center"                      
                TextWrapping="Wrap"
                Margin="10"
                TextAlignment="Center"
                Text="{Binding Text}"/>
-  </Grid>
+  </Panel>
 
 </UserControl>
