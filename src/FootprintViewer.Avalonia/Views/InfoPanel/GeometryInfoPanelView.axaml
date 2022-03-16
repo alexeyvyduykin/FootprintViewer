@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"                 
+             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:icons="using:Material.Icons.Avalonia"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              mc:Ignorable="d"       
@@ -16,71 +18,32 @@
   <UserControl.Resources>
     <selectors:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">
       <DataTemplate x:Key="Route">
-        <Grid>
+        <Panel>
           <Viewbox>
             <Image Source="{DynamicResource IconCircle}"/>
           </Viewbox>
           <Viewbox Margin="8.5">
             <Image Source="{DynamicResource IconScale}"/>
           </Viewbox>
-        </Grid>
+        </Panel>
       </DataTemplate>
       <DataTemplate x:Key="AOI">
-        <Grid>
+        <Panel>
           <Viewbox>
             <Image Source="{DynamicResource IconCircle}"/>
           </Viewbox>
           <Viewbox Margin="8.5">
             <Image Source="{DynamicResource IconSquare}"/>
           </Viewbox>
-        </Grid>
+        </Panel>
       </DataTemplate>
     </selectors:InfoPanelIconSelector>
   </UserControl.Resources>
 
-  <UserControl.Styles>
-
-    <Style Selector="Button.closeBottom">
-      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
-      <Setter Property="Opacity" Value="0.7" />
-      <Setter Property="Margin" Value="0" />
-      <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="CornerRadius" Value="3" />
-      <Setter Property="Width" Value="29"></Setter>
-      <Setter Property="Height" Value="29"></Setter>
-      <!--<Setter Property="ToolTipService.InitialShowDelay" Value="0"></Setter>-->
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate>
-            <ContentPresenter x:Name="PART_ContentPresenter"
-                              Content="{TemplateBinding Content}"
-                              CornerRadius="{TemplateBinding CornerRadius}"
-                              Background="{TemplateBinding Background}"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Margin="0,0,0,0" />
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-    <Style Selector="Button.closeBottom:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
-    </Style>
-
-    <Style Selector="Border.infoPanelBorder">
-      <Setter Property="Width" Value="400"/>
-      <Setter Property="Height" Value="52"/>
-      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
-      <Setter Property="Opacity" Value="0.7" />
-      <Setter Property="Padding" Value="15,7,15,7" />     
-      <Setter Property="CornerRadius" Value="3" />
-    </Style>
-
-  </UserControl.Styles>
-
-  <Grid>
-    <Border Classes="infoPanelBorder">
+  <Panel>
+    <styles:Card Width="400" 
+                 Height="52"
+                 Opacity="0.85">
       <Grid ColumnDefinitions="Auto,*,Auto">
 
         <Grid Width="32" Height="32">
@@ -88,55 +51,32 @@
                           ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
         </Grid>
 
-        <TextBlock Text="{Binding Text}"  
-                   Grid.Column="1"
+        <TextBlock x:Name="TextBlock" 
+                   Text="{Binding Text}"  
+                   Grid.Column="1"             
+                   Classes="Body2"
                    VerticalAlignment="Center"
                    Margin="15,0,15,0"/>
 
         <Button HorizontalAlignment="Right"
-                Grid.Column="2"
-                Classes="closeBottom"
+                Grid.Column="2"          
+                Width="29"
+                Height="29"
+                Padding="0"
+                Cursor="Hand"
+                Classes="Flat"
                 Command="{Binding Close}">
           <ToolTip.Tip>
             <ToolTip Content="Закрыть" Classes="fastTooltip"/>
           </ToolTip.Tip>
-          <Viewbox Margin="8">
-            <Image Source="{DynamicResource IconClose}"/>
-          </Viewbox>
+          <icons:MaterialIcon Width="20" 
+                              Height="20" 
+                              Foreground="{Binding #TextBlock.Foreground}"
+                              Kind="CloseThick" />
         </Button>
 
       </Grid>
-    </Border>
-
-  </Grid>
-
-  <!--<Grid>
-    <Border Classes="infoPanelBorder">
-      <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-
-        <Grid Width="32" Height="32">
-          <ContentControl Content="{Binding}"
-                          ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
-        </Grid>
-
-        <TextBlock Text="{Binding Text}"
-                   VerticalAlignment="Center"
-                   Margin="15,0,15,0"/>
-
-      </DockPanel>
-    </Border>
-
-    <Button HorizontalAlignment="Right"          
-            Classes="closeBottom"
-            Command="{Binding Close}">
-      <ToolTip.Tip>
-        <ToolTip Content="Закрыть" Classes="fastTooltip"/>
-      </ToolTip.Tip>
-      <Viewbox Margin="8">
-        <Image Source="{DynamicResource IconClose}"/>
-      </Viewbox>
-    </Button>
-
-  </Grid>-->
+    </styles:Card>
+  </Panel>
    
 </UserControl>
