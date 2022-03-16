@@ -33,11 +33,10 @@
       </controls:Flyout.ContentTemplate>
     </controls:Flyout>
     
-    <Grid RowDefinitions="Auto,*,50"
-          Background="{StaticResource MainBackgroundBrush}">
+    <Grid RowDefinitions="Auto,*,50">
 
       <ToggleButton x:Name="SearchToggleButton"
-                    Classes="searchToggleButton"                  
+                    Classes="FilterToggleButton"                  
                     Content="Настройки поиска"/>
                  
       <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                      

@@ -14,26 +14,13 @@
     <vmd:DesignTimeFootprintObserverList/>
   </Design.DataContext>
   
-  <UserControl.Styles>
-    <Style Selector="ListBoxItem">
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="Margin" Value="1"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-    </Style>
-
-  </UserControl.Styles>
-
   <Grid>
     <ProgressBar x:Name="ProgressBar" 
                  VerticalAlignment="Center"    
                  HorizontalAlignment="Center"              
                  IsIndeterminate="True"/>
 
-    <ListBox x:Name="ListBox"
-             BorderThickness="0"
-             Margin="10"
-             Background="Transparent"
+    <ListBox x:Name="ListBox"               
              behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
       <ListBox.ItemTemplate>
         <DataTemplate>

@@ -2,7 +2,8 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"            
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                           
              mc:Ignorable="d" d:DesignWidth="280">
@@ -10,48 +11,50 @@
   <Design.DataContext>
     <vmd:DesignTimeFootprintInfo/>
   </Design.DataContext>
-  
-  <UserControl.Styles>        
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"></Setter>
-    </Style>      
-    <Style Selector="TextBlock.txtInfoNameKey">    
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>
-    </Style>
-    <Style Selector="TextBlock.txtInfoValueKey">  
-      <Setter Property="HorizontalAlignment" Value="Right"></Setter>      
-    </Style>
-  </UserControl.Styles>
 
-  <Border x:Name="MainBorder"
-          Background="{StaticResource LightBackgroundBrush}" 
-          Padding="8,4,8,4">
+  <styles:Card x:Name="MainCard">
     <StackPanel>
-      <TextBlock x:Name="HeaderTextBlock"/>
+      <TextBlock x:Name="HeaderTextBlock" Classes="Headline6"/>
       <StackPanel x:Name="MainStackPanel">
-        <Grid ColumnDefinitions="*,Auto">
 
-          <StackPanel Margin="0,0,4,0">
-            <TextBlock x:Name="SatelliteTextBlock" Classes="txtInfoValueKey"/>
-            <TextBlock x:Name="CenterTextBlock" Classes="txtInfoValueKey"/>
-            <TextBlock x:Name="BeginTextBlock" Classes="txtInfoValueKey"/>
-            <TextBlock x:Name="DurationTextBlock" Classes="txtInfoValueKey"/>
-            <TextBlock x:Name="NodeTextBlock" Classes="txtInfoValueKey"/>
-            <TextBlock x:Name="DirectionTextBlock" Classes="txtInfoValueKey"/>
-          </StackPanel>
+        <StackPanel.Styles>
+          <Style Selector="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right"/>           
+          </Style>
+        </StackPanel.Styles>
 
-          <StackPanel Grid.Column="1">
-            <TextBlock Text="Satellite" Classes="txtInfoNameKey"/>
-            <TextBlock Text="Center" Classes="txtInfoNameKey"/>
-            <TextBlock Text="Begin" Classes="txtInfoNameKey"/>
-            <TextBlock Text="Duration" Classes="txtInfoNameKey"/>
-            <TextBlock Text="Node" Classes="txtInfoNameKey"/>
-            <TextBlock Text="Direction" Classes="txtInfoNameKey"/>
-          </StackPanel>
-          
-        </Grid>
+        <StackPanel>
+          <TextBlock Text="Satellite" Classes="Caption"/>
+          <TextBlock x:Name="SatelliteTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Center" Classes="Caption"/>
+          <TextBlock x:Name="CenterTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Begin" Classes="Caption"/>
+          <TextBlock x:Name="BeginTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Duration" Classes="Caption"/>
+          <TextBlock x:Name="DurationTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Node" Classes="Caption"/>
+          <TextBlock x:Name="NodeTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Direction" Classes="Caption"/>
+          <TextBlock x:Name="DirectionTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
       </StackPanel>
     </StackPanel>
-  </Border>
+  </styles:Card>
     
 </UserControl>

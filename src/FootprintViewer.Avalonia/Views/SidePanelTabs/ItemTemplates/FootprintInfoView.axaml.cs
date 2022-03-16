@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
+using Material.Styles;
 using ReactiveUI;
 using Splat;
 using System;
@@ -14,7 +15,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class FootprintInfoView : ReactiveUserControl<FootprintInfo>
     {
-        private Border MainBorder => this.FindControl<Border>("MainBorder");
+        private Card MainCard => this.FindControl<Card>("MainCard");
 
         private StackPanel MainStackPanel => this.FindControl<StackPanel>("MainStackPanel");
 
@@ -42,7 +43,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
             this.WhenActivated(disposables => 
             {
-                this.MainBorder.Events().PointerPressed.Select(args => Unit.Default).InvokeCommand(this, v => v._command).DisposeWith(disposables);
+                this.MainCard.Events().PointerPressed.Select(args => Unit.Default).InvokeCommand(this, v => v._command).DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.Name, v => v.HeaderTextBlock.Text).DisposeWith(disposables);
 
