@@ -4,105 +4,113 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"                     
              mc:Ignorable="d"
              MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="640">
+             d:DesignWidth="400" d:DesignHeight="440">
 
   <Design.DataContext>
     <vmd:DesignTimeFootprintObserverFilter/>
   </Design.DataContext>
-  
-  <Border Background="{StaticResource MainBackgroundBrush}">
+
+  <UserControl.Styles>
+    <Style Selector="CheckBox">
+      <Setter Property="ContentTemplate">
+        <Setter.Value>
+          <DataTemplate>
+            <TextBlock Text="{Binding}" Classes="Body2"/>
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Styles>
+    
+  <styles:Card Padding="20">
     <StackPanel>
 
-      <Border Padding="20">
-        <StackPanel >
+      <Grid Margin="0,0,0,20"
+            RowDefinitions="Auto,Auto">
+        <Grid ColumnDefinitions="*,24"
+              HorizontalAlignment="Left">
+          <TextBlock Text="От витка:"
+                     VerticalAlignment="Center"
+                     Classes="Body2"/>
+          <TextBlock Grid.Column="1"
+                     VerticalAlignment="Center"
+                     TextAlignment="Center"
+                     Classes="Body2"
+                     Text="{Binding #Slider1.Value}"/>
+        </Grid>
+        <Slider x:Name="Slider1"
+                Classes="Modern Discrete Ticks"
+                Grid.Row="1"
+                Minimum="1"
+                Maximum="15"
+                TickFrequency="1"
+                IsSnapToTickEnabled="True"
+                Value="{Binding FromNode}"/>
+      </Grid>
 
-          <StackPanel Margin="0,0,0,20">
-            <TextBlock Text="От витка"/>
-            <Slider x:Name="CloudinessSlider"
-                    Minimum="1" Maximum="15"
-                    TickFrequency="1" IsSnapToTickEnabled="True"
-                    Value="{Binding FromNode}"/>
-            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*">
-              <TextBlock Grid.Column="0" FontSize="10">1</TextBlock>
-              <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">2</TextBlock>
-              <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">3</TextBlock>
-              <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">4</TextBlock>
-              <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">5</TextBlock>
-              <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">6</TextBlock>
-              <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">7</TextBlock>
-              <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">8</TextBlock>
-              <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">9</TextBlock>
-              <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
-              <TextBlock Grid.Column="9" FontSize="10" HorizontalAlignment="Right">11</TextBlock>
-              <TextBlock Grid.Column="10" FontSize="10" HorizontalAlignment="Right">12</TextBlock>
-              <TextBlock Grid.Column="11" FontSize="10" HorizontalAlignment="Right">13</TextBlock>
-              <TextBlock Grid.Column="12" FontSize="10" HorizontalAlignment="Right">14</TextBlock>
-              <TextBlock Grid.Column="13" FontSize="10" HorizontalAlignment="Right">15</TextBlock>
-            </Grid>
-          </StackPanel>
+      <Grid Margin="0,0,0,20"
+            RowDefinitions="Auto,Auto">
 
-          <StackPanel Margin="0,0,0,20">
-            <TextBlock Text="До витка"/>
-            <Slider x:Name="AngleSlider"
-                    Minimum="1" Maximum="15"
-                    TickFrequency="1" IsSnapToTickEnabled="True"
-                    Value="{Binding ToNode}"/>
-            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*">
-              <TextBlock Grid.Column="0" FontSize="10">1</TextBlock>
-              <TextBlock Grid.Column="0" FontSize="10" HorizontalAlignment="Right">2</TextBlock>
-              <TextBlock Grid.Column="1" FontSize="10" HorizontalAlignment="Right">3</TextBlock>
-              <TextBlock Grid.Column="2" FontSize="10" HorizontalAlignment="Right">4</TextBlock>
-              <TextBlock Grid.Column="3" FontSize="10" HorizontalAlignment="Right">5</TextBlock>
-              <TextBlock Grid.Column="4" FontSize="10" HorizontalAlignment="Right">6</TextBlock>
-              <TextBlock Grid.Column="5" FontSize="10" HorizontalAlignment="Right">7</TextBlock>
-              <TextBlock Grid.Column="6" FontSize="10" HorizontalAlignment="Right">8</TextBlock>
-              <TextBlock Grid.Column="7" FontSize="10" HorizontalAlignment="Right">9</TextBlock>
-              <TextBlock Grid.Column="8" FontSize="10" HorizontalAlignment="Right">10</TextBlock>
-              <TextBlock Grid.Column="9" FontSize="10" HorizontalAlignment="Right">11</TextBlock>
-              <TextBlock Grid.Column="10" FontSize="10" HorizontalAlignment="Right">12</TextBlock>
-              <TextBlock Grid.Column="11" FontSize="10" HorizontalAlignment="Right">13</TextBlock>
-              <TextBlock Grid.Column="12" FontSize="10" HorizontalAlignment="Right">14</TextBlock>
-              <TextBlock Grid.Column="13" FontSize="10" HorizontalAlignment="Right">15</TextBlock>
-            </Grid>
-          </StackPanel>
+        <Grid ColumnDefinitions="*,24"
+              HorizontalAlignment="Right">
+          <TextBlock Text="До витка:"
+                     VerticalAlignment="Center"
+                     Classes="Body2"/>
+          <TextBlock Grid.Column="1"
+                     VerticalAlignment="Center"
+                     TextAlignment="Center"
+                     Classes="Body2"
+                     Text="{Binding #Slider2.Value}"/>
+        </Grid>
 
-          <CheckBox IsChecked="{Binding IsLeftStrip}" Margin="0,0,0,4" Content="Левая полоса обзора"/>
+        <Slider x:Name="Slider2"
+                Classes="Modern Discrete Ticks"
+                Grid.Row="1"
+                Minimum="1"
+                Maximum="15"
+                TickFrequency="1"
+                IsSnapToTickEnabled="True"
+                Value="{Binding ToNode}"/>
 
-          <CheckBox IsChecked="{Binding IsRightStrip}" Margin="0,4,0,0" Content="Правая полоса обзора"/>
+      </Grid>
 
-        </StackPanel>
-      </Border>
+      <CheckBox IsChecked="{Binding IsLeftStrip}" 
+                Margin="0,0,0,4" 
+                Content="Левая полоса обзора"/>
 
-      <Border Margin="20,0,20,0" Height="1" Background="Silver"></Border>
+      <CheckBox IsChecked="{Binding IsRightStrip}" 
+                Margin="0,4,0,20" 
+                Content="Правая полоса обзора"/>
 
-      <Border Padding="20">
-        <StackPanel>
-          <DockPanel LastChildFill="True" Margin="0,0,0,10">
-            <Viewbox Width="18" Height="18">
-              <Image Source="{DynamicResource IconSatelliteMain}"/>
-            </Viewbox>
-            <TextBlock Text="Спутники" Margin="8,0,0,0"></TextBlock>
-            <CheckBox Content="Все спутники" IsChecked="{Binding IsAllSatelliteActive}" HorizontalAlignment="Right"></CheckBox>
-          </DockPanel>
+      <DockPanel LastChildFill="True" Margin="0,0,0,10">
+        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
+          <Image Source="{DynamicResource IconSatelliteMain}"/>
+        </Viewbox>
+        <TextBlock Text="Спутники" 
+                   Classes="Body2"
+                   VerticalAlignment="Center"
+                   Margin="8,0,0,0"/>
+        <CheckBox Content="Все спутники" 
+                  IsChecked="{Binding IsAllSatelliteActive}"
+                  HorizontalAlignment="Right"/>
+      </DockPanel>
 
-          <ItemsControl Items="{Binding Satellites}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Border Padding="0,8,0,8">
-                  <StackPanel Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding IsActive}"></CheckBox>
-                    <TextBlock Text="{Binding Name}"></TextBlock>
-                  </StackPanel>
-                </Border>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </StackPanel>
-      </Border>
+      <ItemsControl Items="{Binding Satellites}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Padding="16,8">                             
+              <CheckBox IsChecked="{Binding IsActive}" 
+                        Content="{Binding Name}"/>                       
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
     </StackPanel>
-  </Border>
+  </styles:Card>
   
 </UserControl>
