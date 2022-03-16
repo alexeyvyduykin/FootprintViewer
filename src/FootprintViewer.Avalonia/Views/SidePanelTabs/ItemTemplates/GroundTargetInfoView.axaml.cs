@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
+using Material.Styles;
 using ReactiveUI;
 using Splat;
 using System;
@@ -13,7 +14,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class GroundTargetInfoView : ReactiveUserControl<GroundTargetInfo>
     {
-        private Border MainBorder => this.FindControl<Border>("MainBorder");
+        private Card MainCard => this.FindControl<Card>("MainCard");
 
         private TextBlock TypeTextBlock => this.FindControl<TextBlock>("TypeTextBlock");
 
@@ -31,9 +32,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
             this.WhenActivated(disposables =>
             {
-                this.MainBorder.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
+                this.MainCard.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
                 
-                this.MainBorder.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
+                this.MainCard.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.Type, v => v.TypeTextBlock.Text, value => ((Data.GroundTargetType)value).ToString()).DisposeWith(disposables);
 

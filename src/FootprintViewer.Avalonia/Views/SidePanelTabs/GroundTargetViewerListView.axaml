@@ -11,49 +11,21 @@
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetViewerList/>
   </Design.DataContext>
-  
-  <UserControl.Styles>
 
-    <Style Selector="ListBoxItem">
-      <Setter Property="Background" Value="{StaticResource LightBackgroundBrush}"></Setter>
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="Margin" Value="1"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-    </Style>
+  <Panel>
+    <ProgressBar x:Name="ProgressBar"
+                 Classes="Circle"           
+                 VerticalAlignment="Center"           
+                 HorizontalAlignment="Center"           
+                 IsIndeterminate="True"/>
 
-    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource MainBackgroundBrush}"></Setter>
-    </Style>
-
-    <Style Selector="ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}"></Setter>
-    </Style>
-
-    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}"></Setter>
-    </Style>
-
-  </UserControl.Styles>
-
-  <Border Background="{StaticResource MainBackgroundBrush}">
-    <Grid>
-      <ProgressBar x:Name="ProgressBar"
-             VerticalAlignment="Center"
-             HorizontalAlignment="Center"
-             IsIndeterminate="True"/>
-
-      <ListBox x:Name="ListBox"
-               BorderThickness="0"
-               Margin="10"
-               Background="Transparent">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <items:GroundTargetInfoView DataContext="{Binding}"/>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-    </Grid>
-  </Border>
+    <ListBox x:Name="ListBox">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <items:GroundTargetInfoView DataContext="{Binding}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Panel>
 
 </UserControl>

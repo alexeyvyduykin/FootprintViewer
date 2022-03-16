@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"       
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"    
              mc:Ignorable="d" d:DesignWidth="280">
@@ -11,11 +12,16 @@
     <vmd:DesignTimeGroundTargetInfo/>
   </Design.DataContext>
   
-  <Border x:Name="MainBorder" Padding="8,4,8,4">
-    <Grid ColumnDefinitions="40,*">
-      <TextBlock x:Name="TypeTextBlock"/>
-      <TextBlock x:Name="NameTextBlock" Grid.Column="1"/>
+  <styles:Card x:Name="MainCard">
+    <Grid ColumnDefinitions="Auto,8,*">
+      <TextBlock x:Name="TypeTextBlock" 
+                 VerticalAlignment="Center" 
+                 Classes="Subtitle1"/>
+      <TextBlock x:Name="NameTextBlock" 
+                 VerticalAlignment="Center" 
+                 Grid.Column="2" 
+                 Classes="Headline6"/>
     </Grid>
-  </Border>
+  </styles:Card>
   
 </UserControl>

@@ -25,7 +25,8 @@
 
   <Grid>
 
-    <ProgressBar x:Name="ProgressBar"
+    <ProgressBar x:Name="ProgressBar" 
+                 Classes="Circle"
                  VerticalAlignment="Center"
                  HorizontalAlignment="Center"
                  IsIndeterminate="True"/>
