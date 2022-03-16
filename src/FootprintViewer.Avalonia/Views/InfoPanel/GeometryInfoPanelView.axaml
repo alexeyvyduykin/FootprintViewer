@@ -65,9 +65,10 @@
                 Padding="0"
                 Cursor="Hand"
                 Classes="Flat"
+                ToolTip.ShowDelay="0"
                 Command="{Binding Close}">
           <ToolTip.Tip>
-            <ToolTip Content="Закрыть" Classes="fastTooltip"/>
+            <ToolTip Content="Закрыть" Classes="FastTooltip"/>
           </ToolTip.Tip>
           <icons:MaterialIcon Width="20" 
                               Height="20" 
