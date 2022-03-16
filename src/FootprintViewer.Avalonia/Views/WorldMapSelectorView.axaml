@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                        
              mc:Ignorable="d">
 
@@ -11,26 +10,15 @@
     <vmd:DesignTimeWorldMapSelector/>
   </Design.DataContext>
   
-  <UserControl.Styles>
-
-    <Style Selector="ListBox > ListBoxItem /template/ Border">
-      <Setter Property="Margin" Value="8,2,8,2"></Setter>
-    </Style>
-    
-  </UserControl.Styles>
-  
-  <Grid>
-    <ListBox Background="{StaticResource MainBackgroundBrush}"
-             Foreground="{StaticResource MainForegroundBrush}"
-             BorderThickness="0"
-             Items="{Binding WorldMaps}"             
+  <Panel>
+    <ListBox Items="{Binding WorldMaps}"             
              SelectedItem="{Binding SelectedWorldMap}">
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <TextBlock Text="{Binding Name}"/>
+          <TextBlock Classes="Body2" Text="{Binding Name}"/>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-  </Grid>
+  </Panel>
     
 </UserControl>
