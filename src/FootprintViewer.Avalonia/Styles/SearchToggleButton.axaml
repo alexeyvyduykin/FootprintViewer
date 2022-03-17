@@ -12,6 +12,12 @@
         </Border>
     </Design.PreviewWith>
 
+  <Styles.Resources>
+    <SolidColorBrush x:Key="MainBackgroundBrush" Color="#212b35"/>
+    <SolidColorBrush x:Key="LightBackgroundBrush" Color="#353f49"/>
+    <SolidColorBrush x:Key="MainForegroundBrush" Color="#d6d9dd"/>
+  </Styles.Resources>
+  
   <!-- Add Styles Here -->
 
   <Style Selector="ToggleButton.FilterToggleButton">
@@ -153,6 +159,10 @@
         </DataTemplate>
       </Setter.Value>
     </Setter>
+  </Style>
+
+  <Style Selector="ToggleButton.FilterToggleButton:checked">
+    <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
   </Style>
 
 </Styles>
