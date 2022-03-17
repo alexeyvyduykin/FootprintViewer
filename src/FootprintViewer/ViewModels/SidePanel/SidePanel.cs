@@ -32,23 +32,25 @@ namespace FootprintViewer.ViewModels
 
             SelectedTab = Tabs.FirstOrDefault();
 
-            IsCompactChanged = ReactiveCommand.Create<bool>(IsCompactImpl);
+            IsExpandedChanged = ReactiveCommand.Create<bool>(IsExpandedImpl);
 
-            this.WhenAnyValue(s => s.IsCompact).InvokeCommand(IsCompactChanged);
+            this.WhenAnyValue(s => s.IsExpanded).InvokeCommand(IsExpandedChanged);
+
+            IsExpanded = true;
         }
 
-        private void IsCompactImpl(bool value)
+        private void IsExpandedImpl(bool value)
         {
             foreach (var item in Tabs)
             {
-                item.IsCompact = value;
+                item.IsExpanded = value;
             }
         }
 
-        private ReactiveCommand<bool, Unit> IsCompactChanged { get; }
+        private ReactiveCommand<bool, Unit> IsExpandedChanged { get; }
 
         [Reactive]
-        public bool IsCompact { get; set; }
+        public bool IsExpanded { get; set; }
 
         public List<SidePanelTab> Tabs { get; set; }
 

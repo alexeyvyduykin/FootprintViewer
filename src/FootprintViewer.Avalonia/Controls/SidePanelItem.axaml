@@ -1,11 +1,14 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple"      
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:animations="clr-namespace:Material.Styles.Additional.Animations;assembly=Material.Styles"
         xmlns:controls="using:FootprintViewer.Avalonia.Controls">
 
   <Design.PreviewWith>
     <Border Padding="20">
       <!-- Add Controls for Previewer Here -->
-
       <StackPanel Spacing="20">
         <StackPanel.Resources>
           <PathIcon x:Key="PathIconRectangle" Data="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
@@ -16,44 +19,45 @@
         <controls:SidePanelItem Header="{StaticResource PathIconRectangle}" />
         <controls:SidePanelItem Header="{StaticResource PathIconPolygon}" IsSelected="True" />
         <controls:SidePanelItem Header="{StaticResource PathIconCircle}" />
-
       </StackPanel>
-
     </Border>
   </Design.PreviewWith>
-
+  
   <!--SidePanelItem-->
   <Style Selector="controls|SidePanelItem">
     <Setter Property="Width" Value="{DynamicResource PaneWidth}" />
     <Setter Property="Height" Value="{DynamicResource PaneWidth}" />
     <Setter Property="Padding" Value="0" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="ClipToBounds" Value="False" />
     <Setter Property="Template">
-      <ControlTemplate>
-        <Border Name="PART_LayoutRoot"
+      <Setter.Value>
+        <ControlTemplate>
+          <Panel Name="PART_LayoutRoot"
                 Background="{TemplateBinding Background}">
-          <ContentPresenter Name="PART_ContentPresenter"
-                            Padding="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
-        </Border>
-      </ControlTemplate>
+            <ripple:RippleEffect RippleFill="{Binding Path=(assists:TabControlAssist.TabHeaderHighlightBrush)}">
+              <ContentPresenter Name="headerContent"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                Content="{TemplateBinding Header}"/>
+            </ripple:RippleEffect>
+          </Panel>
+        </ControlTemplate>
+      </Setter.Value>
     </Setter>
   </Style>
 
-  <Style Selector="controls|SidePanelItem /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="Transparent" />
+  <Style Selector="controls|SidePanelItem:pointerover /template/ Panel#PART_LayoutRoot">
+    <Setter Property="Background" Value="{DynamicResource PrimaryHueLowBrush}" />
   </Style>
-  <Style Selector="controls|SidePanelItem:pointerover /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
-  </Style>
-  <Style Selector="controls|SidePanelItem:selected /template/ Border#PART_LayoutRoot">
-    <Setter Property="Border.Background" Value="{DynamicResource LightBackgroundBrush}" />
+  
+  <Style Selector="controls|SidePanelItem:selected /template/ Panel#PART_LayoutRoot">
+    <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}" />
   </Style>
   
 </Styles>

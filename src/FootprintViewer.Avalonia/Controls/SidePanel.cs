@@ -16,13 +16,13 @@ namespace FootprintViewer.Avalonia.Controls
             return new SidePanelItemContainerGenerator(this);
         }
 
-        public static readonly StyledProperty<bool> IsCompactProperty =
-            AvaloniaProperty.Register<SidePanel, bool>(nameof(IsCompact), false);
+        public static readonly StyledProperty<bool> IsExpandedProperty =
+            AvaloniaProperty.Register<SidePanel, bool>(nameof(IsExpanded), true);
 
-        public bool IsCompact
+        public bool IsExpanded
         {
-            get => GetValue(IsCompactProperty);
-            set => SetValue(IsCompactProperty, value);
+            get => GetValue(IsExpandedProperty);
+            set => SetValue(IsExpandedProperty, value);
         }
 
         public static readonly StyledProperty<IBrush> PaneBackgroundProperty =

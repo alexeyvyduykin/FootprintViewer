@@ -69,7 +69,7 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
 
-            this.WhenAnyValue(s => s.IsCompact).Where(c => c == true).Subscribe(_ => IsFilterOpen = false);
+            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
             _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
         }

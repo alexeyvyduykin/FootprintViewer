@@ -90,7 +90,7 @@
   <Panel>
 
     <controls:SidePanel Items="{Binding Tabs}"
-                        IsCompact="{Binding IsCompact, Mode=TwoWay}"
+                        IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                         ItemTemplate="{DynamicResource SidePanelIconSelector}"
                         SelectedItem="{Binding SelectedTab}"/>
   </Panel>

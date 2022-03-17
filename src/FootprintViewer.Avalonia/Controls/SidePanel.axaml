@@ -1,5 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:controls="using:FootprintViewer.Avalonia.Controls">
 
   <Design.PreviewWith>
@@ -11,7 +13,10 @@
       </Border.Resources>
       <controls:SidePanel x:Name="SidePanel">
         <controls:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
-          <Border Width="200" Height="200" Background="Red" />
+          <Panel>
+            <Border Width="200" Height="200" Background="Red" />
+            <Border Width="20" Background="Green" HorizontalAlignment="Left" />
+          </Panel>
         </controls:SidePanelItem>
         <controls:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
           <Border Width="200" Height="200" Background="Green" />
@@ -28,26 +33,7 @@
   </Styles.Resources>
 
   <!-- Add Styles Here -->
-
-  <Style Selector="ToggleButton.tglbtn">
-    <Setter Property="Border.BorderThickness" Value="0"></Setter>
-    <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-    <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
-    <Setter Property="CornerRadius" Value="0"></Setter>
-    <Setter Property="Width" Value="{DynamicResource PaneWidth}"></Setter>
-    <Setter Property="Height" Value="{DynamicResource PaneWidth}"></Setter>
-  </Style>
-
-  <Style Selector="TextBlock.TextBlockTitle">
-    <Setter Property="FontSize" Value="14"></Setter>
-    <Setter Property="FontFamily" Value="Roboto"></Setter>
-  </Style>
-
-  <Style Selector="ToggleButton.tglbtn /template/ ContentPresenter#PART_ContentPresenter">
-    <Setter Property="Background" Value="Transparent" />
-  </Style>
-
-  <Style Selector="SplitView.splt">
+  <Style Selector="SplitView.t1">
     <Setter Property="Template">
       <ControlTemplate>
         <DockPanel Name="PART_Container">
@@ -72,32 +58,92 @@
     </Setter>
   </Style>
 
+  <Style Selector="ToggleButton.t2">
+    <Setter Property="Border.BorderThickness" Value="0"/>
+    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Width" Value="{DynamicResource PaneWidth}"/>
+    <Setter Property="Height" Value="{DynamicResource PaneWidth}"/>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <ripple:RippleEffect RippleFill="{Binding Path=(assists:TabControlAssist.TabHeaderHighlightBrush)}">
+          <Panel Background="{TemplateBinding Background}">
+            <Path Name="PART_ExpandIcon"
+                Margin="14"
+                Stretch="Uniform"
+                Fill="{TemplateBinding Foreground}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+
+          </Panel>
+        </ripple:RippleEffect>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="ToggleButton.t2[IsChecked=false]">
+    <Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}"/>
+  </Style>
+
+  <Style Selector="Expander.t3">
+    <Setter Property="ClipToBounds" Value="False"/>
+    <Setter Property="ExpandDirection" Value="Left"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="ContentTransition">
+      <Setter.Value>
+        <CrossFade Duration="0.25" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_ExpanderRoot">
+          <ContentPresenter Name="PART_ContentPresenter"
+                            IsVisible="{TemplateBinding IsExpanded}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Content="{TemplateBinding Content}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Padding="{TemplateBinding Padding}" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
   <!--SidePanel-->
   <Style Selector="controls|SidePanel">
-    <Setter Property="TitleBackground" Value="{DynamicResource AccentBackgroundBrush}"></Setter>
-    <Setter Property="PaneBackground" Value="{DynamicResource MainBackgroundBrush}"></Setter>
-    <Setter Property="ContentBackground" Value="Transparent"></Setter>
-    <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+    <Setter Property="TitleBackground" Value="{DynamicResource PrimaryHueMidBrush}"/>
+    <Setter Property="PaneBackground" Value="{DynamicResource MaterialDesignPaper}"/>
+    <Setter Property="ContentBackground" Value="Transparent"/>
+    <Setter Property="HorizontalAlignment" Value="Right"/>
     <Setter Property="Template">
       <ControlTemplate>
         <Panel>
-          <SplitView x:Name="PART_NavigationPane"
+          <SplitView Classes="t1"
                      PanePlacement="Right"
-                     Classes="splt"
                      PaneBackground="{TemplateBinding PaneBackground}"
                      CompactPaneLength="{DynamicResource PaneWidth}"
                      DisplayMode="Inline"
                      IsPaneOpen="True"
                      OpenPaneLength="{DynamicResource PaneWidth}">
+
             <SplitView.Pane>
               <DockPanel>
-                <Panel DockPanel.Dock="Top" Background="{TemplateBinding TitleBackground}">
-                  <ToggleButton x:Name="PART_SidePanelButton"
-                                Classes="tglbtn"
-                                IsChecked="{TemplateBinding IsCompact, Mode=TwoWay}">
-                    <PathIcon x:Name="PART_PathIconChevron" />
-                  </ToggleButton>
-                </Panel>
+
+                <ToggleButton x:Name="PART_toggle"
+                              Classes="t2"
+                              Background="{TemplateBinding TitleBackground}"
+                              DockPanel.Dock="Top"
+                              IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
+
                 <ItemsPresenter Name="PART_ItemsPresenter"
                                 Grid.Row="1"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
@@ -111,24 +157,29 @@
               </DockPanel>
             </SplitView.Pane>
             <SplitView.Content>
-              <DockPanel>
-                <Border Height="{DynamicResource PaneWidth}"
-                        Background="{TemplateBinding TitleBackground}"
-                        Padding="15,8,0,8"
-                        DockPanel.Dock="Top">
-                  <TextBlock x:Name="HeaderHolder"
-                             Classes="TextBlockTitle"
-                             VerticalAlignment="Center"
-                             Text="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
-                </Border>
-                <Border x:Name="BackgroundBorder">
+
+              <Expander Classes="t3"
+                        IsExpanded="{TemplateBinding IsExpanded}">
+
+                <DockPanel>
+                  <Border Height="{DynamicResource PaneWidth}"
+                          Background="{TemplateBinding TitleBackground}"
+                          Padding="15,8,0,8"
+                          DockPanel.Dock="Top">
+
+                    <TextBlock VerticalAlignment="Center"
+                               Classes="Headline6"
+                               Text="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
+                  </Border>
+
                   <ContentPresenter Name="PART_SelectedContentHost"
-                                    Background="{TemplateBinding ContentBackground}"
                                     Padding="{TemplateBinding Padding}"
                                     Content="{TemplateBinding SelectedContent}"
-                                    ContentTemplate="{TemplateBinding SelectedContentTemplate}" />
-                </Border>
-              </DockPanel>
+                                    ContentTemplate="{TemplateBinding SelectedContentTemplate}"/>
+                </DockPanel>
+              </Expander>
+
+
             </SplitView.Content>
           </SplitView>
         </Panel>
@@ -136,16 +187,16 @@
     </Setter>
   </Style>
 
-  <Style Selector="controls|SidePanel[IsCompact=True] /template/ SplitView#PART_NavigationPane Panel#PART_ContentRoot">
-    <Setter Property="IsVisible" Value="False" />
+  <Style Selector="controls|SidePanel[IsExpanded=false] /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
+    <Setter Property="RenderTransform" Value="rotate(180deg)"/>
   </Style>
 
-  <Style Selector="controls|SidePanel[IsCompact=True] /template/ PathIcon#PART_PathIconChevron">
-    <Setter Property="Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+  <Style Selector="controls|SidePanel /template/ ToggleButton#PART_toggle /template/ Path">
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>
+      </Transitions>
+    </Setter>
   </Style>
 
-  <Style Selector="controls|SidePanel[IsCompact=False] /template/ PathIcon#PART_PathIconChevron">
-    <Setter Property="Data" Value="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-  </Style>
-  
 </Styles>
