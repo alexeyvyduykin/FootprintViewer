@@ -106,7 +106,7 @@ namespace FootprintViewer.Layers
                 var style0 = new SymbolStyle()
                 {
                     SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.5,
+                    SymbolScale = 0.2,
                     MinVisible = _maxVisibleFootprintStyle,
                     MaxVisible = double.MaxValue,
                 };
