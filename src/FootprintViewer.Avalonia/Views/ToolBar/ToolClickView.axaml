@@ -10,39 +10,15 @@
     <vmd:DesignTimeToolClick/>
   </Design.DataContext>
 
-  <UserControl.Styles>
-
-    <Style Selector="Button">
-      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}"/>
-      <Setter Property="Opacity" Value="0.75"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate>                
-            <ContentPresenter x:Name="PART_ContentPresenter"
-                              Background="{TemplateBinding Background}"                                 
-                              Content="{TemplateBinding Content}"                                 
-                              CornerRadius="{TemplateBinding CornerRadius}"                                 
-                              HorizontalAlignment="Center"                                 
-                              VerticalAlignment="Center"                                
-                              Margin="0,0,0,0"/>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    
-    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
-    </Style>
-  
-    <Style Selector="Button:pressed  /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource DarkWidgetBrush}" />        
-    </Style>
-              
-  </UserControl.Styles>
-
-  <Button x:Name="Button">
+  <Button x:Name="Button"    
+          Background="{DynamicResource MaterialDesignPaper}"
+          Padding="0"
+          Opacity="0.75"
+          VerticalAlignment="Center" 
+          HorizontalAlignment="Center"
+          ToolTip.ShowDelay="0">
     <ToolTip.Tip>
-      <ToolTip Content="{Binding Tooltip}"/>
+      <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
     </ToolTip.Tip>
 
     <ContentControl Content="{Binding}"                

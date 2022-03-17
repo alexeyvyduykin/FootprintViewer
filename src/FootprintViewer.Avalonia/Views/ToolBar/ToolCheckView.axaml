@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                   
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"             
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolCheckView">
 
   <Design.DataContext>
@@ -11,47 +11,21 @@
   </Design.DataContext>
 
   <UserControl.Styles>
-
-    <Style Selector="ToggleButton">
-      <Setter Property="Background" Value="{StaticResource MainWidgetBrush}" />
-      <Setter Property="Opacity" Value="0.75" />  
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate>
-            <ContentPresenter x:Name="PART_ContentPresenter"
-                              Background="{TemplateBinding Background}"
-                              Content="{TemplateBinding Content}"
-                              CornerRadius="{TemplateBinding CornerRadius}"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Margin="0,0,0,0" />
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-    <Style Selector="ToggleButton > ContentPresenter">
-      <Setter Property="HorizontalContentAlignment" Value="Center" />
-    </Style>
-
-    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{StaticResource LightWidgetBrush}" />
-    </Style>
-    
     <Style Selector="ToggleButton:checked">
-      <Setter Property="Opacity" Value="1.0" />
+      <Setter Property="Opacity" Value="1.0"/>  
     </Style>
-    
-    <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="#4c9ae7" />
-    </Style>
-
   </UserControl.Styles>
-
+  
   <ToggleButton x:Name="ToggleButton"
-                IsChecked="{Binding IsCheck}">
+                Padding="0"
+                Opacity="0.75"            
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                IsChecked="{Binding IsCheck}"
+                ToolTip.ShowDelay="0">
+    
     <ToolTip.Tip>
-      <ToolTip Content="{Binding Tooltip}"/>
+      <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
     </ToolTip.Tip>
 
     <ContentControl Content="{Binding}"                  
