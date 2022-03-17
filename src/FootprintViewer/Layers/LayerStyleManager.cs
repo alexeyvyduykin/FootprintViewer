@@ -54,10 +54,10 @@ namespace FootprintViewer.Layers
 
         private static IStyle CreateFootprintLayerStyle()
         {
-            var style1 = CreateFootprintPreviewThemeStyle();
+            //var style1 = CreateFootprintPreviewThemeStyle();
             var style2 = CreateFootprintThemeStyle();
 
-            return new StyleCollection() { style1, style2 };
+            return new StyleCollection() { /*style1,*/ style2 };
         }
 
         private static IStyle CreateFootprintThemeStyle()
@@ -99,41 +99,41 @@ namespace FootprintViewer.Layers
             return stl;
         }
 
-        private static IStyle CreateFootprintPreviewThemeStyle()
-        {
-            var stl0 = new ThemeStyle(f =>
-            {
-                var style0 = new SymbolStyle()
-                {
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.2,
-                    MinVisible = _maxVisibleFootprintStyle,
-                    MaxVisible = double.MaxValue,
-                };
+        //private static IStyle CreateFootprintPreviewThemeStyle()
+        //{
+        //    var stl0 = new ThemeStyle(f =>
+        //    {
+        //        var style0 = new SymbolStyle()
+        //        {
+        //            SymbolType = SymbolType.Ellipse,
+        //            SymbolScale = 0.2,
+        //            MinVisible = _maxVisibleFootprintStyle,
+        //            MaxVisible = double.MaxValue,
+        //        };
 
-                switch (f["State"].ToString())
-                {
-                    case "Unselect":
-                        style0.Fill = new Brush(Color.Opacity(Color.Green, 0.25f));
-                        style0.Line = new Pen(Color.Green, 1.0);
-                        style0.Outline = new Pen(Color.Green, 1.0);
-                        break;
-                    case "Select":
-                        style0.Fill = new Brush(Color.Opacity(Color.Green, 1.0f));
-                        style0.Line = new Pen(Color.Black, 4.0);
-                        style0.Outline = new Pen(Color.Black, 4.0);
-                        break;
-                    default:
-                        style0.Fill = new Brush(Color.Gray);
-                        style0.Outline = new Pen(Color.FromArgb(0, 64, 64, 64));
-                        break;
-                }
+        //        switch (f["State"].ToString())
+        //        {
+        //            case "Unselect":
+        //                style0.Fill = new Brush(Color.Opacity(Color.Green, 0.25f));
+        //                style0.Line = new Pen(Color.Green, 1.0);
+        //                style0.Outline = new Pen(Color.Green, 1.0);
+        //                break;
+        //            case "Select":
+        //                style0.Fill = new Brush(Color.Opacity(Color.Green, 1.0f));
+        //                style0.Line = new Pen(Color.Black, 4.0);
+        //                style0.Outline = new Pen(Color.Black, 4.0);
+        //                break;
+        //            default:
+        //                style0.Fill = new Brush(Color.Gray);
+        //                style0.Outline = new Pen(Color.FromArgb(0, 64, 64, 64));
+        //                break;
+        //        }
 
-                return style0;
-            });
+        //        return style0;
+        //    });
 
-            return stl0;
-        }
+        //    return stl0;
+        //}
 
         private static IStyle CreateTargetLayerStyle()
         {
