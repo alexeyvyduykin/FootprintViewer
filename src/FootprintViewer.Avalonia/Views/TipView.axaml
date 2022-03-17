@@ -11,7 +11,7 @@
   </Design.DataContext>
 
   <UserControl.Resources>
-    <SolidColorBrush x:Key="TipBrush" Color="#040f1b" Opacity="0.65"/>
+    <SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>
   </UserControl.Resources>
 
   <UserControl.Styles>
