@@ -33,6 +33,8 @@ namespace FootprintViewer.FileSystem
             {
                 var path = string.IsNullOrEmpty(subFolder) ? _path : Path.Combine(_path, subFolder);
 
+                CreateIfMissing(path);
+
                 return Path.Combine(path, fileName);
             }
 
@@ -45,10 +47,22 @@ namespace FootprintViewer.FileSystem
             {
                 var path = string.IsNullOrEmpty(subFolder) ? _path : Path.Combine(_path, subFolder);
 
+                CreateIfMissing(path);
+
                 return Directory.GetFiles(path, searchPattern).Select(Path.GetFullPath);
             }
 
             return new List<string>();
+        }
+
+        private void CreateIfMissing(string path)
+        {
+            bool folderExists = Directory.Exists(path);
+
+            if (folderExists == false)
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }
