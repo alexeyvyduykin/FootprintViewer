@@ -46,10 +46,24 @@ namespace FootprintViewer.Layers
         {
             var arr = userGeometries
                 .Where(s => s.Geometry != null)
-                .Select(s => new Feature()
+                .Select(s => 
                 {
-                    ["Name"] = s.Name,
-                    Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!)
+                    if (s.Type == UserGeometryType.Point)
+                    {
+                        return new Feature()
+                        {
+                            ["Name"] = s.Name,
+                            Geometry = NTSConverter.ToPoint(s.Geometry.Geometry!)
+                        };
+                    }
+                    else
+                    {
+                        return new Feature()
+                        {
+                            ["Name"] = s.Name,
+                            Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!)
+                        };
+                    }                                
                 });
 
             Clear();
@@ -70,14 +84,35 @@ namespace FootprintViewer.Layers
         {
             Task.Run(async () =>
             {
-                if (feature.Fields.Contains("Name") == true)
+                if (feature.Fields.Contains("Name") == true && feature.Geometry is Polygon polygon)
                 {
                     var name = (string)feature["Name"];
 
-                    var geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry);
+                    var geometry = NTSConverter.FromPolygon(polygon);
 
                     await _provider.UpdateGeometry(name, geometry);
                 }
+            });
+        }
+
+        public void AddPoint(IFeature feature)
+        {
+            var name = GenerateName(UserGeometryType.Point);
+
+            feature["Name"] = name;
+
+            Add(feature);
+
+            Task.Run(async () =>
+            {
+                var model = new UserGeometry()
+                {
+                    Type = UserGeometryType.Point,
+                    Name = name,
+                    Geometry = NTSConverter.FromPoint((Point)feature.Geometry)
+                };
+
+                await _provider.AddAsync(model);
             });
         }
 
@@ -147,6 +182,17 @@ namespace FootprintViewer.Layers
 
     public static class NTSConverter
     {
+        public static nts.Geometry FromPoint(Point point)
+        {           
+            return new nts.Point(new nts.Coordinate(point.X, point.Y));
+        }
+
+        public static Point ToPoint(nts.Geometry geometry)
+        {
+            var coordinate = ((nts.Point)geometry).Coordinate;
+            return new Point(coordinate.X, coordinate.Y);
+        }
+
         public static nts.Geometry FromPolygon(Polygon polygon)
         {
             var points = polygon.ExteriorRing.Vertices;

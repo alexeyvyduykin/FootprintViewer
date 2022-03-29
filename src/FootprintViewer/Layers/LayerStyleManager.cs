@@ -393,16 +393,33 @@ namespace FootprintViewer.Layers
 
         private static IStyle CreateUserLayerStyle()
         {
-            Color backgroundColor = new Color(20, 120, 120, 40);
-            Color lineColor = new Color(20, 120, 120);
-            Color outlineColor = new Color(20, 20, 20);
-
-            return new VectorStyle
+            return new ThemeStyle(f =>
             {
-                Fill = new Brush(new Color(backgroundColor)),
-                Line = new Pen(lineColor, 3),
-                Outline = new Pen(outlineColor, 3)
-            };
+                if (f.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.Red),
+                        Outline = new Pen(Color.Black, 2 / 0.3),
+                        Line = null,//new Pen(Color.Black, 2),
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.5,
+                    };
+                }
+                else
+                {
+                    Color backgroundColor = new Color(20, 120, 120, 40);
+                    Color lineColor = new Color(20, 120, 120);
+                    Color outlineColor = new Color(20, 20, 20);
+
+                    return new VectorStyle
+                    {
+                        Fill = new Brush(new Color(backgroundColor)),
+                        Line = new Pen(lineColor, 3),
+                        Outline = new Pen(outlineColor, 3)
+                    };
+                }
+            });
         }
 
         private static IStyle CreateFootprintImageBorderStyle()

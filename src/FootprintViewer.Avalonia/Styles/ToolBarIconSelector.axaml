@@ -60,12 +60,18 @@
         </Viewbox>
       </DataTemplate>
 
+      <DataTemplate x:Key="Point">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
+        </Viewbox>
+      </DataTemplate>
+
       <DataTemplate x:Key="Rectangle">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
         </Viewbox>
       </DataTemplate>
-
+     
       <DataTemplate x:Key="Circle">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>

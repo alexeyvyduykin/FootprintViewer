@@ -107,6 +107,9 @@ namespace FootprintViewer.ViewModels
             _customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             _customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
+            _customToolBar.Point.Activate.Subscribe(_ => DrawingPointCommand());
+            _customToolBar.Point.Deactivate.Subscribe(_ => ResetInteractivity());
+
             _customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
             _customToolBar.Rectangle.Deactivate.Subscribe(_ => ResetInteractivity());
 
@@ -548,6 +551,28 @@ namespace FootprintViewer.ViewModels
             });
 
             return panel;
+        }
+
+        private void DrawingPointCommand()
+        {
+            var designer = new PointDesigner();
+
+            CreateInteractiveOnUserLayer(designer);
+
+            Tip = new Tip() { Text = "Нажмите, чтобы нарисовать точку" };
+
+            designer.EndCreating += (s, e) =>
+            {
+                _provider.AddPoint(designer.Feature.Copy());
+
+                Tip = null;
+
+                _customToolBar.Uncheck();
+            };
+
+            MapObserver = new MapObserver(designer);
+
+            ActualController = new DrawingController();
         }
 
         private void DrawingRectangleCommand()

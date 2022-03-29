@@ -77,6 +77,13 @@ namespace FootprintViewer.ViewModels
                 Group = "Group1",
             };
 
+            Point = new ToolCheck()
+            {
+                Title = "Point",
+                Tooltip = "PointGeometry",
+                Group = "Group1",
+            };
+
             Rectangle = new ToolCheck()
             {
                 Title = "Rectangle",
@@ -99,6 +106,7 @@ namespace FootprintViewer.ViewModels
             };
 
             GeometryCollection = new ToolCollection();
+            GeometryCollection.AddItem(Point);
             GeometryCollection.AddItem(Rectangle);
             GeometryCollection.AddItem(Circle);
             GeometryCollection.AddItem(Polygon);
@@ -191,6 +199,8 @@ namespace FootprintViewer.ViewModels
         public ToolCheck AddPolygon { get; }
 
         public ToolCheck AddCircle { get; }
+
+        public ToolCheck Point { get; }
 
         public ToolCheck Rectangle { get; }
 
