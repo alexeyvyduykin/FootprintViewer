@@ -167,7 +167,10 @@ namespace FootprintViewer.ViewModels
                 }
                 else if (_customToolBar.ScaleGeometry.IsCheck == true)
                 {
-                    decorator = new ScaleDecorator(feature);
+                    if (feature.Geometry is not Point)
+                    {
+                        decorator = new ScaleDecorator(feature);
+                    }
                 }
                 else if (_customToolBar.TranslateGeometry.IsCheck == true)
                 {
@@ -175,11 +178,17 @@ namespace FootprintViewer.ViewModels
                 }
                 else if (_customToolBar.RotateGeometry.IsCheck == true)
                 {
-                    decorator = new RotateDecorator(feature);
+                    if (feature.Geometry is not Point)
+                    {
+                        decorator = new RotateDecorator(feature);
+                    }
                 }
                 else if (_customToolBar.EditGeometry.IsCheck == true)
                 {
-                    decorator = new EditDecorator(feature);
+                    if (feature.Geometry is not Point)
+                    {
+                        decorator = new EditDecorator(feature);
+                    }
                 }
 
                 if (decorator == null)

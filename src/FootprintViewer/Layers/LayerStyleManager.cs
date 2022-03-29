@@ -529,12 +529,29 @@ namespace FootprintViewer.Layers
 
         private static IStyle CreateInteractiveSelectLayerStyle()
         {
-            return new VectorStyle()
+            return new ThemeStyle(f =>
             {
-                Fill = new Brush(Color.Transparent),
-                Outline = new Pen(Color.Green, 4),
-                Line = new Pen(Color.Green, 4),
-            };
+                if (f.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.Red),
+                        Outline = new Pen(Color.Green, 2 / 0.3),
+                        Line = null,//new Pen(Color.Black, 2),
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.9,
+                    };
+                }
+                else
+                {
+                    return new VectorStyle()
+                    {
+                        Fill = new Brush(Color.Transparent),
+                        Outline = new Pen(Color.Green, 4),
+                        Line = new Pen(Color.Green, 4),
+                    };
+                }
+            });
         }
     }
 

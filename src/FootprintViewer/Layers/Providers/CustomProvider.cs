@@ -84,11 +84,11 @@ namespace FootprintViewer.Layers
         {
             Task.Run(async () =>
             {
-                if (feature.Fields.Contains("Name") == true && feature.Geometry is Polygon polygon)
+                if (feature.Fields.Contains("Name") == true)
                 {
                     var name = (string)feature["Name"];
 
-                    var geometry = NTSConverter.FromPolygon(polygon);
+                    var geometry = NTSConverter.FromGeometry(feature.Geometry);
 
                     await _provider.UpdateGeometry(name, geometry);
                 }
@@ -97,70 +97,27 @@ namespace FootprintViewer.Layers
 
         public void AddPoint(IFeature feature)
         {
-            var name = GenerateName(UserGeometryType.Point);
-
-            feature["Name"] = name;
-
-            Add(feature);
-
-            Task.Run(async () =>
-            {
-                var model = new UserGeometry()
-                {
-                    Type = UserGeometryType.Point,
-                    Name = name,
-                    Geometry = NTSConverter.FromPoint((Point)feature.Geometry)
-                };
-
-                await _provider.AddAsync(model);
-            });
+            AddUserGeometry(feature, UserGeometryType.Point);
         }
 
         public void AddRectangle(IFeature feature)
         {
-            var name = GenerateName(UserGeometryType.Rectangle);
-
-            feature["Name"] = name;
-
-            Add(feature);
-
-            Task.Run(async () =>
-            {
-                var model = new UserGeometry()
-                {
-                    Type = UserGeometryType.Rectangle,
-                    Name = name,
-                    Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
-                };
-
-                await _provider.AddAsync(model);
-            });
+            AddUserGeometry(feature, UserGeometryType.Rectangle);
         }
 
         public void AddCircle(IFeature feature)
         {
-            var name = GenerateName(UserGeometryType.Circle);
-
-            feature["Name"] = name;
-
-            Add(feature);
-
-            Task.Run(async () =>
-            {
-                var model = new UserGeometry()
-                {
-                    Type = UserGeometryType.Circle,
-                    Name = name,
-                    Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
-                };
-
-                await _provider.AddAsync(model);
-            });
+            AddUserGeometry(feature, UserGeometryType.Circle);
         }
 
         public void AddPolygon(IFeature feature)
         {
-            var name = GenerateName(UserGeometryType.Polygon);
+            AddUserGeometry(feature, UserGeometryType.Polygon);
+        }
+
+        private void AddUserGeometry(IFeature feature, UserGeometryType type)
+        {
+            var name = GenerateName(type);
 
             feature["Name"] = name;
 
@@ -170,9 +127,9 @@ namespace FootprintViewer.Layers
             {
                 var model = new UserGeometry()
                 {
-                    Type = UserGeometryType.Polygon,
+                    Type = type,
                     Name = name,
-                    Geometry = NTSConverter.FromPolygon((Polygon)feature.Geometry)
+                    Geometry = NTSConverter.FromGeometry(feature.Geometry)
                 };
 
                 await _provider.AddAsync(model);
@@ -182,7 +139,7 @@ namespace FootprintViewer.Layers
 
     public static class NTSConverter
     {
-        public static nts.Geometry FromPoint(Point point)
+        private static nts.Geometry FromPoint(Point point)
         {           
             return new nts.Point(new nts.Coordinate(point.X, point.Y));
         }
@@ -193,7 +150,7 @@ namespace FootprintViewer.Layers
             return new Point(coordinate.X, coordinate.Y);
         }
 
-        public static nts.Geometry FromPolygon(Polygon polygon)
+        private static nts.Geometry FromPolygon(Polygon polygon)
         {
             var points = polygon.ExteriorRing.Vertices;
             var lr = new nts.LinearRing(points.Select(s => new nts.Coordinate(s.X, s.Y)).ToArray());
@@ -206,6 +163,20 @@ namespace FootprintViewer.Layers
 
             var lr = new LinearRing(points.Select(s => new Point(s.X, s.Y)).ToArray());
             return new Polygon(lr);
+        }
+
+        public static nts.Geometry FromGeometry(IGeometry geometry)
+        {
+            if (geometry is Point point)
+            {
+                return FromPoint(point);
+            }
+            else if (geometry is Polygon polygon)
+            {
+                return FromPolygon(polygon);
+            }
+
+            throw new Exception();
         }
     }
 }

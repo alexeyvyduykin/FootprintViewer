@@ -28,9 +28,13 @@ namespace FootprintViewer.Interactivity
                 g.MainVertices().RemoveAt(count - 1);
                 return g;
             }
+            else if (geometry is Point)
+            {
+                return geometry.Copy();
+            }
             else
             {
-                throw new Exception();
+                throw new Exception();            
             }
         }
 
