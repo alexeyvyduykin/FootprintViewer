@@ -93,8 +93,8 @@ namespace FootprintViewer.Data.Science
 
     internal static class Meeus
     {
-        private static List<List<double>> xnod;
-        private static List<double> sdata;
+        private static List<List<double>> xnod = new List<List<double>>();
+        private static List<double> sdata = new List<double>();
 
         public static double julian(double day, int year)
         {

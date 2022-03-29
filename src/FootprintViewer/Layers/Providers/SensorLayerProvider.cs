@@ -42,7 +42,7 @@ namespace FootprintViewer.Layers
 
             foreach (var sat in satellites)
             {
-                var name = sat.Name;
+                var name = sat.Name!;
                 var dictLeft = FromStrips(leftStrips[name]);
                 var dictRight = FromStrips(rightStrips[name]);
 

@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FootprintViewer.Data.Science
 {
@@ -133,13 +131,13 @@ namespace FootprintViewer.Data.Science
 
             var shapes = new List<List<Geo2D>>();
 
-            FixPoint point, nextPoint;
+            FixPoint? point, nextPoint;
 
             while (GetShape(clockwise, out point))
             {
                 shapes.Add(new List<Geo2D>());
 
-                while (NextStep(point, clockwise, out nextPoint, out List<Geo2D> data) == true)
+                while (NextStep(point!, clockwise, out nextPoint, out List<Geo2D>? data) == true)
                 {
                     if (data != null)
                     {
@@ -149,7 +147,7 @@ namespace FootprintViewer.Data.Science
                         }
                         else
                         {
-                            if (point.Type == FixPoint.EType.Left || point.Type == FixPoint.EType.Right)
+                            if (point!.Type == FixPoint.EType.Left || point.Type == FixPoint.EType.Right)
                             {
                                 var first = new Geo2D(data.First());
 
@@ -160,9 +158,11 @@ namespace FootprintViewer.Data.Science
                             }
 
                             if (data.Count != 2)
+                            {
                                 shapes.Last().AddRange(data);
+                            }
 
-                            if (nextPoint.Type == FixPoint.EType.Left || nextPoint.Type == FixPoint.EType.Right)
+                            if (nextPoint!.Type == FixPoint.EType.Left || nextPoint.Type == FixPoint.EType.Right)
                             {
                                 var last = new Geo2D(data.Last());
 
@@ -182,7 +182,7 @@ namespace FootprintViewer.Data.Science
         }
 
 
-        private Dictionary<BandSegment, Tuple<FixPoint, FixPoint>> dict;
+        private readonly Dictionary<BandSegment, Tuple<FixPoint, FixPoint>> dict;
 
         private void BandCore2DInit(List<List<Geo2D>> near, List<List<Geo2D>> far, Func<double, bool> isCoverPolis)
         {
@@ -190,10 +190,14 @@ namespace FootprintViewer.Data.Science
             FixPoint.ResetId();
 
             if (isCoverPolis(Math.PI / 2.0) == true)
+            {
                 AddSpecialSegment(BandCore2D.SpecialSegmentType.Top);
+            }
 
             if (isCoverPolis(-Math.PI / 2.0) == true)
+            {
                 AddSpecialSegment(BandCore2D.SpecialSegmentType.BottomReverse);
+            }
 
             if (near.Count == 1)
             {
@@ -204,7 +208,9 @@ namespace FootprintViewer.Data.Science
                 AddSegment(near.First(), BandCore2D.SegmentType.Begin);
 
                 foreach (var item in near.Skip(1).Take(near.Count - 2))
+                {
                     AddSegment(item, BandCore2D.SegmentType.Full);
+                }
 
                 AddSegment(near.Last(), BandCore2D.SegmentType.End);
             }
@@ -218,7 +224,9 @@ namespace FootprintViewer.Data.Science
                 AddSegment(far.First(), BandCore2D.SegmentType.Begin);
 
                 foreach (var item in far.Skip(1).Take(far.Count - 2))
+                {
                     AddSegment(item, BandCore2D.SegmentType.Full);
+                }
 
                 AddSegment(far.Last(), BandCore2D.SegmentType.End);
             }
@@ -239,7 +247,9 @@ namespace FootprintViewer.Data.Science
             tempbegins.AddRange(dict.Select(s => s.Value.Item2).Where(s => s.Type == FixPoint.EType.Begin));
 
             if (tempbegins.Count != 2)
+            {
                 throw new Exception();
+            }
 
             var beg1 = tempbegins[0];
             var beg2 = tempbegins[1];
@@ -260,7 +270,9 @@ namespace FootprintViewer.Data.Science
             tempends.AddRange(dict.Select(s => s.Value.Item2).Where(s => s.Type == FixPoint.EType.End));
 
             if (tempends.Count != 2)
+            {
                 throw new Exception();
+            }
 
             var end1 = tempends[0];
             var end2 = tempends[1];
@@ -276,32 +288,46 @@ namespace FootprintViewer.Data.Science
 
         private void BeginCut(FixPoint beg, double latCut)
         {
-            FixPoint neww = null;
+            FixPoint? neww = null;
             if (beg.Fix.Lon > 0.0)
+            {
                 neww = new FixPoint(new Geo2D(Math.PI, latCut), FixPoint.EType.Right);
+            }
             else
+            {
                 neww = new FixPoint(new Geo2D(-Math.PI, latCut), FixPoint.EType.Left);
+            }
 
-            BandSegment bs = GetDictionaryIndex(beg);
+            BandSegment? bs = GetDictionaryIndex(beg);
 
-            bs.Seg = BandSegment.Segment.Full;
-            bs.AddFirst(neww.Fix);
-            dict[bs] = Tuple.Create<FixPoint, FixPoint>(neww, dict[bs].Item2);
+            if (bs != null)
+            {
+                bs.Seg = BandSegment.Segment.Full;
+                bs.AddFirst(neww.Fix);
+                dict[bs] = Tuple.Create<FixPoint, FixPoint>(neww, dict[bs].Item2);
+            }
         }
 
         private void EndCut(FixPoint end, double latCut)
         {
-            FixPoint neww = null;
+            FixPoint? neww = null;
             if (end.Fix.Lon > 0.0)
+            {
                 neww = new FixPoint(new Geo2D(Math.PI, latCut), FixPoint.EType.Right);
+            }
             else
+            {
                 neww = new FixPoint(new Geo2D(-Math.PI, latCut), FixPoint.EType.Left);
+            }
 
-            BandSegment bs = GetDictionaryIndex(end);
+            BandSegment? bs = GetDictionaryIndex(end);
 
-            bs.Seg = BandSegment.Segment.Full;
-            bs.AddLast(neww.Fix);
-            dict[bs] = Tuple.Create<FixPoint, FixPoint>(dict[bs].Item1, neww);
+            if (bs != null)
+            {
+                bs.Seg = BandSegment.Segment.Full;
+                bs.AddLast(neww.Fix);
+                dict[bs] = Tuple.Create<FixPoint, FixPoint>(dict[bs].Item1, neww);
+            }
         }
 
         private void AddSegment(List<Geo2D> arr, SegmentType type)
@@ -445,36 +471,50 @@ namespace FootprintViewer.Data.Science
 #endif
         }
 
-        private BandSegment GetDictionaryIndex(FixPoint point)
+        private BandSegment? GetDictionaryIndex(FixPoint point)
         {
             foreach (var item in dict)
             {
                 if (item.Value.Item1 == point || item.Value.Item2 == point)
+                {
                     return item.Key;
+                }
             }
 
             return null;
         }
 
-        private FixPoint IsPoint(FixPoint point)
+        private FixPoint? IsPoint(FixPoint point)
         {
             switch (point.Type)
             {
                 case FixPoint.EType.Begin:
                     if (BeginPoints.Contains(point) == true)
+                    {
                         return point;
+                    }
+
                     return null;
                 case FixPoint.EType.Left:
                     if (LeftPoints.Contains(point) == true)
+                    {
                         return point;
+                    }
+
                     return null;
                 case FixPoint.EType.Right:
                     if (RightPoints.Contains(point) == true)
+                    {
                         return point;
+                    }
+
                     return null;
                 case FixPoint.EType.End:
                     if (EndPoints.Contains(point) == true)
+                    {
                         return point;
+                    }
+
                     return null;
                 default:
                     throw new Exception();
@@ -494,18 +534,25 @@ namespace FootprintViewer.Data.Science
                 return dict[segment].Item1;
             }
             else
+            {
                 throw new Exception();
+            }
         }
 
-        private bool GetShape(bool clockwise, out FixPoint begin)
+        private bool GetShape(bool clockwise, out FixPoint? begin)
         {
             if (LeftPoints.Count != 0)
             {
                 // clockwork wise => First
                 if (clockwise == true)
+                {
                     begin = LeftPoints.First();
+                }
                 else
+                {
                     begin = LeftPoints.Last();
+                }
+
                 return true;
             }
 
@@ -513,9 +560,14 @@ namespace FootprintViewer.Data.Science
             {
                 // clockwork wise => Lat
                 if (clockwise == true)
+                {
                     begin = RightPoints.Last();
+                }
                 else
+                {
                     begin = RightPoints.First();
+                }
+
                 return true;
             }
 
@@ -529,18 +581,20 @@ namespace FootprintViewer.Data.Science
                 // а не соседней точки, если это возможно
                 if (clockwise == true)
                 {
-                    begin = dict[GetDictionaryIndex(point)].Item1;// point.Segment.FixPointBegin;
+                    begin = dict[GetDictionaryIndex(point)!].Item1;// point.Segment.FixPointBegin;
                 }
                 else
                 {
-                    begin = dict[GetDictionaryIndex(point)].Item2;// point.Segment.FixPointEnd;
+                    begin = dict[GetDictionaryIndex(point)!].Item2;// point.Segment.FixPointEnd;
                 }
 
                 return true;
             }
 
             if (EndPoints.Count != 0)
+            {
                 throw new Exception();
+            }
 
             begin = null;
             return false;
@@ -834,7 +888,7 @@ namespace FootprintViewer.Data.Science
         //            return isNext;
         //        }
 
-        private bool NextStep(FixPoint point, bool clockwise, out FixPoint nextPoint, out List<Geo2D> data)
+        private bool NextStep(FixPoint point, bool clockwise, out FixPoint? nextPoint, out List<Geo2D>? data)
         {
             if (point == null)
             {
@@ -845,7 +899,7 @@ namespace FootprintViewer.Data.Science
                 return false;
             }
 
-            var indexSegment = GetDictionaryIndex(point);
+            var indexSegment = GetDictionaryIndex(point)!;
 
             switch (point.Type)
             {
@@ -909,9 +963,13 @@ namespace FootprintViewer.Data.Science
                             int index = LeftPoints.FindIndex(s => s.Equals(point));
 
                             if (clockwise == true)
+                            {
                                 index += 1;
+                            }
                             else
+                            {
                                 index -= 1;
+                            }
 
                             nextPoint = LeftPoints[index];
 
@@ -975,9 +1033,13 @@ namespace FootprintViewer.Data.Science
                             int index = RightPoints.FindIndex(s => s.Equals(point));
 
                             if (clockwise == true)
+                            {
                                 index -= 1;
+                            }
                             else
+                            {
                                 index += 1;
+                            }
 
                             nextPoint = RightPoints[index];
 
@@ -1104,12 +1166,12 @@ namespace FootprintViewer.Data.Science
             {
                 if (point.Lon.Equals(-Math.PI))
                 {
-                    this.Fix = point;
+                    Fix = point;
                     Type = EType.Left;
                 }
                 else if (point.Lon.Equals(Math.PI))
                 {
-                    this.Fix = point;
+                    Fix = point;
                     Type = EType.Right;
                 }
                 else
@@ -1122,8 +1184,8 @@ namespace FootprintViewer.Data.Science
 
             public FixPoint(Geo2D point, EType type)
             {
-                this.Fix = point;
-                this.Type = type;
+                Fix = point;
+                Type = type;
 
                 id = ++classCounter;
             }
@@ -1136,11 +1198,11 @@ namespace FootprintViewer.Data.Science
 
             public Geo2D Fix { get; }
 
-            static int classCounter = 0;
+            private static int classCounter = 0;
 
             public static void ResetId() { classCounter = 0; }
 
-            int id;
+            private readonly int id;
 
             public override string ToString()
             {
@@ -1166,16 +1228,16 @@ namespace FootprintViewer.Data.Science
 
             public BandSegment(IList<Geo2D> arr, Segment eseg) : this()
             {
-                this.Seg = eseg;
+                Seg = eseg;
 
-                this.data = new LinkedList<Geo2D>(arr);
+                data = new LinkedList<Geo2D>(arr);
             }
 
             protected BandSegment(IList<Geo2D> arr) : this()
             {
-                this.Seg = Segment.Full;
+                Seg = Segment.Full;
 
-                this.data = new LinkedList<Geo2D>(arr);
+                data = new LinkedList<Geo2D>(arr);
             }
 
             protected BandSegment() { id = ++ClassCounter; }
@@ -1201,11 +1263,11 @@ namespace FootprintViewer.Data.Science
                 }
             }
 
-            static int ClassCounter = 0;
+            private static int ClassCounter = 0;
 
             public static void ResetId() { ClassCounter = 0; }
 
-            int id;
+            private readonly int id;
 
             public override string ToString()
             {
@@ -1215,7 +1277,7 @@ namespace FootprintViewer.Data.Science
             public List<Geo2D> NewData { get { return new List<Geo2D>(data); } }
             public List<Geo2D> NewReverseData { get { var temp = new List<Geo2D>(data); temp.Reverse(); return temp; } }
 
-            LinkedList<Geo2D> data;
+            private readonly LinkedList<Geo2D> data = new LinkedList<Geo2D>();
 
             public void AddFirst(Geo2D point)
             {
@@ -1234,14 +1296,20 @@ namespace FootprintViewer.Data.Science
         private bool Odd(int value)
         {
             if (value % 2 == 0)
+            {
                 return false;
+            }
+
             return true;
         }
 
         private bool Even(int value)
         {
             if (value % 2 == 0)
+            {
                 return true;
+            }
+
             return false;
         }
 

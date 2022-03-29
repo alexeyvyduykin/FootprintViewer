@@ -16,17 +16,20 @@ namespace FootprintViewer.Input
 
             if (_skip == false)
             {
-                var screenPosition = e.Position;
-                var worldPosition = MapView.ScreenToWorld(screenPosition);
-
-                bool isClick(Point worldPosition)
+                if (e.Position != null)
                 {
-                    var p0 = MapView.WorldToScreen(worldPosition);
+                    var screenPosition = e.Position;
+                    var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-                    return IsClick(p0, screenPosition);
+                    bool isClick(Point worldPosition)
+                    {
+                        var p0 = MapView.WorldToScreen(worldPosition);
+
+                        return IsClick(p0, screenPosition);
+                    }
+
+                    MapView.MapObserver.OnCompleted(worldPosition, isClick);
                 }
-
-                MapView.MapObserver.OnCompleted(worldPosition, isClick);
             }
 
             e.Handled = true;
@@ -36,10 +39,13 @@ namespace FootprintViewer.Input
         {
             base.Delta(e);
 
-            var screenPosition = e.Position;
-            var worldPosition = MapView.ScreenToWorld(screenPosition);
+            if (e.Position != null)
+            {
+                var screenPosition = e.Position;
+                var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnDelta(worldPosition);
+                MapView.MapObserver.OnDelta(worldPosition);
+            }
 
             if (_counter++ > 0)
             {
@@ -54,10 +60,13 @@ namespace FootprintViewer.Input
             _skip = false;
             _counter = 0;
 
-            var screenPosition = e.Position;
-            var worldPosition = MapView.ScreenToWorld(screenPosition);
+            if (e.Position != null)
+            {
+                var screenPosition = e.Position;
+                var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnStarted(worldPosition, 0);
+                MapView.MapObserver.OnStarted(worldPosition, 0);
+            }
 
             e.Handled = true;
         }
@@ -84,10 +93,13 @@ namespace FootprintViewer.Input
         {
             base.Delta(e);
 
-            var screenPosition = e.Position;
-            var worldPosition = MapView.ScreenToWorld(screenPosition);
+            if (e.Position != null)
+            {
+                var screenPosition = e.Position;
+                var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnHover(worldPosition);
+                MapView.MapObserver.OnHover(worldPosition);
+            }
 
             e.Handled = true;
         }

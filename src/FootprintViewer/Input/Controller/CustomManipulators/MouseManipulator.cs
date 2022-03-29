@@ -9,7 +9,7 @@ namespace FootprintViewer.Input
         {
         }
 
-        public Point StartPosition { get; protected set; }
+        public Point? StartPosition { get; protected set; }
 
         public override void Started(MouseEventArgs e)
         {

@@ -1,15 +1,14 @@
-﻿using Avalonia.Controls;
-using System;
-using System.Windows;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
-using Avalonia;
-using System.Reactive.Linq;
-using Avalonia.Interactivity;
 using Avalonia.Input;
-using System.Windows.Input;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.Xaml.Interactivity;
+using System;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Windows.Input;
 
 namespace FootprintViewer.Avalonia.Behaviors
 {
@@ -32,12 +31,12 @@ namespace FootprintViewer.Avalonia.Behaviors
 
         public static readonly AttachedProperty<bool> ScrollSelectedIntoViewProperty =
             AvaloniaProperty.RegisterAttached<ListBoxBehavior, ListBox, bool>("ScrollSelectedIntoView", false);
-              //  new UIPropertyMetadata(false, OnScrollSelectedIntoViewChanged));
+        //  new UIPropertyMetadata(false, OnScrollSelectedIntoViewChanged));
 
         private static void OnScrollSelectedIntoViewChanged(AvaloniaPropertyChangedEventArgs e)
         {
             var selector = e.Sender as SelectingItemsControl;
-     
+
             if (selector == null)
             {
                 return;
@@ -82,7 +81,7 @@ namespace FootprintViewer.Avalonia.Behaviors
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     listBox.InvalidateMeasure();
-                 //   listBox.UpdateLayout();
+                    //   listBox.UpdateLayout();
                     if (listBox.SelectedItem != null)
                     {
                         listBox.ScrollToCenterOfView(listBox.SelectedItem);
@@ -138,10 +137,13 @@ namespace FootprintViewer.Avalonia.Behaviors
 
             base.OnAttached();
 
-            Disposables.Add(AssociatedObject.AddDisposableHandler(InputElement.PointerPressedEvent, (sender, e) =>
+            if (AssociatedObject != null)
             {
-                e.Handled = ExecuteCommand();
-            }));
+                Disposables.Add(AssociatedObject.AddDisposableHandler(InputElement.PointerPressedEvent, (sender, e) =>
+                {
+                    e.Handled = ExecuteCommand();
+                }));
+            }
         }
 
         protected override void OnDetaching()

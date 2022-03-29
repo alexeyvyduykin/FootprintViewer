@@ -66,7 +66,9 @@ namespace FootprintViewer.Avalonia
         {
             return new MouseDownEventArgs
             {
+#pragma warning disable CS0618 // Тип или член устарел
                 ChangedButton = e.GetPointerPoint(null).Properties.PointerUpdateKind.Convert(),
+#pragma warning restore CS0618 // Тип или член устарел
                 ClickCount = e.ClickCount,
                 Position = e.GetPosition(relativeTo).ToScreenPoint(),
                 //ModifierKeys = e.KeyModifiers.ToModifierKeys()

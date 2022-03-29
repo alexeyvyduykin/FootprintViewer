@@ -33,7 +33,7 @@ namespace FootprintViewer.Layers
             return new Feature { Geometry = ToGeometry(tileInfo, tileData) };
         }
 
-        private Raster ToGeometry(TileInfo tileInfo, byte[] tileData)
+        private Raster? ToGeometry(TileInfo tileInfo, byte[]? tileData)
         {
             return tileData == null ? null : new Raster(new MemoryStream(tileData), tileInfo.Extent.ToBoundingBox());
         }

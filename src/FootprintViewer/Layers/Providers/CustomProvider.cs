@@ -3,7 +3,6 @@ using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
-using NetTopologySuite.Index.HPRtree;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace FootprintViewer.Layers
                     ["Name"] = s.Name,
                     Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!)
                 });
-            
+
             Clear();
             AddRange(arr);
         }

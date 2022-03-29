@@ -5,7 +5,7 @@ namespace FootprintViewer
 {
     public interface IView
     {
-        Map Map { get; }
+        Map? Map { get; }
 
         void SetCursor(CursorType cursorType);
     }

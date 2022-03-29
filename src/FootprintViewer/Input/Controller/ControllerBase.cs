@@ -78,7 +78,7 @@ namespace FootprintViewer.Input
         {
             lock (GetSyncRoot(view))
             {
-                var hitargs = new HitTestArguments(args.Position, 10);
+                var hitargs = new HitTestArguments(args.Position!, 10);
                 foreach (var result in HitTest(view, hitargs))
                 {
                     //args.HitTestResult = result;
@@ -252,7 +252,7 @@ namespace FootprintViewer.Input
             }
         }
 
-        protected virtual IViewCommand GetCommand(InputGesture gesture)
+        protected virtual IViewCommand? GetCommand(InputGesture gesture)
         {
             var binding = InputCommandBindings.FirstOrDefault(b => b.Gesture.Equals(gesture));
             if (binding == null)
@@ -263,7 +263,7 @@ namespace FootprintViewer.Input
             return binding.Command;
         }
 
-        protected virtual bool HandleCommand(IViewCommand command, IView view, InputEventArgs args)
+        protected virtual bool HandleCommand(IViewCommand? command, IView view, InputEventArgs args)
         {
             if (command == null)
             {

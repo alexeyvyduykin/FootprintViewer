@@ -1,25 +1,21 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
-using Avalonia;
-using HarfBuzzSharp;
+using Avalonia.Threading;
+using Mapsui.Layers;
+using Mapsui.Providers;
+using Mapsui.UI;
+using Mapsui.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using Mapsui.Layers;
-using Mapsui.Utilities;
-using Mapsui.UI;
-using Mapsui.Providers;
 using mg = Mapsui.Geometries;
-using BruTile.Wms;
 
 namespace FootprintViewer.Avalonia
 {
@@ -82,15 +78,23 @@ namespace FootprintViewer.Avalonia
         private void MapControlMouseWheel(object? sender, PointerWheelEventArgs e)
         {
             if (_map?.ZoomLock ?? true)
+            {
                 return;
+            }
+
             if (!Viewport.HasSize)
+            {
                 return;
+            }
 
             _currentMousePosition = e.GetPosition(this).ToOldMapsui();
             //Needed for both MouseMove and MouseWheel event for mousewheel event
 
             if (double.IsNaN(_toResolution))
+            {
                 _toResolution = Viewport.Resolution;
+            }
+
             if (e.Delta.Y > Constants.Epsilon)
             {
                 _toResolution = ZoomHelper.ZoomIn(_map.Resolutions, _toResolution);
@@ -104,7 +108,7 @@ namespace FootprintViewer.Avalonia
             resolution = _map.Limiter.LimitResolution(resolution, Viewport.Width, Viewport.Height, _map.Resolutions, _map.Envelope);
             Navigator.ZoomTo(resolution, _currentMousePosition, MouseWheelAnimation.Duration, MouseWheelAnimation.Easing);
         }
-    
+
         private void MapControlMouseLeftButtonDown(PointerPressedEventArgs e)
         {
             var touchPosition = e.GetPosition(this).ToOldMapsui();
@@ -114,7 +118,7 @@ namespace FootprintViewer.Avalonia
             e.Pointer.Capture(this);
 
             if (IsClick(_currentMousePosition, _downMousePosition))
-            {              
+            {
                 HandleFeatureInfo(e);
                 var mapInfoEventArgs = InvokeInfo(touchPosition, _downMousePosition, e.ClickCount);
                 OnInfo(mapInfoEventArgs);
@@ -124,7 +128,9 @@ namespace FootprintViewer.Avalonia
         private void HandleFeatureInfo(PointerPressedEventArgs e)
         {
             if (FeatureInfo == null)
+            {
                 return; // don't fetch if you the call back is not set.
+            }
 
             var pos = e.GetPosition(this).ToOldMapsui();
 
@@ -157,9 +163,9 @@ namespace FootprintViewer.Avalonia
             {
                 if (_previousMousePosition == null)
                 {
-// Usually MapControlMouseLeftButton down initializes _previousMousePosition but in some
-// situations it can be null. So far I could only reproduce this in debug mode when putting
-// a breakpoint and continuing.
+                    // Usually MapControlMouseLeftButton down initializes _previousMousePosition but in some
+                    // situations it can be null. So far I could only reproduce this in debug mode when putting
+                    // a breakpoint and continuing.
                     return;
                 }
 
@@ -188,7 +194,9 @@ namespace FootprintViewer.Avalonia
         private static bool IsClick(mg.Point? currentPosition, mg.Point? previousPosition)
         {
             if (currentPosition == null || previousPosition == null)
+            {
                 return false;
+            }
 
             return
                 Math.Abs(currentPosition.X - previousPosition.X) < 1 &&
@@ -301,7 +309,9 @@ namespace FootprintViewer.Avalonia
             {
                 var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
                 if (canvas == null)
+                {
                     context.DrawText(Brushes.Black, new Point(), _noSkia.PlatformImpl);
+                }
                 else
                 {
                     canvas.Save();
@@ -316,7 +326,7 @@ namespace FootprintViewer.Avalonia
             if (disposing)
             {
                 _drawOp?.Dispose();
-       //         _map?.Dispose();
+                //         _map?.Dispose();
             }
 
             CommonDispose(disposing);

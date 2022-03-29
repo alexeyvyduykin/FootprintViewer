@@ -85,7 +85,7 @@ namespace FootprintViewer.Avalonia
             Size size = container.DesiredSize;//RenderSize;
            // Point c = container.TransformToAncestor((IVisual)scrollInfo).Transform(new Point(size.Width / 2, size.Height / 2));
 
-            Point c = container.TranslatePoint(new Point(size.Width / 2, size.Height / 2), (IVisual)scrollInfo).Value;
+            Point c = container.TranslatePoint(new Point(size.Width / 2, size.Height / 2), (IVisual)scrollInfo)!.Value;
 
             Point center = new Point(c.X + scrollInfo.Offset.X, c.Y + scrollInfo.Offset.Y);
             

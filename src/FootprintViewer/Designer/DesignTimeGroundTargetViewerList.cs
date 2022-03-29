@@ -15,7 +15,7 @@ namespace FootprintViewer.Designer
 
             var targets = Task.Run(async () => await provider.GetGroundTargetsAsync()).Result;
 
-            Update(targets.Select(s => s.Name).ToArray());
+            Update(targets.Select(s => s.Name!).ToArray());
         }
     }
 }

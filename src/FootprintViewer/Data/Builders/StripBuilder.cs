@@ -34,38 +34,38 @@ namespace FootprintViewer.Data
         public static Dictionary<string, Dictionary<int, List<List<Point>>>> CreateLeft(IEnumerable<Satellite> satellites)
         {
             var leftStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
-          
+
             foreach (var satellite in satellites)
             {
                 var sat = satellite.ToPRDCTSatellite();
 
                 var sensorLeft = satellite.ToPRDCTSensor(SatelliteStripDirection.Left);
-           
+
                 var band = new Band(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
-            
+
                 var left = BuildStrips(sat, band);
-              
-                leftStrips.Add(satellite.Name, left);              
+
+                leftStrips.Add(satellite.Name!, left);
             }
 
             return leftStrips;
         }
 
         public static Dictionary<string, Dictionary<int, List<List<Point>>>> CreateRight(IEnumerable<Satellite> satellites)
-        {          
+        {
             var rightStrips = new Dictionary<string, Dictionary<int, List<List<Point>>>>();
 
             foreach (var satellite in satellites)
             {
                 var sat = satellite.ToPRDCTSatellite();
-                
+
                 var sensorRight = satellite.ToPRDCTSensor(SatelliteStripDirection.Right);
-              
+
                 var band = new Band(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
-             
+
                 var right = BuildStrips(sat, band);
-             
-                rightStrips.Add(satellite.Name, right);
+
+                rightStrips.Add(satellite.Name!, right);
             }
 
             return rightStrips;

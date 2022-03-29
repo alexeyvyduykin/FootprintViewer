@@ -348,11 +348,7 @@ namespace FootprintViewer.Avalonia
         /// <summary>
         /// Called whenever a property is changed
         /// </summary>
-#if __FORMS__ || __MAUI__ || __AVALONIA__
         public new event PropertyChangedEventHandler? PropertyChanged;
-#else
-        public event PropertyChangedEventHandler? PropertyChanged;
-#endif
 
 #if __FORMS__ || __MAUI__
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -555,7 +551,7 @@ namespace FootprintViewer.Avalonia
             }
         }
 
-        private void OnInfo(MapInfoEventArgs mapInfoEventArgs)
+        private void OnInfo(MapInfoEventArgs? mapInfoEventArgs)
         {
             if (mapInfoEventArgs == null)
                 return;

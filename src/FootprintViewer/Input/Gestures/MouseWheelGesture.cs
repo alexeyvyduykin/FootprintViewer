@@ -7,7 +7,7 @@
 
         }
 
-        public override bool Equals(InputGesture other)
+        public override bool Equals(InputGesture? other)
         {
             var mwg = other as MouseWheelGesture;
             return mwg != null;

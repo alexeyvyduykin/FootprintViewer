@@ -14,7 +14,7 @@ namespace FootprintViewer.ViewModels
 
         public UserGeometry Geometry => _geometry;
 
-        public string? Name => _geometry.Name;
+        public string Name => _geometry.Name!;
 
         public UserGeometryType Type => _geometry.Type;
     }

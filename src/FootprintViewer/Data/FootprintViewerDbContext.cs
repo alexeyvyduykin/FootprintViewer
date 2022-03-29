@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+#nullable disable
 
 namespace FootprintViewer.Data
 {
@@ -12,16 +13,9 @@ namespace FootprintViewer.Data
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
         public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
-        {       
+        {
+
         }
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    var options = optionsBuilder.Options;
-
-        //    optionsBuilder.UseNpgsql("Host=localhost;Database=my_db2;Username=postgres;Password=user",
-        //        options => options.SetPostgresVersion(new Version(9, 6)));
-        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,8 +28,8 @@ namespace FootprintViewer.Data
             modelBuilder.Entity<GroundTarget>(GroundTargetConfigure);
 
             // Footprints
-            modelBuilder.Entity<Footprint>(FootprintConfigure);            
-            
+            modelBuilder.Entity<Footprint>(FootprintConfigure);
+
             // UserGeometries
             modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
         }
@@ -43,7 +37,7 @@ namespace FootprintViewer.Data
         protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
         {
             builder.Property(b => b.Name).IsRequired();
-            builder.HasKey(b => b.Name);         
+            builder.HasKey(b => b.Name);
         }
 
         protected void GroundTargetConfigure(EntityTypeBuilder<GroundTarget> builder)

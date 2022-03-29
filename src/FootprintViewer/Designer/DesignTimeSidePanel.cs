@@ -18,7 +18,7 @@ namespace FootprintViewer.Designer
                 new UserGeometryViewer(data),
             };
 
-            Tabs.AddRange(new List<SidePanelTab>(tabs));          
+            Tabs.AddRange(new List<SidePanelTab>(tabs));
         }
     }
 }

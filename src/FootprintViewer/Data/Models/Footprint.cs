@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using System;
 
 namespace FootprintViewer.Data
 {
@@ -12,15 +11,15 @@ namespace FootprintViewer.Data
 
     public class Footprint
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string SatelliteName { get; set; }
+        public string? SatelliteName { get; set; }
 
-        public string TargetName { get; set; }
+        public string? TargetName { get; set; }
 
-        public Point Center { get; set; }
+        public Point? Center { get; set; }
 
-        public LineString Points { get; set; }
+        public LineString? Points { get; set; }
 
         public DateTime Begin { get; set; }
 

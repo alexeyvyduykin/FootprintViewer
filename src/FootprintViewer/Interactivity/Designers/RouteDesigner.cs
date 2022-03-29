@@ -151,7 +151,7 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString.Geometry).EndPoint;
+                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint;
                 var p1 = worldPosition.Clone();
                 var p2 = worldPosition.Clone();
 
@@ -167,7 +167,7 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                ((LineString)_extraLineString.Geometry).EndPoint.X = worldPosition.X;
+                ((LineString)_extraLineString!.Geometry).EndPoint.X = worldPosition.X;
                 ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
                 _extraLineString.RenderedGeometry?.Clear();

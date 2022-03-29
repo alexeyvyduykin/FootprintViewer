@@ -16,7 +16,7 @@ namespace FootprintViewer.ViewModels
         {
             _satellite = satellite;
 
-            _name = satellite.Name;
+            _name = satellite.Name!;
 
             var count = satellite.ToPRDCTSatellite().Nodes().Count;
        

@@ -4,7 +4,7 @@ namespace FootprintViewer
 {
     public class HitTestResult
     {
-        public HitTestResult(/*UIElement element,*/ Point nearestHitPoint, object item = null, double index = 0)
+        public HitTestResult(/*UIElement element,*/ Point nearestHitPoint, object? item = null, double index = 0)
         {
             //this.Element = element;
             NearestHitPoint = nearestHitPoint;
@@ -14,7 +14,7 @@ namespace FootprintViewer
 
         public double Index { get; private set; }
 
-        public object Item { get; private set; }
+        public object? Item { get; private set; }
 
         //public UIElement Element { get; private set; }
 

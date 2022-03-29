@@ -23,7 +23,7 @@ namespace FootprintViewer.Data
             {
                 var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
 
-                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, footprints[i].Center);
+                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, footprints[i].Center!);
 
                 footprints[i].TargetName = target.Name;
 

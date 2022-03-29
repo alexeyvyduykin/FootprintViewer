@@ -50,7 +50,7 @@ namespace FootprintViewer.ViewModels
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Update);
 
-            CreateSensorList(footprintPreviewProvider);
+            Task.Run(async () => await CreateSensorList(footprintPreviewProvider));
         }
 
         public ReactiveCommand<Unit, SceneSearchFilter> Update { get; }
@@ -61,7 +61,7 @@ namespace FootprintViewer.ViewModels
 
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
 
-            AddSensors(sortNames);
+            AddSensors(sortNames!);
         }
 
         private void AddSensors(List<string> sensors)
@@ -101,9 +101,9 @@ namespace FootprintViewer.ViewModels
             }
             else
             {
-                if (_geometries.ContainsKey(footprint.Name))
+                if (_geometries.ContainsKey(footprint.Name!))
                 {
-                    var footprintPolygon = (Polygon)_geometries[footprint.Name];
+                    var footprintPolygon = (Polygon)_geometries[footprint.Name!];
                     var aoiPolygon = (Polygon)AOI;
 
                     isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);

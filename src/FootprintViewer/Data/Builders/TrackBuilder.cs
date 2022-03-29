@@ -12,7 +12,7 @@ namespace FootprintViewer.Data
 
             foreach (var satellite in satellites)
             {
-                tracks.Add(satellite.Name, BuildTracks(satellite));
+                tracks.Add(satellite.Name!, BuildTracks(satellite));
             }
 
             return tracks;

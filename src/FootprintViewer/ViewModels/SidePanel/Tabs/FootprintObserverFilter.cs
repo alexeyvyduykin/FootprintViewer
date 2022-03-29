@@ -43,7 +43,7 @@ namespace FootprintViewer.ViewModels
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Update);
 
-            CreateSatelliteList(provider);
+            Task.Run(async () => await CreateSatelliteList(provider));
         }
 
         public ReactiveCommand<Unit, FootprintObserverFilter> Update { get; }

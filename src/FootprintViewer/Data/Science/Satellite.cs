@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace FootprintViewer.Data.Science
 {
     public class PRDCTSatellite
     {
-        public static PRDCTSatellite Default = new PRDCTSatellite();
-        private PRDCTSatellite() { }
-
         public PRDCTSatellite(Orbit orbit, DateTime startTime, DateTime stopTime, double trueAnomaly)
         {
-            this.Orbit = orbit;
-            this.StartTime = startTime;
-            this.StopTime = stopTime;
-            this.TrueAnomaly = trueAnomaly;
+            Orbit = orbit;
+            StartTime = startTime;
+            StopTime = stopTime;
+            TrueAnomaly = trueAnomaly;
         }
 
         public PRDCTSatellite(Orbit orbit, DateTime startTime, DateTime stopTime) : this(orbit, startTime, stopTime, 0.0) { }
@@ -31,7 +27,11 @@ namespace FootprintViewer.Data.Science
                 double u = TrueAnomaly;
                 double n = Math.Sqrt(Constants.GM) * Math.Pow(Orbit.SemimajorAxis, -3.0 / 2.0);
                 double e1 = 2.0 * Math.Atan2(Math.Sqrt((1.0 - Orbit.Eccentricity) / (1.0 + Orbit.Eccentricity)) * Math.Sin(u / 2.0), Math.Cos(u / 2.0));
-                if (e1 < 0) e1 += 2.0 * Math.PI;
+                if (e1 < 0)
+                {
+                    e1 += 2.0 * Math.PI;
+                }
+
                 double e2 = e1 - Orbit.Eccentricity * Math.Sin(e1);
                 return e2 / n;
             }
@@ -159,7 +159,9 @@ namespace FootprintViewer.Data.Science
             var nodes = Nodes();
 
             if (nodes.Count <= node)
+            {
                 return points;
+            }
 
             for (int q = 0; q < nodes[node].Quarts.Count; q++)
             {
@@ -169,9 +171,15 @@ namespace FootprintViewer.Data.Science
 
                     double lon = point.Lon;
                     while (lon > 2.0 * Math.PI)
+                    {
                         lon -= 2.0 * Math.PI;
+                    }
+
                     while (lon < 0.0)
+                    {
                         lon += 2.0 * Math.PI;
+                    }
+
                     points.Add(new Geo2D(lon, point.Lat));
                 }
             }
@@ -189,7 +197,9 @@ namespace FootprintViewer.Data.Science
             var nodes = Nodes();
 
             if (nodes.Count <= node)
+            {
                 return points;
+            }
 
             var ttt1 = nodes[node].Quarts.First().TimeBegin;
             var ttt2 = nodes[node].Quarts[nodes[node].Quarts.Count - 1].TimeEnd;
@@ -211,9 +221,15 @@ namespace FootprintViewer.Data.Science
 
                     double lon = point.Lon;
                     while (lon > 2.0 * Math.PI)
+                    {
                         lon -= 2.0 * Math.PI;
+                    }
+
                     while (lon < 0.0)
+                    {
                         lon += 2.0 * Math.PI;
+                    }
+
                     points.Add(new Geo2D(lon, point.Lat));
 
                     last = t;
@@ -227,9 +243,15 @@ namespace FootprintViewer.Data.Science
 
                     double lon = point.Lon;
                     while (lon > 2.0 * Math.PI)
+                    {
                         lon -= 2.0 * Math.PI;
+                    }
+
                     while (lon < 0.0)
+                    {
                         lon += 2.0 * Math.PI;
+                    }
+
                     points.Add(new Geo2D(lon, point.Lat));
                 }
             }
@@ -251,7 +273,9 @@ namespace FootprintViewer.Data.Science
             var nodes = Nodes();
 
             if (nodes.Count <= node)
+            {
                 return points;
+            }
 
             var ttt1 = nodes[node].Quarts.First().TimeBegin;
             var ttt2 = nodes[node].Quarts[nodes[node].Quarts.Count - 1].TimeEnd;
@@ -276,16 +300,21 @@ namespace FootprintViewer.Data.Science
 
                     double lon = point.Lon;
                     while (lon > Math.PI)
+                    {
                         lon -= 2.0 * Math.PI;
+                    }
+
                     while (lon < -Math.PI)
+                    {
                         lon += 2.0 * Math.PI;
+                    }
+
                     points.Add(new Geo2D(lon, point.Lat));
 
                     last = t;
 
                     sec = 1.0 / Math.Cos(point.Lat);
                     step = seconds / sec;
-                    int ghhghg = 0;
                 }
 
                 last = step - (t2 - last);
@@ -296,9 +325,15 @@ namespace FootprintViewer.Data.Science
 
                     double lon = point.Lon;
                     while (lon > Math.PI)
+                    {
                         lon -= 2.0 * Math.PI;
+                    }
+
                     while (lon < -Math.PI)
+                    {
                         lon += 2.0 * Math.PI;
+                    }
+
                     points.Add(new Geo2D(lon, point.Lat));
                 }
             }
@@ -307,7 +342,7 @@ namespace FootprintViewer.Data.Science
         }
 
 
-        public List<Geo2D> GetGroundTrackDynStep(int node, double seconds, Func<Geo2D, Geo2D> converter = null)
+        public List<Geo2D> GetGroundTrackDynStep(int node, double seconds, Func<Geo2D, Geo2D>? converter = null)
         {
             converter = converter ?? ScienceConverters.From0To360;
 
@@ -342,13 +377,13 @@ namespace FootprintViewer.Data.Science
                 for (double t = t1; t <= t2; t += step)
                 {
                     var point = track.ContinuousTrack(node, t, TrueTimePastAN, nodes[node].Quarts[q].Quart);
-                  
+
                     points.Add(converter.Invoke(point));
 
                     last = t;
 
                     sec = 1.0 / Math.Cos(point.Lat);
-                    step = seconds / sec;                  
+                    step = seconds / sec;
                 }
 
                 last = step - (t2 - last);

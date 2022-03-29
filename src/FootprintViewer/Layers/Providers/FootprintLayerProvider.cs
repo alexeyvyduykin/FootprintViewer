@@ -32,7 +32,7 @@ namespace FootprintViewer.Layers
 
         public Footprint GetFootprint(string name)
         {
-            return _provider.GetFootprints().Where(s => s.Name.Equals(name)).FirstOrDefault();
+            return _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault();
         }
 
         public async Task<List<Footprint>> GetFootprintsAsync()
@@ -82,7 +82,7 @@ namespace FootprintViewer.Layers
 
             foreach (var item in footprints)
             {
-                var poly = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
+                var poly = AreaCutting(item.Points!.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
 
                 var feature = new Feature { Geometry = poly };
 

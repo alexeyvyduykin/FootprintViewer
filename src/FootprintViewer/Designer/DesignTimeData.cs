@@ -249,7 +249,12 @@ namespace FootprintViewer.Designer
                 return list;
             }
 
-            public async Task<List<UserGeometry>> GetUserGeometriesAsync() => GetUserGeometries().ToList();
+            public async Task<List<UserGeometry>> GetUserGeometriesAsync()
+            {
+                await Task.Delay(2000);
+
+                return await Task.Run(() => GetUserGeometries().ToList());
+            }
 
             public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
             {
@@ -258,7 +263,11 @@ namespace FootprintViewer.Designer
                 return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
             }
 
-            public async Task RemoveAsync(UserGeometry geometry) => throw new NotImplementedException();
+            public async Task RemoveAsync(UserGeometry geometry)
+            {
+                await Task.Delay(1000);
+                throw new NotImplementedException();
+            }
 
             public Task UpdateGeometry(string key, Geometry geometry)
             {
@@ -323,14 +332,19 @@ namespace FootprintViewer.Designer
                 return list;
             }
 
-            public async Task<List<Footprint>> GetFootprintsAsync() => GetFootprints().ToList();
+            public async Task<List<Footprint>> GetFootprintsAsync()
+            {
+                await Task.Delay(2000);
+
+                return await Task.Run(() => { return GetFootprints().ToList(); });
+            }
 
             public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
             {
                 await Task.Delay(2000);
 
                 return await Task.Run(() =>
-                {                  
+                {
                     return GetFootprints().Select(s => new FootprintInfo(s)).ToList();
                 });
             }

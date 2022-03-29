@@ -30,7 +30,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task RemoveAsync(UserGeometry geometry)
         {
-            throw new System.NotImplementedException();
+            await Task.Run(() => { _userGeometries.Remove(geometry); });
         }
 
         public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)

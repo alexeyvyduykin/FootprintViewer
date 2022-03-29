@@ -44,7 +44,7 @@ namespace FootprintViewer.Layers
                 {
                     case GroundTargetType.Point:
                     {
-                        var p = (NetTopologySuite.Geometries.Point)item.Points;
+                        var p = (NetTopologySuite.Geometries.Point)item.Points!;
                         var point = SphericalMercator.FromLonLat(p.X, p.Y);
                         feature.Geometry = point;
                         feature["Type"] = "Point";
@@ -52,13 +52,13 @@ namespace FootprintViewer.Layers
                     break;
                     case GroundTargetType.Route:
                     {
-                        feature.Geometry = RouteCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
+                        feature.Geometry = RouteCutting(item.Points!.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Route";
                     }
                     break;
                     case GroundTargetType.Area:
                     {
-                        feature.Geometry = AreaCutting(item.Points.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
+                        feature.Geometry = AreaCutting(item.Points!.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
                         feature["Type"] = "Area";
                     }
                     break;

@@ -15,13 +15,16 @@ namespace FootprintViewer.Input
 
             if (_isEditing == true)
             {
-                var worldPosition = MapView.ScreenToWorld(e.Position);
+                if (e.Position != null)
+                {
+                    var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                MapView.MapObserver.OnCompleted(worldPosition);
+                    MapView.MapObserver.OnCompleted(worldPosition);
 
-                MapView.Map.PanLock = false;
+                    MapView.Map!.PanLock = false;
 
-                _isEditing = false;
+                    _isEditing = false;
+                }
             }
 
             MapView.SetCursor(CursorType.Default);
@@ -35,11 +38,14 @@ namespace FootprintViewer.Input
 
             if (_isEditing == true)
             {
-                var worldPosition = MapView.ScreenToWorld(e.Position);
+                if (e.Position != null)
+                {
+                    var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                MapView.MapObserver.OnDelta(worldPosition);
+                    MapView.MapObserver.OnDelta(worldPosition);
 
-                MapView.SetCursor(CursorType.HandGrab);
+                    MapView.SetCursor(CursorType.HandGrab);
+                }
 
                 e.Handled = true;
             }
@@ -55,7 +61,7 @@ namespace FootprintViewer.Input
 
             _isEditing = false;
 
-            if (mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
+            if (mapInfo != null && mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
 
@@ -66,7 +72,7 @@ namespace FootprintViewer.Input
 
             if (_isEditing == true)
             {
-                MapView.Map.PanLock = true;
+                MapView.Map!.PanLock = true;
             }
 
             e.Handled = true;
@@ -86,7 +92,7 @@ namespace FootprintViewer.Input
             {
                 var mapInfo = MapView.GetMapInfo(e.Position);
 
-                if (mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
+                if (mapInfo != null && mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
                 {
                     MapView.SetCursor(CursorType.Hand);
                     e.Handled = true;

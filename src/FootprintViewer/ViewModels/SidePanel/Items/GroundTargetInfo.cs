@@ -13,7 +13,7 @@ namespace FootprintViewer.ViewModels
         {
             _groundTarget = groundTarget;
             _type = groundTarget.Type;
-            _name = groundTarget.Name;
+            _name = groundTarget.Name!;
         }
 
         public GroundTarget GroundTarget => _groundTarget;

@@ -8,7 +8,7 @@ namespace FootprintViewer
 {
     public static class MapsuiHelper
     {
-        public static ILayer CreateTileLayer(ITileSource tileSource, string name = null)
+        public static ILayer CreateTileLayer(ITileSource tileSource, string? name = null)
         {
             return new TileLayer(tileSource) { Name = name ?? tileSource.Name };
         }

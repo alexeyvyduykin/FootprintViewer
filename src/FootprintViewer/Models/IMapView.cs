@@ -17,7 +17,7 @@ namespace FootprintViewer
 
         Point WorldToScreen(Point worldPosition);
 
-        MapInfo GetMapInfo(Point screenPosition, int margin = 0);
+        MapInfo? GetMapInfo(Point? screenPosition, int margin = 0);
 
         void NavigateToAOI(BoundingBox boundingBox);
     }

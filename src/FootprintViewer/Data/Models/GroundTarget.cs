@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Data
 {
@@ -12,10 +11,10 @@ namespace FootprintViewer.Data
 
     public class GroundTarget
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public GroundTargetType Type { get; set; }
 
-        public Geometry Points { get; set; }
+        public Geometry? Points { get; set; }
     }
 }

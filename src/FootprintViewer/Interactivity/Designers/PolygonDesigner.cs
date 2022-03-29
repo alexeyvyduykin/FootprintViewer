@@ -14,7 +14,7 @@ namespace FootprintViewer.Interactivity.Designers
         private IFeature? _extraLineString;
         private IFeature? _extraPolygon;
 
-        public override IEnumerable<Point> GetActiveVertices() 
+        public override IEnumerable<Point> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {
@@ -162,11 +162,11 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString.Geometry).EndPoint;
+                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint;
                 var p1 = worldPosition.Clone();
                 var p2 = worldPosition.Clone();
 
-                ((Polygon)_extraPolygon.Geometry).ExteriorRing.Vertices.Add(p0);
+                ((Polygon)_extraPolygon!.Geometry).ExteriorRing.Vertices.Add(p0);
                 ((LineString)Feature.Geometry).Vertices.Add(p0); // and add it to the geometry
                 ((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
 
@@ -180,7 +180,7 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                ((LineString)_extraLineString.Geometry).EndPoint.X = worldPosition.X;
+                ((LineString)_extraLineString!.Geometry).EndPoint.X = worldPosition.X;
                 ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
                 _extraLineString.RenderedGeometry?.Clear();

@@ -12,7 +12,7 @@
 
         public int ClickCount { get; private set; }
 
-        public override bool Equals(InputGesture other)
+        public override bool Equals(InputGesture? other)
         {
             var mg = other as MouseDownGesture;
             return mg != null && mg.MouseButton == MouseButton && mg.ClickCount == ClickCount;

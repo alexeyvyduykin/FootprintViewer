@@ -36,7 +36,7 @@ namespace FootprintViewer.Layers
 
             foreach (var sat in satellites)
             {
-                var name = sat.Name;
+                var name = sat.Name!;
                 var dict = new Dictionary<int, List<IFeature>>();
 
                 foreach (var item in tracks[name])

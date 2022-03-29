@@ -132,17 +132,17 @@ namespace FootprintViewer.ViewModels
 
         private bool IsGeometry(FootprintPreview footprint)
         {
-            return _geometries.ContainsKey(footprint.Name);
+            return _geometries.ContainsKey(footprint.Name!);
         }
 
         private IGeometry ToGeometry(FootprintPreview footprint)
         {
-            return _geometries[footprint.Name];
+            return _geometries[footprint.Name!];
         }
 
         private Point GetCenter(FootprintPreview footprint)
         {
-            return _geometries[footprint.Name].BoundingBox.Centroid;
+            return _geometries[footprint.Name!].BoundingBox.Centroid;
         }
 
         private void HideFootprintBorder()

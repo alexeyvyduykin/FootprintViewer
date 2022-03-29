@@ -1,10 +1,4 @@
-﻿using DynamicData;
-using FootprintViewer.ViewModels;
-using Splat;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.Designer
 {

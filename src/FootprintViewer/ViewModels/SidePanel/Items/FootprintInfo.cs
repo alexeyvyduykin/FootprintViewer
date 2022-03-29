@@ -16,13 +16,13 @@ namespace FootprintViewer.ViewModels
         private readonly double _duration;
         private readonly int _node;
         private readonly SatelliteStripDirection _direction;
-      
+
         public FootprintInfo(Footprint footprint)
         {
             _footprint = footprint;
-            _name = footprint.Name;
-            _satelliteName = footprint.SatelliteName;
-            _center = footprint.Center.Coordinate.Copy();
+            _name = footprint.Name!;
+            _satelliteName = footprint.SatelliteName!;
+            _center = footprint.Center!.Coordinate.Copy();
             _begin = footprint.Begin;
             _duration = footprint.Duration;
             _node = footprint.Node;

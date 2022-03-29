@@ -19,7 +19,7 @@ namespace FootprintViewer.Designer
 
             MainContent = list;
 
-            list.Update(targets.Select(s => s.Name).ToArray());
+            list.Update(targets.Select(s => s.Name!).ToArray());
         }
     }
 }
