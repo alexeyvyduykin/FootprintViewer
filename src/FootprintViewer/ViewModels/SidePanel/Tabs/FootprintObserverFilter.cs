@@ -52,20 +52,23 @@ namespace FootprintViewer.ViewModels
         {
             var satelliteNames = await Task.Run(() => provider.GetSatellitesAsync().Result.Select(s => s.Name).ToList());
 
-            satelliteNames?.Sort();
+            if (satelliteNames != null)
+            {
+                satelliteNames.Sort();
 
-            var list = satelliteNames.Select(s => new SatelliteItem() { Name = s });
+                var list = satelliteNames.Select(s => new SatelliteItem() { Name = s });
 
-            Satellites = new ObservableCollection<SatelliteItem>(list);
+                Satellites = new ObservableCollection<SatelliteItem>(list);
 
-            Satellites.ToObservableChangeSet()
-                      .AutoRefresh(model => model.IsActive)
-                      .Subscribe(s =>
-                      {
-                          Switcher = !Switcher;
-                      });
+                Satellites.ToObservableChangeSet()
+                          .AutoRefresh(model => model.IsActive)
+                          .Subscribe(s =>
+                          {
+                              Switcher = !Switcher;
+                          });
 
-            Switcher = !Switcher;
+                Switcher = !Switcher;
+            }
         }
 
         public bool Filtering(FootprintInfo footprint)

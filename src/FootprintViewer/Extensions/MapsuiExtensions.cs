@@ -24,9 +24,9 @@ namespace FootprintViewer
             map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Envelope };
         }
 
-        public static T GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
+        public static T? GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
         {
-            return (T)map.Layers.FirstOrDefault(l => l.Name.Equals(layerType.ToString()));
+            return (T?)map.Layers.FirstOrDefault(l => l.Name.Equals(layerType.ToString()));
         }
 
         public static void Replace(this LayerCollection collection, string name, ILayer layer)

@@ -114,7 +114,7 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterLazySingleton<Mapsui.Map>(() => map);
 
-            var footprintLayer = (FootprintLayer)map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            var footprintLayer = (FootprintLayer?)map.GetLayer<FootprintLayer>(LayerType.Footprint);
             var targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
             services.RegisterLazySingleton<FootprintLayer>(() => footprintLayer);

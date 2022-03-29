@@ -50,9 +50,9 @@ namespace FootprintViewer.ViewModels
 
             _infoPanel = _factory.CreateInfoPanel();
 
-            _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+            _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit)!;
 
-            _userLayer = _map.GetLayer<UserLayer>(LayerType.User);
+            _userLayer = _map.GetLayer<UserLayer>(LayerType.User)!;
 
             _map.DataChanged += Map_DataChanged;
 

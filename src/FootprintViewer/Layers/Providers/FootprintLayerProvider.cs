@@ -13,7 +13,7 @@ namespace FootprintViewer.Layers
     public class FootprintLayerProvider : MemoryProvider
     {
         private IFeature? _lastSelected;
-        private List<IFeature>? _featuresCache;
+        private List<IFeature> _featuresCache = new List<IFeature>();
         private readonly FootprintProvider _provider;
 
         public FootprintLayerProvider(FootprintProvider provider)
@@ -32,7 +32,7 @@ namespace FootprintViewer.Layers
 
         public Footprint GetFootprint(string name)
         {
-            return _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault();
+            return _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault()!;
         }
 
         public async Task<List<Footprint>> GetFootprintsAsync()

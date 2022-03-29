@@ -34,7 +34,7 @@ namespace FootprintViewer.Avalonia.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void MapControl_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void MapControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainWindow.Bounds))
             {

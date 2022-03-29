@@ -24,7 +24,7 @@ namespace FootprintViewer.Data
 
         public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
         {           
-            await Sources.FirstOrDefault().UpdateGeometry(key, geometry);
+            await Sources.FirstOrDefault()!.UpdateGeometry(key, geometry);
         }
 
         public async Task AddAsync(UserGeometry geometry)
@@ -49,7 +49,7 @@ namespace FootprintViewer.Data
 
         public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
         {
-            return await Sources.FirstOrDefault().GetUserGeometryInfosAsync();
+            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync();
 
             //return await Task.Run(() =>
             //{

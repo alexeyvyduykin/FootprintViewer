@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
 
             WorldMaps = new ObservableCollection<MapResource>(resources);
 
-            SelectedWorldMap = WorldMaps.FirstOrDefault();
+            SelectedWorldMap = WorldMaps.FirstOrDefault()!;
 
             this.WhenAnyValue(x => x.SelectedWorldMap).InvokeCommand(WorldMapChanged);
         }

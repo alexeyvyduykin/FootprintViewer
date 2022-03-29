@@ -41,7 +41,7 @@ namespace FootprintViewer
             map.Layers.Add(CreateEditLayers(_dependencyResolver));                // Edit / VertexOnly
             map.Layers.Add(CreateUserLayer(_dependencyResolver));                 // User
 
-            map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault());
+            map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault()!);
 
             return map;
         }

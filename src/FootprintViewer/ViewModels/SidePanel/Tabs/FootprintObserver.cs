@@ -45,15 +45,21 @@ namespace FootprintViewer.ViewModels
 
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
-                _footrpintLayer.SelectFeature(item.Name);
-                _footrpintLayer.DataHasChanged();
-                SetMapFocusTo(item.Center);
+                if (_footrpintLayer != null)
+                {
+                    _footrpintLayer.SelectFeature(item.Name);
+                    _footrpintLayer.DataHasChanged();
+                    SetMapFocusTo(item.Center);
+                }
             });
 
             _footprintObserverList.UnselectItem.Subscribe(item =>
             {
-                _footrpintLayer.UnselectFeature(item.Name);
-                _footrpintLayer.DataHasChanged();
+                if (_footrpintLayer != null)
+                {
+                    _footrpintLayer.UnselectFeature(item.Name);
+                    _footrpintLayer.DataHasChanged();
+                }
             });
 
             _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);
