@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using FootprintViewer.Data;
+using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -227,7 +228,7 @@ namespace FootprintViewer.Avalonia
         {
             var builder = new ConfigurationBuilder();
             // установка пути к текущему каталогу
-            builder.SetBasePath(Directory.GetCurrentDirectory());
+            builder.SetBasePath(SolutionFolder.GetAppSettingsBasePath("appsettings.json"));
             // получаем конфигурацию из файла appsettings.json
             builder.AddJsonFile("appsettings.json");
             // создаем конфигурацию
@@ -249,7 +250,7 @@ namespace FootprintViewer.Avalonia
 
         public static Window? GetWindow()
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            if (Application.Current != null && Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 return desktopLifetime.MainWindow;
             }

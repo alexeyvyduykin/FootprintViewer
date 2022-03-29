@@ -36,38 +36,32 @@ class Build : NukeBuild
         });
 
     Target Restore => _ => _
-        .Executes(() => SourceDirectory
-            .GlobFiles("**/*.Avalonia.csproj")
-            .ForEach(path =>
-            {
-                DotNetRestore(settings => settings
-                    .SetProjectFile(path));
-            }));
+        .Executes(() =>
+        {
+            DotNetRestore(settings => settings
+                .SetProjectFile(SourceDirectory / $"{RunProjectName}"));
+        });
 
     Target Compile => _ => _
         .DependsOn(Restore)
-        .Executes(() => SourceDirectory
-            .GlobFiles("**/*.Avalonia.csproj")
-            .ForEach(path =>
-            {
-                DotNetBuild(settings => settings
-                    .SetProjectFile(path)
-                    .SetConfiguration(Configuration)
-                    .EnableNoRestore());
-            }));
+        .Executes(() =>
+        {
+            DotNetBuild(settings => settings
+                .SetProjectFile(SourceDirectory / $"{RunProjectName}")
+                .SetConfiguration(Configuration)
+                .EnableNoRestore());
+        });
 
     Target Run => _ => _
         .DependsOn(Compile)
-        .Executes(() => SourceDirectory
-            .GlobFiles($"**/{RunProjectName}.csproj")
-            .ForEach(path =>
-            {
-                DotNetRun(settings => settings
-                    .SetProjectFile(path)
-                    .SetConfiguration(Configuration)
-                    .EnableNoRestore()
-                    .EnableNoBuild());
-            }));
+        .Executes(() =>
+        {
+            DotNetRun(settings => settings
+                .SetProjectFile(SourceDirectory / $"{RunProjectName}")
+                .SetConfiguration(Configuration)
+                .EnableNoRestore()
+                .EnableNoBuild());
+        });
 
     Target Publish => _ => _
         .DependsOn(Clean)
@@ -77,7 +71,7 @@ class Build : NukeBuild
             var rids = new[] { "win-x64", "linux-x64" };
 
             DotNetPublish(settings => settings
-                .SetProject(Solution.GetProject("FootprintViewer.Avalonia"))
+                .SetProject(Solution.GetProject($"{RunProjectName}"))
                 .SetPublishSingleFile(true)
                 .SetSelfContained(true)
                 .SetConfiguration(Configuration)

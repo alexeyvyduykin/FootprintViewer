@@ -1,37 +1,88 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace FootprintViewer.FileSystem
 {
     public class SolutionFolder
     {
-        private readonly string _solutionFolderName;
-        private readonly string? _path;
-
-#if DEBUG
-        private readonly string _separator = @"..\..\..\..\..\";
-#else
-        private readonly string _separator = "";
-#endif
+        private static readonly string _separator = @"..\..\..\..\..\";
+        private readonly string _name;
+        private readonly string _folderDirectory;
+        private readonly string _solutionDirectory;
 
         public SolutionFolder(string name)
         {
-            _solutionFolderName = name;
-            _path = Directory.GetCurrentDirectory();// AppDomain.CurrentDomain.BaseDirectory;
+            _name = name;
 
-            if (_path != null)
+            _solutionDirectory = GetSolutionDirectory();
+
+            _folderDirectory = Path.Combine(_solutionDirectory, name);
+        }
+
+        public static string SourceFolder => "src";
+
+        public string DataFolder => _name;
+
+        public string FolderDirectory => _folderDirectory;
+
+        public string SolutionDirectory => _solutionDirectory;
+
+        private static string GetSolutionDirectory()
+        {
+            var path = Directory.GetCurrentDirectory();
+
+            if (path.Contains(@"\\bin\\Debug\\") || path.Contains(@"\\bin\\Release\\") ||
+                path.Contains(@"\bin\Debug\") || path.Contains(@"\bin\Release\"))
             {
-                _path = Path.GetFullPath(Path.Combine(_path, _separator));
-                _path = Path.Combine(_path, _solutionFolderName);
+                path = Path.GetFullPath(Path.Combine(path, _separator));
             }
+
+            return path;
+        }
+
+        private static string GetProjectDirectory()
+        {
+            string projectName = string.Empty;
+
+            var assembly = Assembly.GetEntryAssembly();
+
+            if (assembly != null)
+            {
+                projectName = assembly.GetName().Name ?? string.Empty;
+            }
+
+            var root = GetSolutionDirectory();
+
+            return Path.Combine(root, SourceFolder, projectName);
+        }
+
+        public static string GetAppSettingsBasePath(string settingsFilename)
+        {
+            var solutionDir = GetSolutionDirectory();
+
+            if (File.Exists(Path.Combine(solutionDir, settingsFilename)) == true)
+            {
+                return solutionDir;
+            }
+
+            var projectDir = GetProjectDirectory();
+
+            if (File.Exists(Path.Combine(projectDir, settingsFilename)) == true)
+            {
+                return projectDir;
+            }
+
+            throw new Exception($"SolutionDirectory: Base path {projectDir} for file {settingsFilename} not found");
         }
 
         public string? GetPath(string fileName, string? subFolder = null)
         {
-            if (_path != null)
+            if (_folderDirectory != null)
             {
-                var path = string.IsNullOrEmpty(subFolder) ? _path : Path.Combine(_path, subFolder);
+                var path = string.IsNullOrEmpty(subFolder) ? _folderDirectory : Path.Combine(_folderDirectory, subFolder);
 
                 CreateIfMissing(path);
 
@@ -43,9 +94,9 @@ namespace FootprintViewer.FileSystem
 
         public IEnumerable<string> GetPaths(string searchPattern, string? subFolder = null)
         {
-            if (_path != null)
+            if (_folderDirectory != null)
             {
-                var path = string.IsNullOrEmpty(subFolder) ? _path : Path.Combine(_path, subFolder);
+                var path = string.IsNullOrEmpty(subFolder) ? _folderDirectory : Path.Combine(_folderDirectory, subFolder);
 
                 CreateIfMissing(path);
 
