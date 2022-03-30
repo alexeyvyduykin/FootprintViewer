@@ -17,7 +17,7 @@ namespace FootprintViewer.Layers
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
-        public int MaxVisiblePreview { get; set; }
+        protected ILayer Source => _source;
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
