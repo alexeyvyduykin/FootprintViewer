@@ -1,44 +1,52 @@
 ﻿using FootprintViewer.Data;
 using Mapsui.Geometries;
+using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayerProvider : MemoryProvider
+    public interface IFootprintLayerSource : ILayer
+    {
+        void SelectFeature(string name);
+
+        void UnselectFeature(string name);
+    }
+
+    public class FootprintLayerSource : WritableLayer, IFootprintLayerSource
     {
         private IFeature? _lastSelected;
         private List<IFeature> _featuresCache = new List<IFeature>();
         private readonly FootprintProvider _provider;
 
-        public FootprintLayerProvider(FootprintProvider provider)
+        public FootprintLayerSource(FootprintProvider provider)
         {
             _provider = provider;
 
-            provider.Loading.Subscribe(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<Footprint>>(LoadingImpl);
+
+            provider.Loading.Select(s => s).InvokeCommand(Loading);
         }
+
+        private ReactiveCommand<List<Footprint>, Unit> Loading { get; }
 
         private void LoadingImpl(List<Footprint> footprints)
         {
             _featuresCache = Build(footprints);
-
-            ReplaceFeatures(_featuresCache);
+            Clear();
+            AddRange(_featuresCache);
         }
 
-        public Footprint GetFootprint(string name)
-        {
-            return _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault()!;
-        }
+        public Footprint GetFootprint(string name) => _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault()!;
 
-        public async Task<List<Footprint>> GetFootprintsAsync()
-        {
-            return await Task.Run(() => _provider.GetFootprints().ToList());
-        }
+        public async Task<List<Footprint>> GetFootprintsAsync() => await Task.Run(() => _provider.GetFootprints().ToList());
 
         public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();
 
@@ -54,6 +62,8 @@ namespace FootprintViewer.Layers
             feature["State"] = "Select";
 
             _lastSelected = feature;
+
+            DataHasChanged();
         }
 
         public void UnselectFeature(string name)
@@ -61,6 +71,8 @@ namespace FootprintViewer.Layers
             if (_lastSelected != null && name.Equals(_lastSelected["Name"]) == true)
             {
                 _lastSelected["State"] = "Unselect";
+
+                DataHasChanged();
             }
         }
 

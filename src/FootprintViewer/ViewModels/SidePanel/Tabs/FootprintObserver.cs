@@ -15,7 +15,6 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintObserver : SidePanelTab
     {
-        private readonly FootprintLayer? _footrpintLayer;
         private readonly Map _map;
         private readonly FootprintObserverList _footprintObserverList;
         private readonly FootprintObserverFilter _filter;
@@ -24,8 +23,7 @@ namespace FootprintViewer.ViewModels
         {
             var map = dependencyResolver.GetExistingService<Map>();
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
-
-            _footrpintLayer = map.GetLayer<FootprintLayer>(LayerType.Footprint);
+            var source = dependencyResolver.GetExistingService<IFootprintLayerSource>();
 
             _filter = new FootprintObserverFilter(dependencyResolver);
 
@@ -45,21 +43,13 @@ namespace FootprintViewer.ViewModels
 
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
-                if (_footrpintLayer != null)
-                {
-                    _footrpintLayer.SelectFeature(item.Name);
-                    _footrpintLayer.DataHasChanged();
-                    SetMapFocusTo(item.Center);
-                }
+                source.SelectFeature(item.Name);
+                SetMapFocusTo(item.Center);
             });
 
             _footprintObserverList.UnselectItem.Subscribe(item =>
             {
-                if (_footrpintLayer != null)
-                {
-                    _footrpintLayer.UnselectFeature(item.Name);
-                    _footrpintLayer.DataHasChanged();
-                }
+                source.UnselectFeature(item.Name);
             });
 
             _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);

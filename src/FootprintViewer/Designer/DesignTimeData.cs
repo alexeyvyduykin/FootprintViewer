@@ -211,7 +211,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeFootprintLayer : Layers.FootprintLayer
         {
-            public DesignTimeFootprintLayer() : base(new FootprintLayerProvider(new DesignDataFootprintProvider()))
+            public DesignTimeFootprintLayer() : base(new FootprintLayerSource(new DesignDataFootprintProvider()))
             {
 
             }

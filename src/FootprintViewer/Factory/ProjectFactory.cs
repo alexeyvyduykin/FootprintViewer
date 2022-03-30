@@ -85,11 +85,10 @@ namespace FootprintViewer
 
         private static ILayer CreateFootprintLayer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
+            var source = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var provider = new FootprintLayerProvider(footprintProvider);
 
-            return new FootprintLayer(provider)
+            return new FootprintLayer(source)
             {
                 Name = nameof(LayerType.Footprint),
                 Style = styleManager.FootprintStyle,

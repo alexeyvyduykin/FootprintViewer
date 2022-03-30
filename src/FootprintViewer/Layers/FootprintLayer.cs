@@ -1,60 +1,53 @@
-﻿using FootprintViewer.Data;
+﻿using Mapsui;
+using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayer : MemoryLayer
+    public class FootprintLayer : BaseLayer
     {
-        private readonly FootprintLayerProvider _provider;
-    
-        public FootprintLayer(FootprintLayerProvider provider)
+        private readonly ILayer _source;
+
+        public FootprintLayer(ILayer source)
         {
-            _provider = provider;
-     
-            DataSource = _provider;
+            _source = source;
+            _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
-
-        public Footprint GetFootprint(string name) => _provider.GetFootprint(name);
-
-        public void SelectFeature(string name) => _provider.SelectFeature(name);
-
-        public void UnselectFeature(string name) => _provider.UnselectFeature(name);
-
-        public bool IsSelect(string name) => _provider.IsSelect(name);
-
-        public Task<List<Footprint>> GetFootprintsAsync() => _provider.GetFootprintsAsync();
-
-        public List<Footprint> GetFootprints() => _provider.GetFootprints();
 
         public int MaxVisiblePreview { get; set; }
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
-            if (resolution >= MaxVisiblePreview) // preview
-            {             
-                foreach (var feature in base.GetFeaturesInView(box, resolution))
-                {
-                    var center = feature.Geometry.BoundingBox.Centroid;
+            // preview
+            //if (resolution >= MaxVisiblePreview)
+            //{
+            //    foreach (var feature in _source.GetFeaturesInView(box, resolution))
+            //    {
+            //        var center = feature.Geometry.BoundingBox.Centroid;
 
-                    yield return new Feature()
-                    {
-                        ["Name"] = feature["Name"],
-                        ["State"] = feature["State"],
-                        Geometry = center,
-                    };
-                }
-            }
-            else
-            {         
-                foreach (var feature in base.GetFeaturesInView(box, resolution))
+            //        yield return new Feature()
+            //        {
+            //            ["Name"] = feature["Name"],
+            //            ["State"] = feature["State"],
+            //            Geometry = center,
+            //        };
+            //    }
+            //}
+            if (resolution < MaxVisiblePreview)
+            {
+                foreach (var feature in _source.GetFeaturesInView(box, resolution))
                 {
                     yield return feature;
                 }
             }
+        }
+
+        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        {
+            OnDataChanged(new DataChangedEventArgs());
         }
     }
 }
