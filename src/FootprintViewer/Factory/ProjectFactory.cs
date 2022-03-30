@@ -2,6 +2,7 @@
 using FootprintViewer.Interactivity;
 using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.Layers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;

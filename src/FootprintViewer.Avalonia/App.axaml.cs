@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using FootprintViewer.Data;
 using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

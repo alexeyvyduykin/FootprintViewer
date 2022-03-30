@@ -53,7 +53,11 @@ namespace FootprintViewer.Layers
                             line.Vertices.Add(point);
                         }
 
-                        list.Add(new Feature { Geometry = line });
+                        list.Add(new Feature
+                        {
+                            Geometry = line,
+                            ["Name"] = name
+                        });
                     }
 
                     dict.Add(item.Key, list);

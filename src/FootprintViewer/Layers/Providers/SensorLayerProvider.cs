@@ -43,8 +43,8 @@ namespace FootprintViewer.Layers
             foreach (var sat in satellites)
             {
                 var name = sat.Name!;
-                var dictLeft = FromStrips(leftStrips[name]);
-                var dictRight = FromStrips(rightStrips[name]);
+                var dictLeft = FromStrips(name, leftStrips[name]);
+                var dictRight = FromStrips(name, rightStrips[name]);
 
                 _dictLeft.Add(name, dictLeft);
                 _dictright.Add(name, dictRight);
@@ -91,7 +91,7 @@ namespace FootprintViewer.Layers
             }
         }
 
-        private Dictionary<int, List<IFeature>> FromStrips(Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
+        private Dictionary<int, List<IFeature>> FromStrips(string name, Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
         {
             var dict = new Dictionary<int, List<IFeature>>();
             foreach (var item in strips)
@@ -110,7 +110,11 @@ namespace FootprintViewer.Layers
 
                     var poly = new Polygon() { ExteriorRing = ring };
 
-                    list.Add(new Feature { Geometry = poly });
+                    list.Add(new Feature
+                    {
+                        Geometry = poly,
+                        ["Name"] = name,
+                    });
                 }
 
                 dict.Add(item.Key, list);

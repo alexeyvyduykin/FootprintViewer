@@ -5,7 +5,7 @@ using Mapsui.Styles.Thematics;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Layers
+namespace FootprintViewer.Styles
 {
     public class LayerStyleManager
     {
@@ -24,7 +24,11 @@ namespace FootprintViewer.Layers
         private const int _maxVisibleTargetStyle = 5000;
         private const int _maxVisibleFootprintStyle = 10000;
 
+        private static readonly ColorPalette _satellitePalette = ColorPalette.DefaultPalette;
+
         public LayerStyleManager() { }
+
+        public static ColorPalette SatellitePalette => _satellitePalette;
 
         public IStyle FootprintStyle => _footprintStyle ??= CreateFootprintLayerStyle();
 
@@ -321,25 +325,80 @@ namespace FootprintViewer.Layers
 
         private static IStyle CreateSensorStyle()
         {
-            var stl = new VectorStyle
+            return new ThemeStyle(f =>
             {
-                Fill = new Brush(Color.Opacity(Color.Blue, 0.25f)),
-                Line = null,
-                Outline = null,
-            };
+                if (f.Geometry is Point)
+                {
+                    return null;
+                }
 
-            return stl;
+                if (f.Fields != null)
+                {
+                    foreach (var item in f.Fields)
+                    {
+                        if (item.Equals("Name") == true)
+                        {
+                            var name = (string)f["Name"];
+
+                            var color = _satellitePalette.PickColor(name);
+
+                            return new VectorStyle
+                            {                              
+                                Fill = new Brush(Color.FromArgb(75, color.R, color.G, color.B)),
+                                Line = null,
+                                Outline = null,
+                            };
+                        }
+                    }
+                }
+
+                var defaultStyle = new VectorStyle
+                {
+                    Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
+                    Line = null,
+                    Outline = null,
+                };
+
+                return defaultStyle;
+            });
         }
 
         private static IStyle CreateTrackStyle()
         {
-            var stl = new VectorStyle
+            return new ThemeStyle(f =>
             {
-                Fill = null,
-                Line = new Pen(Color.Green, 1),
-            };
+                if (f.Geometry is Point)
+                {
+                    return null;
+                }
 
-            return stl;
+                if (f.Fields != null)
+                {
+                    foreach (var item in f.Fields)
+                    {
+                        if (item.Equals("Name") == true)
+                        {
+                            var name = (string)f["Name"];
+
+                            var color = _satellitePalette.PickColor(name);
+
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Line = new Pen(Color.FromArgb(255, color.R, color.G, color.B), 2),
+                            };                       
+                        }
+                    }
+                }
+
+                var defaultStyle = new VectorStyle
+                {
+                    Fill = null,
+                    Line = new Pen(Color.Black, 1),
+                };
+
+                return defaultStyle;
+            });
         }
 
         private static IStyle CreateVertexOnlyStyle()

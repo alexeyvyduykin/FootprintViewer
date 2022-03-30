@@ -369,7 +369,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractivePolygon(feature), FeatureType.AOIRectangle.ToString());
+                _editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
 
                 Tip = null;
 
@@ -413,7 +413,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractivePolygon(feature), FeatureType.AOIPolygon.ToString());
+                _editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
 
                 Tip = null;
 
@@ -451,7 +451,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractiveCircle(feature), FeatureType.AOICircle.ToString());
+                _editLayer.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
 
                 Tip = null;
 
@@ -504,7 +504,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
+                _editLayer.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
                 Tip = null;
 
