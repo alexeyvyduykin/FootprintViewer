@@ -1,21 +1,13 @@
-﻿using Mapsui;
-using Mapsui.Fetcher;
-using Mapsui.Geometries;
+﻿using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayer : BaseLayer
+    public class FootprintLayer : BaseCustomLayer
     {
-        private readonly ILayer _source;
-
-        public FootprintLayer(ILayer source)
-        {
-            _source = source;
-            _source.DataChanged += (sender, args) => OnDataChanged(args);
-        }
+        public FootprintLayer(ILayer source) : base(source) { }
 
         public int MaxVisiblePreview { get; set; }
 
@@ -36,18 +28,14 @@ namespace FootprintViewer.Layers
             //        };
             //    }
             //}
+
             if (resolution < MaxVisiblePreview)
             {
-                foreach (var feature in _source.GetFeaturesInView(box, resolution))
+                foreach (var feature in Source.GetFeaturesInView(box, resolution))
                 {
                     yield return feature;
                 }
             }
-        }
-
-        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
-        {
-            OnDataChanged(new DataChangedEventArgs());
         }
     }
 }
