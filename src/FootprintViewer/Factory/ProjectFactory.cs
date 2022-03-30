@@ -100,10 +100,9 @@ namespace FootprintViewer
         private static ILayer CreateTrackLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
-            var provider = new TrackLayerProvider(satelliteProvider);
+            var source = dependencyResolver.GetExistingService<ITrackLayerSource>();
 
-            return new TrackLayer(provider)
+            return new BaseCustomLayer(source)
             {
                 Name = nameof(LayerType.Track),
                 Style = styleManager.TrackStyle,
@@ -129,10 +128,9 @@ namespace FootprintViewer
         private static ILayer CreateSensorLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
-            var provider = new SensorLayerProvider(satelliteProvider);
+            var source = dependencyResolver.GetExistingService<ISensorLayerSource>();
 
-            return new SensorLayer(provider)
+            return new BaseCustomLayer(source)
             {
                 Name = nameof(LayerType.Sensor),
                 Style = styleManager.SensorStyle,

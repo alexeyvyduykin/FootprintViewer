@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using Mapsui.Geometries;
+using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
 using System;
@@ -9,13 +10,18 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TrackLayerProvider : MemoryProvider
+    public interface ITrackLayerSource : ILayer
+    {
+        void Update(SatelliteInfo info);
+    }
+
+    public class TrackLayerSource : WritableLayer, ITrackLayerSource
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
         private readonly Dictionary<string, List<IFeature>> _cache;
         private readonly SatelliteProvider _provider;
 
-        public TrackLayerProvider(SatelliteProvider provider)
+        public TrackLayerSource(SatelliteProvider provider)
         {
             _provider = provider;
 
@@ -87,7 +93,8 @@ namespace FootprintViewer.Layers
                     }
                 }
 
-                ReplaceFeatures(_cache.SelectMany(s => s.Value));
+                Clear();
+                AddRange(_cache.SelectMany(s => s.Value));
             }
         }
     }

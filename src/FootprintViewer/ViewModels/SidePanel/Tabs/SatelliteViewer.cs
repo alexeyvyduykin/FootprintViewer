@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
-using Mapsui;
 using ReactiveUI;
 using Splat;
 using System.Collections.Generic;
@@ -13,22 +12,18 @@ namespace FootprintViewer.ViewModels
 {
     public class SatelliteViewer : SidePanelTab
     {
-        private readonly TrackLayer? _trackLayer;
-        private readonly SensorLayer? _sensorLayer;
         private readonly SatelliteProvider _provider;
         private readonly ObservableAsPropertyHelper<List<SatelliteInfo>> _satellites;
+        private readonly ITrackLayerSource _trackLayerSource;
+        private readonly ISensorLayerSource _sensorLayerSource;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = dependencyResolver.GetExistingService<Map>();
-
             _provider = dependencyResolver.GetExistingService<SatelliteProvider>();
+            _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
+            _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
 
             Title = "Просмотр спутников";
-
-            _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
-
-            _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
 
             Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
@@ -53,12 +48,12 @@ namespace FootprintViewer.ViewModels
 
         public void UpdateTrack(SatelliteInfo satelliteInfo)
         {
-            _trackLayer?.Update(satelliteInfo);
+            _trackLayerSource.Update(satelliteInfo);
         }
 
         public void UpdateStrips(SatelliteInfo satelliteInfo)
         {
-            _sensorLayer?.Update(satelliteInfo);
+            _sensorLayerSource.Update(satelliteInfo);
         }
 
         public List<SatelliteInfo> SatelliteInfos => _satellites.Value;

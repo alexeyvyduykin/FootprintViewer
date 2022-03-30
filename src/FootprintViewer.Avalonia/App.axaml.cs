@@ -59,6 +59,10 @@ namespace FootprintViewer.Avalonia
             var satelliteProvider = new SatelliteProvider();
             satelliteProvider.AddSource(satelliteDataSource);
             services.RegisterLazySingleton<SatelliteProvider>(() => satelliteProvider);
+            var trackLayerSource = new TrackLayerSource(satelliteProvider);
+            services.RegisterLazySingleton<ITrackLayerSource>(() => trackLayerSource);
+            var sensorLayerSource = new SensorLayerSource(satelliteProvider);
+            services.RegisterLazySingleton<ISensorLayerSource>(() => sensorLayerSource);
 
             // Footprints provider
 
