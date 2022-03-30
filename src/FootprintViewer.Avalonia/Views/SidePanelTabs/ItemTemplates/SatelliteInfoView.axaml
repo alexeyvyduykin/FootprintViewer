@@ -18,6 +18,12 @@
     <Grid RowDefinitions="Auto,Auto,Auto">
       
       <DockPanel>
+      
+          <Border x:Name="RectangleBorder" 
+                  VerticalAlignment="Stretch"
+                  Margin="0,4,8,4"
+                  Width="10"/>
+
           <TextBlock Text="{Binding Name}" 
                      VerticalAlignment="Center"
                      Classes="Headline6"/>
