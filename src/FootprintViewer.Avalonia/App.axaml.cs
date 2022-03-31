@@ -77,6 +77,8 @@ namespace FootprintViewer.Avalonia
             var groundTargetProvider = new GroundTargetProvider();
             groundTargetProvider.AddSource(groundTargetDataSource);
             services.RegisterLazySingleton<GroundTargetProvider>(() => groundTargetProvider);
+            var targetLayerSource = new TargetLayerSource(groundTargetProvider);
+            services.RegisterLazySingleton<ITargetLayerSource>(() => targetLayerSource);
 
             // Map data provider
 
@@ -114,16 +116,10 @@ namespace FootprintViewer.Avalonia
             LayerStyleManager layerStyleManager = new LayerStyleManager();
             services.RegisterLazySingleton<LayerStyleManager>(() => layerStyleManager);
 
-
             var factory = resolver.GetExistingService<ProjectFactory>();
 
             var map = factory.CreateMap();
-
             services.RegisterLazySingleton<Mapsui.Map>(() => map);
-
-            var targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
-
-            services.RegisterLazySingleton<TargetLayer>(() => targetLayer);
 
             services.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(resolver));
             services.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(resolver));

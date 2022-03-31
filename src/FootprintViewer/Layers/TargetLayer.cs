@@ -1,34 +1,21 @@
 ﻿using Mapsui;
 using Mapsui.Geometries;
-using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
-using ReactiveUI;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetLayer : MemoryLayer
+    public class TargetLayer : BaseCustomLayer
     {
-        private readonly TargetLayerProvider _provider;
         private BoundingBox _lastExtent = new BoundingBox(1, 1, 1, 1);
-        private IFeature? _lastSelected;
-        private string[]? _names;
+        private readonly ITargetLayerSource _source;
 
-        public TargetLayer(TargetLayerProvider provider)
+        public TargetLayer(ITargetLayerSource source) : base(source)
         {
-            _provider = provider;
-
-            DataSource = provider;
-
-            Refresh = ReactiveCommand.Create<Unit, string[]?>(_ => _names);
+            _source = source;
         }
-
-        public ReactiveCommand<Unit, string[]?> Refresh { get; }
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
@@ -45,60 +32,20 @@ namespace FootprintViewer.Layers
 
                         var activeFeatures = GetFeaturesInView(box, resolution);
 
-                        _names = activeFeatures.Select(s => (string)s["Name"]).ToArray();
+                        _source.ActiveFeatures = activeFeatures;
 
-                        Debug.WriteLine("--- Start ---");
-
-                        Refresh.Execute().Subscribe();
-
-                        Debug.WriteLine("--- End ---");
+                        _source.Refresh.Execute().Subscribe();
                     }
                     else
                     {
-                        _names = null;
+                        _source.ActiveFeatures = null;
 
-                        Debug.WriteLine("--- Start ---");
-
-                        Refresh.Execute().Subscribe();
-
-                        Debug.WriteLine("--- End ---");
+                        _source.Refresh.Execute().Subscribe();
                     }
 
                     _lastExtent = extent.Copy();
                 }
             }
-        }
-
-        public void SelectGroundTarget(string name)
-        {
-            var feature = _provider.FeaturesCache.Where(s => name.Equals((string)s["Name"])).First();
-
-            if (_lastSelected != null)
-            {
-                _lastSelected["State"] = "Unselected";
-            }
-
-            feature["State"] = "Selected";
-
-            _lastSelected = feature;
-
-            DataHasChanged();
-        }
-
-        public void ShowHighlight(string name)
-        {
-            var feature = _provider.FeaturesCache.Where(s => name.Equals((string)s["Name"])).First();
-
-            feature["Highlight"] = true;
-
-            DataHasChanged();
-        }
-
-        public void HideHighlight()
-        {
-            _provider.FeaturesCache.ForEach(s => s["Highlight"] = false);
-
-            DataHasChanged();
         }
     }
 }

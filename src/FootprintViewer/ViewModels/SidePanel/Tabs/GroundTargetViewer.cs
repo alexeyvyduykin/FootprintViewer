@@ -11,18 +11,15 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundTargetViewer : SidePanelTab
     {
-        private readonly TargetLayer? _targetLayer;
         private readonly GroundTargetViewerList _groundTargetViewerList;
         private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
+        private readonly ITargetLayerSource _source;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = dependencyResolver.GetExistingService<Mapsui.Map>();
-
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-
-            _targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
+            _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
             Title = "Просмотр наземных целей";
 
@@ -38,29 +35,26 @@ namespace FootprintViewer.ViewModels
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
-            if (_targetLayer != null)
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_source.Refresh);
+
+            _source.Refresh.Where(_ => IsActive == true).Subscribe(names =>
             {
-                this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_targetLayer.Refresh);
+                IsEnable = !(names == null);
 
-                _targetLayer.Refresh.Where(_ => IsActive == true).Subscribe(names =>
+                if (IsEnable == true)
                 {
-                    IsEnable = !(names == null);
-
-                    if (IsEnable == true)
-                    {
-                        MainContent = _groundTargetViewerList;
-                    }
-                    else
-                    {
-                        MainContent = _previewContent;
-                    }
-                });
-
-                _targetLayer.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names =>
+                    MainContent = _groundTargetViewerList;
+                }
+                else
                 {
-                    _groundTargetViewerList.Update(names);
-                });
-            }
+                    MainContent = _previewContent;
+                }
+            });
+
+            _source.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names =>
+            {
+                _groundTargetViewerList.Update(names);
+            });
 
             MainContent = _previewContent;
         }
@@ -73,7 +67,7 @@ namespace FootprintViewer.ViewModels
 
                 if (string.IsNullOrEmpty(name) == false)
                 {
-                    _targetLayer?.SelectGroundTarget(name);
+                    _source.SelectGroundTarget(name);
                 }
             }
         }
@@ -86,14 +80,14 @@ namespace FootprintViewer.ViewModels
 
                 if (name != null)
                 {
-                    _targetLayer?.ShowHighlight(name);
+                    _source.ShowHighlight(name);
                 }
             }
         }
 
         private void HideHighlightImpl()
         {
-            _targetLayer?.HideHighlight();
+            _source.HideHighlight();
         }
 
         public ReactiveCommand<GroundTargetInfo?, Unit> ShowHighlight { get; }

@@ -203,7 +203,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeTargetLayer : Layers.TargetLayer
         {
-            public DesignTimeTargetLayer() : base(new TargetLayerProvider(new DesignDataGroundTargetProvider()))
+            public DesignTimeTargetLayer() : base(new TargetLayerSource(new DesignDataGroundTargetProvider()))
             {
 
             }

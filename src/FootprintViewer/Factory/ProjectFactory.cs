@@ -113,10 +113,9 @@ namespace FootprintViewer
         private static ILayer CreateTargetLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-            var provider = new TargetLayerProvider(groundTargetProvider);
-
-            return new TargetLayer(provider)
+            var source = dependencyResolver.GetExistingService<ITargetLayerSource>();
+     
+            return new TargetLayer(source)
             {
                 Name = nameof(LayerType.GroundTarget),
                 Style = styleManager.TargetStyle,

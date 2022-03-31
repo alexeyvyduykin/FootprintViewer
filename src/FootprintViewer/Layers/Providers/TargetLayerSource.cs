@@ -1,31 +1,95 @@
 ﻿using FootprintViewer.Data;
 using Mapsui.Geometries;
+using Mapsui.Layers;
 using Mapsui.Projection;
 using Mapsui.Providers;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetLayerProvider : MemoryProvider
+    public interface ITargetLayerSource : ILayer
     {
-        private List<IFeature>? _featuresCache;
+        ReactiveCommand<Unit, string[]?> Refresh { get; }
 
-        public TargetLayerProvider(GroundTargetProvider provider)
+        IEnumerable<IFeature>? ActiveFeatures { get; set; }
+
+        void SelectGroundTarget(string name);
+
+        void ShowHighlight(string name);
+
+        void HideHighlight();
+    }
+
+    public class TargetLayerSource : WritableLayer, ITargetLayerSource
+    {
+        private List<IFeature> _featuresCache = new List<IFeature>();
+        private IFeature? _lastSelected;
+
+        public TargetLayerSource(GroundTargetProvider provider)
         {
             provider.Loading.Subscribe(LoadingImpl);
+
+            Refresh = ReactiveCommand.Create(RefreshImpl);
+        }
+
+        public ReactiveCommand<Unit, string[]?> Refresh { get; }
+
+        public IEnumerable<IFeature>? ActiveFeatures { get; set; }
+
+        private string[]? RefreshImpl()
+        {
+            if (ActiveFeatures == null)
+            {
+                return null;
+            }
+
+            return ActiveFeatures.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]).ToArray();
         }
 
         private void LoadingImpl(List<GroundTarget> groundTargets)
         {
             _featuresCache = Build(groundTargets);
 
-            ReplaceFeatures(_featuresCache);
+            Clear();
+            AddRange(_featuresCache);
         }
 
-        public List<IFeature> FeaturesCache => _featuresCache!;
+        public void SelectGroundTarget(string name)
+        {
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
+
+            if (_lastSelected != null)
+            {
+                _lastSelected["State"] = "Unselected";
+            }
+
+            feature["State"] = "Selected";
+
+            _lastSelected = feature;
+
+            DataHasChanged();
+        }
+
+        public void ShowHighlight(string name)
+        {
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
+
+            feature["Highlight"] = true;
+
+            DataHasChanged();
+        }
+
+        public void HideHighlight()
+        {
+            _featuresCache.ForEach(s => s["Highlight"] = false);
+
+            DataHasChanged();
+        }
 
         private List<IFeature> Build(IEnumerable<GroundTarget> groundTargets)
         {
