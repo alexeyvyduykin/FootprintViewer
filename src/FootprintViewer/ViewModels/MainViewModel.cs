@@ -22,7 +22,6 @@ namespace FootprintViewer.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {
-        private readonly EditLayer _editLayer;
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
@@ -48,8 +47,6 @@ namespace FootprintViewer.ViewModels
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = _factory.CreateInfoPanel();
-
-            _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit)!;
 
             _map.DataChanged += Map_DataChanged;
 
@@ -219,24 +216,21 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void RemoveInteractiveLayer()
-        {
-            var layer = Map.Layers.FindLayer("InteractiveLayer").FirstOrDefault();
-
-            if (layer != null)
-            {
-                Map.Layers.Remove(layer);
-            }
-        }
+        private void RemoveInteractiveLayer() => Map.RemoveLayer(LayerType.InteractiveLayer);
 
         private void CreateInteractiveOnEditLayer(IDesigner designer)
         {
-            CreateInteractiveLayer(_editLayer, designer);
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+            if (editLayer != null)
+            {
+                CreateInteractiveLayer(editLayer, designer);
+            }
         }
 
         private void CreateInteractiveOnUserLayer(IDesigner designer)
         {
-            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+            var userLayer = _map.GetLayer(LayerType.User);
 
             if (userLayer != null)
             {
@@ -250,7 +244,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveLayer(layer, designer));
+            Map.AddLayer(factory.CreateInteractiveLayer(layer, designer), LayerType.InteractiveLayer);
         }
 
         private void CreateInteractiveSelectLayer(ILayer source, IFeature feature)
@@ -259,7 +253,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveSelectLayer(source, feature));
+            Map.AddLayer(factory.CreateInteractiveSelectLayer(source, feature), LayerType.InteractiveLayer);
         }
 
         private void CreateInteractiveLayer(ILayer source, IDecorator decorator)
@@ -268,7 +262,7 @@ namespace FootprintViewer.ViewModels
 
             RemoveInteractiveLayer();
 
-            Map.Layers.Add(factory.CreateInteractiveLayer(source, decorator));
+            Map.AddLayer(factory.CreateInteractiveLayer(source, decorator), LayerType.InteractiveLayer);
         }
 
         public event EventHandler? AOIChanged;
@@ -350,6 +344,13 @@ namespace FootprintViewer.ViewModels
 
         private void RectangleCommand()
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+            if (editLayer == null)
+            {
+                return;
+            }
+
             var designer = new RectangleDesigner();
 
             CreateInteractiveOnEditLayer(designer);
@@ -371,7 +372,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
+                editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
 
                 Tip = null;
 
@@ -389,6 +390,13 @@ namespace FootprintViewer.ViewModels
 
         private void PolygonCommand()
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+            if (editLayer == null)
+            {
+                return;
+            }
+
             var designer = new PolygonDesigner();
 
             CreateInteractiveOnEditLayer(designer);
@@ -415,7 +423,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
+                editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
 
                 Tip = null;
 
@@ -433,6 +441,13 @@ namespace FootprintViewer.ViewModels
 
         private void CircleCommand()
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+            if (editLayer == null)
+            {
+                return;
+            }
+
             var designer = new CircleDesigner();
 
             CreateInteractiveOnEditLayer(designer);
@@ -453,7 +468,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
+                editLayer.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
 
                 Tip = null;
 
@@ -471,11 +486,18 @@ namespace FootprintViewer.ViewModels
 
         private void RouteCommand()
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+            if (editLayer == null)
+            {
+                return;
+            }
+
             var designer = new RouteDesigner();
 
             CreateInteractiveOnEditLayer(designer);
 
-            _editLayer.ClearRoute();
+            editLayer.ClearRoute();
 
             InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
@@ -506,7 +528,7 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature;
 
-                _editLayer.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
+                editLayer.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
                 Tip = null;
 
@@ -520,6 +542,8 @@ namespace FootprintViewer.ViewModels
 
         private AOIInfoPanel CreateAOIPanel(IFeature feature)
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
             var descr = FeatureAreaEndCreating(feature);
 
             var panel = new AOIInfoPanel()
@@ -529,8 +553,11 @@ namespace FootprintViewer.ViewModels
 
             panel.Close.Subscribe(_ =>
             {
-                _editLayer.ResetAOI();
-                _editLayer.DataHasChanged();
+                if (editLayer != null)
+                {
+                    editLayer.ResetAOI();
+                    editLayer.DataHasChanged();
+                }
 
                 AOIChanged?.Invoke(null, EventArgs.Empty);
 
@@ -544,6 +571,8 @@ namespace FootprintViewer.ViewModels
 
         private RouteInfoPanel CreateRoutePanel(RouteDesigner designer)
         {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
             var distance = GetRouteLength(designer);
 
             var panel = new RouteInfoPanel()
@@ -553,8 +582,11 @@ namespace FootprintViewer.ViewModels
 
             panel.Close.Subscribe(_ =>
             {
-                _editLayer.ClearRoute();
-                _editLayer.DataHasChanged();
+                if (editLayer != null)
+                {
+                    editLayer.ClearRoute();
+                    editLayer.DataHasChanged();
+                }
 
                 Tip = null;
 

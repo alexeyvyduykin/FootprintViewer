@@ -46,7 +46,7 @@ namespace FootprintViewer.ViewModels
                 {
                     var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
 
-                    _map.Layers.Replace(nameof(LayerType.FootprintImage), layer);
+                    _map.ReplaceLayer(layer, LayerType.FootprintImage);
 
                     CurrentFootprint?.Invoke(this, EventArgs.Empty);
                 }
@@ -114,18 +114,13 @@ namespace FootprintViewer.ViewModels
         {
             if (footprint != null && IsGeometry(footprint) == true)
             {
-                var layers = _map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
+                var layer = _map.GetLayer(LayerType.FootprintImageBorder);
 
-                if (layers != null)
+                if (layer != null && layer is WritableLayer writableLayer)
                 {
-                    var layer = layers.SingleOrDefault();
-
-                    if (layer != null && layer is WritableLayer writableLayer)
-                    {
-                        writableLayer.Clear();
-                        writableLayer.Add(new Feature() { Geometry = ToGeometry(footprint) });
-                        writableLayer.DataHasChanged();
-                    }
+                    writableLayer.Clear();
+                    writableLayer.Add(new Feature() { Geometry = ToGeometry(footprint) });
+                    writableLayer.DataHasChanged();
                 }
             }
         }
@@ -147,17 +142,12 @@ namespace FootprintViewer.ViewModels
 
         private void HideFootprintBorder()
         {
-            var layers = _map.Layers.FindLayer(nameof(LayerType.FootprintImageBorder));
+            var layer = _map.GetLayer(LayerType.FootprintImageBorder);
 
-            if (layers != null)
+            if (layer != null && layer is WritableLayer writableLayer)
             {
-                var layer = layers.SingleOrDefault();
-
-                if (layer != null && layer is WritableLayer writableLayer)
-                {
-                    writableLayer.Clear();
-                    writableLayer.DataHasChanged();
-                }
+                writableLayer.Clear();
+                writableLayer.DataHasChanged();
             }
         }
 

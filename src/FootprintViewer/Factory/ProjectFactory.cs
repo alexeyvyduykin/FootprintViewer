@@ -32,55 +32,41 @@ namespace FootprintViewer
                 Transformation = new MinimalTransformation(),
             };
 
-            map.Layers.Add(CreateWorldMapLayer());                                // WorldMap
-            map.Layers.Add(CreateFootprintImageLayer());                          // FootprintImage
-            map.Layers.Add(CreateTargetLayer(_dependencyResolver));               // GroundTarget
-            map.Layers.Add(CreateSensorLayer(_dependencyResolver));               // Sensor
-            map.Layers.Add(CreateTrackLayer(_dependencyResolver));                // Track
-            map.Layers.Add(CreateFootprintLayer(_dependencyResolver));            // Footprint
-            map.Layers.Add(CreateFootprintImageBorderLayer(_dependencyResolver)); // FootprintImageBorder      
-            map.Layers.Add(CreateEditLayers(_dependencyResolver));                // Edit / VertexOnly
-            map.Layers.Add(CreateUserLayer(_dependencyResolver));                 // User
+            map.AddLayer(new Layer(), LayerType.WorldMap);
+            map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
+            map.AddLayer(CreateTargetLayer(_dependencyResolver), LayerType.GroundTarget);
+            map.AddLayer(CreateSensorLayer(_dependencyResolver), LayerType.Sensor);
+            map.AddLayer(CreateTrackLayer(_dependencyResolver), LayerType.Track);
+            map.AddLayer(CreateFootprintLayer(_dependencyResolver), LayerType.Footprint);
+            map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
+            map.AddLayer(CreateEditLayer(_dependencyResolver), LayerType.Edit);
+            map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
+            map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
 
             map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault()!);
 
             return map;
         }
 
-        private static ILayer CreateWorldMapLayer()
-        {
-            return new Layer()
-            {
-                Name = nameof(LayerType.WorldMap)
-            };
-        }
-
-        private static ILayer CreateFootprintImageLayer()
-        {
-            return new WritableLayer()
-            {
-                Name = nameof(LayerType.FootprintImage)
-            };
-        }
-
-        private static ILayer[] CreateEditLayers(IReadonlyDependencyResolver dependencyResolver)
+        private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
 
-            var editLayer = new EditLayer
+            return new EditLayer
             {
-                Name = nameof(LayerType.Edit),
                 Style = styleManager.EditStyle,
-                IsMapInfoLayer = true
             };
+        }
 
-            var vertexOnlyLayer = new VertexOnlyLayer(editLayer)
+        private static ILayer CreateVertexOnlyLayer(Map map, IReadonlyDependencyResolver dependencyResolver)
+        {
+            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+            var editLayer = map.GetLayer(LayerType.Edit);
+
+            return new VertexOnlyLayer(editLayer!)
             {
-                Name = nameof(LayerType.Vertex),
                 Style = styleManager.VertexOnlyStyle,
             };
-
-            return new ILayer[] { editLayer, vertexOnlyLayer };
         }
 
         private static ILayer CreateFootprintLayer(IReadonlyDependencyResolver dependencyResolver)
@@ -90,10 +76,8 @@ namespace FootprintViewer
 
             return new FootprintLayer(source)
             {
-                Name = nameof(LayerType.Footprint),
                 Style = styleManager.FootprintStyle,
                 MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
-                IsMapInfoLayer = true,
             };
         }
 
@@ -104,7 +88,6 @@ namespace FootprintViewer
 
             return new BaseCustomLayer(source)
             {
-                Name = nameof(LayerType.Track),
                 Style = styleManager.TrackStyle,
                 IsMapInfoLayer = false,
             };
@@ -114,12 +97,10 @@ namespace FootprintViewer
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<ITargetLayerSource>();
-     
+
             return new TargetLayer(source)
             {
-                Name = nameof(LayerType.GroundTarget),
                 Style = styleManager.TargetStyle,
-                IsMapInfoLayer = false,
                 MaxVisible = styleManager.MaxVisibleTargetStyle,
             };
         }
@@ -131,7 +112,6 @@ namespace FootprintViewer
 
             return new BaseCustomLayer(source)
             {
-                Name = nameof(LayerType.Sensor),
                 Style = styleManager.SensorStyle,
                 IsMapInfoLayer = false,
             };
@@ -144,7 +124,6 @@ namespace FootprintViewer
 
             return new BaseCustomLayer(source)
             {
-                Name = nameof(LayerType.User),               
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,
             };
@@ -156,7 +135,6 @@ namespace FootprintViewer
 
             return new WritableLayer
             {
-                Name = nameof(LayerType.FootprintImageBorder),
                 Style = styleManager.FootprintImageBorderStyle,
             };
         }
@@ -170,19 +148,11 @@ namespace FootprintViewer
         {
             var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
 
-            if (obj is IDesigner designer)
-            {
-                return new InteractiveLayer(layer, designer)
-                {
-                    Name = "InteractiveLayer",
-                    Style = styleManager.DesignerStyle,
-                };
-            }
+            var style = (obj is IDesigner) ? styleManager.DesignerStyle : styleManager.DecoratorStyle;
 
             return new InteractiveLayer(layer, obj)
             {
-                Name = "InteractiveLayer",
-                Style = styleManager.DecoratorStyle,
+                Style = style,
             };
         }
 
@@ -192,8 +162,6 @@ namespace FootprintViewer
 
             return new SelectLayer(source, feature)
             {
-                Name = "InteractiveLayer",
-                IsMapInfoLayer = true,
                 Style = styleManager.SelectStyle,
             };
         }

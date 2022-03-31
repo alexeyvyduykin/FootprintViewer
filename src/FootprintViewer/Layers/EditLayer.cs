@@ -15,7 +15,7 @@ namespace FootprintViewer.Layers
 
         public EditLayer() : base()
         {
-
+            IsMapInfoLayer = true;
         }
 
         public List<Point> GetVertices()

@@ -15,6 +15,8 @@ namespace FootprintViewer.Layers
         public TargetLayer(ITargetLayerSource source) : base(source)
         {
             _source = source;
+
+            IsMapInfoLayer = false;
         }
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)

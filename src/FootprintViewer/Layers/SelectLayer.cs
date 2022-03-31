@@ -20,6 +20,8 @@ namespace FootprintViewer.Layers
             _source = source;
             _feature = feature;
             _source.DataChanged += (sender, args) => OnDataChanged(args);
+            
+            IsMapInfoLayer = true;
         }
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)

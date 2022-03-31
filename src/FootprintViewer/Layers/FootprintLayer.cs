@@ -7,7 +7,10 @@ namespace FootprintViewer.Layers
 {
     public class FootprintLayer : BaseCustomLayer
     {
-        public FootprintLayer(ILayer source) : base(source) { }
+        public FootprintLayer(ILayer source) : base(source) 
+        {
+            IsMapInfoLayer = true;
+        }
 
         public int MaxVisiblePreview { get; set; }
 

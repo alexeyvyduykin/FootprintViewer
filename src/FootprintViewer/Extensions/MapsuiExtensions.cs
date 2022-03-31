@@ -1,27 +1,49 @@
 ﻿using BruTile;
 using BruTile.MbTiles;
 using FootprintViewer.Data;
-using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Projection;
 using Mapsui.UI;
 using SQLite;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace FootprintViewer
 {
     public static class MapsuiExtensions
     {
         public static void SetWorldMapLayer(this Map map, MapResource resource)
-        { 
+        {
             var layer = CreateWorldMapLayer(resource);
-            map.Layers.Replace(nameof(LayerType.WorldMap), layer);
+            map.ReplaceLayer(layer, LayerType.WorldMap);
             map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Envelope };
+        }
+
+        public static void AddLayer(this Map map, ILayer layer, LayerType layerType)
+        {
+            map.AddLayer(layer, layerType.ToString());
+        }
+
+        public static void AddLayer(this Map map, ILayer layer, string name)
+        {
+            layer.Name = name;
+
+            map.Layers.Add(layer);
+        }
+
+        public static void RemoveLayer(this Map map, LayerType layerType)
+        {
+            map.RemoveLayer(layerType.ToString());
+        }
+
+        public static void RemoveLayer(this Map map, string name)
+        {
+            var layer = map.Layers.FindLayer(name).FirstOrDefault();
+
+            if (layer != null)
+            {
+                map.Layers.Remove(layer);
+            }
         }
 
         public static T? GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
@@ -29,18 +51,28 @@ namespace FootprintViewer
             return (T?)map.Layers.FirstOrDefault(l => l.Name.Equals(layerType.ToString()));
         }
 
-        public static void Replace(this LayerCollection collection, string name, ILayer layer)
+        public static ILayer? GetLayer(this Map map, LayerType layerType)
+        {
+            return map.GetLayer<ILayer>(layerType);
+        }
+
+        public static void ReplaceLayer(this Map map, ILayer layer, LayerType layerType)
+        {
+            map.ReplaceLayer(layer, layerType.ToString());
+        }
+
+        public static void ReplaceLayer(this Map map, ILayer layer, string name)
         {
             int index = 0;
             ILayer? removable = null;
 
-            var count = collection.Count;
+            var count = map.Layers.Count;
 
             for (int i = 0; i < count; i++)
             {
-                if (collection[i].Name.Equals(name) == true)
+                if (map.Layers[i].Name.Equals(name) == true)
                 {
-                    removable = collection[i];
+                    removable = map.Layers[i];
                     index = i;
                     break;
                 }
@@ -48,11 +80,11 @@ namespace FootprintViewer
 
             if (removable != null)
             {
-                collection.Remove(removable);
+                map.Layers.Remove(removable);
 
                 layer.Name = name;
 
-                collection.Insert(index, layer);
+                map.Layers.Insert(index, layer);
             }
         }
 
@@ -68,12 +100,7 @@ namespace FootprintViewer
             //double minX, double minY, double maxX, double maxY
             var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
 
-            var layer = new TileLayer(mbTilesTileSource)
-            {
-                Name = nameof(LayerType.WorldMap)
-            };
-
-            return layer;
+            return new TileLayer(mbTilesTileSource);
         }
     }
 }
