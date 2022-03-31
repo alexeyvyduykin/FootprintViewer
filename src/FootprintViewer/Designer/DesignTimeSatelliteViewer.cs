@@ -6,7 +6,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeSatelliteViewer() : base(new DesignTimeData())
         {
-
+            IsActive = true;
         }
     }
 }

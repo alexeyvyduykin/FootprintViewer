@@ -14,22 +14,27 @@ namespace FootprintViewer.Designer
     {
         private Mapsui.Map? _map;
         private ProjectFactory? _projectFactory;
+
         private SatelliteProvider? _satelliteProvider;
-        private FootprintLayer? _footprintDataSource;
-        private TargetLayer? _groundTargetDataSource;
         private MapProvider? _mapProvider;
         private FootprintPreviewProvider? _footprintPreviewProvider;
         private FootprintPreviewGeometryProvider? _footprintPreviewGeometryProvider;
         private GroundTargetProvider? _groundTargetProvider;
         private FootprintProvider? _footprintProvider;
         private UserGeometryProvider? _userGeometryProvider;
+
+        private IFootprintLayerSource? _footprintLayerSource;
+        private ISensorLayerSource? _sensorLayerSource;
+        private ITargetLayerSource? _targetLayerSource;
+        private ITrackLayerSource? _trackLayerSource;
+        private IUserLayerSource? _userLayerSource;
+
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
         private SceneSearch? _sceneSearch;
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
-        //private ViewModels.ToolBar? _toolBar;
         private CustomToolBar? _customToolBar;
 
         public object? GetService(Type? serviceType, string? contract = null)
@@ -45,6 +50,16 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(SatelliteProvider))
             {
                 return _satelliteProvider ??= new DesignTimeSatelliteProvider();
+            }
+            else if (serviceType == typeof(ISensorLayerSource))
+            {
+                var provider = (SatelliteProvider)GetService(typeof(SatelliteProvider), contract)!;
+                return _sensorLayerSource ??= new SensorLayerSource(provider);
+            }
+            else if (serviceType == typeof(ITrackLayerSource))
+            {
+                var provider = (SatelliteProvider)GetService(typeof(SatelliteProvider), contract)!;
+                return _trackLayerSource ??= new TrackLayerSource(provider);
             }
             else if (serviceType == typeof(MapProvider))
             {
@@ -62,13 +77,28 @@ namespace FootprintViewer.Designer
             {
                 return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
             }
+            else if (serviceType == typeof(ITargetLayerSource))
+            {
+                var provider = (GroundTargetProvider)GetService(typeof(GroundTargetProvider), contract)!;
+                return _targetLayerSource ??= new TargetLayerSource(provider);
+            }
             else if (serviceType == typeof(FootprintProvider))
             {
                 return _footprintProvider ??= new DesignDataFootprintProvider();
             }
+            else if (serviceType == typeof(IFootprintLayerSource))
+            {
+                var provider = (FootprintProvider)GetService(typeof(FootprintProvider), contract)!;
+                return _footprintLayerSource ??= new FootprintLayerSource(provider);
+            }
             else if (serviceType == typeof(UserGeometryProvider))
             {
                 return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
+            }
+            else if (serviceType == typeof(IUserLayerSource))
+            {
+                var provider = (UserGeometryProvider)GetService(typeof(UserGeometryProvider), contract)!;
+                return _userLayerSource ??= new UserLayerSource(provider);
             }
             else if (serviceType == typeof(SatelliteViewer))
             {
@@ -93,14 +123,6 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(SidePanel))
             {
                 return _sidePanel ??= new SidePanel();
-            }
-            else if (serviceType == typeof(FootprintLayer))
-            {
-                return _footprintDataSource ??= new DesignTimeFootprintLayer();
-            }
-            else if (serviceType == typeof(TargetLayer))
-            {
-                return _groundTargetDataSource ??= new DesignTimeTargetLayer();
             }
             else if (serviceType == typeof(MainViewModel))
             {
@@ -191,152 +213,136 @@ namespace FootprintViewer.Designer
             }
         }
 
-        private class DesignTimeTargetLayer : Layers.TargetLayer
+        private class DesignTimeUserGeometryProvider : UserGeometryProvider
         {
-            public DesignTimeTargetLayer() : base(new TargetLayerSource(new DesignDataGroundTargetProvider()))
+            public DesignTimeUserGeometryProvider() : base()
             {
-
+                AddSource(new DesignTimeUserGeometrySource());
             }
-        }
 
-        private class DesignTimeFootprintLayer : Layers.FootprintLayer
-        {
-            public DesignTimeFootprintLayer() : base(new FootprintLayerSource(new DesignDataFootprintProvider()))
+            private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
             {
+                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
 
-            }
-        }
-    }
-
-    internal class DesignTimeUserGeometryProvider : UserGeometryProvider
-    {
-        public DesignTimeUserGeometryProvider() : base()
-        {
-            AddSource(new DesignTimeUserGeometrySource());
-        }
-
-        private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
-        {
-            public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
-
-            public List<FootprintPreview> GetFootprintPreviews()
-            {
-                var list = new List<FootprintPreview>();
-                for (int i = 0; i < 8; i++)
+                public List<FootprintPreview> GetFootprintPreviews()
                 {
-                    list.Add(DesignTimeFootprintPreview.Build());
+                    var list = new List<FootprintPreview>();
+                    for (int i = 0; i < 8; i++)
+                    {
+                        list.Add(DesignTimeFootprintPreview.Build());
+                    }
+                    return list;
                 }
-                return list;
-            }
 
-            public List<UserGeometry> GetUserGeometries()
-            {
-                var list = new List<UserGeometry>();
-                for (int i = 0; i < 10; i++)
+                public List<UserGeometry> GetUserGeometries()
                 {
-                    list.Add(DesignTimeUserGeometryInfo.BuildModel());
+                    var list = new List<UserGeometry>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        list.Add(DesignTimeUserGeometryInfo.BuildModel());
+                    }
+                    return list;
                 }
-                return list;
-            }
 
-            public async Task<List<UserGeometry>> GetUserGeometriesAsync()
-            {
-                await Task.Delay(2000);
-
-                return await Task.Run(() => GetUserGeometries().ToList());
-            }
-
-            public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
-            {
-                await Task.Delay(2000);
-
-                return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
-            }
-
-            public async Task RemoveAsync(UserGeometry geometry)
-            {
-                await Task.Delay(1000);
-                throw new NotImplementedException();
-            }
-
-            public Task UpdateGeometry(string key, Geometry geometry)
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-
-    internal class DesignDataGroundTargetProvider : GroundTargetProvider
-    {
-        public DesignDataGroundTargetProvider() : base()
-        {
-            AddSource(new DesignTimeGroundTargetDataSource());
-        }
-
-        private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
-        {
-            public List<GroundTarget> GetGroundTargets()
-            {
-                var list = new List<GroundTarget>();
-                for (int i = 0; i < 10; i++)
+                public async Task<List<UserGeometry>> GetUserGeometriesAsync()
                 {
-                    list.Add(DesignTimeGroundTargetInfo.BuildModel());
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() => GetUserGeometries().ToList());
                 }
-                return list;
-            }
 
-            public async Task<List<GroundTarget>> GetGroundTargetsAsync() => await Task.Run(() => GetGroundTargets());
-
-            public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names) => await Task.Run(() => GetGroundTargets());
-
-            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
-            {
-                await Task.Delay(2000);
-
-                return await Task.Run(() =>
+                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
                 {
-                    return GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList();
-                });
-            }
+                    await Task.Delay(2000);
 
-            public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
-        }
-    }
-
-    internal class DesignDataFootprintProvider : FootprintProvider
-    {
-        public DesignDataFootprintProvider() : base()
-        {
-            AddSource(new DesignTimeFootprintDataSource());
-        }
-
-        private class DesignTimeFootprintDataSource : Data.Sources.IFootprintDataSource
-        {
-            public List<Footprint> GetFootprints()
-            {
-                var list = new List<Footprint>();
-                for (int i = 0; i < 10; i++)
-                {
-                    list.Add(DesignTimeFootprintInfo.BuildModel());
+                    return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
                 }
-                return list;
-            }
 
-            public async Task<List<Footprint>> GetFootprintsAsync()
-            {
-                await Task.Delay(2000);
-
-                return await Task.Run(() => { return GetFootprints().ToList(); });
-            }
-
-            public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
-            {
-                await Task.Delay(2000);
-
-                return await Task.Run(() =>
+                public async Task RemoveAsync(UserGeometry geometry)
                 {
-                    return GetFootprints().Select(s => new FootprintInfo(s)).ToList();
-                });
+                    await Task.Delay(1000);
+                    throw new NotImplementedException();
+                }
+
+                public Task UpdateGeometry(string key, Geometry geometry)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+
+        private class DesignDataGroundTargetProvider : GroundTargetProvider
+        {
+            public DesignDataGroundTargetProvider() : base()
+            {
+                AddSource(new DesignTimeGroundTargetDataSource());
+            }
+
+            private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
+            {
+                public List<GroundTarget> GetGroundTargets()
+                {
+                    var list = new List<GroundTarget>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        list.Add(DesignTimeGroundTargetInfo.BuildModel());
+                    }
+                    return list;
+                }
+
+                public async Task<List<GroundTarget>> GetGroundTargetsAsync() => await Task.Run(() => GetGroundTargets());
+
+                public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names) => await Task.Run(() => GetGroundTargets());
+
+                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
+                {
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() =>
+                    {
+                        return GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList();
+                    });
+                }
+
+                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
+            }
+        }
+
+        private class DesignDataFootprintProvider : FootprintProvider
+        {
+            public DesignDataFootprintProvider() : base()
+            {
+                AddSource(new DesignTimeFootprintDataSource());
+            }
+
+            private class DesignTimeFootprintDataSource : Data.Sources.IFootprintDataSource
+            {
+                public List<Footprint> GetFootprints()
+                {
+                    var list = new List<Footprint>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        list.Add(DesignTimeFootprintInfo.BuildModel());
+                    }
+                    return list;
+                }
+
+                public async Task<List<Footprint>> GetFootprintsAsync()
+                {
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() => { return GetFootprints().ToList(); });
+                }
+
+                public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+                {
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() =>
+                    {
+                        return GetFootprints().Select(s => new FootprintInfo(s)).ToList();
+                    });
+                }
             }
         }
     }
