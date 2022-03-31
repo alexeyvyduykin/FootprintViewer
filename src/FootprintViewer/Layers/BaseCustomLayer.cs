@@ -23,10 +23,12 @@ namespace FootprintViewer.Layers
 
         public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
         {
-            foreach (var feature in _source.GetFeaturesInView(box, resolution))
-            {
-                yield return feature;
-            }
+            return _source.GetFeaturesInView(box, resolution);
+
+            //foreach (var feature in _source.GetFeaturesInView(box, resolution))
+            //{
+            //    yield return feature;
+            //}
         }
 
         public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
