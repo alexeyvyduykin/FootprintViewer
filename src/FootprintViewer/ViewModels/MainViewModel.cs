@@ -23,7 +23,6 @@ namespace FootprintViewer.ViewModels
     public class MainViewModel : ReactiveObject
     {
         private readonly EditLayer _editLayer;
-        private readonly UserLayer _userLayer;
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly SidePanel _sidePanel;
@@ -32,7 +31,7 @@ namespace FootprintViewer.ViewModels
         private readonly MapListener _mapListener;
         private readonly FootprintObserver _footprintObserver;
         private readonly SceneSearch _sceneSearch;
-        private readonly CustomProvider _provider;
+        private readonly IUserLayerSource _userLayerSource;
         private IFeature? _currentFeature;
         private readonly IReadonlyDependencyResolver _dependencyResolver;
         private bool _isDirtyDecorator = false;
@@ -44,15 +43,13 @@ namespace FootprintViewer.ViewModels
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-            _provider = dependencyResolver.GetExistingService<CustomProvider>();
+            _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = _factory.CreateInfoPanel();
 
             _editLayer = _map.GetLayer<EditLayer>(LayerType.Edit)!;
-
-            _userLayer = _map.GetLayer<UserLayer>(LayerType.User)!;
 
             _map.DataChanged += Map_DataChanged;
 
@@ -126,7 +123,7 @@ namespace FootprintViewer.ViewModels
         {
             if (_isDirtyDecorator == true)
             {
-                _provider.EditFeature(_currentFeature.Copy());
+                _userLayerSource.EditFeature(_currentFeature.Copy());
 
                 _isDirtyDecorator = false;
             }
@@ -239,7 +236,12 @@ namespace FootprintViewer.ViewModels
 
         private void CreateInteractiveOnUserLayer(IDesigner designer)
         {
-            CreateInteractiveLayer(_userLayer, designer);
+            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userLayer != null)
+            {
+                CreateInteractiveLayer(userLayer, designer);
+            }
         }
 
         private void CreateInteractiveLayer(ILayer layer, IDesigner designer)
@@ -572,7 +574,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddPoint(designer.Feature.Copy());
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
 
                 Tip = null;
 
@@ -605,7 +607,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddRectangle(designer.Feature.Copy());
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
                 Tip = null;
 
@@ -638,7 +640,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddCircle(designer.Feature.Copy());
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
 
                 Tip = null;
 
@@ -668,7 +670,8 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddFeature(designer.Feature.Copy());
+                // TODO: user geometry route not enable
+                //_userLayerSource.AddFeature(designer.Feature.Copy());
 
                 Tip = null;
 
@@ -706,7 +709,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _provider.AddPolygon(designer.Feature.Copy());
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
 
                 Tip = null;
 

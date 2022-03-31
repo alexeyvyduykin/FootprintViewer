@@ -14,11 +14,18 @@ using nts = NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Layers
 {
-    public class CustomProvider : WritableLayer
+    public interface IUserLayerSource : ILayer
+    {
+        void EditFeature(IFeature feature);
+
+        void AddUserGeometry(IFeature feature, UserGeometryType type);
+    }
+
+    public class UserLayerSource : WritableLayer, IUserLayerSource
     {
         private readonly UserGeometryProvider _provider;
 
-        public CustomProvider(UserGeometryProvider provider)
+        public UserLayerSource(UserGeometryProvider provider)
         {
             _provider = provider;
 
@@ -75,11 +82,6 @@ namespace FootprintViewer.Layers
             return await _provider.GetUserGeometryInfosAsync();
         }
 
-        public void AddFeature(IFeature feature)
-        {
-            Add(feature);
-        }
-
         public void EditFeature(IFeature feature)
         {
             Task.Run(async () =>
@@ -95,27 +97,7 @@ namespace FootprintViewer.Layers
             });
         }
 
-        public void AddPoint(IFeature feature)
-        {
-            AddUserGeometry(feature, UserGeometryType.Point);
-        }
-
-        public void AddRectangle(IFeature feature)
-        {
-            AddUserGeometry(feature, UserGeometryType.Rectangle);
-        }
-
-        public void AddCircle(IFeature feature)
-        {
-            AddUserGeometry(feature, UserGeometryType.Circle);
-        }
-
-        public void AddPolygon(IFeature feature)
-        {
-            AddUserGeometry(feature, UserGeometryType.Polygon);
-        }
-
-        private void AddUserGeometry(IFeature feature, UserGeometryType type)
+        public void AddUserGeometry(IFeature feature, UserGeometryType type)
         {
             var name = GenerateName(type);
 

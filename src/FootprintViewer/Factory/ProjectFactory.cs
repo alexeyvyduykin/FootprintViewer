@@ -140,12 +140,11 @@ namespace FootprintViewer
         private static ILayer CreateUserLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var customProvider = dependencyResolver.GetExistingService<CustomProvider>();
+            var source = dependencyResolver.GetExistingService<IUserLayerSource>();
 
-            return new UserLayer(customProvider)
+            return new BaseCustomLayer(source)
             {
-                Name = nameof(LayerType.User),
-                //DataSource = customProvider,
+                Name = nameof(LayerType.User),               
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,
             };
