@@ -1,9 +1,9 @@
-﻿using FootprintViewer.Interactivity;
-using Mapsui.Geometries;
+﻿using Mapsui.Geometries;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Styles
 {
@@ -20,9 +20,13 @@ namespace FootprintViewer.Styles
         private IStyle? _designerStyle;
         private IStyle? _decoratorStyle;
         private IStyle? _selectStyle;
+        private IStyle? _groundStationStyle;
 
         private const int _maxVisibleTargetStyle = 5000;
         private const int _maxVisibleFootprintStyle = 10000;
+
+        private static readonly Color _gsColor1 = new() { R = 132, G = 94, B = 194, A = 255 };
+        private static readonly Color _gsColor2 = new() { R = 250, G = 204, B = 255, A = 255 };
 
         private static readonly ColorPalette _satellitePalette = ColorPalette.DefaultPalette;
 
@@ -45,12 +49,14 @@ namespace FootprintViewer.Styles
         public IStyle UserStyle => _userStyle ??= CreateUserLayerStyle();
 
         public IStyle FootprintImageBorderStyle => _footprintImageBorderStyle ??= CreateFootprintImageBorderStyle();
-        
+
         public IStyle DesignerStyle => _designerStyle ??= CreateInteractiveLayerDesignerStyle();
-        
+
         public IStyle DecoratorStyle => _decoratorStyle ??= CreateInteractiveLayerDecoratorStyle();
-        
+
         public IStyle SelectStyle => _selectStyle ??= CreateInteractiveSelectLayerStyle();
+
+        public IStyle GroundStationStyle => _groundStationStyle ??= CreateGroundStationLayerStyle();
 
         public int MaxVisibleFootprintStyle => _maxVisibleFootprintStyle;
 
@@ -343,7 +349,7 @@ namespace FootprintViewer.Styles
                             var color = _satellitePalette.PickColor(name);
 
                             return new VectorStyle
-                            {                              
+                            {
                                 Fill = new Brush(Color.FromArgb(75, color.R, color.G, color.B)),
                                 Line = null,
                                 Outline = null,
@@ -386,7 +392,7 @@ namespace FootprintViewer.Styles
                             {
                                 Fill = null,
                                 Line = new Pen(Color.FromArgb(255, color.R, color.G, color.B), 2),
-                            };                       
+                            };
                         }
                     }
                 }
@@ -551,7 +557,7 @@ namespace FootprintViewer.Styles
                 }
 
                 if (f.Geometry is Polygon || f.Geometry is LineString)
-                {        
+                {
                     return new VectorStyle
                     {
                         Fill = new Brush(Color.Transparent),
@@ -611,6 +617,89 @@ namespace FootprintViewer.Styles
                     };
                 }
             });
+        }
+
+        private static IStyle CreateGroundStationLayerStyle()
+        {
+            return new ThemeStyle(f =>
+            {
+                if (f.Geometry is Point)
+                {
+                    return null;
+                }
+
+                if (f.Geometry is MultiPolygon)
+                {
+                    foreach (var item in f.Fields)
+                    {
+                        if (item.Equals("Count"))
+                        {
+                            var count = int.Parse(f["Count"].ToString()!);
+                            var index = int.Parse(f["Index"].ToString()!);
+                            var color = CreateGradients(_gsColor1, _gsColor2, count)[index];
+                            return new VectorStyle
+                            {
+                                Fill = new Brush(Color.Opacity(color, 0.25f)),
+                                Line = null,
+                                Outline = null,
+                                Enabled = true
+                            };
+                        }
+                    }
+                }
+
+                if (f.Fields != null && f.Geometry is MultiLineString)
+                {
+                    foreach (var item in f.Fields)
+                    {
+                        if (item.Equals("InnerBorder"))
+                        {
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Line = new Pen(_gsColor1, 2.0),
+                                Outline = new Pen(_gsColor1, 2.0),
+                                Enabled = true
+                            };
+                        }
+                        if (item.Equals("OuterBorder"))
+                        {
+                            return new VectorStyle
+                            {
+                                Fill = null,
+                                Line = new Pen(_gsColor2, 2.0),
+                                Outline = new Pen(_gsColor2, 2.0),
+                                Enabled = true
+                            };
+                        }
+                    }
+                }
+
+                return null;
+            });
+        }
+
+        private static IEnumerable<Color> GetGradients(Color start, Color end, int steps)
+        {
+            int stepA = (end.A - start.A) / (steps - 1);
+            int stepR = (end.R - start.R) / (steps - 1);
+            int stepG = (end.G - start.G) / (steps - 1);
+            int stepB = (end.B - start.B) / (steps - 1);
+
+            for (int i = 0; i < steps; i++)
+            {
+                yield return Color.FromArgb(start.A + (stepA * i),
+                                            start.R + (stepR * i),
+                                            start.G + (stepG * i),
+                                            start.B + (stepB * i));
+            }
+        }
+
+        private static List<Color> CreateGradients(Color start, Color end, int steps)
+        {
+            int steps1 = (steps > 1) ? steps : 2;
+
+            return GetGradients(start, end, steps1).ToList();
         }
     }
 

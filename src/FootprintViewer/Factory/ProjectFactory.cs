@@ -34,6 +34,7 @@ namespace FootprintViewer
 
             map.AddLayer(new Layer(), LayerType.WorldMap);
             map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
+            map.AddLayer(CreateGroundStationLayer(_dependencyResolver), LayerType.GroundStation);
             map.AddLayer(CreateTargetLayer(_dependencyResolver), LayerType.GroundTarget);
             map.AddLayer(CreateSensorLayer(_dependencyResolver), LayerType.Sensor);
             map.AddLayer(CreateTrackLayer(_dependencyResolver), LayerType.Track);
@@ -78,6 +79,18 @@ namespace FootprintViewer
             {
                 Style = styleManager.FootprintStyle,
                 MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
+            };
+        }
+
+        private static ILayer CreateGroundStationLayer(IReadonlyDependencyResolver dependencyResolver)
+        {
+            var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+            var source = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
+
+            return new BaseCustomLayer(source)
+            {
+                Style = styleManager.GroundStationStyle,
+                IsMapInfoLayer = false,
             };
         }
 

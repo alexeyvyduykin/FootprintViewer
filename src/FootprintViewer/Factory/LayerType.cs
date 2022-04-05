@@ -4,6 +4,7 @@
     {
         WorldMap,
         FootprintImage,
+        GroundStation,
         GroundTarget,
         Sensor,
         Track,

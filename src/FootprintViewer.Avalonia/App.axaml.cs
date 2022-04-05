@@ -37,6 +37,7 @@ namespace FootprintViewer.Avalonia
             Data.Sources.IFootprintDataSource footprintDataSource;
             Data.Sources.ISatelliteDataSource satelliteDataSource;
             Data.Sources.IUserGeometryDataSource userGeometryDataSource;
+            Data.Sources.IGroundStationDataSource groundStationDataSource;
 
             if (IsConnectionValid() == true)
             {
@@ -45,6 +46,7 @@ namespace FootprintViewer.Avalonia
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(options);
                 footprintDataSource = new Data.Sources.FootprintDataSource(options);
                 userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
+                groundStationDataSource = new Data.Sources.RandomGroundStationDataSource();
             }
             else
             {
@@ -52,6 +54,7 @@ namespace FootprintViewer.Avalonia
                 footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
                 groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);
                 userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
+                groundStationDataSource = new Data.Sources.RandomGroundStationDataSource();
             }
 
             // Satellites provider
@@ -108,6 +111,14 @@ namespace FootprintViewer.Avalonia
             var userLayerSource = new UserLayerSource(userGeometryProvider);
             services.RegisterLazySingleton<IUserLayerSource>(() => userLayerSource);
 
+            // GroundStation provider
+
+            var groundStationProvider = new GroundStationProvider();
+            groundStationProvider.AddSource(groundStationDataSource);
+            services.RegisterLazySingleton<GroundStationProvider>(() => groundStationProvider);
+            var groundStationSource = new GroundStationLayerSource(groundStationProvider);
+            services.RegisterLazySingleton<IGroundStationLayerSource>(() => groundStationSource);
+
             // Layer style manager
 
             LayerStyleManager layerStyleManager = new LayerStyleManager();
@@ -151,6 +162,7 @@ namespace FootprintViewer.Avalonia
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
             var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
             var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+            var groundStationProvider = dependencyResolver.GetExistingService<GroundStationProvider>();
 
             //await Task.Delay(TimeSpan.FromSeconds(4));
 
@@ -161,6 +173,8 @@ namespace FootprintViewer.Avalonia
             await satelliteProvider.Loading.Execute();
 
             await groundTargetProvider.Loading.Execute();
+
+            await groundStationProvider.Loading.Execute();
         }
 
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
