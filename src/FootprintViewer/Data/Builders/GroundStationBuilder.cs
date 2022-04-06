@@ -26,30 +26,25 @@ namespace FootprintViewer.Data
 
         public static IList<GroundStationResult> Create(IEnumerable<GroundStation> groundStations)
         {
-            var list = new List<GroundStationResult>();
+            return groundStations.Select(s => Create(s)).ToList();
+        }
 
-            foreach (var gs in groundStations)
+        public static GroundStationResult Create(GroundStation groundStation)
+        {
+            var lon = groundStation.Center.X;
+            var lat = groundStation.Center.Y;
+            var (isHole, angles) = Verify(groundStation.Angles);
+            var circles = EarthGeometry.BuildCircles(lon, lat, angles);
+
+            return new GroundStationResult()
             {
-                if (gs.Center != null)
-                {
-                    var lon = gs.Center.X;
-                    var lat = gs.Center.Y;
-                    var (isHole, angles) = Verify(gs.Angles);
-                    var circles = EarthGeometry.BuildCircles(lon, lat, angles);
-
-                    list.Add(new GroundStationResult()
-                    {
-                        Center = new Point(lon, lat),
-                        InnerAngle = (isHole == false) ? 0.0 : angles.First(),
-                        OuterAngle = angles.Last(),
-                        Areas = circles.Select(s => s.Areas).ToList(),
-                        InnerBorder = (isHole == false) ? new List<IEnumerable<Point>>() : circles.First().Borders,
-                        OuterBorder = circles.Last().Borders,
-                    });
-                }
-            }
-
-            return list;
+                Center = new Point(lon, lat),
+                InnerAngle = (isHole == false) ? 0.0 : angles.First(),
+                OuterAngle = angles.Last(),
+                Areas = circles.Select(s => s.Areas).ToList(),
+                InnerBorder = (isHole == false) ? new List<IEnumerable<Point>>() : circles.First().Borders,
+                OuterBorder = circles.Last().Borders,
+            };
         }
 
         private static (bool isHole, double[] angles) Verify(double[] anglesSource)

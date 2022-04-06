@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using nts = NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Designer
 {
@@ -22,16 +23,19 @@ namespace FootprintViewer.Designer
         private GroundTargetProvider? _groundTargetProvider;
         private FootprintProvider? _footprintProvider;
         private UserGeometryProvider? _userGeometryProvider;
+        private GroundStationProvider? _groundStationProvider;
 
         private IFootprintLayerSource? _footprintLayerSource;
         private ISensorLayerSource? _sensorLayerSource;
         private ITargetLayerSource? _targetLayerSource;
         private ITrackLayerSource? _trackLayerSource;
         private IUserLayerSource? _userLayerSource;
+        private IGroundStationLayerSource? _groundStationLayerSource;
 
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
+        private GroundStationViewer? _groundStationViewer;
         private SceneSearch? _sceneSearch;
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
@@ -100,9 +104,22 @@ namespace FootprintViewer.Designer
                 var provider = (UserGeometryProvider)GetService(typeof(UserGeometryProvider), contract)!;
                 return _userLayerSource ??= new UserLayerSource(provider);
             }
+            else if (serviceType == typeof(GroundStationProvider))
+            {
+                return _groundStationProvider ??= new DesignTimeGroundStationProvider();
+            }
+            else if (serviceType == typeof(IGroundStationLayerSource))
+            {
+                var provider = (GroundStationProvider)GetService(typeof(GroundStationProvider), contract)!;
+                return _groundStationLayerSource ??= new GroundStationLayerSource(provider);
+            }
             else if (serviceType == typeof(SatelliteViewer))
             {
                 return _satelliteViewer ??= new SatelliteViewer(this);
+            }
+            else if (serviceType == typeof(GroundStationViewer))
+            {
+                return _groundStationViewer ??= new GroundStationViewer(this);
             }
             else if (serviceType == typeof(FootprintObserver))
             {
@@ -165,6 +182,34 @@ namespace FootprintViewer.Designer
                 public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => throw new Exception();
 
                 public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => throw new Exception();
+            }
+        }
+
+        private class DesignTimeGroundStationProvider : GroundStationProvider
+        {
+            public DesignTimeGroundStationProvider() : base()
+            {
+                AddSource(new DesignTimeGroundStationSource());
+            }
+
+            private class DesignTimeGroundStationSource : Data.Sources.IGroundStationDataSource
+            {
+                private readonly List<GroundStation> _groundStations;
+
+                public DesignTimeGroundStationSource()
+                {
+                    _groundStations = new List<GroundStation>()
+                    {
+                        new GroundStation() { Name = "Москва",      Center = new nts.Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
+                        new GroundStation() { Name = "Новосибирск", Center = new nts.Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
+                        new GroundStation() { Name = "Хабаровск",   Center = new nts.Point(135.04, 48.29), Angles = new [] { 0.0, 6, 10, 11 } },
+                        new GroundStation() { Name = "Шпицберген",  Center = new nts.Point(    21, 78.38), Angles = new [] { 0.0, 6, 10, 11 } },
+                        new GroundStation() { Name = "Анадырь",     Center = new nts.Point(177.31, 64.44), Angles = new [] { 0.0, 6, 10, 11 } },
+                        new GroundStation() { Name = "Тикси",       Center = new nts.Point(128.52, 71.38), Angles = new [] { 0.0, 6, 10, 11 } },
+                    };
+                }
+
+                public Task<List<GroundStation>> GetGroundStationsAsync() => Task.Run(() => _groundStations);
             }
         }
 

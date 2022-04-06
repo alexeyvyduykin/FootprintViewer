@@ -134,6 +134,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(resolver));
             services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
             services.RegisterLazySingleton<UserGeometryViewer>(() => new UserGeometryViewer(resolver));
+            services.RegisterLazySingleton<GroundStationViewer>(() => new GroundStationViewer(resolver));
 
             services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
 
@@ -144,6 +145,7 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<GroundTargetViewer>(),
                 resolver.GetExistingService<FootprintObserver>(),
                 resolver.GetExistingService<UserGeometryViewer>(),
+                resolver.GetExistingService<GroundStationViewer>(),
             };
 
             services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });

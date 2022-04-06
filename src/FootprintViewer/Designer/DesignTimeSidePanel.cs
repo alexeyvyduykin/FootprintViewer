@@ -16,6 +16,7 @@ namespace FootprintViewer.Designer
                 new GroundTargetViewer(data),
                 new FootprintObserver(data),
                 new UserGeometryViewer(data),
+                new GroundStationViewer(data),
             };
 
             Tabs.AddRange(new List<SidePanelTab>(tabs));

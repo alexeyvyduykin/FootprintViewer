@@ -38,6 +38,10 @@
       <views:UserGeometryViewerView/>
     </DataTemplate>
 
+    <DataTemplate DataType="vm:GroundStationViewer">
+      <views:GroundStationViewerView/>
+    </DataTemplate>
+    
   </UserControl.DataTemplates>
   
   <UserControl.Resources>
@@ -77,6 +81,15 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
+
+      <DataTemplate x:Key="GroundStationViewer">
+        <Grid>
+          <Viewbox Margin="8">
+            <Image Source="{DynamicResource IconGroundStation}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
+      
     </selectors:SidePanelIconSelector>
   </UserControl.Resources>
 
