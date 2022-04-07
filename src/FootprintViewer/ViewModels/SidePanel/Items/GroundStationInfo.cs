@@ -94,15 +94,15 @@ namespace FootprintViewer.ViewModels
 
             var list = new List<GroundStationAreaItem>();
 
-            var colors = LayerStyleManager.GetGroundTargetPalette(areaCount);
-
             for (int i = 1; i < areaCount + 1; i++)
             {
                 var angle = inner + areaStep * i;
 
+                var color = LayerStyleManager.GroundStationPalette.GetColor(i - 1, areaCount);
+
                 list.Add(new GroundStationAreaItem()
                 {
-                    Color = colors[i - 1],
+                    Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
                     Angle = angle,
                 });
             }

@@ -3,7 +3,6 @@ using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer.Styles
 {
@@ -25,14 +24,15 @@ namespace FootprintViewer.Styles
         private const int _maxVisibleTargetStyle = 5000;
         private const int _maxVisibleFootprintStyle = 10000;
 
-        private static readonly Color _gsColor1 = new() { R = 132, G = 94, B = 194, A = 255 };
-        private static readonly Color _gsColor2 = new() { R = 250, G = 204, B = 255, A = 255 };
-
         private static readonly ColorPalette _satellitePalette = ColorPalette.DefaultPalette;
+
+        private static readonly SingleHuePalette _groundStationPalette = SingleHuePalette.Purples;
 
         public LayerStyleManager() { }
 
         public static ColorPalette SatellitePalette => _satellitePalette;
+
+        public static SingleHuePalette GroundStationPalette => _groundStationPalette;
 
         public IStyle FootprintStyle => _footprintStyle ??= CreateFootprintLayerStyle();
 
@@ -636,10 +636,10 @@ namespace FootprintViewer.Styles
                         {
                             var count = int.Parse(f["Count"].ToString()!);
                             var index = int.Parse(f["Index"].ToString()!);
-                            var color = GetGroundTargetPalette(count)[index];
+                            var color = _groundStationPalette.GetColor(index, count);
                             return new VectorStyle
                             {
-                                Fill = new Brush(Color.Opacity(color, 0.25f)),
+                                Fill = new Brush(Color.Opacity(new Color(color.R, color.G, color.B), 0.45f)),
                                 Line = null,
                                 Outline = null,
                                 Enabled = true
@@ -654,24 +654,27 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("InnerBorder"))
                         {
+                            var count = int.Parse(f["Count"].ToString()!);
+                            var color = _groundStationPalette.GetColor(0, count);
+
                             return new VectorStyle
                             {
                                 Fill = null,
-                                Line = new Pen(_gsColor1, 2.0),
-                                Outline = new Pen(_gsColor1, 2.0),
+                                Line = new Pen(new Color(color.R, color.G, color.B), 2.0),
+                                Outline = new Pen(new Color(color.R, color.G, color.B), 2.0),
                                 Enabled = true
                             };
                         }
                         if (item.Equals("OuterBorder"))
                         {
                             var count = int.Parse(f["Count"].ToString()!);
-                            var color = GetGroundTargetPalette(count)[count - 1];
+                            var color = _groundStationPalette.GetColor(count - 1, count);
 
                             return new VectorStyle
                             {
                                 Fill = null,
-                                Line = new Pen(color, 2.0),
-                                Outline = new Pen(color, 2.0),
+                                Line = new Pen(new Color(color.R, color.G, color.B), 2.0),
+                                Outline = new Pen(new Color(color.R, color.G, color.B), 2.0),
                                 Enabled = true
                             };
                         }
@@ -680,34 +683,6 @@ namespace FootprintViewer.Styles
 
                 return null;
             });
-        }
-
-        private static IEnumerable<Color> GetGradients(Color start, Color end, int steps)
-        {
-            int stepA = (end.A - start.A) / (steps - 1);
-            int stepR = (end.R - start.R) / (steps - 1);
-            int stepG = (end.G - start.G) / (steps - 1);
-            int stepB = (end.B - start.B) / (steps - 1);
-
-            for (int i = 0; i < steps; i++)
-            {
-                yield return Color.FromArgb(start.A + (stepA * i),
-                                            start.R + (stepR * i),
-                                            start.G + (stepG * i),
-                                            start.B + (stepB * i));
-            }
-        }
-
-        private static List<Color> CreateGradients(Color start, Color end, int steps)
-        {
-            int steps1 = (steps > 1) ? steps : 2;
-
-            return GetGradients(start, end, steps1).ToList();
-        }
-
-        public static List<Color> GetGroundTargetPalette(int steps)
-        {
-            return CreateGradients(_gsColor1, _gsColor2, steps);
         }
     }
 
