@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -13,8 +15,8 @@ namespace FootprintViewer.ViewModels
     public class GroundStationViewer : SidePanelTab
     {
         private readonly GroundStationProvider _provider;
-        private readonly ObservableAsPropertyHelper<List<GroundStationInfo>> _groundStations;
         private readonly IGroundStationLayerSource _groundStationLayerSource;
+        private bool _first = true;
 
         public GroundStationViewer(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -25,9 +27,11 @@ namespace FootprintViewer.ViewModels
 
             Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _first == true).Select(_ => Unit.Default).InvokeCommand(Loading);
 
-            _groundStations = Loading.Select(s => Convert(s)).ToProperty(this, x => x.GroundStationInfos, scheduler: RxApp.MainThreadScheduler);
+            Loading.Select(s => Convert(s)).ToPropertyEx(this, x => x.GroundStationInfos, scheduler: RxApp.MainThreadScheduler);
+
+            Loading.Subscribe(_ => _first = false);
         }
 
         protected ReactiveCommand<Unit, List<GroundStation>> Loading { get; }
@@ -54,6 +58,7 @@ namespace FootprintViewer.ViewModels
             _groundStationLayerSource.Change(groundStationInfo);
         }
 
-        public List<GroundStationInfo> GroundStationInfos => _groundStations.Value;
+        [ObservableAsProperty]
+        public List<GroundStationInfo> GroundStationInfos { get; } = new List<GroundStationInfo>();
     }
 }
