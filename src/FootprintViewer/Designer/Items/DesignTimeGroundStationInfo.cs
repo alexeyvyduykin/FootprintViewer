@@ -7,7 +7,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeGroundStationInfo() : base(BuildModel())
         {
-
+            IsShow = true;
         }
 
         public static GroundStation BuildModel()
@@ -16,6 +16,7 @@ namespace FootprintViewer.Designer
             {
                 Name = $"London",
                 Center = new NetTopologySuite.Geometries.Point(-0.118092, 51.509865),
+                Angles = new double[] { 12, 18, 22, 26, 30 },
             };
         }
     }

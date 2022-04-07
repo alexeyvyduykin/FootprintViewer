@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:icons="using:Material.Icons.Avalonia"
+             xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="280"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundStationInfoView">
 
@@ -14,12 +16,19 @@
   
   <styles:ColorZone Padding="8">
 
-    <Grid RowDefinitions="Auto,Auto,Auto">
+    <Grid RowDefinitions="Auto,Auto">
 
       <DockPanel>
+        <StackPanel>
+        
         <TextBlock Text="{Binding Name}"
                    VerticalAlignment="Center"
                    Classes="Headline6"/>
+
+          <TextBlock x:Name="CoordinateTextBlock" 
+                     Classes="Caption"/>
+          
+        </StackPanel>
 
         <ToggleSwitch x:Name="ShowToggleSwitch"
                       IsChecked="{Binding IsShow}"
@@ -33,6 +42,69 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Right"/>
       </DockPanel>
+
+      <styles:Card Margin="0,8,0,0"             
+                   Grid.Row="1"            
+                   IsVisible="{Binding #ShowToggleSwitch.IsChecked}">
+        <StackPanel>
+
+          <Grid ColumnDefinitions="*,24" Margin="0,8,0,8">
+            <Slider x:Name="Slider1"
+                    Margin="8,0,16,0"
+                    Value="{Binding InnerAngle}"
+                    Classes="Modern Discrete Ticks"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1" />
+            <TextBlock Text="{Binding #Slider1.Value, StringFormat={}{0}°}"       
+                       Classes="Body2"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"                    
+                       Grid.Column="1"/>
+          </Grid>
+
+          <Grid ColumnDefinitions="*,24" Margin="0,8,0,8">
+            <Slider x:Name="Slider2"
+                    Margin="8,0,16,0"
+                    Value="{Binding OuterAngle}"
+                    Classes="Modern Discrete Ticks"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1" />
+            <TextBlock Text="{Binding #Slider2.Value, StringFormat={}{0}°}" 
+                       Classes="Body2"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"
+                       Grid.Column="1"/>
+          </Grid>
+
+          <Grid ColumnDefinitions="*, *">
+            <ComboBox x:Name="CountComboBox"                      
+                      Items="{Binding AvailableAreaCounts}"
+                      SelectedItem="{Binding AreaCount}"/>
+            <ComboBox x:Name="ModeComboBox" 
+                      Grid.Column="1"
+                      Items="{Binding AvailableCountModes}"
+                      SelectedItem="{Binding CountMode}"/>
+          </Grid>
+
+          <ItemsControl x:Name="ItemsControl" Margin="0,16,0,0">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="items:AvaloniaAreaItem">
+                <Grid ColumnDefinitions="40, 30, *">
+                  <Border Background="{Binding Brush}"/>
+                  <TextBlock Text="-" 
+                             Grid.Column="1" 
+                             HorizontalAlignment="Center"   
+                             Classes="Body2"/>
+                  <TextBlock Text="{Binding Angle, StringFormat={}{0:00.0}°}"   
+                             Classes="Body2"
+                             Grid.Column="2"/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+   
+        </StackPanel>
+      </styles:Card>
 
     </Grid>
 

@@ -2,6 +2,7 @@
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -700,6 +701,11 @@ namespace FootprintViewer.Styles
             int steps1 = (steps > 1) ? steps : 2;
 
             return GetGradients(start, end, steps1).ToList();
+        }
+
+        public static List<Color> GetGroundTargetPalette(int steps)
+        {
+            return CreateGradients(_gsColor1, _gsColor2, steps);
         }
     }
 

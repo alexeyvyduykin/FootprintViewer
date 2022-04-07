@@ -17,6 +17,7 @@ namespace FootprintViewer.Layers
     public interface IGroundStationLayerSource : ILayer
     {
         void Update(GroundStationInfo info);
+        void Change(GroundStationInfo info);
     }
 
     public class GroundStationLayerSource : WritableLayer, IGroundStationLayerSource
@@ -61,8 +62,9 @@ namespace FootprintViewer.Layers
                 {
                     var groundStation = new GroundStation()
                     {
+                        Name = name,
                         Center = new NetTopologySuite.Geometries.Point(info.Center),
-                        Angles = info.Angles,
+                        Angles = info.GetAngles(),
                     };
 
                     _cache[name].Add(Build(groundStation));
@@ -72,7 +74,43 @@ namespace FootprintViewer.Layers
                 AddRange(_cache.SelectMany(s => s.Value));
             }
         }
+        public void Change(GroundStationInfo info)
+        {
+            var name = info.Name;
 
+            if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
+            {
+                _cache[name].Clear();
+
+                if (info.IsShow == true)
+                {
+                    var count = info.AreaCount;
+                    var inner = info.InnerAngle;
+                    var outer = info.OuterAngle;
+
+                    var val = (outer - inner) / count;
+
+                    var list = new List<double>();
+
+                    for (int i = 0; i < count + 1; i++)
+                    {
+                        list.Add(inner + val * i);
+                    }
+
+                    var groundStation = new GroundStation()
+                    {
+                        Name = info.Name,
+                        Center = new NetTopologySuite.Geometries.Point(info.Center),
+                        Angles = list.ToArray(),
+                    };
+
+                    _cache[name].Add(Build(groundStation));
+                }
+
+                Clear();
+                AddRange(_cache.SelectMany(s => s.Value));
+            }
+        }
         private static List<IFeature> Build(GroundStation groundStation)
         {
             var list = new List<IFeature>();

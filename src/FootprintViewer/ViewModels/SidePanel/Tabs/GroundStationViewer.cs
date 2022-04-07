@@ -49,6 +49,11 @@ namespace FootprintViewer.ViewModels
             _groundStationLayerSource.Update(groundStationInfo);
         }
 
+        public void Change(GroundStationInfo groundStationInfo)
+        {
+            _groundStationLayerSource.Change(groundStationInfo);
+        }
+
         public List<GroundStationInfo> GroundStationInfos => _groundStations.Value;
     }
 }
