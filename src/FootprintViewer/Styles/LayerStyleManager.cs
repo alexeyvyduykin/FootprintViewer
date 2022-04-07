@@ -2,7 +2,6 @@
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -637,7 +636,7 @@ namespace FootprintViewer.Styles
                         {
                             var count = int.Parse(f["Count"].ToString()!);
                             var index = int.Parse(f["Index"].ToString()!);
-                            var color = CreateGradients(_gsColor1, _gsColor2, count)[index];
+                            var color = GetGroundTargetPalette(count)[index];
                             return new VectorStyle
                             {
                                 Fill = new Brush(Color.Opacity(color, 0.25f)),
@@ -665,11 +664,14 @@ namespace FootprintViewer.Styles
                         }
                         if (item.Equals("OuterBorder"))
                         {
+                            var count = int.Parse(f["Count"].ToString()!);
+                            var color = GetGroundTargetPalette(count)[count - 1];
+
                             return new VectorStyle
                             {
                                 Fill = null,
-                                Line = new Pen(_gsColor2, 2.0),
-                                Outline = new Pen(_gsColor2, 2.0),
+                                Line = new Pen(color, 2.0),
+                                Outline = new Pen(color, 2.0),
                                 Enabled = true
                             };
                         }

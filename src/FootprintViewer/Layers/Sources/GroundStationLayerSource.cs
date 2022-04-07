@@ -119,8 +119,10 @@ namespace FootprintViewer.Layers
 
             var areaCount = gs.Areas.Count;
 
+            bool isHole = (gs.InnerAngle != 0.0);
+
             // First area
-            if (gs.InnerAngle == 0.0)
+            if (isHole == false)
             {
                 var multi = new MultiPolygon();
 
@@ -182,8 +184,8 @@ namespace FootprintViewer.Layers
                     var feature = new Feature
                     {
                         Geometry = multi,
-                        ["Count"] = $"{areaCount}",
-                        ["Index"] = $"{i}",
+                        ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
+                        ["Index"] = $"{(isHole == true ? i - 1 : i)}",
                     };
 
                     list.Add(feature);
@@ -191,7 +193,7 @@ namespace FootprintViewer.Layers
             }
 
             // Inner border
-            if (gs.InnerAngle != 0.0)
+            if (isHole == true)
             {
                 var multi = new MultiLineString
                 {
@@ -202,7 +204,7 @@ namespace FootprintViewer.Layers
                 var feature = new Feature
                 {
                     Geometry = multi,
-                    ["Count"] = $"{areaCount}",
+                    ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
                     ["InnerBorder"] = "",
                 };
 
@@ -221,7 +223,7 @@ namespace FootprintViewer.Layers
                 var feature = new Feature
                 {
                     Geometry = multi,
-                    ["Count"] = $"{areaCount}",
+                    ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
                     ["OuterBorder"] = "",
                 };
 
