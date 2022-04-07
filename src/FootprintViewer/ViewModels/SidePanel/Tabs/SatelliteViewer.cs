@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -13,9 +15,9 @@ namespace FootprintViewer.ViewModels
     public class SatelliteViewer : SidePanelTab
     {
         private readonly SatelliteProvider _provider;
-        private readonly ObservableAsPropertyHelper<List<SatelliteInfo>> _satellites;
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
+        private bool _first = true;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -27,16 +29,18 @@ namespace FootprintViewer.ViewModels
 
             Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _first == true).Select(_ => Unit.Default).InvokeCommand(Loading);
 
-            _satellites = Loading.Select(s => Convert(s)).ToProperty(this, x => x.SatelliteInfos, scheduler: RxApp.MainThreadScheduler);
+            Loading.Select(s => Convert(s)).ToPropertyEx(this, x => x.SatelliteInfos, scheduler: RxApp.MainThreadScheduler);
+
+            Loading.Subscribe(_ => _first = false);
         }
 
         private ReactiveCommand<Unit, List<Satellite>> Loading { get; }
 
         private async Task<List<Satellite>> LoadingAsync() => await _provider.GetSatellitesAsync();
 
-        private List<SatelliteInfo> Convert(List<Satellite> satellites)
+        private static List<SatelliteInfo> Convert(List<Satellite> satellites)
         {
             if (satellites == null)
             {
@@ -56,6 +60,7 @@ namespace FootprintViewer.ViewModels
             _sensorLayerSource.Update(satelliteInfo);
         }
 
-        public List<SatelliteInfo> SatelliteInfos => _satellites.Value;
+        [ObservableAsProperty]
+        public List<SatelliteInfo> SatelliteInfos { get; } = new List<SatelliteInfo>();
     }
 }
