@@ -11,6 +11,8 @@ namespace FootprintViewer.ViewModels
             Click = ReactiveCommand.Create<Unit, IToolClick>(_ => this);
         }
 
+        public string GetKey() => Title ?? string.Empty;
+
         public string? Tooltip { get; set; }
 
         public string? Title { get; set; }

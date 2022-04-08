@@ -1,7 +1,9 @@
 ﻿namespace FootprintViewer.ViewModels
 {
-    public abstract class CustomInfoPanel : InfoPanelItem
+    public abstract class CustomInfoPanel : InfoPanelItem, ISelectorItem
     {
+        public string GetKey() => Title;
+
         public virtual string Title => nameof(CustomInfoPanel);
 
         public string? Text { get; set; }

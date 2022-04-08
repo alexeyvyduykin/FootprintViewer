@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundTargetInfo : ReactiveObject
+    public class GroundTargetInfo : ReactiveObject, ISelectorItem
     {
         private readonly GroundTarget _groundTarget;
         private readonly GroundTargetType _type;
@@ -15,6 +15,8 @@ namespace FootprintViewer.ViewModels
             _type = groundTarget.Type;
             _name = groundTarget.Name!;
         }
+
+        public string GetKey() => _type.ToString();
 
         public GroundTarget GroundTarget => _groundTarget;
 

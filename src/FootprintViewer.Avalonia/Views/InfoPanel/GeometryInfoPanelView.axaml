@@ -16,7 +16,7 @@
   </Design.DataContext>
   
   <UserControl.Resources>
-    <selectors:InfoPanelIconSelector x:Key="InfoPanelIconDataSelector">
+    <selectors:DataTemplateSelector x:Key="InfoPanelIconDataSelector">
       <DataTemplate x:Key="Route">
         <Panel>
           <Viewbox>
@@ -37,7 +37,7 @@
           </Viewbox>
         </Panel>
       </DataTemplate>
-    </selectors:InfoPanelIconSelector>
+    </selectors:DataTemplateSelector>
   </UserControl.Resources>
 
   <Panel>

@@ -1,6 +1,6 @@
 ﻿namespace FootprintViewer.Models
 {
-    public interface ITool : IToolItem
+    public interface ITool : IToolItem, ISelectorItem
     {
         string? Tooltip { get; set; }
 

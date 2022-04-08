@@ -36,6 +36,8 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsCheck).Where(s => s == false).Select(_ => Unit.Default).InvokeCommand(Deactivate);
         }
 
+        public string GetKey() => Title ?? string.Empty;
+
         [Reactive]
         public bool IsCheck { get; set; }
 

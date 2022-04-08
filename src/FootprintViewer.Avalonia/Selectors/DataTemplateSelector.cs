@@ -1,20 +1,19 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using FootprintViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Avalonia.Selectors
 {
-    public class GroundTargetInfoIconSelector : IDataTemplate
+    public class DataTemplateSelector : IDataTemplate
     {
         [Content]
         public Dictionary<string, IDataTemplate> Templates { get; } = new Dictionary<string, IDataTemplate>();
 
         public IControl Build(object param)
         {
-            var key = ((GroundTargetInfo)param).Type.ToString();
+            var key = ((ISelectorItem)param).GetKey();
 
             if (key != null)
             {
@@ -26,7 +25,7 @@ namespace FootprintViewer.Avalonia.Selectors
 
         public bool Match(object data)
         {
-            return data is GroundTargetInfo;
+            return data is ISelectorItem;
         }
     }
 }

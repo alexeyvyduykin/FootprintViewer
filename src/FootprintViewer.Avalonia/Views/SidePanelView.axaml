@@ -45,7 +45,7 @@
   </UserControl.DataTemplates>
   
   <UserControl.Resources>
-    <selectors:SidePanelIconSelector x:Key="SidePanelIconSelector">
+    <selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
       <DataTemplate x:Key="SceneSearch">
         <Grid>
           <Viewbox Margin="8">
@@ -89,8 +89,8 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-      
-    </selectors:SidePanelIconSelector>
+
+    </selectors:DataTemplateSelector>
   </UserControl.Resources>
 
   <UserControl.Styles>

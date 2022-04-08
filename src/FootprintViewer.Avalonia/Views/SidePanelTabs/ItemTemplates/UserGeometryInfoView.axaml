@@ -14,7 +14,7 @@
   </Design.DataContext>
 
   <UserControl.Resources>
-    <selectors:UserGeometryInfoIconSelector x:Key="UserGeometryInfoIconSelector">
+    <selectors:DataTemplateSelector x:Key="UserGeometryInfoIconSelector">
       <DataTemplate x:Key="Point">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
@@ -35,7 +35,7 @@
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconCircle}"/>
         </Viewbox>
       </DataTemplate>
-    </selectors:UserGeometryInfoIconSelector>
+    </selectors:DataTemplateSelector>
   </UserControl.Resources>
 
   <styles:Card x:Name="MainCard">

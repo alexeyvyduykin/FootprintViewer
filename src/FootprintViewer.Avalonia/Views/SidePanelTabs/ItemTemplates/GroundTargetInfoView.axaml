@@ -14,7 +14,7 @@
   </Design.DataContext>
 
   <UserControl.Resources>
-    <selectors:GroundTargetInfoIconSelector x:Key="GroundTargetInfoIconSelector">
+    <selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">
       <DataTemplate x:Key="Point">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
@@ -30,7 +30,7 @@
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-regular-shape-o}"/>
         </Viewbox>
       </DataTemplate>
-    </selectors:GroundTargetInfoIconSelector>
+    </selectors:DataTemplateSelector>
   </UserControl.Resources>
 
 

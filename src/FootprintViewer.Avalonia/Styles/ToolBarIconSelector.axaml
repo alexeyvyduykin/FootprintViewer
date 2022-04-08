@@ -10,7 +10,7 @@
     <!-- Add Styles Here -->
 
   <Styles.Resources>
-    <selectors:ToolIconSelector x:Key="ToolIconDataSelector">
+    <selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
 
       <DataTemplate x:Key="AddRectangle">
         <Viewbox Width="36" Height="36">
@@ -71,7 +71,7 @@
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
         </Viewbox>
       </DataTemplate>
-     
+
       <DataTemplate x:Key="Circle">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
@@ -108,7 +108,7 @@
         </Viewbox>
       </DataTemplate>
 
-    </selectors:ToolIconSelector>
+    </selectors:DataTemplateSelector>
   </Styles.Resources>
 
 </Styles>
