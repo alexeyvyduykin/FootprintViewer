@@ -84,24 +84,11 @@ namespace FootprintViewer.Layers
 
                 if (info.IsShow == true)
                 {
-                    var count = info.AreaCount;
-                    var inner = info.InnerAngle;
-                    var outer = info.OuterAngle;
-
-                    var val = (outer - inner) / count;
-
-                    var list = new List<double>();
-
-                    for (int i = 0; i < count + 1; i++)
-                    {
-                        list.Add(inner + val * i);
-                    }
-
                     var groundStation = new GroundStation()
                     {
                         Name = info.Name,
                         Center = new NetTopologySuite.Geometries.Point(info.Center),
-                        Angles = list.ToArray(),
+                        Angles = info.GetAngles(),
                     };
 
                     _cache[name].Add(Build(groundStation));

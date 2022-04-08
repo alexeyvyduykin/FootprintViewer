@@ -22,13 +22,16 @@ namespace FootprintViewer.ViewModels
     {
         private readonly Coordinate _center;
         private readonly string _name;
-        private readonly string _countMode;
+        private readonly double[] _defaultAngles;
+        private bool _isBlock = false;
 
         public GroundStationInfo(GroundStation groundStation)
         {
             _name = groundStation.Name!;
             _center = groundStation.Center.Coordinate.Copy();
-            _countMode = "Equal";
+            _defaultAngles = groundStation.Angles;
+
+            CountMode = "None";
 
             InnerAngle = groundStation.Angles.First();
 
@@ -36,12 +39,12 @@ namespace FootprintViewer.ViewModels
 
             AreaCount = groundStation.Angles.Length - 1;
 
-            AreaItems = CreateAreaItems(InnerAngle, OuterAngle, AreaCount);
+            AreaItems = CreateAreaItems(_defaultAngles);
 
             Change = ReactiveCommand.Create(ChangeImpl);
             Update = ReactiveCommand.Create(UpdateImpl);
 
-            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount)
+            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
                 .Throttle(TimeSpan.FromSeconds(1.5))
                 .Select(args => Unit.Default)
                 .InvokeCommand(this, v => v.Change);
@@ -71,8 +74,34 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount)
-                .Select(s => CreateAreaItems(s.Item1, s.Item2, s.Item3))
+            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+                .Where(_ => _isBlock == false)
+                .Select(s =>
+                {
+                    if (s.Item4 == "Equal")
+                    {
+                        return CreateAreaItemsEqualMode(s.Item1, s.Item2, s.Item3);
+                    }
+                    else if (s.Item4 == "Geometric")
+                    {
+                        return CreateAreaItemsGeometricMode(s.Item1, s.Item2, s.Item3);
+                    }
+                    else
+                    {
+                        // HACK: change property without callback
+                        _isBlock = true;
+
+                        InnerAngle = _defaultAngles.First();
+
+                        OuterAngle = _defaultAngles.Last();
+
+                        AreaCount = _defaultAngles.Length - 1;
+
+                        _isBlock = false;
+
+                        return CreateAreaItems(_defaultAngles);
+                    }
+                })
                 .ToPropertyEx(this, x => x.AreaItems);
         }
 
@@ -88,17 +117,17 @@ namespace FootprintViewer.ViewModels
             return list.ToArray();
         }
 
-        private static List<GroundStationAreaItem> CreateAreaItems(double inner, double outer, int areaCount)
+        private static List<GroundStationAreaItem> CreateAreaItems(double[] angles)
         {
-            var areaStep = (outer - inner) / areaCount;
+            var areaCount = angles.Length - 1;
 
             var list = new List<GroundStationAreaItem>();
 
-            for (int i = 1; i < areaCount + 1; i++)
+            for (int i = 0; i < areaCount; i++)
             {
-                var angle = inner + areaStep * i;
+                var angle = angles[i + 1];
 
-                var color = LayerStyleManager.GroundStationPalette.GetColor(i - 1, areaCount);
+                var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
 
                 list.Add(new GroundStationAreaItem()
                 {
@@ -108,6 +137,67 @@ namespace FootprintViewer.ViewModels
             }
 
             return list;
+        }
+
+        private static List<GroundStationAreaItem> CreateAreaItemsEqualMode(double inner, double outer, int areaCount)
+        {
+            var areaStep = (outer - inner) / areaCount;
+
+            var list = new List<GroundStationAreaItem>();
+
+            for (int i = 0; i < areaCount; i++)
+            {
+                var angle = inner + areaStep * (i + 1);
+
+                var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
+
+                list.Add(new GroundStationAreaItem()
+                {
+                    Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
+                    Angle = angle,
+                });
+            }
+
+            return list;
+        }
+
+        private static List<GroundStationAreaItem> CreateAreaItemsGeometricMode(double inner, double outer, int areaCount)
+        {
+            var list = new List<GroundStationAreaItem>();
+
+            for (int i = 0; i < areaCount; i++)
+            {
+                var step = (outer - inner) * GetGeometricStep(i + 1, areaCount);
+
+                var angle = inner + step;
+
+                var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
+
+                list.Add(new GroundStationAreaItem()
+                {
+                    Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
+                    Angle = angle,
+                });
+            }
+
+            return list;
+        }
+
+        private static double GetGeometricStep(int n, int count)
+        {
+            if (n == count)
+            {
+                return 1.0;
+            }
+
+            double value = 0.0;
+
+            for (int i = 0; i < n; i++)
+            {
+                value += 1 / Math.Pow(2, i + 1);
+            }
+
+            return value;
         }
 
         [ObservableAsProperty]
@@ -149,9 +239,10 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public double OuterAngle { get; set; }
 
-        public string CountMode => _countMode;
+        [Reactive]
+        public string CountMode { get; set; }
 
-        public IList<string> AvailableCountModes => new[] { "Equal", "Radial" };
+        public IList<string> AvailableCountModes => new[] { "None", "Equal", "Geometric" };
 
         [Reactive]
         public int AreaCount { get; set; }
