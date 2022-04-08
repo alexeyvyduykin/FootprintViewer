@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:icons="using:Material.Icons.Avalonia"            
              mc:Ignorable="d" d:DesignWidth="380"  
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView">
@@ -11,16 +12,47 @@
   <Design.DataContext>
     <vmd:DesignTimeUserGeometryInfo/>
   </Design.DataContext>
-  
+
+  <UserControl.Resources>
+    <selectors:UserGeometryInfoIconSelector x:Key="UserGeometryInfoIconSelector">
+      <DataTemplate x:Key="Point">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
+        </Viewbox>
+      </DataTemplate>
+      <DataTemplate x:Key="Rectangle">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-rectangle-o}"/>
+        </Viewbox>
+      </DataTemplate>
+      <DataTemplate x:Key="Polygon">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-regular-shape-o}"/>
+        </Viewbox>
+      </DataTemplate>
+      <DataTemplate x:Key="Circle">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconCircle}"/>
+        </Viewbox>
+      </DataTemplate>
+    </selectors:UserGeometryInfoIconSelector>
+  </UserControl.Resources>
+
   <styles:Card x:Name="MainCard">
-    <Grid ColumnDefinitions="*,Auto">
-      <StackPanel>
+    <Grid ColumnDefinitions="Auto,*,Auto">
+
+      <Grid Width="32" Height="32">
+        <ContentControl Content="{Binding}"
+                        ContentTemplate="{StaticResource UserGeometryInfoIconSelector}"/>
+      </Grid>
+        
+      <StackPanel Grid.Column="1" Margin="4,0,0,0">
         <TextBlock x:Name="TypeTextBlock" Classes="Headline6"/>
         <TextBlock x:Name="NameTextBlock" Classes="Body2"/>
       </StackPanel>
       <Button x:Name="RemoveButton"              
               Classes="Flat"           
-              Grid.Column="1">             
+              Grid.Column="2">             
           <icons:MaterialIcon Width="20" Height="20" Foreground="Red" Kind="CloseThick" /> 
       </Button>
     </Grid>

@@ -33,9 +33,10 @@
       <StackPanel>                                                           
         <WrapPanel>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconZoomIn}"/>             
-          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomOut}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomOut}"/>                               
           <ContentPresenter Classes="small" Content="{DynamicResource IconAddRectangle}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconAddPolygon}"/>             
+          <ContentPresenter Classes="small" Content="{DynamicResource IconCircle}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconAddCircle}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconScale}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconChevronLeft}"/>             
@@ -60,11 +61,11 @@
           <ContentPresenter Classes="small" Content="{DynamicResource IconGrid}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconToday}"/>             
           <ContentPresenter Classes="small" Content="{DynamicResource IconSquare}"/>             
-          <ContentPresenter Classes="small" Content="{DynamicResource IconCircle}"/>
+          <ContentPresenter Classes="small" Content="{DynamicResource IconBorderCircle}"/>
 
           <Border Width="36" Height="36" Background="#373737" Margin="1" Padding="2">
             <Panel>
-              <ContentPresenter Classes="t1" Content="{DynamicResource IconCircle}"/>
+              <ContentPresenter Classes="t1" Content="{DynamicResource IconBorderCircle}"/>
               <ContentPresenter Classes="t1" Margin="8.5" Content="{DynamicResource IconSquare}"/>
             </Panel>
           </Border>
@@ -78,6 +79,18 @@
           <Viewbox Width="46" Height="46" Margin="1">
             <Border Background="#373737">
               <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>
+            </Border>
+          </Viewbox>
+
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-regular-shape-o}"/>
+            </Border>
+          </Viewbox>
+
+          <Viewbox Width="46" Height="46" Margin="1">
+            <Border Background="#373737">
+              <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-rectangle-o}"/>
             </Border>
           </Viewbox>
 
@@ -228,7 +241,7 @@
         </DrawingGroup>
       </DrawingImage.Drawing>
     </DrawingImage>
-
+    
     <DrawingImage x:Key="IconAddRectangle">
       <DrawingImage.Drawing>
         <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
@@ -238,6 +251,13 @@
     <DrawingImage x:Key="IconAddPolygon">
       <DrawingImage.Drawing>
         <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z" />
+      </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="IconCircle">
+      <DrawingImage.Drawing>
+        <GeometryDrawing Brush="{StaticResource IconMainBrush}" 
+                         Geometry="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
       </DrawingImage.Drawing>
     </DrawingImage>
 
@@ -450,7 +470,7 @@
       </DrawingImage.Drawing>
     </DrawingImage>
 
-    <DrawingImage x:Key="IconCircle">
+    <DrawingImage x:Key="IconBorderCircle">
       <DrawingImage.Drawing>
         <DrawingGroup Opacity="0.2">
           <GeometryDrawing Geometry="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z">
@@ -484,6 +504,28 @@
           <DrawingGroup Opacity="1">
             <GeometryDrawing Brush="{StaticResource IconMainBrush}"
                              Geometry="M 17.089588,1.8528582 C 16.132913,1.7932392 15.158141,2.007996 14.29076,2.5052019 12.546087,3.5051682 11.570713,5.4524323 11.814197,7.4485612 l 7.556641,81.0878898 c 0.48303,3.937156 5.136915,5.772128 8.175781,3.222657 l 15.946895,-12.931641 7.15039,12.384765 c 4.111755,7.121766 10.636412,8.871528 17.758184,4.759767 7.121772,-4.111753 8.869938,-10.637998 4.758183,-17.759767 l -7.125,-12.339843 18.896114,-7.244141 c 3.72734,-1.356999 4.466991,-6.306465 1.298828,-8.693359 L 19.7849,2.8469984 C 18.985961,2.2459489 18.046263,1.9124768 17.089588,1.8528582 Z" />
+          </DrawingGroup>
+        </DrawingGroup>
+      </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="fg-regular-shape-o">
+      <DrawingImage.Drawing>
+        <DrawingGroup>
+          <DrawingGroup Opacity="1">
+            <GeometryDrawing Brush="{StaticResource IconMainBrush}"
+                             Geometry="M 50.099609,11.501953 a 3.50035,3.50035 0 0 0 -2.15625,0.666016 L 11.140625,38.90625 A 3.50035,3.50035 0 0 0 9.8710938,42.818359 L 23.927734,86.082031 A 3.50035,3.50035 0 0 0 27.255859,88.5 h 45.488282 a 3.50035,3.50035 0 0 0 3.328125,-2.417969 L 90.128906,42.818359 A 3.50035,3.50035 0 0 0 88.859375,38.90625 L 52.056641,12.167969 A 3.50035,3.50035 0 0 0 50.099609,11.501953 Z M 50,19.326172 82.6875,43.074219 70.201172,81.5 H 29.798828 L 17.3125,43.074219 Z" />
+          </DrawingGroup>
+        </DrawingGroup>
+      </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="fg-rectangle-o">
+      <DrawingImage.Drawing>
+        <DrawingGroup>
+          <DrawingGroup Opacity="1">
+            <GeometryDrawing Brush="{StaticResource IconMainBrush}"
+                             Geometry="M 8.5 22.5 A 3.50035 3.50035 0 0 0 5 26 L 5 74 A 3.50035 3.50035 0 0 0 8.5 77.5 L 91.5 77.5 A 3.50035 3.50035 0 0 0 95 74 L 95 26 A 3.50035 3.50035 0 0 0 91.5 22.5 L 8.5 22.5 z M 12 29.5 L 88 29.5 L 88 70.5 L 12 70.5 L 12 29.5 z" />
           </DrawingGroup>
         </DrawingGroup>
       </DrawingImage.Drawing>
