@@ -13,7 +13,7 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundStationAreaItem
     {
-        public Mapsui.Styles.Color? Color { get; set; }
+        public Mapsui.Styles.Color Color { get; set; } = new Mapsui.Styles.Color();
 
         public double Angle { get; set; }
     }
@@ -23,7 +23,6 @@ namespace FootprintViewer.ViewModels
         private readonly Coordinate _center;
         private readonly string _name;
         private readonly double[] _defaultAngles;
-        private bool _isBlock = false;
 
         public GroundStationInfo(GroundStation groundStation)
         {
@@ -43,6 +42,8 @@ namespace FootprintViewer.ViewModels
 
             Change = ReactiveCommand.Create(ChangeImpl);
             Update = ReactiveCommand.Create(UpdateImpl);
+            ChangeAreaItems = ReactiveCommand.Create<List<GroundStationAreaItem>, List<GroundStationAreaItem>>(s => s);
+            ChangeAreaItems.ToPropertyEx(this, x => x.AreaItems);
 
             this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
                 .Throttle(TimeSpan.FromSeconds(1.5))
@@ -75,35 +76,29 @@ namespace FootprintViewer.ViewModels
             });
 
             this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
-                .Where(_ => _isBlock == false)
+                .Where(s => s.Item4 == "Equal")
+                .Select(s => CreateAreaItemsEqualMode(s.Item1, s.Item2, s.Item3))
+                .InvokeCommand(ChangeAreaItems);
+
+            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+                .Where(s => s.Item4 == "Geometric")
+                .Select(s => CreateAreaItemsGeometricMode(s.Item1, s.Item2, s.Item3))
+                .InvokeCommand(ChangeAreaItems);
+
+            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+                .Where(s => s.Item4 == "None")
                 .Select(s =>
                 {
-                    if (s.Item4 == "Equal")
-                    {
-                        return CreateAreaItemsEqualMode(s.Item1, s.Item2, s.Item3);
-                    }
-                    else if (s.Item4 == "Geometric")
-                    {
-                        return CreateAreaItemsGeometricMode(s.Item1, s.Item2, s.Item3);
-                    }
-                    else
-                    {
-                        // HACK: change property without callback
-                        _isBlock = true;
-
-                        InnerAngle = _defaultAngles.First();
-
-                        OuterAngle = _defaultAngles.Last();
-
-                        AreaCount = _defaultAngles.Length - 1;
-
-                        _isBlock = false;
-
-                        return CreateAreaItems(_defaultAngles);
-                    }
+                    InnerAngle = _defaultAngles.First();
+                    OuterAngle = _defaultAngles.Last();
+                    AreaCount = _defaultAngles.Length - 1;
+                    return CreateAreaItems(_defaultAngles);
                 })
-                .ToPropertyEx(this, x => x.AreaItems);
+                .InvokeCommand(ChangeAreaItems);
         }
+
+
+        private ReactiveCommand<List<GroundStationAreaItem>, List<GroundStationAreaItem>> ChangeAreaItems { get; }
 
         public double[] GetAngles()
         {
