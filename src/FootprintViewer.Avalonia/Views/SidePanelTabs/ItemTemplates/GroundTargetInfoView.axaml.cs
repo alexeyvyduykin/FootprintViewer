@@ -16,10 +16,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
     {
         private Card MainCard => this.FindControl<Card>("MainCard");
 
-        private TextBlock TypeTextBlock => this.FindControl<TextBlock>("TypeTextBlock");
-
-        private TextBlock NameTextBlock => this.FindControl<TextBlock>("NameTextBlock");
-
         private static GroundTargetViewer? _groundTargetViewer;
 
         public GroundTargetInfoView()
@@ -32,13 +28,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
             this.WhenActivated(disposables =>
             {
-                this.MainCard.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
-                
-                this.MainCard.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
+                MainCard.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
 
-                this.OneWayBind(ViewModel, vm => vm.Type, v => v.TypeTextBlock.Text, value => ((Data.GroundTargetType)value).ToString()).DisposeWith(disposables);
-
-                this.OneWayBind(ViewModel, vm => vm.Name, v => v.NameTextBlock.Text).DisposeWith(disposables);
+                MainCard.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
             });
         }
 
