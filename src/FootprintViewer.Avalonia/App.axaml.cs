@@ -46,7 +46,7 @@ namespace FootprintViewer.Avalonia
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(options);
                 footprintDataSource = new Data.Sources.FootprintDataSource(options);
                 userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
-                groundStationDataSource = new Data.Sources.RandomGroundStationDataSource();
+                groundStationDataSource = new Data.Sources.GroundStationDataSource(options);
             }
             else
             {
