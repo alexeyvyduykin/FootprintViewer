@@ -121,7 +121,7 @@ namespace FootprintViewer.Layers
                 {
                     //var ring = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
 
-                    var res = points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate());
+                    var res = points.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
                     var poly = new GeometryFactory().CreatePolygon(res.ToArray().ToClosedCoordinates());
 
                     //multi.Polygons.Add(new Polygon()
@@ -157,14 +157,14 @@ namespace FootprintViewer.Layers
               //      var rings = gs.Areas[i - 1].Select(s =>
               //        new LinearRing(s.Reverse().Select(s => SphericalMercator.FromLonLat(s.X, s.Y)))).ToList();
 
-                    var rings = gs.Areas[i - 1].Select(s => s.Reverse().Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate())).ToList();
+                    var rings = gs.Areas[i - 1].Select(s => s.Reverse().Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate())).ToList();
 
                     int index = 0;
 
                     foreach (var points1 in gs.Areas[i])
                     {
                         //var ring = new LinearRing(points1.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
-                        var res = points1.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate());
+                        var res = points1.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
 
                         if (index < rings.Count)
                         {
@@ -222,7 +222,7 @@ namespace FootprintViewer.Layers
 
                 foreach (var item in gs.InnerBorder)
                 {
-                    var res = item.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate());
+                    var res = item.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
 
                     var line = new GeometryFactory().CreateLineString(res.ToArray());
                     lineStrings.Add(line);
@@ -247,7 +247,7 @@ namespace FootprintViewer.Layers
 
                 foreach (var item in gs.OuterBorder)
                 {
-                    var res = item.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate());
+                    var res = item.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
 
                     var line = new GeometryFactory().CreateLineString(res.ToArray());
                     lineStrings.Add(line);

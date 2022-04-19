@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Science
 {
@@ -25,17 +23,14 @@ namespace FootprintViewer.Data.Science
             // Arbitrary years used for error checking
             if (year < 1900 || year > 2100)
             {
-                throw new ArgumentOutOfRangeException("year");
+                throw new ArgumentOutOfRangeException(nameof(year));
             }
 
             // The last day of a leap year is day 366
             if (day < 1.0 || day >= 367.0)
             {
-                throw new ArgumentOutOfRangeException("day");
+                throw new ArgumentOutOfRangeException(nameof(day));
             }
-
-            this.Year = year;
-            this.Day = day;
 
             year--;
 
@@ -70,13 +65,13 @@ namespace FootprintViewer.Data.Science
         public double ToGmst()
         {
             // greenwich mean sidereal time
-            return Meeus.gast2(Date, 0.0, 0) * 360.0 / 24.0;
+            return Meeus.Gast2(Date, 0.0, 0) * 360.0 / 24.0;
         }
 
         public double ToGast()
         {
             // greenwich apparent sidereal time
-            return Meeus.gast2(Date, 0.0, 1) * 360.0 / 24.0;
+            return Meeus.Gast2(Date, 0.0, 1) * 360.0 / 24.0;
         }
 
         public double Date { get; private set; } // Julian date
@@ -86,30 +81,27 @@ namespace FootprintViewer.Data.Science
         public double FromJan1_12h_1900() { return Date - EPOCH_JAN1_12H_1900; }
         public double FromJan1_12h_2000() { return Date - EPOCH_JAN1_12H_2000; }
         public double FromJ2000() { return Date - EPOCH_J2000; }
-
-        private int Year { get; set; }    // Year including century
-        private double Day { get; set; }  // Day of year, 1.0 = Jan 1 00h
     }
 
     internal static class Meeus
     {
-        private static List<List<double>> xnod = new List<List<double>>();
-        private static List<double> sdata = new List<double>();
+        private static List<List<double>> xnod = new();
+        private static List<double> sdata = new();
 
-        public static double julian(double day, int year)
+        public static double Julian(double day, int year)
         {
             // Julian date
 
             // Arbitrary years used for error checking
             if (year < 1900 || year > 2100)
             {
-                throw new ArgumentOutOfRangeException("year");
+                throw new ArgumentOutOfRangeException(nameof(year));
             }
 
             // The last day of a leap year is day 366
             if (day < 1.0 || day >= 367.0)
             {
-                throw new ArgumentOutOfRangeException("day");
+                throw new ArgumentOutOfRangeException(nameof(day));
             }
 
             year--;
@@ -122,7 +114,7 @@ namespace FootprintViewer.Data.Science
             return jdate;
         }
 
-        public static double gast2(double tjdh, double tjdl, int k)
+        public static double Gast2(double tjdh, double tjdl, int k)
         {
             // this function computes the greenwich sidereal time
             // (either mean or apparent) at julian date tjdh + tjdl
@@ -167,7 +159,7 @@ namespace FootprintViewer.Data.Science
 
                 // obtain nutation parameters in seconds of arc
 
-                var res = nod(tjd, 1);
+                var res = Nod(tjd, 1);
                 double psi = res.Item1;
                 double eps = res.Item2;
 
@@ -199,7 +191,7 @@ namespace FootprintViewer.Data.Science
             return gst;
         }
 
-        public static Tuple<double, double> nod(double jdate, int inutate)
+        public static Tuple<double, double> Nod(double jdate, int inutate)
         {
             // 79 - 106. 1980 iau theory of nutation.
 
@@ -338,7 +330,7 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
             double tjcent = (jdate - 2451545.0) / 36525.0;
 
             // get fundamental arguments
-            var res = funarg(tjcent);
+            var res = Funarg(tjcent);
             double l = res.Item1;
             double lp = res.Item2;
             double f = res.Item3;
@@ -377,7 +369,7 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
 
         }
 
-        public static Tuple<double, double, double> sun2(double jdate, int suncoef)
+        public static Tuple<double, double, double> Sun2(double jdate, int suncoef)
         {
             //    function[rasc, decl, rsun] = sun2(jdate)
 
@@ -542,7 +534,7 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
                 dr * Math.Sin(decl));                  // rsun
         }
 
-        public static double mltan2raan(double jdate, double mltan, int suncoef, int inutate)
+        public static double Mltan2raan(double jdate, double mltan, int suncoef, int inutate)
         {
             //  function raan = mltan2raan(jdate, mltan)
 
@@ -566,7 +558,7 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
 
             // compute apparent right ascension of the sun (radians)
 
-            var res = sun2(jdate, suncoef);
+            var res = Sun2(jdate, suncoef);
             double rasc_ts = res.Item1;
             double decl = res.Item2;
             double rsun = res.Item3;
@@ -592,7 +584,7 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
 
             // nutations
 
-            var rrr = nod(jdate, inutate);
+            var rrr = Nod(jdate, inutate);
             double psi = rrr.Item1;
             double eps = rrr.Item2;
 
@@ -642,11 +634,11 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
 
             // julian date of ascending node crossing
 
-            double jdate_an = julian(dt.DayOfYear + dt.TimeOfDay.TotalDays, dt.Year);
+            double jdate_an = Julian(dt.DayOfYear + dt.TimeOfDay.TotalDays, dt.Year);
 
             // greenwich apparent sidereal time at ascending node
 
-            double gast_an = gast2(jdate_an, 0.0, inutate);
+            double gast_an = Gast2(jdate_an, 0.0, inutate);
 
 
             /////////////////
@@ -655,10 +647,10 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
 
             double mltan_an = dtloc.TimeOfDay.TotalHours;// dtloc.Hour + dtloc.Minute / 60.0 + dtloc.Second / 3600.0;
 
-            return mltan2raan(jdate_an, mltan_an, suncoef, inutate);  // raan
+            return Mltan2raan(jdate_an, mltan_an, suncoef, inutate);  // raan
         }
 
-        public static Tuple<double, double, double, double, double> funarg(double t)
+        public static Tuple<double, double, double, double, double> Funarg(double t)
         {
             //            function[el, elprim, f, d, omega] = funarg(t)
 
@@ -723,5 +715,4 @@ new List<double> { -1.0, -1.0,  0.0,  2.0,  1.0,       1.0,    0.00,      0.0,  
             return Tuple.Create(arg[0], arg[1], arg[2], arg[3], arg[4]);
         }
     }
-
 }

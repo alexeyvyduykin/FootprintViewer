@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Data.Science
 {
@@ -12,12 +10,12 @@ namespace FootprintViewer.Data.Science
 
     public class Geo2D
     {
-        public static Geo2D Empty = new Geo2D();
+        public static Geo2D Empty => new();
 
         private Geo2D()
         {
-            Lon = Double.NaN;
-            Lat = Double.NaN;
+            Lon = double.NaN;
+            Lat = double.NaN;
             Type = GeoCoordTypes.Radians;
         }
 
@@ -34,6 +32,12 @@ namespace FootprintViewer.Data.Science
             this.Lat = geo.Lat;
             this.Type = geo.Type;
         }
+
+        public GeoCoordTypes Type { get; protected set; }
+
+        public double Lon { get; protected set; }
+
+        public double Lat { get; protected set; }
 
         //public Geo2D LongitudeNormalize()
         //{
@@ -74,14 +78,14 @@ namespace FootprintViewer.Data.Science
 
         public Geo2D ToRadians()
         {
-            Geo2D point = new Geo2D(Lon, Lat, Type);
+            var point = new Geo2D(Lon, Lat, Type);
             point.Radians();
             return point;
         }
 
         public Geo2D ToDegrees()
         {
-            Geo2D point = new Geo2D(Lon, Lat, Type);
+            var point = new Geo2D(Lon, Lat, Type);
             point.Degrees();
             return point;
         }
@@ -131,10 +135,5 @@ namespace FootprintViewer.Data.Science
             }
 
         }
-
-        public GeoCoordTypes Type { get; protected set; }
-
-        public double Lon { get; protected set; }
-        public double Lat { get; protected set; }
     }
 }

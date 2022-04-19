@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer.Data.Science
 {
@@ -19,6 +18,14 @@ namespace FootprintViewer.Data.Science
         public PRDCTSatellite(Orbit orbit, int days) : this(orbit, orbit.Epoch, orbit.Epoch.AddDays(days), 0.0) { }
 
         public PRDCTSatellite(Orbit orbit, int days, double trueAnomaly) : this(orbit, orbit.Epoch, orbit.Epoch.AddDays(days), trueAnomaly) { }
+
+        public Orbit Orbit { get; }
+
+        public double TrueAnomaly { get; }
+
+        public DateTime StartTime { get; }
+
+        public DateTime StopTime { get; }
 
         public double TrueTimePastAN
         {
@@ -51,9 +58,9 @@ namespace FootprintViewer.Data.Science
 
             for (int i = 0; i < numNodes; i++)
             {
-                Node node = new Node();
+                var node = new Node();
 
-                List<Tuple<double, double, int>> tq = new List<Tuple<double, double, int>>();
+                var tq = new List<Tuple<double, double, int>>();
 
                 for (int j = 1; j <= 4; j++)
                 {
@@ -148,13 +155,11 @@ namespace FootprintViewer.Data.Science
             return nodes;
         }
 
-        public Orbit Orbit { get; }
-
         public List<Geo2D> GetGroundTrack(int node)
         {
-            List<Geo2D> points = new List<Geo2D>();
+            var points = new List<Geo2D>();
 
-            Track track = new Track(Orbit);
+            var track = new Track(Orbit);
 
             var nodes = Nodes();
 
@@ -187,12 +192,11 @@ namespace FootprintViewer.Data.Science
             return points;
         }
 
-
         public List<Geo2D> GetGroundTrack(int node, int parts)
         {
-            List<Geo2D> points = new List<Geo2D>();
+            var points = new List<Geo2D>();
 
-            Track track = new Track(Orbit);
+            var track = new Track(Orbit);
 
             var nodes = Nodes();
 
@@ -201,8 +205,8 @@ namespace FootprintViewer.Data.Science
                 return points;
             }
 
-            var ttt1 = nodes[node].Quarts.First().TimeBegin;
-            var ttt2 = nodes[node].Quarts[nodes[node].Quarts.Count - 1].TimeEnd;
+            var ttt1 = nodes[node].Quarts[0].TimeBegin;
+            var ttt2 = nodes[node].Quarts[^1].TimeEnd;
 
             double step = (ttt2 - ttt1) / parts;
 
@@ -213,7 +217,7 @@ namespace FootprintViewer.Data.Science
                 double t1 = nodes[node].Quarts[q].TimeBegin;
                 double t2 = nodes[node].Quarts[q].TimeEnd;
 
-                t1 = t1 + last;
+                t1 += last;
 
                 for (double t = t1; t <= t2; t += step)
                 {
@@ -258,6 +262,7 @@ namespace FootprintViewer.Data.Science
 
             return points;
         }
+
         /// <summary>
         /// lon(rad) => (-PI; +PI)
         /// </summary>
@@ -266,9 +271,9 @@ namespace FootprintViewer.Data.Science
         /// <returns></returns>
         public List<Geo2D> GetGroundTrackDynStep1(int node, double seconds)
         {
-            List<Geo2D> points = new List<Geo2D>();
+            var points = new List<Geo2D>();
 
-            Track track = new Track(Orbit);
+            var track = new Track(Orbit);
 
             var nodes = Nodes();
 
@@ -277,8 +282,8 @@ namespace FootprintViewer.Data.Science
                 return points;
             }
 
-            var ttt1 = nodes[node].Quarts.First().TimeBegin;
-            var ttt2 = nodes[node].Quarts[nodes[node].Quarts.Count - 1].TimeEnd;
+            var ttt1 = nodes[node].Quarts[0].TimeBegin;
+            var ttt2 = nodes[node].Quarts[^1].TimeEnd;
 
             double angle = seconds * 2.0 * Math.PI / (ttt2 - ttt1);
             double sec = 1.0 / Math.Cos(angle);
@@ -292,7 +297,7 @@ namespace FootprintViewer.Data.Science
                 double t1 = nodes[node].Quarts[q].TimeBegin;
                 double t2 = nodes[node].Quarts[q].TimeEnd;
 
-                t1 = t1 + last;
+                t1 += last;
 
                 for (double t = t1; t <= t2; t += step)
                 {
@@ -340,15 +345,14 @@ namespace FootprintViewer.Data.Science
 
             return points;
         }
-
 
         public List<Geo2D> GetGroundTrackDynStep(int node, double seconds, Func<Geo2D, Geo2D>? converter = null)
         {
-            converter = converter ?? ScienceConverters.From0To360;
+            converter ??= ScienceConverters.From0To360;
 
-            List<Geo2D> points = new List<Geo2D>();
+            var points = new List<Geo2D>();
 
-            Track track = new Track(Orbit);
+            var track = new Track(Orbit);
 
             var nodes = Nodes();
 
@@ -357,8 +361,8 @@ namespace FootprintViewer.Data.Science
                 return points;
             }
 
-            var ttt1 = nodes[node].Quarts.First().TimeBegin;
-            var ttt2 = nodes[node].Quarts[nodes[node].Quarts.Count - 1].TimeEnd;
+            var ttt1 = nodes[node].Quarts[0].TimeBegin;
+            var ttt2 = nodes[node].Quarts[^1].TimeEnd;
 
             double angle = seconds * 2.0 * Math.PI / (ttt2 - ttt1);
             double sec = 1.0 / Math.Cos(angle);
@@ -372,7 +376,7 @@ namespace FootprintViewer.Data.Science
                 double t1 = nodes[node].Quarts[q].TimeBegin;
                 double t2 = nodes[node].Quarts[q].TimeEnd;
 
-                t1 = t1 + last;
+                t1 += last;
 
                 for (double t = t1; t <= t2; t += step)
                 {
@@ -397,13 +401,5 @@ namespace FootprintViewer.Data.Science
 
             return points;
         }
-
-
-        public double TrueAnomaly { get; }
-
-        public DateTime StartTime { get; }
-
-        public DateTime StopTime { get; }
     }
-
 }

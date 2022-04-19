@@ -1,5 +1,4 @@
-﻿using Mapsui;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,10 +12,10 @@ namespace FootprintViewer.Data.Science
 
         public double Angle { get; set; }
 
-        public IEnumerable<IEnumerable<MPoint>> Borders { get; init; } = new List<List<MPoint>>();
+        public IEnumerable<IEnumerable<(double lon, double lat)>> Borders { get; init; } = new List<List<(double, double)>>();
 
         // Areas count: 1 or 2
-        public IEnumerable<IEnumerable<MPoint>> Areas { get; init; } = new List<List<MPoint>>();
+        public IEnumerable<IEnumerable<(double lon, double lat)>> Areas { get; init; } = new List<List<(double, double)>>();
     }
 
     internal static class EarthGeometry
@@ -41,13 +40,13 @@ namespace FootprintViewer.Data.Science
 
             var count = lons.Length;
 
-            var borders = new List<List<MPoint>>();
-            var area = new List<List<MPoint>>();
+            var borders = new List<List<(double, double)>>();
+            var area = new List<List<(double, double)>>();
 
             if (isNorth == false && isSouth == false)
             {
-                var temp = new List<MPoint>();
-                var areas = new List<MPoint>[2] { new List<MPoint>(), new List<MPoint>() };
+                var temp = new List<(double, double)>();
+                var areas = new List<(double, double)>[2] { new List<(double, double)>(), new List<(double, double)>() };
                 int index = 0;
 
                 double begin = lons[0];
@@ -68,33 +67,33 @@ namespace FootprintViewer.Data.Science
 
                         if (end.lon - begin >= 0)
                         {
-                            temp.Add(new MPoint(180, cutLat));
+                            temp.Add((180, cutLat));
 
                             borders.Add(temp);
                             areas[index].AddRange(temp);
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(-180, cutLat)
+                                (-180, cutLat)
                             };
                         }
                         else
                         {
-                            temp.Add(new MPoint(-180, cutLat));
+                            temp.Add((-180, cutLat));
 
                             borders.Add(temp);
                             areas[index].AddRange(temp);
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(180, cutLat)
+                                (180, cutLat)
                             };
                         }
 
                         index = Check(index);
                     }
 
-                    temp.Add(new MPoint(lonn, lats[i]));
+                    temp.Add((lonn, lats[i]));
 
                     end = (begin, lats[i]);
                 }
@@ -104,18 +103,18 @@ namespace FootprintViewer.Data.Science
 
                 if (areas[1].Count == 0)
                 {
-                    area = new List<List<MPoint>>() { areas[0] };
+                    area = new List<List<(double, double)>>() { areas[0] };
 
                 }
                 else
                 {
-                    area = new List<List<MPoint>>() { areas[0], areas[1] };
+                    area = new List<List<(double, double)>>() { areas[0], areas[1] };
                 }
             }
             else if (isNorth == true)
             {
-                var area1 = new List<MPoint>();
-                var temp = new List<MPoint>();
+                var area1 = new List<(double, double)>();
+                var temp = new List<(double, double)>();
 
                 double begin = lons[0];
                 (double lon, double lat) end = (lons[0], lats[0]);
@@ -136,51 +135,51 @@ namespace FootprintViewer.Data.Science
                         if (end.lon - begin >= 0)
                         {
 
-                            temp.Add(new MPoint(180, cutLat));
-                            area1.Add(new MPoint(180, cutLat));
+                            temp.Add((180, cutLat));
+                            area1.Add((180, cutLat));
                             borders.Add(temp);
 
-                            area1.Add(new MPoint(+180, 90));
-                            area1.Add(new MPoint(-180, 90));
+                            area1.Add((+180, 90));
+                            area1.Add((-180, 90));
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(-180, cutLat)
+                                (-180, cutLat)
                             };
-                            area1.Add(new MPoint(-180, cutLat));
+                            area1.Add((-180, cutLat));
                         }
                         else
                         {
-                            temp.Add(new MPoint(-180, cutLat));
-                            area1.Add(new MPoint(-180, cutLat));
+                            temp.Add((-180, cutLat));
+                            area1.Add((-180, cutLat));
 
                             borders.Add(temp);
 
-                            area1.Add(new MPoint(-180, 90));
-                            area1.Add(new MPoint(+180, 90));
+                            area1.Add((-180, 90));
+                            area1.Add((+180, 90));
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(180, cutLat)
+                                (180, cutLat)
                             };
-                            area1.Add(new MPoint(180, cutLat));
+                            area1.Add((180, cutLat));
                         }
 
                     }
 
-                    temp.Add(new MPoint(lonn, lats[i]));
-                    area1.Add(new MPoint(lonn, lats[i]));
+                    temp.Add((lonn, lats[i]));
+                    area1.Add((lonn, lats[i]));
 
                     end = (begin, lats[i]);
                 }
 
                 borders.Add(temp);
-                area = new List<List<MPoint>>() { area1 };
+                area = new List<List<(double, double)>>() { area1 };
             }
             else if (isSouth == true)
             {
-                var area1 = new List<MPoint>();
-                var temp = new List<MPoint>();
+                var area1 = new List<(double, double)>();
+                var temp = new List<(double, double)>();
 
                 double begin = lons[0];
                 (double lon, double lat) end = (lons[0], lats[0]);
@@ -200,46 +199,45 @@ namespace FootprintViewer.Data.Science
 
                         if (end.lon - begin >= 0)
                         {
-
-                            temp.Add(new MPoint(180, cutLat));
-                            area1.Add(new MPoint(180, cutLat));
+                            temp.Add((180, cutLat));
+                            area1.Add((180, cutLat));
                             borders.Add(temp);
 
-                            area1.Add(new MPoint(+180, Bottom));
-                            area1.Add(new MPoint(-180, Bottom));
+                            area1.Add((+180, Bottom));
+                            area1.Add((-180, Bottom));
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(-180, cutLat)
+                                (-180, cutLat)
                             };
-                            area1.Add(new MPoint(-180, cutLat));
+                            area1.Add((-180, cutLat));
                         }
                         else
                         {
-                            temp.Add(new MPoint(-180, cutLat));
-                            area1.Add(new MPoint(-180, cutLat));
+                            temp.Add((-180, cutLat));
+                            area1.Add((-180, cutLat));
 
                             borders.Add(temp);
 
-                            area1.Add(new MPoint(+180, Bottom));
-                            area1.Add(new MPoint(-180, Bottom));
+                            area1.Add((+180, Bottom));
+                            area1.Add((-180, Bottom));
 
-                            temp = new List<MPoint>
+                            temp = new List<(double, double)>
                             {
-                                new MPoint(180, cutLat)
+                                (180, cutLat)
                             };
-                            area1.Add(new MPoint(180, cutLat));
+                            area1.Add((180, cutLat));
                         }
                     }
 
-                    temp.Add(new MPoint(lonn, lats[i]));
-                    area1.Add(new MPoint(lonn, lats[i]));
+                    temp.Add((lonn, lats[i]));
+                    area1.Add((lonn, lats[i]));
 
                     end = (begin, lats[i]);
                 }
 
                 borders.Add(temp);
-                area = new List<List<MPoint>>() { area1 };
+                area = new List<List<(double, double)>>() { area1 };
             }
 
             return new EarthCircle()
