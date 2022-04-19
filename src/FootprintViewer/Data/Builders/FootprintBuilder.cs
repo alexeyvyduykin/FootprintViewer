@@ -8,7 +8,7 @@ namespace FootprintViewer.Data
 {
     internal static class FootprintBuilder
     {
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
         private static readonly double _size = 1.2;
         private static readonly double _r = Math.Sqrt(_size * _size / 2.0);
         private static readonly int _countFootprints = 440;
@@ -67,15 +67,12 @@ namespace FootprintViewer.Data
 
                         var (t, center, border) = GetRandomFootprint(sat, bands[(int)sensorIndex], nodes[i].Value - 1, u);
 
-                        //var ring = new LinearRing(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray());
-                        //var polygon = new Polygon(ring);
-                        var line = new LineString(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray());
                         footprints.Add(new Footprint()
                         {
                             Name = $"Footprint{++footprintCount:0000}",
                             SatelliteName = satellite.Name,
                             Center = center,
-                            Points = line,//border.Select(s => new NetTopologySuite.Geometries.Point(s.Lon, s.Lat)),
+                            Points = new LineString(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray()),
                             Begin = epoch.AddSeconds(t - duration / 2.0),
                             Duration = duration,
                             Node = nodes[i].Value,
@@ -130,7 +127,7 @@ namespace FootprintViewer.Data
             var res1 = new Geo2D(lon1, center.Lat + dlat1, GeoCoordTypes.Degrees);
             list.Add(res1);
 
-            a = a - Math.PI / 2.0;
+            a -= Math.PI / 2.0;
 
             var (dlon2, dlat2) = (_r * Math.Cos(a), _r * Math.Sin(a));
             var lon2 = center.Lon + dlon2;
@@ -149,7 +146,7 @@ namespace FootprintViewer.Data
             var res2 = new Geo2D(lon2, center.Lat + dlat2, GeoCoordTypes.Degrees);
             list.Add(res2);
 
-            a = a - Math.PI / 2.0;
+            a -= Math.PI / 2.0;
 
             var (dlon3, dlat3) = (_r * Math.Cos(a), _r * Math.Sin(a));
             var lon3 = center.Lon + dlon3;
@@ -168,7 +165,7 @@ namespace FootprintViewer.Data
             var res3 = new Geo2D(lon3, center.Lat + dlat3, GeoCoordTypes.Degrees);
             list.Add(res3);
 
-            a = a - Math.PI / 2.0;
+            a -= Math.PI / 2.0;
 
             var (dlon4, dlat4) = (_r * Math.Cos(a), _r * Math.Sin(a));
             var lon4 = center.Lon + dlon4;
@@ -197,7 +194,7 @@ namespace FootprintViewer.Data
 
             var angle = GetRandomAngle(a1, a2);
 
-            CustomTrack track = new CustomTrack(satellite.Orbit, angle, band.NearLine.Direction);
+            var track = new CustomTrack(satellite.Orbit, angle, band.NearLine.Direction);
 
             var (t, p) = GetGroundPoint(node, u, track, satellite);
 

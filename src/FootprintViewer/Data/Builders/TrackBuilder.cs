@@ -30,7 +30,7 @@ namespace FootprintViewer.Data
 
                 tracks.Add(node.Value, new List<List<(double, double)>>());
 
-                List<(double, double)> temp = new List<(double, double)>();
+                var temp = new List<(double, double)>();
 
                 Geo2D old = coords[0], cur;
                 for (int i = 0; i < coords.Count; i++)
@@ -39,13 +39,13 @@ namespace FootprintViewer.Data
 
                     if (Math.Abs(cur.Lon - old.Lon) >= 3.2)
                     {
-                        double cutLat = linearInterpDiscontLat(old, cur);
+                        double cutLat = LinearInterpDiscontLat(old, cur);
 
                         if (old.Lon > 0.0)
                         {
                             temp.Add((180.0, cutLat * 180.0 / Math.PI));
                             tracks[node.Value].Add(temp);
-                            temp = new List<(double, double)>();
+                            temp = new();
                             temp.Add((-180.0, cutLat * 180.0 / Math.PI));
                             temp.Add((cur.ToDegrees().Lon, cur.ToDegrees().Lat));
                         }
@@ -53,7 +53,7 @@ namespace FootprintViewer.Data
                         {
                             temp.Add((-180.0, cutLat * 180.0 / Math.PI));
                             tracks[node.Value].Add(temp);
-                            temp = new List<(double, double)>();
+                            temp = new();
                             temp.Add((180.0, cutLat * 180.0 / Math.PI));
                             temp.Add((cur.ToDegrees().Lon, cur.ToDegrees().Lat));
                         }
@@ -72,7 +72,7 @@ namespace FootprintViewer.Data
             return tracks;
         }
 
-        private static double linearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
+        private static double LinearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
         {
             Geo2D p1 = pp1.ToRadians(), p2 = pp2.ToRadians();
 

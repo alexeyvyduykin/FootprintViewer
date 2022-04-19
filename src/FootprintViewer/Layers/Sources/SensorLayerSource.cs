@@ -100,7 +100,7 @@ namespace FootprintViewer.Layers
             }
         }
 
-        private Dictionary<int, List<GeometryFeature>> FromStrips(string name, Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
+        private Dictionary<int, List<GeometryFeature>> FromStrips(string name, Dictionary<int, List<List<(double lon, double lat)>>> strips)
         {
             var dict = new Dictionary<int, List<GeometryFeature>>();
             foreach (var item in strips)
@@ -114,7 +114,7 @@ namespace FootprintViewer.Layers
 
                     foreach (var p in ln)
                     {
-                        var point = SphericalMercator.FromLonLat(p.X * ScienceMath.RadiansToDegrees, p.Y * ScienceMath.RadiansToDegrees).ToCoordinate();
+                        var point = SphericalMercator.FromLonLat(p.lon * ScienceMath.RadiansToDegrees, p.lat * ScienceMath.RadiansToDegrees).ToCoordinate();
                         vertices.Add(point);
                     }
 

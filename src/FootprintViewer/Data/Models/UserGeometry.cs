@@ -1,11 +1,10 @@
 ﻿using NetTopologySuite.Geometries;
-using ReactiveUI;
 
 namespace FootprintViewer.Data
 {
     public enum UserGeometryType { Point, Rectangle, Polygon, Circle }
 
-    public class UserGeometry //: ReactiveObject
+    public class UserGeometry
     {
         public string? Name { get; set; }
 

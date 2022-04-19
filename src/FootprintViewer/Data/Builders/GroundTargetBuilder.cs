@@ -2,18 +2,17 @@
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer.Data
 {
     internal static class GroundTargetBuilder
     {
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
         private static readonly int _countTargets = 5000;
 
         public static IEnumerable<GroundTarget> Create(IList<Footprint> footprints)
         {
-            int counts = footprints.Count();
+            int counts = footprints.Count;
 
             int index = 0;
 
@@ -57,7 +56,7 @@ namespace FootprintViewer.Data
                     };
                 case GroundTargetType.Route:
                 {
-                    var list = new List<Point>();
+                    var list = new List<Coordinate>();
                     double r = _random.Next(10, 20 + 1) / 10.0;
                     double d = 2 * r;
 
@@ -72,7 +71,7 @@ namespace FootprintViewer.Data
                         lon0 -= 360;
                     }
 
-                    var begin = new Point(lon0, center.Y);
+                    var begin = new Coordinate(lon0, center.Y);
 
                     var lon1 = center.X + r;
                     if (lon1 < -180)
@@ -85,7 +84,7 @@ namespace FootprintViewer.Data
                         lon1 -= 360;
                     }
 
-                    var end = new Point(lon1, center.Y);
+                    var end = new Coordinate(lon1, center.Y);
 
                     var count = _random.Next(2, 5 + 1);
                     var dd = d / (count + 1);
@@ -107,7 +106,7 @@ namespace FootprintViewer.Data
                             lon -= 360;
                         }
 
-                        var point = new Point(lon, last.Y + yd);
+                        var point = new Coordinate(lon, last.Y + yd);
 
                         list.Add(point);
 
@@ -119,12 +118,12 @@ namespace FootprintViewer.Data
                     {
                         Name = name,
                         Type = GroundTargetType.Route,
-                        Points = new LineString(list.Select(s => new Coordinate(s.X, s.Y)).ToArray()),//Rotate(list, center, _random.Next(0, 360 + 1)),
+                        Points = new LineString(list.ToArray()),//Rotate(list, center, _random.Next(0, 360 + 1)),
                     };
                 }
                 case GroundTargetType.Area:
                 {
-                    var list = new List<Point>();
+                    var list = new List<Coordinate>();
 
                     var angle0 = (double)_random.Next(0, 90 + 1);
                     var vertexCount = _random.Next(4, 10 + 1);
@@ -148,7 +147,7 @@ namespace FootprintViewer.Data
                             lon -= 360;
                         }
 
-                        var point = new Point(lon, center.Y + dlat);
+                        var point = new Coordinate(lon, center.Y + dlat);
 
                         list.Add(point);
 
@@ -159,7 +158,7 @@ namespace FootprintViewer.Data
                     {
                         Name = name,
                         Type = GroundTargetType.Area,
-                        Points = new LineString(list.Select(s => new Coordinate(s.X, s.Y)).ToArray()),
+                        Points = new LineString(list.ToArray()),
                     };
                 }
                 default:
@@ -167,28 +166,28 @@ namespace FootprintViewer.Data
             }
         }
 
-        private static Point Rotate(Point pointToRotate, Point centerPoint, double angleInDegrees)
-        {
-            double angleInRadians = angleInDegrees * (Math.PI / 180);
-            double cosTheta = Math.Cos(angleInRadians);
-            double sinTheta = Math.Sin(angleInRadians);
-            return new NetTopologySuite.Geometries.Point((int)
-                    (cosTheta * (pointToRotate.X - centerPoint.X) -
-                    sinTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.X),
-                    (int)
-                    (sinTheta * (pointToRotate.X - centerPoint.X) +
-                    cosTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.Y)
-            );
-        }
+        //private static Point Rotate(Point pointToRotate, Point centerPoint, double angleInDegrees)
+        //{
+        //    double angleInRadians = angleInDegrees * (Math.PI / 180);
+        //    double cosTheta = Math.Cos(angleInRadians);
+        //    double sinTheta = Math.Sin(angleInRadians);
+        //    return new Point((int)
+        //            (cosTheta * (pointToRotate.X - centerPoint.X) -
+        //            sinTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.X),
+        //            (int)
+        //            (sinTheta * (pointToRotate.X - centerPoint.X) +
+        //            cosTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.Y)
+        //    );
+        //}
 
-        private static IEnumerable<Point> Rotate(IEnumerable<Point> pointsToRotate, Point centerPoint, double angleInDegrees)
-        {
-            var list = new List<NetTopologySuite.Geometries.Point>();
-            foreach (var item in pointsToRotate)
-            {
-                list.Add(Rotate(item, centerPoint, angleInDegrees));
-            }
-            return list;
-        }
+        //private static IEnumerable<Point> Rotate(IEnumerable<Point> pointsToRotate, Point centerPoint, double angleInDegrees)
+        //{
+        //    var list = new List<Point>();
+        //    foreach (var item in pointsToRotate)
+        //    {
+        //        list.Add(Rotate(item, centerPoint, angleInDegrees));
+        //    }
+        //    return list;
+        //}
     }
 }
