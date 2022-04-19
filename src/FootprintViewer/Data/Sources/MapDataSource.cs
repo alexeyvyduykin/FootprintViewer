@@ -5,7 +5,7 @@ using System.IO;
 namespace FootprintViewer.Data.Sources
 {
     public class MapDataSource : IMapDataSource
-    {     
+    {
         private readonly SolutionFolder _dataFolder;
         private readonly string? _subFolder;
         private readonly string _file;

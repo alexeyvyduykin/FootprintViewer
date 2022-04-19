@@ -1,5 +1,4 @@
-﻿using BruTile;
-using BruTile.MbTiles;
+﻿using BruTile.MbTiles;
 using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
@@ -18,14 +17,14 @@ namespace FootprintViewer.Data.Sources
 {
     public class FootprintPreviewDataSource : IFootprintPreviewDataSource
     {
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
         private readonly DateTime _date;
         private readonly SolutionFolder _dataFolder;
         private readonly string _file;
         private readonly string? _subFolder;
         private readonly string? _searchPattern;
         //private readonly Mapsui.Styles.Color _backgroundColorMask = new Mapsui.Styles.Color() { R = 33, G = 43, B = 53, A = 255 }; // #212b35
-        private readonly Mapsui.Styles.Color _backgroundColorMask = new Mapsui.Styles.Color() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                
+        private readonly Mapsui.Styles.Color _backgroundColorMask = new() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                
 
         public FootprintPreviewDataSource(string file, string folder, string? subFolder = null)
         {
@@ -57,7 +56,7 @@ namespace FootprintViewer.Data.Sources
             {
                 paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
             }
-         
+
             foreach (var path in paths)
             {
                 if (string.IsNullOrEmpty(path) == false)
@@ -107,7 +106,7 @@ namespace FootprintViewer.Data.Sources
 
             var viewport = new Viewport
             {
-               // Center = area.Centroid,
+                // Center = area.Centroid,
                 CenterX = area.Centroid.X,
                 CenterY = area.Centroid.Y,
                 Width = 200,
@@ -125,7 +124,7 @@ namespace FootprintViewer.Data.Sources
 
             // Image1 = new System.Drawing.Bitmap(200, 200, PixelFormat.Format24bppRgb);
 
-            return Image.FromStream(bitmap);
+            return Image.FromStream(bitmap!);
 
             //   image.Save(@"C:/Users/User/AlexeyVyduykin/Resources/ttttttttttttt.png");
 

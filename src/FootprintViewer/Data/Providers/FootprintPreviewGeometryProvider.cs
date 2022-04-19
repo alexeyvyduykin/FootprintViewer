@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace FootprintViewer.Data
 {
     public class FootprintPreviewGeometryProvider : BaseProvider<IFootprintPreviewGeometryDataSource>
-    {     
+    {
         public virtual IDictionary<string, Geometry> GetFootprintPreviewGeometries()
         {
             var dict = new Dictionary<string, Geometry>();

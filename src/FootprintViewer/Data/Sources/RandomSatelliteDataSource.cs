@@ -11,7 +11,7 @@ namespace FootprintViewer.Data.Sources
         {
             return await Task.Run(() =>
             {
-                return _satellites ??= new List<Satellite>(SatelliteBuilder.Create());                
+                return _satellites ??= new List<Satellite>(SatelliteBuilder.Create());
             });
         }
     }

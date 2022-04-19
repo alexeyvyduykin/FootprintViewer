@@ -10,7 +10,7 @@ namespace FootprintViewer.Data
     public class SatelliteProvider : BaseProvider<ISatelliteDataSource>
     {
         public SatelliteProvider()
-        {    
+        {
             Loading = ReactiveCommand.CreateFromTask(GetSatellitesAsync);
         }
 

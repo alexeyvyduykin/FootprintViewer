@@ -38,13 +38,13 @@ namespace FootprintViewer.Data
             modelBuilder.Entity<GroundStation>(GroundStationsConfigure);
         }
 
-        protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
+        protected static void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
         }
 
-        protected void GroundTargetConfigure(EntityTypeBuilder<GroundTarget> builder)
+        protected static void GroundTargetConfigure(EntityTypeBuilder<GroundTarget> builder)
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
@@ -53,7 +53,7 @@ namespace FootprintViewer.Data
                 v => (GroundTargetType)Enum.Parse(typeof(GroundTargetType), v));
         }
 
-        protected void FootprintConfigure(EntityTypeBuilder<Footprint> builder)
+        protected static void FootprintConfigure(EntityTypeBuilder<Footprint> builder)
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
@@ -62,7 +62,7 @@ namespace FootprintViewer.Data
                 v => (SatelliteStripDirection)Enum.Parse(typeof(SatelliteStripDirection), v));
         }
 
-        protected void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)
+        protected static void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
@@ -71,7 +71,7 @@ namespace FootprintViewer.Data
                 v => (UserGeometryType)Enum.Parse(typeof(UserGeometryType), v));
         }
 
-        protected void GroundStationsConfigure(EntityTypeBuilder<GroundStation> builder)
+        protected static void GroundStationsConfigure(EntityTypeBuilder<GroundStation> builder)
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);

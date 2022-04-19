@@ -23,7 +23,7 @@ namespace FootprintViewer.Data
         public ReactiveCommand<Unit, Unit> Update { get; }
 
         public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
-        {           
+        {
             await Sources.FirstOrDefault()!.UpdateGeometry(key, geometry);
         }
 

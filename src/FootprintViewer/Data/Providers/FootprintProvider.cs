@@ -11,7 +11,7 @@ namespace FootprintViewer.Data
     public class FootprintProvider : BaseProvider<IFootprintDataSource>
     {
         public FootprintProvider()
-        {      
+        {
             Loading = ReactiveCommand.CreateFromTask(GetFootprintsAsync);
         }
 
