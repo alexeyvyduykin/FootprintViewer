@@ -4,11 +4,13 @@ using FootprintViewer.Interactivity.Decorators;
 using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.Layers;
 using Mapsui;
-using Mapsui.Geometries;
+using Mapsui.Extensions;
 using Mapsui.Layers;
-using Mapsui.Projection;
-using Mapsui.Providers;
+using Mapsui.Nts;
+using Mapsui.Projections;
+using Mapsui.Tiling.Layers;
 using Mapsui.UI;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -31,7 +33,7 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintObserver _footprintObserver;
         private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
-        private IFeature? _currentFeature;
+        private GeometryFeature? _currentFeature;
         private readonly IReadonlyDependencyResolver _dependencyResolver;
         private bool _isDirtyDecorator = false;
 
@@ -58,7 +60,7 @@ namespace FootprintViewer.ViewModels
             {
                 if (s != null)
                 {
-                    if (s is IGeometry geometry)
+                    if (s is Geometry geometry)
                     {
                         _sceneSearch.SetAOI(geometry);
                     }
@@ -146,11 +148,11 @@ namespace FootprintViewer.ViewModels
                 {
                     RemoveInteractiveLayer();
 
-                    if (feature != _currentFeature)
+                    if (feature is GeometryFeature gf && gf != _currentFeature)
                     {
                         CreateInteractiveSelectLayer(mapInfo.Layer, mapInfo.Feature);
 
-                        _currentFeature = feature;
+                        _currentFeature = gf;
                     }
                     else
                     {
@@ -161,27 +163,30 @@ namespace FootprintViewer.ViewModels
                 }
                 else if (_customToolBar.ScaleGeometry.IsCheck == true)
                 {
-                    if (feature.Geometry is not Point)
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
                     {
-                        decorator = new ScaleDecorator(feature);
+                        decorator = new ScaleDecorator(gf);
                     }
                 }
                 else if (_customToolBar.TranslateGeometry.IsCheck == true)
                 {
-                    decorator = new TranslateDecorator(feature);
+                    if (feature is GeometryFeature gf)
+                    {
+                        decorator = new TranslateDecorator(gf);
+                    }
                 }
                 else if (_customToolBar.RotateGeometry.IsCheck == true)
                 {
-                    if (feature.Geometry is not Point)
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
                     {
-                        decorator = new RotateDecorator(feature);
+                        decorator = new RotateDecorator(gf);
                     }
                 }
                 else if (_customToolBar.EditGeometry.IsCheck == true)
                 {
-                    if (feature.Geometry is not Point)
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
                     {
-                        decorator = new EditDecorator(feature);
+                        decorator = new EditDecorator(gf);
                     }
                 }
 
@@ -192,13 +197,13 @@ namespace FootprintViewer.ViewModels
 
                 RemoveInteractiveLayer();
 
-                if (feature != _currentFeature)
+                if (feature is GeometryFeature gf2 && gf2 != _currentFeature)
                 {
                     CreateInteractiveLayer(mapInfo.Layer, decorator);
 
                     MapObserver = new MapObserver(decorator);
 
-                    _currentFeature = feature;
+                    _currentFeature = gf2;
 
                     _isDirtyDecorator = true;
                 }
@@ -275,24 +280,24 @@ namespace FootprintViewer.ViewModels
             {
                 foreach (var layer in Map.Layers)
                 {
-                    string crs = string.Empty;
+                 //   string crs = string.Empty;
                     string format = string.Empty;
 
                     if (layer is TileLayer tileLayer)
                     {
-                        crs = tileLayer.TileSource.Schema.Srs;
+                       // crs = tileLayer.TileSource.Schema.Srs;
                         format = tileLayer.TileSource.Schema.Format;
                     }
 
-                    if (string.IsNullOrEmpty(crs) == true)
+                   // if (string.IsNullOrEmpty(crs) == true)
                     {
-                        crs = layer.CRS;
+                   //     crs = layer.CRS;
                     }
 
                     list.Add(new MapLayer()
                     {
                         Name = layer.Name,
-                        CRS = crs,
+                   //     CRS = crs,
                         Format = format,
                     });
                 }
@@ -301,11 +306,11 @@ namespace FootprintViewer.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
-        private string FeatureAreaEndCreating(IFeature feature)
+        private string FeatureAreaEndCreating(GeometryFeature feature)
         {
-            var bb = feature.Geometry.BoundingBox;
-            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y);
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var bb = feature.Extent;//Geometry.BoundingBox;
+            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y).ToMPoint();
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
             area = Math.Abs(area);
             return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";
@@ -540,7 +545,7 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController();
         }
 
-        private AOIInfoPanel CreateAOIPanel(IFeature feature)
+        private AOIInfoPanel CreateAOIPanel(GeometryFeature feature)
         {
             var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -753,21 +758,21 @@ namespace FootprintViewer.ViewModels
             ActualController = new DrawingController();
         }
 
-        private static double GetFeatureArea(IFeature feature)
+        private static double GetFeatureArea(GeometryFeature feature)
         {
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
             var area = SphericalUtil.ComputeSignedArea(vertices);
             return Math.Abs(area);
         }
 
         private static double GetRouteLength(RouteDesigner designer)
         {
-            var geometry = (Mapsui.Geometries.LineString)designer.Feature.Geometry;
+            var geometry = (LineString)designer.Feature.Geometry;
             var fHelp = designer.ExtraFeatures.Single();
             var verts0 = geometry.AllVertices();
             var verts1 = fHelp.Geometry.AllVertices();
             var verts = verts0.Union(verts1);
-            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)).ToArray();
+            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
             return SphericalUtil.ComputeDistance(vertices);
         }
 
@@ -798,7 +803,7 @@ namespace FootprintViewer.ViewModels
     {
         public string? Name { get; set; }
 
-        public string? CRS { get; set; }
+       // public string? CRS { get; set; }
 
         public string? Format { get; set; }
     }

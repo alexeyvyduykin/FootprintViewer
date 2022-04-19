@@ -1,8 +1,6 @@
 ﻿using Mapsui;
 using Mapsui.Fetcher;
-using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Providers;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
@@ -13,7 +11,7 @@ namespace FootprintViewer.Layers
 
         private readonly IFeature _feature;
 
-        public override BoundingBox Envelope => _source.Envelope;
+        //public override BoundingBox Envelope => _source.Envelope;
 
         public SelectLayer(ILayer source, IFeature feature)
         {
@@ -24,9 +22,9 @@ namespace FootprintViewer.Layers
             IsMapInfoLayer = true;
         }
 
-        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
-            if (box.Intersects(_feature.Geometry?.BoundingBox) == true)
+            if (box.Intersects(_feature.Extent/* Geometry?.BoundingBox*/) == true)
             {
                 yield return _feature;
             }
@@ -35,8 +33,9 @@ namespace FootprintViewer.Layers
 
             //return _source.GetFeaturesInView(box, resolution);
         }
-
-        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        
+        public override void RefreshData(FetchInfo fetchInfo)
+        //public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
             OnDataChanged(new DataChangedEventArgs());
         }

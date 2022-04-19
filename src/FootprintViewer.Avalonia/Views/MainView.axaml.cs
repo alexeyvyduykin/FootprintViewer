@@ -1,17 +1,22 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Projection;
+using Mapsui.Extensions;
+using Mapsui.Projections;
 using Mapsui.UI;
+using Mapsui.UI.Avalonia;
+using ReactiveUI;
 using System;
+using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views
 {
     public partial class MainView : ReactiveUserControl<MainViewModel>
     {
-        private MapControl MapControl => this.FindControl<MapControl>("MapControl");
+        private UserMapControl UserMapControl => this.FindControl<UserMapControl>("UserMapControl");
         private TextBlock TextBlockResolution => this.FindControl<TextBlock>("TextBlockResolution");
         private TextBlock TextBlockCoordinates => this.FindControl<TextBlock>("TextBlockCoordinates");
         private ScaleBarView ScaleBarView => this.FindControl<ScaleBarView>("ScaleBarView");
@@ -20,13 +25,33 @@ namespace FootprintViewer.Avalonia.Views
         {
             InitializeComponent();
 
-            MapControl.PointerMoved += MapControlOnMouseMove;
-            MapControl.PointerWheelChanged += MapControl_MouseWheel;
-            MapControl.PropertyChanged += MapControl_PropertyChanged;
+            UserMapControl.PointerMoved += MapControlOnMouseMove;
+            UserMapControl.PointerWheelChanged += MapControl_MouseWheel;
+            UserMapControl.PropertyChanged += MapControl_PropertyChanged;
 
             TextBlockResolution.Text = GetCurrentResolution();
 
-            MapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
+            UserMapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
+        }
+
+        private void MainView_ViewportUpdate(object? sender, EventArgs e)
+        {
+            if (sender is IReadOnlyViewport viewport)
+            {                   
+        //        ScaleBarView.Update?.Invoke(viewport);
+            }
+        }
+
+        private void UserMapControl_ViewportInitialized(object? sender, EventArgs e)
+        {
+            if (sender is UserMapControl userMapControl)
+            {
+                //if (UserMapControl.Map != null)
+                {
+                    //ScaleBarView.Update(UserMapControl.Map, viewport);
+           //         ScaleBarView.Update(userMapControl.Viewport);
+                }
+            }
         }
 
         private void InitializeComponent()
@@ -40,15 +65,30 @@ namespace FootprintViewer.Avalonia.Views
             {
                 TextBlockResolution.Text = GetCurrentResolution();
             }
+            
+            if (e.PropertyName == nameof(UserMapControl.Viewport))
+            {
+                int fdfd = 0;
+            }
+
         }
+
+        public event EventHandler<EventArgs> ViewportUpdate;
 
         private void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender is Viewport viewport)
             {
-                if (MapControl.Map != null)
+                //if (UserMapControl.Map != null)
                 {
-                    ScaleBarView.Update(MapControl.Map, viewport);
+                    //ScaleBarView.Update(UserMapControl.Map, viewport);
+                    //  ScaleBarView.Update(viewport);
+
+
+              //      ScaleBarView.Update.Invoke(viewport);
+
+                 ViewportUpdate?.Invoke(viewport, EventArgs.Empty);
+
                 }
             }
         }
@@ -71,30 +111,21 @@ namespace FootprintViewer.Avalonia.Views
             TextBlockResolution.Text = GetCurrentResolution();
         }
 
-        private static void MapControlFeatureInfo(object? sender, FeatureInfoEventArgs e)
-        {
-            //MessageBox.Show(e.FeatureInfo.ToDisplayText());
-        }
-
         private void MapControlOnMouseMove(object? sender, global::Avalonia.Input.PointerEventArgs e)
         {
-            var screenPosition = e.GetPosition(MapControl);
-            var worldPosition = MapControl.Viewport.ScreenToWorld(screenPosition.X, screenPosition.Y);
-            var coord = SphericalMercator.ToLonLat(worldPosition.X, worldPosition.Y);
+            var screenPosition = e.GetPosition(UserMapControl);
+            var worldPosition = UserMapControl.Viewport.ScreenToWorld(screenPosition.X, screenPosition.Y);
+            var coord = SphericalMercator.ToLonLat(worldPosition.X, worldPosition.Y).ToMPoint();
             TextBlockCoordinates.Text = FormatHelper.ToCoordinate(coord.X, coord.Y);
             TextBlockResolution.Text = GetCurrentResolution();
         }
 
         private string GetCurrentResolution()
         {
-            var center = MapControl.Viewport.Center;
-            var point = SphericalMercator.ToLonLat(center.X, center.Y);
-            //var mapInfo = MapControl.GetMapInfo(center);
-            //var res = mapInfo.Resolution;    
-            //var zoomlevel = ToZoomLevel(res);
-            double groundResolution = MapControl.Viewport.Resolution * Math.Cos(point.Y / 180.0 * Math.PI);
-            var scale = groundResolution * 96 / 0.0254;
-            //var scale = MapScale(point.Y, zoomlevel, 96, 256);         
+            var center = UserMapControl.Viewport.Center;
+            var point = SphericalMercator.ToLonLat(center.X, center.Y).ToMPoint();
+            double groundResolution = UserMapControl.Viewport.Resolution * Math.Cos(point.Y / 180.0 * Math.PI);
+            var scale = groundResolution * 96 / 0.0254;        
             return FormatHelper.ToScale(scale);
         }
     }

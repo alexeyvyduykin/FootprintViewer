@@ -26,12 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mapsui" Version="3.0.0" />
+    <PackageReference Include="Mapsui" Version="4.0.0-beta.3" />
+    <PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.3" />
     <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.83-nightly" />
     <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.178" />
+    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.232" />
     <PackageReference Include="ReactiveUI" Version="16.2.6" />
-    <PackageReference Include="BruTile.MbTiles" Version="4.0.0" />    
+    <PackageReference Include="BruTile.MbTiles" Version="5.0.0" />    
     <PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.0.0" />  
     <PackageReference Include="ReactiveUI.Fody" Version="16.2.6" />   
     <PackageReference Include="sqlite-net" Version="1.6.292" />

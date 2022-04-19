@@ -1,4 +1,4 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 
 namespace FootprintViewer.Input
 {
@@ -21,7 +21,7 @@ namespace FootprintViewer.Input
                     var screenPosition = e.Position;
                     var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-                    bool isClick(Point worldPosition)
+                    bool isClick(MPoint worldPosition)
                     {
                         var p0 = MapView.WorldToScreen(worldPosition);
 
@@ -71,7 +71,7 @@ namespace FootprintViewer.Input
             e.Handled = true;
         }
 
-        private static bool IsClick(Point screenPosition, Point mouseDownScreenPosition)
+        private static bool IsClick(MPoint screenPosition, MPoint mouseDownScreenPosition)
         {
             if (mouseDownScreenPosition == null || screenPosition == null)
             {

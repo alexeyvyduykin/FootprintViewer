@@ -1,7 +1,10 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Interactivity.Designers
 {
@@ -10,23 +13,23 @@ namespace FootprintViewer.Interactivity.Designers
         private bool _skip;
         private int _counter;
 
-        public override IEnumerable<Point> GetActiveVertices()
+        public override IEnumerable<MPoint> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {
-                return Feature.Geometry.MainVertices();
+                return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new Point[] { };
+            return new MPoint[] { };
         }
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _skip = false;
             _counter = 0;
         }
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_counter++ > 0)
             {
@@ -34,7 +37,7 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_skip == false)
             {
@@ -42,12 +45,12 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
 
         }
 
-        public void CreatingFeature(Point worldPosition)
+        public void CreatingFeature(MPoint worldPosition)
         {
             EndDrawing(worldPosition);
 
@@ -56,11 +59,11 @@ namespace FootprintViewer.Interactivity.Designers
             return;
         }
 
-        public void EndDrawing(Point worldPosition)
+        public void EndDrawing(MPoint worldPosition)
         {
             var geometry = new Point(worldPosition.X, worldPosition.Y);
 
-            Feature = new Feature() { Geometry = geometry };
+            Feature = new GeometryFeature() { Geometry = geometry };
         }
     }
 }

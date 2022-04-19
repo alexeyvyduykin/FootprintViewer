@@ -2,6 +2,7 @@
 using BruTile.MbTiles;
 using FootprintViewer.Layers;
 using Mapsui.Layers;
+using Mapsui.Tiling.Layers;
 using SQLite;
 
 namespace FootprintViewer

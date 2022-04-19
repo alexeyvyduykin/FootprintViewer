@@ -6,6 +6,7 @@ using Avalonia.Platform;
 using Avalonia.Rendering.SceneGraph;
 using Avalonia.Skia;
 using Avalonia.Threading;
+using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.UI;
@@ -15,327 +16,326 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using mg = Mapsui.Geometries;
 
 namespace FootprintViewer.Avalonia
 {
-    public partial class MapControl : Grid, IMapControl, IDisposable
-    {
-        private mg.Point? _mousePosition;
-        private MapsuiCustomDrawOp? _drawOp;
-        private mg.Point? _currentMousePosition;
-        private mg.Point? _downMousePosition;
-        private bool _mouseDown;
-        private mg.Point? _previousMousePosition;
-        private double _toResolution = double.NaN;
+    //public partial class MapControl : Grid, IMapControl, IDisposable
+    //{
+    //    private MPoint? _mousePosition;
+    //    private MapsuiCustomDrawOp? _drawOp;
+    //    private MPoint? _currentMousePosition;
+    //    private MPoint? _downMousePosition;
+    //    private bool _mouseDown;
+    //    private MPoint? _previousMousePosition;
+    //    private double _toResolution = double.NaN;
 
-        public event EventHandler<FeatureInfoEventArgs>? FeatureInfo;
-        public MouseWheelAnimation MouseWheelAnimation { get; } = new MouseWheelAnimation() { Duration = 0 };
+    //    public event EventHandler<FeatureInfoEventArgs>? FeatureInfo;
+    //    public MouseWheelAnimation MouseWheelAnimation { get; } = new MouseWheelAnimation() { Duration = 0 };
 
-        public MapControl()
-        {
-            ClipToBounds = true;
-            CommonInitialize();
-            Initialize();
-        }
+    //    public MapControl()
+    //    {
+    //        ClipToBounds = true;
+    //        CommonInitialize();
+    //        Initialize();
+    //    }
 
-        private void Initialize()
-        {
-            _invalidate = () => { RunOnUIThread(InvalidateVisual); };
+    //    private void Initialize()
+    //    {
+    //        _invalidate = () => { RunOnUIThread(InvalidateVisual); };
 
-            Initialized += MapControlInitialized;
+    //        Initialized += MapControlInitialized;
 
-            PointerPressed += MapControl_PointerPressed;
-            PointerReleased += MapControl_PointerReleased;
-            PointerMoved += MapControlMouseMove;
-            PointerLeave += MapControlMouseLeave;
+    //        PointerPressed += MapControl_PointerPressed;
+    //        PointerReleased += MapControl_PointerReleased;
+    //        PointerMoved += MapControlMouseMove;
+    //        PointerLeave += MapControlMouseLeave;
 
-            PointerWheelChanged += MapControlMouseWheel;
+    //        PointerWheelChanged += MapControlMouseWheel;
 
-            //Tapped += OnSingleTapped;
-            //DoubleTapped += OnDoubleTapped;
-        }
+    //        //Tapped += OnSingleTapped;
+    //        //DoubleTapped += OnDoubleTapped;
+    //    }
 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
-        {
-            switch (change.Property.Name)
-            {
-                case nameof(Bounds):
-                    // size changed
-                    MapControlSizeChanged();
-                    break;
-            }
-        }
+    //    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+    //    {
+    //        switch (change.Property.Name)
+    //        {
+    //            case nameof(Bounds):
+    //                // size changed
+    //                MapControlSizeChanged();
+    //                break;
+    //        }
+    //    }
 
-        private void MapControl_PointerPressed(object? sender, PointerPressedEventArgs e)
-        {
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            {
-                MapControlMouseLeftButtonDown(e);
-            }
-        }
+    //    private void MapControl_PointerPressed(object? sender, PointerPressedEventArgs e)
+    //    {
+    //        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+    //        {
+    //            MapControlMouseLeftButtonDown(e);
+    //        }
+    //    }
 
-        private void MapControlMouseWheel(object? sender, PointerWheelEventArgs e)
-        {
-            if (_map?.ZoomLock ?? true)
-            {
-                return;
-            }
+    //    private void MapControlMouseWheel(object? sender, PointerWheelEventArgs e)
+    //    {
+    //        if (_map?.ZoomLock ?? true)
+    //        {
+    //            return;
+    //        }
 
-            if (!Viewport.HasSize)
-            {
-                return;
-            }
+    //        if (!Viewport.HasSize)
+    //        {
+    //            return;
+    //        }
 
-            _currentMousePosition = e.GetPosition(this).ToOldMapsui();
-            //Needed for both MouseMove and MouseWheel event for mousewheel event
+    //        _currentMousePosition = e.GetPosition(this).ToOldMapsui();
+    //        //Needed for both MouseMove and MouseWheel event for mousewheel event
 
-            if (double.IsNaN(_toResolution))
-            {
-                _toResolution = Viewport.Resolution;
-            }
+    //        if (double.IsNaN(_toResolution))
+    //        {
+    //            _toResolution = Viewport.Resolution;
+    //        }
 
-            if (e.Delta.Y > Constants.Epsilon)
-            {
-                _toResolution = ZoomHelper.ZoomIn(_map.Resolutions, _toResolution);
-            }
-            else if (e.Delta.Y < Constants.Epsilon)
-            {
-                _toResolution = ZoomHelper.ZoomOut(_map.Resolutions, _toResolution);
-            }
-            var resolution = MouseWheelAnimation.GetResolution((int)e.Delta.Y, _viewport, _map);
-            // Limit target resolution before animation to avoid an animation that is stuck on the max resolution, which would cause a needless delay
-            resolution = _map.Limiter.LimitResolution(resolution, Viewport.Width, Viewport.Height, _map.Resolutions, _map.Envelope);
-            Navigator.ZoomTo(resolution, _currentMousePosition, MouseWheelAnimation.Duration, MouseWheelAnimation.Easing);
-        }
+    //        if (e.Delta.Y > Constants.Epsilon)
+    //        {
+    //            _toResolution = ZoomHelper.ZoomIn(_map.Resolutions, _toResolution);
+    //        }
+    //        else if (e.Delta.Y < Constants.Epsilon)
+    //        {
+    //            _toResolution = ZoomHelper.ZoomOut(_map.Resolutions, _toResolution);
+    //        }
+    //        var resolution = MouseWheelAnimation.GetResolution((int)e.Delta.Y, _viewport, _map);
+    //        // Limit target resolution before animation to avoid an animation that is stuck on the max resolution, which would cause a needless delay
+    //        resolution = _map.Limiter.LimitResolution(resolution, Viewport.Width, Viewport.Height, _map.Resolutions, _map.Extent);
+    //        Navigator.ZoomTo(resolution, _currentMousePosition, MouseWheelAnimation.Duration, MouseWheelAnimation.Easing);
+    //    }
 
-        private void MapControlMouseLeftButtonDown(PointerPressedEventArgs e)
-        {
-            var touchPosition = e.GetPosition(this).ToOldMapsui();
-            _previousMousePosition = touchPosition;
-            _downMousePosition = touchPosition;
-            _mouseDown = true;
-            e.Pointer.Capture(this);
+    //    private void MapControlMouseLeftButtonDown(PointerPressedEventArgs e)
+    //    {
+    //        var touchPosition = e.GetPosition(this).ToOldMapsui();
+    //        _previousMousePosition = touchPosition;
+    //        _downMousePosition = touchPosition;
+    //        _mouseDown = true;
+    //        e.Pointer.Capture(this);
 
-            if (IsClick(_currentMousePosition, _downMousePosition))
-            {
-                HandleFeatureInfo(e);
-                var mapInfoEventArgs = InvokeInfo(touchPosition, _downMousePosition, e.ClickCount);
-                OnInfo(mapInfoEventArgs);
-            }
-        }
+    //        if (IsClick(_currentMousePosition, _downMousePosition))
+    //        {
+    //            HandleFeatureInfo(e);
+    //            var mapInfoEventArgs = InvokeInfo(touchPosition, _downMousePosition, e.ClickCount);
+    //            OnInfo(mapInfoEventArgs);
+    //        }
+    //    }
 
-        private void HandleFeatureInfo(PointerPressedEventArgs e)
-        {
-            if (FeatureInfo == null)
-            {
-                return; // don't fetch if you the call back is not set.
-            }
+    //    private void HandleFeatureInfo(PointerPressedEventArgs e)
+    //    {
+    //        if (FeatureInfo == null)
+    //        {
+    //            return; // don't fetch if you the call back is not set.
+    //        }
 
-            var pos = e.GetPosition(this).ToOldMapsui();
+    //        var pos = e.GetPosition(this).ToOldMapsui();
 
-            if (Map != null && _downMousePosition!.Equals(pos) == true)
-            {
-                foreach (var layer in Map.Layers)
-                {
-                    // ReSharper disable once SuspiciousTypeConversion.Global
-                    (layer as IFeatureInfo)?.GetFeatureInfo(Viewport, _downMousePosition.X, _downMousePosition.Y,
-                        OnFeatureInfo);
-                }
-            }
-        }
+    //        if (Map != null && _downMousePosition!.Equals(pos) == true)
+    //        {
+    //            foreach (var layer in Map.Layers)
+    //            {
+    //                // ReSharper disable once SuspiciousTypeConversion.Global
+    //                (layer as IFeatureInfo)?.GetFeatureInfo(Viewport, _downMousePosition.X, _downMousePosition.Y,
+    //                    OnFeatureInfo);
+    //            }
+    //        }
+    //    }
 
-        private void OnFeatureInfo(IDictionary<string, IEnumerable<IFeature>> features)
-        {
-            FeatureInfo?.Invoke(this, new FeatureInfoEventArgs { FeatureInfo = features });
-        }
+    //    private void OnFeatureInfo(IDictionary<string, IEnumerable<IFeature>> features)
+    //    {
+    //        FeatureInfo?.Invoke(this, new FeatureInfoEventArgs { FeatureInfo = features });
+    //    }
 
-        private void MapControlMouseLeave(object? sender, PointerEventArgs e)
-        {
-            _previousMousePosition = null;
-        }
+    //    private void MapControlMouseLeave(object? sender, PointerEventArgs e)
+    //    {
+    //        _previousMousePosition = null;
+    //    }
 
-        private void MapControlMouseMove(object? sender, PointerEventArgs e)
-        {
-            _currentMousePosition = e.GetPosition(this).ToOldMapsui(); // Needed for both MouseMove and MouseWheel event
+    //    private void MapControlMouseMove(object? sender, PointerEventArgs e)
+    //    {
+    //        _currentMousePosition = e.GetPosition(this).ToOldMapsui(); // Needed for both MouseMove and MouseWheel event
 
-            if (_mouseDown)
-            {
-                if (_previousMousePosition == null)
-                {
-                    // Usually MapControlMouseLeftButton down initializes _previousMousePosition but in some
-                    // situations it can be null. So far I could only reproduce this in debug mode when putting
-                    // a breakpoint and continuing.
-                    return;
-                }
+    //        if (_mouseDown)
+    //        {
+    //            if (_previousMousePosition == null)
+    //            {
+    //                // Usually MapControlMouseLeftButton down initializes _previousMousePosition but in some
+    //                // situations it can be null. So far I could only reproduce this in debug mode when putting
+    //                // a breakpoint and continuing.
+    //                return;
+    //            }
 
-                _viewport.Transform(_currentMousePosition, _previousMousePosition);
-                RefreshGraphics();
-                _previousMousePosition = _currentMousePosition;
-            }
-        }
+    //            _viewport.Transform(_currentMousePosition, _previousMousePosition);
+    //            RefreshGraphics();
+    //            _previousMousePosition = _currentMousePosition;
+    //        }
+    //    }
 
-        private void MapControl_PointerReleased(object? sender, PointerReleasedEventArgs e)
-        {
-            if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
-            {
-                MapControlMouseLeftButtonUp(e);
-            }
-        }
+    //    private void MapControl_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    //    {
+    //        if (e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+    //        {
+    //            MapControlMouseLeftButtonUp(e);
+    //        }
+    //    }
 
-        private void MapControlMouseLeftButtonUp(PointerReleasedEventArgs e)
-        {
-            RefreshData();
-            _mouseDown = false;
-            _previousMousePosition = null;
-            e.Pointer.Capture(null);
-        }
+    //    private void MapControlMouseLeftButtonUp(PointerReleasedEventArgs e)
+    //    {
+    //        RefreshData();
+    //        _mouseDown = false;
+    //        _previousMousePosition = null;
+    //        e.Pointer.Capture(null);
+    //    }
 
-        private static bool IsClick(mg.Point? currentPosition, mg.Point? previousPosition)
-        {
-            if (currentPosition == null || previousPosition == null)
-            {
-                return false;
-            }
+    //    private static bool IsClick(MPoint? currentPosition, MPoint? previousPosition)
+    //    {
+    //        if (currentPosition == null || previousPosition == null)
+    //        {
+    //            return false;
+    //        }
 
-            return
-                Math.Abs(currentPosition.X - previousPosition.X) < 1 &&
-                Math.Abs(currentPosition.Y - previousPosition.Y) < 1;
-        }
+    //        return
+    //            Math.Abs(currentPosition.X - previousPosition.X) < 1 &&
+    //            Math.Abs(currentPosition.Y - previousPosition.Y) < 1;
+    //    }
 
-        protected override void OnPointerMoved(PointerEventArgs e)
-        {
-            base.OnPointerMoved(e);
-            _mousePosition = e.GetPosition(this).ToOldMapsui();
-        }
+    //    protected override void OnPointerMoved(PointerEventArgs e)
+    //    {
+    //        base.OnPointerMoved(e);
+    //        _mousePosition = e.GetPosition(this).ToOldMapsui();
+    //    }
 
-        //private void OnDoubleTapped(object? sender, RoutedEventArgs e)
-        //{
-        //    // We have a new interaction with the screen, so stop all navigator animations
-        //    Navigator.StopRunningAnimation();
-        //    var tapPosition = _mousePosition;
-        //    OnInfo(InvokeInfo(tapPosition, tapPosition, 2));
-        //}
+    //    //private void OnDoubleTapped(object? sender, RoutedEventArgs e)
+    //    //{
+    //    //    // We have a new interaction with the screen, so stop all navigator animations
+    //    //    Navigator.StopRunningAnimation();
+    //    //    var tapPosition = _mousePosition;
+    //    //    OnInfo(InvokeInfo(tapPosition, tapPosition, 2));
+    //    //}
 
-        //private void OnSingleTapped(object? sender, RoutedEventArgs e)
-        //{
-        //    // We have a new interaction with the screen, so stop all navigator animations
-        //    Navigator.StopRunningAnimation();
+    //    //private void OnSingleTapped(object? sender, RoutedEventArgs e)
+    //    //{
+    //    //    // We have a new interaction with the screen, so stop all navigator animations
+    //    //    Navigator.StopRunningAnimation();
 
-        //    var tapPosition = _mousePosition;
-        //    OnInfo(InvokeInfo(tapPosition, tapPosition, 1));
-        //}
+    //    //    var tapPosition = _mousePosition;
+    //    //    OnInfo(InvokeInfo(tapPosition, tapPosition, 1));
+    //    //}
 
-        public override void Render(DrawingContext context)
-        {
-            _drawOp ??= new MapsuiCustomDrawOp(new Rect(0, 0, Bounds.Width, Bounds.Height), this);
-            _drawOp.Bounds = new Rect(0, 0, Bounds.Width, Bounds.Height);
-            context.Custom(_drawOp);
-        }
+    //    public override void Render(DrawingContext context)
+    //    {
+    //        _drawOp ??= new MapsuiCustomDrawOp(new Rect(0, 0, Bounds.Width, Bounds.Height), this);
+    //        _drawOp.Bounds = new Rect(0, 0, Bounds.Width, Bounds.Height);
+    //        context.Custom(_drawOp);
+    //    }
 
-        private void MapControlInitialized(object? sender, EventArgs eventArgs)
-        {
-            SetViewportSize();
-        }
+    //    private void MapControlInitialized(object? sender, EventArgs eventArgs)
+    //    {
+    //        SetViewportSize();
+    //    }
 
-        private void MapControlSizeChanged()
-        {
-            SetViewportSize();
-        }
+    //    private void MapControlSizeChanged()
+    //    {
+    //        SetViewportSize();
+    //    }
 
-        private void RunOnUIThread(Action action)
-        {
-            Task.Run(() => Dispatcher.UIThread.InvokeAsync(action));
-        }
+    //    private void RunOnUIThread(Action action)
+    //    {
+    //        Task.Run(() => Dispatcher.UIThread.InvokeAsync(action));
+    //    }
 
-        public void OpenBrowser(string url)
-        {
-            using (Process.Start(new ProcessStartInfo
-            {
-                FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? url : "open",
-                Arguments = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"-e {url}" : "",
-                CreateNoWindow = true,
-                UseShellExecute = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            }))
-            { }
-        }
+    //    public void OpenBrowser(string url)
+    //    {
+    //        using (Process.Start(new ProcessStartInfo
+    //        {
+    //            FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? url : "open",
+    //            Arguments = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"-e {url}" : "",
+    //            CreateNoWindow = true,
+    //            UseShellExecute = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+    //        }))
+    //        { }
+    //    }
 
-        private float ViewportWidth => Convert.ToSingle(Bounds.Width);
-        private float ViewportHeight => Convert.ToSingle(Bounds.Height);
+    //    private float ViewportWidth => Convert.ToSingle(Bounds.Width);
+    //    private float ViewportHeight => Convert.ToSingle(Bounds.Height);
 
-        private float GetPixelDensity()
-        {
-            if (VisualRoot != null)
-            {
-                return Convert.ToSingle(VisualRoot.RenderScaling);
-            }
+    //    private float GetPixelDensity()
+    //    {
+    //        if (VisualRoot != null)
+    //        {
+    //            return Convert.ToSingle(VisualRoot.RenderScaling);
+    //        }
 
-            return 1f;
-        }
+    //        return 1f;
+    //    }
 
-        private sealed class MapsuiCustomDrawOp : ICustomDrawOperation
-        {
-            private readonly MapControl _mapControl;
+    //    private sealed class MapsuiCustomDrawOp : ICustomDrawOperation
+    //    {
+    //        private readonly MapControl _mapControl;
 
-            private readonly FormattedText _noSkia = new FormattedText()
-            {
-                Text = "Current rendering API is not Skia"
-            };
+    //        private readonly FormattedText _noSkia = new FormattedText()
+    //        {
+    //            Text = "Current rendering API is not Skia"
+    //        };
 
-            public MapsuiCustomDrawOp(Rect bounds, MapControl mapControl)
-            {
-                Bounds = bounds;
-                _mapControl = mapControl;
-            }
+    //        public MapsuiCustomDrawOp(Rect bounds, MapControl mapControl)
+    //        {
+    //            Bounds = bounds;
+    //            _mapControl = mapControl;
+    //        }
 
-            public void Dispose()
-            {
-                // No-op
-            }
+    //        public void Dispose()
+    //        {
+    //            // No-op
+    //        }
 
-            public Rect Bounds { get; set; }
+    //        public Rect Bounds { get; set; }
 
-            public bool HitTest(Point p)
-            {
-                return true;
-            }
+    //        public bool HitTest(Point p)
+    //        {
+    //            return true;
+    //        }
 
-            public bool Equals(ICustomDrawOperation? other)
-            {
-                return false;
-            }
+    //        public bool Equals(ICustomDrawOperation? other)
+    //        {
+    //            return false;
+    //        }
 
-            public void Render(IDrawingContextImpl context)
-            {
-                var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
-                if (canvas == null)
-                {
-                    context.DrawText(Brushes.Black, new Point(), _noSkia.PlatformImpl);
-                }
-                else
-                {
-                    canvas.Save();
-                    _mapControl.CommonDrawControl(canvas);
-                    canvas.Restore();
-                }
-            }
-        }
+    //        public void Render(IDrawingContextImpl context)
+    //        {
+    //            var canvas = (context as ISkiaDrawingContextImpl)?.SkCanvas;
+    //            if (canvas == null)
+    //            {
+    //                context.DrawText(Brushes.Black, new Point(), _noSkia.PlatformImpl);
+    //            }
+    //            else
+    //            {
+    //                canvas.Save();
+    //                _mapControl.CommonDrawControl(canvas);
+    //                canvas.Restore();
+    //            }
+    //        }
+    //    }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _drawOp?.Dispose();
-                //         _map?.Dispose();
-            }
+    //    protected virtual void Dispose(bool disposing)
+    //    {
+    //        if (disposing)
+    //        {
+    //            _drawOp?.Dispose();
+    //            //         _map?.Dispose();
+    //        }
 
-            CommonDispose(disposing);
-        }
+    //        CommonDispose(disposing);
+    //    }
 
-        public virtual void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-    }
+    //    public virtual void Dispose()
+    //    {
+    //        Dispose(true);
+    //        GC.SuppressFinalize(this);
+    //    }
+    //}
 }

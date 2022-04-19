@@ -1,6 +1,7 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui.Nts;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 
@@ -74,7 +75,12 @@ namespace FootprintViewer.Styles
         {
             var stl = new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     return null;
                 }
@@ -85,7 +91,7 @@ namespace FootprintViewer.Styles
                     MaxVisible = _maxVisibleFootprintStyle,
                 };
 
-                switch (f["State"].ToString())
+                switch (gf["State"].ToString())
                 {
                     case "Unselect":
                         style.Fill = new Brush(Color.Opacity(Color.Green, 0.25f));
@@ -162,7 +168,12 @@ namespace FootprintViewer.Styles
 
                 if (highlight == true)
                 {
-                    if (f.Geometry is Point)
+                    if (f is not GeometryFeature gf)
+                    {
+                        return null;
+                    }
+
+                    if (gf.Geometry is Point)
                     {
                         switch (state)
                         {
@@ -189,7 +200,7 @@ namespace FootprintViewer.Styles
                         }
                     }
 
-                    if (f.Geometry is LineString || f.Geometry is MultiLineString)
+                    if (gf.Geometry is LineString || gf.Geometry is MultiLineString)
                     {
                         switch (state)
                         {
@@ -212,7 +223,7 @@ namespace FootprintViewer.Styles
                         }
                     }
 
-                    if (f.Geometry is Polygon || f.Geometry is MultiPolygon)
+                    if (gf.Geometry is Polygon || gf.Geometry is MultiPolygon)
                     {
                         switch (state)
                         {
@@ -250,7 +261,12 @@ namespace FootprintViewer.Styles
             {
                 var state = f["State"].ToString();
 
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     switch (state)
                     {
@@ -277,7 +293,7 @@ namespace FootprintViewer.Styles
                     }
                 }
 
-                if (f.Geometry is LineString || f.Geometry is MultiLineString)
+                if (gf.Geometry is LineString || gf.Geometry is MultiLineString)
                 {
                     switch (state)
                     {
@@ -300,7 +316,7 @@ namespace FootprintViewer.Styles
                     }
                 }
 
-                if (f.Geometry is Polygon || f.Geometry is MultiPolygon)
+                if (gf.Geometry is Polygon || gf.Geometry is MultiPolygon)
                 {
                     switch (state)
                     {
@@ -333,18 +349,23 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
                 {
                     return null;
                 }
 
-                if (f.Fields != null)
+                if (gf.Geometry is Point)
                 {
-                    foreach (var item in f.Fields)
+                    return null;
+                }
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("Name") == true)
                         {
-                            var name = (string)f["Name"];
+                            var name = (string)gf["Name"];
 
                             var color = _satellitePalette.PickColor(name);
 
@@ -373,18 +394,23 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
                 {
                     return null;
                 }
 
-                if (f.Fields != null)
+                if (gf.Geometry is Point)
                 {
-                    foreach (var item in f.Fields)
+                    return null;
+                }
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("Name") == true)
                         {
-                            var name = (string)f["Name"];
+                            var name = (string)gf["Name"];
 
                             var color = _satellitePalette.PickColor(name);
 
@@ -424,23 +450,28 @@ namespace FootprintViewer.Styles
             // depending on a "Selected" attribute.
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
                 {
                     return null;
                 }
 
-                if (f.Fields != null)
+                if (gf.Geometry is Point)
                 {
-                    foreach (var item in f.Fields)
+                    return null;
+                }
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("Name"))
                         {
-                            return FeatureStyles.Get((string)f["Name"]);
+                            return FeatureStyles.Get((string)gf["Name"]);
                         }
                     }
                 }
 
-                if (f.Geometry is Polygon)
+                if (gf.Geometry is Polygon)
                 {
                     Color editModeColor = new Color(124, 22, 111, 180);
 
@@ -460,7 +491,12 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     return new SymbolStyle()
                     {
@@ -506,7 +542,12 @@ namespace FootprintViewer.Styles
             // depending on a "Selected" attribute.
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     return new SymbolStyle()
                     {
@@ -521,13 +562,13 @@ namespace FootprintViewer.Styles
                 Color _color = new Color(76, 154, 231);
                 //Color _darkColor = new Color(67, 135, 202);
 
-                if (f.Fields != null)
+                if (gf.Fields != null)
                 {
-                    foreach (var item in f.Fields)
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("Name") == true)
                         {
-                            if ((string)f["Name"] == "ExtraPolygonHoverLine")
+                            if ((string)gf["Name"] == "ExtraPolygonHoverLine")
                             {
                                 return new VectorStyle
                                 {
@@ -535,7 +576,7 @@ namespace FootprintViewer.Styles
                                     Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
                                 };
                             }
-                            else if ((string)f["Name"] == "ExtraPolygonArea")
+                            else if ((string)gf["Name"] == "ExtraPolygonArea")
                             {
                                 return new VectorStyle
                                 {
@@ -544,7 +585,7 @@ namespace FootprintViewer.Styles
                                     Outline = null,
                                 };
                             }
-                            else if ((string)f["Name"] == "ExtraRouteHoverLine")
+                            else if ((string)gf["Name"] == "ExtraRouteHoverLine")
                             {
                                 return new VectorStyle
                                 {
@@ -556,7 +597,7 @@ namespace FootprintViewer.Styles
                     }
                 }
 
-                if (f.Geometry is Polygon || f.Geometry is LineString)
+                if (gf.Geometry is Polygon || gf.Geometry is LineString)
                 {
                     return new VectorStyle
                     {
@@ -576,7 +617,12 @@ namespace FootprintViewer.Styles
             // depending on a "Selected" attribute.
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     return new SymbolStyle()
                     {
@@ -596,7 +642,12 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
                 {
                     return new SymbolStyle()
                     {
@@ -623,19 +674,24 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                if (f.Geometry is Point)
+                if (f is not GeometryFeature gf)
                 {
                     return null;
                 }
 
-                if (f.Geometry is MultiPolygon)
+                if (gf.Geometry is Point)
                 {
-                    foreach (var item in f.Fields)
+                    return null;
+                }
+
+                if (gf.Geometry is MultiPolygon)
+                {
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("Count"))
                         {
-                            var count = int.Parse(f["Count"].ToString()!);
-                            var index = int.Parse(f["Index"].ToString()!);
+                            var count = int.Parse(gf["Count"].ToString()!);
+                            var index = int.Parse(gf["Index"].ToString()!);
                             var color = _groundStationPalette.GetColor(index, count);
                             return new VectorStyle
                             {
@@ -648,13 +704,13 @@ namespace FootprintViewer.Styles
                     }
                 }
 
-                if (f.Fields != null && f.Geometry is MultiLineString)
+                if (gf.Fields != null && gf.Geometry is MultiLineString)
                 {
-                    foreach (var item in f.Fields)
+                    foreach (var item in gf.Fields)
                     {
                         if (item.Equals("InnerBorder"))
                         {
-                            var count = int.Parse(f["Count"].ToString()!);
+                            var count = int.Parse(gf["Count"].ToString()!);
                             var color = _groundStationPalette.GetColor(0, count);
 
                             return new VectorStyle
@@ -667,7 +723,7 @@ namespace FootprintViewer.Styles
                         }
                         if (item.Equals("OuterBorder"))
                         {
-                            var count = int.Parse(f["Count"].ToString()!);
+                            var count = int.Parse(gf["Count"].ToString()!);
                             var color = _groundStationPalette.GetColor(count - 1, count);
 
                             return new VectorStyle

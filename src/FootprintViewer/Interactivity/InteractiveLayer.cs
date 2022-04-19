@@ -2,9 +2,9 @@
 using FootprintViewer.Interactivity.Designers;
 using Mapsui;
 using Mapsui.Fetcher;
-using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Providers;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Interactivity
@@ -14,7 +14,7 @@ namespace FootprintViewer.Interactivity
         private readonly ILayer _source;
         private readonly IInteractiveObject? _interactiveObject;
 
-        public override BoundingBox Envelope => _source.Envelope;
+        //public override BoundingBox Envelope => _source.Envelope;
 
         public InteractiveLayer(ILayer source, IInteractiveObject interactiveObject)
         {
@@ -27,7 +27,7 @@ namespace FootprintViewer.Interactivity
             IsMapInfoLayer = true;
         }
 
-        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
             if (_interactiveObject is IDecorator decorator)
             {
@@ -38,11 +38,11 @@ namespace FootprintViewer.Interactivity
                     yield break;
                 }
 
-                if (box.Intersects(feature.Geometry.BoundingBox) == true)
+                if (box.Intersects(feature.Extent /*Geometry.BoundingBox*/) == true)
                 {
                     foreach (var point in decorator.GetActiveVertices())
                     {
-                        yield return new Feature { Geometry = point };
+                        yield return new GeometryFeature { Geometry = point.ToPoint() };
                     }
                 }
             }
@@ -62,12 +62,12 @@ namespace FootprintViewer.Interactivity
 
                 foreach (var point in designer.GetActiveVertices())
                 {
-                    yield return new Feature { Geometry = point };
+                    yield return new GeometryFeature { Geometry = point.ToPoint() };
                 }
             }
         }
-
-        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        public override void RefreshData(FetchInfo fetchInfo)
+        //public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         {
             OnDataChanged(new DataChangedEventArgs());
         }      

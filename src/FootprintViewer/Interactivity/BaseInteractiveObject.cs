@@ -1,4 +1,5 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 
@@ -13,9 +14,9 @@ namespace FootprintViewer.Interactivity
             InvalidateLayer?.Invoke(this, EventArgs.Empty);
         }
 
-        public abstract IEnumerable<Point> GetActiveVertices();
+        public abstract IEnumerable<MPoint> GetActiveVertices();
 
-        protected IGeometry Copy(IGeometry geometry)
+        protected Geometry Copy(Geometry geometry)
         {
             if (geometry is LineString)
             {
@@ -38,12 +39,12 @@ namespace FootprintViewer.Interactivity
             }
         }
 
-        public abstract void Starting(Point worldPosition);
+        public abstract void Starting(MPoint worldPosition);
 
-        public abstract void Moving(Point worldPosition);
+        public abstract void Moving(MPoint worldPosition);
 
-        public abstract void Ending(Point worldPosition, Predicate<Point>? isEnd);
+        public abstract void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd);
 
-        public abstract void Hovering(Point worldPosition);
+        public abstract void Hovering(MPoint worldPosition);
     }
 }

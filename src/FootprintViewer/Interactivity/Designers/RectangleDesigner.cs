@@ -1,5 +1,9 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using Mapsui.Providers;
+using NetTopologySuite.Geometries;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 
@@ -13,15 +17,15 @@ namespace FootprintViewer.Interactivity.Designers
 
         public RectangleDesigner() : base() { }
 
-        public override IEnumerable<Point> GetActiveVertices() => new Point[] { };
+        public override IEnumerable<MPoint> GetActiveVertices() => new MPoint[] { };
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _skip = false;
             _counter = 0;
         }
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_counter++ > 0)
             {
@@ -29,7 +33,7 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_skip == false)
             {
@@ -37,19 +41,19 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(Point worldPosition)
+        public void CreatingFeature(MPoint worldPosition)
         {
             CreatingFeature(worldPosition, point => true);
         }
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
+        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint> isEnd)
         {
             if (_firstClick == true)
             {
@@ -73,7 +77,7 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public void HoverCreatingFeature(Point worldPosition)
+        public void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -87,43 +91,48 @@ namespace FootprintViewer.Interactivity.Designers
 
 
 
-        public void BeginDrawing(Point worldPosition)
+        public void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == false)
             {
                 _isDrawing = true;
 
-                var p0 = worldPosition.Clone();
-                var p1 = worldPosition.Clone();
-                var p2 = worldPosition.Clone();
-                var p3 = worldPosition.Clone();
+                var p0 = worldPosition.Copy().ToCoordinate();
+                var p1 = worldPosition.Copy().ToCoordinate();
+                var p2 = worldPosition.Copy().ToCoordinate();
+                var p3 = worldPosition.Copy().ToCoordinate();
 
-                var geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(new[] { p0, p1, p2, p3 })
-                };
+//                var geometry = new Polygon()
+//                {
+//                    ExteriorRing = new LinearRing(new[] { p0, p1, p2, p3 })
+//};
 
-                Feature = new Feature() { Geometry = geometry };
-                ExtraFeatures = new List<IFeature>();
+                var geometry = new GeometryFactory().CreatePolygon(new[] { p0, p1, p2, p3 });
+
+                Feature = new GeometryFeature() { Geometry = geometry };
+                ExtraFeatures = new List<GeometryFeature>();
             }
         }
 
-        public void DrawingHover(Point worldPosition)
+        public void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
                 var geometry = Feature.Geometry;
-                var p2 = worldPosition.Clone();
+                var p2 = worldPosition.Copy().ToCoordinate();
                 var rectangle = (Polygon)geometry;
-                var p0 = rectangle.ExteriorRing.Vertices[0];
+                var p0 = rectangle.ExteriorRing.Coordinates[0];
 
-                var p1 = new Point(p2.X, p0.Y);
-                var p3 = new Point(p0.X, p2.Y);
+                var p1 = new MPoint(p2.X, p0.Y).ToCoordinate();
+                var p3 = new MPoint(p0.X, p2.Y).ToCoordinate();
 
-                ((Polygon)geometry).ExteriorRing.Vertices[0] = p0;
-                ((Polygon)geometry).ExteriorRing.Vertices[1] = p1;
-                ((Polygon)geometry).ExteriorRing.Vertices[2] = p2;
-                ((Polygon)geometry).ExteriorRing.Vertices[3] = p3;
+   //             ((Polygon)geometry).ExteriorRing.Vertices[0] = p0;
+   //             ((Polygon)geometry).ExteriorRing.Vertices[1] = p1;
+   //             ((Polygon)geometry).ExteriorRing.Vertices[2] = p2;
+   //             ((Polygon)geometry).ExteriorRing.Vertices[3] = p3;
+
+                var poly = new GeometryFactory().CreatePolygon(new[] { p0, p1, p2, p3 });
+                Feature.Geometry = poly;
 
                 Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
@@ -137,13 +146,15 @@ namespace FootprintViewer.Interactivity.Designers
 
                 var geometry = Feature.Geometry;
 
-                var vertices = ((Polygon)geometry).ExteriorRing.Vertices;
+                var vertices = ((Polygon)geometry).ExteriorRing.Coordinates;
+               
+                var poly = new GeometryFactory().CreatePolygon(vertices);
 
-                Feature.Geometry = new Polygon()
+                Feature.Geometry = poly/*new Polygon()
                 {
                     ExteriorRing = new LinearRing(vertices)
-                };
-
+                }*/;
+            
                 Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }

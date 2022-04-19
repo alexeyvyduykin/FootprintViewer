@@ -1,6 +1,6 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Geometries.Utilities;
+﻿using Mapsui;
 using Mapsui.UI;
+using Mapsui.Utilities;
 using System.Collections.Generic;
 
 namespace FootprintViewer
@@ -15,12 +15,12 @@ namespace FootprintViewer
         /// <param name="vertices">The list of vertices to insert into</param>
         /// <param name="screenDistance"></param>
         /// <returns></returns>
-        public static bool TryInsertVertex(MapInfo mapInfo, IList<Point> vertices, double screenDistance)
+        public static bool TryInsertVertex(MapInfo mapInfo, IList<MPoint> vertices, double screenDistance)
         {
             var (distance, segment) = GetDistanceAndSegment(mapInfo.WorldPosition, vertices);
             if (IsCloseEnough(distance, mapInfo.Resolution, screenDistance))
             {
-                vertices.Insert(segment + 1, mapInfo.WorldPosition.Clone());
+                vertices.Insert(segment + 1, mapInfo.WorldPosition.Copy());
                 return true;
             }
             return false;
@@ -31,7 +31,7 @@ namespace FootprintViewer
             return distance <= resolution * screenDistance;
         }
 
-        private static (double Distance, int segment) GetDistanceAndSegment(Point point, IList<Point> points)
+        private static (double Distance, int segment) GetDistanceAndSegment(MPoint point, IList<MPoint> points)
         {
             // Move this to Mapsui
 
@@ -40,7 +40,7 @@ namespace FootprintViewer
 
             for (var i = 0; i < points.Count - 1; i++)
             {
-                var dist = CGAlgorithms.DistancePointLine(point, points[i], points[i + 1]);
+                var dist = /*CGAlgorithms*/Algorithms.DistancePointLine(point, points[i], points[i + 1]);
                 if (dist < minDist)
                 {
                     minDist = dist;

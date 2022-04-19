@@ -5,6 +5,7 @@ using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Rendering.Skia;
+using Mapsui.Tiling.Extensions;
 using Mapsui.Utilities;
 using SQLite;
 using System;
@@ -102,11 +103,13 @@ namespace FootprintViewer.Data.Sources
 
             map.Layers.Add(layer);
 
-            var area = mbTilesTileSource.Schema.Extent.ToBoundingBox();
+            var area = mbTilesTileSource.Schema.Extent.ToMRect();
 
             var viewport = new Viewport
             {
-                Center = area.Centroid,
+               // Center = area.Centroid,
+                CenterX = area.Centroid.X,
+                CenterY = area.Centroid.Y,
                 Width = 200,
                 Height = 200,
                 Resolution = ZoomHelper.DetermineResolution(area.Width, area.Height, 200, 200)

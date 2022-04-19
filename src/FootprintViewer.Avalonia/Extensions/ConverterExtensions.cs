@@ -1,15 +1,15 @@
 ﻿using Avalonia;
 using FootprintViewer.Input;
+using Mapsui;
 using avalonia = Avalonia.Input;
-using M = Mapsui.Geometries;
 
 namespace FootprintViewer.Avalonia
 {
     public static class ConverterExtensions
     {
-        public static M.Point ToScreenPoint(this Point pt)
+        public static MPoint ToScreenPoint(this Point pt)
         {
-            return new M.Point(pt.X, pt.Y);
+            return new MPoint(pt.X, pt.Y);
         }
 
         public static MouseButton Convert(this avalonia.PointerUpdateKind state)

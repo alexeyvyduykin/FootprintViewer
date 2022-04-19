@@ -1,7 +1,6 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer
 {
@@ -14,12 +13,12 @@ namespace FootprintViewer
             return input / 180.0 * Math.PI;
         }
 
-        public static double ComputeSignedArea(IList<Point> path)
+        public static double ComputeSignedArea(IList<MPoint> path)
         {
             return ComputeSignedArea(path, EARTH_RADIUS);
         }
 
-        private static double ComputeSignedArea(IList<Point> path, double radius)
+        private static double ComputeSignedArea(IList<MPoint> path, double radius)
         {
             int size = path.Count;
             if (size < 3)
@@ -47,12 +46,12 @@ namespace FootprintViewer
             return 2 * Math.Atan2(t * Math.Sin(deltaLng), 1 + t * Math.Cos(deltaLng));
         }
 
-        public static double ComputeDistance(IList<Point> path)
+        public static double ComputeDistance(IList<MPoint> path)
         {
             return ComputeDistance(path, EARTH_RADIUS);
         }
 
-        private static double ComputeDistance(IList<Point> path, double radius)
+        private static double ComputeDistance(IList<MPoint> path, double radius)
         {
             int size = path.Count;
             if (size < 2)
@@ -62,7 +61,7 @@ namespace FootprintViewer
 
             double total = 0;
              
-            Point prevPoint = path[0];
+            MPoint prevPoint = path[0];
       
             foreach (var point in path)
             {
@@ -75,7 +74,7 @@ namespace FootprintViewer
             return total;
         }
 
-        private static double GetDistance(Point p0, Point p1)
+        private static double GetDistance(MPoint p0, MPoint p1)
         {
             var lat0 = ToRadians(p0.Y);
             var lon0 = ToRadians(p0.X);

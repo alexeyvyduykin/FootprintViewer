@@ -1,5 +1,7 @@
 ﻿using FootprintViewer.FileSystem;
-using Mapsui.Geometries;
+using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +28,9 @@ namespace FootprintViewer.Data.Sources
             _dataFolder = new SolutionFolder(folder);
         }
 
-        public IDictionary<string, IGeometry> GetFootprintPreviewGeometries()
+        public IDictionary<string, Geometry> GetFootprintPreviewGeometries()
         {
-            var dict = new SortedDictionary<string, IGeometry>();
+            var dict = new SortedDictionary<string, Geometry>();
 
             var shapeFileName = _dataFolder.GetPath(_file, _subFolder);
 
@@ -43,8 +45,14 @@ namespace FootprintViewer.Data.Sources
                     var geometry = shapefileFeature.Geometry;
 
                     var points = geometry.Coordinates;
-                    var exteriorRing = new LinearRing(points.Select(s => Mapsui.Projection.SphericalMercator.FromLonLat(s.X, s.Y)));
-                    var poly = new Polygon(exteriorRing);
+                    //var exteriorRing = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate()).ToArray());
+                    //var poly = new Polygon(exteriorRing);
+
+                    var vertices = points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate()).ToArray();
+
+                    var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
+
+
 
                     dict.Add(name, poly);
                 }

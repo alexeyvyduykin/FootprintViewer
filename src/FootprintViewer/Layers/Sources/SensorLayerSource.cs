@@ -1,10 +1,12 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Science;
 using FootprintViewer.ViewModels;
-using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Projection;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using Mapsui.Providers;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +20,20 @@ namespace FootprintViewer.Layers
 
     public class SensorLayerSource : WritableLayer, ISensorLayerSource
     {
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft;
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright;
-        private readonly Dictionary<string, List<IFeature>> _cache;
+        private readonly Dictionary<string, Dictionary<int, List<GeometryFeature>>> _dictLeft;
+        private readonly Dictionary<string, Dictionary<int, List<GeometryFeature>>> _dictright;
+        private readonly Dictionary<string, List<GeometryFeature>> _cache;
         private readonly SatelliteProvider _provider;
 
         public SensorLayerSource(SatelliteProvider provider)
         {
             _provider = provider;
 
-            _cache = new Dictionary<string, List<IFeature>>();
+            _cache = new Dictionary<string, List<GeometryFeature>>();
 
-            _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            _dictLeft = new Dictionary<string, Dictionary<int, List<GeometryFeature>>>();
 
-            _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            _dictright = new Dictionary<string, Dictionary<int, List<GeometryFeature>>>();
 
             provider.Loading.Subscribe(LoadingImpl);
         }
@@ -57,7 +59,7 @@ namespace FootprintViewer.Layers
 
                 if (_cache.ContainsKey(name) == false)
                 {
-                    _cache.Add(name, new List<IFeature>());
+                    _cache.Add(name, new List<GeometryFeature>());
                 }
             }
         }
@@ -98,26 +100,29 @@ namespace FootprintViewer.Layers
             }
         }
 
-        private Dictionary<int, List<IFeature>> FromStrips(string name, Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
+        private Dictionary<int, List<GeometryFeature>> FromStrips(string name, Dictionary<int, List<List<NetTopologySuite.Geometries.Point>>> strips)
         {
-            var dict = new Dictionary<int, List<IFeature>>();
+            var dict = new Dictionary<int, List<GeometryFeature>>();
             foreach (var item in strips)
             {
-                var list = new List<IFeature>();
+                var list = new List<GeometryFeature>();
 
                 foreach (var ln in item.Value)
                 {
-                    var ring = new LinearRing();
+                    //var ring = new LinearRing();
+                    var vertices = new List<Coordinate>();
 
                     foreach (var p in ln)
                     {
-                        var point = SphericalMercator.FromLonLat(p.X * ScienceMath.RadiansToDegrees, p.Y * ScienceMath.RadiansToDegrees);
-                        ring.Vertices.Add(point);
+                        var point = SphericalMercator.FromLonLat(p.X * ScienceMath.RadiansToDegrees, p.Y * ScienceMath.RadiansToDegrees).ToCoordinate();
+                        vertices.Add(point);
                     }
 
-                    var poly = new Polygon() { ExteriorRing = ring };
+                    //var poly = new Polygon() { ExteriorRing = ring };
 
-                    list.Add(new Feature
+                    var poly = new GeometryFactory().CreatePolygon(vertices.ToArray().ToClosedCoordinates());
+
+                    list.Add(new GeometryFeature
                     {
                         Geometry = poly,
                         ["Name"] = name,

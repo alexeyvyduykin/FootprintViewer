@@ -1,7 +1,11 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui.Nts;
+using Mapsui;
 using System;
 using System.Collections.Generic;
+using NetTopologySuite.Geometries;
+using System.Linq;
+using Mapsui.Nts.Extensions;
+using DynamicData;
 
 namespace FootprintViewer.Interactivity.Designers
 {
@@ -10,25 +14,25 @@ namespace FootprintViewer.Interactivity.Designers
         private bool _skip;
         private int _counter;
         private bool _isDrawing = false;
-        private IFeature? _extraLineString;
+        private GeometryFeature? _extraLineString;
 
-        public override IEnumerable<Point> GetActiveVertices()
+        public override IEnumerable<MPoint> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {
-                return Feature.Geometry.MainVertices();
+                return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new Point[] { };
+            return new MPoint[] { };
         }
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _skip = false;
             _counter = 0;
         }
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_counter++ > 0)
             {
@@ -36,7 +40,7 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_skip == false)
             {
@@ -44,19 +48,19 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(Point worldPosition)
+        public void CreatingFeature(MPoint worldPosition)
         {
             CreatingFeature(worldPosition, point => true);
         }
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(Point worldPosition, Predicate<Point>? isEnd)
+        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_firstClick == true)
             {
@@ -91,7 +95,7 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public void HoverCreatingFeature(Point worldPosition)
+        public void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -103,15 +107,15 @@ namespace FootprintViewer.Interactivity.Designers
             }
         }
 
-        public bool IsEndDrawing(Point worldPosition, Predicate<Point>? isEnd)
+        public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             var routeGeometry = (LineString)Feature.Geometry;
 
-            if (routeGeometry.Vertices.Count > 1)
+            if (routeGeometry.Coordinates.Count() > 1)
             {
-                foreach (var item in routeGeometry.Vertices)
+                foreach (var item in routeGeometry.Coordinates)
                 {
-                    var click = isEnd?.Invoke(item);
+                    var click = isEnd?.Invoke(item.ToMPoint());
                     if (click == true)
                     {
                         return true;
@@ -122,7 +126,7 @@ namespace FootprintViewer.Interactivity.Designers
             return false;
         }
 
-        public void BeginDrawing(Point worldPosition)
+        public void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -131,39 +135,40 @@ namespace FootprintViewer.Interactivity.Designers
 
             _isDrawing = true;
 
-            var p0 = worldPosition.Clone();
+            var p0 = worldPosition.Copy().ToCoordinate();
             // Add a second point right away. The second one will be the 'hover' vertex
-            var p1 = worldPosition.Clone();
+            var p1 = worldPosition.Copy().ToCoordinate();
 
             var geometry = new LineString(new[] { p0 });
 
-            _extraLineString = new Feature
+            _extraLineString = new GeometryFeature
             {
                 Geometry = new LineString(new[] { p0, p1 }),
                 ["Name"] = "ExtraRouteHoverLine",
             };
 
-            Feature = new Feature() { Geometry = geometry };
-            ExtraFeatures = new List<IFeature>() { _extraLineString };
+            Feature = new GeometryFeature() { Geometry = geometry };
+            ExtraFeatures = new List<GeometryFeature>() { _extraLineString };
         }
 
-        public void Drawing(Point worldPosition)
+        public void Drawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint;
-                var p1 = worldPosition.Clone();
-                var p2 = worldPosition.Clone();
+                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint.ToMPoint().ToCoordinate();
+                var p1 = worldPosition.Copy().ToCoordinate();
+                var p2 = worldPosition.Copy().ToCoordinate();
 
-                ((LineString)Feature.Geometry).Vertices.Add(p0); // and add it to the geometry
-                ((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
+                ((LineString)Feature.Geometry).Coordinates.Add(new[] { p0 }); // and add it to the geometry
+                //((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
+                _extraLineString.Geometry = new LineString(new[] { p1, p2 });
 
                 Feature.RenderedGeometry?.Clear();
                 _extraLineString.RenderedGeometry?.Clear();
             }
         }
 
-        public void DrawingHover(Point worldPosition)
+        public void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {

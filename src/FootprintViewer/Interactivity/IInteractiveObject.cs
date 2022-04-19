@@ -1,4 +1,4 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 using System;
 using System.Collections.Generic;
 
@@ -8,14 +8,14 @@ namespace FootprintViewer.Interactivity
     {
         event EventHandler? InvalidateLayer;
 
-        IEnumerable<Point> GetActiveVertices();
+        IEnumerable<MPoint> GetActiveVertices();
 
-        void Starting(Point worldPosition);
+        void Starting(MPoint worldPosition);
 
-        void Moving(Point worldPosition);
+        void Moving(MPoint worldPosition);
 
-        void Ending(Point worldPosition, Predicate<Point>? isEnd);
+        void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd);
 
-        void Hovering(Point worldPosition);
+        void Hovering(MPoint worldPosition);
     }
 }

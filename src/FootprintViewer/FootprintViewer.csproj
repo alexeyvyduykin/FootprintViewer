@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BruTile.MbTiles" Version="4.0.0" />
-    <PackageReference Include="Mapsui" Version="3.0.0" />
+    <PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
+    <PackageReference Include="Mapsui" Version="4.0.0-beta.3" />
     <PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.0.0" />
     <PackageReference Include="ReactiveUI" Version="16.2.6" />
     <PackageReference Include="ReactiveUI.Fody" Version="16.2.6" />

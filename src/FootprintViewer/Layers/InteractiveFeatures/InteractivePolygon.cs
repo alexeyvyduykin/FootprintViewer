@@ -1,21 +1,24 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Layers
 {
     public class InteractivePolygon : InteractiveFeature
     {
-        public InteractivePolygon(IFeature feature) : base(feature) { }
+        public InteractivePolygon(GeometryFeature feature) : base(feature) { }
 
-        public override IList<Point> EditVertices()
+        public override IList<MPoint> EditVertices()
         {
             if (Geometry != null)
             {
-                return ((Polygon)Geometry).ExteriorRing.Vertices;
+                return ((Polygon)Geometry).ExteriorRing.Coordinates.Select(s => s.ToMPoint()).ToList();// Vertices;
             }
 
-            return new List<Point>();
+            return new List<MPoint>();
         }
     }
 }

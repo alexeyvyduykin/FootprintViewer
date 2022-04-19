@@ -6,6 +6,8 @@ using Avalonia.Media;
 using Mapsui.Widgets.ScaleBar;
 using Mapsui;
 using System;
+using Mapsui.Projections;
+using FootprintViewer.Input;
 
 namespace FootprintViewer.Avalonia.Views
 {
@@ -24,25 +26,82 @@ namespace FootprintViewer.Avalonia.Views
 
             _textBlockScale = this.FindControl<TextBlock>("TextBlockScale");
             _canvasScale = this.FindControl<Canvas>("CanvasScale");
+
+         //   Update += ScaleBarView_Update;
+
+            UserMapControlProperty.Changed.Subscribe(OnUserMapControlChanged);
         }
+
+
+        public UserMapControl UserMapControl
+        {
+            get { return GetValue(UserMapControlProperty); }
+            set { SetValue(UserMapControlProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
+        public static readonly StyledProperty<UserMapControl> UserMapControlProperty =
+            AvaloniaProperty.Register<ScaleBarView, UserMapControl>(nameof(UserMapControl));
+
+
+        private static void OnUserMapControlChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            var scaleBarView = (ScaleBarView)e.Sender;      
+            if (e.NewValue == null)
+            {
+             
+            }
+            else
+            {
+              
+            }
+        }
+
+        private static void Viewport_ViewportChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void MapControl_ViewportUpdate(object? sender, EventArgs e)
+        {
+            if (sender is IReadOnlyViewport viewport)
+            {
+                OnUpdate(viewport);
+            }
+        }
+
+        //private void ScaleBarView_Update(object? sender, EventArgs e)
+        //{
+        //    if (sender is IReadOnlyViewport viewport)
+        //    {
+        //        OnUpdate(viewport);
+        //    }
+        //}
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
 
-        public void Update(Map map, Viewport viewport)
+       // public event EventHandler<EventArgs> Update;
+
+        private void OnUpdate(/*Map map,*/ IReadOnlyViewport viewport)
         {
             if (Design.IsDesignMode == false)
             {
                 var unitConverter = MetricUnitConverter.Instance;
 
-                var center = new Mapsui.Geometries.Point(viewport.Center.X, viewport.Center.Y);
+                var center = new MPoint(viewport.Center.X, viewport.Center.Y);
 
                 // We have to calc the angle difference to the equator (angle = 0), 
                 // because EPSG:3857 is only there 1 m. At othere angles, we
                 // should calculate the correct length.                       
-                var position = (Mapsui.Geometries.Point)map.Transformation.Transform(map.CRS, "EPSG:4326", center); // clone or else you will transform the orginal viewport center
+        //        var position = (MPoint)map.Transformation.Transform(map.CRS, "EPSG:4326", center); // clone or else you will transform the orginal viewport center
+
+                var proj = new Projection();
+                //var position = proj.Project(map.CRS, "EPSG:4326", center.X, center.Y);
+                var position = proj.Project("EPSG:3857", "EPSG:4326", center.X, center.Y);
+
 
                 // Calc ground resolution in meters per pixel of viewport for this latitude
                 double groundResolution = viewport.Resolution * Math.Cos(position.Y / 180.0 * Math.PI);

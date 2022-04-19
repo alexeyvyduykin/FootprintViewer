@@ -1,5 +1,7 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 
@@ -7,34 +9,34 @@ namespace FootprintViewer.Interactivity.Decorators
 {
     public class ScaleDecorator : BaseDecorator
     {
-        private readonly Point _center;
-        private Point _sizeNE;
-        private Point _startSizeNE;
-        private Point _startOffsetToVertex;
-        private IGeometry? _startGeometry;
+        private readonly MPoint _center;
+        private MPoint _sizeNE;
+        private MPoint _startSizeNE;
+        private MPoint _startOffsetToVertex;
+        private Geometry? _startGeometry;
         private double _startScale;
         // HACK: without this locker Moving() passing not his order
         private bool _isScaling = false;
 
-        public ScaleDecorator(IFeature featureSource) : base(featureSource)
+        public ScaleDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _sizeNE = featureSource.Geometry.BoundingBox.TopRight;
+            _sizeNE = featureSource.Extent.TopRight;//Geometry.BoundingBox.TopRight;
 
-            _center = featureSource.Geometry.BoundingBox.Centroid;
+            _center = featureSource.Extent.Centroid;//Geometry.BoundingBox.Centroid;
 
             _startSizeNE = _sizeNE;
 
-            _startOffsetToVertex = new Point();
+            _startOffsetToVertex = new MPoint();
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             _isScaling = false;
         }
 
-        public override IEnumerable<Point> GetActiveVertices() => new[] { _sizeNE };
+        public override IEnumerable<MPoint> GetActiveVertices() => new[] { _sizeNE };
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_isScaling == true && _startGeometry != null)
             {
@@ -44,9 +46,9 @@ namespace FootprintViewer.Interactivity.Decorators
 
                 var geometry = Copy(_startGeometry);
 
-                Geomorpher.Scale(geometry, scale / _startScale, _center);
+                Geomorpher.Scale(geometry, scale / _startScale, _center.ToPoint());
 
-                _sizeNE = geometry.BoundingBox.TopRight;
+                _sizeNE = geometry.EnvelopeInternal.ToMRect().TopRight;// BoundingBox.TopRight;
 
                 FeatureSource.Geometry = geometry;
 
@@ -54,7 +56,7 @@ namespace FootprintViewer.Interactivity.Decorators
             }
         }
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _startSizeNE = _sizeNE;
 
@@ -67,7 +69,7 @@ namespace FootprintViewer.Interactivity.Decorators
             _isScaling = true;
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
 
         }

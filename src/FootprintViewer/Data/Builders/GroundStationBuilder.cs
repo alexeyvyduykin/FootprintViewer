@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data.Science;
-using Mapsui.Geometries;
+using Mapsui;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,17 +7,17 @@ namespace FootprintViewer.Data
 {
     internal class GroundStationResult
     {
-        public Point Center { get; init; } = new Point();
+        public MPoint Center { get; init; } = new MPoint();
 
         public double InnerAngle { get; init; }
 
         public double OuterAngle { get; init; }
 
-        public IList<IEnumerable<IEnumerable<Point>>> Areas { get; init; } = new List<IEnumerable<IEnumerable<Point>>>();
+        public IList<IEnumerable<IEnumerable<MPoint>>> Areas { get; init; } = new List<IEnumerable<IEnumerable<MPoint>>>();
 
-        public IEnumerable<IEnumerable<Point>> InnerBorder { get; init; } = new List<IEnumerable<Point>>();
+        public IEnumerable<IEnumerable<MPoint>> InnerBorder { get; init; } = new List<IEnumerable<MPoint>>();
 
-        public IEnumerable<IEnumerable<Point>> OuterBorder { get; init; } = new List<IEnumerable<Point>>();
+        public IEnumerable<IEnumerable<MPoint>> OuterBorder { get; init; } = new List<IEnumerable<MPoint>>();
     }
 
     internal static class GroundStationBuilder
@@ -38,11 +38,11 @@ namespace FootprintViewer.Data
 
             return new GroundStationResult()
             {
-                Center = new Point(lon, lat),
+                Center = new MPoint(lon, lat),
                 InnerAngle = (isHole == false) ? 0.0 : angles.First(),
                 OuterAngle = angles.Last(),
                 Areas = circles.Select(s => s.Areas).ToList(),
-                InnerBorder = (isHole == false) ? new List<IEnumerable<Point>>() : circles.First().Borders,
+                InnerBorder = (isHole == false) ? new List<IEnumerable<MPoint>>() : circles.First().Borders,
                 OuterBorder = circles.Last().Borders,
             };
         }

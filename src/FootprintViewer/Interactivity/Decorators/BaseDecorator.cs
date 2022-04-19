@@ -1,16 +1,16 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
 
 namespace FootprintViewer.Interactivity.Decorators
 {
     public abstract class BaseDecorator : BaseInteractiveObject, IDecorator
     {
-        private readonly IFeature _featureSource;
+        private readonly GeometryFeature _featureSource;
 
-        public BaseDecorator(IFeature featureSource)
+        public BaseDecorator(GeometryFeature featureSource)
         {
             _featureSource = featureSource;
         }
 
-        public IFeature FeatureSource => _featureSource;
+        public GeometryFeature FeatureSource => _featureSource;
     }
 }

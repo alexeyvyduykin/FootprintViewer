@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
-using Mapsui.Geometries;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -26,7 +26,7 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearchFilter : ReactiveObject
     {
-        private readonly IDictionary<string, IGeometry> _geometries;
+        private readonly IDictionary<string, Geometry> _geometries;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -152,6 +152,6 @@ namespace FootprintViewer.ViewModels
         public bool IsAllSensorActive { get; set; }
 
         [Reactive]
-        public IGeometry? AOI { get; set; }
+        public Geometry? AOI { get; set; }
     }
 }

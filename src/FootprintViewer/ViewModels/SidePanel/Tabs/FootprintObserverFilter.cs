@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
-using Mapsui.Geometries;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -114,6 +114,6 @@ namespace FootprintViewer.ViewModels
         public ObservableCollection<SatelliteItem> Satellites { get; private set; }
 
         [Reactive]
-        public IGeometry? AOI { get; set; }
+        public Geometry? AOI { get; set; }
     }
 }

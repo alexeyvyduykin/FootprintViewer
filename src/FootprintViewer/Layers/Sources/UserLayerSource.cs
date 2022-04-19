@@ -1,8 +1,7 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
-using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Providers;
+using Mapsui.Nts;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -16,9 +15,9 @@ namespace FootprintViewer.Layers
 {
     public interface IUserLayerSource : ILayer
     {
-        void EditFeature(IFeature feature);
+        void EditFeature(GeometryFeature feature);
 
-        void AddUserGeometry(IFeature feature, UserGeometryType type);
+        void AddUserGeometry(GeometryFeature feature, UserGeometryType type);
     }
 
     public class UserLayerSource : WritableLayer, IUserLayerSource
@@ -57,18 +56,18 @@ namespace FootprintViewer.Layers
                 {
                     if (s.Type == UserGeometryType.Point)
                     {
-                        return new Feature()
+                        return new GeometryFeature()
                         {
                             ["Name"] = s.Name,
-                            Geometry = NTSConverter.ToPoint(s.Geometry.Geometry!)
+                            Geometry = s.Geometry.Geometry// NTSConverter.ToPoint(s.Geometry.Geometry!)
                         };
                     }
                     else
                     {
-                        return new Feature()
+                        return new GeometryFeature()
                         {
                             ["Name"] = s.Name,
-                            Geometry = NTSConverter.ToPolygon(s.Geometry.Geometry!)
+                            Geometry = s.Geometry.Geometry//NTSConverter.ToPolygon(s.Geometry.Geometry!)
                         };
                     }                                
                 });
@@ -82,7 +81,7 @@ namespace FootprintViewer.Layers
             return await _provider.GetUserGeometryInfosAsync();
         }
 
-        public void EditFeature(IFeature feature)
+        public void EditFeature(GeometryFeature feature)
         {
             Task.Run(async () =>
             {
@@ -90,14 +89,14 @@ namespace FootprintViewer.Layers
                 {
                     var name = (string)feature["Name"];
 
-                    var geometry = NTSConverter.FromGeometry(feature.Geometry);
+                    var geometry = feature.Geometry;//NTSConverter.FromGeometry(feature.Geometry);
 
                     await _provider.UpdateGeometry(name, geometry);
                 }
             });
         }
 
-        public void AddUserGeometry(IFeature feature, UserGeometryType type)
+        public void AddUserGeometry(GeometryFeature feature, UserGeometryType type)
         {
             var name = GenerateName(type);
 
@@ -111,7 +110,7 @@ namespace FootprintViewer.Layers
                 {
                     Type = type,
                     Name = name,
-                    Geometry = NTSConverter.FromGeometry(feature.Geometry)
+                    Geometry = feature.Geometry//NTSConverter.FromGeometry(feature.Geometry)
                 };
 
                 await _provider.AddAsync(model);
@@ -119,46 +118,46 @@ namespace FootprintViewer.Layers
         }
     }
 
-    public static class NTSConverter
-    {
-        private static nts.Geometry FromPoint(Point point)
-        {           
-            return new nts.Point(new nts.Coordinate(point.X, point.Y));
-        }
+    //public static class NTSConverter
+    //{
+    //    private static nts.Geometry FromPoint(Point point)
+    //    {           
+    //        return new nts.Point(new nts.Coordinate(point.X, point.Y));
+    //    }
 
-        public static Point ToPoint(nts.Geometry geometry)
-        {
-            var coordinate = ((nts.Point)geometry).Coordinate;
-            return new Point(coordinate.X, coordinate.Y);
-        }
+    //    public static Point ToPoint(nts.Geometry geometry)
+    //    {
+    //        var coordinate = ((nts.Point)geometry).Coordinate;
+    //        return new Point(coordinate.X, coordinate.Y);
+    //    }
 
-        private static nts.Geometry FromPolygon(Polygon polygon)
-        {
-            var points = polygon.ExteriorRing.Vertices;
-            var lr = new nts.LinearRing(points.Select(s => new nts.Coordinate(s.X, s.Y)).ToArray());
-            return new nts.Polygon(lr);
-        }
+    //    private static nts.Geometry FromPolygon(Polygon polygon)
+    //    {
+    //        var points = polygon.ExteriorRing.Vertices;
+    //        var lr = new nts.LinearRing(points.Select(s => new nts.Coordinate(s.X, s.Y)).ToArray());
+    //        return new nts.Polygon(lr);
+    //    }
 
-        public static Polygon ToPolygon(nts.Geometry geometry)
-        {
-            var points = geometry.Coordinates;
+    //    public static Polygon ToPolygon(nts.Geometry geometry)
+    //    {
+    //        var points = geometry.Coordinates;
 
-            var lr = new LinearRing(points.Select(s => new Point(s.X, s.Y)).ToArray());
-            return new Polygon(lr);
-        }
+    //        var lr = new LinearRing(points.Select(s => new Point(s.X, s.Y)).ToArray());
+    //        return new Polygon(lr);
+    //    }
 
-        public static nts.Geometry FromGeometry(IGeometry geometry)
-        {
-            if (geometry is Point point)
-            {
-                return FromPoint(point);
-            }
-            else if (geometry is Polygon polygon)
-            {
-                return FromPolygon(polygon);
-            }
+    //    public static nts.Geometry FromGeometry(IGeometry geometry)
+    //    {
+    //        if (geometry is Point point)
+    //        {
+    //            return FromPoint(point);
+    //        }
+    //        else if (geometry is Polygon polygon)
+    //        {
+    //            return FromPolygon(polygon);
+    //        }
 
-            throw new Exception();
-        }
-    }
+    //        throw new Exception();
+    //    }
+    //}
 }

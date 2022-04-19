@@ -1,8 +1,13 @@
 ﻿using FootprintViewer.Data;
-using Mapsui.Geometries;
+using Mapsui;
+using Mapsui.Extensions;
 using Mapsui.Layers;
-using Mapsui.Projection;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using Mapsui.Providers;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Operation.Overlay;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -97,7 +102,7 @@ namespace FootprintViewer.Layers
 
             foreach (var item in groundTargets)
             {
-                var feature = new Feature()
+                var feature = new GeometryFeature()
                 {
                     ["Name"] = item.Name,
                     ["State"] = "Unselected",
@@ -109,7 +114,7 @@ namespace FootprintViewer.Layers
                     case GroundTargetType.Point:
                     {
                         var p = (NetTopologySuite.Geometries.Point)item.Points!;
-                        var point = SphericalMercator.FromLonLat(p.X, p.Y);
+                        var point = SphericalMercator.FromLonLat(p.X, p.Y).ToMPoint().ToPoint();
                         feature.Geometry = point;
                         feature["Type"] = "Point";
                     }
@@ -136,46 +141,50 @@ namespace FootprintViewer.Layers
             return list;
         }
 
-        private IGeometry AreaCutting(IList<Point> points)
+        private Geometry AreaCutting(IList<Point> points)
         {
             var count = points.Count;
-            var ring1 = new LinearRing();
-            var ring2 = new LinearRing();
+            //var ring1 = new LinearRing();
+            //var ring2 = new LinearRing();
 
-            var ring = ring1;
+            //var ring = ring1;
+
+            var vertices1 = new List<MPoint>();
+            var vertices2 = new List<MPoint>();
+            var vertices = vertices1;
 
             for (int i = 0; i < count; i++)
             {
                 var p1 = points[i];
                 var p2 = (i == count - 1) ? points[0] : points[i + 1];
 
-                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y);
-                ring.Vertices.Add(point1);
+                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y).ToMPoint();
+                vertices.Add(point1);
 
                 if (Math.Abs(p2.X - p1.X) > 180)
                 {
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
-                        ring.Vertices.Add(pp1);
+                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        vertices.Add(pp1);
 
-                        ring = (ring == ring1) ? ring2 : ring1;
+                        vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(180, cutLat);
-                        ring.Vertices.Add(pp2);
+                        var pp2 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        vertices.Add(pp2);
                     }
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(180, cutLat);
-                        ring.Vertices.Add(pp1);
+                        var pp1 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        vertices.Add(pp1);
 
-                        ring = (ring == ring1) ? ring2 : ring1;
+                        vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat);
-                        ring.Vertices.Add(pp2);
+                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        vertices.Add(pp2);
                     }
                 }
 
@@ -183,60 +192,75 @@ namespace FootprintViewer.Layers
             }
 
 
-            if (ring2.Length != 0) // multipolygon
+            if (vertices2.Count != 0) // multipolygon
             {
-                var multi = new MultiPolygon();
-                multi.Polygons.Add(new Polygon() { ExteriorRing = ring1 });
-                multi.Polygons.Add(new Polygon() { ExteriorRing = ring2 });
+                //var ring1 = new LinearRing();
+                //var ring2 = new LinearRing();
+        
+                //multi.Polygons.Add(new Polygon() { ExteriorRing = ring1 });
+                //multi.Polygons.Add(new Polygon() { ExteriorRing = ring2 });
+
+                var poly1 = new GeometryFactory().CreatePolygon(vertices1.Select(s=>s.ToCoordinate()).ToArray().ToClosedCoordinates());
+                var poly2 = new GeometryFactory().CreatePolygon(vertices2.Select(s => s.ToCoordinate()).ToArray().ToClosedCoordinates());
+
+
+                var multi = new GeometryFactory().CreateMultiPolygon(new[] { poly1, poly2 });
 
                 return multi;
             }
             else
             {
-                return new Polygon() { ExteriorRing = ring1 };
+                var poly1 = new GeometryFactory().CreatePolygon(vertices1.Select(s => s.ToCoordinate()).ToArray().ToClosedCoordinates());
+                return poly1;
+
+                //return new Polygon() { ExteriorRing = ring1 };
             }
         }
 
-        private IGeometry RouteCutting(IList<Point> points)
+        private Geometry RouteCutting(IList<Point> points)
         {
             var count = points.Count;
-            var line1 = new LineString();
-            var line2 = new LineString();
+            //var line1 = new LineString();
+            //var line2 = new LineString();
 
-            var line = line1;
+            //var line = line1;
+
+            var vertices1 = new List<MPoint>();
+            var vertices2 = new List<MPoint>();
+            var vertices = vertices1;
 
             for (int i = 0; i < count - 1; i++)
             {
                 var p1 = points[i];
                 var p2 = points[i + 1];
 
-                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y);
-                line.Vertices.Add(point1);
+                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y).ToMPoint();
+                vertices.Add(point1);
 
                 if (Math.Abs(p2.X - p1.X) > 180)
                 {
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
-                        line.Vertices.Add(pp1);
+                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        vertices.Add(pp1);
 
-                        line = (line == line1) ? line2 : line1;
+                        vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(180, cutLat);
-                        line.Vertices.Add(pp2);
+                        var pp2 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        vertices.Add(pp2);
                     }
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(180, cutLat);
-                        line.Vertices.Add(pp1);
+                        var pp1 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        vertices.Add(pp1);
 
-                        line = (line == line1) ? line2 : line1;
+                        vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat);
-                        line.Vertices.Add(pp2);
+                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        vertices.Add(pp2);
                     }
                 }
 
@@ -244,16 +268,22 @@ namespace FootprintViewer.Layers
             }
 
 
-            if (line2.Length != 0) // MultiLineString
+            if (vertices2.Count != 0) // MultiLineString
             {
-                var multi = new MultiLineString();
-                multi.LineStrings.Add(line1);
-                multi.LineStrings.Add(line2);
+                //var multi = new MultiLineString();
+                // multi.LineStrings.Add(line1);
+                // multi.LineStrings.Add(line2);
+                
+                var line1 = new LineString(vertices1.Select(s=>s.ToCoordinate()).ToArray());
+                var line2 = new LineString(vertices2.Select(s => s.ToCoordinate()).ToArray().ToGreaterThanTwoCoordinates());
+
+                var multi = new GeometryFactory().CreateMultiLineString(new[] { line1 , line2 });
 
                 return multi;
             }
             else
             {
+                var line1 = new LineString(vertices1.Select(s => s.ToCoordinate()).ToArray());
                 return line1;
             }
         }

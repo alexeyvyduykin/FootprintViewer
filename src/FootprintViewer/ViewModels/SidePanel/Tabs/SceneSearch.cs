@@ -1,8 +1,9 @@
 ﻿using FootprintViewer.Data;
 using Mapsui;
-using Mapsui.Geometries;
 using Mapsui.Layers;
-using Mapsui.Providers;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -21,7 +22,7 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintPreviewProvider _footprintPreviewProvider;
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
         private readonly Map _map;
-        private readonly IDictionary<string, IGeometry> _geometries;
+        private readonly IDictionary<string, Geometry> _geometries;
         private bool _firstLoading = true;
 
         public event EventHandler? CurrentFootprint;
@@ -98,7 +99,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public void SetAOI(IGeometry aoi) => Filter.AOI = aoi;
+        public void SetAOI(Geometry aoi) => Filter.AOI = aoi;
 
         public void ResetAOI() => Filter.AOI = null;
 
@@ -119,7 +120,7 @@ namespace FootprintViewer.ViewModels
                 if (layer != null && layer is WritableLayer writableLayer)
                 {
                     writableLayer.Clear();
-                    writableLayer.Add(new Feature() { Geometry = ToGeometry(footprint) });
+                    writableLayer.Add(new GeometryFeature() { Geometry = ToGeometry(footprint) });
                     writableLayer.DataHasChanged();
                 }
             }
@@ -130,14 +131,14 @@ namespace FootprintViewer.ViewModels
             return _geometries.ContainsKey(footprint.Name!);
         }
 
-        private IGeometry ToGeometry(FootprintPreview footprint)
+        private Geometry ToGeometry(FootprintPreview footprint)
         {
             return _geometries[footprint.Name!];
         }
 
-        private Point GetCenter(FootprintPreview footprint)
+        private MPoint GetCenter(FootprintPreview footprint)
         {
-            return _geometries[footprint.Name!].BoundingBox.Centroid;
+            return _geometries[footprint.Name!].Centroid.ToMPoint();// BoundingBox.Centroid;
         }
 
         private void HideFootprintBorder()

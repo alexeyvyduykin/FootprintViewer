@@ -1,4 +1,4 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 
 namespace FootprintViewer.Input
 {
@@ -9,7 +9,7 @@ namespace FootprintViewer.Input
         {
         }
 
-        public Point? StartPosition { get; protected set; }
+        public MPoint? StartPosition { get; protected set; }
 
         public override void Started(MouseEventArgs e)
         {

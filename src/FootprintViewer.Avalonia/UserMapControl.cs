@@ -2,12 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using DynamicData;
 using FootprintViewer.Input;
 using FootprintViewer.Interactivity;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Geometries;
 using Mapsui.UI;
+using Mapsui.UI.Avalonia;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace FootprintViewer.Avalonia
 {
     public class UserMapControl : MapControl, IMapView
     {
-        private Mapsui.Geometries.Point? _mouseDownPoint;
+        private MPoint? _mouseDownPoint;
         private Cursor? _grabHandCursor;
         private bool _isLeftMouseDown = false;
         private CursorType _currentCursorType = CursorType.Default;
@@ -28,6 +29,8 @@ namespace FootprintViewer.Avalonia
         private bool _isLeftClick2 = false;
         private MapInfo? _lastMapInfo2;
         private int _counter2 = 0;
+
+        public event EventHandler<EventArgs> ViewportUpdate;
 
         public UserMapControl() : base()
         {
@@ -52,6 +55,21 @@ namespace FootprintViewer.Avalonia
             {
                 _tipControl = itemsControl;
                 Children.Add(itemsControl);
+            }
+            
+            PropertyChanged += UserMapControl_PropertyChanged;
+        }
+
+        private void UserMapControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var userMapControl = (UserMapControl)sender!;
+
+            switch (e.PropertyName)
+            {
+                case nameof(Bounds):
+                    // size changed
+                    ViewportUpdate?.Invoke(userMapControl.Viewport, EventArgs.Empty);
+                    break;
             }
         }
 
@@ -383,7 +401,7 @@ namespace FootprintViewer.Avalonia
             Controller.HandleMouseEnter(this, e.ToMouseEventArgs(this));
         }
 
-        public void NavigateToAOI(BoundingBox boundingBox)
+        public void NavigateToAOI(MRect boundingBox)
         {
             Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
@@ -416,12 +434,12 @@ namespace FootprintViewer.Avalonia
             _currentCursorType = cursorType;
         }
 
-        public Mapsui.Geometries.Point ScreenToWorld(Mapsui.Geometries.Point screenPosition)
+        public MPoint ScreenToWorld(MPoint screenPosition)
         {
             return Viewport.ScreenToWorld(screenPosition);
         }
 
-        public Mapsui.Geometries.Point WorldToScreen(Mapsui.Geometries.Point worldPosition)
+        public MPoint WorldToScreen(MPoint worldPosition)
         {
             return Viewport.WorldToScreen(worldPosition);
         }

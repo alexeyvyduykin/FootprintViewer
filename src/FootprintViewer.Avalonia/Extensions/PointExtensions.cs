@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Mapsui;
 
 namespace FootprintViewer.Avalonia
 {
@@ -9,10 +10,9 @@ namespace FootprintViewer.Avalonia
         //    return new MPoint(point.X, point.Y);
         //}
 
-
-        public static Mapsui.Geometries.Point ToOldMapsui(this Point point)
+        public static MPoint ToOldMapsui(this Point point)
         {
-            return new Mapsui.Geometries.Point(point.X, point.Y);
+            return new MPoint(point.X, point.Y);
         }
     }
 }

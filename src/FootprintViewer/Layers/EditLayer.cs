@@ -1,5 +1,5 @@
 ﻿using Mapsui;
-using Mapsui.Geometries;
+using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
@@ -18,11 +18,11 @@ namespace FootprintViewer.Layers
             IsMapInfoLayer = true;
         }
 
-        public List<Point> GetVertices()
+        public List<MPoint> GetVertices()
         {
             var features = _layer.GetFeatures();
 
-            List<Point> list = new List<Point>();
+            List<MPoint> list = new List<MPoint>();
 
             foreach (var f in features)
             {
@@ -35,16 +35,18 @@ namespace FootprintViewer.Layers
             return list;
         }
 
-        public override BoundingBox Envelope => _layer.Envelope;
+        //public override BoundingBox Envelope => _layer.Envelope;
 
-        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
-            return _layer.GetFeaturesInView(box, resolution);
+            return _layer.GetFeatures(box, resolution);
         }
 
-        public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+       // public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
+        public override void RefreshData(FetchInfo fetchInfo)
         {
-            _layer.RefreshData(extent, resolution, changeType);
+            //_layer.RefreshData(extent, resolution, changeType);
+            _layer.RefreshData(fetchInfo);
         }
 
         public void AddAOI(InteractiveFeature feature, string name)

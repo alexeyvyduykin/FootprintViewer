@@ -1,14 +1,14 @@
 ﻿using FootprintViewer.Data.Sources;
-using Mapsui.Geometries;
+using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Data
 {
     public class FootprintPreviewGeometryProvider : BaseProvider<IFootprintPreviewGeometryDataSource>
     {     
-        public virtual IDictionary<string, IGeometry> GetFootprintPreviewGeometries()
+        public virtual IDictionary<string, Geometry> GetFootprintPreviewGeometries()
         {
-            var dict = new Dictionary<string, IGeometry>();
+            var dict = new Dictionary<string, Geometry>();
 
             foreach (var source in Sources)
             {

@@ -1,4 +1,4 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
 using System;
 using System.Collections.Generic;
 
@@ -6,9 +6,9 @@ namespace FootprintViewer.Interactivity.Designers
 {
     public abstract class BaseDesigner : BaseInteractiveObject, IDesigner
     {
-        public IFeature Feature { get; protected set; } = new Feature();
+        public GeometryFeature Feature { get; protected set; } = new GeometryFeature();
 
-        public IList<IFeature> ExtraFeatures { get; protected set; } = new List<IFeature>();
+        public IList<GeometryFeature> ExtraFeatures { get; protected set; } = new List<GeometryFeature>();
 
         public event EventHandler? BeginCreating;
 

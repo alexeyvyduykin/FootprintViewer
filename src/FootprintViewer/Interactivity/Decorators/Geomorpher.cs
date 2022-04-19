@@ -1,12 +1,11 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Geometries.Utilities;
-using Mapsui.Projection;
+﻿using Mapsui.Utilities;
+using NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Interactivity.Decorators
 {
     public static class Geomorpher
     {
-        public static void Rotate(IGeometry geometry, double degrees, Point center)
+        public static void Rotate(Geometry geometry, double degrees, Point center)
         {
             foreach (var vertex in geometry.AllVertices())
             {
@@ -28,7 +27,7 @@ namespace FootprintViewer.Interactivity.Decorators
             vertex.Y = p.Y + center.Y;
         }
 
-        public static void Scale(IGeometry geometry, double scale, Point center)
+        public static void Scale(Geometry geometry, double scale, Point center)
         {
             foreach (var vertex in geometry.AllVertices())
             {
@@ -42,7 +41,7 @@ namespace FootprintViewer.Interactivity.Decorators
             vertex.Y = center.Y + (vertex.Y - center.Y) * scale;
         }
 
-        public static void Translate(IGeometry geometry, double deltaX, double deltaY)
+        public static void Translate(Geometry geometry, double deltaX, double deltaY)
         {
             foreach (var vertex in geometry.AllVertices())
             {

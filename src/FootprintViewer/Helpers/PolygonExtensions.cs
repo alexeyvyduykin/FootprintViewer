@@ -1,7 +1,7 @@
-﻿using Mapsui.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace FootprintViewer
 {   
@@ -9,8 +9,8 @@ namespace FootprintViewer
     {
         public static bool Intersection(this Polygon parent, Polygon child, bool isFullCover = false)
         {
-            var points1 = parent.ExteriorRing.Vertices;
-            var points2 = child.ExteriorRing.Vertices;
+            var points1 = parent.ExteriorRing.Coordinates.Select(s => new Point(s)).ToList();//Vertices;
+            var points2 = child.ExteriorRing.Coordinates.Select(s => new Point(s)).ToList();//Vertices;
 
             bool fullContain = false;
 
@@ -66,7 +66,7 @@ namespace FootprintViewer
             {
                 foreach (var (q1, q2) in lines2)
                 {
-                    var res = doIntersect(p1, p2, q1, q2);
+                    var res = DoIntersect(p1, p2, q1, q2);
 
                     if (res == true)
                     {
@@ -93,7 +93,7 @@ namespace FootprintViewer
         // 0 --> p, q and r are collinear
         // 1 --> Clockwise
         // 2 --> Counterclockwise
-        private static int orientation(Point p, Point q, Point r)
+        private static int Orientation(Point p, Point q, Point r)
         {
             // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
             // for details of below formula.
@@ -107,14 +107,14 @@ namespace FootprintViewer
         }
 
         // The main function that returns true if line segment 'p1q1' and 'p2q2' intersect.
-        private static bool doIntersect(Point p1, Point q1, Point p2, Point q2)
+        private static bool DoIntersect(Point p1, Point q1, Point p2, Point q2)
         {
             // Find the four orientations needed for general and
             // special cases
-            int o1 = orientation(p1, q1, p2);
-            int o2 = orientation(p1, q1, q2);
-            int o3 = orientation(p2, q2, p1);
-            int o4 = orientation(p2, q2, q1);
+            int o1 = Orientation(p1, q1, p2);
+            int o2 = Orientation(p1, q1, q2);
+            int o3 = Orientation(p2, q2, p1);
+            int o4 = Orientation(p2, q2, q1);
 
             // General case
             if (o1 != o2 && o3 != o4)

@@ -1,9 +1,9 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
 
 namespace FootprintViewer.Interactivity.Decorators
 {
     public interface IDecorator : IInteractiveObject
     {
-        IFeature FeatureSource { get; }
+        GeometryFeature FeatureSource { get; }
     }
 }

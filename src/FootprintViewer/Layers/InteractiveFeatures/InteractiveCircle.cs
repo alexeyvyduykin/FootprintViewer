@@ -1,18 +1,19 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
     public class InteractiveCircle : InteractiveFeature
     {
-        private readonly Point _center;
+        private readonly MPoint _center;
 
-        public InteractiveCircle(IFeature feature) : base(feature)
+        public InteractiveCircle(GeometryFeature feature) : base(feature)
         {
-            _center = feature.Geometry.BoundingBox.Centroid;
+            _center = feature.Geometry.Centroid.ToMPoint();// BoundingBox.Centroid;
         }
 
-        public override IList<Point> EditVertices() => new List<Point>() { _center };
+        public override IList<MPoint> EditVertices() => new List<MPoint>() { _center };
     }
 }

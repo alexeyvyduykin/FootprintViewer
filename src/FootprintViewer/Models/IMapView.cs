@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Interactivity;
 using Mapsui;
-using Mapsui.Geometries;
 using Mapsui.UI;
 
 namespace FootprintViewer
@@ -13,12 +12,12 @@ namespace FootprintViewer
 
         IMapObserver MapObserver { get; set; }
 
-        Point ScreenToWorld(Point screenPosition);
+        MPoint ScreenToWorld(MPoint screenPosition);
 
-        Point WorldToScreen(Point worldPosition);
+        MPoint WorldToScreen(MPoint worldPosition);
 
-        MapInfo? GetMapInfo(Point? screenPosition, int margin = 0);
+        MapInfo? GetMapInfo(MPoint? screenPosition, int margin = 0);
 
-        void NavigateToAOI(BoundingBox boundingBox);
+        void NavigateToAOI(MRect boundingBox);
     }
 }

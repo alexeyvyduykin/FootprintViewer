@@ -1,12 +1,16 @@
-﻿using BruTile;
-using BruTile.MbTiles;
+﻿using BruTile.MbTiles;
 using FootprintViewer.Data;
 using Mapsui;
-using Mapsui.Geometries;
 using Mapsui.Layers;
+using Mapsui.Tiling.Layers;
 using Mapsui.UI;
+using NetTopologySuite.Geometries;
 using SQLite;
+using System.Collections.Generic;
+using System;
 using System.Linq;
+using Mapsui.Nts.Extensions;
+using SkiaSharp;
 
 namespace FootprintViewer
 {
@@ -16,7 +20,7 @@ namespace FootprintViewer
         {
             var layer = CreateWorldMapLayer(resource);
             map.ReplaceLayer(layer, LayerType.WorldMap);
-            map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Envelope };
+            map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Extent /*Envelope*/ };
         }
 
         public static void AddLayer(this Map map, ILayer layer, LayerType layerType)
@@ -94,13 +98,100 @@ namespace FootprintViewer
 
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
-            var area = mbTilesTileSource.Schema.Extent.ToBoundingBox();
-            var delta = area.Width / 2.0;
+            //         var area = mbTilesTileSource.Schema.Extent.ToBoundingBox();
+            //         var delta = area.Width / 2.0;
 
             //double minX, double minY, double maxX, double maxY
-            var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
+            //          var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
 
             return new TileLayer(mbTilesTileSource);
+}
+}
+    
+    public static class GeometryIterator
+    {
+        public static IEnumerable<Point> AllVertices(this Geometry geometry)
+        {
+            if (geometry == null)
+                return new Point[0];
+
+            var point = geometry as Point;
+            if (point != null)
+                return new[] { point };
+            var lineString = geometry as LineString;
+            if (lineString != null)
+                return AllVertices(lineString);
+            var polygon = geometry as Polygon;
+            if (polygon != null)
+                return AllVertices(polygon);
+            var geometries = geometry as IEnumerable<Geometry>;
+            if (geometries != null)
+                return AllVertices(geometries);
+
+            var format = $"unsupported geometry: {geometry.GetType().Name}";
+            throw new NotSupportedException(format);
+        }
+
+        private static IEnumerable<Point> AllVertices(LineString lineString)
+        {
+            if (lineString == null)
+                throw new ArgumentNullException(nameof(lineString));
+
+            return lineString.Coordinates.Select(s => s.ToPoint());// Vertices;
+        }
+
+        private static IEnumerable<Point> AllVertices(Polygon polygon)
+        {
+            if (polygon == null)
+                throw new ArgumentNullException(nameof(polygon));
+
+            foreach (var point in polygon.ExteriorRing.Coordinates.Select(s => s.ToPoint())/*Vertices*/)
+                yield return point;
+            foreach (var ring in polygon.InteriorRings)
+                foreach (var point in ring.Coordinates.Select(s => s.ToPoint())/*Vertices*/)
+                    yield return point;
+        }
+
+        private static IEnumerable<Point> AllVertices(IEnumerable<Geometry> collection)
+        {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
+
+            foreach (var geometry in collection)
+                foreach (var point in AllVertices(geometry))
+                    yield return point;
+        }
+    }
+
+    public static class TempExtensions
+    {
+        public static Coordinate[] ToClosedCoordinates(this Coordinate[] coordinates)
+        {
+            var first = coordinates[0];
+
+            var list = coordinates.ToList();
+
+            if (first != list.Last())
+            {
+                list.Add(first);
+            }
+
+            return list.ToArray();
+        }
+
+        public static Coordinate[] ToGreaterThanTwoCoordinates(this Coordinate[] coordinates)
+        {
+            if (coordinates.Length >= 2)
+            {
+                return coordinates;
+            }
+
+            if (coordinates.Length == 0)
+            {
+                return new Coordinate[] { new Coordinate(0.0, 0.0), new Coordinate(0.0, 0.0) };
+            }
+
+            return new Coordinate[] { coordinates[0], coordinates[0] };
         }
     }
 }

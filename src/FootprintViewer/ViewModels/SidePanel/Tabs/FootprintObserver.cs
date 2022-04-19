@@ -1,7 +1,8 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using Mapsui;
-using Mapsui.Projection;
+using Mapsui.Extensions;
+using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -124,13 +125,13 @@ namespace FootprintViewer.ViewModels
         {
             if (_map != null)
             {
-                var p = SphericalMercator.FromLonLat(coordinate.X, coordinate.Y);
+                var p = SphericalMercator.FromLonLat(coordinate.X, coordinate.Y).ToMPoint();
 
                 _map.Initialized = false;
 
                 _map.Home = (navigator) =>
                 {
-                    navigator.CenterOn(new Mapsui.Geometries.Point(p.X, p.Y));
+                    navigator.CenterOn(new MPoint(p.X, p.Y));
                 };
 
                 // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home

@@ -23,7 +23,7 @@
           ColumnDefinitions="*,Auto">
 
       <Panel>
-        <local:UserMapControl x:Name="MapControl"                          
+        <local:UserMapControl x:Name="UserMapControl"                          
                               MapSource="{Binding Map}"                                                     
                               Controller="{Binding ActualController}"                         
                               TipSource="{Binding Tip}"                         

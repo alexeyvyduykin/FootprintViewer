@@ -1,10 +1,10 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 
 namespace FootprintViewer
 {
     public class HitTestResult
     {
-        public HitTestResult(/*UIElement element,*/ Point nearestHitPoint, object? item = null, double index = 0)
+        public HitTestResult(/*UIElement element,*/ MPoint nearestHitPoint, object? item = null, double index = 0)
         {
             //this.Element = element;
             NearestHitPoint = nearestHitPoint;
@@ -18,6 +18,6 @@ namespace FootprintViewer
 
         //public UIElement Element { get; private set; }
 
-        public Point NearestHitPoint { get; private set; }
+        public MPoint NearestHitPoint { get; private set; }
     }
 }

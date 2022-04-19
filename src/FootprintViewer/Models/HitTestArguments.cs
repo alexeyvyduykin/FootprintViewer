@@ -1,16 +1,16 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 
 namespace FootprintViewer
 {
     public class HitTestArguments
     {
-        public HitTestArguments(Point point, double tolerance)
+        public HitTestArguments(MPoint point, double tolerance)
         {
             Point = point;
             Tolerance = tolerance;
         }
 
-        public Point Point { get; private set; }
+        public MPoint Point { get; private set; }
 
         public double Tolerance { get; private set; }
     }

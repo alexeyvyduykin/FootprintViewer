@@ -1,4 +1,4 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace FootprintViewer.Layers
 
         public int MaxVisiblePreview { get; set; }
 
-        public override IEnumerable<IFeature> GetFeaturesInView(BoundingBox box, double resolution)
+        public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
             // preview
             //if (resolution >= MaxVisiblePreview)
@@ -34,7 +34,7 @@ namespace FootprintViewer.Layers
 
             if (resolution < MaxVisiblePreview)
             {
-                foreach (var feature in Source.GetFeaturesInView(box, resolution))
+                foreach (var feature in Source.GetFeatures(box, resolution))
                 {
                     yield return feature;
                 }
