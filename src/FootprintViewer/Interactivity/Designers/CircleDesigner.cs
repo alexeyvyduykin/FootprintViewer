@@ -1,9 +1,9 @@
-﻿using Mapsui.Nts;
-using Mapsui;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using NetTopologySuite.Geometries;
-using System.Linq;
 
 namespace FootprintViewer.Interactivity.Designers
 {
@@ -14,7 +14,7 @@ namespace FootprintViewer.Interactivity.Designers
         private bool _isDrawing = false;
         protected MPoint? _center;
 
-        public override IEnumerable<MPoint> GetActiveVertices() => new MPoint[] { };
+        public override IEnumerable<MPoint> GetActiveVertices() => Array.Empty<MPoint>();
 
         public override void Starting(MPoint worldPosition)
         {
@@ -43,14 +43,14 @@ namespace FootprintViewer.Interactivity.Designers
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(MPoint worldPosition)
-        {
-            CreatingFeature(worldPosition, point => true);
-        }
+        //public void CreatingFeature(MPoint worldPosition)
+        //{
+        //    CreatingFeature(worldPosition, point => true);
+        //}
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint> isEnd)
+        public void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
         {
             if (_firstClick == true)
             {
@@ -92,21 +92,14 @@ namespace FootprintViewer.Interactivity.Designers
 
                 _center = worldPosition.Copy();
 
-                var vertices = GetCircle(_center, 0.0, 3).ToArray();
+                var featureCoordinates = GetCircle(_center, 0.0, 3);
 
-                //var geometry = new Polygon()
-                //{
-                //    ExteriorRing = new LinearRing(vertices)
-                //};
-
-                var geometry = new GeometryFactory().CreatePolygon(vertices);
-
-                Feature = new GeometryFeature() { Geometry = geometry };
+                Feature = featureCoordinates.ToPolygon().ToFeature();
                 ExtraFeatures = new List<GeometryFeature>();
             }
         }
 
-        private IList<Coordinate> GetCircle(MPoint center, double radius, double quality)
+        private static List<Coordinate> GetCircle(MPoint center, double radius, double quality)
         {
             var centerX = center.X;
             var centerY = center.Y;
@@ -128,20 +121,15 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true && _center != null)
             {
-                var geometry = Feature.Geometry;
-
                 var p1 = worldPosition.Copy();
 
                 var radius = _center.Distance(p1);
 
-                var vertices = GetCircle(_center, radius, 180).ToArray();
+                var featureCoordinates = GetCircle(_center, radius, 180);
 
-                //((Polygon)geometry).ExteriorRing = new LinearRing(vertices);
-
-                geometry = new GeometryFactory().CreatePolygon(vertices);
-                Feature.Geometry = geometry;
-
-                Feature.RenderedGeometry?.Clear();
+                Feature.Geometry = featureCoordinates.ToPolygon();
+                
+                Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
 
@@ -150,8 +138,6 @@ namespace FootprintViewer.Interactivity.Designers
             if (_isDrawing == true)
             {
                 _isDrawing = false;
-
-                Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
     }

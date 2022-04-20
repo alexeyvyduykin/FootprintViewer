@@ -1,11 +1,10 @@
-﻿using Mapsui.Nts;
-using Mapsui;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using NetTopologySuite.Geometries;
 using System.Linq;
-using Mapsui.Nts.Extensions;
-using DynamicData;
 
 namespace FootprintViewer.Interactivity.Designers
 {
@@ -15,6 +14,7 @@ namespace FootprintViewer.Interactivity.Designers
         private int _counter;
         private bool _isDrawing = false;
         private GeometryFeature? _extraLineString;
+        private List<Coordinate> _featureCoordinates = new();
 
         public override IEnumerable<MPoint> GetActiveVertices()
         {
@@ -23,7 +23,7 @@ namespace FootprintViewer.Interactivity.Designers
                 return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new MPoint[] { };
+            return Array.Empty<MPoint>();
         }
 
         public override void Starting(MPoint worldPosition)
@@ -109,9 +109,9 @@ namespace FootprintViewer.Interactivity.Designers
 
         public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
-            var routeGeometry = (LineString)Feature.Geometry;
+            var routeGeometry = (LineString)Feature.Geometry!;
 
-            if (routeGeometry.Coordinates.Count() > 1)
+            if (routeGeometry.Coordinates.Length > 1)
             {
                 foreach (var item in routeGeometry.Coordinates)
                 {
@@ -135,19 +135,13 @@ namespace FootprintViewer.Interactivity.Designers
 
             _isDrawing = true;
 
-            var p0 = worldPosition.Copy().ToCoordinate();
-            // Add a second point right away. The second one will be the 'hover' vertex
-            var p1 = worldPosition.Copy().ToCoordinate();
+            var p0 = worldPosition.ToCoordinate();
+            var p1 = worldPosition.ToCoordinate();
 
-            var geometry = new LineString(new[] { p0 });
+            _extraLineString = new[] { p0, p1 }.ToLineString().ToFeature("ExtraRouteHoverLine");
 
-            _extraLineString = new GeometryFeature
-            {
-                Geometry = new LineString(new[] { p0, p1 }),
-                ["Name"] = "ExtraRouteHoverLine",
-            };
-
-            Feature = new GeometryFeature() { Geometry = geometry };
+            _featureCoordinates = new() { p0 };
+            Feature = _featureCoordinates.ToLineString().ToFeature();
             ExtraFeatures = new List<GeometryFeature>() { _extraLineString };
         }
 
@@ -155,13 +149,14 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint.ToMPoint().ToCoordinate();
-                var p1 = worldPosition.Copy().ToCoordinate();
-                var p2 = worldPosition.Copy().ToCoordinate();
+                var p0 = ((LineString)_extraLineString!.Geometry!).EndPoint.ToMPoint().ToCoordinate();
+                var p1 = worldPosition.ToCoordinate();
+                var p2 = worldPosition.ToCoordinate();
 
-                ((LineString)Feature.Geometry).Coordinates.Add(new[] { p0 }); // and add it to the geometry
-                //((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
-                _extraLineString.Geometry = new LineString(new[] { p1, p2 });
+                _featureCoordinates.Add(p0);
+                Feature.Geometry = _featureCoordinates.ToLineString();
+
+                _extraLineString.Geometry = new[] { p1, p2 }.ToLineString();
 
                 Feature.RenderedGeometry?.Clear();
                 _extraLineString.RenderedGeometry?.Clear();
@@ -172,7 +167,7 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                ((LineString)_extraLineString!.Geometry).EndPoint.X = worldPosition.X;
+                ((LineString)_extraLineString!.Geometry!).EndPoint.X = worldPosition.X;
                 ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
                 _extraLineString.RenderedGeometry?.Clear();

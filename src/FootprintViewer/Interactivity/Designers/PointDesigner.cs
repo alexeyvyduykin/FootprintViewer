@@ -1,7 +1,5 @@
 ﻿using Mapsui;
-using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
-using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +18,7 @@ namespace FootprintViewer.Interactivity.Designers
                 return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new MPoint[] { };
+            return Array.Empty<MPoint>();
         }
 
         public override void Starting(MPoint worldPosition)
@@ -61,9 +59,7 @@ namespace FootprintViewer.Interactivity.Designers
 
         public void EndDrawing(MPoint worldPosition)
         {
-            var geometry = new Point(worldPosition.X, worldPosition.Y);
-
-            Feature = new GeometryFeature() { Geometry = geometry };
+            Feature = worldPosition.ToPoint().ToFeature();
         }
     }
 }

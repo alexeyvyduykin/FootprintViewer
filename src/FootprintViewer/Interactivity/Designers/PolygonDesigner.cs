@@ -1,10 +1,7 @@
-﻿using DynamicData;
-using Mapsui;
+﻿using Mapsui;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
-using Mapsui.Providers;
 using NetTopologySuite.Geometries;
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +17,17 @@ namespace FootprintViewer.Interactivity.Designers
         private GeometryFeature? _extraLineString;
         private GeometryFeature? _extraPolygon;
 
+        private List<Coordinate> _extraPolygonCoordinates = new();
+        private List<Coordinate> _featureCoordinates = new();
+
         public override IEnumerable<MPoint> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {
-                return Feature.Geometry.MainVertices().Select(s=>s.ToMPoint());
+                return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new MPoint[] { };
+            return Array.Empty<MPoint>();
         }
 
         public override void Starting(MPoint worldPosition)
@@ -115,9 +115,9 @@ namespace FootprintViewer.Interactivity.Designers
 
         public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
-            var polygonGeometry = (LineString)Feature.Geometry;
+            var polygonGeometry = (LineString)Feature.Geometry!;
 
-            if (polygonGeometry.Coordinates.Count() > 2)
+            if (polygonGeometry.Coordinates.Length > 2)
             {
                 var click = isEnd?.Invoke(polygonGeometry.Coordinates[0].ToMPoint());
 
@@ -139,45 +139,33 @@ namespace FootprintViewer.Interactivity.Designers
 
             _isDrawing = true;
 
-            var p0 = worldPosition.Copy().ToCoordinate();
-            // Add a second point right away. The second one will be the 'hover' vertex
-            var p1 = worldPosition.Copy().ToCoordinate();
+            var p0 = worldPosition.ToCoordinate();
+            var p1 = worldPosition.ToCoordinate();
 
-            var geometry = new LineString(new[] { p0 });
+            _extraLineString = new[] { p0, p1 }.ToLineString().ToFeature("ExtraPolygonHoverLine");
+            _extraPolygonCoordinates = new() { p0 };
+            _extraPolygon = _extraPolygonCoordinates.ToPolygon().ToFeature("ExtraPolygonArea");
 
-            _extraLineString = new GeometryFeature
-            {
-                Geometry = new LineString(new[] { p0, p1 }),
-                ["Name"] = "ExtraPolygonHoverLine",
-};
-
-            var poly = new GeometryFactory().CreatePolygon(new[] { p0 });
-
-            _extraPolygon = new GeometryFeature
-            {
-                Geometry = poly/*new Polygon()
-                {
-                    ExteriorRing = new LinearRing(new[] { p0 })
-                }*/,
-                ["Name"] = "ExtraPolygonArea",
-            };
-
-            Feature = new GeometryFeature() { Geometry = geometry };
-            ExtraFeatures = new List<GeometryFeature>() { _extraLineString, _extraPolygon };
+            _featureCoordinates = new() { p0 };
+            Feature = _featureCoordinates.ToLineString().ToFeature();
+            ExtraFeatures = new[] { _extraLineString, _extraPolygon };
         }
 
         public void Drawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString!.Geometry).EndPoint;
-                var p1 = worldPosition.Copy().ToCoordinate();
-                var p2 = worldPosition.Copy().ToCoordinate();
+                var p0 = ((LineString)_extraLineString!.Geometry!).EndPoint;
+                var p1 = worldPosition.ToCoordinate();
+                var p2 = worldPosition.ToCoordinate();
 
-                ((Polygon)_extraPolygon!.Geometry).ExteriorRing.Coordinates/*Vertices*/.Add(new[] { new Coordinate(p0.X, p0.Y) });
-                ((LineString)Feature.Geometry).Coordinates.Add(new[] { new Coordinate(p0.X, p0.Y) }); // and add it to the geometry
-                //((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
-                _extraLineString.Geometry = new LineString(new[] { p1, p2 });
+                _extraLineString.Geometry = new[] { p1, p2 }.ToLineString();
+
+                _extraPolygonCoordinates.Add(new Coordinate(p0.X, p0.Y));
+                _extraPolygon!.Geometry = _extraPolygonCoordinates.ToPolygon();
+
+                _featureCoordinates.Add(new Coordinate(p0.X, p0.Y));
+                Feature.Geometry = _featureCoordinates.ToLineString();
 
                 Feature.RenderedGeometry?.Clear();
                 _extraLineString.RenderedGeometry?.Clear();
@@ -189,7 +177,7 @@ namespace FootprintViewer.Interactivity.Designers
         {
             if (_isDrawing == true)
             {
-                ((LineString)_extraLineString!.Geometry).EndPoint.X = worldPosition.X;
+                ((LineString)_extraLineString!.Geometry!).EndPoint.X = worldPosition.X;
                 ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
                 _extraLineString.RenderedGeometry?.Clear();
@@ -202,16 +190,8 @@ namespace FootprintViewer.Interactivity.Designers
             {
                 _isDrawing = false;
 
-                var vertices = ((LineString)Feature.Geometry).Coordinates;//Vertices;
-
-                var poly = new GeometryFactory().CreatePolygon(vertices);
-
-                Feature.Geometry = poly/*new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                }*/;
+                Feature.Geometry = _featureCoordinates.ToPolygon();
             }
         }
-
     }
 }
