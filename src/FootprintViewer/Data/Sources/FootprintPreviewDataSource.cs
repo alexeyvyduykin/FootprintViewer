@@ -3,14 +3,10 @@ using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Rendering.Skia;
-using Mapsui.Tiling.Extensions;
 using Mapsui.Utilities;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 
 namespace FootprintViewer.Data.Sources
@@ -23,8 +19,9 @@ namespace FootprintViewer.Data.Sources
         private readonly string _file;
         private readonly string? _subFolder;
         private readonly string? _searchPattern;
-        //private readonly Mapsui.Styles.Color _backgroundColorMask = new Mapsui.Styles.Color() { R = 33, G = 43, B = 53, A = 255 }; // #212b35
-        private readonly Mapsui.Styles.Color _backgroundColorMask = new() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                
+        //private readonly Mapsui.Styles.Color _backgroundColorMask = new() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                                                                                                                                                 
+        private const int _previewWidth = 200;
+        private const int _previewHeight = 200;
 
         public FootprintPreviewDataSource(string file, string folder, string? subFolder = null)
         {
@@ -61,17 +58,12 @@ namespace FootprintViewer.Data.Sources
             {
                 if (string.IsNullOrEmpty(path) == false)
                 {
-                    var filename = Path.GetFileNameWithoutExtension(path);
+                    var filename = System.IO.Path.GetFileNameWithoutExtension(path);
                     var name = filename?.Split('_').FirstOrDefault();
 
                     if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
                     {
                         var tileNumber = name.Replace("-", "").ToUpper();
-
-                        //var geometry = _dict[name];
-                        //var points = geometry.Coordinates;
-                        //var exteriorRing = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
-                        //var poly = new Polygon(exteriorRing);
 
                         list.Add(new FootprintPreview()
                         {
@@ -83,7 +75,6 @@ namespace FootprintViewer.Data.Sources
                             TileNumber = tileNumber,
                             Path = path,
                             Image = CreatePreviewImage(path),
-                            //Geometry = poly
                         });
                     }
                 }
@@ -92,49 +83,26 @@ namespace FootprintViewer.Data.Sources
             return list;
         }
 
-        private Image CreatePreviewImage(string path)
+        private static System.Drawing.Image CreatePreviewImage(string path)
         {
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
             var layer = new TileMemoryLayer(mbTilesTileSource);
 
-            var map = new Map();
-
-            map.Layers.Add(layer);
-
-            var area = mbTilesTileSource.Schema.Extent.ToMRect();
+            var extent = mbTilesTileSource.Schema.Extent;
 
             var viewport = new Viewport
             {
-                // Center = area.Centroid,
-                CenterX = area.Centroid.X,
-                CenterY = area.Centroid.Y,
-                Width = 200,
-                Height = 200,
-                Resolution = ZoomHelper.DetermineResolution(area.Width, area.Height, 200, 200)
+                CenterX = extent.CenterX,
+                CenterY = extent.CenterY,
+                Width = _previewWidth,
+                Height = _previewHeight,
+                Resolution = ZoomHelper.DetermineResolution(extent.Width, extent.Height, _previewWidth, _previewHeight)
             };
 
-            var bitmap = new MapRenderer().RenderToBitmapStream(viewport, map.Layers, _backgroundColorMask);
+            var bitmap = new Mapsui.Rendering.Skia.MapRenderer().RenderToBitmapStream(viewport, new[] { layer }/*, _backgroundColorMask*/);
 
-            // var imageSource = new BitmapImage();
-            // imageSource.BeginInit();
-            // imageSource.StreamSource = bitmap;
-            // imageSource.EndInit();
-            // imageSource.Freeze();
-
-            // Image1 = new System.Drawing.Bitmap(200, 200, PixelFormat.Format24bppRgb);
-
-            return Image.FromStream(bitmap!);
-
-            //   image.Save(@"C:/Users/User/AlexeyVyduykin/Resources/ttttttttttttt.png");
-
-            //   using (MemoryStream memory = bitmap)
-            //   {
-            //       Image1.Save(memory, ImageFormat.Png);               
-            //       memory.Position = 0;
-            //   }
-
-            //return imageSource;
+            return System.Drawing.Image.FromStream(bitmap!);
         }
     }
 }

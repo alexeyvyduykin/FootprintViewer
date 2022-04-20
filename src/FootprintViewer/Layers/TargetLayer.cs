@@ -1,6 +1,5 @@
 ﻿using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Providers;
 using Mapsui.Styles;
 using System;
 using System.Reactive.Linq;
@@ -9,7 +8,7 @@ namespace FootprintViewer.Layers
 {
     public class TargetLayer : BaseCustomLayer
     {
-        private MRect _lastExtent = new MRect(1, 1, 1, 1);
+        private MRect _lastExtent = new(1, 1, 1, 1);
         private readonly ITargetLayerSource _source;
 
         public TargetLayer(ITargetLayerSource source) : base(source)
@@ -19,10 +18,8 @@ namespace FootprintViewer.Layers
             IsMapInfoLayer = false;
         }
 
-        //public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         public override void RefreshData(FetchInfo fetchInfo)
         {
-            //base.RefreshData(extent, resolution, changeType);
             base.RefreshData(fetchInfo);
 
             var extent = fetchInfo.Extent;

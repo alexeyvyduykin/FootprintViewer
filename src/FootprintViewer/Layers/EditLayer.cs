@@ -1,17 +1,14 @@
 ﻿using Mapsui;
-using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Providers;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
     public class EditLayer : BaseLayer
     {
-        private readonly List<IFeature> _aoiInfos = new List<IFeature>();
+        private readonly List<IFeature> _aoiInfos = new();
         private IFeature? _routeInfo = null;
-
-        private readonly WritableLayer _layer = new WritableLayer();
+        private readonly WritableLayer _layer = new();
 
         public EditLayer() : base()
         {
@@ -22,7 +19,7 @@ namespace FootprintViewer.Layers
         {
             var features = _layer.GetFeatures();
 
-            List<MPoint> list = new List<MPoint>();
+            var list = new List<MPoint>();
 
             foreach (var f in features)
             {
@@ -35,17 +32,13 @@ namespace FootprintViewer.Layers
             return list;
         }
 
-        //public override BoundingBox Envelope => _layer.Envelope;
-
         public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
             return _layer.GetFeatures(box, resolution);
         }
 
-       // public override void RefreshData(BoundingBox extent, double resolution, ChangeType changeType)
         public override void RefreshData(FetchInfo fetchInfo)
         {
-            //_layer.RefreshData(extent, resolution, changeType);
             _layer.RefreshData(fetchInfo);
         }
 
