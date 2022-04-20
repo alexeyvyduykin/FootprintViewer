@@ -1,14 +1,12 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
-using Mapsui.Nts.Extensions;
+using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Nts;
 using Mapsui.Projections;
-using Mapsui.Providers;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Layers
 {
@@ -19,17 +17,14 @@ namespace FootprintViewer.Layers
 
     public class TrackLayerSource : WritableLayer, ITrackLayerSource
     {
-        private readonly Dictionary<string, Dictionary<int, List<GeometryFeature>>> _dict;
-        private readonly Dictionary<string, List<GeometryFeature>> _cache;
-        private readonly SatelliteProvider _provider;
+        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
+        private readonly Dictionary<string, List<IFeature>> _cache;
 
         public TrackLayerSource(SatelliteProvider provider)
         {
-            _provider = provider;
+            _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
-            _dict = new Dictionary<string, Dictionary<int, List<GeometryFeature>>>();
-
-            _cache = new Dictionary<string, List<GeometryFeature>>();
+            _cache = new Dictionary<string, List<IFeature>>();
 
             provider.Loading.Subscribe(LoadingImpl);
         }
@@ -45,38 +40,24 @@ namespace FootprintViewer.Layers
             foreach (var sat in satellites)
             {
                 var name = sat.Name!;
-                var dict = new Dictionary<int, List<GeometryFeature>>();
+                var dict = new Dictionary<int, List<IFeature>>();
 
                 foreach (var item in tracks[name])
                 {
-                    var list = new List<GeometryFeature>();
-
-                    foreach (var ln in item.Value)
+                    var list = item.Value.Select(s =>
                     {
-                        //var line = new LineString();
+                        var vertices = s.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat));
 
-                        var vertices = new List<Coordinate>();
+                        var line = new GeometryFactory().CreateLineString(vertices.ToGreaterThanTwoCoordinates());
 
-                        foreach (var (lon, lat) in ln)
-                        {
-                            var point = SphericalMercator.FromLonLat(lon, lat).ToCoordinate();
-                            vertices.Add(point);
-                        }
-
-                        var line = new GeometryFactory().CreateLineString(vertices.ToArray());
-                      
-                        list.Add(new GeometryFeature
-                        {
-                            Geometry = line,
-                            ["Name"] = name
-                        });
-                    }
+                        return (IFeature)line.ToFeature(name);
+                    }).ToList();
 
                     dict.Add(item.Key, list);
                 }
 
                 _dict.Add(name, dict);
-                _cache.Add(name, new List<GeometryFeature>());
+                _cache.Add(name, new List<IFeature>());
             }
         }
 

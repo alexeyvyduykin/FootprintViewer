@@ -1,9 +1,8 @@
 ﻿using FootprintViewer.Data;
-using Mapsui.Extensions;
 using Mapsui;
 using Mapsui.Layers;
+using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
-using Mapsui.Providers;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using System;
@@ -12,8 +11,6 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Mapsui.Nts;
-using Mapsui.Nts.Extensions;
 
 namespace FootprintViewer.Layers
 {
@@ -27,7 +24,7 @@ namespace FootprintViewer.Layers
     public class FootprintLayerSource : WritableLayer, IFootprintLayerSource
     {
         private IFeature? _lastSelected;
-        private List<IFeature> _featuresCache = new List<IFeature>();
+        private List<IFeature> _featuresCache = new();
         private readonly FootprintProvider _provider;
 
         public FootprintLayerSource(FootprintProvider provider)
@@ -56,7 +53,7 @@ namespace FootprintViewer.Layers
 
         public void SelectFeature(string name)
         {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
 
             if (_lastSelected != null)
             {
@@ -82,25 +79,25 @@ namespace FootprintViewer.Layers
 
         public bool IsSelect(string name)
         {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"])).First();
+            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
 
             if (feature != null)
             {
-                return (string)feature["State"] == "Select";
+                return (string)feature["State"]! == "Select";
             }
 
             throw new Exception();
         }
 
-        private List<IFeature> Build(IEnumerable<Footprint> footprints)
+        private static List<IFeature> Build(IEnumerable<Footprint> footprints)
         {
             var list = new List<IFeature>();
 
             foreach (var item in footprints)
             {
-                var poly = AreaCutting(item.Points!.Coordinates.Select(s => new Point(s.X, s.Y)).ToList());
+                var poly = AreaCutting(item.Points!.Coordinates);
 
-                var feature = new GeometryFeature { Geometry = poly };
+                var feature = poly.ToFeature();
 
                 feature["Name"] = item.Name;
                 feature["State"] = "Unselect";
@@ -172,16 +169,11 @@ namespace FootprintViewer.Layers
         //    }
         //}
 
-        private Geometry AreaCutting(IList<Point> points)
+        private static Geometry AreaCutting(Coordinate[] points)
         {
-            var count = points.Count;
-            //var ring1 = new LinearRing();
-            //var ring2 = new LinearRing();
-
-            //var ring = ring1;
-
-            var vertices1 = new List<MPoint>();
-            var vertices2 = new List<MPoint>();
+            var count = points.Length;
+            var vertices1 = new List<(double, double)>();
+            var vertices2 = new List<(double, double)>();
             var vertices = vertices1;
 
             for (int i = 0; i < count; i++)
@@ -189,7 +181,7 @@ namespace FootprintViewer.Layers
                 var p1 = points[i];
                 var p2 = (i == count - 1) ? points[0] : points[i + 1];
 
-                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y).ToMPoint();
+                var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y);
                 vertices.Add(point1);
 
                 if (Math.Abs(p2.X - p1.X) > 180)
@@ -197,58 +189,43 @@ namespace FootprintViewer.Layers
                     if (p2.X - p1.X > 0) // -180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
                         vertices.Add(pp1);
 
                         vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        var pp2 = SphericalMercator.FromLonLat(180, cutLat);
                         vertices.Add(pp2);
                     }
 
                     if (p2.X - p1.X < 0) // +180 cutting
                     {
                         var cutLat = LinearInterpDiscontLat(p1, p2);
-                        var pp1 = SphericalMercator.FromLonLat(180, cutLat).ToMPoint();
+                        var pp1 = SphericalMercator.FromLonLat(180, cutLat);
                         vertices.Add(pp1);
 
                         vertices = (vertices == vertices1) ? vertices2 : vertices1;
 
-                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat).ToMPoint();
+                        var pp2 = SphericalMercator.FromLonLat(-180, cutLat);
                         vertices.Add(pp2);
                     }
                 }
-
-
             }
-
 
             if (vertices2.Count != 0) // multipolygon
             {
-                //var ring1 = new LinearRing();
-                //var ring2 = new LinearRing();
+                var poly1 = new GeometryFactory().CreatePolygon(vertices1.ToClosedCoordinates());
+                var poly2 = new GeometryFactory().CreatePolygon(vertices2.ToClosedCoordinates());
 
-                //multi.Polygons.Add(new Polygon() { ExteriorRing = ring1 });
-                //multi.Polygons.Add(new Polygon() { ExteriorRing = ring2 });
-
-                var poly1 = new GeometryFactory().CreatePolygon(vertices1.Select(s => s.ToCoordinate()).ToArray().ToClosedCoordinates());
-                var poly2 = new GeometryFactory().CreatePolygon(vertices2.Select(s => s.ToCoordinate()).ToArray().ToClosedCoordinates());
-
-
-                var multi = new GeometryFactory().CreateMultiPolygon(new[] { poly1, poly2 });
-
-                return multi;
+                return new GeometryFactory().CreateMultiPolygon(new[] { poly1, poly2 });
             }
             else
             {
-                var poly1 = new GeometryFactory().CreatePolygon(vertices1.Select(s => s.ToCoordinate()).ToArray().ToClosedCoordinates());
-                return poly1;
-
-                //return new Polygon() { ExteriorRing = ring1 };
+                return new GeometryFactory().CreatePolygon(vertices1.ToClosedCoordinates());
             }
         }
 
-        private double LinearInterpDiscontLat(Point p1, Point p2)
+        private static double LinearInterpDiscontLat(Coordinate p1, Coordinate p2)
         {
             // one longitude should be negative one positive, make them both positive
             double lon1 = p1.X, lat1 = p1.Y, lon2 = p2.X, lat2 = p2.Y;

@@ -2,15 +2,15 @@
 using FootprintViewer.Data;
 using Mapsui;
 using Mapsui.Layers;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using Mapsui.Tiling.Layers;
 using Mapsui.UI;
 using NetTopologySuite.Geometries;
 using SQLite;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Mapsui.Nts.Extensions;
-using SkiaSharp;
 
 namespace FootprintViewer
 {
@@ -105,9 +105,9 @@ namespace FootprintViewer
             //          var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
 
             return new TileLayer(mbTilesTileSource);
-}
-}
-    
+        }
+    }
+
     public static class GeometryIterator
     {
         public static IEnumerable<Point> AllVertices(this Geometry geometry)
@@ -179,8 +179,24 @@ namespace FootprintViewer
             return list.ToArray();
         }
 
-        public static Coordinate[] ToGreaterThanTwoCoordinates(this Coordinate[] coordinates)
+        public static Coordinate[] ToClosedCoordinates(this IEnumerable<(double, double)> values)
         {
+            var coordinates = values.Select(s => s.ToCoordinate()).ToList();
+
+            var first = coordinates.First();
+
+            if (first != coordinates.Last())
+            {
+                coordinates.Add(first);
+            }
+
+            return coordinates.ToArray();
+        }
+
+        public static Coordinate[] ToGreaterThanTwoCoordinates(this IEnumerable<(double, double)> values)
+        {
+            var coordinates = values.Select(s => s.ToCoordinate()).ToArray();
+
             if (coordinates.Length >= 2)
             {
                 return coordinates;
@@ -192,6 +208,15 @@ namespace FootprintViewer
             }
 
             return new Coordinate[] { coordinates[0], coordinates[0] };
+        }
+
+        public static GeometryFeature ToFeature(this Geometry geometry, string name)
+        {
+            var feature = geometry.ToFeature();
+
+            feature["Name"] = name;
+
+            return feature;
         }
     }
 }

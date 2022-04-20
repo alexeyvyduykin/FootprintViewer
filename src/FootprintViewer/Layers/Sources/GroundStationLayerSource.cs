@@ -1,11 +1,9 @@
-﻿using DynamicData;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
+using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
-using Mapsui.Providers;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using System;
@@ -24,20 +22,16 @@ namespace FootprintViewer.Layers
 
     public class GroundStationLayerSource : WritableLayer, IGroundStationLayerSource
     {
-        private readonly Dictionary<string, List<GeometryFeature>> _cache;
+        private readonly Dictionary<string, List<IFeature>> _cache;
 
         public GroundStationLayerSource(GroundStationProvider provider)
         {
-            //Update = ReactiveCommand.Create<GroundStation>(UpdateImpl);
-
-            _cache = new Dictionary<string, List<GeometryFeature>>();
+            _cache = new Dictionary<string, List<IFeature>>();
 
             Loading = ReactiveCommand.Create<List<GroundStation>>(LoadingImpl);
 
             provider.Loading.Select(s => s).InvokeCommand(Loading);
         }
-
-        //private ReactiveCommand<GroundStation, Unit> Update { get; }
 
         private ReactiveCommand<List<GroundStation>, Unit> Loading { get; }
 
@@ -47,7 +41,7 @@ namespace FootprintViewer.Layers
             {
                 if (string.IsNullOrEmpty(item.Name) == false)
                 {
-                    _cache.Add(item.Name, new List<GeometryFeature>());
+                    _cache.Add(item.Name, new List<IFeature>());
                 }
             }
         }
@@ -65,11 +59,11 @@ namespace FootprintViewer.Layers
                     var groundStation = new GroundStation()
                     {
                         Name = name,
-                        Center = new NetTopologySuite.Geometries.Point(info.Center),
+                        Center = new Point(info.Center),
                         Angles = info.GetAngles(),
                     };
 
-                    _cache[name].Add(Build(groundStation));
+                    _cache[name] = Build(groundStation);
                 }
 
                 Clear();
@@ -89,20 +83,20 @@ namespace FootprintViewer.Layers
                     var groundStation = new GroundStation()
                     {
                         Name = info.Name,
-                        Center = new NetTopologySuite.Geometries.Point(info.Center),
+                        Center = new Point(info.Center),
                         Angles = info.GetAngles(),
                     };
 
-                    _cache[name].Add(Build(groundStation));
+                    _cache[name] = Build(groundStation);
                 }
 
                 Clear();
                 AddRange(_cache.SelectMany(s => s.Value));
             }
         }
-        private static List<GeometryFeature> Build(GroundStation groundStation)
+        private static List<IFeature> Build(GroundStation groundStation)
         {
-            var list = new List<GeometryFeature>();
+            var list = new List<IFeature>();
 
             var gs = GroundStationBuilder.Create(groundStation);
 
@@ -113,34 +107,17 @@ namespace FootprintViewer.Layers
             // First area
             if (isHole == false)
             {
-                //var multi = new MultiPolygon();
+                var poligons = gs.Areas.First()
+                    .Select(s => s.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat)))
+                    .Select(s => new GeometryFactory().CreatePolygon(s.ToClosedCoordinates()))
+                    .ToArray();
 
-                var poligons = new List<Polygon>();
+                var multi = new GeometryFactory().CreateMultiPolygon(poligons);
 
-                foreach (var points in gs.Areas.First())
-                {
-                    //var ring = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
+                var feature = multi.ToFeature();
 
-                    var res = points.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
-                    var poly = new GeometryFactory().CreatePolygon(res.ToArray().ToClosedCoordinates());
-
-                    //multi.Polygons.Add(new Polygon()
-                    //{
-                    //    ExteriorRing = ring,
-                    //});
-
-                    poligons.Add(poly);
-                }
-
-
-                var multi = new GeometryFactory().CreateMultiPolygon(poligons.ToArray());
-
-                var feature = new GeometryFeature
-                {
-                    Geometry = multi,
-                    ["Count"] = $"{areaCount}",
-                    ["Index"] = $"{0}",
-                };
+                feature["Count"] = $"{areaCount}";
+                feature["Index"] = $"{0}";
 
                 list.Add(feature);
             }
@@ -150,60 +127,41 @@ namespace FootprintViewer.Layers
             {
                 for (int i = 1; i < areaCount; i++)
                 {
-                    //var multi = new MultiPolygon();
-
                     var poligons = new List<Polygon>();
 
-              //      var rings = gs.Areas[i - 1].Select(s =>
-              //        new LinearRing(s.Reverse().Select(s => SphericalMercator.FromLonLat(s.X, s.Y)))).ToList();
-
-                    var rings = gs.Areas[i - 1].Select(s => s.Reverse().Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate())).ToList();
+                    var rings = gs.Areas[i - 1].Select(s => s.Reverse().Select(s => SphericalMercator.FromLonLat(s.lon, s.lat))).ToList();
 
                     int index = 0;
 
                     foreach (var points1 in gs.Areas[i])
                     {
-                        //var ring = new LinearRing(points1.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)));
-                        var res = points1.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
+                        var res = points1.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat));
 
                         if (index < rings.Count)
                         {
-                           // var interiorRings = (gs.Areas[i].Count() == 1) ? rings : new List<LinearRing>() { rings[index++] };
-                            var interiorRings = (gs.Areas[i].Count() == 1) ? rings : new List<IEnumerable<Coordinate>>() { rings[index++] };
+                            var interiorRings = (gs.Areas[i].Count() == 1) ? rings : new List<IEnumerable<(double, double)>>() { rings[index++] };
 
-                            //multi.Polygons.Add(new Polygon()
-                            //{
-                            //    ExteriorRing = ring,
-                            //    InteriorRings = interiorRings,
-                            //});
+                            var shell = new GeometryFactory().CreateLinearRing(res.ToClosedCoordinates());
+                            var holes = interiorRings.Select(s => new GeometryFactory().CreateLinearRing(s.ToClosedCoordinates())).ToArray();
 
-                            var shell = new GeometryFactory().CreateLinearRing(res.ToArray().ToClosedCoordinates());
-                            var holes = interiorRings.Select(s => new GeometryFactory().CreateLinearRing(s.ToArray().ToClosedCoordinates()));
+                            var poly = new GeometryFactory().CreatePolygon(shell, holes);
 
-                            var poly = new GeometryFactory().CreatePolygon(shell, holes.ToArray());
                             poligons.Add(poly);
                         }
                         else
                         {
-                            //multi.Polygons.Add(new Polygon()
-                            //{
-                            //    ExteriorRing = ring,
-                            //});
+                            var poly = new GeometryFactory().CreatePolygon(res.ToClosedCoordinates());
 
-                            var poly = new GeometryFactory().CreatePolygon(res.ToArray().ToClosedCoordinates());
                             poligons.Add(poly);
                         }
                     }
 
                     var multi = new GeometryFactory().CreateMultiPolygon(poligons.ToArray());
 
+                    var feature = multi.ToFeature();
 
-                    var feature = new GeometryFeature
-                    {
-                        Geometry = multi,
-                        ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
-                        ["Index"] = $"{(isHole == true ? i - 1 : i)}",
-                    };
+                    feature["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}";
+                    feature["Index"] = $"{(isHole == true ? i - 1 : i)}";
 
                     list.Add(feature);
                 }
@@ -212,30 +170,17 @@ namespace FootprintViewer.Layers
             // Inner border
             if (isHole == true)
             {
-                //var multi = new MultiLineString
-                //{
-                //    LineStrings = gs.InnerBorder.Select(s =>
-                //      new LineString(s.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)))).ToList()
-                //};
+                var lineStrings = gs.InnerBorder
+                    .Select(s => s.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate()).ToArray())
+                    .Select(s => new GeometryFactory().CreateLineString(s))
+                    .ToArray();
 
-                var lineStrings = new List<LineString>();
+                var multi = new GeometryFactory().CreateMultiLineString(lineStrings);
 
-                foreach (var item in gs.InnerBorder)
-                {
-                    var res = item.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
+                var feature = multi.ToFeature();
 
-                    var line = new GeometryFactory().CreateLineString(res.ToArray());
-                    lineStrings.Add(line);
-                }
-
-                var multi = new GeometryFactory().CreateMultiLineString(lineStrings.ToArray());
-
-                var feature = new GeometryFeature
-                {
-                    Geometry = multi,
-                    ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
-                    ["InnerBorder"] = "",
-                };
+                feature["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}";
+                feature["InnerBorder"] = "";
 
                 list.Add(feature);
             }
@@ -243,29 +188,17 @@ namespace FootprintViewer.Layers
             // Outer border
             if (gs.OuterBorder.Any())
             {
-                var lineStrings = new List<LineString>();
+                var lineStrings = gs.OuterBorder
+                    .Select(s => s.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate()).ToArray())
+                    .Select(s => new GeometryFactory().CreateLineString(s))
+                    .ToArray();
 
-                foreach (var item in gs.OuterBorder)
-                {
-                    var res = item.Select(s => SphericalMercator.FromLonLat(s.lon, s.lat).ToCoordinate());
+                var multi = new GeometryFactory().CreateMultiLineString(lineStrings);
 
-                    var line = new GeometryFactory().CreateLineString(res.ToArray());
-                    lineStrings.Add(line);
-                }
+                var feature = multi.ToFeature();
 
-                //var multi = new MultiLineString
-                //{
-                //    LineStrings = gs.OuterBorder.Select(s =>
-                //      new LineString(s.Select(s => SphericalMercator.FromLonLat(s.X, s.Y)))).ToList()
-                //};
-                var multi = new GeometryFactory().CreateMultiLineString(lineStrings.ToArray());
-
-                var feature = new GeometryFeature
-                {
-                    Geometry = multi,
-                    ["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}",
-                    ["OuterBorder"] = "",
-                };
+                feature["Count"] = $"{(isHole == true ? areaCount - 1 : areaCount)}";
+                feature["OuterBorder"] = "";
 
                 list.Add(feature);
             }
