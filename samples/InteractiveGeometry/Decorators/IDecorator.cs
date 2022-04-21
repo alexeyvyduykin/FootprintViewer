@@ -1,9 +1,9 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
 
 namespace InteractiveGeometry
 {
     public interface IDecorator : IInteractiveObject
     {
-        IFeature FeatureSource { get; }
+        GeometryFeature FeatureSource { get; }
     }
 }

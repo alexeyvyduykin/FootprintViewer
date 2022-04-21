@@ -1,7 +1,11 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿
+using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InteractiveGeometry
 {
@@ -11,26 +15,29 @@ namespace InteractiveGeometry
         private int _counter;
         private bool _isDrawing = false;
 
-        private IFeature? _extraLineString;
-        private IFeature? _extraPolygon;
+        private GeometryFeature? _extraLineString;
+        private GeometryFeature? _extraPolygon;
 
-        public override IEnumerable<Point> GetActiveVertices()
+        private List<Coordinate> _extraPolygonCoordinates = new();
+        private List<Coordinate> _featureCoordinates = new();
+
+        public override IEnumerable<MPoint> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {
-                return Feature.Geometry.MainVertices();
+                return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
             }
 
-            return new Point[] { };
+            return Array.Empty<MPoint>();
         }
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _skip = false;
             _counter = 0;
         }
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_counter++ > 0)
             {
@@ -38,7 +45,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_skip == false)
             {
@@ -46,19 +53,19 @@ namespace InteractiveGeometry
             }
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(Point worldPosition)
+        public void CreatingFeature(MPoint worldPosition)
         {
             CreatingFeature(worldPosition, point => true);
         }
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(Point worldPosition, Predicate<Point>? isEnd)
+        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_firstClick == true)
             {
@@ -95,7 +102,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void HoverCreatingFeature(Point worldPosition)
+        public void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -107,13 +114,13 @@ namespace InteractiveGeometry
             }
         }
 
-        public bool IsEndDrawing(Point worldPosition, Predicate<Point>? isEnd)
+        public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
-            var polygonGeometry = (LineString)Feature.Geometry;
+            var polygonGeometry = (LineString)Feature.Geometry!;
 
-            if (polygonGeometry.Vertices.Count > 2)
+            if (polygonGeometry.Coordinates.Length > 2)
             {
-                var click = isEnd?.Invoke(polygonGeometry.Vertices[0]);
+                var click = isEnd?.Invoke(polygonGeometry.Coordinates[0].ToMPoint());
 
                 if (click == true)
                 {
@@ -124,7 +131,7 @@ namespace InteractiveGeometry
             return false;
         }
 
-        public void BeginDrawing(Point worldPosition)
+        public void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -133,42 +140,33 @@ namespace InteractiveGeometry
 
             _isDrawing = true;
 
-            var p0 = worldPosition.Clone();
-            // Add a second point right away. The second one will be the 'hover' vertex
-            var p1 = worldPosition.Clone();
+            var p0 = worldPosition.ToCoordinate();
+            var p1 = worldPosition.ToCoordinate();
 
-            var geometry = new LineString(new[] { p0 });
+            _extraLineString = new[] { p0, p1 }.ToLineString().ToFeature("ExtraPolygonHoverLine");
+            _extraPolygonCoordinates = new() { p0 };
+            _extraPolygon = _extraPolygonCoordinates.ToPolygon().ToFeature("ExtraPolygonArea");
 
-            _extraLineString = new Feature
-            {
-                Geometry = new LineString(new[] { p0, p1 }),
-                ["Name"] = "ExtraPolygonHoverLine",
-            };
-
-            _extraPolygon = new Feature
-            {
-                Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(new[] { p0 })
-                },
-                ["Name"] = "ExtraPolygonArea",
-            };
-
-            Feature = new Feature() { Geometry = geometry };
-            ExtraFeatures = new List<IFeature>() { _extraLineString, _extraPolygon };
+            _featureCoordinates = new() { p0 };
+            Feature = _featureCoordinates.ToLineString().ToFeature();
+            ExtraFeatures = new[] { _extraLineString, _extraPolygon };
         }
 
-        public void Drawing(Point worldPosition)
+        public void Drawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
-                var p0 = ((LineString)_extraLineString.Geometry).EndPoint;
-                var p1 = worldPosition.Clone();
-                var p2 = worldPosition.Clone();
+                var p0 = ((LineString)_extraLineString!.Geometry!).EndPoint;
+                var p1 = worldPosition.ToCoordinate();
+                var p2 = worldPosition.ToCoordinate();
 
-                ((Polygon)_extraPolygon.Geometry).ExteriorRing.Vertices.Add(p0);
-                ((LineString)Feature.Geometry).Vertices.Add(p0); // and add it to the geometry
-                ((LineString)_extraLineString.Geometry).Vertices = new[] { p1, p2 };
+                _extraLineString.Geometry = new[] { p1, p2 }.ToLineString();
+
+                _extraPolygonCoordinates.Add(new Coordinate(p0.X, p0.Y));
+                _extraPolygon!.Geometry = _extraPolygonCoordinates.ToPolygon();
+
+                _featureCoordinates.Add(new Coordinate(p0.X, p0.Y));
+                Feature.Geometry = _featureCoordinates.ToLineString();
 
                 Feature.RenderedGeometry?.Clear();
                 _extraLineString.RenderedGeometry?.Clear();
@@ -176,11 +174,11 @@ namespace InteractiveGeometry
             }
         }
 
-        public void DrawingHover(Point worldPosition)
+        public void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
-                ((LineString)_extraLineString.Geometry).EndPoint.X = worldPosition.X;
+                ((LineString)_extraLineString!.Geometry!).EndPoint.X = worldPosition.X;
                 ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
                 _extraLineString.RenderedGeometry?.Clear();
@@ -193,14 +191,8 @@ namespace InteractiveGeometry
             {
                 _isDrawing = false;
 
-                var vertices = ((LineString)Feature.Geometry).Vertices;
-
-                Feature.Geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
+                Feature.Geometry = _featureCoordinates.ToPolygon();
             }
         }
-
     }
 }

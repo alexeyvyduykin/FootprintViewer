@@ -1,5 +1,7 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 
@@ -10,17 +12,17 @@ namespace InteractiveGeometry
         private bool _skip;
         private int _counter;
         private bool _isDrawing = false;
-        protected Point? _center;
+        protected MPoint? _center;
 
-        public override IEnumerable<Point> GetActiveVertices() => new Point[] { };
+        public override IEnumerable<MPoint> GetActiveVertices() => Array.Empty<MPoint>();
 
-        public override void Starting(Point worldPosition)
+        public override void Starting(MPoint worldPosition)
         {
             _skip = false;
             _counter = 0;
         }
 
-        public override void Moving(Point worldPosition)
+        public override void Moving(MPoint worldPosition)
         {
             if (_counter++ > 0)
             {
@@ -28,7 +30,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public override void Ending(Point worldPosition, Predicate<Point>? isEnd)
+        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_skip == false)
             {
@@ -36,19 +38,19 @@ namespace InteractiveGeometry
             }
         }
 
-        public override void Hovering(Point worldPosition)
+        public override void Hovering(MPoint worldPosition)
         {
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(Point worldPosition)
-        {
-            CreatingFeature(worldPosition, point => true);
-        }
+        //public void CreatingFeature(MPoint worldPosition)
+        //{
+        //    CreatingFeature(worldPosition, point => true);
+        //}
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(Point worldPosition, Predicate<Point> isEnd)
+        public void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
         {
             if (_firstClick == true)
             {
@@ -70,7 +72,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void HoverCreatingFeature(Point worldPosition)
+        public void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -82,59 +84,52 @@ namespace InteractiveGeometry
             }
         }
 
-        public void BeginDrawing(Point worldPosition)
+        public void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == false)
             {
                 _isDrawing = true;
 
-                _center = worldPosition.Clone();
+                _center = worldPosition.Copy();
 
-                var vertices = GetCircle(_center, 0.0, 3);
+                var featureCoordinates = GetCircle(_center, 0.0, 3);
 
-                var geometry = new Polygon()
-                {
-                    ExteriorRing = new LinearRing(vertices)
-                };
-
-                Feature = new Feature() { Geometry = geometry };
-                ExtraFeatures = new List<IFeature>();
+                Feature = featureCoordinates.ToPolygon().ToFeature();
+                ExtraFeatures = new List<GeometryFeature>();
             }
         }
 
-        private IList<Point> GetCircle(Point center, double radius, double quality)
+        private static List<Coordinate> GetCircle(MPoint center, double radius, double quality)
         {
             var centerX = center.X;
             var centerY = center.Y;
 
             //var radius = Radius.Meters / Math.Cos(Center.Latitude / 180.0 * Math.PI);
             var increment = 360.0 / (quality < 3.0 ? 3.0 : (quality > 360.0 ? 360.0 : quality));
-            var vertices = new List<Point>();
+            var vertices = new List<Coordinate>();
 
             for (double angle = 0; angle < 360; angle += increment)
             {
                 var angleRad = angle / 180.0 * Math.PI;
-                vertices.Add(new Point(radius * Math.Sin(angleRad) + centerX, radius * Math.Cos(angleRad) + centerY));
+                vertices.Add(new Coordinate(radius * Math.Sin(angleRad) + centerX, radius * Math.Cos(angleRad) + centerY));
             }
 
             return vertices;
         }
 
-        public void DrawingHover(Point worldPosition)
+        public void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true && _center != null)
             {
-                var geometry = Feature.Geometry;
-
-                var p1 = worldPosition.Clone();
+                var p1 = worldPosition.Copy();
 
                 var radius = _center.Distance(p1);
 
-                var vertices = GetCircle(_center, radius, 180);
+                var featureCoordinates = GetCircle(_center, radius, 180);
 
-                ((Polygon)geometry).ExteriorRing = new LinearRing(vertices);
+                Feature.Geometry = featureCoordinates.ToPolygon();
 
-                Feature.RenderedGeometry?.Clear();
+                Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
 
@@ -143,8 +138,6 @@ namespace InteractiveGeometry
             if (_isDrawing == true)
             {
                 _isDrawing = false;
-
-                Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
         }
     }

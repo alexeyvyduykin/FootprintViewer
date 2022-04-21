@@ -1,4 +1,4 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 using System;
 using System.Linq;
 
@@ -58,27 +58,27 @@ namespace InteractiveGeometry
             };
         }
 
-        public void OnDelta(Point worldPosition)
+        public void OnDelta(MPoint worldPosition)
         {
             Delta?.Invoke(this, new DeltaEventArgs() { WorldPosition = worldPosition });
         }
 
-        public void OnStarted(Point worldPosition, double screenDistance)
+        public void OnStarted(MPoint worldPosition, double screenDistance)
         {
             Started?.Invoke(this, new StartedEventArgs() { WorldPosition = worldPosition, ScreenDistance = screenDistance });
         }
 
-        public void OnCompleted(Point worldPosition, Predicate<Point> isEnd)
+        public void OnCompleted(MPoint worldPosition, Predicate<MPoint> isEnd)
         {
             Completed?.Invoke(this, new CompletedEventArgs() { WorldPosition = worldPosition, IsEnd = isEnd });
         }
 
-        public void OnCompleted(Point worldPosition)
+        public void OnCompleted(MPoint worldPosition)
         {
             Completed?.Invoke(this, new CompletedEventArgs() { WorldPosition = worldPosition, IsEnd = null });
         }
 
-        public void OnHover(Point worldPosition)
+        public void OnHover(MPoint worldPosition)
         {
             Hover?.Invoke(this, new HoverEventArgs() { WorldPosition = worldPosition });
         }

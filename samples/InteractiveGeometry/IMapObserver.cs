@@ -1,30 +1,30 @@
-﻿using Mapsui.Geometries;
+﻿using Mapsui;
 using System;
 
 namespace InteractiveGeometry
 {
     public class DeltaEventArgs : EventArgs
     {
-        public Point WorldPosition { get; set; } = new Point();
+        public MPoint WorldPosition { get; set; } = new MPoint();
     }
 
     public class StartedEventArgs : EventArgs
     {
-        public Point WorldPosition { get; set; } = new Point();
+        public MPoint WorldPosition { get; set; } = new MPoint();
 
         public double ScreenDistance { get; set; }
     }
 
     public class CompletedEventArgs : EventArgs
     {
-        public Point WorldPosition { get; set; } = new Point();
+        public MPoint WorldPosition { get; set; } = new MPoint();
 
-        public Predicate<Point>? IsEnd { get; set; }
+        public Predicate<MPoint>? IsEnd { get; set; }
     }
 
     public class HoverEventArgs : EventArgs
     {
-        public Point WorldPosition { get; set; } = new Point();
+        public MPoint WorldPosition { get; set; } = new MPoint();
     }
 
     public delegate void StartedEventHandler(object sender, StartedEventArgs e);
@@ -42,14 +42,14 @@ namespace InteractiveGeometry
 
         event HoverEventHandler? Hover;
 
-        void OnStarted(Point worldPosition, double screenDistance);
+        void OnStarted(MPoint worldPosition, double screenDistance);
 
-        void OnDelta(Point worldPosition);
+        void OnDelta(MPoint worldPosition);
 
-        void OnCompleted(Point worldPosition, Predicate<Point> isEnd);
+        void OnCompleted(MPoint worldPosition, Predicate<MPoint> isEnd);
 
-        void OnCompleted(Point worldPosition);
+        void OnCompleted(MPoint worldPosition);
 
-        void OnHover(Point worldPosition);
+        void OnHover(MPoint worldPosition);
     }
 }

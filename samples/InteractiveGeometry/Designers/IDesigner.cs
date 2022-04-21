@@ -1,4 +1,4 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
 using System;
 using System.Collections.Generic;
 
@@ -6,9 +6,9 @@ namespace InteractiveGeometry
 {
     public interface IDesigner : IInteractiveObject
     {
-        IFeature Feature { get; }
+        GeometryFeature Feature { get; }
 
-        IList<IFeature> ExtraFeatures { get; }
+        IList<GeometryFeature> ExtraFeatures { get; }
 
         event EventHandler? BeginCreating;
 

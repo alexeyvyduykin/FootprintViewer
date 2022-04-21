@@ -1,20 +1,20 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Geometries.Utilities;
-using Mapsui.Projection;
+﻿using Mapsui;
+using Mapsui.Utilities;
+using NetTopologySuite.Geometries;
 
 namespace InteractiveGeometry
 {
     public static class Geomorpher
     {
-        public static void Rotate(IGeometry geometry, double degrees, Point center)
+        public static void Rotate(Geometry geometry, double degrees, MPoint center)
         {
-            foreach (var vertex in geometry.AllVertices())
+            foreach (var coordinate in geometry.Coordinates)
             {
-                Rotate(vertex, degrees, center);
+                Rotate(coordinate, degrees, center);
             }
         }
 
-        private static void Rotate(Point vertex, double degrees, Point center)
+        private static void Rotate(Coordinate vertex, double degrees, MPoint center)
         {
             // translate this point back to the center
             var newX = vertex.X - center.X;
@@ -28,32 +28,32 @@ namespace InteractiveGeometry
             vertex.Y = p.Y + center.Y;
         }
 
-        public static void Scale(IGeometry geometry, double scale, Point center)
+        public static void Scale(Geometry geometry, double scale, MPoint center)
         {
-            foreach (var vertex in geometry.AllVertices())
+            foreach (var coordinate in geometry.Coordinates)
             {
-                Scale(vertex, scale, center);
+                Scale(coordinate, scale, center);
             }
         }
 
-        private static void Scale(Point vertex, double scale, Point center)
+        private static void Scale(Coordinate vertex, double scale, MPoint center)
         {
             vertex.X = center.X + (vertex.X - center.X) * scale;
             vertex.Y = center.Y + (vertex.Y - center.Y) * scale;
         }
 
-        public static void Translate(IGeometry geometry, double deltaX, double deltaY)
+        public static void Translate(Geometry geometry, double deltaX, double deltaY)
         {
-            foreach (var vertex in geometry.AllVertices())
+            foreach (var vertex in geometry.Coordinates)
             {
                 Translate(vertex, deltaX, deltaY);
             }
         }
 
-        private static void Translate(Point vertex, double deltaX, double deltaY)
+        public static void Translate(Coordinate vertex, double deltaX, double deltaY)
         {
-            vertex.X = vertex.X + deltaX;
-            vertex.Y = vertex.Y + deltaY;
+            vertex.X += deltaX;
+            vertex.Y += deltaY;
         }
     }
 }

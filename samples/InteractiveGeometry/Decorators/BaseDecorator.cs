@@ -1,16 +1,24 @@
-﻿using Mapsui.Providers;
+﻿using Mapsui.Nts;
+using NetTopologySuite.Geometries;
 
 namespace InteractiveGeometry
 {
     public abstract class BaseDecorator : BaseInteractiveObject, IDecorator
     {
-        private readonly IFeature _featureSource;
+        private readonly GeometryFeature _featureSource;
 
-        public BaseDecorator(IFeature featureSource)
+        public BaseDecorator(GeometryFeature featureSource)
         {
             _featureSource = featureSource;
         }
 
-        public IFeature FeatureSource => _featureSource;
+        protected void UpdateGeometry(Geometry geometry)
+        {
+            _featureSource.Geometry = geometry;
+
+            _featureSource.RenderedGeometry.Clear();
+        }
+
+        public GeometryFeature FeatureSource => _featureSource;
     }
 }
