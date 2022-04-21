@@ -1,0 +1,147 @@
+﻿using Avalonia;
+using InteractiveSample.Input;
+using InteractiveSample.Input.Controller.Core;
+using Mapsui;
+using avalonia = Avalonia.Input;
+
+namespace InteractiveSample
+{
+    public static class ConverterExtensions
+    {
+        public static MPoint ToScreenPoint(this Point pt)
+        {
+            return new MPoint(pt.X, pt.Y);
+        }
+
+        public static MouseButton Convert(this avalonia.PointerUpdateKind state)
+        {
+            switch (state)
+            {
+                case avalonia.PointerUpdateKind.LeftButtonPressed:
+                    return MouseButton.Left;
+                case avalonia.PointerUpdateKind.MiddleButtonPressed:
+                    return MouseButton.Middle;
+                case avalonia.PointerUpdateKind.RightButtonPressed:
+                    return MouseButton.Right;
+                case avalonia.PointerUpdateKind.XButton1Pressed:
+                    return MouseButton.XButton1;
+                case avalonia.PointerUpdateKind.XButton2Pressed:
+                    return MouseButton.XButton2;
+                case avalonia.PointerUpdateKind.LeftButtonReleased:
+                    return MouseButton.Left;
+                case avalonia.PointerUpdateKind.MiddleButtonReleased:
+                    return MouseButton.Middle;
+                case avalonia.PointerUpdateKind.RightButtonReleased:
+                    return MouseButton.Right;
+                case avalonia.PointerUpdateKind.XButton1Released:
+                    return MouseButton.XButton1;
+                case avalonia.PointerUpdateKind.XButton2Released:
+                    return MouseButton.XButton2;
+                case avalonia.PointerUpdateKind.Other:
+                    return MouseButton.None;
+                default:
+                    return MouseButton.None;
+            }
+        }
+
+        public static MouseWheelEventArgs ToMouseWheelEventArgs(this avalonia.PointerWheelEventArgs e, avalonia.IInputElement relativeTo)
+        {
+            return new MouseWheelEventArgs
+            {
+                Position = e.GetPosition(relativeTo).ToScreenPoint(),
+                //ModifierKeys = Keyboard.Instance.GetModifierKeys(),
+                Delta = (int)(e.Delta.Y + e.Delta.X) * 120
+            };
+        }
+
+        public static MouseEventArgs ToMouseEventArgs(this avalonia.PointerEventArgs e, avalonia.IInputElement relativeTo)
+        {
+            return new MouseEventArgs
+            {
+                Position = e.GetPosition(relativeTo).ToScreenPoint(),
+                //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+            };
+        }
+
+        public static MouseDownEventArgs ToMouseDownEventArgs(this avalonia.PointerPressedEventArgs e, avalonia.IInputElement relativeTo)
+        {
+            return new MouseDownEventArgs
+            {
+#pragma warning disable CS0618 // Тип или член устарел
+                ChangedButton = e.GetPointerPoint(null).Properties.PointerUpdateKind.Convert(),
+#pragma warning restore CS0618 // Тип или член устарел
+                ClickCount = e.ClickCount,
+                Position = e.GetPosition(relativeTo).ToScreenPoint(),
+                //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+            };
+        }
+
+        public static MouseEventArgs ToMouseReleasedEventArgs(this avalonia.PointerReleasedEventArgs e, avalonia.IInputElement relativeTo)
+        {
+            return new MouseEventArgs
+            {
+                Position = e.GetPosition(relativeTo).ToScreenPoint(),
+                //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+            };
+        }
+
+        //public static M.Point ToScreenPoint(this Point pt)
+        //{
+        //    return new M.Point(pt.X, pt.Y);
+        //}
+
+        //public static InteractivitySample.Input.MouseButton Convert(this System.Windows.Input.MouseButton mouseButton)
+        //{
+        //    switch (mouseButton)
+        //    {
+        //        case System.Windows.Input.MouseButton.Left:
+        //            return InteractivitySample.Input.MouseButton.Left;
+        //        case System.Windows.Input.MouseButton.Middle:
+        //            return InteractivitySample.Input.MouseButton.Middle;
+        //        case System.Windows.Input.MouseButton.Right:
+        //            return InteractivitySample.Input.MouseButton.Right;
+        //        default:
+        //            return InteractivitySample.Input.MouseButton.None;
+        //    }
+        //}
+
+        //public static controller.MouseWheelEventArgs ToMouseWheelEventArgs(this System.Windows.Input.MouseWheelEventArgs e, IInputElement relativeTo)
+        //{
+        //    return new controller.MouseWheelEventArgs
+        //    {
+        //        Position = e.GetPosition(relativeTo).ToScreenPoint(),
+        //        //ModifierKeys = Keyboard.Instance.GetModifierKeys(),
+        //        Delta = e.Delta/*e.Delta.Y + e.Delta.X*/ * 120
+        //    };
+        //}
+
+        //public static controller.MouseEventArgs ToMouseEventArgs(this System.Windows.Input.MouseEventArgs e, IInputElement relativeTo)
+        //{
+        //    return new controller.MouseEventArgs
+        //    {
+        //        Position = e.GetPosition(relativeTo).ToScreenPoint(),
+        //        //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+        //    };
+        //}
+
+        //public static controller.MouseDownEventArgs ToMouseDownEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
+        //{
+        //    return new controller.MouseDownEventArgs
+        //    {
+        //        ChangedButton = e.ChangedButton.Convert(),
+        //        ClickCount = e.ClickCount,
+        //        Position = e.GetPosition(relativeTo).ToScreenPoint(),
+        //        //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+        //    };
+        //}
+
+        //public static controller.MouseEventArgs ToMouseReleasedEventArgs(this MouseButtonEventArgs e, IInputElement relativeTo)
+        //{
+        //    return new controller.MouseEventArgs
+        //    {
+        //        Position = e.GetPosition(relativeTo).ToScreenPoint(),
+        //        //ModifierKeys = e.KeyModifiers.ToModifierKeys()
+        //    };
+        //}
+    }
+}

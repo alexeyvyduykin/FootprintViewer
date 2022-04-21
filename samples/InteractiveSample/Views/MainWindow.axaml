@@ -1,0 +1,66 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:InteractiveSample.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:InteractiveSample"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="InteractiveSample.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="InteractiveSample">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+  <Window.Styles>    
+    <Style Selector="ToggleButton">
+      <Setter Property="Padding" Value="8,4,8,4"></Setter>
+    </Style>
+  </Window.Styles>
+
+  <Grid>
+    <local:UserMapControl x:Name="MapControl"
+                          MapSource="{Binding Map}"
+                          MapListener="{Binding MapListener}"
+                          Controller="{Binding ActualController}"
+                          MapObserver="{Binding MapObserver}"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch" />
+
+    <StackPanel HorizontalAlignment="Left">
+      <ToggleButton IsChecked="{Binding IsSelect}">Select</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsTranslate}">Translate</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsRotate}">Rotate</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsScale}">Scale</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsEdit}">Edit</ToggleButton>
+      <Border Height="10"/>
+      <ToggleButton IsChecked="{Binding IsRectangle}">Rectangle</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsCircle}">Circle</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsPolygon}">Polygon</ToggleButton>
+      <ToggleButton IsChecked="{Binding IsRoute}">Route</ToggleButton>
+    </StackPanel>
+
+    <Border x:Name="tipBorder"
+            HorizontalAlignment="Center"
+            Width="200"
+            VerticalAlignment="Bottom"
+            Padding="8"
+            Background="AliceBlue"
+            BorderThickness="1"
+            BorderBrush="Black">
+      <!--<Border.Style>
+        <Style TargetType="Border">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Tip}" Value="">
+              <Setter Property="Visibility" Value="Hidden"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>-->
+
+      <TextBlock TextWrapping="Wrap" Text="{Binding Tip}"></TextBlock>
+    </Border>
+
+  </Grid>
+</Window>
