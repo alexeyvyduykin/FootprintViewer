@@ -1,17 +1,17 @@
 ﻿using Mapsui;
 using Mapsui.Nts;
-using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Interactivity.Decorators
 {
     public class ScaleDecorator : BaseDecorator
     {
         private readonly MPoint _center;
-        private MPoint _sizeNE;
-        private MPoint _startSizeNE;
+        private MPoint _scaleTopRight;
+        private MPoint _startScaleTopRight;
         private MPoint _startOffsetToVertex;
         private Geometry? _startGeometry;
         private double _startScale;
@@ -20,11 +20,11 @@ namespace FootprintViewer.Interactivity.Decorators
 
         public ScaleDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _sizeNE = featureSource.Extent.TopRight;//Geometry.BoundingBox.TopRight;
+            _scaleTopRight = GetTopRight(featureSource.Geometry!);
 
-            _center = featureSource.Extent.Centroid;//Geometry.BoundingBox.Centroid;
+            _center = featureSource.Extent!.Centroid;
 
-            _startSizeNE = _sizeNE;
+            _startScaleTopRight = _scaleTopRight;
 
             _startOffsetToVertex = new MPoint();
         }
@@ -34,7 +34,7 @@ namespace FootprintViewer.Interactivity.Decorators
             _isScaling = false;
         }
 
-        public override IEnumerable<MPoint> GetActiveVertices() => new[] { _sizeNE };
+        public override IEnumerable<MPoint> GetActiveVertices() => new[] { _scaleTopRight };
 
         public override void Moving(MPoint worldPosition)
         {
@@ -44,27 +44,25 @@ namespace FootprintViewer.Interactivity.Decorators
 
                 var scale = _center.Distance(p1);
 
-                var geometry = Copy(_startGeometry);
+                var geometry = _startGeometry.Copy();
 
-                Geomorpher.Scale(geometry, scale / _startScale, _center.ToPoint());
+                Geomorpher.Scale(geometry, scale / _startScale, _center);
 
-                _sizeNE = geometry.EnvelopeInternal.ToMRect().TopRight;// BoundingBox.TopRight;
+                _scaleTopRight = GetTopRight(geometry);
 
-                FeatureSource.Geometry = geometry;
-
-                FeatureSource.RenderedGeometry.Clear();
+                UpdateGeometry(geometry);
             }
         }
 
         public override void Starting(MPoint worldPosition)
         {
-            _startSizeNE = _sizeNE;
+            _startScaleTopRight = _scaleTopRight;
 
-            _startOffsetToVertex = worldPosition - _startSizeNE;
+            _startOffsetToVertex = worldPosition - _startScaleTopRight;
 
-            _startGeometry = Copy(FeatureSource.Geometry);
+            _startGeometry = FeatureSource.Geometry!.Copy();
 
-            _startScale = _center.Distance(_startSizeNE);
+            _startScale = _center.Distance(_startScaleTopRight);
 
             _isScaling = true;
         }
@@ -72,6 +70,14 @@ namespace FootprintViewer.Interactivity.Decorators
         public override void Hovering(MPoint worldPosition)
         {
 
+        }
+
+        private static MPoint GetTopRight(Geometry geometry)
+        {
+            var right = geometry.Coordinates.Max(s => s.X);
+            var top = geometry.Coordinates.Max(s => s.Y);
+
+            return new MPoint(right, top);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Mapsui.Nts;
+using NetTopologySuite.Geometries;
 
 namespace FootprintViewer.Interactivity.Decorators
 {
@@ -9,6 +10,13 @@ namespace FootprintViewer.Interactivity.Decorators
         public BaseDecorator(GeometryFeature featureSource)
         {
             _featureSource = featureSource;
+        }
+
+        protected void UpdateGeometry(Geometry geometry)
+        {
+            _featureSource.Geometry = geometry;
+
+            _featureSource.RenderedGeometry.Clear();
         }
 
         public GeometryFeature FeatureSource => _featureSource;

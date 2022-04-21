@@ -18,7 +18,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
         public TranslateDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _center = featureSource.Geometry.Centroid.ToMPoint();// BoundingBox.Centroid;
+            _center = featureSource.Geometry!.Centroid.ToMPoint();
 
             _startCenter = _center;
 
@@ -40,15 +40,13 @@ namespace FootprintViewer.Interactivity.Decorators
 
                 var delta = p1 - _startCenter;
 
-                var geometry = Copy(_startGeometry);
+                var geometry = _startGeometry.Copy();
 
                 Geomorpher.Translate(geometry, delta.X, delta.Y);
 
-                _center = geometry.Centroid.ToMPoint();// BoundingBox.Centroid;
+                _center = geometry.Centroid.ToMPoint();
 
-                FeatureSource.Geometry = geometry;
-
-                FeatureSource.RenderedGeometry.Clear();
+                UpdateGeometry(geometry);
             }
         }
 
@@ -58,7 +56,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
             _startOffsetToVertex = worldPosition - _startCenter;
 
-            _startGeometry = Copy(FeatureSource.Geometry);
+            _startGeometry = FeatureSource.Geometry!.Copy();
 
             _isTranslating = true;
         }

@@ -8,7 +8,7 @@ namespace FootprintViewer.Interactivity.Decorators
 {
     public class RotateDecorator : BaseDecorator
     {
-        private readonly Point _center;
+        private readonly MPoint _center;
         private MPoint _rotateRight;
         private MPoint _startRotateRight;
         private MPoint _startOffsetToVertex;
@@ -19,20 +19,20 @@ namespace FootprintViewer.Interactivity.Decorators
 
         public RotateDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _rotateRight = new MPoint(featureSource.Extent.Right/*Geometry.BoundingBox.Right*/, featureSource.Extent.Centroid.Y/* Geometry.BoundingBox.Centroid.Y*/);
+            _rotateRight = new MPoint(featureSource.Extent!.Right, featureSource.Extent.Centroid.Y);
 
-            _center = featureSource.Geometry.Centroid;// BoundingBox.Centroid;
+            _center = featureSource.Extent.Centroid;
 
             _startRotateRight = _rotateRight;
 
-            _halfDiagonal = Diagonal(FeatureSource.Extent/*Geometry.BoundingBox*/) / 2.0;
-            
+            _halfDiagonal = Diagonal(featureSource.Extent) / 2.0;
+
             _startOffsetToVertex = new MPoint();
         }
 
         public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
-            _rotateRight = new MPoint(FeatureSource.Extent.Right/*Geometry.BoundingBox.Right*/, FeatureSource.Extent.Centroid.Y/*Geometry.BoundingBox.Centroid.Y*/);
+            _rotateRight = new MPoint(FeatureSource.Extent!.Right, FeatureSource.Extent.Centroid.Y);
 
             _isRotating = false;
         }
@@ -49,7 +49,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
                 var sign = (p1 - _startRotateRight).Y >= 0 ? -1 : 1;
 
-                var geometry = Copy(_startGeometry);
+                var geometry = _startGeometry.Copy();
 
                 var degrees = sign * (distance * 360.0 / _halfDiagonal);
 
@@ -57,9 +57,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
                 _rotateRight = new MPoint(_startRotateRight.X, p1.Y);
 
-                FeatureSource.Geometry = geometry;
-
-                FeatureSource.RenderedGeometry.Clear();
+                UpdateGeometry(geometry);
             }
         }
 
@@ -69,9 +67,9 @@ namespace FootprintViewer.Interactivity.Decorators
 
             _startOffsetToVertex = worldPosition - _startRotateRight;
 
-            _startGeometry = Copy(FeatureSource.Geometry);
+            _startGeometry = FeatureSource.Geometry!.Copy();
 
-            _halfDiagonal = Diagonal(FeatureSource.Extent /*Geometry.BoundingBox*/) / 2.0;
+            _halfDiagonal = Diagonal(FeatureSource.Extent!) / 2.0;
 
             _isRotating = true;
         }
@@ -81,9 +79,9 @@ namespace FootprintViewer.Interactivity.Decorators
 
         }
 
-        private double Diagonal(MRect boundingBox)
+        private static double Diagonal(MRect box)
         {
-            return Math.Sqrt(boundingBox.Width * boundingBox.Width + boundingBox.Height * boundingBox.Height);
+            return Math.Sqrt(box.Width * box.Width + box.Height * box.Height);
         }
     }
 }

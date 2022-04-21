@@ -21,7 +21,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
         public EditDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _points = featureSource.Geometry.MainVertices().Select(s=>s.ToMPoint()).ToList();
+            _points = featureSource.Geometry!.MainVertices().Select(s => s.ToMPoint()).ToList();
 
             _startOffsetToVertex = new MPoint();
 
@@ -39,60 +39,50 @@ namespace FootprintViewer.Interactivity.Decorators
         {
             if (_isEditing == true && _startGeometry != null)
             {
-                if (_isRectangle == false)
+                var p1 = worldPosition - _startOffsetToVertex;
+
+                var delta = p1 - _startPoint!;
+
+                var geometry = _startGeometry.Copy();
+
+                var pp = geometry.Coordinates[_index];
+                Geomorpher.Translate(pp, delta.X, delta.Y);
+
+                if (_index == 0 || _index == _points.Count - 1)
                 {
-                    var p1 = worldPosition - _startOffsetToVertex;
-
-                    var delta = p1 - _startPoint;
-
-                    var geometry = Copy(_startGeometry);
-
-                    var pp = geometry.MainVertices()[_index];
-
-                    Geomorpher.Translate(pp, delta.X, delta.Y);
-
-                    _points = geometry.MainVertices().Select(s => s.ToMPoint()).ToList();
-
-                    FeatureSource.Geometry = geometry;
-
-                    FeatureSource.RenderedGeometry.Clear();
+                    var ppp = geometry.Coordinates[_index == 0 ? _points.Count - 1 : 0];
+                    Geomorpher.Translate(ppp, delta.X, delta.Y);
                 }
-                else
+
+                if (_isRectangle == true)
                 {
-                    var p1 = worldPosition - _startOffsetToVertex;
-
-                    var delta = p1 - _startPoint;
-
-                    var geometry = Copy(_startGeometry);
-
-                    var prev = (_index - 1) < 0 ? 3 : _index - 1;
-                    var next = (_index + 1) > 3 ? 0 : _index + 1;
-
-                    var pp = geometry.MainVertices()[_index];
-                    var pPrev = geometry.MainVertices()[prev];
-                    var pNext = geometry.MainVertices()[next];
-
-                    bool isVertical = Math.Abs(pp.X - pPrev.X) < 1E-4 ? true : false;
-
-                    Geomorpher.Translate(pp, delta.X, delta.Y);
-
-                    if (isVertical) // vertical
+                    if (_index == 0 || _index == 4)
                     {
-                        Geomorpher.Translate(pPrev, delta.X, 0.0);
-                        Geomorpher.Translate(pNext, 0.0, delta.Y);
+                        Geomorpher.Translate(geometry.Coordinates[1], 0.0, delta.Y);
+                        Geomorpher.Translate(geometry.Coordinates[3], delta.X, 0.0);
                     }
-                    else // horizontal
+                    else if (_index == 1)
                     {
-                        Geomorpher.Translate(pPrev, 0.0, delta.Y);
-                        Geomorpher.Translate(pNext, delta.X, 0.0);
+                        Geomorpher.Translate(geometry.Coordinates[0], 0.0, delta.Y);
+                        Geomorpher.Translate(geometry.Coordinates[2], delta.X, 0.0);
+                        Geomorpher.Translate(geometry.Coordinates[4], 0.0, delta.Y);
                     }
-
-                    _points = geometry.MainVertices().Select(s => s.ToMPoint()).ToList();
-
-                    FeatureSource.Geometry = geometry;
-
-                    FeatureSource.RenderedGeometry.Clear();
+                    else if (_index == 2)
+                    {
+                        Geomorpher.Translate(geometry.Coordinates[1], delta.X, 0.0);
+                        Geomorpher.Translate(geometry.Coordinates[3], 0.0, delta.Y);
+                    }
+                    else if (_index == 3)
+                    {
+                        Geomorpher.Translate(geometry.Coordinates[0], delta.X, 0.0);
+                        Geomorpher.Translate(geometry.Coordinates[2], 0.0, delta.Y);
+                        Geomorpher.Translate(geometry.Coordinates[4], delta.X, 0.0);
+                    }
                 }
+
+                _points = geometry.MainVertices().Select(s => s.ToMPoint()).ToList();
+
+                UpdateGeometry(geometry);
 
                 Invalidate();
             }
@@ -106,7 +96,7 @@ namespace FootprintViewer.Interactivity.Decorators
 
             _startOffsetToVertex = worldPosition - _startPoint;
 
-            _startGeometry = Copy(FeatureSource.Geometry);
+            _startGeometry = FeatureSource.Geometry!.Copy();
 
             _isEditing = true;
         }
@@ -116,9 +106,9 @@ namespace FootprintViewer.Interactivity.Decorators
 
         }
 
-        private bool IsRectangle(IList<MPoint> points)
+        private static bool IsRectangle(IList<MPoint> points)
         {
-            if (points.Count != 4)
+            if (points.Count != 5)
             {
                 return false;
             }
@@ -127,7 +117,7 @@ namespace FootprintViewer.Interactivity.Decorators
                    IsOrthogonal(points[1], points[2], points[3]) &&
                    IsOrthogonal(points[2], points[3], points[0]);
 
-            bool IsOrthogonal(MPoint a, MPoint b, MPoint c)
+            static bool IsOrthogonal(MPoint a, MPoint b, MPoint c)
             {
                 return Math.Abs((b.X - a.X) * (b.X - c.X) + (b.Y - a.Y) * (b.Y - c.Y)) < 1E-6;// == 0.0;
             }
