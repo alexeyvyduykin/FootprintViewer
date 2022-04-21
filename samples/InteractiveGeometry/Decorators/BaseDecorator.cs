@@ -1,9 +1,6 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
-using System;
-using System.Collections.Generic;
+﻿using Mapsui.Providers;
 
-namespace InteractivitySample.Interactivity.Decorators
+namespace InteractiveGeometry
 {
     public abstract class BaseDecorator : BaseInteractiveObject, IDecorator
     {

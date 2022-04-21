@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity
+namespace InteractiveGeometry
 {
     public interface IInteractiveObject
     {

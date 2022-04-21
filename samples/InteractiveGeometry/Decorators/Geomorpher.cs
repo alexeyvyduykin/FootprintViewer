@@ -2,7 +2,7 @@
 using Mapsui.Geometries.Utilities;
 using Mapsui.Projection;
 
-namespace InteractivitySample.Interactivity.Decorators
+namespace InteractiveGeometry
 {
     public static class Geomorpher
     {

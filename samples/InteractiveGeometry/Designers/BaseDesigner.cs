@@ -1,9 +1,8 @@
-﻿using Mapsui.Geometries;
-using Mapsui.Providers;
+﻿using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity.Designers
+namespace InteractiveGeometry
 {
     public abstract class BaseDesigner : BaseInteractiveObject, IDesigner
     {

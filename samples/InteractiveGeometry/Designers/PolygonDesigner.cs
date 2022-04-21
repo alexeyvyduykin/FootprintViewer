@@ -3,18 +3,18 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity.Designers
+namespace InteractiveGeometry
 {
     public class PolygonDesigner : BaseDesigner
     {
         private bool _skip;
-        private int _counter; 
+        private int _counter;
         private bool _isDrawing = false;
 
         private IFeature? _extraLineString;
         private IFeature? _extraPolygon;
 
-        public override IEnumerable<Point> GetActiveVertices() 
+        public override IEnumerable<Point> GetActiveVertices()
         {
             if (Feature.Geometry != null)
             {

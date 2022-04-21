@@ -1,6 +1,4 @@
-﻿using InteractivitySample.Interactivity.Decorators;
-using InteractivitySample.Interactivity.Designers;
-using Mapsui;
+﻿using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Layers;
@@ -9,7 +7,7 @@ using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity
+namespace InteractiveGeometry
 {
     public class InteractiveLayer : BaseLayer
     {
@@ -77,7 +75,7 @@ namespace InteractivitySample.Interactivity
         {
             OnDataChanged(new DataChangedEventArgs());
         }
-        
+
         private static IStyle CreateDefaultStyle(IInteractiveObject interactiveObject)
         {
             // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
@@ -128,7 +126,7 @@ namespace InteractivitySample.Interactivity
                                         Fill = null,
                                         Line = new Pen(_color, 3) { PenStyle = PenStyle.Dash },
                                     };
-                                }                          
+                                }
                             }
                         }
                     }

@@ -1,10 +1,8 @@
-﻿using InteractivitySample.Interactivity.Decorators;
-using InteractivitySample.Interactivity.Designers;
-using Mapsui.Geometries;
+﻿using Mapsui.Geometries;
 using System;
 using System.Linq;
 
-namespace InteractivitySample.Interactivity
+namespace InteractiveGeometry
 {
     public class MapObserver : IMapObserver
     {
@@ -15,7 +13,7 @@ namespace InteractivitySample.Interactivity
         public event CompletedEventHandler? Completed;
 
         public event HoverEventHandler? Hover;
-        
+
         public MapObserver(IInteractiveObject interactiveObject)
         {
             if (interactiveObject is IDesigner)

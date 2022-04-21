@@ -1,4 +1,4 @@
-﻿using InteractivitySample.Interactivity;
+﻿using InteractiveGeometry;
 using Mapsui.Geometries;
 using Mapsui.UI;
 

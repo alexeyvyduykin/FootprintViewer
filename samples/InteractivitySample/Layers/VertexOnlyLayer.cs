@@ -1,12 +1,10 @@
-﻿using InteractivitySample.Interactivity;
+﻿using InteractiveGeometry;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Geometries;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
-using SkiaSharp;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,9 +19,9 @@ namespace InteractivitySample.Layers
             Fill = new Brush(Color.White),
             Outline = new Pen(Color.Black, 2 / 0.3),
             SymbolType = SymbolType.Ellipse,
-            SymbolScale = 0.3,       
+            SymbolScale = 0.3,
         };
-       
+
         public override BoundingBox Envelope => _source.Envelope;
 
         public VertexOnlyLayer(ILayer source)
@@ -40,7 +38,7 @@ namespace InteractivitySample.Layers
             {
                 if (feature.Geometry is Point || feature.Geometry is MultiPoint)
                 {
-                    continue; 
+                    continue;
                 }
 
                 if (feature.Geometry != null)

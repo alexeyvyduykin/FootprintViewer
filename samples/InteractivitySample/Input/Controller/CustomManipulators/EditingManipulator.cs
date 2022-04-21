@@ -1,5 +1,4 @@
-﻿using InteractivitySample.Interactivity;
-using Mapsui.Layers;
+﻿using InteractiveGeometry;
 using InteractivitySample.Input.Controller.Core;
 
 namespace InteractivitySample.Input.Controller

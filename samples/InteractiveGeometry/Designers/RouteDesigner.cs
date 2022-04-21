@@ -3,13 +3,13 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity.Designers
+namespace InteractiveGeometry
 {
     public class RouteDesigner : BaseDesigner
     {
         private bool _skip;
         private int _counter;
-        private bool _isDrawing = false;      
+        private bool _isDrawing = false;
         private IFeature? _extraLineString;
 
         public override IEnumerable<Point> GetActiveVertices()

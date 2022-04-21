@@ -2,9 +2,8 @@
 using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 
-namespace InteractivitySample.Interactivity.Decorators
+namespace InteractiveGeometry
 {
     public class RotateDecorator : BaseDecorator
     {

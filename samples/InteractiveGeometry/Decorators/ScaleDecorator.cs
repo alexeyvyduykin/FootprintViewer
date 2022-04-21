@@ -3,7 +3,7 @@ using Mapsui.Providers;
 using System;
 using System.Collections.Generic;
 
-namespace InteractivitySample.Interactivity.Decorators
+namespace InteractiveGeometry
 {
     public class ScaleDecorator : BaseDecorator
     {

@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace InteractivitySample.Interactivity
+namespace InteractiveGeometry
 {
     public static class GeometryExtensions
     {

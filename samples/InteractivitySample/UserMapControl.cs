@@ -7,8 +7,8 @@ using Mapsui.UI.Wpf;
 using System;
 using System.Windows;
 using System.Windows.Input;
-using InteractivitySample.Interactivity;
 using Mapsui.Projection;
+using InteractiveGeometry;
 
 namespace InteractivitySample
 {

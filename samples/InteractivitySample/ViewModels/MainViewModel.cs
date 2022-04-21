@@ -1,8 +1,6 @@
 ﻿using InteractivitySample.Helpers;
 using InteractivitySample.Input.Controller;
-using InteractivitySample.Interactivity;
-using InteractivitySample.Interactivity.Decorators;
-using InteractivitySample.Interactivity.Designers;
+using InteractiveGeometry;
 using InteractivitySample.Layers;
 using Mapsui;
 using Mapsui.Geometries;
