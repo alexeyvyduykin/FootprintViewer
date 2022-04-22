@@ -1,7 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Input;
 using InteractiveGeometry;
-using InteractiveSample.Input.Controller;
+using InteractiveGeometry.UI;
+using InteractiveGeometry.UI.Input;
 using InteractiveSample.ViewModels;
 using Mapsui;
 using Mapsui.Extensions;
@@ -10,7 +11,7 @@ using Mapsui.UI;
 using Mapsui.UI.Avalonia;
 using System;
 using System.Reactive.Linq;
-using input = InteractiveSample.Input;
+using input = InteractiveGeometry.UI;
 
 namespace InteractiveSample
 {
@@ -119,7 +120,7 @@ namespace InteractiveSample
             var mapControl = (UserMapControl)e.Sender;
 
             // HACK: after tools check, hover manipulator not active, it call this
-            mapControl.Controller.HandleMouseEnter(mapControl, new input.Controller.Core.MouseEventArgs());
+            mapControl.Controller.HandleMouseEnter(mapControl, new input.Input.Core.MouseEventArgs());
         }
 
         public IMapObserver MapObserver

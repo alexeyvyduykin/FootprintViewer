@@ -1,15 +1,8 @@
 ﻿using Avalonia;
-using InteractiveSample.Input;
-using InteractiveSample.Input.Controller.Core;
-using InteractiveSample.Layers;
+using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI.Input.Core;
 using Mapsui;
 using avalonia = Avalonia.Input;
-using InteractiveGeometry;
-using InteractiveSample.Input.Controller;
-using InteractiveSample.Layers;
-using System.Linq;
-using Mapsui.Layers;
-using BruTile.Wms;
 
 namespace InteractiveSample
 {

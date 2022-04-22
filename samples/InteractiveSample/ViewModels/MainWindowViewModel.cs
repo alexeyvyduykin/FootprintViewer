@@ -1,5 +1,5 @@
 ﻿using InteractiveGeometry;
-using InteractiveSample.Input.Controller;
+using InteractiveGeometry.UI.Input;
 using InteractiveSample.Layers;
 using Mapsui;
 using Mapsui.Layers;
