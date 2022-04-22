@@ -12,10 +12,13 @@ namespace InteractiveGeometry
 {
     internal class CircleDesigner : BaseDesigner, IAreaDesigner
     {
+        private bool _isDrawing = false;
         private bool _skip;
         private int _counter;
-        private bool _isDrawing = false;
+        private List<Coordinate> _featureCoordinates = new();
         protected MPoint? _center;
+
+        public CircleDesigner() : base() { }
 
         public override IEnumerable<MPoint> GetActiveVertices() => Array.Empty<MPoint>();
 
@@ -61,6 +64,8 @@ namespace InteractiveGeometry
 
                 _firstClick = false;
 
+                BeginCreatingCallback();
+
                 return;
             }
             else
@@ -95,9 +100,9 @@ namespace InteractiveGeometry
 
                 _center = worldPosition.Copy();
 
-                var featureCoordinates = GetCircle(_center, 0.0, 3);
+                _featureCoordinates = GetCircle(_center, 0.0, 3);
 
-                Feature = featureCoordinates.ToPolygon().ToFeature();
+                Feature = _featureCoordinates.ToPolygon().ToFeature();
                 ExtraFeatures = new List<GeometryFeature>();
             }
         }
@@ -128,9 +133,9 @@ namespace InteractiveGeometry
 
                 var radius = _center.Distance(p1);
 
-                var featureCoordinates = GetCircle(_center, radius, 180);
+                _featureCoordinates = GetCircle(_center, radius, 180);
 
-                Feature.Geometry = featureCoordinates.ToPolygon();
+                Feature.Geometry = _featureCoordinates.ToPolygon();
 
                 Feature.RenderedGeometry?.Clear(); // You need to clear the cache to see changes.
             }
@@ -148,7 +153,7 @@ namespace InteractiveGeometry
         {
             if (Feature.Geometry != null)
             {
-                var vertices = Feature.Geometry.Coordinates.SkipLast(1).Select(s => SphericalMercator.ToLonLat(s.X, s.Y));
+                var vertices = _featureCoordinates.Select(s => SphericalMercator.ToLonLat(s.X, s.Y));
                 return MathHelper.ComputeSphericalArea(vertices);
             }
 

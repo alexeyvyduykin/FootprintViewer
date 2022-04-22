@@ -70,6 +70,8 @@ namespace InteractiveGeometry
 
                 _firstClick = false;
 
+                BeginCreatingCallback();
+
                 return;
             }
             else
