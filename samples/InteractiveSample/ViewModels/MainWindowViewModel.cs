@@ -34,12 +34,9 @@ namespace InteractiveSample.ViewModels
         public MainWindowViewModel()
         {
             Map = CreateMap();
+            Map.Info += Map_Info;
 
             _userLayer = (WritableLayer)Map.Layers[0];
-
-            MapListener = new MapListener();
-
-            MapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
 
             this.WhenAnyValue(s => s.IsSelect).Subscribe((s) =>
             {
@@ -100,6 +97,83 @@ namespace InteractiveSample.ViewModels
             this.WhenAnyValue(s => s.IsRoute).Subscribe(v => DrawingRouteCommand(v));
 
             ActualController = new EditController();
+        }
+
+        private void Map_Info(object? sender, MapInfoEventArgs e)
+        {
+            if (e.MapInfo != null && e.MapInfo.Layer != null && e.MapInfo.Feature != null)
+            {
+                var feature = e.MapInfo.Feature;
+
+                if (IsSelect == true)
+                {
+                    InteractiveLayerRemove();
+
+                    if (feature != _currentFeature)
+                    {
+                        Map.Layers.Add(CreateSelectLayer(e.MapInfo.Layer, e.MapInfo.Feature));
+
+                        _currentFeature = feature;
+                    }
+                    else
+                    {
+                        _currentFeature = null;
+                    }
+
+                    return;
+                }
+
+                IDecorator? decorator = null;
+
+                if (IsScale == true)
+                {
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
+                    {
+                        decorator = new ScaleDecorator(gf);
+                    }
+                }
+                if (IsTranslate == true)
+                {
+                    if (feature is GeometryFeature gf)
+                    {
+                        decorator = new TranslateDecorator(gf);
+                    }
+                }
+                if (IsRotate == true)
+                {
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
+                    {
+                        decorator = new RotateDecorator(gf);
+                    }
+                }
+                if (IsEdit == true)
+                {
+                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
+                    {
+                        decorator = new EditDecorator(gf);
+                    }
+                }
+
+                if (decorator == null)
+                {
+                    return;
+                }
+
+                InteractiveLayerRemove();
+
+                if (feature != _currentFeature)
+                {
+                    Map.Layers.Add(new InteractiveLayer(/*mapInfo.Layer,*/ decorator) { Name = "InteractiveLayer" });
+
+                    MapObserver = new MapObserver(decorator);
+
+                    _currentFeature = feature;
+                }
+                else
+                {
+                    _currentFeature = null;
+                }
+            }
         }
 
         private void ResetExclude(bool propertyValue, string propertyName)
@@ -164,83 +238,6 @@ namespace InteractiveSample.ViewModels
             if (layer != null)
             {
                 Map.Layers.Remove(layer);
-            }
-        }
-
-        private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
-        {
-            if (sender is MapInfo mapInfo)
-            {
-                var feature = mapInfo.Feature;
-
-                if (IsSelect == true)
-                {
-                    InteractiveLayerRemove();
-
-                    if (feature != _currentFeature)
-                    {
-                        Map.Layers.Add(CreateSelectLayer(mapInfo.Layer, mapInfo.Feature));
-
-                        _currentFeature = feature;
-                    }
-                    else
-                    {
-                        _currentFeature = null;
-                    }
-
-                    return;
-                }
-
-                IDecorator? decorator = null;
-
-                if (IsScale == true)
-                {
-                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                    {
-                        decorator = new ScaleDecorator(gf);
-                    }
-                }
-                if (IsTranslate == true)
-                {
-                    if (feature is GeometryFeature gf)
-                    {
-                        decorator = new TranslateDecorator(gf);
-                    }
-                }
-                if (IsRotate == true)
-                {
-                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                    {
-                        decorator = new RotateDecorator(gf);
-                    }
-                }
-                if (IsEdit == true)
-                {
-                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                    {
-                        decorator = new EditDecorator(gf);
-                    }
-                }
-
-                if (decorator == null)
-                {
-                    return;
-                }
-
-                InteractiveLayerRemove();
-
-                if (feature != _currentFeature)
-                {
-                    Map.Layers.Add(new InteractiveLayer(/*mapInfo.Layer,*/ decorator) { Name = "InteractiveLayer" });
-
-                    MapObserver = new MapObserver(decorator);
-
-                    _currentFeature = feature;
-                }
-                else
-                {
-                    _currentFeature = null;
-                }
             }
         }
 
@@ -436,8 +433,8 @@ namespace InteractiveSample.ViewModels
         [Reactive]
         public Map Map { get; set; }
 
-        [Reactive]
-        public MapListener? MapListener { get; set; }
+        //[Reactive]
+        //public MapListener? MapListener { get; set; }
 
         [Reactive]
         public bool IsSelect { get; set; } = false;
