@@ -1,6 +1,8 @@
-﻿using Mapsui;
+﻿using InteractiveGeometry.Helpers;
+using Mapsui;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Linq;
 
 namespace InteractiveGeometry
 {
-    public class RouteDesigner : BaseDesigner
+    internal class RouteDesigner : BaseDesigner, IRouteDesigner
     {
         private bool _skip;
         private int _counter;
@@ -53,14 +55,14 @@ namespace InteractiveGeometry
             HoverCreatingFeature(worldPosition);
         }
 
-        public void CreatingFeature(MPoint worldPosition)
-        {
-            CreatingFeature(worldPosition, point => true);
-        }
+        //private void CreatingFeature(MPoint worldPosition)
+        //{
+        //    CreatingFeature(worldPosition, point => true);
+        //}
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
+        private void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
             if (_firstClick == true)
             {
@@ -72,7 +74,7 @@ namespace InteractiveGeometry
             }
             else
             {
-                var res = IsEndDrawing(worldPosition, isEnd);
+                var res = IsEndDrawing(/*worldPosition,*/ isEnd);
 
                 if (res == true)
                 {
@@ -95,7 +97,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void HoverCreatingFeature(MPoint worldPosition)
+        private void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -107,7 +109,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
+        private bool IsEndDrawing(/*MPoint worldPosition,*/ Predicate<MPoint>? isEnd)
         {
             var routeGeometry = (LineString)Feature.Geometry!;
 
@@ -126,7 +128,7 @@ namespace InteractiveGeometry
             return false;
         }
 
-        public void BeginDrawing(MPoint worldPosition)
+        private void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -145,7 +147,7 @@ namespace InteractiveGeometry
             ExtraFeatures = new List<GeometryFeature>() { _extraLineString };
         }
 
-        public void Drawing(MPoint worldPosition)
+        private void Drawing(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -163,7 +165,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void DrawingHover(MPoint worldPosition)
+        private void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -174,12 +176,26 @@ namespace InteractiveGeometry
             }
         }
 
-        public void EndDrawing()
+        private void EndDrawing()
         {
             if (_isDrawing == true)
             {
                 _isDrawing = false;
             }
+        }
+
+        public double Distance()
+        {
+            if (Feature.Geometry != null)
+            {
+                var verts0 = Feature.Geometry.Coordinates;
+                var verts1 = ExtraFeatures.Single().Geometry!.Coordinates;
+                var verts = verts0.Union(verts1);
+                var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y));
+                return MathHelper.ComputeSphericalDistance(vertices);
+            }
+
+            return 0;
         }
     }
 }

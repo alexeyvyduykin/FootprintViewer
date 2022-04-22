@@ -1,13 +1,16 @@
-﻿using Mapsui;
+﻿using InteractiveGeometry.Helpers;
+using Mapsui;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InteractiveGeometry
 {
-    public class CircleDesigner : BaseDesigner
+    internal class CircleDesigner : BaseDesigner, IAreaDesigner
     {
         private bool _skip;
         private int _counter;
@@ -50,7 +53,7 @@ namespace InteractiveGeometry
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
+        private void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
         {
             if (_firstClick == true)
             {
@@ -72,7 +75,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void HoverCreatingFeature(MPoint worldPosition)
+        private void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -84,7 +87,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void BeginDrawing(MPoint worldPosition)
+        private void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == false)
             {
@@ -117,7 +120,7 @@ namespace InteractiveGeometry
             return vertices;
         }
 
-        public void DrawingHover(MPoint worldPosition)
+        private void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true && _center != null)
             {
@@ -133,12 +136,23 @@ namespace InteractiveGeometry
             }
         }
 
-        public void EndDrawing()
+        private void EndDrawing()
         {
             if (_isDrawing == true)
             {
                 _isDrawing = false;
             }
+        }
+
+        public double Area()
+        {
+            if (Feature.Geometry != null)
+            {
+                var vertices = Feature.Geometry.Coordinates.SkipLast(1).Select(s => SphericalMercator.ToLonLat(s.X, s.Y));
+                return MathHelper.ComputeSphericalArea(vertices);
+            }
+
+            return 0;
         }
     }
 }

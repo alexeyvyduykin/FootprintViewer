@@ -251,18 +251,12 @@ namespace InteractiveSample.ViewModels
 
             if (value == true)
             {
-                InteractiveLayerRemove();
-
-                var designer = new RectangleDesigner();
-
-                Map.Layers.Add(new InteractiveLayer(_userLayer, designer) { Name = "InteractiveLayer" });
+                var designer = new InteractiveFactory().CreateRectangleDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var feature = designer.Feature;
-
-                    var area = GetFeatureArea(feature);
-
+                    var area = ((IAreaDesigner)designer).Area();
+                 
                     Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
                 };
 
@@ -289,17 +283,11 @@ namespace InteractiveSample.ViewModels
 
             if (value == true)
             {
-                InteractiveLayerRemove();
-
-                var designer = new CircleDesigner();
-
-                Map.Layers.Add(new InteractiveLayer(_userLayer, designer) { Name = "InteractiveLayer" });
+                var designer = new InteractiveFactory().CreateCircleDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var feature = designer.Feature;
-
-                    var area = GetFeatureArea(feature);
+                    var area = ((IAreaDesigner)designer).Area();
 
                     Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
                 };
@@ -327,15 +315,11 @@ namespace InteractiveSample.ViewModels
 
             if (value == true)
             {
-                InteractiveLayerRemove();
-
-                var designer = new RouteDesigner();
-
-                Map.Layers.Add(new InteractiveLayer(_userLayer, designer) { Name = "InteractiveLayer" });
+                var designer = new InteractiveFactory().CreateRouteDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var distance = GetRouteLength(designer);
+                    var distance = ((IRouteDesigner)designer).Distance();
 
                     var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
 
@@ -362,14 +346,10 @@ namespace InteractiveSample.ViewModels
         private void DrawingPolygonCommand(bool value)
         {
             ResetExclude(value, nameof(IsPolygon));
-
+            
             if (value == true)
             {
-                InteractiveLayerRemove();
-
-                var designer = new PolygonDesigner();
-
-                Map.Layers.Add(new InteractiveLayer(_userLayer, designer) { Name = "InteractiveLayer" });
+                var designer = new InteractiveFactory().CreatePolygonDesigner(Map, _userLayer);
 
                 designer.BeginCreating += (s, e) =>
                 {
@@ -378,10 +358,10 @@ namespace InteractiveSample.ViewModels
 
                 designer.Creating += (s, e) =>
                 {
-                    if (designer.Feature.Geometry.Coordinates.Length > 2)
-                    {
-                        var area = GetFeatureArea(designer.Feature);
+                    var area = ((IAreaDesigner)designer).Area();
 
+                    if (area != 0.0)
+                    {                                            
                         Tip = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²";
                     }
                 };
@@ -452,24 +432,6 @@ namespace InteractiveSample.ViewModels
                     Outline = new Pen(outlineColor, 3)
                 },
             };
-        }
-
-        private static double GetFeatureArea(GeometryFeature feature)
-        {
-            var vertices = feature.Geometry.Coordinates.Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            return Math.Abs(area);
-        }
-
-        private static double GetRouteLength(RouteDesigner designer)
-        {
-            var geometry = (LineString)designer.Feature.Geometry;
-            var fHelp = designer.ExtraFeatures.Single();
-            var verts0 = geometry.Coordinates;
-            var verts1 = fHelp.Geometry.Coordinates;
-            var verts = verts0.Union(verts1);
-            var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
-            return SphericalUtil.ComputeDistance(vertices);
         }
 
         [Reactive]

@@ -1,13 +1,16 @@
-﻿using Mapsui;
+﻿using InteractiveGeometry.Helpers;
+using Mapsui;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InteractiveGeometry
 {
-    public class RectangleDesigner : BaseDesigner
+    internal class RectangleDesigner : BaseDesigner, IAreaDesigner
     {
         private bool _isDrawing = false;
         private bool _skip;
@@ -52,7 +55,7 @@ namespace InteractiveGeometry
 
         private bool _firstClick = true;
 
-        public void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
+        private void CreatingFeature(MPoint worldPosition/*, Predicate<MPoint> isEnd*/)
         {
             if (_firstClick == true)
             {
@@ -76,7 +79,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void HoverCreatingFeature(MPoint worldPosition)
+        private void HoverCreatingFeature(MPoint worldPosition)
         {
             if (_firstClick == false)
             {
@@ -88,7 +91,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void BeginDrawing(MPoint worldPosition)
+        private void BeginDrawing(MPoint worldPosition)
         {
             if (_isDrawing == false)
             {
@@ -105,7 +108,7 @@ namespace InteractiveGeometry
             }
         }
 
-        public void DrawingHover(MPoint worldPosition)
+        private void DrawingHover(MPoint worldPosition)
         {
             if (_isDrawing == true)
             {
@@ -121,12 +124,14 @@ namespace InteractiveGeometry
             }
         }
 
-        public void EndDrawing()
+        private void EndDrawing()
         {
             if (_isDrawing == true)
             {
                 _isDrawing = false;
             }
         }
+
+        public double Area() => MathHelper.ComputeSphericalArea(_featureCoordinates.Select(s => SphericalMercator.ToLonLat(s.X, s.Y)));
     }
 }
