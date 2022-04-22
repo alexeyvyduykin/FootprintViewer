@@ -2,13 +2,13 @@
 using InteractiveSample.Input.Controller;
 using InteractiveSample.Layers;
 using Mapsui;
-using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
-using Mapsui.Projections;
+using Mapsui.Nts.Extensions;
 using Mapsui.Styles;
 using Mapsui.UI;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -25,18 +25,17 @@ namespace InteractiveSample.ViewModels
         private static readonly string wktRectangle = "POLYGON ((1199513.0851808232 5265186.30704513, 1707054.9529943874 5265186.30704513, 1707054.9529943874 5158785.963672167, 1199513.0851808232 5158785.963672167, 1199513.0851808232 5265186.30704513))";
         private static readonly string wktRoute = "LINESTRING (1042158.9502034901 5321132.10610815, 1154674.2558392682 5217177.747640314, 966333.4181445962 5190271.913683931, 1025037.0558676108 5066749.675975089, 922305.6898523355 4964018.309959814, 1080071.7162329375 4973802.249580316, 951657.508713843 4740210.691140819, 1236614.7501609768 5054519.751449459, 1072733.761517561 5145021.192939107)";
 
-        private static readonly Color backgroundColor = new Color(20, 120, 120, 40);
-        private static readonly Color lineColor = new Color(20, 120, 120);
-        private static readonly Color outlineColor = new Color(20, 20, 20);
+        private static readonly Color backgroundColor = new(20, 120, 120, 40);
+        private static readonly Color lineColor = new(20, 120, 120);
+        private static readonly Color outlineColor = new(20, 20, 20);
 
-        private readonly UserLayer _userLayer;
-        private const string UserLayerName = "Userlayer";
+        private readonly WritableLayer _userLayer;
 
         public MainWindowViewModel()
         {
             Map = CreateMap();
 
-            _userLayer = (UserLayer)Map.Layers.FindLayer(UserLayerName).FirstOrDefault();
+            _userLayer = (WritableLayer)Map.Layers[0];
 
             MapListener = new MapListener();
 
@@ -232,7 +231,7 @@ namespace InteractiveSample.ViewModels
 
                 if (feature != _currentFeature)
                 {
-                    Map.Layers.Add(new InteractiveLayer(mapInfo.Layer, decorator) { Name = "InteractiveLayer" });
+                    Map.Layers.Add(new InteractiveLayer(/*mapInfo.Layer,*/ decorator) { Name = "InteractiveLayer" });
 
                     MapObserver = new MapObserver(decorator);
 
@@ -256,14 +255,12 @@ namespace InteractiveSample.ViewModels
                 designer.HoverCreating += (s, e) =>
                 {
                     var area = ((IAreaDesigner)designer).Area();
-                 
+
                     Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
                 };
 
                 designer.EndCreating += (s, e) =>
                 {
-                    _userLayer.AddFeature(designer.Feature.Copy());
-
                     Tip = string.Empty;
 
                     IsRectangle = false;
@@ -294,8 +291,6 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
-                    _userLayer.AddFeature(designer.Feature.Copy());
-
                     Tip = string.Empty;
 
                     IsCircle = false;
@@ -328,8 +323,6 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
-                    _userLayer.AddFeature(designer.Feature.Copy());
-
                     Tip = string.Empty;
 
                     IsRoute = false;
@@ -346,7 +339,7 @@ namespace InteractiveSample.ViewModels
         private void DrawingPolygonCommand(bool value)
         {
             ResetExclude(value, nameof(IsPolygon));
-            
+
             if (value == true)
             {
                 var designer = new InteractiveFactory().CreatePolygonDesigner(Map, _userLayer);
@@ -361,15 +354,13 @@ namespace InteractiveSample.ViewModels
                     var area = ((IAreaDesigner)designer).Area();
 
                     if (area != 0.0)
-                    {                                            
+                    {
                         Tip = $"Щелкните по первой точке, чтобы закрыть эту фигуру. Область: {area:N2} km²";
                     }
                 };
 
                 designer.EndCreating += (s, e) =>
                 {
-                    _userLayer.AddFeature(designer.Feature.Copy());
-
                     Tip = string.Empty;
 
                     IsPolygon = false;
@@ -388,20 +379,43 @@ namespace InteractiveSample.ViewModels
             var map = new Map()
             {
                 CRS = "EPSG:3857",
-                // Transformation = new MinimalTransformation(),            
             };
 
-            var userLayer = CreateUserLayer(UserLayerName);
+            var userLayer = new WritableLayer()
+            {
+                IsMapInfoLayer = true,
+                Style = new VectorStyle
+                {
+                    Fill = new Brush(new Color(backgroundColor)),
+                    Line = new Pen(lineColor, 3),
+                    Outline = new Pen(outlineColor, 3)
+                },
+            };
 
-            map.Layers.Add(new Layer()); // BackgroundLayer
             map.Layers.Add(userLayer);
 
-            userLayer.AddFeature("Polygon", wktPolygon);
-            userLayer.AddFeature("Circle", wktCircle);
-            userLayer.AddFeature("Rectangle", wktRectangle);
-            userLayer.AddFeature("Route", wktRoute);
+            userLayer.Add(CreateFeature("Polygon", wktPolygon));
+            userLayer.Add(CreateFeature("Circle", wktCircle));
+            userLayer.Add(CreateFeature("Rectangle", wktRectangle));
+            userLayer.Add(CreateFeature("Route", wktRoute));
 
             return map;
+
+            static IFeature CreateFeature(string name, string wkt, IStyle? style = null)
+            {
+                var g = new WKTReader().Read(wkt);
+
+                var feature = g.ToFeature();
+
+                feature["Name"] = name;
+
+                if (style != null)
+                {
+                    feature.Styles = new[] { style };
+                }
+
+                return feature;
+            }
         }
 
         private static ILayer CreateSelectLayer(ILayer source, IFeature feature)
@@ -415,21 +429,6 @@ namespace InteractiveSample.ViewModels
                     Fill = new Brush(Color.Transparent),
                     Outline = new Pen(Color.Green, 4),
                     Line = new Pen(Color.Green, 4),
-                },
-            };
-        }
-
-        private static UserLayer CreateUserLayer(string name)
-        {
-            return new UserLayer()
-            {
-                Name = name,
-                IsMapInfoLayer = true,
-                Style = new VectorStyle
-                {
-                    Fill = new Brush(new Color(backgroundColor)),
-                    Line = new Pen(lineColor, 3),
-                    Outline = new Pen(outlineColor, 3)
                 },
             };
         }

@@ -9,14 +9,11 @@ namespace InteractiveGeometry
 {
     public class InteractiveLayer : BaseLayer
     {
-        private readonly ILayer _source;
         private readonly IInteractiveObject? _interactiveObject;
 
-        public InteractiveLayer(ILayer source, IInteractiveObject interactiveObject)
+        public InteractiveLayer(IInteractiveObject interactiveObject)
         {
-            _source = source;
             _interactiveObject = interactiveObject;
-            _source.DataChanged += (sender, args) => OnDataChanged(args);
 
             _interactiveObject.InvalidateLayer += (s, e) => DataHasChanged();
 
