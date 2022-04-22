@@ -133,7 +133,7 @@ namespace InteractiveSample
         public static readonly StyledProperty<IMapObserver> MapObserverProperty =
             AvaloniaProperty.Register<UserMapControl, IMapObserver>(nameof(MapObserver));
 
-        public void SetCursor(input.CursorType cursorType, string info = "")
+        public void SetCursor(input.CursorType cursorType)
         {
             switch (cursorType)
             {
@@ -154,6 +154,7 @@ namespace InteractiveSample
             }
         }
 
+        //protected override void OnPointerReleased(PointerReleasedEventArgs e)        
         private void MyMapControl_MouseUp(object? sender, PointerReleasedEventArgs e)
         {
             base.OnPointerReleased(e);
@@ -176,6 +177,7 @@ namespace InteractiveSample
             _isLeftMouseDown = false;
         }
 
+        //protected override void OnPointerMoved(PointerEventArgs e)
         private void MyMapControl_MouseMove(object? sender, PointerEventArgs e)
         {
             if (++_counter > 1)
@@ -206,6 +208,7 @@ namespace InteractiveSample
             }
         }
 
+        //protected override void OnPointerPressed(PointerPressedEventArgs e)
         private void MyMapControl_MouseDown(object? sender, PointerPressedEventArgs e)
         {
             _counter = 0;
@@ -230,6 +233,7 @@ namespace InteractiveSample
             Controller.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
         }
 
+        //protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
         private void MyMapControl_MouseWheel(object? sender, PointerWheelEventArgs e)
         {
             base.OnPointerWheelChanged(e);
@@ -242,6 +246,7 @@ namespace InteractiveSample
             Controller.HandleMouseWheel(this, e.ToMouseWheelEventArgs(this));
         }
 
+        //protected override void OnPointerLeave(PointerEventArgs e)
         private void MyMapControl_MouseLeave(object? sender, PointerEventArgs e)
         {
             base.OnPointerLeave(e);
@@ -255,6 +260,7 @@ namespace InteractiveSample
             Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));
         }
 
+        //protected override void OnPointerEnter(PointerEventArgs e)
         private void MyMapControl_MouseEnter(object? sender, PointerEventArgs e)
         {
             base.OnPointerEnter(e);

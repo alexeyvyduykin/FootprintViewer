@@ -34,7 +34,6 @@
     <PackageReference Include="ReactiveUI.Fody" Version="16.2.6" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InteractiveGeometry.UI\InteractiveGeometry.UI.csproj" />
-    <ProjectReference Include="..\InteractiveGeometry\InteractiveGeometry.csproj" />
+    <ProjectReference Include="..\InteractiveGeometry.UI.Avalonia\InteractiveGeometry.UI.Avalonia.csproj" />
   </ItemGroup>
 </Project>

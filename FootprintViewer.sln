@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractiveSample", "sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveGeometry.UI", "samples\InteractiveGeometry.UI\InteractiveGeometry.UI.csproj", "{E21DAE84-77F1-4CC7-8470-8A097D6F7E8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveGeometry.UI.Avalonia", "samples\InteractiveGeometry.UI.Avalonia\InteractiveGeometry.UI.Avalonia.csproj", "{A8F75A68-BB66-4711-B951-834607077B6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{E21DAE84-77F1-4CC7-8470-8A097D6F7E8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E21DAE84-77F1-4CC7-8470-8A097D6F7E8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E21DAE84-77F1-4CC7-8470-8A097D6F7E8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8F75A68-BB66-4711-B951-834607077B6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8F75A68-BB66-4711-B951-834607077B6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8F75A68-BB66-4711-B951-834607077B6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8F75A68-BB66-4711-B951-834607077B6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{F4622374-43B4-4569-9432-99499260EDF5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{2BF6EF8F-D7AD-4C70-9FB2-7515DAF38F86} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{E21DAE84-77F1-4CC7-8470-8A097D6F7E8F} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
+		{A8F75A68-BB66-4711-B951-834607077B6F} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}

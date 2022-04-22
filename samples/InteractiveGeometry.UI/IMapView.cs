@@ -14,6 +14,6 @@ namespace InteractiveGeometry.UI
 
         MPoint WorldToScreen(MPoint worldPosition);
 
-        MapInfo GetMapInfo(MPoint screenPosition, int margin = 0);
+        MapInfo? GetMapInfo(MPoint screenPosition, int margin = 0);
     }
 }
