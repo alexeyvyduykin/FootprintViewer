@@ -11,13 +11,6 @@ namespace InteractiveGeometry.UI.Avalonia
     {
         public InteractiveMapControl() : base()
         {
-            PointerEnter += MyMapControl_MouseEnter;
-            PointerLeave += MyMapControl_MouseLeave;
-            PointerWheelChanged += MyMapControl_MouseWheel;
-            PointerPressed += MyMapControl_MouseDown;
-            PointerMoved += MyMapControl_MouseMove;
-            PointerReleased += MyMapControl_MouseUp;
-
             ControllerProperty.Changed.Subscribe(OnControllerChanged);
         }
 
@@ -41,7 +34,7 @@ namespace InteractiveGeometry.UI.Avalonia
 
         public IMapObserver MapObserver
         {
-            get { return (IMapObserver)GetValue(MapObserverProperty); }
+            get { return GetValue(MapObserverProperty); }
             set { SetValue(MapObserverProperty, value); }
         }
 
@@ -49,52 +42,105 @@ namespace InteractiveGeometry.UI.Avalonia
         public static readonly StyledProperty<IMapObserver> MapObserverProperty =
             AvaloniaProperty.Register<InteractiveMapControl, IMapObserver>(nameof(MapObserver));
 
-        private void MyMapControl_MouseUp(object? sender, PointerReleasedEventArgs e)
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
             base.OnPointerReleased(e);
 
+            if (e.Handled)
+            {
+                return;
+            }
+
             e.Pointer.Capture(null);
 
-            Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
+            var args = e.ToMouseReleasedEventArgs(this);
+
+            Controller.HandleMouseUp(this, args);
+
+            //e.Handled = args.Handled;
         }
 
-        private void MyMapControl_MouseMove(object? sender, PointerEventArgs e)
+        protected override void OnPointerMoved(PointerEventArgs e)
         {
             base.OnPointerMoved(e);
 
-            Controller.HandleMouseMove(this, e.ToMouseEventArgs(this));
+            if (e.Handled == true)
+            {
+                return;
+            }
+
+            var args = e.ToMouseEventArgs(this);
+
+            Controller.HandleMouseMove(this, args);
+
+            e.Handled = args.Handled;
         }
 
-        private void MyMapControl_MouseDown(object? sender, PointerPressedEventArgs e)
+        protected override void OnPointerPressed(PointerPressedEventArgs e)
         {
             base.OnPointerPressed(e);
 
-            Focus();
+            if (e.Handled)
+            {
+                return;
+            }
 
+            Focus();
             e.Pointer.Capture(this);
 
-            Controller.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
+            var args = e.ToMouseDownEventArgs(this);
+
+            Controller.HandleMouseDown(this, args);
+
+            //e.Handled = args.Handled;
         }
 
-        private void MyMapControl_MouseWheel(object? sender, PointerWheelEventArgs e)
+        protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
         {
             base.OnPointerWheelChanged(e);
 
-            Controller.HandleMouseWheel(this, e.ToMouseWheelEventArgs(this));
+            if (e.Handled)
+            {
+                return;
+            }
+
+            var args = e.ToMouseWheelEventArgs(this);
+
+            Controller.HandleMouseWheel(this, args);
+
+            //e.Handled = args.Handled;
         }
 
-        private void MyMapControl_MouseLeave(object? sender, PointerEventArgs e)
+        protected override void OnPointerLeave(PointerEventArgs e)
         {
             base.OnPointerLeave(e);
 
-            Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));
+            if (e.Handled)
+            {
+                return;
+            }
+
+            var args = e.ToMouseEventArgs(this);
+
+            Controller.HandleMouseLeave(this, args);
+
+            //e.Handled = args.Handled;
         }
 
-        private void MyMapControl_MouseEnter(object? sender, PointerEventArgs e)
+        protected override void OnPointerEnter(PointerEventArgs e)
         {
             base.OnPointerEnter(e);
 
-            Controller.HandleMouseEnter(this, e.ToMouseEventArgs(this));
+            if (e.Handled)
+            {
+                return;
+            }
+
+            var args = e.ToMouseEventArgs(this);
+
+            Controller.HandleMouseEnter(this, args);
+
+            //e.Handled = args.Handled;
         }
 
         public void SetCursor(CursorType cursorType)

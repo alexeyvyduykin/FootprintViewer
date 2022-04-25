@@ -1,18 +1,12 @@
 ﻿using InteractiveGeometry.UI.Input;
 using InteractiveGeometry.UI.Input.Core;
-using Mapsui;
-using a = Avalonia;
+using Mapsui.UI.Avalonia.Extensions;
 using aInput = Avalonia.Input;
 
 namespace InteractiveGeometry.UI.Avalonia
 {
     public static class AvaloniaExtension
     {
-        public static MPoint ToMPoint(this a.Point pt)
-        {
-            return new MPoint(pt.X, pt.Y);
-        }
-
         public static MouseButton Convert(this aInput.PointerUpdateKind state)
         {
             return state switch
@@ -36,7 +30,7 @@ namespace InteractiveGeometry.UI.Avalonia
         {
             return new MouseWheelEventArgs
             {
-                Position = e.GetPosition(relativeTo).ToMPoint(),
+                Position = e.GetPosition(relativeTo).ToMapsui(),
                 Delta = (int)(e.Delta.Y + e.Delta.X) * 120
             };
         }
@@ -45,7 +39,7 @@ namespace InteractiveGeometry.UI.Avalonia
         {
             return new MouseEventArgs
             {
-                Position = e.GetPosition(relativeTo).ToMPoint(),
+                Position = e.GetPosition(relativeTo).ToMapsui(),
             };
         }
 
@@ -57,7 +51,7 @@ namespace InteractiveGeometry.UI.Avalonia
                 ChangedButton = e.GetPointerPoint(null).Properties.PointerUpdateKind.Convert(),
 #pragma warning restore CS0618 // Тип или член устарел
                 ClickCount = e.ClickCount,
-                Position = e.GetPosition(relativeTo).ToMPoint(),
+                Position = e.GetPosition(relativeTo).ToMapsui(),
             };
         }
 
@@ -65,7 +59,7 @@ namespace InteractiveGeometry.UI.Avalonia
         {
             return new MouseEventArgs
             {
-                Position = e.GetPosition(relativeTo).ToMPoint(),
+                Position = e.GetPosition(relativeTo).ToMapsui(),
             };
         }
     }
