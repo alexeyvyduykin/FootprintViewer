@@ -1,10 +1,10 @@
 ﻿using InteractiveGeometry;
 using InteractiveGeometry.UI.Input;
-using InteractiveSample.Layers;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using Mapsui.Styles;
 using Mapsui.UI;
 using NetTopologySuite.Geometries;
@@ -31,6 +31,8 @@ namespace InteractiveSample.ViewModels
 
         private readonly WritableLayer _userLayer;
 
+        private ISelectDecorator? _selectDecorator;
+
         public MainWindowViewModel()
         {
             Map = CreateMap();
@@ -38,15 +40,7 @@ namespace InteractiveSample.ViewModels
 
             _userLayer = (WritableLayer)Map.Layers[0];
 
-            this.WhenAnyValue(s => s.IsSelect).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsSelect));
-
-                if (s == true)
-                {
-                    ActualController = new EditController();
-                }
-            });
+            this.WhenAnyValue(s => s.IsSelect).Subscribe(s => SelectDecoratorCommand(s));
 
             this.WhenAnyValue(s => s.IsTranslate).Subscribe((s) =>
             {
@@ -101,27 +95,9 @@ namespace InteractiveSample.ViewModels
 
         private void Map_Info(object? sender, MapInfoEventArgs e)
         {
-            if (e.MapInfo != null && e.MapInfo.Layer != null && e.MapInfo.Feature != null)
+            if (e.MapInfo != null && e.MapInfo.Layer != null && e.MapInfo.Feature != null && IsSelect == false)
             {
                 var feature = e.MapInfo.Feature;
-
-                if (IsSelect == true)
-                {
-                    InteractiveLayerRemove();
-
-                    if (feature != _currentFeature)
-                    {
-                        Map.Layers.Add(CreateSelectLayer(e.MapInfo.Layer, e.MapInfo.Feature));
-
-                        _currentFeature = feature;
-                    }
-                    else
-                    {
-                        _currentFeature = null;
-                    }
-
-                    return;
-                }
 
                 IDecorator? decorator = null;
 
@@ -238,6 +214,39 @@ namespace InteractiveSample.ViewModels
             if (layer != null)
             {
                 Map.Layers.Remove(layer);
+            }
+        }
+
+        private void SelectDecoratorCommand(bool value)
+        {
+            ResetExclude(value, nameof(IsSelect));
+
+            if (value == true)
+            {
+                ActualController = new DefaultController();
+
+                _selectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, _userLayer);
+
+                _selectDecorator.Select += (s, e) =>
+                {
+                    var decorator = (ISelectDecorator)s!;
+
+                    var feature = (GeometryFeature)decorator.SelectFeature!;
+
+                    var center = SphericalMercator.ToLonLat(feature.Extent!.Centroid);
+
+                    Tip = $"Выбран объект с центром в: {center.X}, {center.Y}";
+                };
+
+                _selectDecorator.Unselect += (s, e) =>
+                {
+                    Tip = string.Empty;
+                };
+            }
+            else
+            {
+                _selectDecorator?.Dispose();
+                _selectDecorator = null;
             }
         }
 
@@ -390,6 +399,7 @@ namespace InteractiveSample.ViewModels
             };
 
             map.Layers.Add(userLayer);
+            map.Layers.Add(CreateLayer());
 
             userLayer.Add(CreateFeature("Polygon", wktPolygon));
             userLayer.Add(CreateFeature("Circle", wktCircle));
@@ -413,28 +423,30 @@ namespace InteractiveSample.ViewModels
 
                 return feature;
             }
-        }
 
-        private static ILayer CreateSelectLayer(ILayer source, IFeature feature)
-        {
-            return new SelectLayer(source, feature)
+            static ILayer CreateLayer()
             {
-                Name = "InteractiveLayer",
-                IsMapInfoLayer = true,
-                Style = new VectorStyle()
+                var feature = CreateFeature("Polygon", wktPolygon);
+
+                Geomorpher.Translate(((GeometryFeature)feature).Geometry!, 700000, 0);
+
+                var layer = new WritableLayer()
                 {
-                    Fill = new Brush(Color.Transparent),
-                    Outline = new Pen(Color.Green, 4),
-                    Line = new Pen(Color.Green, 4),
-                },
-            };
+                    Style = new VectorStyle()
+                    {
+                        Fill = new Brush(new Color(0, 0, 0, 40)),
+                        Line = new Pen(Color.Black, 2),
+                        Outline = new Pen(Color.Black, 2)
+                    },
+                };
+                layer.Add(feature);
+
+                return layer;
+            }
         }
 
         [Reactive]
         public Map Map { get; set; }
-
-        //[Reactive]
-        //public MapListener? MapListener { get; set; }
 
         [Reactive]
         public bool IsSelect { get; set; } = false;
