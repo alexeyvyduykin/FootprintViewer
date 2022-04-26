@@ -58,6 +58,8 @@ namespace InteractiveGeometry
                 _rotateRight = new MPoint(_startRotateRight.X, p1.Y);
 
                 UpdateGeometry(geometry);
+
+                Invalidate();
             }
         }
 

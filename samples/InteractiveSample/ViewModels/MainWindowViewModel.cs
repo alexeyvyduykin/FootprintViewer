@@ -34,6 +34,7 @@ namespace InteractiveSample.ViewModels
         private ISelectDecorator? _selectDecorator;
         private ISelectScaleDecorator? _selectScaleDecorator;
         private ISelectTranslateDecorator? _selectTranslateDecorator;
+        private ISelectRotateDecorator? _selectRotateDecorator;
 
         public MainWindowViewModel()
         {
@@ -46,15 +47,7 @@ namespace InteractiveSample.ViewModels
 
             this.WhenAnyValue(s => s.IsTranslate).Subscribe(s => SelectTranslateCommand(s));
 
-            this.WhenAnyValue(s => s.IsRotate).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsRotate));
-
-                if (s == true)
-                {
-                    ActualController = new EditController();
-                }
-            });
+            this.WhenAnyValue(s => s.IsRotate).Subscribe(s => SelectRotateCommand(s));
 
             this.WhenAnyValue(s => s.IsScale).Subscribe(s => ScaleDecoratorCommand(s));
 
@@ -87,13 +80,6 @@ namespace InteractiveSample.ViewModels
 
                 IDecorator? decorator = null;
 
-                if (IsRotate == true)
-                {
-                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                    {
-                        decorator = new RotateDecorator(gf);
-                    }
-                }
                 if (IsEdit == true)
                 {
                     if (feature is GeometryFeature gf && gf.Geometry is not Point)
@@ -277,6 +263,35 @@ namespace InteractiveSample.ViewModels
             {
                 _selectTranslateDecorator?.Dispose();
                 _selectTranslateDecorator = null;
+            }
+        }
+
+        private void SelectRotateCommand(bool value)
+        {
+            ResetExclude(value, nameof(IsRotate));
+
+            if (value == true)
+            {
+                ActualController = new EditController();
+
+                _selectRotateDecorator = new InteractiveFactory().CreateSelectRotateDecorator(Map, _userLayer);
+
+                _selectRotateDecorator.Select += (s, e) =>
+                {
+                    MapObserver = new MapObserver(((ISelectRotateDecorator)s!).Rotate!);
+
+                    Tip = $"Rotate mode";
+                };
+
+                _selectRotateDecorator.Unselect += (s, e) =>
+                {
+                    Tip = string.Empty;
+                };
+            }
+            else
+            {
+                _selectRotateDecorator?.Dispose();
+                _selectRotateDecorator = null;
             }
         }
 

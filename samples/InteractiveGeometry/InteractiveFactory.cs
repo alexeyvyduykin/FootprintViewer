@@ -146,6 +146,30 @@ namespace InteractiveGeometry
             return translateDecorator;
         }
 
+        public ISelectRotateDecorator CreateSelectRotateDecorator(Map map, ILayer layer)
+        {
+            var rotateDecorator = new SelectRotateDecorator(map, layer);
+
+            rotateDecorator.DecoratorChanged += (s, e) =>
+            {
+                if (s is SelectRotateDecorator decorator)
+                {
+                    if (decorator.Rotate != null)
+                    {
+                        var interactiveLayer = new InteractiveLayer(decorator.Rotate) { Name = nameof(InteractiveLayer) };
+
+                        map.Layers.Add(interactiveLayer);
+                    }
+                    else
+                    {
+                        RemoveInteractiveLayer(map);
+                    }
+                }
+            };
+
+            return rotateDecorator;
+        }
+
         public IDecorator CreateScaleDecorator(GeometryFeature feature)
         {
             var decorator = new ScaleDecorator(feature);
@@ -156,6 +180,13 @@ namespace InteractiveGeometry
         public IDecorator CreateTranslateDecorator(GeometryFeature feature)
         {
             var decorator = new TranslateDecorator(feature);
+
+            return decorator;
+        }
+
+        public IDecorator CreateRotateDecorator(GeometryFeature feature)
+        {
+            var decorator = new RotateDecorator(feature);
 
             return decorator;
         }
