@@ -33,6 +33,7 @@ namespace InteractiveSample.ViewModels
 
         private ISelectDecorator? _selectDecorator;
         private ISelectScaleDecorator? _selectScaleDecorator;
+        private ISelectTranslateDecorator? _selectTranslateDecorator;
 
         public MainWindowViewModel()
         {
@@ -43,15 +44,7 @@ namespace InteractiveSample.ViewModels
 
             this.WhenAnyValue(s => s.IsSelect).Subscribe(s => SelectDecoratorCommand(s));
 
-            this.WhenAnyValue(s => s.IsTranslate).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsTranslate));
-
-                if (s == true)
-                {
-                    ActualController = new EditController();
-                }
-            });
+            this.WhenAnyValue(s => s.IsTranslate).Subscribe(s => SelectTranslateCommand(s));
 
             this.WhenAnyValue(s => s.IsRotate).Subscribe((s) =>
             {
@@ -94,13 +87,6 @@ namespace InteractiveSample.ViewModels
 
                 IDecorator? decorator = null;
 
-                if (IsTranslate == true)
-                {
-                    if (feature is GeometryFeature gf)
-                    {
-                        decorator = new TranslateDecorator(gf);
-                    }
-                }
                 if (IsRotate == true)
                 {
                     if (feature is GeometryFeature gf && gf.Geometry is not Point)
@@ -262,6 +248,35 @@ namespace InteractiveSample.ViewModels
             {
                 _selectScaleDecorator?.Dispose();
                 _selectScaleDecorator = null;
+            }
+        }
+
+        private void SelectTranslateCommand(bool value)
+        {
+            ResetExclude(value, nameof(IsTranslate));
+
+            if (value == true)
+            {
+                ActualController = new EditController();
+
+                _selectTranslateDecorator = new InteractiveFactory().CreateSelectTranslateDecorator(Map, _userLayer);
+
+                _selectTranslateDecorator.Select += (s, e) =>
+                {
+                    MapObserver = new MapObserver(((ISelectTranslateDecorator)s!).Translate!);
+
+                    Tip = $"Translate mode";
+                };
+
+                _selectTranslateDecorator.Unselect += (s, e) =>
+                {
+                    Tip = string.Empty;
+                };
+            }
+            else
+            {
+                _selectTranslateDecorator?.Dispose();
+                _selectTranslateDecorator = null;
             }
         }
 

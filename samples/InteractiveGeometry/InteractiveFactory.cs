@@ -122,9 +122,40 @@ namespace InteractiveGeometry
             return scaleDecorator;
         }
 
+        public ISelectTranslateDecorator CreateSelectTranslateDecorator(Map map, ILayer layer)
+        {
+            var translateDecorator = new SelectTranslateDecorator(map, layer);
+
+            translateDecorator.DecoratorChanged += (s, e) =>
+            {
+                if (s is SelectTranslateDecorator decorator)
+                {
+                    if (decorator.Translate != null)
+                    {
+                        var interactiveLayer = new InteractiveLayer(decorator.Translate) { Name = nameof(InteractiveLayer) };
+
+                        map.Layers.Add(interactiveLayer);
+                    }
+                    else
+                    {
+                        RemoveInteractiveLayer(map);
+                    }
+                }
+            };
+
+            return translateDecorator;
+        }
+
         public IDecorator CreateScaleDecorator(GeometryFeature feature)
         {
             var decorator = new ScaleDecorator(feature);
+
+            return decorator;
+        }
+
+        public IDecorator CreateTranslateDecorator(GeometryFeature feature)
+        {
+            var decorator = new TranslateDecorator(feature);
 
             return decorator;
         }

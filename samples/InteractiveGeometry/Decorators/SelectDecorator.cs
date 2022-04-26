@@ -10,6 +10,7 @@ namespace InteractiveGeometry
         BaseFeature? SelectFeature { get; }
 
         event EventHandler? Select;
+
         event EventHandler? Unselect;
     }
 
@@ -41,6 +42,14 @@ namespace InteractiveGeometry
 
                 if (feature != _saveFeature)
                 {
+                    if (_saveFeature != null)
+                    {
+                        _saveFeature = null;
+
+                        //TODO: SelectFeature is null, what a feature unselect?
+                        UnselectImpl();
+                    }
+
                     _saveFeature = (BaseFeature)feature;
 
                     SelectImpl(feature);

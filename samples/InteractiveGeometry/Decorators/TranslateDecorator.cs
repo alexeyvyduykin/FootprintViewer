@@ -47,6 +47,8 @@ namespace InteractiveGeometry
                 _center = geometry.Centroid.ToMPoint();
 
                 UpdateGeometry(geometry);
+
+                Invalidate();
             }
         }
 
