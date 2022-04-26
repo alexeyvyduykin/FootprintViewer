@@ -13,7 +13,7 @@ namespace InteractiveGeometry
         event EventHandler? Unselect;
     }
 
-    public class SelectDecorator : ISelectDecorator
+    internal class SelectDecorator : ISelectDecorator
     {
         private readonly Map _map;
         private readonly ILayer _layer;
@@ -41,32 +41,42 @@ namespace InteractiveGeometry
 
                 if (feature != _saveFeature)
                 {
+                    _saveFeature = (BaseFeature)feature;
+
                     SelectImpl(feature);
                 }
                 else
                 {
-                    UnselectImpl();
+                    if (_saveFeature != null)
+                    {
+                        _saveFeature = null;
+
+                        UnselectImpl();
+                    }
                 }
 
                 return;
             }
         }
 
-        private void SelectImpl(IFeature feature)
+        protected virtual void SelectImpl(IFeature feature)
         {
-            _saveFeature = (BaseFeature)feature;
+            OnSelect();
+        }
 
+        protected void OnSelect()
+        {
             Select?.Invoke(this, EventArgs.Empty);
         }
 
-        private void UnselectImpl()
+        protected virtual void UnselectImpl()
         {
-            if (_saveFeature != null)
-            {
-                _saveFeature = null;
+            OnUnselect();
+        }
 
-                Unselect?.Invoke(this, EventArgs.Empty);
-            }
+        private void OnUnselect()
+        {
+            Unselect?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

@@ -1,6 +1,7 @@
 ﻿using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
+using Mapsui.Nts;
 using Mapsui.Styles;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,6 +96,37 @@ namespace InteractiveGeometry
             };
 
             return selectDecorator;
+        }
+
+        public ISelectScaleDecorator CreateSelectScaleDecorator(Map map, ILayer layer)
+        {
+            var scaleDecorator = new SelectScaleDecorator(map, layer);
+
+            scaleDecorator.DecoratorChanged += (s, e) =>
+            {
+                if (s is SelectScaleDecorator decorator)
+                {
+                    if (decorator.Scale != null)
+                    {
+                        var interactiveLayer = new InteractiveLayer(decorator.Scale) { Name = nameof(InteractiveLayer) };
+
+                        map.Layers.Add(interactiveLayer);
+                    }
+                    else
+                    {
+                        RemoveInteractiveLayer(map);
+                    }
+                }
+            };
+
+            return scaleDecorator;
+        }
+
+        public IDecorator CreateScaleDecorator(GeometryFeature feature)
+        {
+            var decorator = new ScaleDecorator(feature);
+
+            return decorator;
         }
 
         private void RemoveInteractiveLayer(IMap map)

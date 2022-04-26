@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace InteractiveGeometry
 {
-    public class ScaleDecorator : BaseDecorator
+    internal class ScaleDecorator : BaseDecorator
     {
         private readonly MPoint _center;
         private MPoint _scaleTopRight;
@@ -51,6 +51,8 @@ namespace InteractiveGeometry
                 _scaleTopRight = GetTopRight(geometry);
 
                 UpdateGeometry(geometry);
+
+                Invalidate();
             }
         }
 

@@ -32,6 +32,7 @@ namespace InteractiveSample.ViewModels
         private readonly WritableLayer _userLayer;
 
         private ISelectDecorator? _selectDecorator;
+        private ISelectScaleDecorator? _selectScaleDecorator;
 
         public MainWindowViewModel()
         {
@@ -62,15 +63,7 @@ namespace InteractiveSample.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsScale).Subscribe((s) =>
-            {
-                ResetExclude(s, nameof(IsScale));
-
-                if (s == true)
-                {
-                    ActualController = new EditController();
-                }
-            });
+            this.WhenAnyValue(s => s.IsScale).Subscribe(s => ScaleDecoratorCommand(s));
 
             this.WhenAnyValue(s => s.IsEdit).Subscribe((s) =>
             {
@@ -95,19 +88,12 @@ namespace InteractiveSample.ViewModels
 
         private void Map_Info(object? sender, MapInfoEventArgs e)
         {
-            if (e.MapInfo != null && e.MapInfo.Layer != null && e.MapInfo.Feature != null && IsSelect == false)
+            if (e.MapInfo != null && e.MapInfo.Layer != null && e.MapInfo.Feature != null)
             {
                 var feature = e.MapInfo.Feature;
 
                 IDecorator? decorator = null;
 
-                if (IsScale == true)
-                {
-                    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                    {
-                        decorator = new ScaleDecorator(gf);
-                    }
-                }
                 if (IsTranslate == true)
                 {
                     if (feature is GeometryFeature gf)
@@ -247,6 +233,35 @@ namespace InteractiveSample.ViewModels
             {
                 _selectDecorator?.Dispose();
                 _selectDecorator = null;
+            }
+        }
+
+        private void ScaleDecoratorCommand(bool value)
+        {
+            ResetExclude(value, nameof(IsScale));
+
+            if (value == true)
+            {
+                ActualController = new EditController();
+
+                _selectScaleDecorator = new InteractiveFactory().CreateSelectScaleDecorator(Map, _userLayer);
+
+                _selectScaleDecorator.Select += (s, e) =>
+                {
+                    MapObserver = new MapObserver(((ISelectScaleDecorator)s!).Scale!);
+
+                    Tip = $"Scale mode";
+                };
+
+                _selectScaleDecorator.Unselect += (s, e) =>
+                {
+                    Tip = string.Empty;
+                };
+            }
+            else
+            {
+                _selectScaleDecorator?.Dispose();
+                _selectScaleDecorator = null;
             }
         }
 
