@@ -381,7 +381,7 @@ namespace InteractiveSample.ViewModels
             }
         }
 
-        public static Map CreateMap()
+        private static Map CreateMap()
         {
             var map = new Map()
             {

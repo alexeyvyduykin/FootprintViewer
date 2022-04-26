@@ -3,6 +3,8 @@ using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Styles;
+using Mapsui.Styles.Thematics;
+using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,8 +15,8 @@ namespace InteractiveGeometry
         private readonly IStyle _defaultSelectorStyle = new VectorStyle()
         {
             Fill = new Brush(Color.Transparent),
-            Outline = new Pen(Color.Red, 4),
-            Line = new Pen(Color.Red, 4),
+            Outline = new Pen(Color.Green, 4),
+            Line = new Pen(Color.Green, 4),
         };
 
         public IDesigner CreatePolygonDesigner(IMap map, WritableLayer source)
@@ -41,7 +43,11 @@ namespace InteractiveGeometry
         {
             RemoveInteractiveLayer(map);
 
-            var interactiveLayer = new InteractiveLayer(designer) { Name = nameof(InteractiveLayer) };
+            var interactiveLayer = new InteractiveLayer(designer)
+            {
+                Name = nameof(InteractiveLayer),
+                Style = CreateInteractiveLayerDesignerStyle(),
+            };
 
             designer.BeginCreating += (s, e) =>
             {
@@ -108,7 +114,11 @@ namespace InteractiveGeometry
                 {
                     if (decorator.Scale != null)
                     {
-                        var interactiveLayer = new InteractiveLayer(decorator.Scale) { Name = nameof(InteractiveLayer) };
+                        var interactiveLayer = new InteractiveLayer(decorator.Scale)
+                        {
+                            Name = nameof(InteractiveLayer),
+                            Style = CreateInteractiveLayerDecoratorStyle(),
+                        };
 
                         map.Layers.Add(interactiveLayer);
                     }
@@ -132,7 +142,11 @@ namespace InteractiveGeometry
                 {
                     if (decorator.Translate != null)
                     {
-                        var interactiveLayer = new InteractiveLayer(decorator.Translate) { Name = nameof(InteractiveLayer) };
+                        var interactiveLayer = new InteractiveLayer(decorator.Translate)
+                        {
+                            Name = nameof(InteractiveLayer),
+                            Style = CreateInteractiveLayerDecoratorStyle(),
+                        };
 
                         map.Layers.Add(interactiveLayer);
                     }
@@ -156,7 +170,11 @@ namespace InteractiveGeometry
                 {
                     if (decorator.Rotate != null)
                     {
-                        var interactiveLayer = new InteractiveLayer(decorator.Rotate) { Name = nameof(InteractiveLayer) };
+                        var interactiveLayer = new InteractiveLayer(decorator.Rotate)
+                        {
+                            Name = nameof(InteractiveLayer),
+                            Style = CreateInteractiveLayerDecoratorStyle(),
+                        };
 
                         map.Layers.Add(interactiveLayer);
                     }
@@ -180,7 +198,11 @@ namespace InteractiveGeometry
                 {
                     if (decorator.Edit != null)
                     {
-                        var interactiveLayer = new InteractiveLayer(decorator.Edit) { Name = nameof(InteractiveLayer) };
+                        var interactiveLayer = new InteractiveLayer(decorator.Edit)
+                        {
+                            Name = nameof(InteractiveLayer),
+                            Style = CreateInteractiveLayerDecoratorStyle(),
+                        };
 
                         map.Layers.Add(interactiveLayer);
                     }
@@ -230,6 +252,135 @@ namespace InteractiveGeometry
             {
                 map.Layers.Remove(interactiveLayer);
             }
+        }
+
+        private static IStyle CreateInteractiveLayerDesignerStyle()
+        {
+            return new ThemeStyle(f =>
+            {
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.White),
+                        Outline = new Pen(Color.Black, 2 / 0.3),
+                        Line = null,
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.3,
+                    };
+                }
+
+                var _color = new Color(76, 154, 231);
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
+                    {
+                        if (item.Equals("Name") == true)
+                        {
+                            if (gf["Name"]!.Equals("ExtraPolygonHoverLine"))
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
+                                };
+                            }
+                            else if (gf["Name"]!.Equals("ExtraPolygonArea"))
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = new Brush(Color.Opacity(_color, 0.25f)),
+                                    Line = null,
+                                    Outline = null,
+                                };
+                            }
+                            else if (gf["Name"]!.Equals("ExtraRouteHoverLine"))
+                            {
+                                return new VectorStyle
+                                {
+                                    Fill = null,
+                                    Line = new Pen(_color, 3) { PenStyle = PenStyle.Dash },
+                                };
+                            }
+                        }
+                    }
+                }
+
+                if (gf.Geometry is Polygon || gf.Geometry is LineString)
+                {
+                    return new VectorStyle
+                    {
+                        Fill = new Brush(Color.Transparent),
+                        Line = new Pen(_color, 3),
+                        Outline = new Pen(_color, 3)
+                    };
+                }
+
+                return null;
+            });
+        }
+
+        private static IStyle CreateInteractiveLayerDecoratorStyle()
+        {
+            return new ThemeStyle(f =>
+            {
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.White),
+                        Outline = new Pen(Color.Black, 2 / 0.3),
+                        Line = null,
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.3,
+                    };
+                }
+
+                return null;
+            });
+        }
+
+        private static IStyle CreateInteractiveSelectLayerStyle()
+        {
+            return new ThemeStyle(f =>
+            {
+                if (f is not GeometryFeature gf)
+                {
+                    return null;
+                }
+
+                if (gf.Geometry is Point)
+                {
+                    return new SymbolStyle()
+                    {
+                        Fill = new Brush(Color.Red),
+                        Outline = new Pen(Color.Green, 2 / 0.3),
+                        Line = null,
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = 0.9,
+                    };
+                }
+                else
+                {
+                    return new VectorStyle()
+                    {
+                        Fill = new Brush(Color.Transparent),
+                        Outline = new Pen(Color.Green, 4),
+                        Line = new Pen(Color.Green, 4),
+                    };
+                }
+            });
         }
     }
 }
