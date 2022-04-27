@@ -54,6 +54,9 @@ namespace InteractiveSample.ViewModels
             this.WhenAnyValue(s => s.IsEdit).Subscribe(s => ResetExclude(s, nameof(IsEdit)));
             this.WhenAnyValue(s => s.IsEdit).Subscribe(s => EditCommand(s));
 
+            this.WhenAnyValue(s => s.IsPoint).Subscribe(s => ResetExclude(s, nameof(IsPoint)));
+            this.WhenAnyValue(s => s.IsPoint).Subscribe(s => DrawingPointCommand(s));
+
             this.WhenAnyValue(s => s.IsRectangle).Subscribe(s => ResetExclude(s, nameof(IsRectangle)));
             this.WhenAnyValue(s => s.IsRectangle).Subscribe(s => DrawingRectangleCommand(s));
 
@@ -96,6 +99,11 @@ namespace InteractiveSample.ViewModels
                 if (nameof(MainWindowViewModel.IsEdit) != propertyName)
                 {
                     IsEdit = false;
+                }
+
+                if (nameof(MainWindowViewModel.IsPoint) != propertyName)
+                {
+                    IsPoint = false;
                 }
 
                 if (nameof(MainWindowViewModel.IsRectangle) != propertyName)
@@ -256,6 +264,20 @@ namespace InteractiveSample.ViewModels
             {
                 _selectEditDecorator?.Dispose();
                 _selectEditDecorator = null;
+            }
+        }
+
+        private void DrawingPointCommand(bool value)
+        {
+            if (value == true)
+            {
+                var designer = new InteractiveFactory().CreatePointDesigner(Map, _userLayer);
+
+                Tip = "Нажмите, чтобы нарисовать точку";
+
+                MapObserver = new MapObserver(designer);
+
+                ActualController = new DrawingController();
             }
         }
 
@@ -463,6 +485,9 @@ namespace InteractiveSample.ViewModels
 
         [Reactive]
         public bool IsEdit { get; set; } = false;
+
+        [Reactive]
+        public bool IsPoint { get; set; } = false;
 
         [Reactive]
         public bool IsRectangle { get; set; } = false;

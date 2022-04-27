@@ -34,6 +34,11 @@ namespace InteractiveGeometry
             return CreateDesigner(map, source, new CircleDesigner());
         }
 
+        public IDesigner CreatePointDesigner(IMap map, WritableLayer source)
+        {
+            return CreateDesigner(map, source, new PointDesigner());
+        }
+
         public IDesigner CreateRectangleDesigner(IMap map, WritableLayer source)
         {
             return CreateDesigner(map, source, new RectangleDesigner());

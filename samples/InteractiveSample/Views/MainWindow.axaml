@@ -35,6 +35,7 @@
       <ToggleButton IsChecked="{Binding IsScale}">Scale</ToggleButton>
       <ToggleButton IsChecked="{Binding IsEdit}">Edit</ToggleButton>
       <Border Height="10"/>
+      <ToggleButton IsChecked="{Binding IsPoint}">Point</ToggleButton>
       <ToggleButton IsChecked="{Binding IsRectangle}">Rectangle</ToggleButton>
       <ToggleButton IsChecked="{Binding IsCircle}">Circle</ToggleButton>
       <ToggleButton IsChecked="{Binding IsPolygon}">Polygon</ToggleButton>
