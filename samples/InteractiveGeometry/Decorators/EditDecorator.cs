@@ -48,10 +48,13 @@ namespace InteractiveGeometry
                 var pp = geometry.Coordinates[_index];
                 Geomorpher.Translate(pp, delta.X, delta.Y);
 
-                if (_index == 0 || _index == _points.Count - 1)
+                if (geometry is Polygon)
                 {
-                    var ppp = geometry.Coordinates[_index == 0 ? _points.Count - 1 : 0];
-                    Geomorpher.Translate(ppp, delta.X, delta.Y);
+                    if (_index == 0 || _index == _points.Count - 1)
+                    {
+                        var ppp = geometry.Coordinates[_index == 0 ? _points.Count - 1 : 0];
+                        Geomorpher.Translate(ppp, delta.X, delta.Y);
+                    }
                 }
 
                 if (_isRectangle == true)
