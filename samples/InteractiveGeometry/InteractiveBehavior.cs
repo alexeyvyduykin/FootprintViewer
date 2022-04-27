@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace InteractiveGeometry
 {
-    public class MapObserver : IMapObserver
+    public class InteractiveBehavior : IInteractiveBehavior
     {
         public event StartedEventHandler? Started;
 
@@ -14,26 +14,26 @@ namespace InteractiveGeometry
 
         public event HoverEventHandler? Hover;
 
-        public MapObserver(IInteractiveObject interactiveObject)
+        public InteractiveBehavior(IInteractive interactive)
         {
-            if (interactiveObject is IDesigner)
+            if (interactive is IDesigner)
             {
                 Started += (s, e) =>
                 {
-                    interactiveObject.Starting(e.WorldPosition);
+                    interactive.Starting(e.WorldPosition);
                 };
             }
-            else if (interactiveObject is IDecorator)
+            else if (interactive is IDecorator decorator)
             {
                 Started += (s, e) =>
                 {
-                    var vertices = ((IDecorator)interactiveObject).GetActiveVertices();
+                    var vertices = decorator.GetActiveVertices();
 
                     var vertexTouched = vertices.OrderBy(v => v.Distance(e.WorldPosition)).FirstOrDefault(v => v.Distance(e.WorldPosition) < e.ScreenDistance);
 
                     if (vertexTouched != null)
                     {
-                        interactiveObject.Starting(e.WorldPosition);
+                        interactive.Starting(e.WorldPosition);
                     }
                 };
             }
@@ -44,17 +44,17 @@ namespace InteractiveGeometry
 
             Delta += (s, e) =>
             {
-                interactiveObject.Moving(e.WorldPosition);
+                interactive.Moving(e.WorldPosition);
             };
 
             Completed += (s, e) =>
             {
-                interactiveObject.Ending(e.WorldPosition, e.IsEnd);
+                interactive.Ending(e.WorldPosition, e.IsEnd);
             };
 
             Hover += (s, e) =>
             {
-                interactiveObject.Hovering(e.WorldPosition);
+                interactive.Hovering(e.WorldPosition);
             };
         }
 

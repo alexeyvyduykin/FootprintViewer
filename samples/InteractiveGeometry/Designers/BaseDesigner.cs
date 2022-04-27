@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace InteractiveGeometry
 {
-    public abstract class BaseDesigner : BaseInteractiveObject, IDesigner
+    public abstract class BaseDesigner : BaseInteractive, IDesigner
     {
         public GeometryFeature Feature { get; protected set; } = new GeometryFeature();
 

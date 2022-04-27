@@ -3,7 +3,7 @@ using NetTopologySuite.Geometries;
 
 namespace InteractiveGeometry
 {
-    public abstract class BaseDecorator : BaseInteractiveObject, IDecorator
+    public abstract class BaseDecorator : BaseInteractive, IDecorator
     {
         private readonly GeometryFeature _featureSource;
 

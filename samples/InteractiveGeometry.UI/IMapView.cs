@@ -6,7 +6,7 @@ namespace InteractiveGeometry.UI
 {
     public interface IMapView : IView
     {
-        IMapObserver MapObserver { get; set; }
+        IInteractiveBehavior Behavior { get; set; }
 
         IController Controller { get; set; }
 

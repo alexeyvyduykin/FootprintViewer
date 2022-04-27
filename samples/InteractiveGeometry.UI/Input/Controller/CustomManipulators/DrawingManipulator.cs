@@ -39,7 +39,7 @@ namespace InteractiveGeometry.UI.Input
                     return res;
                 }
 
-                MapView.MapObserver.OnCompleted(worldPosition, isClick);
+                MapView.Behavior.OnCompleted(worldPosition, isClick);
             }
 
             e.Handled = true;
@@ -52,7 +52,7 @@ namespace InteractiveGeometry.UI.Input
             var screenPosition = e.Position;
             var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnDelta(worldPosition);
+            MapView.Behavior.OnDelta(worldPosition);
 
             if (_counter++ > 0)
             {
@@ -74,7 +74,7 @@ namespace InteractiveGeometry.UI.Input
             var screenPosition = e.Position;
             var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnStarted(worldPosition, 0);
+            MapView.Behavior.OnStarted(worldPosition, 0);
 
             e.Handled = true;
         }
@@ -104,7 +104,7 @@ namespace InteractiveGeometry.UI.Input
             var screenPosition = e.Position;
             var worldPosition = MapView.ScreenToWorld(screenPosition);
 
-            MapView.MapObserver.OnHover(worldPosition);
+            MapView.Behavior.OnHover(worldPosition);
 
             //e.Handled = true;
         }

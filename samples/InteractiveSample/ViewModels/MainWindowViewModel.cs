@@ -174,7 +174,7 @@ namespace InteractiveSample.ViewModels
 
                 _selectScaleDecorator.Select += (s, e) =>
                 {
-                    MapObserver = new MapObserver(((ISelectScaleDecorator)s!).Scale!);
+                    Behavior = new InteractiveBehavior(((ISelectScaleDecorator)s!).Scale!);
 
                     Tip = $"Scale mode";
                 };
@@ -201,7 +201,7 @@ namespace InteractiveSample.ViewModels
 
                 _selectTranslateDecorator.Select += (s, e) =>
                 {
-                    MapObserver = new MapObserver(((ISelectTranslateDecorator)s!).Translate!);
+                    Behavior = new InteractiveBehavior(((ISelectTranslateDecorator)s!).Translate!);
 
                     Tip = $"Translate mode";
                 };
@@ -228,7 +228,7 @@ namespace InteractiveSample.ViewModels
 
                 _selectRotateDecorator.Select += (s, e) =>
                 {
-                    MapObserver = new MapObserver(((ISelectRotateDecorator)s!).Rotate!);
+                    Behavior = new InteractiveBehavior(((ISelectRotateDecorator)s!).Rotate!);
 
                     Tip = $"Rotate mode";
                 };
@@ -255,7 +255,7 @@ namespace InteractiveSample.ViewModels
 
                 _selectEditDecorator.Select += (s, e) =>
                 {
-                    MapObserver = new MapObserver(((ISelectEditDecorator)s!).Edit!);
+                    Behavior = new InteractiveBehavior(((ISelectEditDecorator)s!).Edit!);
 
                     Tip = $"Edit mode";
                 };
@@ -280,7 +280,7 @@ namespace InteractiveSample.ViewModels
 
                 Tip = "Нажмите, чтобы нарисовать точку";
 
-                MapObserver = new MapObserver(designer);
+                Behavior = new InteractiveBehavior(designer);
 
                 ActualController = new DrawingController();
             }
@@ -290,11 +290,11 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = new InteractiveFactory().CreateRectangleDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var area = ((IAreaDesigner)designer).Area();
+                    var area = designer.Area();
 
                     Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
                 };
@@ -308,7 +308,7 @@ namespace InteractiveSample.ViewModels
 
                 Tip = "Нажмите и перетащите, чтобы нарисовать прямоугольник";
 
-                MapObserver = new MapObserver(designer);
+                Behavior = new InteractiveBehavior(designer);
 
                 ActualController = new DrawingController();
             }
@@ -318,11 +318,11 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = new InteractiveFactory().CreateCircleDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var area = ((IAreaDesigner)designer).Area();
+                    var area = designer.Area();
 
                     Tip = $"Отпустите клавишу мыши для завершения рисования. Область: {area:N2} km²";
                 };
@@ -336,7 +336,7 @@ namespace InteractiveSample.ViewModels
 
                 Tip = "Нажмите и перетащите, чтобы нарисовать круг";
 
-                MapObserver = new MapObserver(designer);
+                Behavior = new InteractiveBehavior(designer);
 
                 ActualController = new DrawingController();
             }
@@ -346,11 +346,11 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = new InteractiveFactory().CreateRouteDesigner(Map, _userLayer);
+                var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map, _userLayer);
 
                 designer.HoverCreating += (s, e) =>
                 {
-                    var distance = ((IRouteDesigner)designer).Distance();
+                    var distance = designer.Distance();
 
                     var res = (distance >= 1) ? $"{distance:N2} km" : $"{distance * 1000.0:N2} m";
 
@@ -366,7 +366,7 @@ namespace InteractiveSample.ViewModels
 
                 Tip = "Кликните, чтобы начать измерение";
 
-                MapObserver = new MapObserver(designer);
+                Behavior = new InteractiveBehavior(designer);
 
                 ActualController = new DrawingController();
             }
@@ -376,7 +376,7 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = new InteractiveFactory().CreatePolygonDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map, _userLayer);
 
                 designer.BeginCreating += (s, e) =>
                 {
@@ -385,7 +385,7 @@ namespace InteractiveSample.ViewModels
 
                 designer.Creating += (s, e) =>
                 {
-                    var area = ((IAreaDesigner)designer).Area();
+                    var area = designer.Area();
 
                     if (area != 0.0)
                     {
@@ -402,7 +402,7 @@ namespace InteractiveSample.ViewModels
 
                 Tip = "Нажмите и перетащите, чтобы нарисовать полигон";
 
-                MapObserver = new MapObserver(designer);
+                Behavior = new InteractiveBehavior(designer);
 
                 ActualController = new DrawingController();
             }
@@ -511,7 +511,7 @@ namespace InteractiveSample.ViewModels
         public IController ActualController { get; set; }
 
         [Reactive]
-        public IMapObserver? MapObserver { get; set; }
+        public IInteractiveBehavior? Behavior { get; set; }
 
         [Reactive]
         public string Tip { get; set; } = string.Empty;

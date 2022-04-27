@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace InteractiveGeometry
 {
-    public interface IDesigner : IInteractiveObject
+    public interface IDesigner : IInteractive
     {
         GeometryFeature Feature { get; }
 

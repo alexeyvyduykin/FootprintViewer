@@ -32,7 +32,7 @@ namespace InteractiveGeometry
     public delegate void CompletedEventHandler(object sender, CompletedEventArgs e);
     public delegate void HoverEventHandler(object sender, HoverEventArgs e);
 
-    public interface IMapObserver
+    public interface IInteractiveBehavior
     {
         event StartedEventHandler? Started;
 

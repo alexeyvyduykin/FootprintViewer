@@ -17,7 +17,7 @@ namespace InteractiveGeometry.UI.Input
             {
                 var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                MapView.MapObserver.OnCompleted(worldPosition);
+                MapView.Behavior.OnCompleted(worldPosition);
 
                 MapView.Map!.PanLock = false;
 
@@ -37,7 +37,7 @@ namespace InteractiveGeometry.UI.Input
             {
                 var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                MapView.MapObserver.OnDelta(worldPosition);
+                MapView.Behavior.OnDelta(worldPosition);
 
                 MapView.SetCursor(CursorType.HandGrab);
 
@@ -59,7 +59,7 @@ namespace InteractiveGeometry.UI.Input
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
 
-                MapView.MapObserver.OnStarted(mapInfo.WorldPosition!, distance);
+                MapView.Behavior.OnStarted(mapInfo.WorldPosition!, distance);
 
                 _isEditing = true;
             }

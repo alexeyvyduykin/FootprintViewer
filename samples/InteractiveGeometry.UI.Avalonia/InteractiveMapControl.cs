@@ -32,15 +32,15 @@ namespace InteractiveGeometry.UI.Avalonia
             mapControl.Controller.HandleMouseEnter(mapControl, new Input.Core.MouseEventArgs());
         }
 
-        public IMapObserver MapObserver
+        public IInteractiveBehavior Behavior
         {
-            get { return GetValue(MapObserverProperty); }
-            set { SetValue(MapObserverProperty, value); }
+            get { return GetValue(BehaviorProperty); }
+            set { SetValue(BehaviorProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
-        public static readonly StyledProperty<IMapObserver> MapObserverProperty =
-            AvaloniaProperty.Register<InteractiveMapControl, IMapObserver>(nameof(MapObserver));
+        public static readonly StyledProperty<IInteractiveBehavior> BehaviorProperty =
+            AvaloniaProperty.Register<InteractiveMapControl, IInteractiveBehavior>(nameof(Behavior));
 
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {

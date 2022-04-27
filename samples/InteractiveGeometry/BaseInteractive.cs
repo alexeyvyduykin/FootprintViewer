@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace InteractiveGeometry
 {
-    public abstract class BaseInteractiveObject : IInteractiveObject
+    public abstract class BaseInteractive : IInteractive
     {
         public event EventHandler? InvalidateLayer;
 

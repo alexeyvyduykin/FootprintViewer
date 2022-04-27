@@ -2,7 +2,7 @@
 
 namespace InteractiveGeometry
 {
-    public interface IDecorator : IInteractiveObject
+    public interface IDecorator : IInteractive
     {
         GeometryFeature FeatureSource { get; }
     }

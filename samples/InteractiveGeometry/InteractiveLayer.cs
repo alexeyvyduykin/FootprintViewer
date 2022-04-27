@@ -9,20 +9,20 @@ namespace InteractiveGeometry
 {
     public class InteractiveLayer : BaseLayer
     {
-        private readonly IInteractiveObject? _interactiveObject;
+        private readonly IInteractive? _interactive;
 
-        public InteractiveLayer(IInteractiveObject interactiveObject)
+        public InteractiveLayer(IInteractive interactive)
         {
-            _interactiveObject = interactiveObject;
+            _interactive = interactive;
 
-            _interactiveObject.InvalidateLayer += (s, e) => DataHasChanged();
+            _interactive.InvalidateLayer += (s, e) => DataHasChanged();
 
             IsMapInfoLayer = true;
         }
 
         public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
-            if (_interactiveObject is IDecorator decorator)
+            if (_interactive is IDecorator decorator)
             {
                 var feature = decorator.FeatureSource;
 
@@ -39,7 +39,7 @@ namespace InteractiveGeometry
                     }
                 }
             }
-            else if (_interactiveObject is IDesigner designer)
+            else if (_interactive is IDesigner designer)
             {
                 var feature = designer.Feature;
 
