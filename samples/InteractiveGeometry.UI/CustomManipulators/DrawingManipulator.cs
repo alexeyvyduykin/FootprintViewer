@@ -1,9 +1,10 @@
-﻿using InteractiveGeometry.UI.Input.Core;
+﻿using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI.Input.Core;
 using Mapsui;
 
-namespace InteractiveGeometry.UI.Input
+namespace InteractiveGeometry.UI
 {
-    public class DrawingManipulator : MouseManipulator
+    internal class DrawingManipulator : MouseManipulator
     {
         public DrawingManipulator(IMapView view) : base(view) { }
 
@@ -90,7 +91,7 @@ namespace InteractiveGeometry.UI.Input
         }
     }
 
-    public class HoverDrawingManipulator : MouseManipulator
+    internal class HoverDrawingManipulator : MouseManipulator
     {
         public HoverDrawingManipulator(IMapView view) : base(view)
         {

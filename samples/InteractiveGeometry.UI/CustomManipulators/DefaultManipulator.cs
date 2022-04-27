@@ -1,8 +1,9 @@
-﻿using InteractiveGeometry.UI.Input.Core;
+﻿using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI.Input.Core;
 
-namespace InteractiveGeometry.UI.Input
+namespace InteractiveGeometry.UI
 {
-    public class DefaultManipulator : MouseManipulator
+    internal class DefaultManipulator : MouseManipulator
     {
         public DefaultManipulator(IMapView mapView) : base(mapView)
         {
@@ -10,7 +11,7 @@ namespace InteractiveGeometry.UI.Input
         }
     }
 
-    public class HoverDefaultManipulator : MouseManipulator
+    internal class HoverDefaultManipulator : MouseManipulator
     {
         public HoverDefaultManipulator(IMapView view) : base(view)
         {

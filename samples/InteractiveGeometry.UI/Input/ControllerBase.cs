@@ -6,7 +6,7 @@ namespace InteractiveGeometry.UI.Input
 {
     public abstract class ControllerBase : IController
     {
-        private readonly object syncRoot = new object();
+        private readonly object syncRoot = new();
 
         protected ControllerBase()
         {
@@ -244,7 +244,7 @@ namespace InteractiveGeometry.UI.Input
             return true;
         }
 
-        protected object GetSyncRoot(IView view)
+        protected object GetSyncRoot(IView _)
         {
             return syncRoot;
         }

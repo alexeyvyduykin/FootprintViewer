@@ -1,8 +1,9 @@
-﻿using InteractiveGeometry.UI.Input.Core;
+﻿using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI.Input.Core;
 
-namespace InteractiveGeometry.UI.Input
+namespace InteractiveGeometry.UI
 {
-    public class EditingManipulator : MouseManipulator
+    internal class EditingManipulator : MouseManipulator
     {
         private bool _isEditing = false;
         private readonly int _vertexRadius = 4;
@@ -74,7 +75,7 @@ namespace InteractiveGeometry.UI.Input
 
     }
 
-    public class HoverEditingManipulator : MouseManipulator
+    internal class HoverEditingManipulator : MouseManipulator
     {
         private bool _isChecker = false;
 

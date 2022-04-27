@@ -1,8 +1,8 @@
 ﻿using InteractiveGeometry.UI.Input.Core;
 
-namespace InteractiveGeometry.UI.Input
+namespace InteractiveGeometry.UI
 {
-    public static class MapCommands
+    internal static class MapCommands
     {
         static MapCommands()
         {

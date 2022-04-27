@@ -15,7 +15,9 @@
 
   <Window.Styles>    
     <Style Selector="ToggleButton">
-      <Setter Property="Padding" Value="8,4,8,4"></Setter>
+      <Setter Property="Padding" Value="8,4,8,4"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
   </Window.Styles>
 
@@ -28,19 +30,20 @@
                           VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch" />
 
-    <StackPanel HorizontalAlignment="Left">
-      <ToggleButton IsChecked="{Binding IsSelect}">Select</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsTranslate}">Translate</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsRotate}">Rotate</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsScale}">Scale</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsEdit}">Edit</ToggleButton>
-      <Border Height="10"/>
-      <ToggleButton IsChecked="{Binding IsPoint}">Point</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsRectangle}">Rectangle</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsCircle}">Circle</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsPolygon}">Polygon</ToggleButton>
-      <ToggleButton IsChecked="{Binding IsRoute}">Route</ToggleButton>
-    </StackPanel>
+    <Grid HorizontalAlignment="Left" 
+          VerticalAlignment="Top"                 
+          RowDefinitions="*,*,*,*,*,10,*,*,*,*,*">
+      <ToggleButton Grid.Row="0" IsChecked="{Binding IsSelect}" Content="Select"/>
+      <ToggleButton Grid.Row="1" IsChecked="{Binding IsTranslate}" Content="Translate"/>
+      <ToggleButton Grid.Row="2" IsChecked="{Binding IsRotate}" Content="Rotate"/>
+      <ToggleButton Grid.Row="3" IsChecked="{Binding IsScale}" Content="Scale"/>
+      <ToggleButton Grid.Row="4" IsChecked="{Binding IsEdit}" Content="Edit"/>   
+      <ToggleButton Grid.Row="6" IsChecked="{Binding IsPoint}" Content="Point"/>
+      <ToggleButton Grid.Row="7" IsChecked="{Binding IsRectangle}" Content="Rectangle"/>
+      <ToggleButton Grid.Row="8" IsChecked="{Binding IsCircle}" Content="Circle"/>
+      <ToggleButton Grid.Row="9" IsChecked="{Binding IsPolygon}" Content="Polygon"/>
+      <ToggleButton Grid.Row="10" IsChecked="{Binding IsRoute}" Content="Route"/>
+    </Grid>
 
     <Border x:Name="tipBorder"
             HorizontalAlignment="Center"
@@ -50,16 +53,6 @@
             Background="AliceBlue"
             BorderThickness="1"
             BorderBrush="Black">
-      <!--<Border.Style>
-        <Style TargetType="Border">
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding Tip}" Value="">
-              <Setter Property="Visibility" Value="Hidden"/>
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </Border.Style>-->
-
       <TextBlock TextWrapping="Wrap" Text="{Binding Tip}"></TextBlock>
     </Border>
 

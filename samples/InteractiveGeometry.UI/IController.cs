@@ -1,6 +1,7 @@
-﻿using InteractiveGeometry.UI.Input.Core;
+﻿using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI.Input.Core;
 
-namespace InteractiveGeometry.UI.Input
+namespace InteractiveGeometry.UI
 {
     public interface IMapController : IController
     {

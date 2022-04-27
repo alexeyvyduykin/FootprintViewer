@@ -1,5 +1,5 @@
 ﻿using InteractiveGeometry;
-using InteractiveGeometry.UI.Input;
+using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;

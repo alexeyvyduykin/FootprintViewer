@@ -1,4 +1,6 @@
-﻿namespace InteractiveGeometry.UI.Input
+﻿using InteractiveGeometry.UI.Input;
+
+namespace InteractiveGeometry.UI
 {
     public class DrawingController : ControllerBase, IMapController
     {
