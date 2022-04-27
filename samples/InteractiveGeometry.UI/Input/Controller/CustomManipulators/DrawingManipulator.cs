@@ -15,6 +15,11 @@ namespace InteractiveGeometry.UI.Input
         {
             base.Completed(e);
 
+            if (_skip == true)
+            {
+                MapView.SetCursor(CursorType.Cross);
+            }
+
             if (_skip == false)
             {
                 var screenPosition = e.Position;
@@ -52,7 +57,11 @@ namespace InteractiveGeometry.UI.Input
             if (_counter++ > 0)
             {
                 _skip = true;
+
+                return;
             }
+
+            e.Handled = true;
         }
 
         public override void Started(MouseEventArgs e)
@@ -97,7 +106,7 @@ namespace InteractiveGeometry.UI.Input
 
             MapView.MapObserver.OnHover(worldPosition);
 
-            e.Handled = true;
+            //e.Handled = true;
         }
 
         public override void Started(MouseEventArgs e)

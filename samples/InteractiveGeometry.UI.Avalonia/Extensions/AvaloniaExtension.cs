@@ -7,6 +7,18 @@ namespace InteractiveGeometry.UI.Avalonia
 {
     public static class AvaloniaExtension
     {
+        public static aInput.StandardCursorType ToStandartCursor(this CursorType cursorType)
+        {
+            return cursorType switch
+            {
+                CursorType.Default => aInput.StandardCursorType.Arrow,
+                CursorType.Hand => aInput.StandardCursorType.Hand,
+                CursorType.HandGrab => aInput.StandardCursorType.SizeAll,
+                CursorType.Cross => aInput.StandardCursorType.Cross,
+                _ => throw new System.Exception(),
+            };
+        }
+
         public static MouseButton Convert(this aInput.PointerUpdateKind state)
         {
             return state switch

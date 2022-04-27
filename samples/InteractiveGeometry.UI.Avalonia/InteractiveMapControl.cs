@@ -56,8 +56,6 @@ namespace InteractiveGeometry.UI.Avalonia
             var args = e.ToMouseReleasedEventArgs(this);
 
             Controller.HandleMouseUp(this, args);
-
-            //e.Handled = args.Handled;
         }
 
         protected override void OnPointerMoved(PointerEventArgs e)
@@ -91,8 +89,6 @@ namespace InteractiveGeometry.UI.Avalonia
             var args = e.ToMouseDownEventArgs(this);
 
             Controller.HandleMouseDown(this, args);
-
-            //e.Handled = args.Handled;
         }
 
         protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -107,8 +103,6 @@ namespace InteractiveGeometry.UI.Avalonia
             var args = e.ToMouseWheelEventArgs(this);
 
             Controller.HandleMouseWheel(this, args);
-
-            //e.Handled = args.Handled;
         }
 
         protected override void OnPointerLeave(PointerEventArgs e)
@@ -123,8 +117,6 @@ namespace InteractiveGeometry.UI.Avalonia
             var args = e.ToMouseEventArgs(this);
 
             Controller.HandleMouseLeave(this, args);
-
-            //e.Handled = args.Handled;
         }
 
         protected override void OnPointerEnter(PointerEventArgs e)
@@ -139,20 +131,11 @@ namespace InteractiveGeometry.UI.Avalonia
             var args = e.ToMouseEventArgs(this);
 
             Controller.HandleMouseEnter(this, args);
-
-            //e.Handled = args.Handled;
         }
 
         public void SetCursor(CursorType cursorType)
         {
-            Cursor = cursorType switch
-            {
-                CursorType.Default => new Cursor(StandardCursorType.Arrow),
-                CursorType.Hand => new Cursor(StandardCursorType.Hand),
-                CursorType.HandGrab => new Cursor(StandardCursorType.SizeAll),
-                CursorType.Cross => new Cursor(StandardCursorType.Cross),
-                _ => throw new Exception(),
-            };
+            Cursor = new Cursor(cursorType.ToStandartCursor());
         }
 
         public MPoint ScreenToWorld(MPoint screenPosition) => Viewport.ScreenToWorld(screenPosition);

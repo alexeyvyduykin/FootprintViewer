@@ -5,6 +5,7 @@
         public DefaultController()
         {
             this.BindMouseDown(MouseButton.Left, MapCommands.Default);
+            this.BindMouseEnter(MapCommands.HoverDefault);
         }
     }
 }

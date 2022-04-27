@@ -12,6 +12,8 @@ namespace InteractiveSample
 {
     public class UserMapControl : InteractiveMapControl
     {
+        private bool _isGrabbing = false;
+
         public UserMapControl() : base()
         {
             MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
@@ -51,13 +53,29 @@ namespace InteractiveSample
 
                 if (isLeftMouseDown == true)
                 {
-                    SetCursor(CursorType.HandGrab);
+                    if (_isGrabbing == false)
+                    {
+                        _isGrabbing = true;
+
+                        SetCursor(CursorType.HandGrab);
+                    }
                 }
-                else
+            }
+        }
+
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
+        {
+            if (_isGrabbing == true)
+            {
+                _isGrabbing = false;
+
+                if (e.Handled == false)
                 {
                     SetCursor(CursorType.Default);
                 }
             }
+
+            base.OnPointerReleased(e);
         }
     }
 }

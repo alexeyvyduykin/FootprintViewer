@@ -19,7 +19,7 @@ namespace InteractiveGeometry.UI.Input
 
                 MapView.MapObserver.OnCompleted(worldPosition);
 
-                MapView.Map.PanLock = false;
+                MapView.Map!.PanLock = false;
 
                 _isEditing = false;
             }
@@ -51,7 +51,7 @@ namespace InteractiveGeometry.UI.Input
         {
             base.Started(e);
 
-            var mapInfo = MapView.GetMapInfo(e.Position);
+            var mapInfo = MapView.GetMapInfo(e.Position)!;
 
             _isEditing = false;
 
@@ -59,14 +59,14 @@ namespace InteractiveGeometry.UI.Input
             {
                 var distance = mapInfo.Resolution * _vertexRadius;
 
-                MapView.MapObserver.OnStarted(mapInfo.WorldPosition, distance);
+                MapView.MapObserver.OnStarted(mapInfo.WorldPosition!, distance);
 
                 _isEditing = true;
             }
 
             if (_isEditing == true)
             {
-                MapView.Map.PanLock = true;
+                MapView.Map!.PanLock = true;
             }
 
             e.Handled = true;
@@ -76,6 +76,8 @@ namespace InteractiveGeometry.UI.Input
 
     public class HoverEditingManipulator : MouseManipulator
     {
+        private bool _isChecker = false;
+
         public HoverEditingManipulator(IMapView view) : base(view) { }
 
         public override void Delta(MouseEventArgs e)
@@ -84,12 +86,27 @@ namespace InteractiveGeometry.UI.Input
 
             if (e.Handled == false)
             {
-                var mapInfo = MapView.GetMapInfo(e.Position);
+                var mapInfo = MapView.GetMapInfo(e.Position)!;
 
                 if (mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
                 {
-                    MapView.SetCursor(CursorType.Hand);
+                    if (_isChecker == true)
+                    {
+                        MapView.SetCursor(CursorType.Hand);
+
+                        _isChecker = false;
+                    }
+
                     e.Handled = true;
+                }
+                else
+                {
+                    if (_isChecker == false)
+                    {
+                        MapView.SetCursor(CursorType.Default);
+
+                        _isChecker = true;
+                    }
                 }
             }
         }
