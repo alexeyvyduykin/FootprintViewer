@@ -86,8 +86,6 @@ namespace InteractiveGeometry
                 _points = geometry.MainVertices().Select(s => s.ToMPoint()).ToList();
 
                 UpdateGeometry(geometry);
-
-                Invalidate();
             }
         }
 

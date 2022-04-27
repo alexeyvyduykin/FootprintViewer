@@ -147,7 +147,7 @@ namespace InteractiveSample.ViewModels
 
                     var feature = (GeometryFeature)decorator.SelectFeature!;
 
-                    var center = SphericalMercator.ToLonLat(feature.Extent!.Centroid);
+                    var center = SphericalMercator.ToLonLat(feature.Geometry!.Centroid.ToMPoint());
 
                     Tip = $"Выбран объект с центром в: {center.X}, {center.Y}";
                 };

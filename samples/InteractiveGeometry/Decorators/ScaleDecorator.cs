@@ -1,5 +1,6 @@
 ﻿using Mapsui;
 using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace InteractiveGeometry
         {
             _scaleTopRight = GetTopRight(featureSource.Geometry!);
 
-            _center = featureSource.Extent!.Centroid;
+            _center = featureSource.Geometry!.Centroid.ToMPoint();
 
             _startScaleTopRight = _scaleTopRight;
 
@@ -51,8 +52,6 @@ namespace InteractiveGeometry
                 _scaleTopRight = GetTopRight(geometry);
 
                 UpdateGeometry(geometry);
-
-                Invalidate();
             }
         }
 

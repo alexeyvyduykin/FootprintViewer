@@ -3,6 +3,7 @@ using Mapsui.Nts;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InteractiveGeometry
 {
@@ -19,20 +20,24 @@ namespace InteractiveGeometry
 
         public RotateDecorator(GeometryFeature featureSource) : base(featureSource)
         {
-            _rotateRight = new MPoint(featureSource.Extent!.Right, featureSource.Extent.Centroid.Y);
+            var extent = GetExtent(featureSource);
 
-            _center = featureSource.Extent.Centroid;
+            _rotateRight = new MPoint(extent.Right, extent.Centroid.Y);
+
+            _center = extent.Centroid;
 
             _startRotateRight = _rotateRight;
 
-            _halfDiagonal = Diagonal(featureSource.Extent) / 2.0;
+            _halfDiagonal = Diagonal(extent) / 2.0;
 
             _startOffsetToVertex = new MPoint();
         }
 
         public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
         {
-            _rotateRight = new MPoint(FeatureSource.Extent!.Right, FeatureSource.Extent.Centroid.Y);
+            var extent = GetExtent(FeatureSource);
+
+            _rotateRight = new MPoint(extent.Right, extent.Centroid.Y);
 
             _isRotating = false;
         }
@@ -58,8 +63,6 @@ namespace InteractiveGeometry
                 _rotateRight = new MPoint(_startRotateRight.X, p1.Y);
 
                 UpdateGeometry(geometry);
-
-                Invalidate();
             }
         }
 
@@ -71,7 +74,9 @@ namespace InteractiveGeometry
 
             _startGeometry = FeatureSource.Geometry!.Copy();
 
-            _halfDiagonal = Diagonal(FeatureSource.Extent!) / 2.0;
+            var extent = GetExtent(FeatureSource);
+
+            _halfDiagonal = Diagonal(extent) / 2.0;
 
             _isRotating = true;
         }
@@ -84,6 +89,16 @@ namespace InteractiveGeometry
         private static double Diagonal(MRect box)
         {
             return Math.Sqrt(box.Width * box.Width + box.Height * box.Height);
+        }
+
+        private static MRect GetExtent(GeometryFeature feature)
+        {
+            var minX = feature.Geometry!.Coordinates.Min(s => s.X);
+            var minY = feature.Geometry!.Coordinates.Min(s => s.Y);
+            var maxX = feature.Geometry!.Coordinates.Max(s => s.X);
+            var maxY = feature.Geometry!.Coordinates.Max(s => s.Y);
+
+            return new MRect(minX, minY, maxX, maxY);
         }
     }
 }

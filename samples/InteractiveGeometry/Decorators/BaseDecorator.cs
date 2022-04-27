@@ -17,6 +17,8 @@ namespace InteractiveGeometry
             _featureSource.Geometry = geometry;
 
             _featureSource.RenderedGeometry.Clear();
+
+            Invalidate();
         }
 
         public GeometryFeature FeatureSource => _featureSource;
