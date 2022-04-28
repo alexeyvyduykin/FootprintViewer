@@ -28,7 +28,7 @@ namespace FootprintViewer.ViewModels
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintObserver _footprintObserver;
         private readonly SceneSearch _sceneSearch;
-        //    private readonly IUserLayerSource _userLayerSource;
+        private readonly IUserLayerSource _userLayerSource;
         //     private GeometryFeature? _currentFeature;
         //private readonly IReadonlyDependencyResolver _dependencyResolver;
         //     private bool _isDirtyDecorator = false;
@@ -40,7 +40,7 @@ namespace FootprintViewer.ViewModels
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-            //       _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
+            _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
@@ -95,17 +95,17 @@ namespace FootprintViewer.ViewModels
             //_customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             //_customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.Point.Activate.Subscribe(_ => DrawingPointCommand());
-            //_customToolBar.Point.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.Point.Activate.Subscribe(_ => DrawingPointCommand());
+            _customToolBar.Point.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
-            //_customToolBar.Rectangle.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
+            _customToolBar.Rectangle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.Circle.Activate.Subscribe(_ => DrawingCircleCommand());
-            //_customToolBar.Circle.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.Circle.Activate.Subscribe(_ => DrawingCircleCommand());
+            _customToolBar.Circle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
-            //_customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
+            _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
         }
@@ -532,162 +532,147 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        //private void DrawingPointCommand()
-        //{
-        //    var designer = new PointDesigner();
+        private void DrawingPointCommand()
+        {
+            var designer = new InteractiveFactory().CreatePointDesigner(Map);
 
-        //    CreateInteractiveOnUserLayer(designer);
+            designer.EndCreating += (s, e) =>
+            {
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
 
-        //    Tip = new Tip() { Text = "Нажмите, чтобы нарисовать точку" };
+                Tip = null;
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
+                _customToolBar.Uncheck();
+            };
 
-        //        Tip = null;
+            Tip = new Tip() { Text = "Нажмите, чтобы нарисовать точку" };
 
-        //        _customToolBar.Uncheck();
-        //    };
+            Behavior = new InteractiveBehavior(designer);
 
-        //    MapObserver = new MapObserver(designer);
+            ActualController = new DrawingController();
+        }
 
-        //    ActualController = new DrawingController();
-        //}
+        private void DrawingRectangleCommand()
+        {
+            var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map);
 
-        //private void DrawingRectangleCommand()
-        //{
-        //    var designer = new RectangleDesigner();
+            designer.HoverCreating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //    CreateInteractiveOnUserLayer(designer);
+                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            };
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+            designer.EndCreating += (s, e) =>
+            {
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
-        //        var area = GetFeatureArea(feature);
+                Tip = null;
 
-        //        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                _customToolBar.Uncheck();
+            };
 
-        //        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //    };
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
+            Behavior = new InteractiveBehavior(designer);
 
-        //        Tip = null;
+            ActualController = new DrawingController();
+        }
 
-        //        _customToolBar.Uncheck();
-        //    };
+        private void DrawingCircleCommand()
+        {
+            var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map);
 
+            designer.HoverCreating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //    MapObserver = new MapObserver(designer);
+                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            };
 
-        //    ActualController = new DrawingController();
-        //}
+            designer.EndCreating += (s, e) =>
+            {
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
 
-        //private void DrawingCircleCommand()
-        //{
-        //    var designer = new CircleDesigner();
+                Tip = null;
 
-        //    CreateInteractiveOnUserLayer(designer);
+                _customToolBar.Uncheck();
+            };
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+            Behavior = new InteractiveBehavior(designer);
 
-        //        var area = GetFeatureArea(feature);
+            ActualController = new DrawingController();
+        }
 
-        //        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
-        //        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //    };
+        private void DrawingRouteCommand()
+        {
+            var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
+            designer.HoverCreating += (s, e) =>
+            {
+                var distance = designer.Distance();
 
-        //        Tip = null;
+                Tip!.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
 
-        //        _customToolBar.Uncheck();
-        //    };
+            designer.EndCreating += (s, e) =>
+            {
+                // TODO: user geometry route not enable
+                //_userLayerSource.AddFeature(designer.Feature.Copy());
 
-        //    MapObserver = new MapObserver(designer);
+                Tip = null;
 
-        //    ActualController = new DrawingController();
-        //}
+                _customToolBar.Uncheck();
+            };
 
-        //private void DrawingRouteCommand()
-        //{
-        //    var designer = new RouteDesigner();
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
 
-        //    CreateInteractiveOnUserLayer(designer);
+            Behavior = new InteractiveBehavior(designer);
 
-        //    Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+            ActualController = new DrawingController();
+        }
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var distance = GetRouteLength(designer);
+        private void DrawingPolygonCommand()
+        {
+            var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map);
 
-        //        Tip.Text = "";
-        //        Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-        //    };
+            designer.BeginCreating += (s, e) =>
+            {
+                Tip!.Text = "Нажмите, чтобы продолжить рисование фигуры";
+            };
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        // TODO: user geometry route not enable
-        //        //_userLayerSource.AddFeature(designer.Feature.Copy());
+            designer.Creating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //        Tip = null;
+                if (area != 0.0)
+                {
+                    Tip!.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
+                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                }
+            };
 
-        //        _customToolBar.Uncheck();
-        //    };
+            designer.EndCreating += (s, e) =>
+            {
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
 
-        //    MapObserver = new MapObserver(designer);
+                Tip = null;
 
-        //    ActualController = new DrawingController();
-        //}
+                _customToolBar.Uncheck();
+            };
 
-        //private void DrawingPolygonCommand()
-        //{
-        //    var designer = new PolygonDesigner();
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
-        //    CreateInteractiveOnUserLayer(designer);
+            Behavior = new InteractiveBehavior(designer);
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
-
-        //    designer.BeginCreating += (s, e) =>
-        //    {
-        //        Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
-        //    };
-
-        //    designer.Creating += (s, e) =>
-        //    {
-        //        if (designer.Feature.Geometry.AllVertices().Count() > 2)
-        //        {
-        //            var area = GetFeatureArea(designer.Feature);
-
-        //            Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
-        //            Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //        }
-        //    };
-
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
-
-        //        Tip = null;
-
-        //        _customToolBar.Uncheck();
-        //    };
-
-        //    MapObserver = new MapObserver(designer);
-
-        //    ActualController = new DrawingController();
-        //}
+            ActualController = new DrawingController();
+        }
 
         public Map Map => _map;
 
