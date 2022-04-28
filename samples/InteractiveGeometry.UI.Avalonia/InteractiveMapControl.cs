@@ -133,7 +133,7 @@ namespace InteractiveGeometry.UI.Avalonia
             Controller.HandleMouseEnter(this, args);
         }
 
-        public void SetCursor(CursorType cursorType)
+        public virtual void SetCursor(CursorType cursorType)
         {
             Cursor = new Cursor(cursorType.ToStandartCursor());
         }
