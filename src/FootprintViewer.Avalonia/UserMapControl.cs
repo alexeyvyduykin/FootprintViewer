@@ -2,50 +2,27 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using DynamicData;
-//using FootprintViewer.Input;
-//using FootprintViewer.Interactivity;
 using FootprintViewer.ViewModels;
+using InteractiveGeometry.UI;
+using InteractiveGeometry.UI.Avalonia;
 using Mapsui;
-using Mapsui.UI;
-using Mapsui.UI.Avalonia;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia
 {
-    public class UserMapControl : MapControl//, IMapView
+    public class UserMapControl : InteractiveMapControl
     {
-     //   private MPoint? _mouseDownPoint;
-     //   private Cursor? _grabHandCursor;
-        private bool _isLeftMouseDown = false;
-    //    private CursorType _currentCursorType = CursorType.Default;
+        private bool _isGrabbing = false;
+        private Cursor? _grabHandCursor;
+        private CursorType _currentCursorType = CursorType.Default;
         private readonly ItemsControl? _tipControl;
-   //     private string? _lastNameFeatureInfo;
-    //    private bool _infoLeftClick = false;
 
-    //    private bool _isLeftClick2 = false;
-    //    private MapInfo? _lastMapInfo2;
-    //    private int _counter2 = 0;
-
-        public event EventHandler<EventArgs> ViewportUpdate;
+        public event EventHandler<EventArgs>? ViewportUpdate;
 
         public UserMapControl() : base()
         {
-            PointerEnter += MyMapControl_MouseEnter;
-            PointerLeave += MyMapControl_MouseLeave;
-            PointerWheelChanged += MyMapControl_MouseWheel;
-            PointerPressed += MyMapControl_MouseDown;
-            PointerMoved += MyMapControl_MouseMove;
-            PointerReleased += MyMapControl_MouseUp;
-
-        //    Info += UserMapControl_Info;
-
-        //    Info += UserMapControl_Info2;
-
-  //          ControllerProperty.Changed.Subscribe(OnControllerChanged);
             TipSourceProperty.Changed.Subscribe(OnTipSourceChanged);
             MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
 
@@ -56,7 +33,7 @@ namespace FootprintViewer.Avalonia
                 _tipControl = itemsControl;
                 Children.Add(itemsControl);
             }
-            
+
             PropertyChanged += UserMapControl_PropertyChanged;
         }
 
@@ -72,37 +49,6 @@ namespace FootprintViewer.Avalonia
                     break;
             }
         }
-
-        //private void UserMapControl_Info(object? sender, Mapsui.UI.MapInfoEventArgs e)
-        //{
-        //    if (MapListener != null)
-        //    {
-        //        if (e.MapInfo != null && e.MapInfo.Feature != null)
-        //        {
-        //            var feature = e.MapInfo.Feature;
-
-        //            if (feature != null && feature.Fields.Contains("Name") == true)
-        //            {
-        //                var name = (string)feature["Name"];
-        //                _infoLeftClick = true;
-        //                _lastNameFeatureInfo = name;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void UserMapControl_Info2(object? sender, MapInfoEventArgs e)
-        //{
-        //    if (MapListener != null)
-        //    {
-        //        if (e.MapInfo != null && e.MapInfo.Feature != null)
-        //        {
-        //            _lastMapInfo2 = e.MapInfo;
-
-        //            _isLeftClick2 = true;
-        //        }
-        //    }
-        //}
 
         private static ItemsControl? CreateTip()
         {
@@ -135,24 +81,6 @@ namespace FootprintViewer.Avalonia
 
             return AvaloniaRuntimeXamlLoader.Parse<ItemsControl>(xaml);
         }
-
-        //public IController Controller
-        //{
-        //    get { return GetValue(ControllerProperty); }
-        //    set { SetValue(ControllerProperty, value); }
-        //}
-
-        //// Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
-        //public static readonly StyledProperty<IController> ControllerProperty =
-        //    AvaloniaProperty.Register<UserMapControl, IController>(nameof(Controller), new DefaultController());
-
-        //private static void OnControllerChanged(AvaloniaPropertyChangedEventArgs e)
-        //{
-        //    var mapControl = (UserMapControl)e.Sender;
-
-        //    // HACK: after tools check, hover manipulator not active, it call this
-        //    mapControl.Controller.HandleMouseEnter(mapControl, new MouseEventArgs());
-        //}
 
         public ITip? TipSource
         {
@@ -213,87 +141,38 @@ namespace FootprintViewer.Avalonia
             }
         }
 
-        //public MapListener? MapListener
-        //{
-        //    get { return (MapListener?)GetValue(MapListenerProperty); }
-        //    set { SetValue(MapListenerProperty, value); }
-        //}
-
-        //// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        //public static readonly StyledProperty<MapListener?> MapListenerProperty =
-        //    AvaloniaProperty.Register<UserMapControl, MapListener?>(nameof(MapListener));
-
-        //public IMapObserver MapObserver
-        //{
-        //    get { return (IMapObserver)GetValue(MapObserverProperty); }
-        //    set { SetValue(MapObserverProperty, value); }
-        //}
-
-        //// Using a DependencyProperty as the backing store for Observer.  This enables animation, styling, binding, etc...
-        //public static readonly StyledProperty<IMapObserver> MapObserverProperty =
-        //    AvaloniaProperty.Register<UserMapControl, IMapObserver>(nameof(MapObserver));
-
-        private void MyMapControl_MouseUp(object? sender, PointerReleasedEventArgs e)
+        protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
-            base.OnPointerReleased(e);
-
-            if (e.Handled)
+            if (_isGrabbing == true)
             {
-                return;
+                _isGrabbing = false;
+
+                if (e.Handled == false)
+                {
+                    SetCursor(CursorType.Default);
+                }
             }
 
-            e.Pointer.Capture(null);
-
-            //e.Handled = 
-   //         Controller.HandleMouseUp(this, e.ToMouseReleasedEventArgs(this));
-
-            //if (_infoLeftClick == true && string.IsNullOrEmpty(_lastNameFeatureInfo) == false)
-            //{
-            //    MapListener?.LeftClick(_lastNameFeatureInfo);
-
-            //    _infoLeftClick = false;
-            //}
-
-            //if (_isLeftClick2 == true)
-            //{
-            //    MapListener?.LeftClick(_lastMapInfo2);
-
-            //    _isLeftClick2 = false;
-            //}
-
-
-            _isLeftMouseDown = false;
-
-            // Open the context menu
-            //var p = e.GetPosition(this).ToScreenPoint();
-            //var d = p.DistanceTo(_mouseDownPoint);
-
-            //if (ContextMenu != null)
-            //{
-            //    if (Math.Abs(d) < 1e-8 && releasedArgs.InitialPressMouseButton == MouseButton.Right)
-            //    {
-            //        ContextMenu.DataContext = DataContext;
-            //        ContextMenu.IsVisible = true;
-            //    }
-            //    else
-            //    {
-            //        ContextMenu.IsVisible = false;
-            //    }
-            //}
+            base.OnPointerReleased(e);
         }
 
-        private void MyMapControl_MouseMove(object? sender, PointerEventArgs e)
+        protected override void OnPointerMoved(PointerEventArgs e)
         {
-            //if (++_counter2 > 1)
-            //{
-            //    _isLeftClick2 = false;
-            //}
-
             base.OnPointerMoved(e);
 
-            if (e.Handled)
+            if (e.Handled == false)
             {
-                return;
+                var isLeftMouseDown = e.GetCurrentPoint(this).Properties.IsLeftButtonPressed;
+
+                if (isLeftMouseDown == true)
+                {
+                    if (_isGrabbing == false)
+                    {
+                        _isGrabbing = true;
+
+                        SetCursor(CursorType.HandGrab);
+                    }
+                }
             }
 
             if (TipSource != null)
@@ -308,97 +187,16 @@ namespace FootprintViewer.Avalonia
                     TipSource.IsVisible = true;
                 }
             }
-
-            //e.Handled = 
-    //        var args = e.ToMouseEventArgs(this);
-    //        Controller.HandleMouseMove(this, args);
-
-    //        if (e.Handled == false)
-    //        {
-    //            if (_isLeftMouseDown == true && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == true)
-    //            {
-    ////                _infoLeftClick = false;
-    ////                SetCursor(CursorType.HandGrab);
-    //            }
-    //            else
-    //            {
-    ////                SetCursor(CursorType.Default);
-    //            }
-    //        }
         }
 
-        private void MyMapControl_MouseDown(object? sender, PointerPressedEventArgs e)
-        {
-       //     _counter2 = 0;
-
-            base.OnPointerPressed(e);
-
-            if (e.Handled)
-            {
-                return;
-            }
-
-            Focus();
-            e.Pointer.Capture(this);
-
-            // store the mouse down point, check it when mouse button is released to determine if the context menu should be shown
-   //         _mouseDownPoint = e.GetPosition(this).ToScreenPoint();
-
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == true)
-            {
-                _isLeftMouseDown = true;
-            }
-
-            //e.Handled = 
-  //          Controller.HandleMouseDown(this, e.ToMouseDownEventArgs(this));
-        }
-
-        private void MyMapControl_MouseWheel(object? sender, PointerWheelEventArgs e)
-        {
-            base.OnPointerWheelChanged(e);
-
-            if (e.Handled /*|| !IsMouseWheelEnabled*/)
-            {
-                return;
-            }
-
-            //e.Handled = 
-   //         Controller.HandleMouseWheel(this, e.ToMouseWheelEventArgs(this));
-        }
-
-        private void MyMapControl_MouseLeave(object? sender, PointerEventArgs e)
+        protected override void OnPointerLeave(PointerEventArgs e)
         {
             base.OnPointerLeave(e);
 
-            if (e.Handled)
-            {
-                return;
-            }
-
-            _isLeftMouseDown = false;
-
             if (TipSource != null)
-            {                                
-                TipSource.IsVisible = false;                
-            }
-
-            //e.Handled = 
-   //         Controller.HandleMouseLeave(this, e.ToMouseEventArgs(this));
-        }
-
-        private void MyMapControl_MouseEnter(object? sender, PointerEventArgs e)
-        {
-            base.OnPointerEnter(e);
-
-            if (e.Handled)
             {
-                return;
+                TipSource.IsVisible = false;
             }
-
-            _isLeftMouseDown = false;
-
-            //e.Handled = 
-   //         Controller.HandleMouseEnter(this, e.ToMouseEventArgs(this));
         }
 
         public void NavigateToAOI(MRect boundingBox)
@@ -406,42 +204,23 @@ namespace FootprintViewer.Avalonia
             Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
-        //public void SetCursor(CursorType cursorType)
-        //{
-        //    if (_currentCursorType == cursorType)
-        //    {
-        //        return;
-        //    }
-
-        //    switch (cursorType)
-        //    {
-        //        case CursorType.Default:
-        //            Cursor = new Cursor(StandardCursorType.Arrow);
-        //            break;
-        //        case CursorType.Hand:
-        //            Cursor = new Cursor(StandardCursorType.Hand);
-        //            break;
-        //        case CursorType.HandGrab:
-        //            Cursor = (_grabHandCursor ??= Services.CursorService.GetGrabHandCursor());
-        //            break;
-        //        case CursorType.Cross:
-        //            Cursor = new Cursor(StandardCursorType.Cross);
-        //            break;
-        //        default:
-        //            throw new Exception();
-        //    }
-
-        //    _currentCursorType = cursorType;
-        //}
-
-        public MPoint ScreenToWorld(MPoint screenPosition)
+        public override void SetCursor(CursorType cursorType)
         {
-            return Viewport.ScreenToWorld(screenPosition);
-        }
+            if (_currentCursorType == cursorType)
+            {
+                return;
+            }
 
-        public MPoint WorldToScreen(MPoint worldPosition)
-        {
-            return Viewport.WorldToScreen(worldPosition);
+            Cursor = cursorType switch
+            {
+                CursorType.Default => new Cursor(StandardCursorType.Arrow),
+                CursorType.Hand => new Cursor(StandardCursorType.Hand),
+                CursorType.HandGrab => (_grabHandCursor ??= Services.CursorService.GetGrabHandCursor()),
+                CursorType.Cross => new Cursor(StandardCursorType.Cross),
+                _ => throw new Exception(),
+            };
+
+            _currentCursorType = cursorType;
         }
     }
 }
