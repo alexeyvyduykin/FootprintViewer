@@ -3,6 +3,7 @@ using InteractiveGeometry;
 using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Extensions;
+using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Projections;
 using Mapsui.Tiling.Layers;
@@ -29,13 +30,15 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintObserver _footprintObserver;
         private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
-        //     private GeometryFeature? _currentFeature;
-        //private readonly IReadonlyDependencyResolver _dependencyResolver;
-        //     private bool _isDirtyDecorator = false;
+
+        //  private ISelectDecorator? _selectDecorator;
+        private ISelectScaleDecorator? _selectScaleDecorator;
+        private ISelectTranslateDecorator? _selectTranslateDecorator;
+        private ISelectRotateDecorator? _selectRotateDecorator;
+        private ISelectEditDecorator? _selectEditDecorator;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            //_dependencyResolver = dependencyResolver;
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
@@ -83,17 +86,17 @@ namespace FootprintViewer.ViewModels
             //_customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             //_customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.TranslateGeometry.Activate.Subscribe(_ => ActualController = new EditController());
-            //_customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.TranslateGeometry.Activate.Subscribe(_ => TranslateCommand());
+            _customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.RotateGeometry.Activate.Subscribe(_ => ActualController = new EditController());
-            //_customToolBar.RotateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.RotateGeometry.Activate.Subscribe(_ => RotateCommand());
+            _customToolBar.RotateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.ScaleGeometry.Activate.Subscribe(_ => ActualController = new EditController());
-            //_customToolBar.ScaleGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.ScaleGeometry.Activate.Subscribe(_ => ScaleCommand());
+            _customToolBar.ScaleGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.EditGeometry.Activate.Subscribe(_ => ActualController = new EditController());
-            //_customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.EditGeometry.Activate.Subscribe(_ => EditCommand());
+            _customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _customToolBar.Point.Activate.Subscribe(_ => DrawingPointCommand());
             _customToolBar.Point.Deactivate.Subscribe(_ => ResetInteractivity());
@@ -112,18 +115,31 @@ namespace FootprintViewer.ViewModels
 
         private void ResetInteractivity()
         {
-            //if (_isDirtyDecorator == true)
-            //{
-            //    _userLayerSource.EditFeature(_currentFeature.Copy());
+            if (_selectTranslateDecorator != null)
+            {
+                _selectTranslateDecorator?.Dispose();
+                _selectTranslateDecorator = null;
+            }
 
-            //    _isDirtyDecorator = false;
-            //}
+            if (_selectScaleDecorator != null)
+            {
+                _selectScaleDecorator?.Dispose();
+                _selectScaleDecorator = null;
+            }
+
+            if (_selectRotateDecorator != null)
+            {
+                _selectRotateDecorator?.Dispose();
+                _selectRotateDecorator = null;
+            }
+
+            if (_selectEditDecorator != null)
+            {
+                _selectEditDecorator?.Dispose();
+                _selectEditDecorator = null;
+            }
 
             Tip = null;
-
-            //_currentFeature = null;
-
-            //RemoveInteractiveLayer();
 
             ActualController = new DefaultController();
         }
@@ -133,61 +149,6 @@ namespace FootprintViewer.ViewModels
             if (sender is MapInfo mapInfo)
             {
                 //var feature = mapInfo.Feature;
-
-                //IDecorator? decorator = null;
-
-                //if (_customToolBar.SelectGeometry.IsCheck == true)
-                //{
-                //    RemoveInteractiveLayer();
-
-                //    if (feature is GeometryFeature gf && gf != _currentFeature)
-                //    {
-                //        CreateInteractiveSelectLayer(mapInfo.Layer, mapInfo.Feature);
-
-                //        _currentFeature = gf;
-                //    }
-                //    else
-                //    {
-                //        _currentFeature = null;
-                //    }
-
-                //    return;
-                //}
-                //else if (_customToolBar.ScaleGeometry.IsCheck == true)
-                //{
-                //    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                //    {
-                //        decorator = new ScaleDecorator(gf);
-                //    }
-                //}
-                //else if (_customToolBar.TranslateGeometry.IsCheck == true)
-                //{
-                //    if (feature is GeometryFeature gf)
-                //    {
-                //        decorator = new TranslateDecorator(gf);
-                //    }
-                //}
-                //else if (_customToolBar.RotateGeometry.IsCheck == true)
-                //{
-                //    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                //    {
-                //        decorator = new RotateDecorator(gf);
-                //    }
-                //}
-                //else if (_customToolBar.EditGeometry.IsCheck == true)
-                //{
-                //    if (feature is GeometryFeature gf && gf.Geometry is not Point)
-                //    {
-                //        decorator = new EditDecorator(gf);
-                //    }
-                //}
-
-                //if (decorator == null)
-                //{
-                //    return;
-                //}
-
-                //RemoveInteractiveLayer();
 
                 //if (feature is GeometryFeature gf2 && gf2 != _currentFeature)
                 //{
@@ -474,6 +435,118 @@ namespace FootprintViewer.ViewModels
             Behavior = new InteractiveBehavior(designer);
 
             ActualController = new DrawingController();
+        }
+
+        private void ScaleCommand()
+        {
+            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userLayer == null)
+            {
+                return;
+            }
+
+            IFeature? selectFeature = null;
+
+            _selectScaleDecorator = new InteractiveFactory().CreateSelectScaleDecorator(Map, userLayer);
+
+            _selectScaleDecorator.Select += (s, e) =>
+            {
+                selectFeature = (IFeature?)((ISelectScaleDecorator)s!).SelectFeature;
+
+                Behavior = new InteractiveBehavior(((ISelectScaleDecorator)s!).Scale!);
+            };
+
+            _selectScaleDecorator.Unselect += (s, e) =>
+            {
+                _userLayerSource.EditFeature(selectFeature!);
+            };
+
+            ActualController = new EditController();
+        }
+
+        private void TranslateCommand()
+        {
+            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userLayer == null)
+            {
+                return;
+            }
+
+            IFeature? selectFeature = null;
+
+            _selectTranslateDecorator = new InteractiveFactory().CreateSelectTranslateDecorator(Map, userLayer);
+
+            _selectTranslateDecorator.Select += (s, e) =>
+            {
+                selectFeature = (IFeature?)((ISelectTranslateDecorator)s!).SelectFeature;
+
+                Behavior = new InteractiveBehavior(((ISelectTranslateDecorator)s!).Translate!);
+            };
+
+            _selectTranslateDecorator.Unselect += (s, e) =>
+            {
+                _userLayerSource.EditFeature(selectFeature!);
+            };
+
+            ActualController = new EditController();
+        }
+
+        private void RotateCommand()
+        {
+            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userLayer == null)
+            {
+                return;
+            }
+
+            IFeature? selectFeature = null;
+
+            _selectRotateDecorator = new InteractiveFactory().CreateSelectRotateDecorator(Map, userLayer);
+
+            _selectRotateDecorator.Select += (s, e) =>
+            {
+                selectFeature = (IFeature?)((ISelectRotateDecorator)s!).SelectFeature;
+
+                Behavior = new InteractiveBehavior(((ISelectRotateDecorator)s!).Rotate!);
+            };
+
+            _selectRotateDecorator.Unselect += (s, e) =>
+            {
+                _userLayerSource.EditFeature(selectFeature!);
+            };
+
+            ActualController = new EditController();
+        }
+
+        private void EditCommand()
+        {
+            var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userLayer == null)
+            {
+                return;
+            }
+
+            IFeature? selectFeature = null;
+
+            _selectEditDecorator = new InteractiveFactory().CreateSelectEditDecorator(Map, userLayer);
+
+            _selectEditDecorator.Select += (s, e) =>
+            {
+                selectFeature = (IFeature?)((ISelectEditDecorator)s!).SelectFeature;
+
+                Behavior = new InteractiveBehavior(((ISelectEditDecorator)s!).Edit!);
+            };
+
+            _selectEditDecorator.Unselect += (s, e) =>
+            {
+                _userLayerSource.EditFeature(selectFeature!);
+            };
+
+            ActualController = new EditController();
         }
 
         private AOIInfoPanel CreateAOIPanel(GeometryFeature feature)
