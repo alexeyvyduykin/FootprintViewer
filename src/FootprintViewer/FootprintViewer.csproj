@@ -26,4 +26,9 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="5.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\InteractiveGeometry.UI\InteractiveGeometry.UI.csproj" />
+    <ProjectReference Include="..\..\samples\InteractiveGeometry\InteractiveGeometry.csproj" />
+  </ItemGroup>
+
 </Project>

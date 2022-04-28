@@ -1,11 +1,8 @@
-﻿using FootprintViewer.Input;
-using FootprintViewer.Interactivity;
-using FootprintViewer.Interactivity.Decorators;
-using FootprintViewer.Interactivity.Designers;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
+using InteractiveGeometry;
+using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Extensions;
-using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Projections;
 using Mapsui.Tiling.Layers;
@@ -29,32 +26,27 @@ namespace FootprintViewer.ViewModels
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
-   //     private readonly MapListener _mapListener;
         private readonly FootprintObserver _footprintObserver;
         private readonly SceneSearch _sceneSearch;
-    //    private readonly IUserLayerSource _userLayerSource;
-   //     private GeometryFeature? _currentFeature;
-        private readonly IReadonlyDependencyResolver _dependencyResolver;
-   //     private bool _isDirtyDecorator = false;
+        //    private readonly IUserLayerSource _userLayerSource;
+        //     private GeometryFeature? _currentFeature;
+        //private readonly IReadonlyDependencyResolver _dependencyResolver;
+        //     private bool _isDirtyDecorator = false;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _dependencyResolver = dependencyResolver;
+            //_dependencyResolver = dependencyResolver;
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
             _map = dependencyResolver.GetExistingService<Map>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-     //       _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
+            //       _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = _factory.CreateInfoPanel();
 
             _map.DataChanged += Map_DataChanged;
-
-     //       _mapListener = new MapListener();
-
-       //     _mapListener.LeftClickOnMap += MapListener_LeftClickOnMap;
 
             AOIChanged += (s, e) =>
             {
@@ -71,22 +63,22 @@ namespace FootprintViewer.ViewModels
                 }
             };
 
-      //      ActualController = new DefaultController();
+            ActualController = new DefaultController();
 
             _customToolBar.ZoomIn.Click.Subscribe(_ => ZoomInCommand());
             _customToolBar.ZoomOut.Click.Subscribe(_ => ZoomOutCommand());
 
-            //_customToolBar.AddRectangle.Activate.Subscribe(_ => RectangleCommand());
-            //_customToolBar.AddRectangle.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.AddRectangle.Activate.Subscribe(_ => RectangleCommand());
+            _customToolBar.AddRectangle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.AddPolygon.Activate.Subscribe(_ => PolygonCommand());
-            //_customToolBar.AddPolygon.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.AddPolygon.Activate.Subscribe(_ => PolygonCommand());
+            _customToolBar.AddPolygon.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.AddCircle.Activate.Subscribe(_ => CircleCommand());
-            //_customToolBar.AddCircle.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.AddCircle.Activate.Subscribe(_ => CircleCommand());
+            _customToolBar.AddCircle.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
-            //_customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
+            _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
 
             //_customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController());
             //_customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
@@ -118,23 +110,23 @@ namespace FootprintViewer.ViewModels
             _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
         }
 
-        //private void ResetInteractivity()
-        //{
-        //    if (_isDirtyDecorator == true)
-        //    {
-        //        _userLayerSource.EditFeature(_currentFeature.Copy());
+        private void ResetInteractivity()
+        {
+            //if (_isDirtyDecorator == true)
+            //{
+            //    _userLayerSource.EditFeature(_currentFeature.Copy());
 
-        //        _isDirtyDecorator = false;
-        //    }
+            //    _isDirtyDecorator = false;
+            //}
 
-        //    Tip = null;
+            Tip = null;
 
-        //    _currentFeature = null;
+            //_currentFeature = null;
 
-        //    RemoveInteractiveLayer();
+            //RemoveInteractiveLayer();
 
-        //    ActualController = new DefaultController();
-        //}
+            ActualController = new DefaultController();
+        }
 
         private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
         {
@@ -221,55 +213,6 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void RemoveInteractiveLayer() => Map.RemoveLayer(LayerType.InteractiveLayer);
-
-        //private void CreateInteractiveOnEditLayer(IDesigner designer)
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-        //    if (editLayer != null)
-        //    {
-        //        CreateInteractiveLayer(editLayer, designer);
-        //    }
-        //}
-
-        //private void CreateInteractiveOnUserLayer(IDesigner designer)
-        //{
-        //    var userLayer = _map.GetLayer(LayerType.User);
-
-        //    if (userLayer != null)
-        //    {
-        //        CreateInteractiveLayer(userLayer, designer);
-        //    }
-        //}
-
-        //private void CreateInteractiveLayer(ILayer layer, IDesigner designer)
-        //{
-        //    var factory = _dependencyResolver.GetExistingService<ProjectFactory>();
-
-        //    RemoveInteractiveLayer();
-
-        //    Map.AddLayer(factory.CreateInteractiveLayer(layer, designer), LayerType.InteractiveLayer);
-        //}
-
-        private void CreateInteractiveSelectLayer(ILayer source, IFeature feature)
-        {
-            var factory = _dependencyResolver.GetExistingService<ProjectFactory>();
-
-            RemoveInteractiveLayer();
-
-            Map.AddLayer(factory.CreateInteractiveSelectLayer(source, feature), LayerType.InteractiveLayer);
-        }
-
-        //private void CreateInteractiveLayer(ILayer source, IDecorator decorator)
-        //{
-        //    var factory = _dependencyResolver.GetExistingService<ProjectFactory>();
-
-        //    RemoveInteractiveLayer();
-
-        //    Map.AddLayer(factory.CreateInteractiveLayer(source, decorator), LayerType.InteractiveLayer);
-        //}
-
         public event EventHandler? AOIChanged;
 
         private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
@@ -280,24 +223,24 @@ namespace FootprintViewer.ViewModels
             {
                 foreach (var layer in Map.Layers)
                 {
-                 //   string crs = string.Empty;
+                    //   string crs = string.Empty;
                     string format = string.Empty;
 
                     if (layer is TileLayer tileLayer)
                     {
-                       // crs = tileLayer.TileSource.Schema.Srs;
+                        // crs = tileLayer.TileSource.Schema.Srs;
                         format = tileLayer.TileSource.Schema.Format;
                     }
 
-                   // if (string.IsNullOrEmpty(crs) == true)
+                    // if (string.IsNullOrEmpty(crs) == true)
                     {
-                   //     crs = layer.CRS;
+                        //     crs = layer.CRS;
                     }
 
                     list.Add(new MapLayer()
                     {
                         Name = layer.Name,
-                   //     CRS = crs,
+                        //     CRS = crs,
                         Format = format,
                     });
                 }
@@ -347,203 +290,191 @@ namespace FootprintViewer.ViewModels
             Map.Layers.Remove(layer);
         }
 
-        //private void RectangleCommand()
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+        private void RectangleCommand()
+        {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        //    if (editLayer == null)
-        //    {
-        //        return;
-        //    }
+            if (editLayer == null)
+            {
+                return;
+            }
 
-        //    var designer = new RectangleDesigner();
+            var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map);
 
-        //    CreateInteractiveOnEditLayer(designer);
+            designer.HoverCreating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            };
 
-        //        var area = GetFeatureArea(feature);
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature.Copy();
 
-        //        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
+                editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
 
-        //        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //    };
+                Tip = null;
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+                InfoPanel.Show(CreateAOIPanel(feature));
 
-        //        editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
+                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-        //        Tip = null;
+                _customToolBar.Uncheck();
+            };
 
-        //        InfoPanel.Show(CreateAOIPanel(feature));
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
 
-        //        AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            Behavior = new InteractiveBehavior(designer);
 
-        //        _customToolBar.Uncheck();
-        //    };
+            ActualController = new DrawingController();
+        }
 
-        //    MapObserver = new MapObserver(designer);
+        private void PolygonCommand()
+        {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        //    ActualController = new DrawingController();
-        //}
+            if (editLayer == null)
+            {
+                return;
+            }
 
-        //private void PolygonCommand()
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+            var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map);
 
-        //    if (editLayer == null)
-        //    {
-        //        return;
-        //    }
+            designer.BeginCreating += (s, e) =>
+            {
+                Tip!.Text = "Нажмите, чтобы продолжить рисование фигуры";
+            };
 
-        //    var designer = new PolygonDesigner();
+            designer.Creating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //    CreateInteractiveOnEditLayer(designer);
+                if (area != 0.0)
+                {
+                    Tip!.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
+                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                }
+            };
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature.Copy();
 
-        //    designer.BeginCreating += (s, e) =>
-        //    {
-        //        Tip.Text = "Нажмите, чтобы продолжить рисование фигуры";
-        //    };
+                editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
 
-        //    designer.Creating += (s, e) =>
-        //    {
-        //        if (designer.Feature.Geometry.AllVertices().Count() > 2)
-        //        {
-        //            var area = GetFeatureArea(designer.Feature);
+                Tip = null;
 
-        //            Tip.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
-        //            Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //        }
-        //    };
+                InfoPanel.Show(CreateAOIPanel(feature));
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-        //        editLayer.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
+                _customToolBar.Uncheck();
+            };
 
-        //        Tip = null;
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
 
-        //        InfoPanel.Show(CreateAOIPanel(feature));
+            Behavior = new InteractiveBehavior(designer);
 
-        //        AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            ActualController = new DrawingController();
+        }
 
-        //        _customToolBar.Uncheck();
-        //    };
+        private void CircleCommand()
+        {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        //    MapObserver = new MapObserver(designer);
+            if (editLayer == null)
+            {
+                return;
+            }
 
-        //    ActualController = new DrawingController();
-        //}
+            var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map);
 
-        //private void CircleCommand()
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+            designer.HoverCreating += (s, e) =>
+            {
+                var area = designer.Area();
 
-        //    if (editLayer == null)
-        //    {
-        //        return;
-        //    }
+                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
+                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+            };
 
-        //    var designer = new CircleDesigner();
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature.Copy();
 
-        //    CreateInteractiveOnEditLayer(designer);
+                editLayer.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
 
-        //    Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+                Tip = null;
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+                InfoPanel.Show(CreateAOIPanel(feature));
 
-        //        var area = GetFeatureArea(feature);
+                AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
-        //        Tip.Text = "Отпустите клавишу мыши для завершения рисования";
-        //        Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
-        //    };
+                _customToolBar.Uncheck();
+            };
 
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
+            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
 
-        //        editLayer.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
+            Behavior = new InteractiveBehavior(designer);
 
-        //        Tip = null;
+            ActualController = new DrawingController();
+        }
 
-        //        InfoPanel.Show(CreateAOIPanel(feature));
+        private void RouteCommand()
+        {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        //        AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            if (editLayer == null)
+            {
+                return;
+            }
 
-        //        _customToolBar.Uncheck();
-        //    };
+            var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
 
-        //    MapObserver = new MapObserver(designer);
+            designer.BeginCreating += (s, e) =>
+            {
+                var distance = designer.Distance();
 
-        //    ActualController = new DrawingController();
-        //}
+                Tip!.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
 
-        //private void RouteCommand()
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+            designer.Creating += (s, e) =>
+            {
+                InfoPanel.Show(CreateRoutePanel(designer));
+            };
 
-        //    if (editLayer == null)
-        //    {
-        //        return;
-        //    }
+            designer.HoverCreating += (s, e) =>
+            {
+                var distance = designer.Distance();
 
-        //    var designer = new RouteDesigner();
+                Tip!.Text = "";
+                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+            };
 
-        //    CreateInteractiveOnEditLayer(designer);
+            designer.EndCreating += (s, e) =>
+            {
+                var feature = designer.Feature.Copy();
 
-        //    editLayer.ClearRoute();
+                editLayer.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
-        //    InfoPanel.CloseAll(typeof(RouteInfoPanel));
+                Tip = null;
 
-        //    Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+                _customToolBar.Uncheck();
+            };
 
-        //    designer.BeginCreating += (s, e) =>
-        //    {
-        //        var distance = GetRouteLength(designer);
+            editLayer.ClearRoute();
 
-        //        Tip.Text = "";
-        //        Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-        //    };
+            InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
-        //    designer.Creating += (s, e) =>
-        //    {
-        //        InfoPanel.Show(CreateRoutePanel(designer));
-        //    };
+            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
 
-        //    designer.HoverCreating += (s, e) =>
-        //    {
-        //        var distance = GetRouteLength(designer);
+            Behavior = new InteractiveBehavior(designer);
 
-        //        Tip.Text = "";
-        //        Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
-        //    };
-
-        //    designer.EndCreating += (s, e) =>
-        //    {
-        //        var feature = designer.Feature;
-
-        //        editLayer.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
-
-        //        Tip = null;
-
-        //        _customToolBar.Uncheck();
-        //    };
-
-        //    MapObserver = new MapObserver(designer);
-
-        //    ActualController = new DrawingController();
-        //}
+            ActualController = new DrawingController();
+        }
 
         private AOIInfoPanel CreateAOIPanel(GeometryFeature feature)
         {
@@ -574,32 +505,32 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        //private RouteInfoPanel CreateRoutePanel(RouteDesigner designer)
-        //{
-        //    var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
+        private RouteInfoPanel CreateRoutePanel(IRouteDesigner designer)
+        {
+            var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        //    var distance = GetRouteLength(designer);
+            var distance = designer.Distance();
 
-        //    var panel = new RouteInfoPanel()
-        //    {
-        //        Text = FormatHelper.ToDistance(distance),
-        //    };
+            var panel = new RouteInfoPanel()
+            {
+                Text = FormatHelper.ToDistance(distance),
+            };
 
-        //    panel.Close.Subscribe(_ =>
-        //    {
-        //        if (editLayer != null)
-        //        {
-        //            editLayer.ClearRoute();
-        //            editLayer.DataHasChanged();
-        //        }
+            panel.Close.Subscribe(_ =>
+            {
+                if (editLayer != null)
+                {
+                    editLayer.ClearRoute();
+                    editLayer.DataHasChanged();
+                }
 
-        //        Tip = null;
+                Tip = null;
 
-        //        ToolBar.Uncheck();
-        //    });
+                ToolBar.Uncheck();
+            });
 
-        //    return panel;
-        //}
+            return panel;
+        }
 
         //private void DrawingPointCommand()
         //{
@@ -758,52 +689,32 @@ namespace FootprintViewer.ViewModels
         //    ActualController = new DrawingController();
         //}
 
-        //private static double GetFeatureArea(GeometryFeature feature)
-        //{
-        //    var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
-        //    var area = SphericalUtil.ComputeSignedArea(vertices);
-        //    return Math.Abs(area);
-        //}
-
-        //private static double GetRouteLength(RouteDesigner designer)
-        //{
-        //    var geometry = (LineString)designer.Feature.Geometry;
-        //    var fHelp = designer.ExtraFeatures.Single();
-        //    var verts0 = geometry.AllVertices();
-        //    var verts1 = fHelp.Geometry.AllVertices();
-        //    var verts = verts0.Union(verts1);
-        //    var vertices = verts.Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
-        //    return SphericalUtil.ComputeDistance(vertices);
-        //}
-
         public Map Map => _map;
 
         public SidePanel SidePanel => _sidePanel;
 
         public InfoPanel InfoPanel => _infoPanel;
 
-    //    public MapListener MapListener => _mapListener;
-
         public CustomToolBar ToolBar => _customToolBar;
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }
 
-    //    [Reactive]
-    //    public IController ActualController { get; set; }
+        [Reactive]
+        public IController ActualController { get; set; }
 
         [Reactive]
         public Tip? Tip { get; set; }
 
-   //     [Reactive]
-   //     public IMapObserver? MapObserver { get; set; }
+        [Reactive]
+        public IInteractiveBehavior? Behavior { get; set; }
     }
 
     public class MapLayer
     {
         public string? Name { get; set; }
 
-       // public string? CRS { get; set; }
+        // public string? CRS { get; set; }
 
         public string? Format { get; set; }
     }
