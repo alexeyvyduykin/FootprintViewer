@@ -5,20 +5,12 @@ using Mapsui.Nts;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace InteractiveGeometry
 {
     public class InteractiveFactory
     {
-        private readonly IStyle _defaultSelectorStyle = new VectorStyle()
-        {
-            Fill = new Brush(Color.Transparent),
-            Outline = new Pen(Color.Green, 4),
-            Line = new Pen(Color.Green, 4),
-        };
-
         public IDesigner CreatePolygonDesigner(IMap map, WritableLayer source)
         {
             return CreateDesigner(map, source, new PolygonDesigner());
@@ -61,7 +53,9 @@ namespace InteractiveGeometry
 
             designer.EndCreating += (s, e) =>
             {
-                source.Add(designer.Feature.Copy());
+                var feature = designer.Feature.Copy();
+
+                source.Add(feature);
 
                 map.Layers.Remove(interactiveLayer);
             };
@@ -69,11 +63,10 @@ namespace InteractiveGeometry
             return designer;
         }
 
-        public ISelectDecorator CreateSelectDecorator(Map map, ILayer layer, IStyle? style = null)
+        public ISelectDecorator CreateSelectDecorator(Map map, ILayer layer)
         {
             var selectDecorator = new SelectDecorator(map, layer);
 
-            ICollection<IStyle>? saveStyles = null;
             BaseFeature? saveFeature = null;
 
             selectDecorator.Select += (s, e) =>
@@ -82,13 +75,11 @@ namespace InteractiveGeometry
                 {
                     if (saveFeature != null)
                     {
-                        saveFeature.Styles = saveStyles!;
+                        saveFeature["Interactive.Select"] = false;
                     }
 
                     saveFeature = decorator.SelectFeature!;
-                    saveStyles = decorator.SelectFeature!.Styles;
-
-                    decorator.SelectFeature.Styles = new StyleCollection() { style ?? _defaultSelectorStyle };
+                    saveFeature["Interactive.Select"] = true;
                 }
             };
 
@@ -98,10 +89,8 @@ namespace InteractiveGeometry
                 {
                     if (saveFeature != null)
                     {
-                        saveFeature.Styles = saveStyles!;
-
+                        saveFeature["Interactive.Select"] = false;
                         saveFeature = null;
-                        saveStyles = null;
                     }
                 }
             };
@@ -353,38 +342,6 @@ namespace InteractiveGeometry
                 }
 
                 return null;
-            });
-        }
-
-        private static IStyle CreateInteractiveSelectLayerStyle()
-        {
-            return new ThemeStyle(f =>
-            {
-                if (f is not GeometryFeature gf)
-                {
-                    return null;
-                }
-
-                if (gf.Geometry is Point)
-                {
-                    return new SymbolStyle()
-                    {
-                        Fill = new Brush(Color.Red),
-                        Outline = new Pen(Color.Green, 2 / 0.3),
-                        Line = null,
-                        SymbolType = SymbolType.Ellipse,
-                        SymbolScale = 0.9,
-                    };
-                }
-                else
-                {
-                    return new VectorStyle()
-                    {
-                        Fill = new Brush(Color.Transparent),
-                        Outline = new Pen(Color.Green, 4),
-                        Line = new Pen(Color.Green, 4),
-                    };
-                }
             });
         }
     }
