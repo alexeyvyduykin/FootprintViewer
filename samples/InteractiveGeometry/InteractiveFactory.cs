@@ -1,5 +1,4 @@
 ﻿using Mapsui;
-using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Styles;
@@ -11,32 +10,32 @@ namespace InteractiveGeometry
 {
     public class InteractiveFactory
     {
-        public IDesigner CreatePolygonDesigner(IMap map, WritableLayer source)
+        public IDesigner CreatePolygonDesigner(IMap map)
         {
-            return CreateDesigner(map, source, new PolygonDesigner());
+            return CreateDesigner(map, new PolygonDesigner());
         }
 
-        public IDesigner CreateRouteDesigner(IMap map, WritableLayer source)
+        public IDesigner CreateRouteDesigner(IMap map)
         {
-            return CreateDesigner(map, source, new RouteDesigner());
+            return CreateDesigner(map, new RouteDesigner());
         }
 
-        public IDesigner CreateCircleDesigner(IMap map, WritableLayer source)
+        public IDesigner CreateCircleDesigner(IMap map)
         {
-            return CreateDesigner(map, source, new CircleDesigner());
+            return CreateDesigner(map, new CircleDesigner());
         }
 
-        public IDesigner CreatePointDesigner(IMap map, WritableLayer source)
+        public IDesigner CreatePointDesigner(IMap map)
         {
-            return CreateDesigner(map, source, new PointDesigner());
+            return CreateDesigner(map, new PointDesigner());
         }
 
-        public IDesigner CreateRectangleDesigner(IMap map, WritableLayer source)
+        public IDesigner CreateRectangleDesigner(IMap map)
         {
-            return CreateDesigner(map, source, new RectangleDesigner());
+            return CreateDesigner(map, new RectangleDesigner());
         }
 
-        private IDesigner CreateDesigner(IMap map, WritableLayer source, IDesigner designer)
+        private IDesigner CreateDesigner(IMap map, IDesigner designer)
         {
             RemoveInteractiveLayer(map);
 
@@ -53,10 +52,6 @@ namespace InteractiveGeometry
 
             designer.EndCreating += (s, e) =>
             {
-                var feature = designer.Feature.Copy();
-
-                source.Add(feature);
-
                 map.Layers.Remove(interactiveLayer);
             };
 

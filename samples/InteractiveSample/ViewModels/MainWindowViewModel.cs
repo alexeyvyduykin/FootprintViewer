@@ -1,6 +1,7 @@
 ﻿using InteractiveGeometry;
 using InteractiveGeometry.UI;
 using Mapsui;
+using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
@@ -264,7 +265,12 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = new InteractiveFactory().CreatePointDesigner(Map, _userLayer);
+                var designer = new InteractiveFactory().CreatePointDesigner(Map);
+
+                designer.EndCreating += (s, e) =>
+                {
+                    _userLayer.Add(designer.Feature.Copy());
+                };
 
                 Tip = "Нажмите, чтобы нарисовать точку";
 
@@ -278,7 +284,7 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map);
 
                 designer.HoverCreating += (s, e) =>
                 {
@@ -289,6 +295,8 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
+                    _userLayer.Add(designer.Feature.Copy());
+
                     Tip = string.Empty;
 
                     IsRectangle = false;
@@ -306,7 +314,7 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map);
 
                 designer.HoverCreating += (s, e) =>
                 {
@@ -317,6 +325,8 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
+                    _userLayer.Add(designer.Feature.Copy());
+
                     Tip = string.Empty;
 
                     IsCircle = false;
@@ -334,7 +344,7 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map, _userLayer);
+                var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
 
                 designer.HoverCreating += (s, e) =>
                 {
@@ -347,6 +357,8 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
+                    _userLayer.Add(designer.Feature.Copy());
+
                     Tip = string.Empty;
 
                     IsRoute = false;
@@ -364,7 +376,7 @@ namespace InteractiveSample.ViewModels
         {
             if (value == true)
             {
-                var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map, _userLayer);
+                var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map);
 
                 designer.BeginCreating += (s, e) =>
                 {
@@ -383,6 +395,8 @@ namespace InteractiveSample.ViewModels
 
                 designer.EndCreating += (s, e) =>
                 {
+                    _userLayer.Add(designer.Feature.Copy());
+
                     Tip = string.Empty;
 
                     IsPolygon = false;
