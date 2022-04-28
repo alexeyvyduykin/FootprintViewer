@@ -4,20 +4,20 @@ using Mapsui.UI;
 
 namespace FootprintViewer
 {
-    public interface IMapView : IView
-    {
-        IReadOnlyViewport Viewport { get; }
+    //public interface IMapView : IView
+    //{
+    //    IReadOnlyViewport Viewport { get; }
 
-        IController Controller { get; set; }
+    //    IController Controller { get; set; }
 
-        IMapObserver MapObserver { get; set; }
+    //    IMapObserver MapObserver { get; set; }
 
-        MPoint ScreenToWorld(MPoint screenPosition);
+    //    MPoint ScreenToWorld(MPoint screenPosition);
 
-        MPoint WorldToScreen(MPoint worldPosition);
+    //    MPoint WorldToScreen(MPoint worldPosition);
 
-        MapInfo? GetMapInfo(MPoint? screenPosition, int margin = 0);
+    //    MapInfo? GetMapInfo(MPoint? screenPosition, int margin = 0);
 
-        void NavigateToAOI(MRect boundingBox);
-    }
+    //    void NavigateToAOI(MRect boundingBox);
+    //}
 }

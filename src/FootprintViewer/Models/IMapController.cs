@@ -1,6 +1,6 @@
 ﻿namespace FootprintViewer
 {
-    public interface IMapController : IController
-    {
-    }
+    //public interface IMapController : IController
+    //{
+    //}
 }

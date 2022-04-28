@@ -24,11 +24,8 @@
 
       <Panel>
         <local:UserMapControl x:Name="UserMapControl"                          
-                              MapSource="{Binding Map}"                                                     
-                              Controller="{Binding ActualController}"                         
-                              TipSource="{Binding Tip}"                         
-                              MapListener="{Binding MapListener}"                          
-                              MapObserver="{Binding MapObserver}"
+                              MapSource="{Binding Map}"                                                                                                          
+                              TipSource="{Binding Tip}"                                                                                                     
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"/>
 

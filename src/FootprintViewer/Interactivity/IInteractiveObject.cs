@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Interactivity
 {
-    public interface IInteractiveObject
-    {
-        event EventHandler? InvalidateLayer;
+    //public interface IInteractiveObject
+    //{
+    //    event EventHandler? InvalidateLayer;
 
-        IEnumerable<MPoint> GetActiveVertices();
+    //    IEnumerable<MPoint> GetActiveVertices();
 
-        void Starting(MPoint worldPosition);
+    //    void Starting(MPoint worldPosition);
 
-        void Moving(MPoint worldPosition);
+    //    void Moving(MPoint worldPosition);
 
-        void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd);
+    //    void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd);
 
-        void Hovering(MPoint worldPosition);
-    }
+    //    void Hovering(MPoint worldPosition);
+    //}
 }

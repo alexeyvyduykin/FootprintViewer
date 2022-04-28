@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Interactivity.Designers
 {
-    public interface IDesigner : IInteractiveObject
-    {
-        GeometryFeature Feature { get; }
+    //public interface IDesigner : IInteractiveObject
+    //{
+    //    GeometryFeature Feature { get; }
 
-        IList<GeometryFeature> ExtraFeatures { get; }
+    //    IList<GeometryFeature> ExtraFeatures { get; }
 
-        event EventHandler? BeginCreating;
+    //    event EventHandler? BeginCreating;
 
-        event EventHandler? Creating;
+    //    event EventHandler? Creating;
 
-        event EventHandler? HoverCreating;
+    //    event EventHandler? HoverCreating;
 
-        event EventHandler? EndCreating;
-    }
+    //    event EventHandler? EndCreating;
+    //}
 }

@@ -8,190 +8,190 @@ using System.Linq;
 
 namespace FootprintViewer.Interactivity.Designers
 {
-    public class PolygonDesigner : BaseDesigner
-    {
-        private bool _skip;
-        private int _counter;
-        private bool _isDrawing = false;
+    //public class PolygonDesigner : BaseDesigner
+    //{
+    //    private bool _skip;
+    //    private int _counter;
+    //    private bool _isDrawing = false;
 
-        private GeometryFeature? _extraLineString;
-        private GeometryFeature? _extraPolygon;
+    //    private GeometryFeature? _extraLineString;
+    //    private GeometryFeature? _extraPolygon;
 
-        private List<Coordinate> _extraPolygonCoordinates = new();
-        private List<Coordinate> _featureCoordinates = new();
+    //    private List<Coordinate> _extraPolygonCoordinates = new();
+    //    private List<Coordinate> _featureCoordinates = new();
 
-        public override IEnumerable<MPoint> GetActiveVertices()
-        {
-            if (Feature.Geometry != null)
-            {
-                return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
-            }
+    //    public override IEnumerable<MPoint> GetActiveVertices()
+    //    {
+    //        if (Feature.Geometry != null)
+    //        {
+    //            return Feature.Geometry.MainVertices().Select(s => s.ToMPoint());
+    //        }
 
-            return Array.Empty<MPoint>();
-        }
+    //        return Array.Empty<MPoint>();
+    //    }
 
-        public override void Starting(MPoint worldPosition)
-        {
-            _skip = false;
-            _counter = 0;
-        }
+    //    public override void Starting(MPoint worldPosition)
+    //    {
+    //        _skip = false;
+    //        _counter = 0;
+    //    }
 
-        public override void Moving(MPoint worldPosition)
-        {
-            if (_counter++ > 0)
-            {
-                _skip = true;
-            }
-        }
+    //    public override void Moving(MPoint worldPosition)
+    //    {
+    //        if (_counter++ > 0)
+    //        {
+    //            _skip = true;
+    //        }
+    //    }
 
-        public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
-        {
-            if (_skip == false)
-            {
-                CreatingFeature(worldPosition, isEnd);
-            }
-        }
+    //    public override void Ending(MPoint worldPosition, Predicate<MPoint>? isEnd)
+    //    {
+    //        if (_skip == false)
+    //        {
+    //            CreatingFeature(worldPosition, isEnd);
+    //        }
+    //    }
 
-        public override void Hovering(MPoint worldPosition)
-        {
-            HoverCreatingFeature(worldPosition);
-        }
+    //    public override void Hovering(MPoint worldPosition)
+    //    {
+    //        HoverCreatingFeature(worldPosition);
+    //    }
 
-        public void CreatingFeature(MPoint worldPosition)
-        {
-            CreatingFeature(worldPosition, point => true);
-        }
+    //    public void CreatingFeature(MPoint worldPosition)
+    //    {
+    //        CreatingFeature(worldPosition, point => true);
+    //    }
 
-        private bool _firstClick = true;
+    //    private bool _firstClick = true;
 
-        public void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
-        {
-            if (_firstClick == true)
-            {
-                BeginDrawing(worldPosition);
+    //    public void CreatingFeature(MPoint worldPosition, Predicate<MPoint>? isEnd)
+    //    {
+    //        if (_firstClick == true)
+    //        {
+    //            BeginDrawing(worldPosition);
 
-                BeginCreatingCallback();
+    //            BeginCreatingCallback();
 
-                _firstClick = false;
+    //            _firstClick = false;
 
-                return;
-            }
-            else
-            {
-                var res = IsEndDrawing(worldPosition, isEnd);
+    //            return;
+    //        }
+    //        else
+    //        {
+    //            var res = IsEndDrawing(worldPosition, isEnd);
 
-                if (res == true)
-                {
-                    EndDrawing();
+    //            if (res == true)
+    //            {
+    //                EndDrawing();
 
-                    _firstClick = true;
+    //                _firstClick = true;
 
-                    EndCreatingCallback();
+    //                EndCreatingCallback();
 
-                    return;
-                }
-                else
-                {
-                    Drawing(worldPosition);
+    //                return;
+    //            }
+    //            else
+    //            {
+    //                Drawing(worldPosition);
 
-                    CreatingCallback();
+    //                CreatingCallback();
 
-                    return;
-                }
-            }
-        }
+    //                return;
+    //            }
+    //        }
+    //    }
 
-        public void HoverCreatingFeature(MPoint worldPosition)
-        {
-            if (_firstClick == false)
-            {
-                DrawingHover(worldPosition);
+    //    public void HoverCreatingFeature(MPoint worldPosition)
+    //    {
+    //        if (_firstClick == false)
+    //        {
+    //            DrawingHover(worldPosition);
 
-                HoverCreatingCallback();
+    //            HoverCreatingCallback();
 
-                Invalidate();
-            }
-        }
+    //            Invalidate();
+    //        }
+    //    }
 
-        public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
-        {
-            var polygonGeometry = (LineString)Feature.Geometry!;
+    //    public bool IsEndDrawing(MPoint worldPosition, Predicate<MPoint>? isEnd)
+    //    {
+    //        var polygonGeometry = (LineString)Feature.Geometry!;
 
-            if (polygonGeometry.Coordinates.Length > 2)
-            {
-                var click = isEnd?.Invoke(polygonGeometry.Coordinates[0].ToMPoint());
+    //        if (polygonGeometry.Coordinates.Length > 2)
+    //        {
+    //            var click = isEnd?.Invoke(polygonGeometry.Coordinates[0].ToMPoint());
 
-                if (click == true)
-                {
-                    return true;
-                }
-            }
+    //            if (click == true)
+    //            {
+    //                return true;
+    //            }
+    //        }
 
-            return false;
-        }
+    //        return false;
+    //    }
 
-        public void BeginDrawing(MPoint worldPosition)
-        {
-            if (_isDrawing == true)
-            {
-                return;
-            }
+    //    public void BeginDrawing(MPoint worldPosition)
+    //    {
+    //        if (_isDrawing == true)
+    //        {
+    //            return;
+    //        }
 
-            _isDrawing = true;
+    //        _isDrawing = true;
 
-            var p0 = worldPosition.ToCoordinate();
-            var p1 = worldPosition.ToCoordinate();
+    //        var p0 = worldPosition.ToCoordinate();
+    //        var p1 = worldPosition.ToCoordinate();
 
-            _extraLineString = new[] { p0, p1 }.ToLineString().ToFeature("ExtraPolygonHoverLine");
-            _extraPolygonCoordinates = new() { p0 };
-            _extraPolygon = _extraPolygonCoordinates.ToPolygon().ToFeature("ExtraPolygonArea");
+    //        _extraLineString = new[] { p0, p1 }.ToLineString().ToFeature("ExtraPolygonHoverLine");
+    //        _extraPolygonCoordinates = new() { p0 };
+    //        _extraPolygon = _extraPolygonCoordinates.ToPolygon().ToFeature("ExtraPolygonArea");
 
-            _featureCoordinates = new() { p0 };
-            Feature = _featureCoordinates.ToLineString().ToFeature();
-            ExtraFeatures = new[] { _extraLineString, _extraPolygon };
-        }
+    //        _featureCoordinates = new() { p0 };
+    //        Feature = _featureCoordinates.ToLineString().ToFeature();
+    //        ExtraFeatures = new[] { _extraLineString, _extraPolygon };
+    //    }
 
-        public void Drawing(MPoint worldPosition)
-        {
-            if (_isDrawing == true)
-            {
-                var p0 = ((LineString)_extraLineString!.Geometry!).EndPoint;
-                var p1 = worldPosition.ToCoordinate();
-                var p2 = worldPosition.ToCoordinate();
+    //    public void Drawing(MPoint worldPosition)
+    //    {
+    //        if (_isDrawing == true)
+    //        {
+    //            var p0 = ((LineString)_extraLineString!.Geometry!).EndPoint;
+    //            var p1 = worldPosition.ToCoordinate();
+    //            var p2 = worldPosition.ToCoordinate();
 
-                _extraLineString.Geometry = new[] { p1, p2 }.ToLineString();
+    //            _extraLineString.Geometry = new[] { p1, p2 }.ToLineString();
 
-                _extraPolygonCoordinates.Add(new Coordinate(p0.X, p0.Y));
-                _extraPolygon!.Geometry = _extraPolygonCoordinates.ToPolygon();
+    //            _extraPolygonCoordinates.Add(new Coordinate(p0.X, p0.Y));
+    //            _extraPolygon!.Geometry = _extraPolygonCoordinates.ToPolygon();
 
-                _featureCoordinates.Add(new Coordinate(p0.X, p0.Y));
-                Feature.Geometry = _featureCoordinates.ToLineString();
+    //            _featureCoordinates.Add(new Coordinate(p0.X, p0.Y));
+    //            Feature.Geometry = _featureCoordinates.ToLineString();
 
-                Feature.RenderedGeometry?.Clear();
-                _extraLineString.RenderedGeometry?.Clear();
-                _extraPolygon.RenderedGeometry?.Clear();
-            }
-        }
+    //            Feature.RenderedGeometry?.Clear();
+    //            _extraLineString.RenderedGeometry?.Clear();
+    //            _extraPolygon.RenderedGeometry?.Clear();
+    //        }
+    //    }
 
-        public void DrawingHover(MPoint worldPosition)
-        {
-            if (_isDrawing == true)
-            {
-                ((LineString)_extraLineString!.Geometry!).EndPoint.X = worldPosition.X;
-                ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
+    //    public void DrawingHover(MPoint worldPosition)
+    //    {
+    //        if (_isDrawing == true)
+    //        {
+    //            ((LineString)_extraLineString!.Geometry!).EndPoint.X = worldPosition.X;
+    //            ((LineString)_extraLineString.Geometry).EndPoint.Y = worldPosition.Y;
 
-                _extraLineString.RenderedGeometry?.Clear();
-            }
-        }
+    //            _extraLineString.RenderedGeometry?.Clear();
+    //        }
+    //    }
 
-        public void EndDrawing()
-        {
-            if (_isDrawing == true)
-            {
-                _isDrawing = false;
+    //    public void EndDrawing()
+    //    {
+    //        if (_isDrawing == true)
+    //        {
+    //            _isDrawing = false;
 
-                Feature.Geometry = _featureCoordinates.ToPolygon();
-            }
-        }
-    }
+    //            Feature.Geometry = _featureCoordinates.ToPolygon();
+    //        }
+    //    }
+    //}
 }

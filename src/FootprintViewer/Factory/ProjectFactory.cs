@@ -156,17 +156,17 @@ namespace FootprintViewer
             return new InfoPanel();
         }
 
-        public ILayer CreateInteractiveLayer(ILayer layer, IInteractiveObject obj)
-        {
-            var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
+        //public ILayer CreateInteractiveLayer(ILayer layer, IInteractiveObject obj)
+        //{
+        //    var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
 
-            var style = (obj is IDesigner) ? styleManager.DesignerStyle : styleManager.DecoratorStyle;
+        //    var style = (obj is IDesigner) ? styleManager.DesignerStyle : styleManager.DecoratorStyle;
 
-            return new InteractiveLayer(layer, obj)
-            {
-                Style = style,
-            };
-        }
+        //    return new InteractiveLayer(layer, obj)
+        //    {
+        //        Style = style,
+        //    };
+        //}
 
         public ILayer CreateInteractiveSelectLayer(ILayer source, IFeature feature)
         {

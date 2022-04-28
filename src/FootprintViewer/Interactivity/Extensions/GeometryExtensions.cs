@@ -6,51 +6,51 @@ using System.Linq;
 
 namespace FootprintViewer.Interactivity
 {
-    public static class GeometryExtensions
-    {
-        /// <summary>
-        /// For editing features it is simpler if we can treat al
-        /// geometries as a list of lists of points.
-        /// </summary>
-        /// <param name="geometry"></param>
-        /// <returns></returns>
-        //public static IList<IList<Point>> GetVertexLists(this Geometry geometry)
-        //{
-        //    if (geometry is Point point)
-        //    {
-        //        return new List<IList<Point>> { new List<Point> { point } };
-        //    }
-        //    if (geometry is LineString lineString)
-        //    {
-        //        return new List<IList<Point>> { new List<Point>(lineString.Vertices) };
-        //    }
-        //    if (geometry is Polygon polygon)
-        //    {
-        //        var lists = new List<IList<Point>>
-        //        {
-        //            polygon.ExteriorRing?.Vertices ?? new List<Point>()
-        //        };
-        //        lists.AddRange(polygon.InteriorRings.Select(i => i.Vertices));
-        //        return lists;
-        //    }
-        //    throw new NotImplementedException();
-        //}
+//    public static class GeometryExtensions
+//    {
+//        /// <summary>
+//        /// For editing features it is simpler if we can treat al
+//        /// geometries as a list of lists of points.
+//        /// </summary>
+//        /// <param name="geometry"></param>
+//        /// <returns></returns>
+//        //public static IList<IList<Point>> GetVertexLists(this Geometry geometry)
+//        //{
+//        //    if (geometry is Point point)
+//        //    {
+//        //        return new List<IList<Point>> { new List<Point> { point } };
+//        //    }
+//        //    if (geometry is LineString lineString)
+//        //    {
+//        //        return new List<IList<Point>> { new List<Point>(lineString.Vertices) };
+//        //    }
+//        //    if (geometry is Polygon polygon)
+//        //    {
+//        //        var lists = new List<IList<Point>>
+//        //        {
+//        //            polygon.ExteriorRing?.Vertices ?? new List<Point>()
+//        //        };
+//        //        lists.AddRange(polygon.InteriorRings.Select(i => i.Vertices));
+//        //        return lists;
+//        //    }
+//        //    throw new NotImplementedException();
+//        //}
 
-        public static IList<Point> MainVertices(this Geometry geometry)
-        {
-            if (geometry is LineString lineString)
-            {
-                return lineString.Coordinates.Select(s => s.ToPoint()).ToList();// Vertices;
-            }
-            if (geometry is Polygon polygon)
-{
-                return polygon.ExteriorRing?.Coordinates.Select(s => s.ToPoint()).ToList()/*Vertices*/ ?? new List<Point>();
-            }
-            if (geometry is Point point)
-            {
-                return new List<Point> { point };
-            }
-            throw new NotImplementedException();
-        }
-    }
+//        public static IList<Point> MainVertices(this Geometry geometry)
+//        {
+//            if (geometry is LineString lineString)
+//            {
+//                return lineString.Coordinates.Select(s => s.ToPoint()).ToList();// Vertices;
+//            }
+//            if (geometry is Polygon polygon)
+//{
+//                return polygon.ExteriorRing?.Coordinates.Select(s => s.ToPoint()).ToList()/*Vertices*/ ?? new List<Point>();
+//            }
+//            if (geometry is Point point)
+//            {
+//                return new List<Point> { point };
+//            }
+//            throw new NotImplementedException();
+//        }
+//    }
 }

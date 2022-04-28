@@ -2,8 +2,8 @@
 
 namespace FootprintViewer
 {
-    public interface IViewCommand
-    {
-        void Execute(IView view, IController controller, InputEventArgs args);
-    }
+    //public interface IViewCommand
+    //{
+    //    void Execute(IView view, IController controller, InputEventArgs args);
+    //}
 }

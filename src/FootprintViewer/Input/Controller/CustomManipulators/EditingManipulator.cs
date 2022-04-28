@@ -2,102 +2,102 @@
 
 namespace FootprintViewer.Input
 {
-    public class EditingManipulator : MouseManipulator
-    {
-        private bool _isEditing = false;
-        private readonly int _vertexRadius = 4;
+    //public class EditingManipulator : MouseManipulator
+    //{
+    //    private bool _isEditing = false;
+    //    private readonly int _vertexRadius = 4;
 
-        public EditingManipulator(IMapView mapView) : base(mapView) { }
+    //    public EditingManipulator(IMapView mapView) : base(mapView) { }
 
-        public override void Completed(MouseEventArgs e)
-        {
-            base.Completed(e);
+    //    public override void Completed(MouseEventArgs e)
+    //    {
+    //        base.Completed(e);
 
-            if (_isEditing == true)
-            {
-                if (e.Position != null)
-                {
-                    var worldPosition = MapView.ScreenToWorld(e.Position);
+    //        if (_isEditing == true)
+    //        {
+    //            if (e.Position != null)
+    //            {
+    //                var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                    MapView.MapObserver.OnCompleted(worldPosition);
+    //                MapView.MapObserver.OnCompleted(worldPosition);
 
-                    MapView.Map!.PanLock = false;
+    //                MapView.Map!.PanLock = false;
 
-                    _isEditing = false;
-                }
-            }
+    //                _isEditing = false;
+    //            }
+    //        }
 
-            MapView.SetCursor(CursorType.Default);
+    //        MapView.SetCursor(CursorType.Default);
 
-            e.Handled = true;
-        }
+    //        e.Handled = true;
+    //    }
 
-        public override void Delta(MouseEventArgs e)
-        {
-            base.Delta(e);
+    //    public override void Delta(MouseEventArgs e)
+    //    {
+    //        base.Delta(e);
 
-            if (_isEditing == true)
-            {
-                if (e.Position != null)
-                {
-                    var worldPosition = MapView.ScreenToWorld(e.Position);
+    //        if (_isEditing == true)
+    //        {
+    //            if (e.Position != null)
+    //            {
+    //                var worldPosition = MapView.ScreenToWorld(e.Position);
 
-                    MapView.MapObserver.OnDelta(worldPosition);
+    //                MapView.MapObserver.OnDelta(worldPosition);
 
-                    MapView.SetCursor(CursorType.HandGrab);
-                }
+    //                MapView.SetCursor(CursorType.HandGrab);
+    //            }
 
-                e.Handled = true;
-            }
+    //            e.Handled = true;
+    //        }
 
-            //e.Handled = true;
-        }
+    //        //e.Handled = true;
+    //    }
 
-        public override void Started(MouseEventArgs e)
-        {
-            base.Started(e);
+    //    public override void Started(MouseEventArgs e)
+    //    {
+    //        base.Started(e);
 
-            var mapInfo = MapView.GetMapInfo(e.Position);
+    //        var mapInfo = MapView.GetMapInfo(e.Position);
 
-            _isEditing = false;
+    //        _isEditing = false;
 
-            if (mapInfo != null && mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
-            {
-                var distance = mapInfo.Resolution * _vertexRadius;
+    //        if (mapInfo != null && mapInfo.Feature != null && mapInfo.Layer is InteractiveLayer)
+    //        {
+    //            var distance = mapInfo.Resolution * _vertexRadius;
 
-                MapView.MapObserver.OnStarted(mapInfo.WorldPosition, distance);
+    //            MapView.MapObserver.OnStarted(mapInfo.WorldPosition, distance);
 
-                _isEditing = true;
-            }
+    //            _isEditing = true;
+    //        }
 
-            if (_isEditing == true)
-            {
-                MapView.Map!.PanLock = true;
-            }
+    //        if (_isEditing == true)
+    //        {
+    //            MapView.Map!.PanLock = true;
+    //        }
 
-            e.Handled = true;
-        }
+    //        e.Handled = true;
+    //    }
 
-    }
+    //}
 
-    public class HoverEditingManipulator : MouseManipulator
-    {
-        public HoverEditingManipulator(IMapView view) : base(view) { }
+    //public class HoverEditingManipulator : MouseManipulator
+    //{
+    //    public HoverEditingManipulator(IMapView view) : base(view) { }
 
-        public override void Delta(MouseEventArgs e)
-        {
-            base.Delta(e);
+    //    public override void Delta(MouseEventArgs e)
+    //    {
+    //        base.Delta(e);
 
-            if (e.Handled == false)
-            {
-                var mapInfo = MapView.GetMapInfo(e.Position);
+    //        if (e.Handled == false)
+    //        {
+    //            var mapInfo = MapView.GetMapInfo(e.Position);
 
-                if (mapInfo != null && mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
-                {
-                    MapView.SetCursor(CursorType.Hand);
-                    e.Handled = true;
-                }
-            }
-        }
-    }
+    //            if (mapInfo != null && mapInfo.Layer != null && mapInfo.Layer is InteractiveLayer)
+    //            {
+    //                MapView.SetCursor(CursorType.Hand);
+    //                e.Handled = true;
+    //            }
+    //        }
+    //    }
+    //}
 }

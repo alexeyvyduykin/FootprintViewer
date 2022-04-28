@@ -3,53 +3,53 @@ using System;
 
 namespace FootprintViewer.Interactivity
 {
-    public class DeltaEventArgs : EventArgs
-    {
-        public MPoint WorldPosition { get; set; } = new MPoint();
-    }
+    //public class DeltaEventArgs : EventArgs
+    //{
+    //    public MPoint WorldPosition { get; set; } = new MPoint();
+    //}
 
-    public class StartedEventArgs : EventArgs
-    {
-        public MPoint WorldPosition { get; set; } = new MPoint();
+    //public class StartedEventArgs : EventArgs
+    //{
+    //    public MPoint WorldPosition { get; set; } = new MPoint();
 
-        public double ScreenDistance { get; set; }
-    }
+    //    public double ScreenDistance { get; set; }
+    //}
 
-    public class CompletedEventArgs : EventArgs
-    {
-        public MPoint WorldPosition { get; set; } = new MPoint();
+    //public class CompletedEventArgs : EventArgs
+    //{
+    //    public MPoint WorldPosition { get; set; } = new MPoint();
 
-        public Predicate<MPoint>? IsEnd { get; set; }
-    }
+    //    public Predicate<MPoint>? IsEnd { get; set; }
+    //}
 
-    public class HoverEventArgs : EventArgs
-    {
-        public MPoint WorldPosition { get; set; } = new MPoint();
-    }
+    //public class HoverEventArgs : EventArgs
+    //{
+    //    public MPoint WorldPosition { get; set; } = new MPoint();
+    //}
 
-    public delegate void StartedEventHandler(object sender, StartedEventArgs e);
-    public delegate void DeltaEventHandler(object sender, DeltaEventArgs e);
-    public delegate void CompletedEventHandler(object sender, CompletedEventArgs e);
-    public delegate void HoverEventHandler(object sender, HoverEventArgs e);
+    //public delegate void StartedEventHandler(object sender, StartedEventArgs e);
+    //public delegate void DeltaEventHandler(object sender, DeltaEventArgs e);
+    //public delegate void CompletedEventHandler(object sender, CompletedEventArgs e);
+    //public delegate void HoverEventHandler(object sender, HoverEventArgs e);
 
-    public interface IMapObserver
-    {
-        event StartedEventHandler? Started;
+    //public interface IMapObserver
+    //{
+    //    event StartedEventHandler? Started;
 
-        event DeltaEventHandler? Delta;
+    //    event DeltaEventHandler? Delta;
 
-        event CompletedEventHandler? Completed;
+    //    event CompletedEventHandler? Completed;
 
-        event HoverEventHandler? Hover;
+    //    event HoverEventHandler? Hover;
 
-        void OnStarted(MPoint worldPosition, double screenDistance);
+    //    void OnStarted(MPoint worldPosition, double screenDistance);
 
-        void OnDelta(MPoint worldPosition);
+    //    void OnDelta(MPoint worldPosition);
 
-        void OnCompleted(MPoint worldPosition, Predicate<MPoint> isEnd);
+    //    void OnCompleted(MPoint worldPosition, Predicate<MPoint> isEnd);
 
-        void OnCompleted(MPoint worldPosition);
+    //    void OnCompleted(MPoint worldPosition);
 
-        void OnHover(MPoint worldPosition);
-    }
+    //    void OnHover(MPoint worldPosition);
+    //}
 }

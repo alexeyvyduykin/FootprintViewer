@@ -7,7 +7,7 @@ using Mapsui.Widgets.ScaleBar;
 using Mapsui;
 using System;
 using Mapsui.Projections;
-using FootprintViewer.Input;
+//using FootprintViewer.Input;
 
 namespace FootprintViewer.Avalonia.Views
 {
