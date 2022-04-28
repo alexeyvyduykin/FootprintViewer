@@ -4,7 +4,7 @@ using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
-using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using Mapsui.Tiling.Layers;
 using Mapsui.UI;
@@ -15,7 +15,6 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
@@ -210,16 +209,6 @@ namespace FootprintViewer.ViewModels
             MapLayers = new ObservableCollection<MapLayer>(list);
         }
 
-        private string FeatureAreaEndCreating(GeometryFeature feature)
-        {
-            var bb = feature.Extent;//Geometry.BoundingBox;
-            var coord = SphericalMercator.ToLonLat(bb.Centroid.X, bb.Centroid.Y).ToMPoint();
-            var vertices = feature.Geometry.AllVertices().Select(s => SphericalMercator.ToLonLat(s.X, s.Y).ToMPoint()).ToArray();
-            var area = SphericalUtil.ComputeSignedArea(vertices);
-            area = Math.Abs(area);
-            return $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(coord.X, coord.Y)}";
-        }
-
         private void ZoomInCommand()
         {
             if (Map == null)
@@ -279,7 +268,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(feature));
+                InfoPanel.Show(CreateAOIPanel(designer));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -328,7 +317,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(feature));
+                InfoPanel.Show(CreateAOIPanel(designer));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -369,7 +358,7 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(feature));
+                InfoPanel.Show(CreateAOIPanel(designer));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
@@ -549,11 +538,14 @@ namespace FootprintViewer.ViewModels
             ActualController = new EditController();
         }
 
-        private AOIInfoPanel CreateAOIPanel(GeometryFeature feature)
+        private AOIInfoPanel CreateAOIPanel(IAreaDesigner designer)
         {
             var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-            var descr = FeatureAreaEndCreating(feature);
+            var center = SphericalMercator.ToLonLat(designer.Feature.Geometry!.Centroid.ToMPoint());
+            var area = designer.Area();
+
+            var descr = $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(center.X, center.Y)}";
 
             var panel = new AOIInfoPanel()
             {
