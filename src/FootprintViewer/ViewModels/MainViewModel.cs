@@ -7,7 +7,6 @@ using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using Mapsui.Tiling.Layers;
-using Mapsui.UI;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -15,6 +14,7 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
@@ -30,7 +30,7 @@ namespace FootprintViewer.ViewModels
         private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
 
-        //  private ISelectDecorator? _selectDecorator;
+        private ISelectDecorator? _selectDecorator;
         private ISelectScaleDecorator? _selectScaleDecorator;
         private ISelectTranslateDecorator? _selectTranslateDecorator;
         private ISelectRotateDecorator? _selectRotateDecorator;
@@ -82,8 +82,8 @@ namespace FootprintViewer.ViewModels
             _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
             _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            //_customToolBar.SelectGeometry.Activate.Subscribe(_ => ActualController = new EditController());
-            //_customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
+            _customToolBar.SelectGeometry.Activate.Subscribe(_ => SelectCommand());
+            _customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _customToolBar.TranslateGeometry.Activate.Subscribe(_ => TranslateCommand());
             _customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
@@ -116,61 +116,37 @@ namespace FootprintViewer.ViewModels
         {
             if (_selectTranslateDecorator != null)
             {
-                _selectTranslateDecorator?.Dispose();
+                _selectTranslateDecorator.Dispose();
                 _selectTranslateDecorator = null;
             }
 
             if (_selectScaleDecorator != null)
             {
-                _selectScaleDecorator?.Dispose();
+                _selectScaleDecorator.Dispose();
                 _selectScaleDecorator = null;
             }
 
             if (_selectRotateDecorator != null)
             {
-                _selectRotateDecorator?.Dispose();
+                _selectRotateDecorator.Dispose();
                 _selectRotateDecorator = null;
             }
 
             if (_selectEditDecorator != null)
             {
-                _selectEditDecorator?.Dispose();
+                _selectEditDecorator.Dispose();
                 _selectEditDecorator = null;
+            }
+
+            if (_selectDecorator != null)
+            {
+                _selectDecorator.Dispose();
+                _selectDecorator = null;
             }
 
             Tip = null;
 
             ActualController = new DefaultController();
-        }
-
-        private void MapListener_LeftClickOnMap(object? sender, EventArgs e)
-        {
-            if (sender is MapInfo mapInfo)
-            {
-                //var feature = mapInfo.Feature;
-
-                //if (feature is GeometryFeature gf2 && gf2 != _currentFeature)
-                //{
-                //    CreateInteractiveLayer(mapInfo.Layer, decorator);
-
-                //    MapObserver = new MapObserver(decorator);
-
-                //    _currentFeature = gf2;
-
-                //    _isDirtyDecorator = true;
-                //}
-                //else
-                //{
-                //    ToolBar.Uncheck();
-                //}
-            }
-            else if (sender is string name)
-            {
-                if (_footprintObserver.IsActive == true)
-                {
-                    _footprintObserver.SelectFootprintInfo(name);
-                }
-            }
         }
 
         public event EventHandler? AOIChanged;
@@ -424,6 +400,33 @@ namespace FootprintViewer.ViewModels
             Behavior = new InteractiveBehavior(designer);
 
             ActualController = new DrawingController();
+        }
+
+        private void SelectCommand()
+        {
+            var footprintLayer = _map.GetLayer<ILayer>(LayerType.Footprint);
+
+            if (footprintLayer == null)
+            {
+                return;
+            }
+
+            _selectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, footprintLayer);
+
+            _selectDecorator.Select += (s, e) =>
+            {
+                var decorator = (ISelectDecorator)s!;
+
+                var feature = decorator.SelectFeature!;
+
+                if (_footprintObserver.IsActive == true && feature.Fields.Contains("Name"))
+                {
+                    var name = (string)feature["Name"]!;
+                    _footprintObserver.SelectFootprintInfo(name);
+                }
+            };
+
+            ActualController = new DefaultController();
         }
 
         private void ScaleCommand()

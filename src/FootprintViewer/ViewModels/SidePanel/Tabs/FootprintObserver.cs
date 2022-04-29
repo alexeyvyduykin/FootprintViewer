@@ -81,45 +81,13 @@ namespace FootprintViewer.ViewModels
 
         public void SelectFootprintInfo(string name)
         {
-            //if (_footrpintLayer != null)
-            //{
-            //    var isSelect = _footrpintLayer.IsSelect(name);
-
-            //    if (isSelect == true)
-            //    {
-            //        _footrpintLayer.UnselectFeature(name);
-
-            //        _footprintObserverList.CloseItems();
-
-            //        _footprintObserverList.SelectedFootprintInfo = null;
-            //    }
-            //    else
-            //    {
-            //        _footrpintLayer.SelectFeature(name);
-
-            //        var item = _footprintObserverList.FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
-
-            //        if (item != null)
-            //        {
-            //            ScrollCollectionToCenter(item);
-            //        }
-            //    }
-            //}
+            _footprintObserverList.SelectFootprintInfo(name);
         }
 
         private void FilterClickImpl()
         {
             IsFilterOpen = !IsFilterOpen;
         }
-
-        //private void ScrollCollectionToCenter(FootprintInfo item)
-        //{
-        //    ScrollToCenter = true;
-
-        //    _footprintObserverList.SelectedFootprintInfo = item;
-
-        //    ScrollToCenter = false;
-        //}
 
         private void SetMapFocusTo(Coordinate coordinate)
         {

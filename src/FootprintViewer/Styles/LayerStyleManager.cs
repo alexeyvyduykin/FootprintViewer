@@ -91,7 +91,27 @@ namespace FootprintViewer.Styles
                     MaxVisible = _maxVisibleFootprintStyle,
                 };
 
-                switch (gf["State"].ToString())
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
+                    {
+                        if (item.Equals("Interactive.Select") == true)
+                        {
+                            var isSelect = (bool)gf["Interactive.Select"]!;
+
+                            if (isSelect == true)
+                            {
+                                style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));                                  
+                                style.Outline = new Pen(Color.Black, 4.0);                                   
+                                style.Line = new Pen(Color.Black, 4.0);
+                                
+                                return style;
+                            }
+                        }
+                    }
+                }
+
+                switch (gf["State"]!.ToString())
                 {
                     case "Unselect":
                         style.Fill = new Brush(Color.Opacity(Color.Green, 0.25f));

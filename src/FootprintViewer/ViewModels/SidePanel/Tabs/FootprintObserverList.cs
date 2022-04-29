@@ -86,33 +86,12 @@ namespace FootprintViewer.ViewModels
             _prevSelectedItem = item;
         }
 
-        //public void SelectFootprintInfo(string name)
-        //{
-        //    if (_footrpintLayer != null)
-        //    {
-        //        var isSelect = _footrpintLayer.IsSelect(name);
+        public void SelectFootprintInfo(string name)
+        {
+            var item = FootprintInfos.Where(s => s.Name.Equals(name)).FirstOrDefault();
 
-        //        if (isSelect == true)
-        //        {
-        //            _footrpintLayer.UnselectFeature(name);
-
-        //            FootprintInfos.ToList().ForEach(s => s.IsShowInfo = false);
-
-        //            SelectedFootprintInfo = null;
-        //        }
-        //        else
-        //        {
-        //            _footrpintLayer.SelectFeature(name);
-
-        //            var item = FootprintInfos.Where(s => name.Equals(s.Name)).SingleOrDefault();
-
-        //            if (item != null)
-        //            {
-        //                ScrollCollectionToCenter(item);
-        //            }
-        //        }
-        //    }
-        //}
+            ClickOnItem(item);
+        }
 
         //private void ScrollCollectionToCenter(FootprintInfo item)
         //{
@@ -125,9 +104,6 @@ namespace FootprintViewer.ViewModels
 
         //[Reactive]
         //public bool ScrollToCenter { get; set; } = false;
-
-        // [Reactive]
-        // public ObservableCollection<FootprintInfo> FootprintInfos { get; private set; }
 
         public List<FootprintInfo> FootprintInfos => _footprintInfos.Value;
 
