@@ -1,12 +1,9 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Interactivity;
-using FootprintViewer.Interactivity.Designers;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Providers;
 using Splat;
 using System.Linq;
 
@@ -28,7 +25,7 @@ namespace FootprintViewer
             var map = new Map()
             {
                 CRS = "EPSG:3857",
-             //   Transformation = new MinimalTransformation(),
+                //   Transformation = new MinimalTransformation(),
             };
 
             map.AddLayer(new Layer(), LayerType.WorldMap);

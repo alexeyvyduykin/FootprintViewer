@@ -101,10 +101,10 @@ namespace FootprintViewer.Styles
 
                             if (isSelect == true)
                             {
-                                style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));                                  
-                                style.Outline = new Pen(Color.Black, 4.0);                                   
+                                style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));
+                                style.Outline = new Pen(Color.Black, 4.0);
                                 style.Line = new Pen(Color.Black, 4.0);
-                                
+
                                 return style;
                             }
                         }
@@ -183,8 +183,8 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                var highlight = (bool)f["Highlight"];
-                var state = f["State"].ToString();
+                var highlight = (bool)f["Highlight"]!;
+                var state = f["State"]!.ToString();
 
                 if (highlight == true)
                 {
@@ -279,7 +279,7 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                var state = f["State"].ToString();
+                var state = f["State"]!.ToString();
 
                 if (f is not GeometryFeature gf)
                 {
@@ -385,7 +385,7 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Name") == true)
                         {
-                            var name = (string)gf["Name"];
+                            var name = (string)gf["Name"]!;
 
                             var color = _satellitePalette.PickColor(name);
 
@@ -430,7 +430,7 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Name") == true)
                         {
-                            var name = (string)gf["Name"];
+                            var name = (string)gf["Name"]!;
 
                             var color = _satellitePalette.PickColor(name);
 
@@ -486,14 +486,14 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Name"))
                         {
-                            return FeatureStyles.Get((string)gf["Name"]);
+                            return FeatureStyles.Get((string)gf["Name"]!);
                         }
                     }
                 }
 
                 if (gf.Geometry is Polygon)
                 {
-                    Color editModeColor = new Color(124, 22, 111, 180);
+                    var editModeColor = new Color(124, 22, 111, 180);
 
                     return new VectorStyle
                     {
@@ -529,9 +529,9 @@ namespace FootprintViewer.Styles
                 }
                 else
                 {
-                    Color backgroundColor = new Color(20, 120, 120, 40);
-                    Color lineColor = new Color(20, 120, 120);
-                    Color outlineColor = new Color(20, 20, 20);
+                    var backgroundColor = new Color(20, 120, 120, 40);
+                    var lineColor = new Color(20, 120, 120);
+                    var outlineColor = new Color(20, 20, 20);
 
                     return new VectorStyle
                     {
@@ -545,7 +545,7 @@ namespace FootprintViewer.Styles
 
         private static IStyle CreateFootprintImageBorderStyle()
         {
-            Color color = new Color() { R = 76, G = 185, B = 247, A = 255 };
+            var color = new Color() { R = 76, G = 185, B = 247, A = 255 };
 
             return new VectorStyle
             {
@@ -579,7 +579,7 @@ namespace FootprintViewer.Styles
                     };
                 }
 
-                Color _color = new Color(76, 154, 231);
+                var _color = new Color(76, 154, 231);
                 //Color _darkColor = new Color(67, 135, 202);
 
                 if (gf.Fields != null)
@@ -588,7 +588,7 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Name") == true)
                         {
-                            if ((string)gf["Name"] == "ExtraPolygonHoverLine")
+                            if ((string)gf["Name"]! == "ExtraPolygonHoverLine")
                             {
                                 return new VectorStyle
                                 {
@@ -596,7 +596,7 @@ namespace FootprintViewer.Styles
                                     Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
                                 };
                             }
-                            else if ((string)gf["Name"] == "ExtraPolygonArea")
+                            else if ((string)gf["Name"]! == "ExtraPolygonArea")
                             {
                                 return new VectorStyle
                                 {
@@ -605,7 +605,7 @@ namespace FootprintViewer.Styles
                                     Outline = null,
                                 };
                             }
-                            else if ((string)gf["Name"] == "ExtraRouteHoverLine")
+                            else if ((string)gf["Name"]! == "ExtraRouteHoverLine")
                             {
                                 return new VectorStyle
                                 {
@@ -710,8 +710,8 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Count"))
                         {
-                            var count = int.Parse(gf["Count"].ToString()!);
-                            var index = int.Parse(gf["Index"].ToString()!);
+                            var count = int.Parse(gf["Count"]!.ToString()!);
+                            var index = int.Parse(gf["Index"]!.ToString()!);
                             var color = _groundStationPalette.GetColor(index, count);
                             return new VectorStyle
                             {
@@ -730,7 +730,7 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("InnerBorder"))
                         {
-                            var count = int.Parse(gf["Count"].ToString()!);
+                            var count = int.Parse(gf["Count"]!.ToString()!);
                             var color = _groundStationPalette.GetColor(0, count);
 
                             return new VectorStyle
@@ -743,7 +743,7 @@ namespace FootprintViewer.Styles
                         }
                         if (item.Equals("OuterBorder"))
                         {
-                            var count = int.Parse(gf["Count"].ToString()!);
+                            var count = int.Parse(gf["Count"]!.ToString()!);
                             var color = _groundStationPalette.GetColor(count - 1, count);
 
                             return new VectorStyle
@@ -773,28 +773,19 @@ namespace FootprintViewer.Styles
     internal static class FeatureStyles
     {
         private static readonly Dictionary<string, VectorStyle> _dict;
-        private static readonly Color _color = new Color { R = 76, G = 154, B = 231, A = 255 };
-        private static readonly Pen _pen = new Pen(_color, 3);
-        private static readonly Pen _penDot = new Pen(_color, 4) { PenStyle = PenStyle.Dot };
-        private static readonly Brush _brush = new Brush(Color.Opacity(_color, 0.25f));
-        private static readonly Color _darkColor = new Color { R = 67, G = 135, B = 202, A = 255 };
-        private static readonly Pen _darkPen = new Pen(_darkColor, 3);
-        private static readonly Pen _darkPenDash = new Pen(_darkColor, 3) { PenStyle = PenStyle.Dash };
+        private static readonly Color _color = new() { R = 76, G = 154, B = 231, A = 255 };
+        private static readonly Pen _pen = new(_color, 3);
+        private static readonly Color _darkColor = new() { R = 67, G = 135, B = 202, A = 255 };
+        private static readonly Pen _darkPen = new(_darkColor, 3);
 
         static FeatureStyles()
         {
             _dict = new Dictionary<string, VectorStyle>()
             {
-                { FeatureType.Route.ToString(), RouteStyle },
-              //  { FeatureType.RouteDrawing.ToString(), RouteDrawingStyle },
-                { FeatureType.AOIRectangle.ToString(), AOIRectangleStyle },
-              //  { FeatureType.AOIRectangleDrawing.ToString(), AOIRectangleDrawingStyle },
+                { FeatureType.Route.ToString(), RouteStyle },           
+                { FeatureType.AOIRectangle.ToString(), AOIRectangleStyle },           
                 { FeatureType.AOIPolygon.ToString(), AOIPolygonStyle },
-              //  { FeatureType.AOIPolygonBorderDrawing.ToString(), AOIPolygonBorderStyle },
-              //  { FeatureType.AOIPolygonAreaDrawing.ToString(), AOIPolygonAreaStyle },
-              //  { FeatureType.AOIPolygonDrawing.ToString(), AOIPolygonDrawingStyle },
-                { FeatureType.AOICircle.ToString(), AOICircleStyle },
-              //  { FeatureType.AOICircleDrawing.ToString(), AOICircleDrawingStyle },
+                { FeatureType.AOICircle.ToString(), AOICircleStyle },            
             };
         }
 
@@ -803,65 +794,28 @@ namespace FootprintViewer.Styles
             return _dict.TryGetValue(feature, out var style) ? style : null;
         }
 
-        private static readonly VectorStyle RouteStyle = new VectorStyle
+        private static readonly VectorStyle RouteStyle = new()
         {
             Fill = null,
             Line = _darkPen
         };
 
-        private static readonly VectorStyle AOIRectangleStyle = new VectorStyle
+        private static readonly VectorStyle AOIRectangleStyle = new()
         {
             Fill = null,
             Outline = _pen,
         };
 
-        private static readonly VectorStyle AOIPolygonStyle = new VectorStyle
+        private static readonly VectorStyle AOIPolygonStyle = new()
         {
             Fill = null,
             Line = _pen,
             Outline = _pen,
         };
 
-        private static readonly VectorStyle AOICircleStyle = new VectorStyle
+        private static readonly VectorStyle AOICircleStyle = new()
         {
             Fill = null,
-            Outline = _pen,
-        };
-
-        private static readonly VectorStyle RouteDrawingStyle = new VectorStyle
-        {
-            Fill = null,
-            Line = _darkPenDash,
-        };
-
-        private static readonly VectorStyle AOIRectangleDrawingStyle = new VectorStyle
-        {
-            Fill = _brush,
-            Outline = _pen,
-        };
-
-        private static readonly VectorStyle AOIPolygonBorderStyle = new VectorStyle
-        {
-            Fill = null,
-            Line = _pen,
-        };
-
-        private static readonly VectorStyle AOIPolygonAreaStyle = new VectorStyle
-        {
-            Fill = _brush,
-            Line = null,
-            Outline = null,
-        };
-
-        private static readonly VectorStyle AOIPolygonDrawingStyle = new VectorStyle
-        {
-            Fill = null,
-            Line = _penDot,
-        };
-
-        private static readonly VectorStyle AOICircleDrawingStyle = new VectorStyle
-        {
-            Fill = _brush,
             Outline = _pen,
         };
     }
