@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:icons="using:Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"             
+             mc:Ignorable="d"
+             d:DesignWidth="450" d:DesignHeight="250"
+             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.FootprintClickInfoPanelView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeFootprintClickInfoPanelItem/>
+  </Design.DataContext>
+
+  <Panel VerticalAlignment="Center"
+         HorizontalAlignment="Center">
+    <styles:Card Opacity="0.85">
+      <StackPanel Margin="4" Spacing="4">
+
+        <TextBlock Text="{Binding Info.Name}" Classes="Headline6"/>
+
+        <StackPanel>
+          <TextBlock Text="Center" Classes="Overline"/>
+          <TextBlock x:Name="CenterTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Satellite (Node - Direction)" Classes="Overline"/>
+          <TextBlock x:Name="SatelliteNodeDirectionTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+        <StackPanel>
+          <TextBlock Text="Begin (Duration)" Classes="Overline"/>
+          <TextBlock x:Name="BeginDurationTextBlock" Classes="Subtitle1"/>
+        </StackPanel>
+
+      </StackPanel>
+
+    </styles:Card>
+  </Panel>
+  
+</UserControl>

@@ -16,8 +16,11 @@ namespace FootprintViewer.Designer
                 Text = "Description",
             };
 
+            var footprintClickInfo = new FootprintClickInfoPanel(new FootprintInfo(DesignTimeFootprintInfo.BuildModel()));
+
             Show(RouteInfoPanel);
             Show(AoiInfoPanel);
+            Show(footprintClickInfo);
         }
     }
 
@@ -26,6 +29,14 @@ namespace FootprintViewer.Designer
         public DesignTimeInfoPanelItem() : base()
         {
             Text = "Description";
+        }
+    }
+
+    public class DesignTimeFootprintClickInfoPanelItem : FootprintClickInfoPanel
+    {
+        public DesignTimeFootprintClickInfoPanelItem() : base(new FootprintInfo(DesignTimeFootprintInfo.BuildModel()))
+        {
+
         }
     }
 }

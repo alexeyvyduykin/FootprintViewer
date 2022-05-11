@@ -25,7 +25,7 @@ namespace FootprintViewer.ViewModels
 
         public List<InfoPanelItem> Panels => _panels.Value;
 
-        public async void ShowAsync(InfoPanelItem panel)
+        public async Task ShowAsync(InfoPanelItem panel)
         {
             await Task.Run(() =>
             {
@@ -37,20 +37,27 @@ namespace FootprintViewer.ViewModels
 
         public void Show(InfoPanelItem panel)
         {
-            Task.Run(() => ShowAsync(panel));
+            //Task.Run(() => ShowAsync(panel));
+
+            AddImpl(panel);
+
+            Loading.Execute().Subscribe();
         }
 
         public void CloseAll(Type type)
         {
-            for (int i = _items.Count - 1; i >= 0; i--)
-            {
-                if (_items[i].GetType() == type)
+            //Task.Run(() =>
+            //{
+                for (int i = _items.Count - 1; i >= 0; i--)
                 {
-                    _items.RemoveAt(i);
+                    if (_items[i].GetType() == type)
+                    {
+                        _items.RemoveAt(i);
+                    }
                 }
-            }
 
-            Loading.Execute().Subscribe();
+                Loading.Execute().Subscribe();
+            //});
         }
 
         private void AddImpl(InfoPanelItem? panel)

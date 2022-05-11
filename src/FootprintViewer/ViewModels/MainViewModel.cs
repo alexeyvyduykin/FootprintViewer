@@ -23,6 +23,7 @@ namespace FootprintViewer.ViewModels
     {
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
+        private readonly InfoPanel _clickInfoPanel;
         private readonly SidePanel _sidePanel;
         private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
@@ -47,6 +48,8 @@ namespace FootprintViewer.ViewModels
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = _factory.CreateInfoPanel();
+
+            _clickInfoPanel = _factory.CreateInfoPanel();
 
             _map.DataChanged += Map_DataChanged;
 
@@ -419,11 +422,26 @@ namespace FootprintViewer.ViewModels
 
                 var feature = decorator.SelectFeature!;
 
-                if (_footprintObserver.IsActive == true && feature.Fields.Contains("Name"))
+                if (feature.Fields.Contains("Name"))
                 {
                     var name = (string)feature["Name"]!;
-                    _footprintObserver.SelectFootprintInfo(name);
+                    var info = _footprintObserver.GetFootprintInfo(name);
+
+                    if (info != null)
+                    {
+                        ClickInfoPanel.Show(new FootprintClickInfoPanel(info));
+                    }
+
+                    if (_footprintObserver.IsActive == true)
+                    {
+                        _footprintObserver.SelectFootprintInfo(name);
+                    }
                 }
+            };
+
+            _selectDecorator.Unselect += (s, e) =>
+            {
+                ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
             };
 
             ActualController = new DefaultController();
@@ -747,6 +765,8 @@ namespace FootprintViewer.ViewModels
         public SidePanel SidePanel => _sidePanel;
 
         public InfoPanel InfoPanel => _infoPanel;
+
+        public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
         public CustomToolBar ToolBar => _customToolBar;
 

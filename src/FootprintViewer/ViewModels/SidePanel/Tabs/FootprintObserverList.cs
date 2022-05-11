@@ -93,6 +93,11 @@ namespace FootprintViewer.ViewModels
             ClickOnItem(item);
         }
 
+        public FootprintInfo? GetFootprintInfo(string name)
+        {
+            return FootprintInfos.Where(s => s.Name.Equals(name)).FirstOrDefault();
+        }
+
         //private void ScrollCollectionToCenter(FootprintInfo item)
         //{
         //    ScrollToCenter = true;

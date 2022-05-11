@@ -84,6 +84,11 @@ namespace FootprintViewer.ViewModels
             _footprintObserverList.SelectFootprintInfo(name);
         }
 
+        public FootprintInfo? GetFootprintInfo(string name)
+        {
+            return _footprintObserverList.GetFootprintInfo(name);
+        }
+
         private void FilterClickImpl()
         {
             IsFilterOpen = !IsFilterOpen;

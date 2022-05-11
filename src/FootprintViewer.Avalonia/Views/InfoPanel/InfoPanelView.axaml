@@ -12,7 +12,7 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"            
              mc:Ignorable="d"
-             d:DesignHeight="200" d:DesignWidth="450">
+             d:DesignHeight="500" d:DesignWidth="450">
 
   <Design.DataContext>
     <vmd:DesignTimeInfoPanel/>
@@ -42,11 +42,17 @@
   
   <Grid>    
     <ItemsControl x:Name="ItemsControl">
-      <ItemsControl.ItemTemplate>
+      <ItemsControl.DataTemplates>
+        
+        <DataTemplate DataType="vm:FootprintClickInfoPanel">
+          <panels:FootprintClickInfoPanelView DataContext="{Binding}"/>
+        </DataTemplate>
+        
         <DataTemplate>
           <panels:GeometryInfoPanelView DataContext="{Binding}"/>
         </DataTemplate>
-      </ItemsControl.ItemTemplate> 
+                
+      </ItemsControl.DataTemplates> 
     </ItemsControl>
   </Grid>
 
