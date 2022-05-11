@@ -541,7 +541,7 @@ namespace FootprintViewer.ViewModels
             ActualController = new EditController();
         }
 
-        private AOIInfoPanel CreateAOIPanel(IAreaDesigner designer)
+        private InfoPanelItem CreateAOIPanel(IAreaDesigner designer)
         {
             var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -573,7 +573,7 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        private RouteInfoPanel CreateRoutePanel(IRouteDesigner designer)
+        private InfoPanelItem CreateRoutePanel(IRouteDesigner designer)
         {
             var editLayer = _map.GetLayer<EditLayer>(LayerType.Edit);
 

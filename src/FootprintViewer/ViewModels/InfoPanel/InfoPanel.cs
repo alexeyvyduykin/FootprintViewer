@@ -1,68 +1,84 @@
-﻿using DynamicData;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class InfoPanel : ReactiveObject
     {
-        private readonly ReadOnlyObservableCollection<InfoPanelItem> _panels;
-        private readonly SourceList<InfoPanelItem> _items = new SourceList<InfoPanelItem>();
+        private readonly List<InfoPanelItem> _items = new();
+        private readonly ObservableAsPropertyHelper<List<InfoPanelItem>> _panels;
 
         public InfoPanel()
         {
-            _items.Connect().Reverse().ObserveOn(RxApp.MainThreadScheduler).Bind(out _panels).Subscribe();
+            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+
+            _panels = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Panels);
+        }
+
+        public ReactiveCommand<Unit, List<InfoPanelItem>> Loading { get; }
+
+        private async Task<List<InfoPanelItem>> LoadingAsync() => await Task.Run(() => new List<InfoPanelItem>(_items));
+
+        public List<InfoPanelItem> Panels => _panels.Value;
+
+        public async void ShowAsync(InfoPanelItem panel)
+        {
+            await Task.Run(() =>
+            {
+                AddImpl(panel);
+
+                Loading.Execute().Subscribe();
+            });
         }
 
         public void Show(InfoPanelItem panel)
         {
-            Type type = panel.GetType();
-
-            CloseAll(type);
-
-            AddPanel(panel);
+            Task.Run(() => ShowAsync(panel));
         }
 
         public void CloseAll(Type type)
         {
-            _items.Edit(innerList =>
+            for (int i = _items.Count - 1; i >= 0; i--)
             {
-                for (int i = innerList.Count() - 1; i >= 0; i--)
+                if (_items[i].GetType() == type)
                 {
-                    if (innerList[i].GetType() == type)
+                    _items.RemoveAt(i);
+                }
+            }
+
+            Loading.Execute().Subscribe();
+        }
+
+        private void AddImpl(InfoPanelItem? panel)
+        {
+            if (panel != null)
+            {
+                for (int i = _items.Count - 1; i >= 0; i--)
+                {
+                    if (_items[i].GetType() == panel.GetType())
                     {
-                        innerList.RemoveAt(i);
+                        _items.RemoveAt(i);
                     }
                 }
-            });
+
+                panel.Close.Subscribe(Remove);
+
+                _items.Add(panel);
+            }
         }
 
-        private void AddPanel(InfoPanelItem panel)
+        private void Remove(InfoPanelItem? panel)
         {
-            _items.Add(panel);
-
-            panel.Close.Subscribe(RemovePanel);
-        }
-
-        private void RemovePanel(InfoPanelItem panel)
-        {
-            _items.Edit(innerList =>
+            if (panel != null)
             {
-                if (innerList.Contains(panel) == true)
-                {
-                    innerList.Remove(panel);
-                }
-            });
+                _items.Remove(panel);
 
-            //if (_items.Items.Contains(panel) == true)
-            //{
-            //    _items.Remove(panel);
-            //}
+                Loading.Execute().Subscribe();
+            }
         }
-
-        public ReadOnlyObservableCollection<InfoPanelItem> Panels => _panels;
     }
 }

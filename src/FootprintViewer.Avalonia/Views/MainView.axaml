@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"                     
+             xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"                     
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"        
              xmlns:reactiveUi="http://reactiveui.net"    
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
@@ -40,11 +41,7 @@
         <Grid VerticalAlignment="Bottom"
               HorizontalAlignment="Center"
               Margin="0,0,0,60">
-          <reactiveUi:ViewModelViewHost ViewModel="{Binding InfoPanel}">
-            <reactiveUi:ViewModelViewHost.PageTransition>
-              <CrossFade Duration="0.01"/>
-            </reactiveUi:ViewModelViewHost.PageTransition>
-          </reactiveUi:ViewModelViewHost>
+          <panels:InfoPanelView DataContext="{Binding InfoPanel}"/>
         </Grid>
 
         <Border BorderBrush="White"

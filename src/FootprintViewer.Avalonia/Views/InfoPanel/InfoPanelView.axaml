@@ -41,7 +41,13 @@
   </UserControl.Styles>
   
   <Grid>    
-    <ItemsControl x:Name="ItemsControl"/>
+    <ItemsControl x:Name="ItemsControl">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <panels:GeometryInfoPanelView DataContext="{Binding}"/>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate> 
+    </ItemsControl>
   </Grid>
 
 </UserControl>

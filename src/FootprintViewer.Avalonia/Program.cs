@@ -27,10 +27,6 @@ namespace FootprintViewer.Avalonia
 
             //Locator.CurrentMutable.Register(() => new Views.TipView(), typeof(IViewFor<Tip>));
 
-            Locator.CurrentMutable.Register(() => new Views.InfoPanel.InfoPanelView(), typeof(IViewFor<InfoPanel>));
-            Locator.CurrentMutable.Register(() => new Views.InfoPanel.GeometryInfoPanelView(), typeof(IViewFor<AOIInfoPanel>));
-            Locator.CurrentMutable.Register(() => new Views.InfoPanel.GeometryInfoPanelView(), typeof(IViewFor<RouteInfoPanel>));
-
             Locator.CurrentMutable.Register(() => new Views.ToolBar.CustomToolBarView(), typeof(IViewFor<CustomToolBar>));
 
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
