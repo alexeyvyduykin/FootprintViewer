@@ -47,7 +47,15 @@
         <DataTemplate DataType="vm:FootprintClickInfoPanel">
           <panels:FootprintClickInfoPanelView DataContext="{Binding}"/>
         </DataTemplate>
-        
+
+        <DataTemplate DataType="vm:GroundTargetClickInfoPanel">
+          <panels:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:UserGeometryClickInfoPanel">
+          <panels:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
+        </DataTemplate>
+
         <DataTemplate>
           <panels:GeometryInfoPanelView DataContext="{Binding}"/>
         </DataTemplate>

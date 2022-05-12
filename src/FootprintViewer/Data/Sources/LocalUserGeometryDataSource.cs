@@ -24,9 +24,11 @@ namespace FootprintViewer.Data.Sources
             _userGeometries.Remove(geometry);
         }
 
-        public async Task<List<UserGeometry>> GetUserGeometriesAsync() => await Task.Run(() => _userGeometries);
+        public async Task<List<UserGeometry>> GetUserGeometriesAsync() =>
+            await Task.Run(() => _userGeometries);
 
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync() => await Task.Run(() => _userGeometries.Select(s => new UserGeometryInfo(s)).ToList());
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync() =>
+            await Task.Run(() => _userGeometries.Select(s => new UserGeometryInfo(s)).ToList());
 
         public async Task RemoveAsync(UserGeometry geometry)
         {
@@ -43,6 +45,14 @@ namespace FootprintViewer.Data.Sources
                 {
                     userGeometry.Geometry = geometry;
                 }
+            });
+        }
+
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
+        {
+            return await Task.Run(() =>
+            {
+                return _userGeometries.Where(s => names.Contains(s.Name)).Select(s => new UserGeometryInfo(s)).ToList();
             });
         }
     }

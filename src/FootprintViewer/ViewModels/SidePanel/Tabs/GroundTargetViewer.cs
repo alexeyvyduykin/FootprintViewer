@@ -4,8 +4,10 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -15,10 +17,11 @@ namespace FootprintViewer.ViewModels
         private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
         private readonly ITargetLayerSource _source;
+        private readonly GroundTargetProvider _groundTargetProvider;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+            _groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
             Title = "Просмотр наземных целей";
@@ -31,7 +34,7 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            _groundTargetViewerList = new GroundTargetViewerList(groundTargetProvider);
+            _groundTargetViewerList = new GroundTargetViewerList(_groundTargetProvider);
 
             _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
 
@@ -57,6 +60,11 @@ namespace FootprintViewer.ViewModels
             });
 
             MainContent = _previewContent;
+        }
+
+        public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
+        {
+            return await _groundTargetProvider.GetGroundTargetInfosAsync(new[] { name });
         }
 
         private void SelectedItemIml(GroundTargetInfo? groundTarget)

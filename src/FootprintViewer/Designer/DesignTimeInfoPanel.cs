@@ -6,21 +6,11 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeInfoPanel() : base()
         {
-            var RouteInfoPanel = new RouteInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            var AoiInfoPanel = new AOIInfoPanel()
-            {
-                Text = "Description",
-            };
-
-            var footprintClickInfo = new FootprintClickInfoPanel(new FootprintInfo(DesignTimeFootprintInfo.BuildModel()));
-
-            Show(RouteInfoPanel);
-            Show(AoiInfoPanel);
-            Show(footprintClickInfo);
+            Show(new RouteInfoPanel() { Text = "Description" });
+            Show(new AOIInfoPanel() { Text = "Description" });
+            Show(new FootprintClickInfoPanel(new FootprintInfo(DesignTimeFootprintInfo.BuildModel())));
+            Show(new GroundTargetClickInfoPanel(new GroundTargetInfo(DesignTimeGroundTargetInfo.BuildModel())));
+            Show(new UserGeometryClickInfoPanel(new UserGeometryInfo(DesignTimeUserGeometryInfo.BuildModel())));
         }
     }
 
@@ -35,6 +25,22 @@ namespace FootprintViewer.Designer
     public class DesignTimeFootprintClickInfoPanelItem : FootprintClickInfoPanel
     {
         public DesignTimeFootprintClickInfoPanelItem() : base(new FootprintInfo(DesignTimeFootprintInfo.BuildModel()))
+        {
+
+        }
+    }
+
+    public class DesignTimeGroundTargetClickInfoPanelItem : GroundTargetClickInfoPanel
+    {
+        public DesignTimeGroundTargetClickInfoPanelItem() : base(new GroundTargetInfo(DesignTimeGroundTargetInfo.BuildModel()))
+        {
+
+        }
+    }
+
+    public class DesignTimeUserGeometryClickInfoPanelItem : UserGeometryClickInfoPanel
+    {
+        public DesignTimeUserGeometryClickInfoPanelItem() : base(new UserGeometryInfo(DesignTimeUserGeometryInfo.BuildModel()))
         {
 
         }

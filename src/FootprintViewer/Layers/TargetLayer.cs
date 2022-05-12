@@ -14,8 +14,6 @@ namespace FootprintViewer.Layers
         public TargetLayer(ITargetLayerSource source) : base(source)
         {
             _source = source;
-
-            IsMapInfoLayer = false;
         }
 
         public override void RefreshData(FetchInfo fetchInfo)

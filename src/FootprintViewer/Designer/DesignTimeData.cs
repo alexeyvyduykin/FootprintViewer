@@ -303,6 +303,16 @@ namespace FootprintViewer.Designer
                     return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
                 }
 
+                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
+                {
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() =>
+                    {
+                        return GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList();
+                    });
+                }
+
                 public async Task RemoveAsync(UserGeometry geometry)
                 {
                     await Task.Delay(1000);

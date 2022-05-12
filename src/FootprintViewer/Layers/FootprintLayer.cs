@@ -8,7 +8,7 @@ namespace FootprintViewer.Layers
     {
         public FootprintLayer(ILayer source) : base(source)
         {
-            IsMapInfoLayer = true;
+
         }
 
         public int MaxVisiblePreview { get; set; }

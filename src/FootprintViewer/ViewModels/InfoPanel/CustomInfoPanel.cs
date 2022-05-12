@@ -33,11 +33,29 @@
 
     public class GroundTargetClickInfoPanel : CustomInfoPanel
     {
+        private readonly GroundTargetInfo _groundTargetInfo;
+
+        public GroundTargetClickInfoPanel(GroundTargetInfo groundTargetInfo)
+        {
+            _groundTargetInfo = groundTargetInfo;
+        }
+
+        public GroundTargetInfo Info => _groundTargetInfo;
+
         public override string GetKey() => "GroundTargetClick";
     }
 
     public class UserGeometryClickInfoPanel : CustomInfoPanel
     {
+        private readonly UserGeometryInfo _userGeometryInfo;
+
+        public UserGeometryClickInfoPanel(UserGeometryInfo userGeometryInfo)
+        {
+            _userGeometryInfo = userGeometryInfo;
+        }
+
+        public UserGeometryInfo Info => _userGeometryInfo;
+
         public override string GetKey() => "UserGeometryClick";
     }
 }

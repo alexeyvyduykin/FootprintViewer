@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -28,10 +29,14 @@ namespace FootprintViewer.ViewModels
         private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintObserver _footprintObserver;
+        private readonly GroundTargetViewer _groundTargetViewer;
+        private readonly UserGeometryViewer _userGeometryViewer;
         private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
 
-        private ISelectDecorator? _selectDecorator;
+        private ISelectDecorator? _footprintSelectDecorator;
+        private ISelectDecorator? _groundTargetSelectDecorator;
+        private ISelectDecorator? _userGeometrySelectDecorator;
         private ISelectScaleDecorator? _selectScaleDecorator;
         private ISelectTranslateDecorator? _selectTranslateDecorator;
         private ISelectRotateDecorator? _selectRotateDecorator;
@@ -45,6 +50,8 @@ namespace FootprintViewer.ViewModels
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
             _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
+            _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
+            _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = _factory.CreateInfoPanel();
@@ -141,10 +148,22 @@ namespace FootprintViewer.ViewModels
                 _selectEditDecorator = null;
             }
 
-            if (_selectDecorator != null)
+            if (_footprintSelectDecorator != null)
             {
-                _selectDecorator.Dispose();
-                _selectDecorator = null;
+                _footprintSelectDecorator.Dispose();
+                _footprintSelectDecorator = null;
+            }
+
+            if (_groundTargetSelectDecorator != null)
+            {
+                _groundTargetSelectDecorator.Dispose();
+                _groundTargetSelectDecorator = null;
+            }
+
+            if (_userGeometrySelectDecorator != null)
+            {
+                _userGeometrySelectDecorator.Dispose();
+                _userGeometrySelectDecorator = null;
             }
 
             Tip = null;
@@ -407,44 +426,114 @@ namespace FootprintViewer.ViewModels
 
         private void SelectCommand()
         {
+            ActualController = new DefaultController();
+
             var footprintLayer = _map.GetLayer<ILayer>(LayerType.Footprint);
 
-            if (footprintLayer == null)
+            if (footprintLayer != null)
             {
-                return;
+                _footprintSelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, footprintLayer);
+
+                _footprintSelectDecorator.Select += (s, e) =>
+                {
+                    var decorator = (ISelectDecorator)s!;
+
+                    var feature = decorator.SelectFeature!;
+
+                    if (feature.Fields.Contains("Name"))
+                    {
+                        var name = (string)feature["Name"]!;
+                        var info = _footprintObserver.GetFootprintInfo(name);
+
+                        if (info != null)
+                        {
+                            ClickInfoPanel.Show(new FootprintClickInfoPanel(info));
+                        }
+
+                        if (_footprintObserver.IsActive == true)
+                        {
+                            _footprintObserver.SelectFootprintInfo(name);
+                        }
+                    }
+                };
+
+                _footprintSelectDecorator.Unselect += (s, e) =>
+                {
+                    ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
+                };
             }
 
-            _selectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, footprintLayer);
+            var groundTargetLayer = _map.GetLayer<ILayer>(LayerType.GroundTarget);
 
-            _selectDecorator.Select += (s, e) =>
+            if (groundTargetLayer != null)
             {
-                var decorator = (ISelectDecorator)s!;
+                _groundTargetSelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, groundTargetLayer);
 
-                var feature = decorator.SelectFeature!;
-
-                if (feature.Fields.Contains("Name"))
+                _groundTargetSelectDecorator.Select += (s, e) =>
                 {
-                    var name = (string)feature["Name"]!;
-                    var info = _footprintObserver.GetFootprintInfo(name);
+                    var decorator = (ISelectDecorator)s!;
 
-                    if (info != null)
+                    var feature = decorator.SelectFeature!;
+
+                    if (feature.Fields.Contains("Name"))
                     {
-                        ClickInfoPanel.Show(new FootprintClickInfoPanel(info));
-                    }
+                        var name = (string)feature["Name"]!;
 
-                    if (_footprintObserver.IsActive == true)
-                    {
-                        _footprintObserver.SelectFootprintInfo(name);
-                    }
-                }
-            };
+                        Task.Run(async () =>
+                        {
+                            var infos = await _groundTargetViewer.GetGroundTargetInfoAsync(name);
 
-            _selectDecorator.Unselect += (s, e) =>
+                            var info = infos.FirstOrDefault();
+
+                            if (info != null)
+                            {
+                                ClickInfoPanel.Show(new GroundTargetClickInfoPanel(info));
+                            }
+                        });
+                    }
+                };
+
+                _groundTargetSelectDecorator.Unselect += (s, e) =>
+                {
+                    ClickInfoPanel.CloseAll(typeof(GroundTargetClickInfoPanel));
+                };
+            }
+
+            var userGeometryLayer = _map.GetLayer<ILayer>(LayerType.User);
+
+            if (userGeometryLayer != null)
             {
-                ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
-            };
+                _userGeometrySelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, userGeometryLayer);
 
-            ActualController = new DefaultController();
+                _userGeometrySelectDecorator.Select += (s, e) =>
+                {
+                    var decorator = (ISelectDecorator)s!;
+
+                    var feature = decorator.SelectFeature!;
+
+                    if (feature.Fields.Contains("Name"))
+                    {
+                        var name = (string)feature["Name"]!;
+
+                        Task.Run(async () =>
+                        {
+                            var infos = await _userGeometryViewer.GetUserGeometryInfoAsync(name);
+
+                            var info = infos.FirstOrDefault();
+
+                            if (info != null)
+                            {
+                                ClickInfoPanel.Show(new UserGeometryClickInfoPanel(info));
+                            }
+                        });
+                    }
+                };
+
+                _userGeometrySelectDecorator.Unselect += (_s, e) =>
+                {
+                    ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
+                };
+            }
         }
 
         private void ScaleCommand()

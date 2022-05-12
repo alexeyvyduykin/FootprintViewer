@@ -62,5 +62,12 @@ namespace FootprintViewer.Data.Sources
 
             return await context.UserGeometries.Select(s => new UserGeometryInfo(s)).ToListAsync();
         }
+
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            return await context.UserGeometries.Where(s => names.Contains(s.Name)).Select(s => new UserGeometryInfo(s)).ToListAsync();
+        }
     }
 }

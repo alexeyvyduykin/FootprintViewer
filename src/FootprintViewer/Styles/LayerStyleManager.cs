@@ -286,6 +286,43 @@ namespace FootprintViewer.Styles
                     return null;
                 }
 
+                var style = new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleTargetStyle,
+                };
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
+                    {
+                        if (item.Equals("Interactive.Select") == true)
+                        {
+                            var isSelect = (bool)gf["Interactive.Select"]!;
+
+                            if (isSelect == true)
+                            {
+                                if (gf.Geometry is Point)
+                                {
+                                    return new SymbolStyle
+                                    {
+                                        Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
+                                        Outline = new Pen(Color.Black, 4.0),
+                                        SymbolType = SymbolType.Ellipse,
+                                        SymbolScale = 0.6,
+                                        MaxVisible = _maxVisibleTargetStyle,
+                                    };
+                                }
+
+                                style.Fill = new Brush(Color.Opacity(Color.Black, 0.55f));
+                                style.Outline = new Pen(Color.Black, 4.0);
+                                style.Line = new Pen(Color.Black, 4.0);
+                                return style;
+                            }
+                        }
+                    }
+                }
+
                 if (gf.Geometry is Point)
                 {
                     switch (state)
@@ -293,7 +330,7 @@ namespace FootprintViewer.Styles
                         case "Unselected":
                             return new SymbolStyle
                             {
-                                Fill = null,
+                                Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
                                 Outline = new Pen(Color.Black, 1.0),
                                 SymbolType = SymbolType.Ellipse,
                                 SymbolScale = 0.4,
@@ -302,7 +339,7 @@ namespace FootprintViewer.Styles
                         case "Selected":
                             return new SymbolStyle
                             {
-                                Fill = null,
+                                Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
                                 Outline = new Pen(Color.Black, 4.0),
                                 SymbolType = SymbolType.Ellipse,
                                 SymbolScale = 0.6,
@@ -318,19 +355,13 @@ namespace FootprintViewer.Styles
                     switch (state)
                     {
                         case "Unselected":
-                            return new VectorStyle
-                            {
-                                Fill = null,
-                                Line = new Pen(Color.Black, 1),
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
+                            style.Fill = null;
+                            style.Line = new Pen(Color.Black, 2);
+                            break;
                         case "Selected":
-                            return new VectorStyle
-                            {
-                                Fill = null,
-                                Line = new Pen(Color.Black, 4),
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
+                            style.Fill = null;
+                            style.Line = new Pen(Color.Black, 4);
+                            break;
                         default:
                             break;
                     }
@@ -341,27 +372,21 @@ namespace FootprintViewer.Styles
                     switch (state)
                     {
                         case "Unselected":
-                            return new VectorStyle
-                            {
-                                Fill = null,
-                                Outline = new Pen(Color.Black, 1),
-                                Line = null,
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
+                            style.Fill = new Brush(Color.Opacity(Color.Black, 0.25f));
+                            style.Outline = new Pen(Color.Black, 1);
+                            style.Line = null;
+                            break;
                         case "Selected":
-                            return new VectorStyle
-                            {
-                                Fill = null,
-                                Outline = new Pen(Color.Black, 4),
-                                Line = null,
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
+                            style.Fill = new Brush(Color.Opacity(Color.Black, 0.25f));
+                            style.Outline = new Pen(Color.Black, 4);
+                            style.Line = null;
+                            break;
                         default:
                             break;
                     }
                 }
 
-                throw new Exception();
+                return style;
             });
         }
 
@@ -516,6 +541,38 @@ namespace FootprintViewer.Styles
                     return null;
                 }
 
+                var style = new VectorStyle();
+
+                if (gf.Fields != null)
+                {
+                    foreach (var item in gf.Fields)
+                    {
+                        if (item.Equals("Interactive.Select") == true)
+                        {
+                            var isSelect = (bool)gf["Interactive.Select"]!;
+
+                            if (isSelect == true)
+                            {
+                                if (gf.Geometry is Point)
+                                {
+                                    return new SymbolStyle
+                                    {
+                                        Fill = new Brush(Color.Red),
+                                        Outline = new Pen(Color.Black, 2 / 0.3),
+                                        SymbolType = SymbolType.Ellipse,
+                                        SymbolScale = 0.8,
+                                    };
+                                }
+
+                                style.Fill = new Brush(new Color(new Color(20, 120, 120, 40)));
+                                style.Outline = new Pen(new Color(20, 120, 120), 4.0);
+                                style.Line = new Pen(new Color(20, 20, 20), 4.0);
+                                return style;
+                            }
+                        }
+                    }
+                }
+
                 if (gf.Geometry is Point)
                 {
                     return new SymbolStyle()
@@ -533,12 +590,11 @@ namespace FootprintViewer.Styles
                     var lineColor = new Color(20, 120, 120);
                     var outlineColor = new Color(20, 20, 20);
 
-                    return new VectorStyle
-                    {
-                        Fill = new Brush(new Color(backgroundColor)),
-                        Line = new Pen(lineColor, 3),
-                        Outline = new Pen(outlineColor, 3)
-                    };
+                    style.Fill = new Brush(new Color(backgroundColor));
+                    style.Line = new Pen(lineColor, 3);
+                    style.Outline = new Pen(outlineColor, 3);
+
+                    return style;
                 }
             });
         }
@@ -782,10 +838,10 @@ namespace FootprintViewer.Styles
         {
             _dict = new Dictionary<string, VectorStyle>()
             {
-                { FeatureType.Route.ToString(), RouteStyle },           
-                { FeatureType.AOIRectangle.ToString(), AOIRectangleStyle },           
+                { FeatureType.Route.ToString(), RouteStyle },
+                { FeatureType.AOIRectangle.ToString(), AOIRectangleStyle },
                 { FeatureType.AOIPolygon.ToString(), AOIPolygonStyle },
-                { FeatureType.AOICircle.ToString(), AOICircleStyle },            
+                { FeatureType.AOICircle.ToString(), AOICircleStyle },
             };
         }
 

@@ -75,6 +75,7 @@ namespace FootprintViewer
             {
                 Style = styleManager.FootprintStyle,
                 MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
+                IsMapInfoLayer = true,
             };
         }
 
@@ -111,6 +112,7 @@ namespace FootprintViewer
             {
                 Style = styleManager.TargetStyle,
                 MaxVisible = styleManager.MaxVisibleTargetStyle,
+                IsMapInfoLayer = true,
             };
         }
 

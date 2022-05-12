@@ -63,5 +63,10 @@ namespace FootprintViewer.Data
             //    return list;
             //});
         }
+
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
+        {
+            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync(names);
+        }
     }
 }

@@ -4,7 +4,6 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +21,7 @@ namespace FootprintViewer.ViewModels
             _groundTargetProvider = provider;
 
             Loading = ReactiveCommand.CreateFromTask<string[], List<GroundTargetInfo>>(LoadingAsync);
-           
+
             //LoadingEx = ReactiveCommand.CreateFromTask<Func<GroundTarget, bool>, List<GroundTargetInfo>>(LoadingExAsync);
 
             _groundTargetInfos = Loading.ToProperty(this, x => x.GroundTargetInfos, scheduler: RxApp.MainThreadScheduler);

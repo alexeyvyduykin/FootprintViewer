@@ -41,6 +41,11 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<UserGeometryInfo?, Unit> Remove { get; }
 
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfoAsync(string name)
+        {
+            return await _provider.GetUserGeometryInfosAsync(new[] { name });
+        }
+
         private async Task<List<UserGeometryInfo>> LoadingAsync()
         {
             return await _provider.GetUserGeometryInfosAsync();
