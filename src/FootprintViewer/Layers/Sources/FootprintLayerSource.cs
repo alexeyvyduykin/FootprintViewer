@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data;
 using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
@@ -16,15 +15,13 @@ namespace FootprintViewer.Layers
 {
     public interface IFootprintLayerSource : ILayer
     {
-        void SelectFeature(string name);
+        IEnumerable<IFeature> GetFeatures();
 
-        void UnselectFeature(string name);
+        IFeature? GetFeature(string name);
     }
 
     public class FootprintLayerSource : WritableLayer, IFootprintLayerSource
     {
-        private IFeature? _lastSelected;
-        private List<IFeature> _featuresCache = new();
         private readonly FootprintProvider _provider;
 
         public FootprintLayerSource(FootprintProvider provider)
@@ -40,9 +37,8 @@ namespace FootprintViewer.Layers
 
         private void LoadingImpl(List<Footprint> footprints)
         {
-            _featuresCache = Build(footprints);
             Clear();
-            AddRange(_featuresCache);
+            AddRange(Build(footprints));
         }
 
         public Footprint GetFootprint(string name) => _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault()!;
@@ -51,43 +47,7 @@ namespace FootprintViewer.Layers
 
         public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();
 
-        public void SelectFeature(string name)
-        {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
-
-            if (_lastSelected != null)
-            {
-                _lastSelected["State"] = "Unselect";
-            }
-
-            feature["State"] = "Select";
-
-            _lastSelected = feature;
-
-            DataHasChanged();
-        }
-
-        public void UnselectFeature(string name)
-        {
-            if (_lastSelected != null && name.Equals(_lastSelected["Name"]) == true)
-            {
-                _lastSelected["State"] = "Unselect";
-
-                DataHasChanged();
-            }
-        }
-
-        public bool IsSelect(string name)
-        {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
-
-            if (feature != null)
-            {
-                return (string)feature["State"]! == "Select";
-            }
-
-            throw new Exception();
-        }
+        public IFeature? GetFeature(string name) => GetFeatures().Where(s => s.Fields.Contains("Name") && s["Name"]!.Equals(name)).FirstOrDefault();
 
         private static List<IFeature> Build(IEnumerable<Footprint> footprints)
         {
@@ -97,10 +57,7 @@ namespace FootprintViewer.Layers
             {
                 var poly = AreaCutting(item.Points!.Coordinates);
 
-                var feature = poly.ToFeature();
-
-                feature["Name"] = item.Name;
-                feature["State"] = "Unselect";
+                var feature = poly.ToFeature(item.Name!);
 
                 list.Add(feature);
             }

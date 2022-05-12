@@ -73,7 +73,7 @@ namespace InteractiveGeometry
                         saveFeature["Interactive.Select"] = false;
                     }
 
-                    saveFeature = decorator.SelectFeature!;
+                    saveFeature = decorator.SelectedFeature!;
                     saveFeature["Interactive.Select"] = true;
                 }
             };

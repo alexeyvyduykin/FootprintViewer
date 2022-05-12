@@ -4,6 +4,7 @@ using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Styles
 {
@@ -87,46 +88,23 @@ namespace FootprintViewer.Styles
 
                 var style = new VectorStyle()
                 {
+                    Fill = new Brush(Color.Opacity(Color.Green, 0.25f)),
+                    Line = new Pen(Color.Green, 1.0),
+                    Outline = new Pen(Color.Green, 1.0),
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
                 };
 
-                if (gf.Fields != null)
+                if (gf.Fields.Contains("Interactive.Select"))
                 {
-                    foreach (var item in gf.Fields)
+                    if ((bool)gf["Interactive.Select"]! == true)
                     {
-                        if (item.Equals("Interactive.Select") == true)
-                        {
-                            var isSelect = (bool)gf["Interactive.Select"]!;
-
-                            if (isSelect == true)
-                            {
-                                style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));
-                                style.Outline = new Pen(Color.Black, 4.0);
-                                style.Line = new Pen(Color.Black, 4.0);
-
-                                return style;
-                            }
-                        }
-                    }
-                }
-
-                switch (gf["State"]!.ToString())
-                {
-                    case "Unselect":
-                        style.Fill = new Brush(Color.Opacity(Color.Green, 0.25f));
-                        style.Line = new Pen(Color.Green, 1.0);
-                        style.Outline = new Pen(Color.Green, 1.0);
-                        break;
-                    case "Select":
                         style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));
-                        style.Line = new Pen(Color.Black, 4.0);
                         style.Outline = new Pen(Color.Black, 4.0);
-                        break;
-                    default:
-                        style.Fill = new Brush(Color.Gray);
-                        style.Outline = new Pen(Color.FromArgb(0, 64, 64, 64));
-                        break;
+                        style.Line = new Pen(Color.Black, 4.0);
+
+                        return style;
+                    }
                 }
 
                 return style;

@@ -7,7 +7,9 @@ namespace InteractiveGeometry
 {
     public interface ISelectDecorator : IDisposable
     {
-        BaseFeature? SelectFeature { get; }
+        BaseFeature? SelectedFeature { get; }
+
+        void SelectFeature(BaseFeature feature);
 
         event EventHandler? Select;
 
@@ -28,11 +30,30 @@ namespace InteractiveGeometry
             map.Info += Map_Info;
         }
 
-        public BaseFeature? SelectFeature => _saveFeature;
+        public BaseFeature? SelectedFeature => _saveFeature;
 
         public event EventHandler? Select;
 
         public event EventHandler? Unselect;
+
+        public void SelectFeature(BaseFeature feature)
+        {
+            if (SelectedFeature == feature)
+            {
+                return;
+            }
+
+            if (SelectedFeature != null)
+            {
+                _saveFeature = null;
+
+                UnselectImpl();
+            }
+
+            _saveFeature = feature;
+
+            SelectImpl((IFeature)feature);
+        }
 
         private void Map_Info(object? sender, MapInfoEventArgs e)
         {

@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Projections;
@@ -24,7 +23,6 @@ namespace FootprintViewer.ViewModels
         {
             var map = dependencyResolver.GetExistingService<Map>();
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
-            var source = dependencyResolver.GetExistingService<IFootprintLayerSource>();
 
             _filter = new FootprintObserverFilter(dependencyResolver);
 
@@ -34,7 +32,7 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр рабочей программы";
 
-            ClickOnItem = ReactiveCommand.Create<FootprintInfo?>(_footprintObserverList.ClickOnItem);
+            ClickOnItem = ReactiveCommand.Create<FootprintInfo?, FootprintInfo?>(s => { _footprintObserverList.ClickOnItem(s); return s; });
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
@@ -44,13 +42,7 @@ namespace FootprintViewer.ViewModels
 
             _footprintObserverList.SelectItem.Subscribe(item =>
             {
-                source.SelectFeature(item.Name);
                 SetMapFocusTo(item.Center);
-            });
-
-            _footprintObserverList.UnselectItem.Subscribe(item =>
-            {
-                source.UnselectFeature(item.Name);
             });
 
             _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);
@@ -75,7 +67,7 @@ namespace FootprintViewer.ViewModels
         //    }
         //}
 
-        public ReactiveCommand<FootprintInfo?, Unit> ClickOnItem { get; }
+        public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
