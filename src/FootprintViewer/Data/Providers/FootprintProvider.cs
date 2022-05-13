@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintProvider : BaseProvider<IFootprintDataSource>
+    public class FootprintProvider : BaseProvider<IFootprintDataSource>, IProvider<FootprintInfo>
     {
         public FootprintProvider()
         {
@@ -43,7 +43,7 @@ namespace FootprintViewer.Data
             //return list;
         }
 
-        public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+        public async Task<List<FootprintInfo>> GetValuesAsync()
         {
             return await Sources.First().GetFootprintInfosAsync();
         }

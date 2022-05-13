@@ -6,7 +6,7 @@ using System;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintInfo : ReactiveObject
+    public class FootprintInfo : ReactiveObject, IViewerItem
     {
         private readonly Footprint? _footprint;
         private readonly string _name;

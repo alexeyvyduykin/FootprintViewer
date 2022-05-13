@@ -13,6 +13,14 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
+    public class FootprintObserverList : ViewerList<FootprintInfo>
+    {
+        public FootprintObserverList(FootprintProvider provider) : base(provider)
+        {
+
+        }
+    }
+
     public class FootprintObserver : SidePanelTab
     {
         private readonly Map _map;
@@ -40,7 +48,7 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
 
-            _footprintObserverList.SelectItem.Subscribe(item =>
+            _footprintObserverList.Select.Select(s => s).Subscribe(item =>
             {
                 SetMapFocusTo(item.Center);
             });
@@ -73,12 +81,12 @@ namespace FootprintViewer.ViewModels
 
         public void SelectFootprintInfo(string name)
         {
-            _footprintObserverList.SelectFootprintInfo(name);
+            _footprintObserverList.SelectItem(name);
         }
 
         public FootprintInfo? GetFootprintInfo(string name)
         {
-            return _footprintObserverList.GetFootprintInfo(name);
+            return _footprintObserverList.GetItem(name);
         }
 
         private void FilterClickImpl()

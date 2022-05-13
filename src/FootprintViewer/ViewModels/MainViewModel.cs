@@ -447,7 +447,7 @@ namespace FootprintViewer.ViewModels
 
         private ISelectDecorator CreateFootprintSelector()
         {
-            var footprintLayer = _map.GetLayer<ILayer>(LayerType.Footprint)!;
+            var footprintLayer = Map.GetLayer<ILayer>(LayerType.Footprint)!;
 
             var footprintSelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, footprintLayer);
 
@@ -484,7 +484,7 @@ namespace FootprintViewer.ViewModels
 
         private ISelectDecorator? CreateGroundTargetSelector()
         {
-            var groundTargetLayer = _map.GetLayer<ILayer>(LayerType.GroundTarget);
+            var groundTargetLayer = Map.GetLayer<ILayer>(LayerType.GroundTarget);
 
             if (groundTargetLayer == null)
             {
@@ -527,7 +527,7 @@ namespace FootprintViewer.ViewModels
 
         private ISelectDecorator? CreateUserGeometrySelector()
         {
-            var userGeometryLayer = _map.GetLayer<ILayer>(LayerType.User);
+            var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
 
             if (userGeometryLayer == null)
             {
