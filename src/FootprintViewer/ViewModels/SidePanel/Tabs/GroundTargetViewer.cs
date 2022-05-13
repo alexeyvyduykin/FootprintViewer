@@ -11,6 +11,14 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
+    public class GroundTargetViewerList : ViewerList<GroundTargetInfo>
+    {
+        public GroundTargetViewerList(GroundTargetProvider provider) : base(provider)
+        {
+
+        }
+    }
+
     public class GroundTargetViewer : SidePanelTab
     {
         private readonly GroundTargetViewerList _groundTargetViewerList;
@@ -36,7 +44,7 @@ namespace FootprintViewer.ViewModels
 
             _groundTargetViewerList = new GroundTargetViewerList(_groundTargetProvider);
 
-            _groundTargetViewerList.SelectedItemObservable.InvokeCommand(_selectedItem);
+            _groundTargetViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
 
             this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_source.Refresh);
 
@@ -64,7 +72,7 @@ namespace FootprintViewer.ViewModels
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
         {
-            return await _groundTargetProvider.GetGroundTargetInfosAsync(new[] { name });
+            return await _groundTargetProvider.GetValuesAsync(new NameFilter<GroundTargetInfo>(new[] { name }));
         }
 
         private void SelectedItemIml(GroundTargetInfo? groundTarget)

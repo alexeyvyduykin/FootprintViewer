@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class FootprintObserverFilter : ReactiveObject
+    public class FootprintObserverFilter : ReactiveObject, IFilter<FootprintInfo>
     {
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -115,5 +115,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Geometry? AOI { get; set; }
+
+        public string[]? Names => throw new NotImplementedException();
     }
 }

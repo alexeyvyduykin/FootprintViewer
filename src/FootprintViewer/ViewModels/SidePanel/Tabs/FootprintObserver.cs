@@ -25,7 +25,7 @@ namespace FootprintViewer.ViewModels
     {
         private readonly Map _map;
         private readonly FootprintObserverList _footprintObserverList;
-        private readonly FootprintObserverFilter _filter;
+        private readonly IFilter<FootprintInfo> _filter;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -53,7 +53,7 @@ namespace FootprintViewer.ViewModels
                 SetMapFocusTo(item.Center);
             });
 
-            _filter.Update.Select(filter => filter).InvokeCommand(_footprintObserverList.Loading);
+            ((FootprintObserverFilter)_filter).Update.Select(filter => (IFilter<FootprintInfo>)filter).InvokeCommand(_footprintObserverList.Loading);
 
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
@@ -114,7 +114,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public FootprintObserverFilter Filter => _filter;
+        public FootprintObserverFilter Filter => (FootprintObserverFilter)_filter;
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }

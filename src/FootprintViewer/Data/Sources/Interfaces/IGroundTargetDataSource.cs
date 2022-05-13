@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,8 +10,6 @@ namespace FootprintViewer.Data.Sources
 
         Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names);
 
-        Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names);
-
-        Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func);
+        Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter);
     }
 }

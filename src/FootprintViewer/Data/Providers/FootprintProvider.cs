@@ -43,7 +43,7 @@ namespace FootprintViewer.Data
             //return list;
         }
 
-        public async Task<List<FootprintInfo>> GetValuesAsync()
+        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter)
         {
             return await Sources.First().GetFootprintInfosAsync();
         }

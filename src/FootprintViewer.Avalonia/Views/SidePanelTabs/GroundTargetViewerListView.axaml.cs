@@ -25,8 +25,8 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
                 // ListBox
                 this.OneWayBind(ViewModel, vm => vm.IsLoading, v => v.ListBox.IsVisible, value => !value).DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.GroundTargetInfos, v => v.ListBox.Items).DisposeWith(disposables);
-                this.Bind(ViewModel, vm => vm.SelectedGroundTargetInfo, v => v.ListBox.SelectedItem).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.Items, v => v.ListBox.Items).DisposeWith(disposables);
+                this.Bind(ViewModel, vm => vm.SelectedItem, v => v.ListBox.SelectedItem).DisposeWith(disposables);
             });
         }
 

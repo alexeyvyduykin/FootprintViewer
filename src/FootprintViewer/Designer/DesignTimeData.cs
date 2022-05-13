@@ -359,7 +359,20 @@ namespace FootprintViewer.Designer
                     });
                 }
 
-                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func) => await Task.Run(() => GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList());
+                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
+                {
+                    await Task.Delay(2000);
+
+                    return await Task.Run(() =>
+                    {
+                        if (filter == null)
+                        {
+                            return GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList();
+                        }
+
+                        return GetGroundTargets().Select(s => new GroundTargetInfo(s)).Where(s => filter.Filtering(s)).ToList();
+                    });
+                }
             }
         }
 

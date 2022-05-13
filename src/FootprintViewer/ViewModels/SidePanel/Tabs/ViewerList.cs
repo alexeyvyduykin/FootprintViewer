@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,31 @@ namespace FootprintViewer.ViewModels
 
     public interface IProvider<T>
     {
-        Task<List<T>> GetValuesAsync();
+        Task<List<T>> GetValuesAsync(IFilter<T>? filter = null);
     }
 
     public interface IFilter<T>
     {
         bool Filtering(T value);
+
+        string[]? Names { get; }
+    }
+
+    public class NameFilter<T> : IFilter<T> where T : IViewerItem
+    {
+        private readonly string[]? _names;
+
+        public NameFilter(string[]? names)
+        {
+            _names = names;
+        }
+
+        public string[]? Names => _names;
+
+        public bool Filtering(T value)
+        {
+            return (_names == null) || _names.Contains(value.Name);
+        }
     }
 
     public class ViewerList<T> : ReactiveObject where T : IViewerItem
@@ -30,6 +50,7 @@ namespace FootprintViewer.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private T? _prevSelectedItem;
         private readonly IProvider<T> _provider;
+        private IFilter<T>? _filter;
 
         public ViewerList(IProvider<T> provider)
         {
@@ -43,24 +64,20 @@ namespace FootprintViewer.ViewModels
 
             _items = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Items);
 
+            this.WhenAnyValue(s => s.Checker).Throttle(TimeSpan.FromSeconds(1)).Select(_ => _filter).InvokeCommand(Loading);
+
             _isLoading = Loading.IsExecuting.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.IsLoading);
         }
 
         private async Task<List<T>> LoadingAsync(IFilter<T>? filter = null)
         {
-            if (filter == null)
-            {
-                return await _provider.GetValuesAsync();
-            }
-            else
-            {
-                return await Task.Run(() =>
-                {
-                    var list = _provider.GetValuesAsync().Result;
+            return await _provider.GetValuesAsync(filter);
+        }
 
-                    return list.Where(s => filter.Filtering(s)).ToList();
-                });
-            }
+        public void Update(string[]? names = null)
+        {
+            _filter = new NameFilter<T>(names);
+            Checker = !Checker;
         }
 
         public ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
@@ -113,5 +130,13 @@ namespace FootprintViewer.ViewModels
         public List<T> Items => _items.Value;
 
         public bool IsLoading => _isLoading.Value;
+
+        [Reactive]
+        private bool Checker { get; set; }
+
+        public IObservable<T?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
+
+        [Reactive]
+        public T? SelectedItem { get; set; }
     }
 }

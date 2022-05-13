@@ -46,7 +46,7 @@ namespace FootprintViewer.Data.Sources
             });
         }
 
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
+        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
         {
             return await Task.Run(async () =>
             {
@@ -57,22 +57,12 @@ namespace FootprintViewer.Data.Sources
                     _groundTargets = new List<GroundTarget>(GroundTargetBuilder.Create(footprints));
                 }
 
-                return _groundTargets.Where(s => names.Contains(s.Name)).Select(s => new GroundTargetInfo(s)).ToList();
-            });
-        }
-
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func)
-        {
-            return await Task.Run(async () =>
-            {
-                if (_groundTargets == null)
+                if (filter == null)
                 {
-                    var footprints = await _source.GetFootprintsAsync();
-
-                    _groundTargets = new List<GroundTarget>(GroundTargetBuilder.Create(footprints));
+                    return _groundTargets.Select(s => new GroundTargetInfo(s)).ToList();
                 }
 
-                return _groundTargets.Where(s => func(s)).Select(s => new GroundTargetInfo(s)).ToList();
+                return _groundTargets.Select(s => new GroundTargetInfo(s)).Where(s => filter.Filtering(s)).ToList();
             });
         }
     }

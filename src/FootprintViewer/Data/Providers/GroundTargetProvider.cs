@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class GroundTargetProvider : BaseProvider<IGroundTargetDataSource>
+    public class GroundTargetProvider : BaseProvider<IGroundTargetDataSource>, IProvider<GroundTargetInfo>
     {
         public GroundTargetProvider()
         {
@@ -32,14 +31,9 @@ namespace FootprintViewer.Data
             //return list;
         }
 
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
+        public async Task<List<GroundTargetInfo>> GetValuesAsync(IFilter<GroundTargetInfo>? filter)
         {
-            return await Sources.First().GetGroundTargetInfosAsync(names);
-        }
-
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosExAsync(Func<GroundTarget, bool> func)
-        {
-            return await Sources.First().GetGroundTargetInfosExAsync(func);
+            return await Sources.First().GetGroundTargetInfosAsync(filter);
         }
     }
 }
