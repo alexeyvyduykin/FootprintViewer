@@ -21,6 +21,13 @@ namespace FootprintViewer.ViewModels
         Task<List<T>> GetValuesAsync(IFilter<T>? filter = null);
     }
 
+    public interface IEditableProvider<T> : IProvider<T>
+    {
+        Task AddAsync(T value);
+
+        Task RemoveAsync(T value);
+    }
+
     public class ViewerList<T> : ReactiveObject where T : IViewerItem
     {
         private readonly ObservableAsPropertyHelper<List<T>> _items;
@@ -42,6 +49,10 @@ namespace FootprintViewer.ViewModels
             MouseOverEnter = ReactiveCommand.Create<T, T>(s => s);
 
             MouseOverLeave = ReactiveCommand.Create(() => { });
+
+            Remove = ReactiveCommand.CreateFromTask<T?>(RemoveAsync);
+
+            Add = ReactiveCommand.CreateFromTask<T?>(AddAsync);
 
             _items = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Items);
 
@@ -70,6 +81,10 @@ namespace FootprintViewer.ViewModels
         public ReactiveCommand<T, T> MouseOverEnter { get; }
 
         public ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
+
+        public ReactiveCommand<T?, Unit> Add { get; }
+
+        public ReactiveCommand<T?, Unit> Remove { get; }
 
         public void ClickOnItem(T? item)
         {
@@ -110,6 +125,22 @@ namespace FootprintViewer.ViewModels
         public T? GetItem(string name)
         {
             return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
+        }
+
+        private async Task AddAsync(T? value)
+        {
+            if (value != null && _provider is IEditableProvider<T> editableProvider)
+            {
+                await editableProvider.AddAsync(value);
+            }
+        }
+
+        private async Task RemoveAsync(T? value)
+        {
+            if (value != null && _provider is IEditableProvider<T> editableProvider)
+            {
+                await editableProvider.RemoveAsync(value);
+            }
         }
 
         public List<T> Items => _items.Value;

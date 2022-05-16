@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace FootprintViewer.ViewModels
 {
-    public class UserGeometryInfo : ReactiveObject, ISelectorItem
+    public class UserGeometryInfo : ReactiveObject, IViewerItem, ISelectorItem
     {
         private readonly UserGeometry _geometry;
 
@@ -19,5 +19,7 @@ namespace FootprintViewer.ViewModels
         public string Name => _geometry.Name!;
 
         public UserGeometryType Type => _geometry.Type;
+
+        public bool IsShowInfo { get; set; }
     }
 }

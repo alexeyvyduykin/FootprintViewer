@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -49,25 +51,25 @@ namespace FootprintViewer.Data.Sources
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<UserGeometry>> GetUserGeometriesAsync()
+        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter)
         {
             var context = new FootprintViewerDbContext(_options);
 
-            return await context.UserGeometries.ToListAsync();
-        }
+            if (filter == null || filter.Names == null)
+            {
+                return await context.UserGeometries.Select(s => new UserGeometryInfo(s)).ToListAsync();
+            }
 
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
-        {
-            var context = new FootprintViewerDbContext(_options);
+            var list = filter.Names.ToList();
 
-            return await context.UserGeometries.Select(s => new UserGeometryInfo(s)).ToListAsync();
-        }
+            Expression<Func<UserGeometry, bool>> predicate = s => false;
 
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
-        {
-            var context = new FootprintViewerDbContext(_options);
+            foreach (var name in list)
+                predicate = predicate.Or(s => string.Equals(s.Name, name));
 
-            return await context.UserGeometries.Where(s => names.Contains(s.Name)).Select(s => new UserGeometryInfo(s)).ToListAsync();
+            return await context.UserGeometries
+                  .Where(predicate)
+                  .Select(s => new UserGeometryInfo(s)).ToListAsync();
         }
     }
 }

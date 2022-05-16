@@ -32,11 +32,11 @@ namespace FootprintViewer.Layers
 
             Loading = ReactiveCommand.Create<List<UserGeometryInfo>>(LoadingImpl);
 
-            Update.Select(s => s).InvokeCommand(Loading);
+            Update.InvokeCommand(Loading);
 
             provider.Update.Select(_ => Unit.Default).InvokeCommand(Update);
 
-            provider.Loading.Select(s => s).InvokeCommand(Loading);
+            provider.Loading.InvokeCommand(Loading);
         }
 
         private ReactiveCommand<Unit, List<UserGeometryInfo>> Update { get; }
@@ -60,7 +60,7 @@ namespace FootprintViewer.Layers
 
         private async Task<List<UserGeometryInfo>> UpdateAsync()
         {
-            return await _provider.GetUserGeometryInfosAsync();
+            return await _provider.GetValuesAsync(null);
         }
 
         public void EditFeature(IFeature feature)
@@ -100,7 +100,7 @@ namespace FootprintViewer.Layers
                         Geometry = gf.Geometry
                     };
 
-                    await _provider.AddAsync(model);
+                    await _provider.AddAsync(new UserGeometryInfo(model));
                 });
             }
         }

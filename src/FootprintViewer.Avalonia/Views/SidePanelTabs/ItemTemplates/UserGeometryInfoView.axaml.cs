@@ -31,7 +31,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             {
                 this.RemoveButton.Events().Click.Select(args => Unit.Default).InvokeCommand(this, v => v._click).DisposeWith(disposables);
 
-                this.OneWayBind(ViewModel, vm => vm.Type, v => v.TypeTextBlock.Text, value => ((Data.UserGeometryType)value).ToString()).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.Type, v => v.TypeTextBlock.Text, value => value.ToString()).DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.Name, v => v.NameTextBlock.Text).DisposeWith(disposables);
             });
@@ -43,7 +43,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
         {
             _userGeometryViewer ??= Locator.Current.GetExistingService<UserGeometryViewer>();
 
-            _userGeometryViewer.Remove.Execute(ViewModel).Subscribe();
+            _userGeometryViewer.ViewerList.Remove.Execute(ViewModel).Subscribe();
         }
 
         private void InitializeComponent()

@@ -10,11 +10,7 @@ namespace FootprintViewer.Data.Sources
 
         Task RemoveAsync(UserGeometry geometry);
 
-        Task<List<UserGeometry>> GetUserGeometriesAsync();
-
-        Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync();
-
-        Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names);
+        Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter);
 
         Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry);
     }

@@ -7,7 +7,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeUserGeometryViewer() : base(new DesignTimeData())
         {
-            Loading.Execute().Subscribe();
+            ViewerList.Loading.Execute().Subscribe();
         }
     }
 }

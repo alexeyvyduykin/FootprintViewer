@@ -283,7 +283,7 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public List<UserGeometry> GetUserGeometries()
+                private static List<UserGeometry> GetUserGeometries()
                 {
                     var list = new List<UserGeometry>();
                     for (int i = 0; i < 10; i++)
@@ -293,21 +293,7 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public async Task<List<UserGeometry>> GetUserGeometriesAsync()
-                {
-                    await Task.Delay(2000);
-
-                    return await Task.Run(() => GetUserGeometries().ToList());
-                }
-
-                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
-                {
-                    await Task.Delay(2000);
-
-                    return await Task.Run(() => GetUserGeometries().Select(s => new UserGeometryInfo(s)).ToList());
-                }
-
-                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
+                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter)
                 {
                     await Task.Delay(2000);
 

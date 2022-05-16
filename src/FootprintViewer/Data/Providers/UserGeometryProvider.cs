@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class UserGeometryProvider : BaseProvider<IUserGeometryDataSource>
+    public class UserGeometryProvider : BaseProvider<IUserGeometryDataSource>, IEditableProvider<UserGeometryInfo>
     {
         public UserGeometryProvider()
         {
             Update = ReactiveCommand.Create(() => { });
 
-            Loading = ReactiveCommand.CreateFromTask(GetUserGeometryInfosAsync);
+            Loading = ReactiveCommand.CreateFromTask<IFilter<UserGeometryInfo>?, List<UserGeometryInfo>>(GetValuesAsync);
         }
 
-        public ReactiveCommand<Unit, List<UserGeometryInfo>> Loading { get; }
+        public ReactiveCommand<IFilter<UserGeometryInfo>?, List<UserGeometryInfo>> Loading { get; }
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
@@ -27,29 +27,29 @@ namespace FootprintViewer.Data
             await Sources.FirstOrDefault()!.UpdateGeometry(key, geometry);
         }
 
-        public async Task AddAsync(UserGeometry geometry)
+        public async Task AddAsync(UserGeometryInfo value)
         {
             foreach (var source in Sources)
             {
-                await source.AddAsync(geometry);
+                await source.AddAsync(value.Geometry);
             }
 
             Update.Execute().Subscribe();
         }
 
-        public async Task RemoveAsync(UserGeometry geometry)
+        public async Task RemoveAsync(UserGeometryInfo value)
         {
             foreach (var source in Sources)
             {
-                await source.RemoveAsync(geometry);
+                await source.RemoveAsync(value.Geometry);
             }
 
             Update.Execute().Subscribe();
         }
 
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync()
+        public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter = null)
         {
-            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync();
+            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync(filter);
 
             //return await Task.Run(() =>
             //{
@@ -62,11 +62,6 @@ namespace FootprintViewer.Data
 
             //    return list;
             //});
-        }
-
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(string[] names)
-        {
-            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync(names);
         }
     }
 }
