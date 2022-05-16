@@ -209,7 +209,8 @@ namespace FootprintViewer.Designer
                     };
                 }
 
-                public Task<List<GroundStation>> GetGroundStationsAsync() => Task.Run(() => _groundStations);
+                public Task<List<GroundStationInfo>> GetGroundStationInfosAsync() =>
+                    Task.Run(() => _groundStations.Select(s => new GroundStationInfo(s)).ToList());
             }
         }
 

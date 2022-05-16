@@ -18,7 +18,7 @@ namespace FootprintViewer.ViewModels
         public double Angle { get; set; }
     }
 
-    public class GroundStationInfo : ReactiveObject
+    public class GroundStationInfo : ReactiveObject, IViewerItem
     {
         private readonly Coordinate _center;
         private readonly string _name;
@@ -246,5 +246,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool IsShow { get; set; } = false;
+
+        public bool IsShowInfo { get; set; }
     }
 }

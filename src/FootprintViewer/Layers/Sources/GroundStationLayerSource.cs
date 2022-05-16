@@ -17,6 +17,7 @@ namespace FootprintViewer.Layers
     public interface IGroundStationLayerSource : ILayer
     {
         void Update(GroundStationInfo info);
+
         void Change(GroundStationInfo info);
     }
 
@@ -28,14 +29,14 @@ namespace FootprintViewer.Layers
         {
             _cache = new Dictionary<string, List<IFeature>>();
 
-            Loading = ReactiveCommand.Create<List<GroundStation>>(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<GroundStationInfo>>(LoadingImpl);
 
             provider.Loading.Select(s => s).InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<List<GroundStation>, Unit> Loading { get; }
+        private ReactiveCommand<List<GroundStationInfo>, Unit> Loading { get; }
 
-        private void LoadingImpl(List<GroundStation> groundStations)
+        private void LoadingImpl(List<GroundStationInfo> groundStations)
         {
             foreach (var item in groundStations)
             {
@@ -68,8 +69,10 @@ namespace FootprintViewer.Layers
 
                 Clear();
                 AddRange(_cache.SelectMany(s => s.Value));
+                DataHasChanged();
             }
         }
+
         public void Change(GroundStationInfo info)
         {
             var name = info.Name;
@@ -92,8 +95,10 @@ namespace FootprintViewer.Layers
 
                 Clear();
                 AddRange(_cache.SelectMany(s => s.Value));
+                DataHasChanged();
             }
         }
+
         private static List<IFeature> Build(GroundStation groundStation)
         {
             var list = new List<IFeature>();

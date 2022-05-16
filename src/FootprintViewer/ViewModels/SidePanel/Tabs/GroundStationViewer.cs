@@ -4,14 +4,19 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
+    public class GroundStationList : ViewerList<GroundStationInfo>
+    {
+        public GroundStationList(GroundStationProvider provider) : base(provider)
+        {
+
+        }
+    }
+
     public class GroundStationViewer : SidePanelTab
     {
         private readonly GroundStationProvider _provider;
@@ -25,27 +30,14 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных станций";
 
-            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+            ViewerList = new GroundStationList(_provider);
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _first == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _first == true)
+                .Select(_ => (IFilter<GroundStationInfo>?)null)
+                .InvokeCommand(ViewerList.Loading);
 
-            Loading.Select(s => Convert(s)).ToPropertyEx(this, x => x.GroundStationInfos, scheduler: RxApp.MainThreadScheduler);
-
-            Loading.Subscribe(_ => _first = false);
-        }
-
-        protected ReactiveCommand<Unit, List<GroundStation>> Loading { get; }
-
-        private async Task<List<GroundStation>> LoadingAsync() => await _provider.GetGroundStationsAsync();
-
-        private static List<GroundStationInfo> Convert(List<GroundStation> groundStations)
-        {
-            if (groundStations == null)
-            {
-                return new List<GroundStationInfo>();
-            }
-
-            return groundStations.Select(s => new GroundStationInfo(s)).ToList();
+            ViewerList.Loading.Subscribe(_ => _first = false);
         }
 
         public void Update(GroundStationInfo groundStationInfo)
@@ -58,7 +50,7 @@ namespace FootprintViewer.ViewModels
             _groundStationLayerSource.Change(groundStationInfo);
         }
 
-        [ObservableAsProperty]
-        public List<GroundStationInfo> GroundStationInfos { get; } = new List<GroundStationInfo>();
+        [Reactive]
+        public ViewerList<GroundStationInfo> ViewerList { get; private set; }
     }
 }

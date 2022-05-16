@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data.Sources;
+using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,30 +8,18 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class GroundStationProvider : BaseProvider<IGroundStationDataSource>
+    public class GroundStationProvider : BaseProvider<IGroundStationDataSource>, IProvider<GroundStationInfo>
     {
         public GroundStationProvider()
         {
-            Loading = ReactiveCommand.CreateFromTask(GetGroundStationsAsync);
+            Loading = ReactiveCommand.CreateFromTask(s => GetValuesAsync(null));
         }
 
-        public ReactiveCommand<Unit, List<GroundStation>> Loading { get; }
+        public ReactiveCommand<Unit, List<GroundStationInfo>> Loading { get; }
 
-        public IEnumerable<GroundStation> GetGroundStations()
+        public async Task<List<GroundStationInfo>> GetValuesAsync(IFilter<GroundStationInfo>? filter = null)
         {
-            var list = new List<GroundStation>();
-
-            foreach (var source in Sources)
-            {
-                list.AddRange(source.GetGroundStationsAsync().Result);
-            }
-
-            return list;
-        }
-
-        public async Task<List<GroundStation>> GetGroundStationsAsync()
-        {
-            return await Sources.First().GetGroundStationsAsync();
+            return await Sources.First().GetGroundStationInfosAsync();
         }
     }
 }

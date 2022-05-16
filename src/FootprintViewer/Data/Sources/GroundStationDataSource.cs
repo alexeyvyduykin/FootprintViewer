@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FootprintViewer.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -13,11 +15,11 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
-        public async Task<List<GroundStation>> GetGroundStationsAsync()
+        public async Task<List<GroundStationInfo>> GetGroundStationInfosAsync()
         {
             var context = new FootprintViewerDbContext(_options);
 
-            return await context.GroundStations.ToListAsync();
+            return await context.GroundStations.Select(s => new GroundStationInfo(s)).ToListAsync();
         }
     }
 }
