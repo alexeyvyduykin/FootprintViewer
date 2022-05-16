@@ -21,7 +21,7 @@ namespace FootprintViewer.ViewModels
 
     public class GroundTargetViewer : SidePanelTab
     {
-        private readonly GroundTargetViewerList _groundTargetViewerList;
+        private readonly IViewerList<GroundTargetInfo> _groundTargetViewerList;
         private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
         private readonly ITargetLayerSource _source;
@@ -54,7 +54,7 @@ namespace FootprintViewer.ViewModels
 
                 if (IsEnable == true)
                 {
-                    MainContent = _groundTargetViewerList;
+                    MainContent = (GroundTargetViewerList)_groundTargetViewerList;
                 }
                 else
                 {

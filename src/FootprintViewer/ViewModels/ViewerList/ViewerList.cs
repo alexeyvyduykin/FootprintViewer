@@ -9,6 +9,39 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
+    public interface IViewerList<T>
+    {
+        void Update(string[]? names = null);
+
+        ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
+
+        ReactiveCommand<T, T> Select { get; }
+
+        ReactiveCommand<T, T> Unselect { get; }
+
+        ReactiveCommand<T, T> MouseOverEnter { get; }
+
+        ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
+
+        ReactiveCommand<T?, Unit> Add { get; }
+
+        ReactiveCommand<T?, Unit> Remove { get; }
+
+        void ClickOnItem(T? item);
+
+        void SelectItem(string name);
+
+        T? GetItem(string name);
+
+        IObservable<T?> SelectedItemObservable { get; }
+
+        bool IsLoading { get; }
+
+        T? SelectedItem { get; set; }
+
+        List<T> Items { get; }
+    }
+
     public interface IViewerItem
     {
         string Name { get; }
@@ -28,7 +61,7 @@ namespace FootprintViewer.ViewModels
         Task RemoveAsync(T value);
     }
 
-    public class ViewerList<T> : ReactiveObject where T : IViewerItem
+    public class ViewerList<T> : ReactiveObject, IViewerList<T> where T : IViewerItem
     {
         private readonly ObservableAsPropertyHelper<List<T>> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;

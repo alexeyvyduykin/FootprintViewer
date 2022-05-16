@@ -157,7 +157,7 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public ViewerList<FootprintPreview> ViewerList { get; private set; }
+        public IViewerList<FootprintPreview> ViewerList { get; private set; }
 
         [Reactive]
         public IFilter<FootprintPreview> Filter { get; set; }

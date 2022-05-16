@@ -43,6 +43,6 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public ViewerList<UserGeometryInfo> ViewerList { get; private set; }
+        public IViewerList<UserGeometryInfo> ViewerList { get; private set; }
     }
 }

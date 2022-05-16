@@ -24,7 +24,7 @@ namespace FootprintViewer.ViewModels
     public class FootprintObserver : SidePanelTab
     {
         private readonly Map _map;
-        private readonly FootprintObserverList _footprintObserverList;
+        private readonly IViewerList<FootprintInfo> _footprintObserverList;
         private readonly IFilter<FootprintInfo> _filter;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
@@ -57,7 +57,7 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
-            MainContent = _footprintObserverList;
+            MainContent = (FootprintObserverList)_footprintObserverList;
         }
 
         //private void FootprintsChanged(FootprintObserverFilter? filter = null)

@@ -51,6 +51,6 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public ViewerList<GroundStationInfo> ViewerList { get; private set; }
+        public IViewerList<GroundStationInfo> ViewerList { get; private set; }
     }
 }

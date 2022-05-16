@@ -53,6 +53,6 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public ViewerList<SatelliteInfo> ViewerList { get; private set; }
+        public IViewerList<SatelliteInfo> ViewerList { get; private set; }
     }
 }
