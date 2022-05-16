@@ -29,9 +29,9 @@ namespace FootprintViewer.Layers
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(List<Satellite> satellites)
+        private void LoadingImpl(List<SatelliteInfo> satellites)
         {
-            var tracks = TrackBuilder.Create(satellites);
+            var tracks = TrackBuilder.Create(satellites.Select(s => s.Satellite));
 
             _dict.Clear();
 
@@ -82,6 +82,7 @@ namespace FootprintViewer.Layers
 
                 Clear();
                 AddRange(_cache.SelectMany(s => s.Value));
+                DataHasChanged();
             }
         }
     }

@@ -4,14 +4,19 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
+    public class SatelliteList : ViewerList<SatelliteInfo>
+    {
+        public SatelliteList(SatelliteProvider provider) : base(provider)
+        {
+
+        }
+    }
+
     public class SatelliteViewer : SidePanelTab
     {
         private readonly SatelliteProvider _provider;
@@ -27,27 +32,14 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр спутников";
 
-            Loading = ReactiveCommand.CreateFromTask(LoadingAsync);
+            ViewerList = new SatelliteList(_provider);
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _first == true).Select(_ => Unit.Default).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _first == true)
+                .Select(_ => (IFilter<SatelliteInfo>?)null)
+                .InvokeCommand(ViewerList.Loading);
 
-            Loading.Select(s => Convert(s)).ToPropertyEx(this, x => x.SatelliteInfos, scheduler: RxApp.MainThreadScheduler);
-
-            Loading.Subscribe(_ => _first = false);
-        }
-
-        private ReactiveCommand<Unit, List<Satellite>> Loading { get; }
-
-        private async Task<List<Satellite>> LoadingAsync() => await _provider.GetSatellitesAsync();
-
-        private static List<SatelliteInfo> Convert(List<Satellite> satellites)
-        {
-            if (satellites == null)
-            {
-                return new List<SatelliteInfo>();
-            }
-
-            return satellites.Select(s => new SatelliteInfo(s)).ToList();
+            ViewerList.Loading.Subscribe(_ => _first = false);
         }
 
         public void UpdateTrack(SatelliteInfo satelliteInfo)
@@ -60,7 +52,7 @@ namespace FootprintViewer.ViewModels
             _sensorLayerSource.Update(satelliteInfo);
         }
 
-        [ObservableAsProperty]
-        public List<SatelliteInfo> SatelliteInfos { get; } = new List<SatelliteInfo>();
+        [Reactive]
+        public ViewerList<SatelliteInfo> ViewerList { get; private set; }
     }
 }

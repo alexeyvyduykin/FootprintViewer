@@ -33,10 +33,10 @@ namespace FootprintViewer.Layers
             provider.Loading.Subscribe(LoadingImpl);
         }
 
-        private void LoadingImpl(List<Satellite> satellites)
+        private void LoadingImpl(List<SatelliteInfo> satellites)
         {
-            var leftStrips = StripBuilder.CreateLeft(satellites);
-            var rightStrips = StripBuilder.CreateRight(satellites);
+            var leftStrips = StripBuilder.CreateLeft(satellites.Select(s => s.Satellite));
+            var rightStrips = StripBuilder.CreateRight(satellites.Select(s => s.Satellite));
 
             _dictLeft.Clear();
             _dictright.Clear();
@@ -92,6 +92,7 @@ namespace FootprintViewer.Layers
 
                 Clear();
                 AddRange(_cache.SelectMany(s => s.Value));
+                DataHasChanged();
             }
         }
 

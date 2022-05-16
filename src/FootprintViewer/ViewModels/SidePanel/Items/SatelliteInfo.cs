@@ -5,7 +5,7 @@ using System.Reactive;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SatelliteInfo : ReactiveObject
+    public class SatelliteInfo : ReactiveObject, IViewerItem
     {
         private readonly string _name;
         private readonly Satellite _satellite;
@@ -19,7 +19,7 @@ namespace FootprintViewer.ViewModels
             _name = satellite.Name!;
 
             var count = satellite.ToPRDCTSatellite().Nodes().Count;
-       
+
             _maxNode = count;
 
             CurrentNode = 1;
@@ -31,7 +31,7 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<Unit, Unit> ShowInfoClick { get; }
 
-        public string? Name => _name;
+        public string Name => _name;
 
         public Satellite Satellite => _satellite;
 

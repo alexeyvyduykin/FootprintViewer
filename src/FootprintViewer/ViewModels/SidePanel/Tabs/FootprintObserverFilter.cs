@@ -46,13 +46,12 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSatelliteList(SatelliteProvider provider)
         {
-            var satelliteNames = await Task.Run(() => provider.GetSatellitesAsync().Result.Select(s => s.Name).ToList());
+            var satellites = await provider.GetValuesAsync();
+            var satelliteNames = satellites?.Select(s => s.Name).ToList();
 
             if (satelliteNames != null)
             {
-                satelliteNames.Sort();
-
-                var list = satelliteNames.Select(s => new SatelliteItem() { Name = s });
+                var list = satelliteNames.OrderBy(s => s).Select(s => new SatelliteItem() { Name = s });
 
                 Satellites = new ObservableCollection<SatelliteItem>(list);
 

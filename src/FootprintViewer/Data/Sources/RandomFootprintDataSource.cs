@@ -21,9 +21,9 @@ namespace FootprintViewer.Data.Sources
             {
                 if (_footprints == null)
                 {
-                    var satellites = await _source.GetSatellitesAsync();
+                    var satellites = await _source.GetSatelliteInfosAsync();
 
-                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites));
+                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites.Select(s => s.Satellite)));
                 }
 
                 return _footprints;
@@ -36,9 +36,9 @@ namespace FootprintViewer.Data.Sources
             {
                 if (_footprints == null)
                 {
-                    var satellites = await _source.GetSatellitesAsync();
+                    var satellites = await _source.GetSatelliteInfosAsync();
 
-                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites));
+                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites.Select(s => s.Satellite)));
                 }
 
                 return _footprints.Select(s => new FootprintInfo(s)).ToList();

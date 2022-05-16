@@ -174,14 +174,9 @@ namespace FootprintViewer.Designer
                         _satellites.Add(DesignTimeSatelliteInfo.BuildModel());
                     }
                 }
-                public Task<List<Satellite>> GetSatellitesAsync() => throw new Exception();
-                public IEnumerable<Satellite> GetSatellites() => _satellites;
 
-                public IDictionary<string, Dictionary<int, List<List<Point>>>> GetLeftStrips() => throw new Exception();
-
-                public IDictionary<string, Dictionary<int, List<List<Point>>>> GetRightStrips() => throw new Exception();
-
-                public IDictionary<string, Dictionary<int, List<List<(double lon, double lat)>>>> GetGroundTracks() => throw new Exception();
+                public Task<List<SatelliteInfo>> GetSatelliteInfosAsync() =>
+                    Task.Run(() => _satellites.Select(s => new SatelliteInfo(s)).ToList());
             }
         }
 
