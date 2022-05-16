@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class FootprintObserverFilter : ReactiveObject, IFilter<FootprintInfo>
+    public class FootprintObserverFilter : ViewerListFilter<FootprintInfo>
     {
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -36,8 +36,6 @@ namespace FootprintViewer.ViewModels
             FromNode = 1;
             ToNode = 15;
 
-            Update = ReactiveCommand.Create(() => this);
-
             this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Switcher)
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Select(_ => Unit.Default)
@@ -45,8 +43,6 @@ namespace FootprintViewer.ViewModels
 
             Task.Run(async () => await CreateSatelliteList(provider));
         }
-
-        public ReactiveCommand<Unit, FootprintObserverFilter> Update { get; }
 
         private async Task CreateSatelliteList(SatelliteProvider provider)
         {
@@ -71,7 +67,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public bool Filtering(FootprintInfo footprint)
+        public override bool Filtering(FootprintInfo footprint)
         {
             if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
             {
@@ -116,6 +112,6 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public Geometry? AOI { get; set; }
 
-        public string[]? Names => throw new NotImplementedException();
+        public override string[]? Names => throw new NotImplementedException();
     }
 }

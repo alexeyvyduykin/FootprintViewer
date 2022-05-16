@@ -12,13 +12,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
+    public class SceneSearchList : ViewerList<FootprintPreview>
+    {
+        public SceneSearchList(FootprintPreviewProvider provider) : base(provider)
+        {
+
+        }
+    }
+
     public class SceneSearch : SidePanelTab
     {
-        private readonly ObservableAsPropertyHelper<List<FootprintPreview>> _footprints;
         private readonly FootprintPreviewProvider _footprintPreviewProvider;
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
         private readonly Map _map;
@@ -35,85 +41,44 @@ namespace FootprintViewer.ViewModels
 
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
 
+            ViewerList = new SceneSearchList(_footprintPreviewProvider);
+
             Title = "Поиск сцены";
 
             Filter = new SceneSearchFilter(dependencyResolver);
 
             _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
 
-            this.WhenAnyValue(s => s.SelectedFootprint).Subscribe(footprint =>
-            {
-                if (footprint != null && _map != null && footprint.Path != null)
-                {
-                    var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
-
-                    _map.ReplaceLayer(layer, LayerType.FootprintImage);
-
-                    CurrentFootprint?.Invoke(this, EventArgs.Empty);
-                }
-            });
-
-            MouseOverEnter = ReactiveCommand.Create<FootprintPreview?>(ShowFootprintBorder);
-
-            MouseOverLeave = ReactiveCommand.Create(HideFootprintBorder);
+            ViewerList.SelectedItemObservable.Subscribe(s => SelectFootprint(s));
+            ViewerList.MouseOverEnter.Subscribe(s => ShowFootprintBorder(s));
+            ViewerList.MouseOverLeave.Subscribe(_ => HideFootprintBorder());
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
-            SelectedItemChangedCommand = ReactiveCommand.Create<FootprintPreview>(SelectionChanged);
+            Filter.Update.InvokeCommand(ViewerList.Loading);
 
-            Loading = ReactiveCommand.CreateFromTask<SceneSearchFilter?, List<FootprintPreview>>(LoadingAsync);
-
-            Filter.Update.Select(filter => filter).InvokeCommand(Loading);
+            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
 
             // TODO: avoid from first loading design
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == true && _firstLoading == true).Select(_ => Filter).InvokeCommand(Loading);
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _firstLoading == true)
+                .Select(_ => Filter)
+                .InvokeCommand(ViewerList.Loading);
 
             this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
 
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
-
-            _footprints = Loading.ToProperty(this, x => x.Footprints, scheduler: RxApp.MainThreadScheduler);
         }
 
-        private ReactiveCommand<SceneSearchFilter?, List<FootprintPreview>> Loading { get; }
+        public void SetAOI(Geometry aoi) => ((SceneSearchFilter)Filter).AOI = aoi;
 
-        private async Task<List<FootprintPreview>> LoadingAsync(SceneSearchFilter? filter = null)
-        {
-            _firstLoading = false;
-
-            if (filter == null)
-            {
-                return await Task.Run(() =>
-                {
-                    return _footprintPreviewProvider.GetFootprintPreviews();
-                });
-            }
-            else
-            {
-                return await Task.Run(() =>
-                {
-                    var list = _footprintPreviewProvider.GetFootprintPreviews();
-
-                    return list.Where(s => filter.Filtering(s)).ToList();
-                });
-            }
-        }
-
-        public void SetAOI(Geometry aoi) => Filter.AOI = aoi;
-
-        public void ResetAOI() => Filter.AOI = null;
+        public void ResetAOI() => ((SceneSearchFilter)Filter).AOI = null;
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
-        public ReactiveCommand<FootprintPreview?, Unit> MouseOverEnter { get; }
-
-        public ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
-
-        public ReactiveCommand<FootprintPreview, Unit> SelectedItemChangedCommand { get; }
-
-        private void ShowFootprintBorder(FootprintPreview? footprint)
+        private void ShowFootprintBorder(FootprintPreview footprint)
         {
-            if (footprint != null && IsGeometry(footprint) == true)
+            if (IsGeometry(footprint) == true)
             {
                 var layer = _map.GetLayer(LayerType.FootprintImageBorder);
 
@@ -123,6 +88,51 @@ namespace FootprintViewer.ViewModels
                     writableLayer.Add(new GeometryFeature() { Geometry = ToGeometry(footprint) });
                     writableLayer.DataHasChanged();
                 }
+            }
+        }
+
+        private void HideFootprintBorder()
+        {
+            var layer = _map.GetLayer(LayerType.FootprintImageBorder);
+
+            if (layer != null && layer is WritableLayer writableLayer)
+            {
+                writableLayer.Clear();
+                writableLayer.DataHasChanged();
+            }
+        }
+
+        private void SelectFootprint(FootprintPreview? footprint)
+        {
+            if (footprint != null && _map != null && footprint.Path != null)
+            {
+                var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
+
+                _map.ReplaceLayer(layer, LayerType.FootprintImage);
+
+                CurrentFootprint?.Invoke(this, EventArgs.Empty);
+
+                NavigateToCenter(footprint);
+            }
+        }
+
+        private void NavigateToCenter(FootprintPreview footprint)
+        {
+            if (IsGeometry(footprint) == true)
+            {
+                var point = GetCenter(footprint);
+
+                _map.Initialized = false;
+
+                _map.Home = (navigator) =>
+                {
+                    navigator.CenterOn(point);
+                };
+
+                // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
+                var layer = new Mapsui.Layers.Layer();
+                _map.Layers.Add(layer);
+                _map.Layers.Remove(layer);
             }
         }
 
@@ -141,49 +151,16 @@ namespace FootprintViewer.ViewModels
             return _geometries[footprint.Name!].Centroid.ToMPoint();// BoundingBox.Centroid;
         }
 
-        private void HideFootprintBorder()
-        {
-            var layer = _map.GetLayer(LayerType.FootprintImageBorder);
-
-            if (layer != null && layer is WritableLayer writableLayer)
-            {
-                writableLayer.Clear();
-                writableLayer.DataHasChanged();
-            }
-        }
-
         private void FilterClickImpl()
         {
             IsFilterOpen = !IsFilterOpen;
         }
 
-        private void SelectionChanged(FootprintPreview footprint)
-        {
-            if (footprint != null && IsGeometry(footprint) == true)
-            {
-                var point = GetCenter(footprint);
-
-                _map.Initialized = false;
-
-                _map.Home = (navigator) =>
-                {
-                    navigator.CenterOn(point);
-                };
-
-                // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
-                var layer = new Mapsui.Layers.Layer();
-                _map.Layers.Add(layer);
-                _map.Layers.Remove(layer);
-            }
-        }
-
-        public List<FootprintPreview> Footprints => _footprints.Value;
+        [Reactive]
+        public ViewerList<FootprintPreview> ViewerList { get; private set; }
 
         [Reactive]
-        public FootprintPreview? SelectedFootprint { get; set; }
-
-        [Reactive]
-        public SceneSearchFilter Filter { get; set; }
+        public IFilter<FootprintPreview> Filter { get; set; }
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }

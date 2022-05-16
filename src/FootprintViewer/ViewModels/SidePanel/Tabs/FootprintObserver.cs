@@ -53,7 +53,7 @@ namespace FootprintViewer.ViewModels
                 SetMapFocusTo(item.Center);
             });
 
-            ((FootprintObserverFilter)_filter).Update.Select(filter => (IFilter<FootprintInfo>)filter).InvokeCommand(_footprintObserverList.Loading);
+            _filter.Update.InvokeCommand(_footprintObserverList.Loading);
 
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
@@ -114,7 +114,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public FootprintObserverFilter Filter => (FootprintObserverFilter)_filter;
+        public IFilter<FootprintInfo> Filter => _filter;
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }

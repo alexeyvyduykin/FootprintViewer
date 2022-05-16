@@ -222,12 +222,16 @@ namespace FootprintViewer.Designer
 
             private class DesignTimeFootprintPreviewSource : Data.Sources.IFootprintPreviewDataSource
             {
-                public IEnumerable<FootprintPreview> GetFootprintPreviews()
+                public IList<FootprintPreview> GetFootprintPreviews(IFilter<FootprintPreview>? filter)
                 {
+                    var list = new List<FootprintPreview>();
+
                     for (int i = 0; i < 8; i++)
                     {
-                        yield return DesignTimeFootprintPreview.Build();
+                        list.Add(DesignTimeFootprintPreview.Build());
                     }
+
+                    return list;
                 }
             }
         }

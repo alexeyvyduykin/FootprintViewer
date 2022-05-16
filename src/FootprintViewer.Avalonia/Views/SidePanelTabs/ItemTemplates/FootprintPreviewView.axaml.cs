@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -10,9 +13,6 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
@@ -21,7 +21,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
         private Border FootprintImageBorder => this.FindControl<Border>("FootprintImageBorder");
 
         private Image FootprintImageImage => this.FindControl<Image>("FootprintImageImage");
-        
+
         private static SceneSearch? _sceneSearch;
 
         public FootprintPreviewView()
@@ -50,14 +50,14 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
         {
             _sceneSearch ??= Locator.Current.GetExistingService<SceneSearch>();
 
-            _sceneSearch.MouseOverEnter.Execute(ViewModel).Subscribe();
+            _sceneSearch.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
         }
 
         private void LeaveImpl()
         {
             _sceneSearch ??= Locator.Current.GetExistingService<SceneSearch>();
 
-            _sceneSearch.MouseOverLeave.Execute().Subscribe();
+            _sceneSearch.ViewerList.MouseOverLeave.Execute().Subscribe();
         }
 
         private static object Convert(System.Drawing.Image? image)
@@ -67,7 +67,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             //    //ensure provided value is valid image.
             //    return (BitmapSource)Application.Current.FindResource("NotLoadingFootprintImage");
             //}
-       
+
             if (image == null)
             {
                 throw new Exception();
@@ -79,12 +79,12 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
                 //Throwing here to reduce cpu and resource usage when error can be detected early.
                 throw new ArgumentException($"Cannot convert System.Drawing.Image with either dimension greater than {Int16.MaxValue} to BitmapImage.\nProvided image's dimensions: {image.Width}x{image.Height}", nameof(image));
             }
-          
+
             using var bitmap = new System.Drawing.Bitmap(image);
 
             Bitmap? avBitmap;
 
-            using (MemoryStream memory = new MemoryStream())
+            using (var memory = new MemoryStream())
             {
                 bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
                 memory.Position = 0;

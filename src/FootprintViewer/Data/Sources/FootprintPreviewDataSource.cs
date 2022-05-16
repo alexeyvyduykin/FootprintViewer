@@ -39,7 +39,7 @@ namespace FootprintViewer.Data.Sources
             _date = DateTime.UtcNow;
         }
 
-        public IEnumerable<FootprintPreview> GetFootprintPreviews()
+        public IList<FootprintPreview> GetFootprintPreviews(IFilter<FootprintPreview>? filter)
         {
             var list = new List<FootprintPreview>();
 
@@ -65,9 +65,8 @@ namespace FootprintViewer.Data.Sources
                     {
                         var tileNumber = name.Replace("-", "").ToUpper();
 
-                        list.Add(new FootprintPreview()
+                        var footprintPreview = new FootprintPreview(filename)
                         {
-                            Name = filename,
                             Date = _date.Date.ToShortDateString(),
                             SatelliteName = $"Satellite{_random.Next(1, 6):00}",
                             SunElevation = _random.Next(0, 90),
@@ -75,7 +74,12 @@ namespace FootprintViewer.Data.Sources
                             TileNumber = tileNumber,
                             Path = path,
                             Image = CreatePreviewImage(path),
-                        });
+                        };
+
+                        if (filter == null || filter.Filtering(footprintPreview))
+                        {
+                            list.Add(footprintPreview);
+                        }
                     }
                 }
             }

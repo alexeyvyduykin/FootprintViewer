@@ -5,6 +5,6 @@ namespace FootprintViewer.Data.Sources
 {
     public interface IFootprintPreviewDataSource
     {
-        IEnumerable<FootprintPreview> GetFootprintPreviews();
+        IList<FootprintPreview> GetFootprintPreviews(IFilter<FootprintPreview>? filter);
     }
 }

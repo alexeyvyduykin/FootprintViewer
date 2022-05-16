@@ -3,6 +3,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -18,30 +19,6 @@ namespace FootprintViewer.ViewModels
     public interface IProvider<T>
     {
         Task<List<T>> GetValuesAsync(IFilter<T>? filter = null);
-    }
-
-    public interface IFilter<T>
-    {
-        bool Filtering(T value);
-
-        string[]? Names { get; }
-    }
-
-    public class NameFilter<T> : IFilter<T> where T : IViewerItem
-    {
-        private readonly string[]? _names;
-
-        public NameFilter(string[]? names)
-        {
-            _names = names;
-        }
-
-        public string[]? Names => _names;
-
-        public bool Filtering(T value)
-        {
-            return (_names == null) || _names.Contains(value.Name);
-        }
     }
 
     public class ViewerList<T> : ReactiveObject where T : IViewerItem
@@ -61,6 +38,10 @@ namespace FootprintViewer.ViewModels
             Select = ReactiveCommand.Create<T, T>(s => s);
 
             Unselect = ReactiveCommand.Create<T, T>(s => s);
+
+            MouseOverEnter = ReactiveCommand.Create<T, T>(s => s);
+
+            MouseOverLeave = ReactiveCommand.Create(() => { });
 
             _items = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Items);
 
@@ -85,6 +66,10 @@ namespace FootprintViewer.ViewModels
         public ReactiveCommand<T, T> Select { get; }
 
         public ReactiveCommand<T, T> Unselect { get; }
+
+        public ReactiveCommand<T, T> MouseOverEnter { get; }
+
+        public ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
 
         public void ClickOnItem(T? item)
         {

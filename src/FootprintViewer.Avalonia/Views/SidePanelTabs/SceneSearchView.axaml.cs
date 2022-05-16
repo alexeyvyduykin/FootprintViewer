@@ -27,8 +27,8 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
                 this.ToggleButtonSearch.Events().Click.Select(args => Unit.Default).InvokeCommand(ViewModel, vm => vm.FilterClick).DisposeWith(disposables);
 
                 // ListBoxFootprints
-                this.OneWayBind(ViewModel, vm => vm.Footprints, v => v.ListBoxFootprints.Items).DisposeWith(disposables);
-                this.Bind(ViewModel, vm => vm.SelectedFootprint, v => v.ListBoxFootprints.SelectedItem).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.ViewerList.Items, v => v.ListBoxFootprints.Items).DisposeWith(disposables);
+                this.Bind(ViewModel, vm => vm.ViewerList.SelectedItem, v => v.ListBoxFootprints.SelectedItem).DisposeWith(disposables);
             });
         }
 

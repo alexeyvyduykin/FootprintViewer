@@ -24,7 +24,7 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class SceneSearchFilter : ReactiveObject
+    public class SceneSearchFilter : ViewerListFilter<FootprintPreview>
     {
         private readonly IDictionary<string, Geometry> _geometries;
 
@@ -43,8 +43,6 @@ namespace FootprintViewer.ViewModels
             FromDate = DateTime.Today.AddDays(-1);
             ToDate = DateTime.Today.AddDays(1);
 
-            Update = ReactiveCommand.Create(() => this);
-
             this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI, s => s.AOI)
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Select(_ => Unit.Default)
@@ -53,11 +51,9 @@ namespace FootprintViewer.ViewModels
             Task.Run(async () => await CreateSensorList(footprintPreviewProvider));
         }
 
-        public ReactiveCommand<Unit, SceneSearchFilter> Update { get; }
-
         private async Task CreateSensorList(FootprintPreviewProvider provider)
         {
-            var footprints = await Task.Run(() => provider.GetFootprintPreviews());
+            var footprints = await provider.GetValuesAsync(null);
 
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
 
@@ -91,7 +87,7 @@ namespace FootprintViewer.ViewModels
             Cloudiness = temp;
         }
 
-        public bool Filtering(FootprintPreview footprint)
+        public override bool Filtering(FootprintPreview value)
         {
             bool isAoiCondition = false;
 
@@ -101,9 +97,9 @@ namespace FootprintViewer.ViewModels
             }
             else
             {
-                if (_geometries.ContainsKey(footprint.Name!))
+                if (_geometries.ContainsKey(value.Name))
                 {
-                    var footprintPolygon = (Polygon)_geometries[footprint.Name!];
+                    var footprintPolygon = (Polygon)_geometries[value.Name];
                     var aoiPolygon = (Polygon)AOI;
 
                     isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);
@@ -112,11 +108,11 @@ namespace FootprintViewer.ViewModels
 
             if (isAoiCondition == true)
             {
-                if (Sensors.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
+                if (Sensors.Where(s => s.IsActive == true).Select(s => s.Name).Contains(value.SatelliteName) == true)
                 {
-                    if (footprint.CloudCoverFull >= Cloudiness)
+                    if (value.CloudCoverFull >= Cloudiness)
                     {
-                        if (footprint.SunElevation >= MinSunElevation && footprint.SunElevation <= MaxSunElevation)
+                        if (value.SunElevation >= MinSunElevation && value.SunElevation <= MaxSunElevation)
                         {
                             return true;
                         }
@@ -153,5 +149,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public Geometry? AOI { get; set; }
+
+        public override string[]? Names => throw new NotImplementedException();
     }
 }

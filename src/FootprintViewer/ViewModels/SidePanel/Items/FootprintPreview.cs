@@ -3,13 +3,14 @@ using System.Drawing;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintPreview : ReactiveObject
+    public class FootprintPreview : ReactiveObject, IViewerItem
     {
-        public FootprintPreview()
+        public FootprintPreview(string name)
         {
+            Name = name;
         }
 
-        public string? Name { get; set; }
+        public string Name { get; }
 
         public string? Date { get; set; }
 
@@ -24,5 +25,7 @@ namespace FootprintViewer.ViewModels
         public string? Path { get; set; }
 
         public Image? Image { get; set; }
+
+        public bool IsShowInfo { get; set; }
     }
 }

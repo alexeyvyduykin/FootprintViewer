@@ -7,7 +7,7 @@ namespace FootprintViewer.Designer
     {
         private static readonly Random _random = new Random();
 
-        public DesignTimeFootprintPreview() : base()
+        public DesignTimeFootprintPreview() : base("38-50-lr_3857")
         {
             var unitBitmap = new System.Drawing.Bitmap(1, 1);
             unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
@@ -31,7 +31,7 @@ namespace FootprintViewer.Designer
             var unitBitmap = new System.Drawing.Bitmap(1, 1);
             unitBitmap.SetPixel(0, 0, System.Drawing.Color.White);
 
-            return new FootprintPreview()
+            return new FootprintPreview(name.ToUpper())
             {
                 Date = date.Date.ToShortDateString(),
                 SatelliteName = satellites[_random.Next(0, satellites.Length - 1)],

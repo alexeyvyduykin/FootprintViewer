@@ -1,21 +1,25 @@
 ﻿using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintPreviewProvider : BaseProvider<IFootprintPreviewDataSource>
+    public class FootprintPreviewProvider : BaseProvider<IFootprintPreviewDataSource>, IProvider<FootprintPreview>
     {
-        public List<FootprintPreview> GetFootprintPreviews()
+        public async Task<List<FootprintPreview>> GetValuesAsync(IFilter<FootprintPreview>? filter)
         {
-            var list = new List<FootprintPreview>();
-
-            foreach (var source in Sources)
+            return await Task.Run(() =>
             {
-                list.AddRange(source.GetFootprintPreviews());
-            }
+                var list = new List<FootprintPreview>();
 
-            return list;
+                foreach (var source in Sources)
+                {
+                    list.AddRange(source.GetFootprintPreviews(filter));
+                }
+
+                return list;
+            });
         }
     }
 }
