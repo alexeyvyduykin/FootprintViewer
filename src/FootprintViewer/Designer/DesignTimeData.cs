@@ -187,7 +187,7 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeGroundStationSource());
             }
 
-            private class DesignTimeGroundStationSource : Data.Sources.IGroundStationDataSource
+            private class DesignTimeGroundStationSource : IDataSource<GroundStationInfo>
             {
                 private readonly List<GroundStation> _groundStations;
 
@@ -204,7 +204,7 @@ namespace FootprintViewer.Designer
                     };
                 }
 
-                public Task<List<GroundStationInfo>> GetGroundStationInfosAsync() =>
+                public Task<List<GroundStationInfo>> GetValuesAsync(IFilter<GroundStationInfo>? filter = null) =>
                     Task.Run(() => _groundStations.Select(s => new GroundStationInfo(s)).ToList());
             }
         }

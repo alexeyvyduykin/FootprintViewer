@@ -37,7 +37,7 @@ namespace FootprintViewer.Avalonia
             IDataSource<FootprintInfo> footprintDataSource;
             Data.Sources.ISatelliteDataSource satelliteDataSource;
             Data.Sources.IUserGeometryDataSource userGeometryDataSource;
-            Data.Sources.IGroundStationDataSource groundStationDataSource;
+            IDataSource<GroundStationInfo> groundStationDataSource;
 
             if (IsConnectionValid() == true)
             {
