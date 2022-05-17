@@ -161,7 +161,7 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeSatelliteSource());
             }
 
-            private class DesignTimeSatelliteSource : Data.Sources.ISatelliteDataSource
+            private class DesignTimeSatelliteSource : IDataSource<SatelliteInfo>
             {
                 private readonly IList<Satellite> _satellites;
 
@@ -175,7 +175,7 @@ namespace FootprintViewer.Designer
                     }
                 }
 
-                public Task<List<SatelliteInfo>> GetSatelliteInfosAsync() =>
+                public Task<List<SatelliteInfo>> GetValuesAsync(IFilter<SatelliteInfo>? filter = null) =>
                     Task.Run(() => _satellites.Select(s => new SatelliteInfo(s)).ToList());
             }
         }

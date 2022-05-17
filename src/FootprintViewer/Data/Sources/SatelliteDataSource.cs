@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class SatelliteDataSource : ISatelliteDataSource
+    public class SatelliteDataSource : IDataSource<SatelliteInfo>
     {
         private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
@@ -15,7 +15,7 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
-        public async Task<List<SatelliteInfo>> GetSatelliteInfosAsync()
+        public async Task<List<SatelliteInfo>> GetValuesAsync(IFilter<SatelliteInfo>? filter = null)
         {
             var context = new FootprintViewerDbContext(_options);
 

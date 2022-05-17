@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomSatelliteDataSource : ISatelliteDataSource
+    public class RandomSatelliteDataSource : IDataSource<SatelliteInfo>
     {
         private List<SatelliteInfo>? _satellites;
 
-        public async Task<List<SatelliteInfo>> GetSatelliteInfosAsync()
+        public async Task<List<SatelliteInfo>> GetValuesAsync(IFilter<SatelliteInfo>? filter = null)
         {
             return await Task.Run(() =>
             {

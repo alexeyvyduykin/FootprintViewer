@@ -8,9 +8,9 @@ namespace FootprintViewer.Data.Sources
     public class RandomFootprintDataSource : IDataSource<FootprintInfo>
     {
         private List<FootprintInfo>? _footprints;
-        private readonly ISatelliteDataSource _source;
+        private readonly IDataSource<SatelliteInfo> _source;
 
-        public RandomFootprintDataSource(ISatelliteDataSource source)
+        public RandomFootprintDataSource(IDataSource<SatelliteInfo> source)
         {
             _source = source;
         }
@@ -21,7 +21,7 @@ namespace FootprintViewer.Data.Sources
             {
                 if (_footprints == null)
                 {
-                    var satellites = await _source.GetSatelliteInfosAsync();
+                    var satellites = await _source.GetValuesAsync(null);
 
                     var footprints = FootprintBuilder.Create(satellites.Select(s => s.Satellite));
 
