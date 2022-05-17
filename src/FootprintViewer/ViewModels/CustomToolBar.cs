@@ -16,6 +16,7 @@ namespace FootprintViewer.ViewModels
         {
             _worldMapSelector = new WorldMapSelector(dependencyResolver);
             _worldMapSelector.WorldMapChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
+            _worldMapSelector.Loading.Execute().Subscribe();
 
             ZoomIn = new ToolClick()
             {

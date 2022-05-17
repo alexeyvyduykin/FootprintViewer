@@ -247,16 +247,19 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeMapDataSource());
             }
 
-            private class DesignTimeMapDataSource : Data.Sources.IMapDataSource
+            private class DesignTimeMapDataSource : IDataSource<MapResource>
             {
-                public IEnumerable<MapResource> GetMapResources()
+                public async Task<List<MapResource>> GetValuesAsync(IFilter<MapResource>? filter = null)
                 {
-                    return new[]
+                    return await Task.Run(() =>
                     {
-                        new MapResource("WorldMapDefault", ""),
-                        new MapResource("OAM-World-1-8-min-J70", ""),
-                        new MapResource("OAM-World-1-10-J70", "")
-                    };
+                        return new List<MapResource>()
+                        {
+                            new MapResource("WorldMapDefault", ""),
+                            new MapResource("OAM-World-1-8-min-J70", ""),
+                            new MapResource("OAM-World-1-10-J70", "")
+                        };
+                    });
                 }
             }
         }
@@ -314,7 +317,7 @@ namespace FootprintViewer.Designer
 
             private class DesignTimeGroundTargetDataSource : IDataSource<GroundTargetInfo>
             {
-                public List<GroundTarget> GetGroundTargets()
+                public static List<GroundTarget> GetGroundTargets()
                 {
                     var list = new List<GroundTarget>();
                     for (int i = 0; i < 10; i++)
@@ -350,7 +353,7 @@ namespace FootprintViewer.Designer
 
             private class DesignTimeFootprintDataSource : IDataSource<FootprintInfo>
             {
-                public List<Footprint> GetFootprints()
+                public static List<Footprint> GetFootprints()
                 {
                     var list = new List<Footprint>();
                     for (int i = 0; i < 10; i++)

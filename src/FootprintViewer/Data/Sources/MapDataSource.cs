@@ -1,10 +1,12 @@
 ﻿using FootprintViewer.FileSystem;
+using FootprintViewer.ViewModels;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class MapDataSource : IMapDataSource
+    public class MapDataSource : IDataSource<MapResource>
     {
         private readonly SolutionFolder _dataFolder;
         private readonly string? _subFolder;
@@ -24,28 +26,35 @@ namespace FootprintViewer.Data.Sources
             _dataFolder = new SolutionFolder(folder);
         }
 
-        public IEnumerable<MapResource> GetMapResources()
+        public async Task<List<MapResource>> GetValuesAsync(IFilter<MapResource>? filter = null)
         {
-            IEnumerable<string?> paths;
+            return await Task.Run(() =>
+            {
+                IEnumerable<string?> paths;
 
-            if (_searchPattern == null)
-            {
-                paths = new[] { _dataFolder.GetPath(_file, _subFolder) };
-            }
-            else
-            {
-                paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
-            }
-
-            foreach (var path in paths)
-            {
-                if (string.IsNullOrEmpty(path) == false)
+                if (_searchPattern == null)
                 {
-                    var name = Path.GetFileNameWithoutExtension(path);
-
-                    yield return new MapResource(name, path);
+                    paths = new[] { _dataFolder.GetPath(_file, _subFolder) };
                 }
-            }
+                else
+                {
+                    paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
+                }
+
+                var list = new List<MapResource>();
+
+                foreach (var path in paths)
+                {
+                    if (string.IsNullOrEmpty(path) == false)
+                    {
+                        var name = Path.GetFileNameWithoutExtension(path);
+
+                        list.Add(new MapResource(name, path));
+                    }
+                }
+
+                return list;
+            });
         }
     }
 }

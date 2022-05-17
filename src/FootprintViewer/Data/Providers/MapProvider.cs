@@ -1,20 +1,24 @@
-﻿using FootprintViewer.Data.Sources;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class MapProvider : BaseProvider<IMapDataSource>
+    public class MapProvider : BaseProvider<IDataSource<MapResource>>
     {
-        public IEnumerable<MapResource> GetMapResources()
+        public async Task<List<MapResource>> GetValuesAsync()
         {
-            var list = new List<MapResource>();
-
-            foreach (var source in Sources)
+            return await Task.Run(async () =>
             {
-                list.AddRange(source.GetMapResources());
-            }
+                var list = new List<MapResource>();
 
-            return list;
+                foreach (var source in Sources)
+                {
+                    var values = await source.GetValuesAsync(null);
+                    list.AddRange(values);
+                }
+
+                return list;
+            });
         }
     }
 }

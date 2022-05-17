@@ -6,6 +6,7 @@ using Mapsui;
 using Mapsui.Layers;
 using Splat;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer
 {
@@ -40,7 +41,7 @@ namespace FootprintViewer
             map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
             map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
 
-            map.SetWorldMapLayer(mapProvider.GetMapResources().FirstOrDefault()!);
+            Task.Run(async () => map.SetWorldMapLayer((await mapProvider.GetValuesAsync()).FirstOrDefault()!));
 
             return map;
         }
@@ -153,28 +154,6 @@ namespace FootprintViewer
         public InfoPanel CreateInfoPanel()
         {
             return new InfoPanel();
-        }
-
-        //public ILayer CreateInteractiveLayer(ILayer layer, IInteractiveObject obj)
-        //{
-        //    var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
-
-        //    var style = (obj is IDesigner) ? styleManager.DesignerStyle : styleManager.DecoratorStyle;
-
-        //    return new InteractiveLayer(layer, obj)
-        //    {
-        //        Style = style,
-        //    };
-        //}
-
-        public ILayer CreateInteractiveSelectLayer(ILayer source, IFeature feature)
-        {
-            var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
-
-            return new SelectLayer(source, feature)
-            {
-                Style = styleManager.SelectStyle,
-            };
         }
     }
 }
