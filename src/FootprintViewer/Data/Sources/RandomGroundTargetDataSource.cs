@@ -8,9 +8,9 @@ namespace FootprintViewer.Data.Sources
     public class RandomGroundTargetDataSource : IGroundTargetDataSource
     {
         private List<GroundTargetInfo>? _groundTargets;
-        private readonly IFootprintDataSource _source;
+        private readonly IDataSource<FootprintInfo> _source;
 
-        public RandomGroundTargetDataSource(IFootprintDataSource source)
+        public RandomGroundTargetDataSource(IDataSource<FootprintInfo> source)
         {
             _source = source;
         }
@@ -21,7 +21,7 @@ namespace FootprintViewer.Data.Sources
             {
                 if (_groundTargets == null)
                 {
-                    var footprints = await _source.GetFootprintInfosAsync();
+                    var footprints = await _source.GetValuesAsync(null);
 
                     var targets = GroundTargetBuilder.Create(footprints.Select(s => s.Footprint!));
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomFootprintDataSource : IFootprintDataSource
+    public class RandomFootprintDataSource : IDataSource<FootprintInfo>
     {
         private List<FootprintInfo>? _footprints;
         private readonly ISatelliteDataSource _source;
@@ -15,7 +15,7 @@ namespace FootprintViewer.Data.Sources
             _source = source;
         }
 
-        public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
         {
             return await Task.Run(async () =>
             {

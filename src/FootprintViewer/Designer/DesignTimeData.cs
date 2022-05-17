@@ -345,7 +345,7 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeFootprintDataSource());
             }
 
-            private class DesignTimeFootprintDataSource : Data.Sources.IFootprintDataSource
+            private class DesignTimeFootprintDataSource : IDataSource<FootprintInfo>
             {
                 public List<Footprint> GetFootprints()
                 {
@@ -357,7 +357,7 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+                public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
                 {
                     await Task.Delay(2000);
 

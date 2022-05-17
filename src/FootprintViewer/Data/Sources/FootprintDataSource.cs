@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class FootprintDataSource : IFootprintDataSource
+    public class FootprintDataSource : IDataSource<FootprintInfo>
     {
         private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
@@ -15,7 +15,7 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
-        public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
+        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
         {
             var context = new FootprintViewerDbContext(_options);
 
