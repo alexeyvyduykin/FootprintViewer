@@ -5,26 +5,26 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class LocalUserGeometryDataSource : IUserGeometryDataSource
+    public class LocalUserGeometryDataSource : IEditableDataSource<UserGeometryInfo>
     {
-        private readonly List<UserGeometry> _userGeometries;
+        private readonly List<UserGeometryInfo> _userGeometries;
 
         public LocalUserGeometryDataSource()
         {
-            _userGeometries = new List<UserGeometry>();
+            _userGeometries = new List<UserGeometryInfo>();
         }
 
-        public async Task AddAsync(UserGeometry geometry)
+        public async Task AddAsync(UserGeometryInfo value)
         {
-            await Task.Run(() => { _userGeometries.Add(geometry); });
+            await Task.Run(() => { _userGeometries.Add(value); });
         }
 
-        public async Task RemoveAsync(UserGeometry geometry)
+        public async Task RemoveAsync(UserGeometryInfo value)
         {
-            await Task.Run(() => { _userGeometries.Remove(geometry); });
+            await Task.Run(() => { _userGeometries.Remove(value); });
         }
 
-        public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
+        public async Task EditAsync(string key, UserGeometryInfo value)
         {
             await Task.Run(() =>
             {
@@ -32,21 +32,21 @@ namespace FootprintViewer.Data.Sources
 
                 if (userGeometry != null)
                 {
-                    userGeometry.Geometry = geometry;
+                    userGeometry.Geometry.Geometry = value.Geometry.Geometry;
                 }
             });
         }
 
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter)
+        public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter)
         {
             return await Task.Run(() =>
             {
                 if (filter == null || filter.Names == null)
                 {
-                    return _userGeometries.Select(s => new UserGeometryInfo(s)).ToList();
+                    return _userGeometries.ToList();
                 }
 
-                return _userGeometries.Select(s => new UserGeometryInfo(s)).Where(s => filter.Filtering(s)).ToList();
+                return _userGeometries.Where(s => filter.Filtering(s)).ToList();
             });
         }
     }

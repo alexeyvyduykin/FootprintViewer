@@ -75,7 +75,12 @@ namespace FootprintViewer.Layers
 
                         var geometry = gf.Geometry!;
 
-                        await _provider.UpdateGeometry(name, geometry);
+                        await _provider.EditAsync(name,
+                            new UserGeometryInfo(
+                                new UserGeometry()
+                                {
+                                    Geometry = geometry
+                                }));
                     }
                 });
             }

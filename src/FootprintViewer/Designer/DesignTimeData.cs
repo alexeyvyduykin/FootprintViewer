@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
-using NetTopologySuite.Geometries;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -271,9 +270,9 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeUserGeometrySource());
             }
 
-            private class DesignTimeUserGeometrySource : Data.Sources.IUserGeometryDataSource
+            private class DesignTimeUserGeometrySource : IEditableDataSource<UserGeometryInfo>
             {
-                public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
+                public Task AddAsync(UserGeometryInfo geometry) => throw new NotImplementedException();
 
                 private static List<UserGeometry> GetUserGeometries()
                 {
@@ -285,7 +284,7 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter)
+                public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter)
                 {
                     await Task.Delay(2000);
 
@@ -295,16 +294,9 @@ namespace FootprintViewer.Designer
                     });
                 }
 
-                public async Task RemoveAsync(UserGeometry geometry)
-                {
-                    await Task.Delay(1000);
-                    throw new NotImplementedException();
-                }
+                public Task RemoveAsync(UserGeometryInfo geometry) => throw new NotImplementedException();
 
-                public Task UpdateGeometry(string key, Geometry geometry)
-                {
-                    throw new NotImplementedException();
-                }
+                public Task EditAsync(string key, UserGeometryInfo geometry) => throw new NotImplementedException();
             }
         }
 

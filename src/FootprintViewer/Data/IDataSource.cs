@@ -8,13 +8,4 @@ namespace FootprintViewer.Data
     {
         Task<List<T>> GetValuesAsync(IFilter<T>? filter);
     }
-
-    //public interface IEditableDataSource<T> : IDataSource<T>
-    //{
-    //    Task AddAsync(UserGeometry geometry);
-
-    //    Task RemoveAsync(UserGeometry geometry);
-
-    //    Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry);
-    //}
 }

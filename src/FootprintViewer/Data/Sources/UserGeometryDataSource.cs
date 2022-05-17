@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class UserGeometryDataSource : IUserGeometryDataSource
+    public class UserGeometryDataSource : IEditableDataSource<UserGeometryInfo>
     {
         private readonly DbContextOptions<FootprintViewerDbContext> _options;
 
@@ -17,7 +17,25 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
-        public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
+        public async Task AddAsync(UserGeometryInfo value)
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            await context.UserGeometries.AddAsync(value.Geometry);
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveAsync(UserGeometryInfo value)
+        {
+            var context = new FootprintViewerDbContext(_options);
+
+            context.UserGeometries.Remove(value.Geometry);
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task EditAsync(string key, UserGeometryInfo value)
         {
             var context = new FootprintViewerDbContext(_options);
 
@@ -27,31 +45,13 @@ namespace FootprintViewer.Data.Sources
 
             if (userGeometry != null)
             {
-                userGeometry.Geometry = geometry;
+                userGeometry.Geometry = value.Geometry.Geometry;
 
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task AddAsync(UserGeometry geometry)
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            await context.UserGeometries.AddAsync(geometry);
-
-            await context.SaveChangesAsync();
-        }
-
-        public async Task RemoveAsync(UserGeometry geometry)
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            context.UserGeometries.Remove(geometry);
-
-            await context.SaveChangesAsync();
-        }
-
-        public async Task<List<UserGeometryInfo>> GetUserGeometryInfosAsync(IFilter<UserGeometryInfo>? filter)
+        public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter)
         {
             var context = new FootprintViewerDbContext(_options);
 

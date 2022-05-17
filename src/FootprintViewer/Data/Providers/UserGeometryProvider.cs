@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data.Sources;
-using FootprintViewer.ViewModels;
+﻿using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class UserGeometryProvider : BaseProvider<IUserGeometryDataSource>, IEditableProvider<UserGeometryInfo>
+    public class UserGeometryProvider : BaseProvider<IEditableDataSource<UserGeometryInfo>>, IEditableProvider<UserGeometryInfo>
     {
         public UserGeometryProvider()
         {
@@ -22,16 +21,16 @@ namespace FootprintViewer.Data
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
-        public async Task UpdateGeometry(string key, NetTopologySuite.Geometries.Geometry geometry)
+        public async Task EditAsync(string key, UserGeometryInfo value)
         {
-            await Sources.FirstOrDefault()!.UpdateGeometry(key, geometry);
+            await Sources.FirstOrDefault()!.EditAsync(key, value);
         }
 
         public async Task AddAsync(UserGeometryInfo value)
         {
             foreach (var source in Sources)
             {
-                await source.AddAsync(value.Geometry);
+                await source.AddAsync(value);
             }
 
             Update.Execute().Subscribe();
@@ -41,7 +40,7 @@ namespace FootprintViewer.Data
         {
             foreach (var source in Sources)
             {
-                await source.RemoveAsync(value.Geometry);
+                await source.RemoveAsync(value);
             }
 
             Update.Execute().Subscribe();
@@ -49,19 +48,7 @@ namespace FootprintViewer.Data
 
         public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter = null)
         {
-            return await Sources.FirstOrDefault()!.GetUserGeometryInfosAsync(filter);
-
-            //return await Task.Run(() =>
-            //{
-            //    var list = new List<UserGeometryInfo>();
-
-            //    foreach (var source in Sources)
-            //    {
-            //        list.AddRange(source.GetUserGeometriesAsync().Result.Select(s => new UserGeometryInfo(s)));
-            //    }
-
-            //    return list;
-            //});
+            return await Sources.FirstOrDefault()!.GetValuesAsync(filter);
         }
     }
 }

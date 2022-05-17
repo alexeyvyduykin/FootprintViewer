@@ -36,7 +36,7 @@ namespace FootprintViewer.Avalonia
             IDataSource<GroundTargetInfo> groundTargetDataSource;
             IDataSource<FootprintInfo> footprintDataSource;
             IDataSource<SatelliteInfo> satelliteDataSource;
-            Data.Sources.IUserGeometryDataSource userGeometryDataSource;
+            IEditableDataSource<UserGeometryInfo> userGeometryDataSource;
             IDataSource<GroundStationInfo> groundStationDataSource;
 
             if (IsConnectionValid() == true)
@@ -121,7 +121,7 @@ namespace FootprintViewer.Avalonia
 
             // Layer style manager
 
-            LayerStyleManager layerStyleManager = new LayerStyleManager();
+            var layerStyleManager = new LayerStyleManager();
             services.RegisterLazySingleton<LayerStyleManager>(() => layerStyleManager);
 
             var factory = resolver.GetExistingService<ProjectFactory>();
@@ -153,12 +153,12 @@ namespace FootprintViewer.Avalonia
             services.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
         }
 
-        public void Initialization(IReadonlyDependencyResolver dependencyResolver)
+        public static void Initialization(IReadonlyDependencyResolver dependencyResolver)
         {
             Task.Run(async () => await LoadingAsync(dependencyResolver));
         }
 
-        public async Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
+        public async static Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
         {
             var userGeometryProvider = dependencyResolver.GetExistingService<UserGeometryProvider>();
             var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
@@ -275,6 +275,6 @@ namespace FootprintViewer.Avalonia
 
     public class WindowsManager
     {
-        public static List<Window> AllWindows = new List<Window>();
+        public static List<Window> AllWindows { get; } = new();
     }
 }
