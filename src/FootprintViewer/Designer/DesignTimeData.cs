@@ -216,18 +216,21 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeFootprintPreviewSource());
             }
 
-            private class DesignTimeFootprintPreviewSource : Data.Sources.IFootprintPreviewDataSource
+            private class DesignTimeFootprintPreviewSource : IDataSource<FootprintPreview>
             {
-                public IList<FootprintPreview> GetFootprintPreviews(IFilter<FootprintPreview>? filter)
+                public async Task<List<FootprintPreview>> GetValuesAsync(IFilter<FootprintPreview>? filter = null)
                 {
-                    var list = new List<FootprintPreview>();
-
-                    for (int i = 0; i < 8; i++)
+                    return await Task.Run(() =>
                     {
-                        list.Add(DesignTimeFootprintPreview.Build());
-                    }
+                        var list = new List<FootprintPreview>();
 
-                    return list;
+                        for (int i = 0; i < 8; i++)
+                        {
+                            list.Add(DesignTimeFootprintPreview.Build());
+                        }
+
+                        return list;
+                    });
                 }
             }
         }

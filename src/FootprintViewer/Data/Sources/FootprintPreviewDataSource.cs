@@ -8,10 +8,11 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class FootprintPreviewDataSource : IFootprintPreviewDataSource
+    public class FootprintPreviewDataSource : IDataSource<FootprintPreview>
     {
         private readonly Random _random = new();
         private readonly DateTime _date;
@@ -39,52 +40,55 @@ namespace FootprintViewer.Data.Sources
             _date = DateTime.UtcNow;
         }
 
-        public IList<FootprintPreview> GetFootprintPreviews(IFilter<FootprintPreview>? filter)
+        public async Task<List<FootprintPreview>> GetValuesAsync(IFilter<FootprintPreview>? filter = null)
         {
-            var list = new List<FootprintPreview>();
-
-            IEnumerable<string?> paths;
-
-            if (_searchPattern == null)
+            return await Task.Run(() =>
             {
-                paths = new[] { _dataFolder.GetPath(_file, _subFolder) };
-            }
-            else
-            {
-                paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
-            }
+                var list = new List<FootprintPreview>();
 
-            foreach (var path in paths)
-            {
-                if (string.IsNullOrEmpty(path) == false)
+                IEnumerable<string?> paths;
+
+                if (_searchPattern == null)
                 {
-                    var filename = System.IO.Path.GetFileNameWithoutExtension(path);
-                    var name = filename?.Split('_').FirstOrDefault();
+                    paths = new[] { _dataFolder.GetPath(_file, _subFolder) };
+                }
+                else
+                {
+                    paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
+                }
 
-                    if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
+                foreach (var path in paths)
+                {
+                    if (string.IsNullOrEmpty(path) == false)
                     {
-                        var tileNumber = name.Replace("-", "").ToUpper();
+                        var filename = System.IO.Path.GetFileNameWithoutExtension(path);
+                        var name = filename?.Split('_').FirstOrDefault();
 
-                        var footprintPreview = new FootprintPreview(filename)
+                        if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
                         {
-                            Date = _date.Date.ToShortDateString(),
-                            SatelliteName = $"Satellite{_random.Next(1, 6):00}",
-                            SunElevation = _random.Next(0, 90),
-                            CloudCoverFull = _random.Next(0, 100),
-                            TileNumber = tileNumber,
-                            Path = path,
-                            Image = CreatePreviewImage(path),
-                        };
+                            var tileNumber = name.Replace("-", "").ToUpper();
 
-                        if (filter == null || filter.Filtering(footprintPreview))
-                        {
-                            list.Add(footprintPreview);
+                            var footprintPreview = new FootprintPreview(filename)
+                            {
+                                Date = _date.Date.ToShortDateString(),
+                                SatelliteName = $"Satellite{_random.Next(1, 6):00}",
+                                SunElevation = _random.Next(0, 90),
+                                CloudCoverFull = _random.Next(0, 100),
+                                TileNumber = tileNumber,
+                                Path = path,
+                                Image = CreatePreviewImage(path),
+                            };
+
+                            if (filter == null || filter.Filtering(footprintPreview))
+                            {
+                                list.Add(footprintPreview);
+                            }
                         }
                     }
                 }
-            }
 
-            return list;
+                return list;
+            });
         }
 
         private static System.Drawing.Image CreatePreviewImage(string path)
