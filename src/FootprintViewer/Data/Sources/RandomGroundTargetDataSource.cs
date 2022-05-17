@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomGroundTargetDataSource : IGroundTargetDataSource
+    public class RandomGroundTargetDataSource : IDataSource<GroundTargetInfo>
     {
         private List<GroundTargetInfo>? _groundTargets;
         private readonly IDataSource<FootprintInfo> _source;
@@ -15,7 +15,7 @@ namespace FootprintViewer.Data.Sources
             _source = source;
         }
 
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
+        public async Task<List<GroundTargetInfo>> GetValuesAsync(IFilter<GroundTargetInfo>? filter)
         {
             return await Task.Run(async () =>
             {

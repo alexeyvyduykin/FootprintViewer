@@ -309,7 +309,7 @@ namespace FootprintViewer.Designer
                 AddSource(new DesignTimeGroundTargetDataSource());
             }
 
-            private class DesignTimeGroundTargetDataSource : Data.Sources.IGroundTargetDataSource
+            private class DesignTimeGroundTargetDataSource : IDataSource<GroundTargetInfo>
             {
                 public List<GroundTarget> GetGroundTargets()
                 {
@@ -321,7 +321,7 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
+                public async Task<List<GroundTargetInfo>> GetValuesAsync(IFilter<GroundTargetInfo>? filter)
                 {
                     await Task.Delay(2000);
 

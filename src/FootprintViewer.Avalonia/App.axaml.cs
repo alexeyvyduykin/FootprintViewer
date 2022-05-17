@@ -33,7 +33,7 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory(resolver));
 
-            Data.Sources.IGroundTargetDataSource groundTargetDataSource;
+            IDataSource<GroundTargetInfo> groundTargetDataSource;
             IDataSource<FootprintInfo> footprintDataSource;
             Data.Sources.ISatelliteDataSource satelliteDataSource;
             Data.Sources.IUserGeometryDataSource userGeometryDataSource;
