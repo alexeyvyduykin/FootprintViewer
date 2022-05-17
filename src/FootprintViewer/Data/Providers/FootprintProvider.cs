@@ -12,38 +12,12 @@ namespace FootprintViewer.Data
     {
         public FootprintProvider()
         {
-            Loading = ReactiveCommand.CreateFromTask(GetFootprintsAsync);
+            Loading = ReactiveCommand.CreateFromTask(_ => GetValuesAsync(null));
         }
 
-        public ReactiveCommand<Unit, List<Footprint>> Loading { get; }
+        public ReactiveCommand<Unit, List<FootprintInfo>> Loading { get; }
 
-        public IEnumerable<Footprint> GetFootprints()
-        {
-            var list = new List<Footprint>();
-
-            foreach (var source in Sources)
-            {
-                list.AddRange(source.GetFootprintsAsync().Result);
-            }
-
-            return list;
-        }
-
-        public async Task<List<Footprint>> GetFootprintsAsync()
-        {
-            return await Sources.First().GetFootprintsAsync();
-
-            //List<Footprint> list = new List<Footprint>();
-
-            //foreach (var source in Sources)
-            //{
-            //    list.AddRange(await source.GetFootprintsAsync());
-            //}
-
-            //return list;
-        }
-
-        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter)
+        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
         {
             return await Sources.First().GetFootprintInfosAsync();
         }

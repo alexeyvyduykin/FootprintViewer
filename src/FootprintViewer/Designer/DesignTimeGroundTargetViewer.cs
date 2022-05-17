@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
@@ -13,8 +12,8 @@ namespace FootprintViewer.Designer
         {
             var provider = _designTimeData.GetExistingService<GroundTargetProvider>();
 
-            var targets = Task.Run(async () => await provider.GetGroundTargetsAsync()).Result;
-            
+            var targets = provider.GetValuesAsync(null).Result;
+
             var list = new GroundTargetViewerList(provider);
 
             MainContent = list;

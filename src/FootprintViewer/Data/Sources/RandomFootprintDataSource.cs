@@ -7,27 +7,12 @@ namespace FootprintViewer.Data.Sources
 {
     public class RandomFootprintDataSource : IFootprintDataSource
     {
-        private List<Footprint>? _footprints;
+        private List<FootprintInfo>? _footprints;
         private readonly ISatelliteDataSource _source;
 
         public RandomFootprintDataSource(ISatelliteDataSource source)
         {
             _source = source;
-        }
-
-        public async Task<List<Footprint>> GetFootprintsAsync()
-        {
-            return await Task.Run(async () =>
-            {
-                if (_footprints == null)
-                {
-                    var satellites = await _source.GetSatelliteInfosAsync();
-
-                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites.Select(s => s.Satellite)));
-                }
-
-                return _footprints;
-            });
         }
 
         public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
@@ -38,10 +23,12 @@ namespace FootprintViewer.Data.Sources
                 {
                     var satellites = await _source.GetSatelliteInfosAsync();
 
-                    _footprints = new List<Footprint>(FootprintBuilder.Create(satellites.Select(s => s.Satellite)));
+                    var footprints = FootprintBuilder.Create(satellites.Select(s => s.Satellite));
+
+                    _footprints = footprints.Select(s => new FootprintInfo(s)).ToList();
                 }
 
-                return _footprints.Select(s => new FootprintInfo(s)).ToList();
+                return _footprints;
             });
         }
     }

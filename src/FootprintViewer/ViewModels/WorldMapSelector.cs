@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 namespace FootprintViewer.ViewModels
 {
     public class WorldMapSelector : ReactiveObject
-    {     
+    {
         public WorldMapSelector(IReadonlyDependencyResolver dependencyResolver)
         {
             var provider = dependencyResolver.GetExistingService<MapProvider>();
@@ -17,7 +17,7 @@ namespace FootprintViewer.ViewModels
             WorldMaps = new ObservableCollection<MapResource>();
 
             WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
-        
+
             var resources = provider.GetMapResources();
 
             WorldMaps = new ObservableCollection<MapResource>(resources);

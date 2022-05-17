@@ -10,21 +10,28 @@ namespace FootprintViewer.Data
         private static readonly Random _random = new();
         private static readonly int _countTargets = 5000;
 
-        public static IEnumerable<GroundTarget> Create(IList<Footprint> footprints)
+        public static IEnumerable<GroundTarget> Create(IEnumerable<Footprint>? footprints)
         {
-            int counts = footprints.Count;
+            var targets = new List<GroundTarget>();
+
+            if (footprints == null)
+            {
+                return targets;
+            }
+
+            var list = new List<Footprint>(footprints);
+
+            int counts = list.Count;
 
             int index = 0;
-
-            var targets = new List<GroundTarget>();
 
             for (int i = 0; i < counts; i++)
             {
                 var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
 
-                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, footprints[i].Center!);
+                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, list[i].Center!);
 
-                footprints[i].TargetName = target.Name;
+                list[i].TargetName = target.Name;
 
                 targets.Add(target);
             }
@@ -165,29 +172,5 @@ namespace FootprintViewer.Data
                     throw new Exception();
             }
         }
-
-        //private static Point Rotate(Point pointToRotate, Point centerPoint, double angleInDegrees)
-        //{
-        //    double angleInRadians = angleInDegrees * (Math.PI / 180);
-        //    double cosTheta = Math.Cos(angleInRadians);
-        //    double sinTheta = Math.Sin(angleInRadians);
-        //    return new Point((int)
-        //            (cosTheta * (pointToRotate.X - centerPoint.X) -
-        //            sinTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.X),
-        //            (int)
-        //            (sinTheta * (pointToRotate.X - centerPoint.X) +
-        //            cosTheta * (pointToRotate.Y - centerPoint.Y) + centerPoint.Y)
-        //    );
-        //}
-
-        //private static IEnumerable<Point> Rotate(IEnumerable<Point> pointsToRotate, Point centerPoint, double angleInDegrees)
-        //{
-        //    var list = new List<Point>();
-        //    foreach (var item in pointsToRotate)
-        //    {
-        //        list.Add(Rotate(item, centerPoint, angleInDegrees));
-        //    }
-        //    return list;
-        //}
     }
 }

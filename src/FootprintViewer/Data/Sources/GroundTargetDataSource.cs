@@ -17,27 +17,6 @@ namespace FootprintViewer.Data.Sources
             _options = options;
         }
 
-        public async Task<List<GroundTarget>> GetGroundTargetsAsync()
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            return await context.GroundTargets.ToListAsync();
-        }
-
-        public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names)
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            return await context.GroundTargets.Where(s => names.Contains(s.Name)).ToListAsync();
-        }
-
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            return await context.GroundTargets.Where(s => names.Contains(s.Name)).Select(s => new GroundTargetInfo(s)).ToListAsync();
-        }
-
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
         {
             var context = new FootprintViewerDbContext(_options);

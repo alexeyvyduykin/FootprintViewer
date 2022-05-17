@@ -21,12 +21,5 @@ namespace FootprintViewer.Data.Sources
 
             return await context.Footprints.Select(s => new FootprintInfo(s)).ToListAsync();
         }
-
-        public async Task<List<Footprint>> GetFootprintsAsync()
-        {
-            var context = new FootprintViewerDbContext(_options);
-
-            return await context.Footprints.ToListAsync();
-        }
     }
 }

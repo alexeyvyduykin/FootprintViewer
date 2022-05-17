@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projections;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
@@ -28,24 +28,18 @@ namespace FootprintViewer.Layers
         {
             _provider = provider;
 
-            Loading = ReactiveCommand.Create<List<Footprint>>(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<FootprintInfo>>(LoadingImpl);
 
-            provider.Loading.Select(s => s).InvokeCommand(Loading);
+            _provider.Loading.InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<List<Footprint>, Unit> Loading { get; }
+        private ReactiveCommand<List<FootprintInfo>, Unit> Loading { get; }
 
-        private void LoadingImpl(List<Footprint> footprints)
+        private void LoadingImpl(List<FootprintInfo> footprints)
         {
             Clear();
-            AddRange(Build(footprints));
+            AddRange(Build(footprints.Select(s => s.Footprint!)));
         }
-
-        public Footprint GetFootprint(string name) => _provider.GetFootprints().Where(s => s.Name!.Equals(name)).FirstOrDefault()!;
-
-        public async Task<List<Footprint>> GetFootprintsAsync() => await Task.Run(() => _provider.GetFootprints().ToList());
-
-        public List<Footprint> GetFootprints() => _provider.GetFootprints().ToList();
 
         public IFeature? GetFeature(string name) => GetFeatures().Where(s => s.Fields.Contains("Name") && s["Name"]!.Equals(name)).FirstOrDefault();
 
@@ -64,67 +58,6 @@ namespace FootprintViewer.Layers
 
             return list;
         }
-
-        //private IGeometry AreaCutting(IList<Point> points)
-        //{
-        //    var count = points.Count;
-        //    var ring1 = new LinearRing();
-        //    var ring2 = new LinearRing();
-
-        //    var ring = ring1;
-
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        var p1 = points[i];
-        //        var p2 = (i == count - 1) ? points[0] : points[i + 1];
-
-        //        var point1 = SphericalMercator.FromLonLat(p1.X, p1.Y);
-        //        ring.Vertices.Add(point1);
-
-        //        if (Math.Abs(p2.X - p1.X) > 180)
-        //        {
-        //            if (p2.X - p1.X > 0) // -180 cutting
-        //            {
-        //                var cutLat = LinearInterpDiscontLat(p1, p2);
-        //                var pp1 = SphericalMercator.FromLonLat(-180, cutLat);
-        //                ring.Vertices.Add(pp1);
-
-        //                ring = (ring == ring1) ? ring2 : ring1;
-
-        //                var pp2 = SphericalMercator.FromLonLat(180, cutLat);
-        //                ring.Vertices.Add(pp2);
-        //            }
-
-        //            if (p2.X - p1.X < 0) // +180 cutting
-        //            {
-        //                var cutLat = LinearInterpDiscontLat(p1, p2);
-        //                var pp1 = SphericalMercator.FromLonLat(180, cutLat);
-        //                ring.Vertices.Add(pp1);
-
-        //                ring = (ring == ring1) ? ring2 : ring1;
-
-        //                var pp2 = SphericalMercator.FromLonLat(-180, cutLat);
-        //                ring.Vertices.Add(pp2);
-        //            }
-        //        }
-
-
-        //    }
-
-
-        //    if (ring2.Length != 0) // multipolygon
-        //    {
-        //        var multi = new MultiPolygon();
-        //        multi.Polygons.Add(new Polygon() { ExteriorRing = ring1 });
-        //        multi.Polygons.Add(new Polygon() { ExteriorRing = ring2 });
-
-        //        return multi;
-        //    }
-        //    else
-        //    {
-        //        return new Polygon() { ExteriorRing = ring1 };
-        //    }
-        //}
 
         private static Geometry AreaCutting(Coordinate[] points)
         {

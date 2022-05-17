@@ -27,7 +27,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task<List<GroundStationInfo>> GetGroundStationInfosAsync()
         {
-            return await Task.Run(() => _groundStations.ToList());
+            return await Task.Run(() => _groundStations);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
@@ -52,9 +53,9 @@ namespace FootprintViewer.Layers
             return ActiveFeatures.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]!).ToArray();
         }
 
-        private void LoadingImpl(List<GroundTarget> groundTargets)
+        private void LoadingImpl(List<GroundTargetInfo> groundTargets)
         {
-            _featuresCache = Build(groundTargets);
+            _featuresCache = Build(groundTargets.Select(s => s.GroundTarget));
 
             Clear();
             AddRange(_featuresCache);

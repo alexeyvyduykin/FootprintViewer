@@ -12,24 +12,10 @@ namespace FootprintViewer.Data
     {
         public GroundTargetProvider()
         {
-            Loading = ReactiveCommand.CreateFromTask(GetGroundTargetsAsync);
+            Loading = ReactiveCommand.CreateFromTask(_ => GetValuesAsync(null));
         }
 
-        public ReactiveCommand<Unit, List<GroundTarget>> Loading { get; }
-
-        public async Task<List<GroundTarget>> GetGroundTargetsAsync()
-        {
-            return await Sources.First().GetGroundTargetsAsync();
-
-            //var list = new List<GroundTarget>();
-
-            //foreach (var source in Sources)
-            //{
-            //    list.AddRange(await source.GetGroundTargetsAsync());
-            //}
-
-            //return list;
-        }
+        public ReactiveCommand<Unit, List<GroundTargetInfo>> Loading { get; }
 
         public async Task<List<GroundTargetInfo>> GetValuesAsync(IFilter<GroundTargetInfo>? filter)
         {

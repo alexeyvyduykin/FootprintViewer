@@ -269,16 +269,6 @@ namespace FootprintViewer.Designer
             {
                 public Task AddAsync(UserGeometry geometry) => throw new NotImplementedException();
 
-                public List<FootprintPreview> GetFootprintPreviews()
-                {
-                    var list = new List<FootprintPreview>();
-                    for (int i = 0; i < 8; i++)
-                    {
-                        list.Add(DesignTimeFootprintPreview.Build());
-                    }
-                    return list;
-                }
-
                 private static List<UserGeometry> GetUserGeometries()
                 {
                     var list = new List<UserGeometry>();
@@ -331,20 +321,6 @@ namespace FootprintViewer.Designer
                     return list;
                 }
 
-                public async Task<List<GroundTarget>> GetGroundTargetsAsync() => await Task.Run(() => GetGroundTargets());
-
-                public async Task<List<GroundTarget>> GetGroundTargetsAsync(string[] names) => await Task.Run(() => GetGroundTargets());
-
-                public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(string[] names)
-                {
-                    await Task.Delay(2000);
-
-                    return await Task.Run(() =>
-                    {
-                        return GetGroundTargets().Select(s => new GroundTargetInfo(s)).ToList();
-                    });
-                }
-
                 public async Task<List<GroundTargetInfo>> GetGroundTargetInfosAsync(IFilter<GroundTargetInfo>? filter)
                 {
                     await Task.Delay(2000);
@@ -379,13 +355,6 @@ namespace FootprintViewer.Designer
                         list.Add(DesignTimeFootprintInfo.BuildModel());
                     }
                     return list;
-                }
-
-                public async Task<List<Footprint>> GetFootprintsAsync()
-                {
-                    await Task.Delay(2000);
-
-                    return await Task.Run(() => { return GetFootprints().ToList(); });
                 }
 
                 public async Task<List<FootprintInfo>> GetFootprintInfosAsync()
