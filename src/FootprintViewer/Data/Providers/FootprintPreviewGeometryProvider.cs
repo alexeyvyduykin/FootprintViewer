@@ -1,24 +1,26 @@
-﻿using FootprintViewer.Data.Sources;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public class FootprintPreviewGeometryProvider : BaseProvider<IFootprintPreviewGeometryDataSource>
+    public class FootprintPreviewGeometryProvider : BaseProvider<IDataSource<(string, Geometry)>>
     {
-        public virtual IDictionary<string, Geometry> GetFootprintPreviewGeometries()
+        public async Task<List<(string, Geometry)>> GetValuesAsync()
         {
-            var dict = new Dictionary<string, Geometry>();
-
-            foreach (var source in Sources)
+            return await Task.Run(async () =>
             {
-                foreach (var item in source.GetFootprintPreviewGeometries())
-                {
-                    dict.TryAdd(item.Key, item.Value);
-                }
-            }
+                var list = new List<(string, Geometry)>();
 
-            return dict;
+                foreach (var source in Sources)
+                {
+                    var values = await source.GetValuesAsync(null);
+
+                    list.AddRange(values);
+                }
+
+                return list;
+            });
         }
     }
 }

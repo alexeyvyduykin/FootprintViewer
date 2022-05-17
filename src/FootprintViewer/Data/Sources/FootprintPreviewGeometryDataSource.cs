@@ -1,14 +1,16 @@
 ﻿using FootprintViewer.FileSystem;
+using FootprintViewer.ViewModels;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class FootprintPreviewGeometryDataSource : IFootprintPreviewGeometryDataSource
+    public class FootprintPreviewGeometryDataSource : IDataSource<(string, Geometry)>
     {
         private readonly SolutionFolder _dataFolder;
         private readonly string _file;
@@ -28,37 +30,36 @@ namespace FootprintViewer.Data.Sources
             _dataFolder = new SolutionFolder(folder);
         }
 
-        public IDictionary<string, Geometry> GetFootprintPreviewGeometries()
+        public async Task<List<(string, Geometry)>> GetValuesAsync(IFilter<(string, Geometry)>? filter = null)
         {
-            var dict = new SortedDictionary<string, Geometry>();
-
-            var shapeFileName = _dataFolder.GetPath(_file, _subFolder);
-
-            var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
-
-            foreach (var shapefileFeature in shp.ReadByMBRFilter(shp.ShapefileBounds))
+            return await Task.Run(() =>
             {
-                var obj = shapefileFeature.Attributes["LABEL"];
+                var shapeFileName = _dataFolder.GetPath(_file, _subFolder);
 
-                if (obj is string name)
+                var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
+
+                var list = new List<(string, Geometry)>();
+
+                foreach (var shapefileFeature in shp.ReadByMBRFilter(shp.ShapefileBounds))
                 {
-                    var geometry = shapefileFeature.Geometry;
+                    var obj = shapefileFeature.Attributes["LABEL"];
 
-                    var points = geometry.Coordinates;
-                    //var exteriorRing = new LinearRing(points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate()).ToArray());
-                    //var poly = new Polygon(exteriorRing);
+                    if (obj is string name)
+                    {
+                        var geometry = shapefileFeature.Geometry;
 
-                    var vertices = points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate()).ToArray();
+                        var points = geometry.Coordinates;
 
-                    var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
+                        var vertices = points.Select(s => SphericalMercator.FromLonLat(s.X, s.Y).ToCoordinate()).ToArray();
 
+                        var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
 
-
-                    dict.Add(name, poly);
+                        list.Add((name, poly!));
+                    }
                 }
-            }
 
-            return dict;
+                return list;
+            });
         }
     }
 }

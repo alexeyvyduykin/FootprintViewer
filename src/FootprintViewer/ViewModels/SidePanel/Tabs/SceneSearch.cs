@@ -25,29 +25,25 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearch : SidePanelTab
     {
-        private readonly FootprintPreviewProvider _footprintPreviewProvider;
         private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
         private readonly Map _map;
-        private readonly IDictionary<string, Geometry> _geometries;
         private bool _firstLoading = true;
-
+        private readonly ObservableAsPropertyHelper<IDictionary<string, Geometry>> _geometries;
         public event EventHandler? CurrentFootprint;
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
             _map = dependencyResolver.GetExistingService<Map>();
 
-            _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
+            var footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
 
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
 
-            ViewerList = new SceneSearchList(_footprintPreviewProvider);
+            ViewerList = new SceneSearchList(footprintPreviewProvider);
 
             Title = "Поиск сцены";
 
             Filter = new SceneSearchFilter(dependencyResolver);
-
-            _geometries = _footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
 
             ViewerList.SelectedItemObservable.Subscribe(s => SelectFootprint(s));
             ViewerList.MouseOverEnter.Subscribe(s => ShowFootprintBorder(s));
@@ -59,11 +55,26 @@ namespace FootprintViewer.ViewModels
 
             ViewerList.Loading.Subscribe(_ => _firstLoading = false);
 
+            LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_footprintPreviewGeometryProvider.GetValuesAsync);
+
+            // TODO: duplicates
+            _geometries = LoadFootprintPreviewGeometry.Select(s => s.ToDictionary(s => s.Item1, s => s.Item2)).ToProperty(this, x => x.Geometries);
+
             // TODO: avoid from first loading design
             this.WhenAnyValue(s => s.IsActive)
                 .Where(active => active == true && _firstLoading == true)
                 .Select(_ => Filter)
                 .InvokeCommand(ViewerList.Loading);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _firstLoading == true)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(LoadFootprintPreviewGeometry);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _firstLoading == true)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Filter.Init);
 
             this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
 
@@ -75,6 +86,8 @@ namespace FootprintViewer.ViewModels
         public void ResetAOI() => ((SceneSearchFilter)Filter).AOI = null;
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
+
+        private ReactiveCommand<Unit, List<(string, Geometry)>> LoadFootprintPreviewGeometry { get; }
 
         private void ShowFootprintBorder(FootprintPreview footprint)
         {
@@ -138,17 +151,17 @@ namespace FootprintViewer.ViewModels
 
         private bool IsGeometry(FootprintPreview footprint)
         {
-            return _geometries.ContainsKey(footprint.Name!);
+            return Geometries.ContainsKey(footprint.Name!);
         }
 
         private Geometry ToGeometry(FootprintPreview footprint)
         {
-            return _geometries[footprint.Name!];
+            return Geometries[footprint.Name!];
         }
 
         private MPoint GetCenter(FootprintPreview footprint)
         {
-            return _geometries[footprint.Name!].Centroid.ToMPoint();// BoundingBox.Centroid;
+            return Geometries[footprint.Name!].Centroid.ToMPoint();// BoundingBox.Centroid;
         }
 
         private void FilterClickImpl()
@@ -164,5 +177,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }
+
+        private IDictionary<string, Geometry> Geometries => _geometries.Value;
     }
 }

@@ -26,14 +26,14 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearchFilter : ViewerListFilter<FootprintPreview>
     {
-        private readonly IDictionary<string, Geometry> _geometries;
+        private IDictionary<string, Geometry>? _geometries;
+        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
+        private readonly FootprintPreviewProvider _footprintPreviewProvider;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
-            var footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
-
-            _geometries = footprintPreviewGeometryProvider.GetFootprintPreviewGeometries();
+            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
+            _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
 
             Cloudiness = 0.0;
             MinSunElevation = 0.0;
@@ -47,23 +47,23 @@ namespace FootprintViewer.ViewModels
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Update);
-
-            Task.Run(async () => await CreateSensorList(footprintPreviewProvider));
         }
 
-        private async Task CreateSensorList(FootprintPreviewProvider provider)
+        protected async override Task InitImpl()
         {
-            var footprints = await provider.GetValuesAsync(null);
+            var footprints = await _footprintPreviewProvider.GetValuesAsync(null);
+            var dicts = await _footprintPreviewGeometryProvider.GetValuesAsync();
 
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
 
             AddSensors(sortNames!);
+
+            // TODO: duplicates
+            _geometries = dicts.ToDictionary(s => s.Item1, s => s.Item2);
         }
 
         private void AddSensors(List<string> sensors)
         {
-            //sensors.Sort();
-
             Sensors.Clear();
 
             foreach (var item in sensors.OrderBy(s => s))
@@ -97,7 +97,7 @@ namespace FootprintViewer.ViewModels
             }
             else
             {
-                if (_geometries.ContainsKey(value.Name))
+                if (_geometries != null && _geometries.ContainsKey(value.Name))
                 {
                     var footprintPolygon = (Polygon)_geometries[value.Name];
                     var aoiPolygon = (Polygon)AOI;
