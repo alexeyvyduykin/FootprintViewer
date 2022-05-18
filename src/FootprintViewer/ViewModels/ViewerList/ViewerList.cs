@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.Data;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -47,18 +48,6 @@ namespace FootprintViewer.ViewModels
         string Name { get; }
 
         bool IsShowInfo { get; set; }
-    }
-
-    public interface IProvider<T>
-    {
-        Task<List<T>> GetValuesAsync(IFilter<T>? filter = null);
-    }
-
-    public interface IEditableProvider<T> : IProvider<T>
-    {
-        Task AddAsync(T value);
-
-        Task RemoveAsync(T value);
     }
 
     public class ViewerList<T> : ReactiveObject, IViewerList<T> where T : IViewerItem

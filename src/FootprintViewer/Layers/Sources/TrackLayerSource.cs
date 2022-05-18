@@ -4,9 +4,10 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using System;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 
 namespace FootprintViewer.Layers
 {
@@ -20,14 +21,18 @@ namespace FootprintViewer.Layers
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public TrackLayerSource(SatelliteProvider provider)
+        public TrackLayerSource(IProvider<SatelliteInfo> provider)
         {
             _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             _cache = new Dictionary<string, List<IFeature>>();
 
-            provider.Loading.Subscribe(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<SatelliteInfo>>(LoadingImpl);
+
+            provider.Loading.InvokeCommand(Loading);
         }
+
+        private ReactiveCommand<List<SatelliteInfo>, Unit> Loading { get; }
 
         private void LoadingImpl(List<SatelliteInfo> satellites)
         {

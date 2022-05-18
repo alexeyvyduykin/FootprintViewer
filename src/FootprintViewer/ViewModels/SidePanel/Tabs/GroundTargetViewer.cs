@@ -13,7 +13,7 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundTargetViewerList : ViewerList<GroundTargetInfo>
     {
-        public GroundTargetViewerList(GroundTargetProvider provider) : base(provider)
+        public GroundTargetViewerList(IProvider<GroundTargetInfo> provider) : base(provider)
         {
 
         }
@@ -25,11 +25,11 @@ namespace FootprintViewer.ViewModels
         private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
         private readonly ITargetLayerSource _source;
-        private readonly GroundTargetProvider _groundTargetProvider;
+        private readonly IProvider<GroundTargetInfo> _groundTargetProvider;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+            _groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
             Title = "Просмотр наземных целей";

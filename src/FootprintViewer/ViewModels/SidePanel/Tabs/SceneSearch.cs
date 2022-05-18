@@ -3,7 +3,6 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
-using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -17,7 +16,7 @@ namespace FootprintViewer.ViewModels
 {
     public class SceneSearchList : ViewerList<FootprintPreview>
     {
-        public SceneSearchList(FootprintPreviewProvider provider) : base(provider)
+        public SceneSearchList(IProvider<FootprintPreview> provider) : base(provider)
         {
 
         }
@@ -25,19 +24,20 @@ namespace FootprintViewer.ViewModels
 
     public class SceneSearch : SidePanelTab
     {
-        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
+        private readonly IProvider<(string, NetTopologySuite.Geometries.Geometry)> _footprintPreviewGeometryProvider;
         private readonly Map _map;
         private bool _firstLoading = true;
-        private readonly ObservableAsPropertyHelper<IDictionary<string, Geometry>> _geometries;
+        private readonly ObservableAsPropertyHelper<IDictionary<string, NetTopologySuite.Geometries.Geometry>> _geometries;
         public event EventHandler? CurrentFootprint;
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            _map = dependencyResolver.GetExistingService<Map>();
+            // TODO: make _map as IMap
+            _map = (Map)dependencyResolver.GetExistingService<IMap>();
 
-            var footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
+            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
-            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
+            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
             ViewerList = new SceneSearchList(footprintPreviewProvider);
 
@@ -55,7 +55,7 @@ namespace FootprintViewer.ViewModels
 
             ViewerList.Loading.Subscribe(_ => _firstLoading = false);
 
-            LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_footprintPreviewGeometryProvider.GetValuesAsync);
+            LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_ => _footprintPreviewGeometryProvider.GetValuesAsync(null));
 
             // TODO: duplicates
             _geometries = LoadFootprintPreviewGeometry.Select(s => s.ToDictionary(s => s.Item1, s => s.Item2)).ToProperty(this, x => x.Geometries);
@@ -81,13 +81,13 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
         }
 
-        public void SetAOI(Geometry aoi) => ((SceneSearchFilter)Filter).AOI = aoi;
+        public void SetAOI(NetTopologySuite.Geometries.Geometry aoi) => ((SceneSearchFilter)Filter).AOI = aoi;
 
         public void ResetAOI() => ((SceneSearchFilter)Filter).AOI = null;
 
         public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
-        private ReactiveCommand<Unit, List<(string, Geometry)>> LoadFootprintPreviewGeometry { get; }
+        private ReactiveCommand<Unit, List<(string, NetTopologySuite.Geometries.Geometry)>> LoadFootprintPreviewGeometry { get; }
 
         private void ShowFootprintBorder(FootprintPreview footprint)
         {
@@ -154,7 +154,7 @@ namespace FootprintViewer.ViewModels
             return Geometries.ContainsKey(footprint.Name!);
         }
 
-        private Geometry ToGeometry(FootprintPreview footprint)
+        private NetTopologySuite.Geometries.Geometry ToGeometry(FootprintPreview footprint)
         {
             return Geometries[footprint.Name!];
         }
@@ -178,6 +178,6 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public bool IsFilterOpen { get; private set; }
 
-        private IDictionary<string, Geometry> Geometries => _geometries.Value;
+        private IDictionary<string, NetTopologySuite.Geometries.Geometry> Geometries => _geometries.Value;
     }
 }

@@ -14,7 +14,6 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,7 +30,9 @@ namespace FootprintViewer.Avalonia
         {
             services.InitializeSplat();
 
-            services.RegisterLazySingleton<ProjectFactory>(() => new ProjectFactory(resolver));
+            services.Register(() => new ProjectFactory(resolver));
+
+            var factory = resolver.GetExistingService<ProjectFactory>();
 
             IDataSource<GroundTargetInfo> groundTargetDataSource;
             IDataSource<FootprintInfo> footprintDataSource;
@@ -57,86 +58,51 @@ namespace FootprintViewer.Avalonia
                 groundStationDataSource = new Data.Sources.RandomGroundStationDataSource();
             }
 
-            // Satellites provider
+            services.RegisterConstant(new Provider<SatelliteInfo>(new[] { satelliteDataSource }), typeof(IProvider<SatelliteInfo>));
+            services.RegisterConstant(new Provider<FootprintInfo>(new[] { footprintDataSource }), typeof(IProvider<FootprintInfo>));
+            services.RegisterConstant(new Provider<GroundTargetInfo>(new[] { groundTargetDataSource }), typeof(IProvider<GroundTargetInfo>));
+            services.RegisterConstant(new Provider<MapResource>(new[]
+            {
+                new Data.Sources.MapDataSource("*.mbtiles", "data", "world"),
+                new Data.Sources.MapDataSource("*.mbtiles", "userData", "world"),
+            }), typeof(IProvider<MapResource>));
+            services.RegisterConstant(new Provider<FootprintPreview>(new[]
+            {
+                new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "data", "footprints"),
+                new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "userData", "footprints"),
+            }), typeof(IProvider<FootprintPreview>));
+            services.RegisterConstant(new Provider<(string, NetTopologySuite.Geometries.Geometry)>(new[]
+            {
+                new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"),
+            }), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
+            services.RegisterConstant(new Provider<GroundStationInfo>(new[] { groundStationDataSource }), typeof(IProvider<GroundStationInfo>));
+            services.RegisterConstant(new EditableProvider<UserGeometryInfo>(new[] { userGeometryDataSource }), typeof(IEditableProvider<UserGeometryInfo>));
 
-            var satelliteProvider = new SatelliteProvider();
-            satelliteProvider.AddSource(satelliteDataSource);
-            services.RegisterLazySingleton<SatelliteProvider>(() => satelliteProvider);
-            var trackLayerSource = new TrackLayerSource(satelliteProvider);
-            services.RegisterLazySingleton<ITrackLayerSource>(() => trackLayerSource);
-            var sensorLayerSource = new SensorLayerSource(satelliteProvider);
-            services.RegisterLazySingleton<ISensorLayerSource>(() => sensorLayerSource);
+            services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
-            // Footprints provider
+            var satelliteProvider = resolver.GetExistingService<IProvider<SatelliteInfo>>();
+            var footprintProvider = resolver.GetExistingService<IProvider<FootprintInfo>>();
+            var groundTargetProvider = resolver.GetExistingService<IProvider<GroundTargetInfo>>();
+            var groundStationProvider = resolver.GetExistingService<IProvider<GroundStationInfo>>();
+            var userGeometryProvider = resolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
 
-            var footprintProvider = new FootprintProvider();
-            footprintProvider.AddSource(footprintDataSource);
-            services.RegisterLazySingleton<FootprintProvider>(() => footprintProvider);
-            var footprintLayerSource = new FootprintLayerSource(footprintProvider);
-            services.RegisterLazySingleton<IFootprintLayerSource>(() => footprintLayerSource);
+            services.RegisterConstant(new TrackLayerSource(satelliteProvider), typeof(ITrackLayerSource));
+            services.RegisterConstant(new SensorLayerSource(satelliteProvider), typeof(ISensorLayerSource));
+            services.RegisterConstant(new FootprintLayerSource(footprintProvider), typeof(IFootprintLayerSource));
+            services.RegisterConstant(new TargetLayerSource(groundTargetProvider), typeof(ITargetLayerSource));
+            services.RegisterConstant(new UserLayerSource(userGeometryProvider), typeof(IUserLayerSource));
+            services.RegisterConstant(new GroundStationLayerSource(groundStationProvider), typeof(IGroundStationLayerSource));
 
-            // GroundTaregt provider
+            services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
 
-            var groundTargetProvider = new GroundTargetProvider();
-            groundTargetProvider.AddSource(groundTargetDataSource);
-            services.RegisterLazySingleton<GroundTargetProvider>(() => groundTargetProvider);
-            var targetLayerSource = new TargetLayerSource(groundTargetProvider);
-            services.RegisterLazySingleton<ITargetLayerSource>(() => targetLayerSource);
+            services.RegisterConstant(new SceneSearch(resolver), typeof(SceneSearch));
+            services.RegisterConstant(new SatelliteViewer(resolver), typeof(SatelliteViewer));
+            services.RegisterConstant(new GroundTargetViewer(resolver), typeof(GroundTargetViewer));
+            services.RegisterConstant(new FootprintObserver(resolver), typeof(FootprintObserver));
+            services.RegisterConstant(new UserGeometryViewer(resolver), typeof(UserGeometryViewer));
+            services.RegisterConstant(new GroundStationViewer(resolver), typeof(GroundStationViewer));
 
-            // Map data provider
-
-            var mapProvider = new MapProvider();
-            mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "data", "world"));
-            mapProvider.AddSource(new Data.Sources.MapDataSource("*.mbtiles", "userData", "world"));
-            services.RegisterLazySingleton<MapProvider>(() => mapProvider);
-
-            // Footprint preview provider
-
-            var footprintPreviewProvider = new FootprintPreviewProvider();
-            footprintPreviewProvider.AddSource(new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "data", "footprints"));
-            footprintPreviewProvider.AddSource(new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "userData", "footprints"));
-            services.RegisterLazySingleton<FootprintPreviewProvider>(() => footprintPreviewProvider);
-
-            // Footprint preview geometry provider
-
-            var footprintPreviewGeometryProvider = new FootprintPreviewGeometryProvider();
-            footprintPreviewGeometryProvider.AddSource(new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"));
-            services.RegisterLazySingleton<FootprintPreviewGeometryProvider>(() => footprintPreviewGeometryProvider);
-
-            // User geometry provider
-
-            var userGeometryProvider = new UserGeometryProvider();
-            userGeometryProvider.AddSource(userGeometryDataSource);
-            services.RegisterLazySingleton<UserGeometryProvider>(() => userGeometryProvider);
-            var userLayerSource = new UserLayerSource(userGeometryProvider);
-            services.RegisterLazySingleton<IUserLayerSource>(() => userLayerSource);
-
-            // GroundStation provider
-
-            var groundStationProvider = new GroundStationProvider();
-            groundStationProvider.AddSource(groundStationDataSource);
-            services.RegisterLazySingleton<GroundStationProvider>(() => groundStationProvider);
-            var groundStationSource = new GroundStationLayerSource(groundStationProvider);
-            services.RegisterLazySingleton<IGroundStationLayerSource>(() => groundStationSource);
-
-            // Layer style manager
-
-            var layerStyleManager = new LayerStyleManager();
-            services.RegisterLazySingleton<LayerStyleManager>(() => layerStyleManager);
-
-            var factory = resolver.GetExistingService<ProjectFactory>();
-
-            var map = factory.CreateMap();
-            services.RegisterLazySingleton<Mapsui.Map>(() => map);
-
-            services.RegisterLazySingleton<SceneSearch>(() => new SceneSearch(resolver));
-            services.RegisterLazySingleton<SatelliteViewer>(() => new SatelliteViewer(resolver));
-            services.RegisterLazySingleton<GroundTargetViewer>(() => new GroundTargetViewer(resolver));
-            services.RegisterLazySingleton<FootprintObserver>(() => new FootprintObserver(resolver));
-            services.RegisterLazySingleton<UserGeometryViewer>(() => new UserGeometryViewer(resolver));
-            services.RegisterLazySingleton<GroundStationViewer>(() => new GroundStationViewer(resolver));
-
-            services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
+            services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
 
             var tabs = new SidePanelTab[]
             {
@@ -148,9 +114,9 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<UserGeometryViewer>(),
             };
 
-            services.RegisterLazySingleton<SidePanel>(() => new SidePanel() { Tabs = new List<SidePanelTab>(tabs) });
+            services.RegisterConstant(new SidePanel() { Tabs = new List<SidePanelTab>(tabs) }, typeof(SidePanel));
 
-            services.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
+            services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
         }
 
         public static void Initialization(IReadonlyDependencyResolver dependencyResolver)
@@ -160,23 +126,24 @@ namespace FootprintViewer.Avalonia
 
         public async static Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
         {
-            var userGeometryProvider = dependencyResolver.GetExistingService<UserGeometryProvider>();
-            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
-            var satelliteProvider = dependencyResolver.GetExistingService<SatelliteProvider>();
-            var groundTargetProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-            var groundStationProvider = dependencyResolver.GetExistingService<GroundStationProvider>();
+            await Task.Run(() =>
+            {
+                var userGeometryProvider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
+                var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
+                var satelliteProvider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
+                var groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
+                var groundStationProvider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
 
-            //await Task.Delay(TimeSpan.FromSeconds(4));
+                userGeometryProvider.Loading.Execute().Subscribe();
 
-            await userGeometryProvider.Loading.Execute();
+                footprintProvider.Loading.Execute().Subscribe();
 
-            await footprintProvider.Loading.Execute();
+                satelliteProvider.Loading.Execute().Subscribe();
 
-            await satelliteProvider.Loading.Execute();
+                groundTargetProvider.Loading.Execute().Subscribe();
 
-            await groundTargetProvider.Loading.Execute();
-
-            await groundStationProvider.Loading.Execute();
+                groundStationProvider.Loading.Execute().Subscribe();
+            });
         }
 
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();

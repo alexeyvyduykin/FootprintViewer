@@ -11,7 +11,7 @@ namespace FootprintViewer.ViewModels
 {
     public class SatelliteList : ViewerList<SatelliteInfo>
     {
-        public SatelliteList(SatelliteProvider provider) : base(provider)
+        public SatelliteList(IProvider<SatelliteInfo> provider) : base(provider)
         {
 
         }
@@ -19,14 +19,14 @@ namespace FootprintViewer.ViewModels
 
     public class SatelliteViewer : SidePanelTab
     {
-        private readonly SatelliteProvider _provider;
+        private readonly IProvider<SatelliteInfo> _provider;
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
         private bool _first = true;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<SatelliteProvider>();
+            _provider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
             _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
             _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
 

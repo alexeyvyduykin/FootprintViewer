@@ -46,7 +46,8 @@ namespace FootprintViewer.ViewModels
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
             _factory = dependencyResolver.GetExistingService<ProjectFactory>();
-            _map = dependencyResolver.GetExistingService<Map>();
+            // TODO: make _map as IMap
+            _map = (Map)dependencyResolver.GetExistingService<IMap>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
             _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();

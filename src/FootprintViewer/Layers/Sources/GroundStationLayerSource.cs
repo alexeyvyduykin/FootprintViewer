@@ -25,13 +25,13 @@ namespace FootprintViewer.Layers
     {
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public GroundStationLayerSource(GroundStationProvider provider)
+        public GroundStationLayerSource(IProvider<GroundStationInfo> provider)
         {
             _cache = new Dictionary<string, List<IFeature>>();
 
             Loading = ReactiveCommand.Create<List<GroundStationInfo>>(LoadingImpl);
 
-            provider.Loading.Select(s => s).InvokeCommand(Loading);
+            provider.Loading.InvokeCommand(Loading);
         }
 
         private ReactiveCommand<List<GroundStationInfo>, Unit> Loading { get; }

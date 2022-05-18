@@ -26,7 +26,7 @@ namespace FootprintViewer.ViewModels
     {
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            var provider = dependencyResolver.GetExistingService<SatelliteProvider>();
+            var provider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
 
             Satellites = new ObservableCollection<SatelliteItem>();
 
@@ -44,7 +44,7 @@ namespace FootprintViewer.ViewModels
             Task.Run(async () => await CreateSatelliteList(provider));
         }
 
-        private async Task CreateSatelliteList(SatelliteProvider provider)
+        private async Task CreateSatelliteList(IProvider<SatelliteInfo> provider)
         {
             var satellites = await provider.GetValuesAsync();
             var satelliteNames = satellites?.Select(s => s.Name).ToList();

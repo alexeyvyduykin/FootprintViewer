@@ -15,7 +15,7 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintObserverList : ViewerList<FootprintInfo>
     {
-        public FootprintObserverList(FootprintProvider provider) : base(provider)
+        public FootprintObserverList(IProvider<FootprintInfo> provider) : base(provider)
         {
 
         }
@@ -29,8 +29,9 @@ namespace FootprintViewer.ViewModels
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
-            var map = dependencyResolver.GetExistingService<Map>();
-            var footprintProvider = dependencyResolver.GetExistingService<FootprintProvider>();
+            // TODO: make _map as IMap
+            var map = (Map)dependencyResolver.GetExistingService<IMap>();
+            var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
 
             _filter = new FootprintObserverFilter(dependencyResolver);
 

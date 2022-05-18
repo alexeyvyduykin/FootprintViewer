@@ -21,7 +21,7 @@ namespace FootprintViewer
 
         public Map CreateMap()
         {
-            var mapProvider = _dependencyResolver.GetExistingService<MapProvider>();
+            var mapProvider = _dependencyResolver.GetExistingService<IProvider<MapResource>>();
 
             var map = new Map()
             {

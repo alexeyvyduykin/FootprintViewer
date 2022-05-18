@@ -11,7 +11,7 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryList : ViewerList<UserGeometryInfo>
     {
-        public UserGeometryList(UserGeometryProvider provider) : base(provider)
+        public UserGeometryList(IEditableProvider<UserGeometryInfo> provider) : base(provider)
         {
 
         }
@@ -19,11 +19,11 @@ namespace FootprintViewer.ViewModels
 
     public class UserGeometryViewer : SidePanelTab
     {
-        private readonly UserGeometryProvider _provider;
+        private readonly IEditableProvider<UserGeometryInfo> _provider;
 
         public UserGeometryViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<UserGeometryProvider>();
+            _provider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
 
             Title = "Пользовательская геометрия";
 

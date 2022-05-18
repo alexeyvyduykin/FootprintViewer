@@ -27,13 +27,13 @@ namespace FootprintViewer.ViewModels
     public class SceneSearchFilter : ViewerListFilter<FootprintPreview>
     {
         private IDictionary<string, Geometry>? _geometries;
-        private readonly FootprintPreviewGeometryProvider _footprintPreviewGeometryProvider;
-        private readonly FootprintPreviewProvider _footprintPreviewProvider;
+        private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
+        private readonly IProvider<FootprintPreview> _footprintPreviewProvider;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<FootprintPreviewGeometryProvider>();
-            _footprintPreviewProvider = dependencyResolver.GetExistingService<FootprintPreviewProvider>();
+            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
+            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
             Cloudiness = 0.0;
             MinSunElevation = 0.0;

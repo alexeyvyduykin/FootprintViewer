@@ -32,12 +32,16 @@ namespace FootprintViewer.Layers
         private List<IFeature> _featuresCache = new();
         private IFeature? _lastSelected;
 
-        public TargetLayerSource(GroundTargetProvider provider)
+        public TargetLayerSource(IProvider<GroundTargetInfo> provider)
         {
-            provider.Loading.Subscribe(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<GroundTargetInfo>>(LoadingImpl);
+
+            provider.Loading.InvokeCommand(Loading);
 
             Refresh = ReactiveCommand.Create(RefreshImpl);
         }
+
+        private ReactiveCommand<List<GroundTargetInfo>, Unit> Loading { get; }
 
         public ReactiveCommand<Unit, string[]?> Refresh { get; }
 

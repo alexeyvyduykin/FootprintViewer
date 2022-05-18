@@ -22,9 +22,9 @@ namespace FootprintViewer.Layers
 
     public class FootprintLayerSource : WritableLayer, IFootprintLayerSource
     {
-        private readonly FootprintProvider _provider;
+        private readonly IProvider<FootprintInfo> _provider;
 
-        public FootprintLayerSource(FootprintProvider provider)
+        public FootprintLayerSource(IProvider<FootprintInfo> provider)
         {
             _provider = provider;
 

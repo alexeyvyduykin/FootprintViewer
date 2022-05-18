@@ -6,13 +6,13 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeGroundTargetViewer : GroundTargetViewer
     {
-        private static readonly DesignTimeData _designTimeData = new DesignTimeData();
+        private static readonly DesignTimeData _designTimeData = new();
 
         public DesignTimeGroundTargetViewer() : base(_designTimeData)
         {
-            var provider = _designTimeData.GetExistingService<GroundTargetProvider>();
+            var provider = _designTimeData.GetExistingService<IProvider<GroundTargetInfo>>();
 
-            var targets = provider.GetValuesAsync(null).Result;
+            var targets = provider.GetValuesAsync().Result;
 
             var list = new GroundTargetViewerList(provider);
 

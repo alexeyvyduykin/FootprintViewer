@@ -23,24 +23,24 @@ namespace FootprintViewer
             map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Extent /*Envelope*/ };
         }
 
-        public static void AddLayer(this Map map, ILayer layer, LayerType layerType)
+        public static void AddLayer(this IMap map, ILayer layer, LayerType layerType)
         {
             map.AddLayer(layer, layerType.ToString());
         }
 
-        public static void AddLayer(this Map map, ILayer layer, string name)
+        public static void AddLayer(this IMap map, ILayer layer, string name)
         {
             layer.Name = name;
 
             map.Layers.Add(layer);
         }
 
-        public static void RemoveLayer(this Map map, LayerType layerType)
+        public static void RemoveLayer(this IMap map, LayerType layerType)
         {
             map.RemoveLayer(layerType.ToString());
         }
 
-        public static void RemoveLayer(this Map map, string name)
+        public static void RemoveLayer(this IMap map, string name)
         {
             var layer = map.Layers.FindLayer(name).FirstOrDefault();
 
@@ -50,22 +50,22 @@ namespace FootprintViewer
             }
         }
 
-        public static T? GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
+        public static T? GetLayer<T>(this IMap map, LayerType layerType) where T : ILayer
         {
             return (T?)map.Layers.FirstOrDefault(l => l.Name.Equals(layerType.ToString()));
         }
 
-        public static ILayer? GetLayer(this Map map, LayerType layerType)
+        public static ILayer? GetLayer(this IMap map, LayerType layerType)
         {
             return map.GetLayer<ILayer>(layerType);
         }
 
-        public static void ReplaceLayer(this Map map, ILayer layer, LayerType layerType)
+        public static void ReplaceLayer(this IMap map, ILayer layer, LayerType layerType)
         {
             map.ReplaceLayer(layer, layerType.ToString());
         }
 
-        public static void ReplaceLayer(this Map map, ILayer layer, string name)
+        public static void ReplaceLayer(this IMap map, ILayer layer, string name)
         {
             int index = 0;
             ILayer? removable = null;
@@ -113,7 +113,7 @@ namespace FootprintViewer
         public static IEnumerable<Point> AllVertices(this Geometry geometry)
         {
             if (geometry == null)
-                return new Point[0];
+                return Array.Empty<Point>();
 
             var point = geometry as Point;
             if (point != null)
@@ -124,8 +124,7 @@ namespace FootprintViewer
             var polygon = geometry as Polygon;
             if (polygon != null)
                 return AllVertices(polygon);
-            var geometries = geometry as IEnumerable<Geometry>;
-            if (geometries != null)
+            if (geometry is IEnumerable<Geometry> geometries)
                 return AllVertices(geometries);
 
             var format = $"unsupported geometry: {geometry.GetType().Name}";

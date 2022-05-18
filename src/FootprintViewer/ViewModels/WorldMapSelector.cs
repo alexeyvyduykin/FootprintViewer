@@ -10,12 +10,12 @@ namespace FootprintViewer.ViewModels
 {
     public class WorldMapSelector : ReactiveObject
     {
-        private readonly MapProvider _mapProvider;
+        private readonly IProvider<MapResource> _mapProvider;
         private readonly ObservableAsPropertyHelper<List<MapResource>> _worldMaps;
 
         public WorldMapSelector(IReadonlyDependencyResolver dependencyResolver)
         {
-            _mapProvider = dependencyResolver.GetExistingService<MapProvider>();
+            _mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
 
             WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
 

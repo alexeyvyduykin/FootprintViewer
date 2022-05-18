@@ -22,9 +22,9 @@ namespace FootprintViewer.Layers
 
     public class UserLayerSource : WritableLayer, IUserLayerSource
     {
-        private readonly UserGeometryProvider _provider;
+        private readonly IEditableProvider<UserGeometryInfo> _provider;
 
-        public UserLayerSource(UserGeometryProvider provider)
+        public UserLayerSource(IEditableProvider<UserGeometryInfo> provider)
         {
             _provider = provider;
 
@@ -34,7 +34,7 @@ namespace FootprintViewer.Layers
 
             Update.InvokeCommand(Loading);
 
-            provider.Update.Select(_ => Unit.Default).InvokeCommand(Update);
+            provider.Update.InvokeCommand(Update);
 
             provider.Loading.InvokeCommand(Loading);
         }

@@ -11,7 +11,7 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundStationList : ViewerList<GroundStationInfo>
     {
-        public GroundStationList(GroundStationProvider provider) : base(provider)
+        public GroundStationList(IProvider<GroundStationInfo> provider) : base(provider)
         {
 
         }
@@ -19,13 +19,13 @@ namespace FootprintViewer.ViewModels
 
     public class GroundStationViewer : SidePanelTab
     {
-        private readonly GroundStationProvider _provider;
+        private readonly IProvider<GroundStationInfo> _provider;
         private readonly IGroundStationLayerSource _groundStationLayerSource;
         private bool _first = true;
 
         public GroundStationViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<GroundStationProvider>();
+            _provider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
 
             Title = "Просмотр наземных станций";
