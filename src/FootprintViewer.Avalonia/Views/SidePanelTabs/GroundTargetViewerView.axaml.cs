@@ -1,5 +1,3 @@
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -9,8 +7,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class GroundTargetViewerView : ReactiveUserControl<GroundTargetViewer>
     {
-        private ViewModelViewHost MainContentControl => this.FindControl<ViewModelViewHost>("MainContentControl");
-
         public GroundTargetViewerView()
         {
             InitializeComponent();
@@ -21,11 +17,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
                 this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.ViewModel).DisposeWith(disposables);
             });
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

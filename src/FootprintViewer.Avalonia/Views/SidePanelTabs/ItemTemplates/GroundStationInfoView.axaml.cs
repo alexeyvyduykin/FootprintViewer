@@ -1,5 +1,3 @@
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
@@ -16,11 +14,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
     public partial class GroundStationInfoView : ReactiveUserControl<GroundStationInfo>
     {
         private GroundStationViewer? _groundStationViewer;
-
-        private TextBlock CoordinateTextBlock => this.FindControl<TextBlock>("CoordinateTextBlock");
-        private ItemsControl ItemsControl => this.FindControl<ItemsControl>("ItemsControl");
-        private Slider Slider1 => this.FindControl<Slider>("Slider1");
-        private Slider Slider2 => this.FindControl<Slider>("Slider2");
 
         public GroundStationInfoView()
         {
@@ -96,11 +89,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             }
 
             return new List<AvaloniaAreaItem>();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 

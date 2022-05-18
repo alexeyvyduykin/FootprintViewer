@@ -1,32 +1,30 @@
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Projections;
+using ReactiveUI;
 using System;
 
 namespace FootprintViewer.Avalonia.Views
 {
     public partial class MainView : ReactiveUserControl<MainViewModel>
     {
-        private UserMapControl UserMapControl => this.FindControl<UserMapControl>("UserMapControl");
-        private TextBlock TextBlockResolution => this.FindControl<TextBlock>("TextBlockResolution");
-        private TextBlock TextBlockCoordinates => this.FindControl<TextBlock>("TextBlockCoordinates");
-        //private ScaleBarView ScaleBarView => this.FindControl<ScaleBarView>("ScaleBarView");
-
         public MainView()
         {
             InitializeComponent();
 
-            UserMapControl.PointerMoved += MapControlOnMouseMove;
-            UserMapControl.PointerWheelChanged += MapControl_MouseWheel;
-            UserMapControl.PropertyChanged += MapControl_PropertyChanged;
+            this.WhenActivated(disposables =>
+            {
+                UserMapControl.PointerMoved += MapControlOnMouseMove;
+                UserMapControl.PointerWheelChanged += MapControl_MouseWheel;
+                UserMapControl.PropertyChanged += MapControl_PropertyChanged;
+                
+                TextBlockResolution.Text = GetCurrentResolution();
 
-            TextBlockResolution.Text = GetCurrentResolution();
-
-            UserMapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
+                UserMapControl.Viewport.ViewportChanged += Viewport_ViewportChanged;
+            });
         }
 
         private void MainView_ViewportUpdate(object? sender, EventArgs e)
@@ -47,11 +45,6 @@ namespace FootprintViewer.Avalonia.Views
                     //         ScaleBarView.Update(userMapControl.Viewport);
                 }
             }
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
 
         private void MapControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

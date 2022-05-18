@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
-using Material.Styles;
 using ReactiveUI;
 using Splat;
 using System;
@@ -14,8 +13,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class GroundTargetInfoView : ReactiveUserControl<GroundTargetInfo>
     {
-        private Card MainCard => this.FindControl<Card>("MainCard");
-
         private static GroundTargetViewer? _groundTargetViewer;
 
         public GroundTargetInfoView()

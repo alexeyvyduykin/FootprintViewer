@@ -1,6 +1,4 @@
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -10,10 +8,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class GroundTargetViewerListView : ReactiveUserControl<GroundTargetViewerList>
     {
-        private ProgressBar ProgressBar => this.FindControl<ProgressBar>("ProgressBar");
-
-        private ListBox ListBox => this.FindControl<ListBox>("ListBox");
-
         public GroundTargetViewerListView()
         {
             InitializeComponent();
@@ -28,11 +22,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
                 this.OneWayBind(ViewModel, vm => vm.Items, v => v.ListBox.Items).DisposeWith(disposables);
                 this.Bind(ViewModel, vm => vm.SelectedItem, v => v.ListBox.SelectedItem).DisposeWith(disposables);
             });
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

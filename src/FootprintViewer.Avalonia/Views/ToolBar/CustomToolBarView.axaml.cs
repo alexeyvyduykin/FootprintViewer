@@ -1,5 +1,3 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
@@ -12,7 +10,7 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
         public CustomToolBarView()
         {
             InitializeComponent();
-           
+
             this.WhenActivated(disposables => { });
         }
 

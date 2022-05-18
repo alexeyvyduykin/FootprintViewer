@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -13,10 +12,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
     public partial class SceneSearchView : ReactiveUserControl<SceneSearch>
     {
-        private ToggleButton ToggleButtonSearch => this.FindControl<ToggleButton>("ToggleButtonSearch");
-
-        private ListBox ListBoxFootprints => this.FindControl<ListBox>("ListBoxFootprints");
-
         public SceneSearchView()
         {
             InitializeComponent();
@@ -30,11 +25,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
                 this.OneWayBind(ViewModel, vm => vm.ViewerList.Items, v => v.ListBoxFootprints.Items).DisposeWith(disposables);
                 this.Bind(ViewModel, vm => vm.ViewerList.SelectedItem, v => v.ListBoxFootprints.SelectedItem).DisposeWith(disposables);
             });
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

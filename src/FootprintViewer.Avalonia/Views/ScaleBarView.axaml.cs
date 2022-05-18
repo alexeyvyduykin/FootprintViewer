@@ -1,13 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Mapsui.Widgets.ScaleBar;
 using Mapsui;
-using System;
 using Mapsui.Projections;
-//using FootprintViewer.Input;
+using Mapsui.Widgets.ScaleBar;
+using System;
 
 namespace FootprintViewer.Avalonia.Views
 {
@@ -17,17 +15,12 @@ namespace FootprintViewer.Avalonia.Views
         private readonly double MaxWidthScaleBar = 100;
         private readonly double StrokeWidth = 2;
         private readonly double TickLength = 4;
-        private readonly TextBlock _textBlockScale;
-        private readonly Canvas _canvasScale;
 
         public ScaleBarView()
         {
             InitializeComponent();
 
-            _textBlockScale = this.FindControl<TextBlock>("TextBlockScale");
-            _canvasScale = this.FindControl<Canvas>("CanvasScale");
-
-         //   Update += ScaleBarView_Update;
+            //   Update += ScaleBarView_Update;
 
             UserMapControlProperty.Changed.Subscribe(OnUserMapControlChanged);
         }
@@ -46,14 +39,14 @@ namespace FootprintViewer.Avalonia.Views
 
         private static void OnUserMapControlChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            var scaleBarView = (ScaleBarView)e.Sender;      
+            var scaleBarView = (ScaleBarView)e.Sender;
             if (e.NewValue == null)
             {
-             
+
             }
             else
             {
-              
+
             }
         }
 
@@ -78,12 +71,7 @@ namespace FootprintViewer.Avalonia.Views
         //    }
         //}
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-       // public event EventHandler<EventArgs> Update;
+        // public event EventHandler<EventArgs> Update;
 
         private void OnUpdate(/*Map map,*/ IReadOnlyViewport viewport)
         {
@@ -96,7 +84,7 @@ namespace FootprintViewer.Avalonia.Views
                 // We have to calc the angle difference to the equator (angle = 0), 
                 // because EPSG:3857 is only there 1 m. At othere angles, we
                 // should calculate the correct length.                       
-        //        var position = (MPoint)map.Transformation.Transform(map.CRS, "EPSG:4326", center); // clone or else you will transform the orginal viewport center
+                //        var position = (MPoint)map.Transformation.Transform(map.CRS, "EPSG:4326", center); // clone or else you will transform the orginal viewport center
 
                 var proj = new Projection();
                 //var position = proj.Project(map.CRS, "EPSG:4326", center.X, center.Y);
@@ -126,15 +114,15 @@ namespace FootprintViewer.Avalonia.Views
 
                 var scaleBarText = unitConverter.GetScaleText(scaleBarValue);
 
-                _textBlockScale.Text = scaleBarText;
+                TextBlockScale.Text = scaleBarText;
 
                 DrawScaleBar(scaleBarLength);
-            }            
+            }
         }
 
         public void DrawScaleBar(double scaleBarLength)
         {
-            _canvasScale.Children.Clear();
+            CanvasScale.Children.Clear();
 
             // Draw lines
 
@@ -162,13 +150,13 @@ namespace FootprintViewer.Avalonia.Views
 
                     line.StrokeLineCap = PenLineCap.Square;
 
-                    _canvasScale.Children.Add(line);
+                    CanvasScale.Children.Add(line);
                 }
             }
         }
 
         public Point[] GetScaleBarLinePositions(double scaleBarLength)
-        {      
+        {
             var posY = -(DesiredSize.Height/* ActualHeight*/ - TickLength) / 2;
 
             double center1 = 0;// (MaxWidthScaleBar - scaleBarLength) / 2;

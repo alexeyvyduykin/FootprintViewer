@@ -12,8 +12,6 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
 {
     public partial class ToolClickView : ReactiveUserControl<IToolClick>
     {
-        private Button Button => this.FindControl<Button>("Button");
-
         public ToolClickView()
         {
             InitializeComponent();

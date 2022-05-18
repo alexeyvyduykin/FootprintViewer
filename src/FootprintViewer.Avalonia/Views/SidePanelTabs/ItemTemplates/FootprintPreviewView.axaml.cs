@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -18,10 +17,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class FootprintPreviewView : ReactiveUserControl<FootprintPreview>
     {
-        private Border FootprintImageBorder => this.FindControl<Border>("FootprintImageBorder");
-
-        private Image FootprintImageImage => this.FindControl<Image>("FootprintImageImage");
-
         private static SceneSearch? _sceneSearch;
 
         public FootprintPreviewView()
@@ -94,11 +89,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             bitmap.Dispose();
 
             return avBitmap;
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

@@ -12,8 +12,6 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
 {
     public partial class ToolCollectionView : ReactiveUserControl<IToolCollection>
     {
-        private StackPanel CollectionStackPanel => this.FindControl<StackPanel>("CollectionStackPanel");
-
         public ToolCollectionView()
         {
             InitializeComponent();

@@ -1,9 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
-using Material.Styles;
 using ReactiveUI;
 using Splat;
 using System;
@@ -15,33 +13,15 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class FootprintInfoView : ReactiveUserControl<FootprintInfo>
     {
-        private Card MainCard => this.FindControl<Card>("MainCard");
-
-        private StackPanel MainStackPanel => this.FindControl<StackPanel>("MainStackPanel");
-
-        private TextBlock HeaderTextBlock => this.FindControl<TextBlock>("HeaderTextBlock");
-
-        private TextBlock SatelliteTextBlock => this.FindControl<TextBlock>("SatelliteTextBlock");
-
-        private TextBlock CenterTextBlock => this.FindControl<TextBlock>("CenterTextBlock");
-
-        private TextBlock BeginTextBlock => this.FindControl<TextBlock>("BeginTextBlock");
-
-        private TextBlock DurationTextBlock => this.FindControl<TextBlock>("DurationTextBlock");
-
-        private TextBlock NodeTextBlock => this.FindControl<TextBlock>("NodeTextBlock");
-
-        private TextBlock DirectionTextBlock => this.FindControl<TextBlock>("DirectionTextBlock");
-        
         private static FootprintObserver? _footprintObserver;
 
         public FootprintInfoView()
         {
             InitializeComponent();
-            
+
             _command = ReactiveCommand.Create(CommandImpl);
 
-            this.WhenActivated(disposables => 
+            this.WhenActivated(disposables =>
             {
                 this.MainCard.Events().PointerPressed.Select(args => Unit.Default).InvokeCommand(this, v => v._command).DisposeWith(disposables);
 
@@ -59,9 +39,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
                 this.OneWayBind(ViewModel, vm => vm.Node, v => v.NodeTextBlock.Text).DisposeWith(disposables);
 
-                this.OneWayBind(ViewModel, vm => vm.Direction, v => v.DirectionTextBlock.Text, value => ((Data.SatelliteStripDirection)value).ToString()).DisposeWith(disposables);
-
-                
+                this.OneWayBind(ViewModel, vm => vm.Direction, v => v.DirectionTextBlock.Text, value => value.ToString()).DisposeWith(disposables);
             });
         }
 
@@ -71,12 +49,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
         {
             _footprintObserver ??= Locator.Current.GetExistingService<FootprintObserver>();
 
-            _footprintObserver?.ClickOnItem.Execute(ViewModel).Subscribe();       
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            _footprintObserver?.ClickOnItem.Execute(ViewModel).Subscribe();
         }
     }
 }

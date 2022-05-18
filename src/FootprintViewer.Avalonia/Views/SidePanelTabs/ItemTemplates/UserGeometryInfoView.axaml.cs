@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -13,12 +12,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
     public partial class UserGeometryInfoView : ReactiveUserControl<UserGeometryInfo>
     {
-        private TextBlock TypeTextBlock => this.FindControl<TextBlock>("TypeTextBlock");
-
-        private TextBlock NameTextBlock => this.FindControl<TextBlock>("NameTextBlock");
-
-        private Button RemoveButton => this.FindControl<Button>("RemoveButton");
-
         private UserGeometryViewer? _userGeometryViewer;
 
         public UserGeometryInfoView()
@@ -44,11 +37,6 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             _userGeometryViewer ??= Locator.Current.GetExistingService<UserGeometryViewer>();
 
             _userGeometryViewer.ViewerList.Remove.Execute(ViewModel).Subscribe();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }
