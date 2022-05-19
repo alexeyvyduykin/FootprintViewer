@@ -35,10 +35,12 @@ namespace FootprintViewer.Designer
         private FootprintObserver? _footprintObserver;
         private GroundTargetViewer? _groundTargetViewer;
         private GroundStationViewer? _groundStationViewer;
+        private UserGeometryViewer? _userGeometryViewer;
         private SceneSearch? _sceneSearch;
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
         private CustomToolBar? _customToolBar;
+        private WorldMapSelector? _worldMapSelector;
 
         public object? GetService(Type? serviceType, string? contract = null)
         {
@@ -46,70 +48,74 @@ namespace FootprintViewer.Designer
             {
                 return _projectFactory ??= new ProjectFactory(this);
             }
-            else if (serviceType == typeof(Mapsui.Map))
+            else if (serviceType == typeof(Mapsui.IMap))
             {
                 return _map ??= new Mapsui.Map();
             }
-            else if (serviceType == typeof(Provider<SatelliteInfo>))
+            else if (serviceType == typeof(IProvider<SatelliteInfo>))
             {
                 return _satelliteProvider ??= new DesignTimeSatelliteProvider();
             }
+            else if (serviceType == typeof(WorldMapSelector))
+            {
+                return _worldMapSelector ??= new WorldMapSelector(this);
+            }
             else if (serviceType == typeof(ISensorLayerSource))
             {
-                var provider = (IProvider<SatelliteInfo>)GetService(typeof(Provider<SatelliteInfo>), contract)!;
+                var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
                 return _sensorLayerSource ??= new SensorLayerSource(provider);
             }
             else if (serviceType == typeof(ITrackLayerSource))
             {
-                var provider = (IProvider<SatelliteInfo>)GetService(typeof(Provider<SatelliteInfo>), contract)!;
+                var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
                 return _trackLayerSource ??= new TrackLayerSource(provider);
             }
-            else if (serviceType == typeof(Provider<MapResource>))
+            else if (serviceType == typeof(IProvider<MapResource>))
             {
                 return _mapProvider ??= new DesignTimeMapProvider();
             }
-            else if (serviceType == typeof(Provider<FootprintPreview>))
+            else if (serviceType == typeof(IProvider<FootprintPreview>))
             {
                 return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
             }
-            else if (serviceType == typeof(Provider<(string, nts.Geometry)>))
+            else if (serviceType == typeof(IProvider<(string, nts.Geometry)>))
             {
                 return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
             }
-            else if (serviceType == typeof(Provider<GroundTargetInfo>))
+            else if (serviceType == typeof(IProvider<GroundTargetInfo>))
             {
                 return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
             }
             else if (serviceType == typeof(ITargetLayerSource))
             {
-                var provider = (IProvider<GroundTargetInfo>)GetService(typeof(Provider<GroundTargetInfo>), contract)!;
+                var provider = (IProvider<GroundTargetInfo>)GetService(typeof(IProvider<GroundTargetInfo>), contract)!;
                 return _targetLayerSource ??= new TargetLayerSource(provider);
             }
-            else if (serviceType == typeof(Provider<FootprintInfo>))
+            else if (serviceType == typeof(IProvider<FootprintInfo>))
             {
                 return _footprintProvider ??= new DesignDataFootprintProvider();
             }
             else if (serviceType == typeof(IFootprintLayerSource))
             {
-                var provider = (IProvider<FootprintInfo>)GetService(typeof(Provider<FootprintInfo>), contract)!;
+                var provider = (IProvider<FootprintInfo>)GetService(typeof(IProvider<FootprintInfo>), contract)!;
                 return _footprintLayerSource ??= new FootprintLayerSource(provider);
             }
-            else if (serviceType == typeof(EditableProvider<UserGeometryInfo>))
+            else if (serviceType == typeof(IEditableProvider<UserGeometryInfo>))
             {
                 return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
             }
             else if (serviceType == typeof(IUserLayerSource))
             {
-                var provider = (IEditableProvider<UserGeometryInfo>)GetService(typeof(EditableProvider<UserGeometryInfo>), contract)!;
+                var provider = (IEditableProvider<UserGeometryInfo>)GetService(typeof(IEditableProvider<UserGeometryInfo>), contract)!;
                 return _userLayerSource ??= new UserLayerSource(provider);
             }
-            else if (serviceType == typeof(Provider<GroundStationInfo>))
+            else if (serviceType == typeof(IProvider<GroundStationInfo>))
             {
                 return _groundStationProvider ??= new DesignTimeGroundStationProvider();
             }
             else if (serviceType == typeof(IGroundStationLayerSource))
             {
-                var provider = (IProvider<GroundStationInfo>)GetService(typeof(Provider<GroundStationInfo>), contract)!;
+                var provider = (IProvider<GroundStationInfo>)GetService(typeof(IProvider<GroundStationInfo>), contract)!;
                 return _groundStationLayerSource ??= new GroundStationLayerSource(provider);
             }
             else if (serviceType == typeof(SatelliteViewer))
@@ -131,6 +137,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(SceneSearch))
             {
                 return _sceneSearch ??= new SceneSearch(this);
+            }
+            else if (serviceType == typeof(UserGeometryViewer))
+            {
+                return _userGeometryViewer ??= new UserGeometryViewer(this);
             }
             else if (serviceType == typeof(CustomToolBar))
             {
@@ -155,23 +165,22 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeSatelliteProvider : Provider<SatelliteInfo>
         {
-            public DesignTimeSatelliteProvider() : base()
-            {
-                AddSource(new DesignTimeSatelliteSource());
-            }
+            public DesignTimeSatelliteProvider() : base(new[] { new DesignTimeSatelliteSource() }) { }
 
             private class DesignTimeSatelliteSource : IDataSource<SatelliteInfo>
             {
-                private readonly IList<Satellite> _satellites;
+                private readonly List<Satellite> _satellites;
 
                 public DesignTimeSatelliteSource()
                 {
-                    _satellites = new List<Satellite>();
-
-                    for (int i = 0; i < 5; i++)
+                    _satellites = new List<Satellite>()
                     {
-                        _satellites.Add(DesignTimeSatelliteInfo.BuildModel());
-                    }
+                        DesignTimeSatelliteInfo.BuildModel(),
+                        DesignTimeSatelliteInfo.BuildModel(),
+                        DesignTimeSatelliteInfo.BuildModel(),
+                        DesignTimeSatelliteInfo.BuildModel(),
+                        DesignTimeSatelliteInfo.BuildModel(),
+                    };
                 }
 
                 public Task<List<SatelliteInfo>> GetValuesAsync(IFilter<SatelliteInfo>? filter = null) =>
@@ -181,10 +190,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeGroundStationProvider : Provider<GroundStationInfo>
         {
-            public DesignTimeGroundStationProvider() : base()
-            {
-                AddSource(new DesignTimeGroundStationSource());
-            }
+            public DesignTimeGroundStationProvider() : base(new[] { new DesignTimeGroundStationSource() }) { }
 
             private class DesignTimeGroundStationSource : IDataSource<GroundStationInfo>
             {
@@ -210,10 +216,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeFootprintPreviewProvider : Provider<FootprintPreview>
         {
-            public DesignTimeFootprintPreviewProvider() : base()
-            {
-                AddSource(new DesignTimeFootprintPreviewSource());
-            }
+            public DesignTimeFootprintPreviewProvider() : base(new[] { new DesignTimeFootprintPreviewSource() }) { }
 
             private class DesignTimeFootprintPreviewSource : IDataSource<FootprintPreview>
             {
@@ -241,10 +244,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeMapProvider : Provider<MapResource>
         {
-            public DesignTimeMapProvider() : base()
-            {
-                AddSource(new DesignTimeMapDataSource());
-            }
+            public DesignTimeMapProvider() : base(new[] { new DesignTimeMapDataSource() }) { }
 
             private class DesignTimeMapDataSource : IDataSource<MapResource>
             {
@@ -265,10 +265,7 @@ namespace FootprintViewer.Designer
 
         private class DesignTimeUserGeometryProvider : EditableProvider<UserGeometryInfo>
         {
-            public DesignTimeUserGeometryProvider() : base()
-            {
-                AddSource(new DesignTimeUserGeometrySource());
-            }
+            public DesignTimeUserGeometryProvider() : base(new[] { new DesignTimeUserGeometrySource() }) { }
 
             private class DesignTimeUserGeometrySource : IEditableDataSource<UserGeometryInfo>
             {
@@ -302,10 +299,7 @@ namespace FootprintViewer.Designer
 
         private class DesignDataGroundTargetProvider : Provider<GroundTargetInfo>
         {
-            public DesignDataGroundTargetProvider() : base()
-            {
-                AddSource(new DesignTimeGroundTargetDataSource());
-            }
+            public DesignDataGroundTargetProvider() : base(new[] { new DesignTimeGroundTargetDataSource() }) { }
 
             private class DesignTimeGroundTargetDataSource : IDataSource<GroundTargetInfo>
             {
@@ -338,10 +332,7 @@ namespace FootprintViewer.Designer
 
         private class DesignDataFootprintProvider : Provider<FootprintInfo>
         {
-            public DesignDataFootprintProvider() : base()
-            {
-                AddSource(new DesignTimeFootprintDataSource());
-            }
+            public DesignDataFootprintProvider() : base(new[] { new DesignTimeFootprintDataSource() }) { }
 
             private class DesignTimeFootprintDataSource : IDataSource<FootprintInfo>
             {

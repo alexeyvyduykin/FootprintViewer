@@ -1,6 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
-using System.Linq;
+using System;
 
 namespace FootprintViewer.Designer
 {
@@ -10,11 +10,7 @@ namespace FootprintViewer.Designer
 
         public DesignTimeGroundTargetViewerList() : base(_designTimeData.GetExistingService<IProvider<GroundTargetInfo>>())
         {
-            var provider = _designTimeData.GetExistingService<IProvider<GroundTargetInfo>>();
-
-            var targets = provider.GetValuesAsync().Result;
-
-            Update(targets.Select(s => s.Name!).ToArray());
+            Loading.Execute(null).Subscribe();
         }
     }
 }

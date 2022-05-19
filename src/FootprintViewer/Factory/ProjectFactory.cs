@@ -1,12 +1,9 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Splat;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer
 {
@@ -21,8 +18,6 @@ namespace FootprintViewer
 
         public Map CreateMap()
         {
-            var mapProvider = _dependencyResolver.GetExistingService<IProvider<MapResource>>();
-
             var map = new Map()
             {
                 CRS = "EPSG:3857",
@@ -40,8 +35,6 @@ namespace FootprintViewer
             map.AddLayer(CreateEditLayer(_dependencyResolver), LayerType.Edit);
             map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
             map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
-
-            Task.Run(async () => map.SetWorldMapLayer((await mapProvider.GetValuesAsync()).FirstOrDefault()!));
 
             return map;
         }

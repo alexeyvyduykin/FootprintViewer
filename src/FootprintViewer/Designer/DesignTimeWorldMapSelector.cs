@@ -1,15 +1,18 @@
-﻿using FootprintViewer.ViewModels;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FootprintViewer.Designer
 {
     public class DesignTimeWorldMapSelector : WorldMapSelector
     {
-        public DesignTimeWorldMapSelector() : base(new DesignTimeData())
-        {
+        private static readonly DesignTimeData _designTimeData = new();
 
+        public DesignTimeWorldMapSelector() : base(_designTimeData)
+        {
+            var mapProvider = _designTimeData.GetExistingService<IProvider<MapResource>>();
+
+            mapProvider.Loading.Execute().Subscribe();
         }
     }
 }

@@ -3,8 +3,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System.Collections.Generic;
-using System.Reactive;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -19,23 +18,20 @@ namespace FootprintViewer.ViewModels
 
             WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
 
-            Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
+            Loading = ReactiveCommand.Create<List<MapResource>, List<MapResource>>(s => s);
 
-            _worldMaps = Loading.ToProperty(this, x => x.WorldMaps);
+            _mapProvider.Loading.InvokeCommand(Loading);
+
+            _worldMaps = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.WorldMaps);
 
             this.WhenAnyValue(x => x.SelectedWorldMap!).InvokeCommand(WorldMapChanged);
         }
 
         public ReactiveCommand<MapResource, MapResource> WorldMapChanged { get; }
 
-        public ReactiveCommand<Unit, List<MapResource>> Loading { get; }
+        public ReactiveCommand<List<MapResource>, List<MapResource>> Loading { get; }
 
-        private async Task<List<MapResource>> LoadingImpl()
-        {
-            return await _mapProvider.GetValuesAsync();
-        }
-
-        private List<MapResource> WorldMaps => _worldMaps.Value;
+        public List<MapResource> WorldMaps => _worldMaps.Value;
 
         [Reactive]
         public MapResource? SelectedWorldMap { get; set; }

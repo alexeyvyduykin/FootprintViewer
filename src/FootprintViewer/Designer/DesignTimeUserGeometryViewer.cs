@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.ViewModels;
-using System;
 
 namespace FootprintViewer.Designer
 {
@@ -7,7 +6,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeUserGeometryViewer() : base(new DesignTimeData())
         {
-            ViewerList.Loading.Execute().Subscribe();
+            IsActive = true;
         }
     }
 }

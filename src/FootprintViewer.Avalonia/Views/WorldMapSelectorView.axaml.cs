@@ -1,4 +1,3 @@
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 
@@ -9,11 +8,6 @@ namespace FootprintViewer.Avalonia.Views
         public WorldMapSelectorView()
         {
             InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

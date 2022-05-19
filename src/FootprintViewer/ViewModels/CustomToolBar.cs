@@ -1,6 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Models;
-using ReactiveUI;
+﻿using FootprintViewer.Models;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
@@ -14,9 +12,9 @@ namespace FootprintViewer.ViewModels
 
         public CustomToolBar(IReadonlyDependencyResolver dependencyResolver) : base()
         {
-            _worldMapSelector = new WorldMapSelector(dependencyResolver);
+            _worldMapSelector = dependencyResolver.GetExistingService<WorldMapSelector>();
+
             _worldMapSelector.WorldMapChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
-            _worldMapSelector.Loading.Execute().Subscribe();
 
             ZoomIn = new ToolClick()
             {
@@ -208,8 +206,6 @@ namespace FootprintViewer.ViewModels
         public ToolCheck Circle { get; }
 
         public ToolCheck Polygon { get; }
-
-        public ReactiveCommand<MapResource, MapResource> LayerChanged => _worldMapSelector.WorldMapChanged;
 
         public WorldMapSelector WorldMapSelector => _worldMapSelector;
 

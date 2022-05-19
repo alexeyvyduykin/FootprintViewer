@@ -26,12 +26,11 @@ namespace FootprintViewer.ViewModels
         private readonly InfoPanel _infoPanel;
         private readonly InfoPanel _clickInfoPanel;
         private readonly SidePanel _sidePanel;
-        private readonly ProjectFactory _factory;
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintObserver _footprintObserver;
         private readonly GroundTargetViewer _groundTargetViewer;
         private readonly UserGeometryViewer _userGeometryViewer;
-        private readonly SceneSearch _sceneSearch;
+        private readonly SceneSearch _sceneSearch; 
         private readonly IUserLayerSource _userLayerSource;
         private readonly IFootprintLayerSource _footprintSource;
 
@@ -45,7 +44,7 @@ namespace FootprintViewer.ViewModels
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _factory = dependencyResolver.GetExistingService<ProjectFactory>();
+            var factory = dependencyResolver.GetExistingService<ProjectFactory>();
             // TODO: make _map as IMap
             _map = (Map)dependencyResolver.GetExistingService<IMap>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
@@ -56,12 +55,17 @@ namespace FootprintViewer.ViewModels
             _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
             _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
+            var worldMapSelector = dependencyResolver.GetExistingService<WorldMapSelector>();
 
-            _infoPanel = _factory.CreateInfoPanel();
+            _infoPanel = factory.CreateInfoPanel();
 
-            _clickInfoPanel = _factory.CreateInfoPanel();
+            _clickInfoPanel = factory.CreateInfoPanel();
 
             _map.DataChanged += Map_DataChanged;
+
+            worldMapSelector.Loading.Subscribe(s => _map.SetWorldMapLayer(s.First()));
+
+            worldMapSelector.WorldMapChanged.Subscribe(s => _map.SetWorldMapLayer(s));
 
             AOIChanged += (s, e) =>
             {
@@ -121,8 +125,6 @@ namespace FootprintViewer.ViewModels
 
             _customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
             _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.LayerChanged.Subscribe(layer => _map.SetWorldMapLayer(layer));
 
             _footprintObserver.ClickOnItem.Subscribe(s =>
             {

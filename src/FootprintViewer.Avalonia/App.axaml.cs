@@ -102,6 +102,8 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new UserGeometryViewer(resolver), typeof(UserGeometryViewer));
             services.RegisterConstant(new GroundStationViewer(resolver), typeof(GroundStationViewer));
 
+            services.RegisterConstant(new WorldMapSelector(resolver), typeof(WorldMapSelector));
+
             services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
 
             var tabs = new SidePanelTab[]
@@ -133,6 +135,7 @@ namespace FootprintViewer.Avalonia
                 var satelliteProvider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
                 var groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
                 var groundStationProvider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
+                var mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
 
                 userGeometryProvider.Loading.Execute().Subscribe();
 
@@ -143,6 +146,8 @@ namespace FootprintViewer.Avalonia
                 groundTargetProvider.Loading.Execute().Subscribe();
 
                 groundStationProvider.Loading.Execute().Subscribe();
+
+                mapProvider.Loading.Execute().Subscribe();
             });
         }
 

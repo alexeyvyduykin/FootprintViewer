@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.Models;
 using ReactiveUI;
@@ -20,11 +19,6 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
             {
                 Button.Events().Click.Select(args => Unit.Default).InvokeCommand(this, v => v.ViewModel!.Click).DisposeWith(disposables);
             });
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

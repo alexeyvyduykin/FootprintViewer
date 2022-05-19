@@ -6,7 +6,8 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates;assembly=FootprintViewer.Avalonia"
-             MinWidth="380" mc:Ignorable="d">
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
+             MinWidth="380">
 
   <Design.DataContext>
     <vmd:DesignTimeSatelliteViewer/>
