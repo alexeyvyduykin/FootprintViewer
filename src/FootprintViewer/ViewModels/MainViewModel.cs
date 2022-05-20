@@ -30,9 +30,10 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintObserver _footprintObserver;
         private readonly GroundTargetViewer _groundTargetViewer;
         private readonly UserGeometryViewer _userGeometryViewer;
-        private readonly SceneSearch _sceneSearch; 
+        private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
         private readonly IFootprintLayerSource _footprintSource;
+        private readonly ScaleMapBar _scaleMapBar;
 
         private ISelectDecorator? _footprintSelectDecorator;
         private ISelectDecorator? _groundTargetSelectDecorator;
@@ -60,6 +61,8 @@ namespace FootprintViewer.ViewModels
             _infoPanel = factory.CreateInfoPanel();
 
             _clickInfoPanel = factory.CreateInfoPanel();
+
+            _scaleMapBar = factory.CreateScaleMapBar();
 
             _map.DataChanged += Map_DataChanged;
 
@@ -904,6 +907,8 @@ namespace FootprintViewer.ViewModels
         public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
         public CustomToolBar ToolBar => _customToolBar;
+
+        public ScaleMapBar ScaleMapBar => _scaleMapBar;
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }

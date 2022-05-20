@@ -6,6 +6,7 @@ using FootprintViewer.ViewModels;
 using InteractiveGeometry.UI;
 using InteractiveGeometry.UI.Avalonia;
 using Mapsui;
+using Mapsui.Extensions;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
@@ -18,8 +19,6 @@ namespace FootprintViewer.Avalonia
         private Cursor? _grabHandCursor;
         private CursorType _currentCursorType = CursorType.Default;
         private readonly ItemsControl? _tipControl;
-
-        public event EventHandler<EventArgs>? ViewportUpdate;
 
         public UserMapControl() : base()
         {
@@ -34,20 +33,15 @@ namespace FootprintViewer.Avalonia
                 Children.Add(itemsControl);
             }
 
-            PropertyChanged += UserMapControl_PropertyChanged;
+            EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
         }
 
-        private void UserMapControl_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void UserMapControl_EffectiveViewportChanged(object? sender, global::Avalonia.Layout.EffectiveViewportChangedEventArgs e)
         {
-            var userMapControl = (UserMapControl)sender!;
-
-            switch (e.PropertyName)
-            {
-                case nameof(Bounds):
-                    // size changed
-                    ViewportUpdate?.Invoke(userMapControl.Viewport, EventArgs.Empty);
-                    break;
-            }
+            var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
+            ScaleMapBar!.Resolution = resolution;
+            ScaleMapBar!.Scale = scaleText;
+            ScaleMapBar!.ScaleLength = scaleLength;
         }
 
         private static ItemsControl? CreateTip()
@@ -103,6 +97,15 @@ namespace FootprintViewer.Avalonia
                 mapControl.ShowTip();
             }
         }
+
+        public ScaleMapBar? ScaleMapBar
+        {
+            get { return GetValue(ScaleMapBarProperty); }
+            set { SetValue(ScaleMapBarProperty, value); }
+        }
+
+        public static readonly StyledProperty<ScaleMapBar?> ScaleMapBarProperty =
+            AvaloniaProperty.Register<UserMapControl, ScaleMapBar?>(nameof(ScaleMapBar), null);
 
         protected void ShowTip()
         {
@@ -164,6 +167,11 @@ namespace FootprintViewer.Avalonia
             {
                 var isLeftMouseDown = e.GetCurrentPoint(this).Properties.IsLeftButtonPressed;
 
+                var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
+                ScaleMapBar!.Resolution = resolution;
+                ScaleMapBar!.Scale = scaleText;
+                ScaleMapBar!.ScaleLength = scaleLength;
+
                 if (isLeftMouseDown == true)
                 {
                     if (_isGrabbing == false)
@@ -172,6 +180,12 @@ namespace FootprintViewer.Avalonia
 
                         SetCursor(CursorType.HandGrab);
                     }
+                }
+                else
+                {
+                    var position = e.GetPosition(this);
+
+                    ScaleMapBar!.Position = ScaleMapBar.ChangedPosition(position.X, position.Y, Viewport).ToMPoint();
                 }
             }
 
@@ -187,6 +201,16 @@ namespace FootprintViewer.Avalonia
                     TipSource.IsVisible = true;
                 }
             }
+        }
+
+        protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+        {
+            base.OnPointerWheelChanged(e);
+
+            var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
+            ScaleMapBar!.Resolution = resolution;
+            ScaleMapBar!.Scale = scaleText;
+            ScaleMapBar!.ScaleLength = scaleLength;
         }
 
         protected override void OnPointerLeave(PointerEventArgs e)

@@ -28,7 +28,8 @@
                               MapSource="{Binding Map}"     
                               Controller="{Binding ActualController}"
                               Behavior="{Binding Behavior}"
-                              TipSource="{Binding Tip}"                                                                                                     
+                              TipSource="{Binding Tip}"        
+                              ScaleMapBar="{Binding ScaleMapBar}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"/>
 
@@ -50,29 +51,9 @@
           <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"/>
         </Grid>
         
-        <Border BorderBrush="White"
-                Opacity="0.65"
-                Background="{StaticResource MainBrush}"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Stretch">
-
-          <Grid ColumnDefinitions="180,150,Auto">
-
-            <TextBlock x:Name="TextBlockCoordinates"
-                       Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       Foreground="WhiteSmoke"
-                       Text="0, 0" />
-            <TextBlock x:Name="TextBlockResolution"
-                       Grid.Column="1"
-                       HorizontalAlignment="Center"
-                       Foreground="WhiteSmoke"/>
-
-            <views:ScaleBarView x:Name="ScaleBarView"
-                                Grid.Column="2" />
-
-          </Grid>
-        </Border>
+        <views:ScaleMapBarView DataContext="{Binding ScaleMapBar}"                               
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Stretch"/>        
       </Panel>
       
       <views:SidePanelView Grid.Column="1"

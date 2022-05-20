@@ -57,39 +57,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Views\InfoPanel\GeometryInfoPanelView.axaml.cs">
-      <DependentUpon>GeometryInfoPanelView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\InfoPanel\InfoPanelView.axaml.cs">
-      <DependentUpon>InfoPanelView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ScaleBarView.axaml.cs">
-      <DependentUpon>ScaleBarView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelView.axaml.cs">
-      <DependentUpon>SidePanelView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\FootprintObserverFilterView.axaml.cs">
-      <DependentUpon>FootprintObserverFilterView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\FootprintObserverView.axaml.cs">
-      <DependentUpon>FootprintObserverView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\GroundTargetViewerView.axaml.cs">
-      <DependentUpon>GroundTargetViewerView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\SatelliteViewerView.axaml.cs">
-      <DependentUpon>SatelliteViewerView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\SceneSearchFilterView.axaml.cs">
-      <DependentUpon>SceneSearchFilterView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\SceneSearchView.axaml.cs">
-      <DependentUpon>SceneSearchView.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

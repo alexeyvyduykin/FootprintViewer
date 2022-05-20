@@ -148,5 +148,10 @@ namespace FootprintViewer
         {
             return new InfoPanel();
         }
+
+        public ScaleMapBar CreateScaleMapBar()
+        {
+            return new ScaleMapBar();
+        }
     }
 }
