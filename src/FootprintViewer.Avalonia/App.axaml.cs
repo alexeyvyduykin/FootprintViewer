@@ -95,6 +95,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new EditLayerSource(), typeof(IEditLayerSource));
 
             services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
+            services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
             services.RegisterConstant(new SceneSearch(resolver), typeof(SceneSearch));
             services.RegisterConstant(new SatelliteViewer(resolver), typeof(SatelliteViewer));

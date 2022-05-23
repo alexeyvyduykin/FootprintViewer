@@ -13,6 +13,7 @@ namespace FootprintViewer.Designer
     public class DesignTimeData : IReadonlyDependencyResolver
     {
         private Mapsui.Map? _map;
+        private IMapNavigator? _mapNavigator;
         private ProjectFactory? _projectFactory;
 
         private IProvider<SatelliteInfo>? _satelliteProvider;
@@ -30,6 +31,7 @@ namespace FootprintViewer.Designer
         private ITrackLayerSource? _trackLayerSource;
         private IUserLayerSource? _userLayerSource;
         private IGroundStationLayerSource? _groundStationLayerSource;
+        private IEditLayerSource? _editLayerSource;
 
         private SatelliteViewer? _satelliteViewer;
         private FootprintObserver? _footprintObserver;
@@ -52,6 +54,10 @@ namespace FootprintViewer.Designer
             {
                 return _map ??= new Mapsui.Map();
             }
+            else if (serviceType == typeof(IMapNavigator))
+            {
+                return _mapNavigator ??= new MapNavigator();
+            }
             else if (serviceType == typeof(IProvider<SatelliteInfo>))
             {
                 return _satelliteProvider ??= new DesignTimeSatelliteProvider();
@@ -69,6 +75,10 @@ namespace FootprintViewer.Designer
             {
                 var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
                 return _trackLayerSource ??= new TrackLayerSource(provider);
+            }
+            else if (serviceType == typeof(IEditLayerSource))
+            {
+                return _editLayerSource ??= new EditLayerSource();
             }
             else if (serviceType == typeof(IProvider<MapResource>))
             {

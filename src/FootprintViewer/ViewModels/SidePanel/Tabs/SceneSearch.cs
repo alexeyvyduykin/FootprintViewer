@@ -26,6 +26,7 @@ namespace FootprintViewer.ViewModels
     {
         private readonly IProvider<(string, NetTopologySuite.Geometries.Geometry)> _footprintPreviewGeometryProvider;
         private readonly Map _map;
+        private readonly IMapNavigator _mapNavigator;
         private bool _firstLoading = true;
         private readonly ObservableAsPropertyHelper<IDictionary<string, NetTopologySuite.Geometries.Geometry>> _geometries;
         public event EventHandler? CurrentFootprint;
@@ -34,6 +35,7 @@ namespace FootprintViewer.ViewModels
         {
             // TODO: make _map as IMap
             _map = (Map)dependencyResolver.GetExistingService<IMap>();
+            _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
 
             var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
@@ -125,27 +127,10 @@ namespace FootprintViewer.ViewModels
 
                 CurrentFootprint?.Invoke(this, EventArgs.Empty);
 
-                NavigateToCenter(footprint);
-            }
-        }
-
-        private void NavigateToCenter(FootprintPreview footprint)
-        {
-            if (IsGeometry(footprint) == true)
-            {
-                var point = GetCenter(footprint);
-
-                _map.Initialized = false;
-
-                _map.Home = (navigator) =>
+                if (IsGeometry(footprint) == true)
                 {
-                    navigator.CenterOn(point);
-                };
-
-                // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
-                var layer = new Mapsui.Layers.Layer();
-                _map.Layers.Add(layer);
-                _map.Layers.Remove(layer);
+                    _mapNavigator.SetFocusToPoint(GetCenter(footprint));
+                }
             }
         }
 

@@ -30,6 +30,7 @@
                               Behavior="{Binding Behavior}"
                               TipSource="{Binding Tip}"        
                               ScaleMapBar="{Binding ScaleMapBar}"
+                              MapNavigator="{Binding MapNavigator}"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"/>
 

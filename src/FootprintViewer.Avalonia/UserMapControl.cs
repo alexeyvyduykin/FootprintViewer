@@ -24,6 +24,7 @@ namespace FootprintViewer.Avalonia
         {
             TipSourceProperty.Changed.Subscribe(OnTipSourceChanged);
             MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
+            MapNavigatorProperty.Changed.Subscribe(OnMapNavigatorChanged);
 
             var itemsControl = CreateTip();
 
@@ -106,6 +107,25 @@ namespace FootprintViewer.Avalonia
 
         public static readonly StyledProperty<ScaleMapBar?> ScaleMapBarProperty =
             AvaloniaProperty.Register<UserMapControl, ScaleMapBar?>(nameof(ScaleMapBar), null);
+
+        public IMapNavigator? MapNavigator
+        {
+            get { return GetValue(MapNavigatorProperty); }
+            set { SetValue(MapNavigatorProperty, value); }
+        }
+
+        public static readonly StyledProperty<IMapNavigator?> MapNavigatorProperty =
+            AvaloniaProperty.Register<UserMapControl, IMapNavigator?>(nameof(MapNavigator), null);
+
+        private static void OnMapNavigatorChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            var mapControl = (UserMapControl)e.Sender;
+
+            if (e.NewValue != null && e.NewValue is IMapNavigator mapNavigator)
+            {
+                mapNavigator.Navigator = mapControl.Navigator;
+            }
+        }
 
         protected void ShowTip()
         {

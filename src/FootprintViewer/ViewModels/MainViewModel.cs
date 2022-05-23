@@ -49,6 +49,7 @@ namespace FootprintViewer.ViewModels
             var factory = dependencyResolver.GetExistingService<ProjectFactory>();
             // TODO: make _map as IMap
             _map = (Map)dependencyResolver.GetExistingService<IMap>();
+            MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
             _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
@@ -89,8 +90,8 @@ namespace FootprintViewer.ViewModels
 
             ActualController = new DefaultController();
 
-            _customToolBar.ZoomIn.Click.Subscribe(_ => ZoomInCommand());
-            _customToolBar.ZoomOut.Click.Subscribe(_ => ZoomOutCommand());
+            _customToolBar.ZoomIn.Click.Subscribe(_ => MapNavigator.ZoomIn());
+            _customToolBar.ZoomOut.Click.Subscribe(_ => MapNavigator.ZoomOut());
 
             _customToolBar.AddRectangle.Activate.Subscribe(_ => RectangleCommand());
             _customToolBar.AddRectangle.Deactivate.Subscribe(_ => ResetInteractivity());
@@ -234,37 +235,6 @@ namespace FootprintViewer.ViewModels
             }
 
             MapLayers = new ObservableCollection<MapLayer>(list);
-        }
-
-        private void ZoomInCommand()
-        {
-            if (Map == null)
-            {
-                return;
-            }
-
-            Map.Initialized = false;
-            Map.Home = (n) => n.ZoomIn();
-
-            // HACK: add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
-            var layer = new Mapsui.Layers.Layer();
-            Map.Layers.Add(layer);
-            Map.Layers.Remove(layer);
-        }
-
-        private void ZoomOutCommand()
-        {
-            if (Map == null)
-            {
-                return;
-            }
-
-            Map.Initialized = false;
-            Map.Home = (n) => n.ZoomOut();
-
-            var layer = new Mapsui.Layers.Layer();
-            Map.Layers.Add(layer);
-            Map.Layers.Remove(layer);
         }
 
         private void RectangleCommand()
@@ -871,6 +841,9 @@ namespace FootprintViewer.ViewModels
         public CustomToolBar ToolBar => _customToolBar;
 
         public ScaleMapBar ScaleMapBar => _scaleMapBar;
+
+        [Reactive]
+        public IMapNavigator MapNavigator { get; set; }
 
         [Reactive]
         public ObservableCollection<MapLayer>? MapLayers { get; set; }

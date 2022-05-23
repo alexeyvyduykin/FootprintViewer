@@ -39,6 +39,11 @@ namespace FootprintViewer
             return map;
         }
 
+        public IMapNavigator CreateMapNavigator()
+        {
+            return new MapNavigator();
+        }
+
         private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var source = dependencyResolver.GetExistingService<IEditLayerSource>();

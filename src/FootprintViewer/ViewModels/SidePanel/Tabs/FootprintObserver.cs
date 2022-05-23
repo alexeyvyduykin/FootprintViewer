@@ -1,8 +1,4 @@
 ﻿using FootprintViewer.Data;
-using Mapsui;
-using Mapsui.Extensions;
-using Mapsui.Projections;
-using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -23,21 +19,17 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserver : SidePanelTab
     {
-        private readonly Map _map;
         private readonly IViewerList<FootprintInfo> _footprintObserverList;
         private readonly IFilter<FootprintInfo> _filter;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
-            // TODO: make _map as IMap
-            var map = (Map)dependencyResolver.GetExistingService<IMap>();
+            var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
             var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
 
             _filter = new FootprintObserverFilter(dependencyResolver);
 
             _footprintObserverList = new FootprintObserverList(footprintProvider);
-
-            _map = map;
 
             Title = "Просмотр рабочей программы";
 
@@ -49,10 +41,7 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
 
-            _footprintObserverList.Select.Select(s => s).Subscribe(item =>
-            {
-                SetMapFocusTo(item.Center);
-            });
+            _footprintObserverList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 
             _filter.Update.InvokeCommand(_footprintObserverList.Loading);
 
@@ -60,21 +49,6 @@ namespace FootprintViewer.ViewModels
 
             MainContent = (FootprintObserverList)_footprintObserverList;
         }
-
-        //private void FootprintsChanged(FootprintObserverFilter? filter = null)
-        //{
-        //    if (_footrpintLayer != null)
-        //    {
-        //        if (filter == null)
-        //        {
-        //            _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints());
-        //        }
-        //        else
-        //        {
-        //            _footprintObserverList.InvalidateData(() => _footrpintLayer.GetFootprints().Where(s => filter.Filtering(new FootprintInfo(s))));
-        //        }
-        //    }
-        //}
 
         public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
 
@@ -93,26 +67,6 @@ namespace FootprintViewer.ViewModels
         private void FilterClickImpl()
         {
             IsFilterOpen = !IsFilterOpen;
-        }
-
-        private void SetMapFocusTo(Coordinate coordinate)
-        {
-            if (_map != null)
-            {
-                var p = SphericalMercator.FromLonLat(coordinate.X, coordinate.Y).ToMPoint();
-
-                _map.Initialized = false;
-
-                _map.Home = (navigator) =>
-                {
-                    navigator.CenterOn(new MPoint(p.X, p.Y));
-                };
-
-                // HACK: set Map.Initialized to false and add/remove layer for calling method CallHomeIfNeeded() and new initializing with Home
-                var layer = new Mapsui.Layers.Layer();
-                _map.Layers.Add(layer);
-                _map.Layers.Remove(layer);
-            }
         }
 
         public IFilter<FootprintInfo> Filter => _filter;
