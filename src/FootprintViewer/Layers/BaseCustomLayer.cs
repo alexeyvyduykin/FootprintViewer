@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
-    public class BaseCustomLayer : BaseLayer
+    public class BaseCustomLayer<T> : BaseLayer where T : ILayer
     {
-        private readonly ILayer _source;
+        private readonly T _source;
 
-        public BaseCustomLayer(ILayer source)
+        public BaseCustomLayer(T source)
         {
             _source = source;
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
-        protected ILayer Source => _source;
+        protected T Source => _source;
 
         public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {

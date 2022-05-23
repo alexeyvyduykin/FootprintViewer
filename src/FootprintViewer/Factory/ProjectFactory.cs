@@ -78,7 +78,7 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
 
-            return new BaseCustomLayer(source)
+            return new BaseCustomLayer<IGroundStationLayerSource>(source)
             {
                 Style = styleManager.GroundStationStyle,
                 IsMapInfoLayer = false,
@@ -90,7 +90,7 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<ITrackLayerSource>();
 
-            return new BaseCustomLayer(source)
+            return new BaseCustomLayer<ITrackLayerSource>(source)
             {
                 Style = styleManager.TrackStyle,
                 IsMapInfoLayer = false,
@@ -115,7 +115,7 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<ISensorLayerSource>();
 
-            return new BaseCustomLayer(source)
+            return new BaseCustomLayer<ISensorLayerSource>(source)
             {
                 Style = styleManager.SensorStyle,
                 IsMapInfoLayer = false,
@@ -127,7 +127,7 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<IUserLayerSource>();
 
-            return new BaseCustomLayer(source)
+            return new BaseCustomLayer<IUserLayerSource>(source)
             {
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,

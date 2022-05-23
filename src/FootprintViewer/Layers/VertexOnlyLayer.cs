@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class VertexOnlyLayer : BaseCustomLayer
+    public class VertexOnlyLayer : BaseCustomLayer<ILayer>
     {
         public VertexOnlyLayer(ILayer source) : base(source) { }
 

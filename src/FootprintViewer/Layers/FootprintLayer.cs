@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
-    public class FootprintLayer : BaseCustomLayer
+    public class FootprintLayer : BaseCustomLayer<ILayer>
     {
         public FootprintLayer(ILayer source) : base(source)
         {

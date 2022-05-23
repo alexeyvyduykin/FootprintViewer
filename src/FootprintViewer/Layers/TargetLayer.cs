@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetLayer : BaseCustomLayer
+    public class TargetLayer : BaseCustomLayer<ITargetLayerSource>
     {
         private MRect _lastExtent = new(1, 1, 1, 1);
         private readonly ITargetLayerSource _source;
