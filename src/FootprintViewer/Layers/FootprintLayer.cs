@@ -33,11 +33,10 @@ namespace FootprintViewer.Layers
 
             if (resolution < MaxVisiblePreview)
             {
-                foreach (var feature in Source.GetFeatures(box, resolution))
-                {
-                    yield return feature;
-                }
+                return base.GetFeatures(box, resolution);
             }
+
+            return new List<IFeature>();
         }
     }
 }

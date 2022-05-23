@@ -5,7 +5,6 @@ using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer.Layers
 {
@@ -15,7 +14,7 @@ namespace FootprintViewer.Layers
 
         public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
-            var features = Source.GetFeatures(box, resolution).ToList();
+            var features = base.GetFeatures(box, resolution);
 
             foreach (var feature in features)
             {

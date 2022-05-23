@@ -15,8 +15,6 @@ namespace FootprintViewer.Layers
             _source.DataChanged += (sender, args) => OnDataChanged(args);
         }
 
-        protected T Source => _source;
-
         public override IEnumerable<IFeature> GetFeatures(MRect box, double resolution)
         {
             return _source.GetFeatures(box, resolution);
