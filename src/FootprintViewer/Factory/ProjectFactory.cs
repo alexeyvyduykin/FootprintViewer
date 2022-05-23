@@ -41,11 +41,13 @@ namespace FootprintViewer
 
         private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
         {
+            var source = dependencyResolver.GetExistingService<IEditLayerSource>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
 
-            return new EditLayer
+            return new BaseCustomLayer<IEditLayerSource>(source)
             {
                 Style = styleManager.EditStyle,
+                IsMapInfoLayer = false,
             };
         }
 

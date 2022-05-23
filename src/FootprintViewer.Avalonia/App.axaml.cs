@@ -92,6 +92,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new TargetLayerSource(groundTargetProvider), typeof(ITargetLayerSource));
             services.RegisterConstant(new UserLayerSource(userGeometryProvider), typeof(IUserLayerSource));
             services.RegisterConstant(new GroundStationLayerSource(groundStationProvider), typeof(IGroundStationLayerSource));
+            services.RegisterConstant(new EditLayerSource(), typeof(IEditLayerSource));
 
             services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
 
