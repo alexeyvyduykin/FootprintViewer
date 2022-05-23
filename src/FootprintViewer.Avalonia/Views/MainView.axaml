@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"                     
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"                     
+             xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"                     
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"        
              xmlns:reactiveUi="http://reactiveui.net"    
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
@@ -34,23 +35,20 @@
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"/>
 
-        <Grid VerticalAlignment="Center"
-              HorizontalAlignment="Left"
-              Margin="8">
-          <reactiveUi:ViewModelViewHost ViewModel="{Binding ToolBar}"/>
-        </Grid>
-
-        <Grid VerticalAlignment="Bottom"
-              HorizontalAlignment="Center"
-              Margin="0,0,0,60">
-          <panels:InfoPanelView DataContext="{Binding InfoPanel}"/>
-        </Grid>
-
-        <Grid VerticalAlignment="Bottom"      
-              HorizontalAlignment="Right"      
-              Margin="0,0,15,30">
-          <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"/>
-        </Grid>
+        <toolBar:CustomToolBarView DataContext="{Binding ToolBar}"                                                                             
+                                   VerticalAlignment="Center"                                                   
+                                   HorizontalAlignment="Left"                                                    
+                                   Margin="8"/>
+                   
+        <panels:InfoPanelView DataContext="{Binding InfoPanel}"
+                              VerticalAlignment="Bottom"              
+                              HorizontalAlignment="Center"              
+                              Margin="0,0,0,60"/>
+                  
+        <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"                               
+                              VerticalAlignment="Bottom"              
+                              HorizontalAlignment="Right"              
+                              Margin="0,0,15,30"/>  
         
         <views:ScaleMapBarView DataContext="{Binding ScaleMapBar}"                               
                                VerticalAlignment="Bottom"
