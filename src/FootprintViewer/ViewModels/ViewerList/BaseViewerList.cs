@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -52,17 +51,14 @@ namespace FootprintViewer.ViewModels
         bool IsShowInfo { get; set; }
     }
 
-    public class ViewerList<T> : ReactiveObject, IViewerList<T> where T : IViewerItem
+    public abstract class BaseViewerList<T> : ReactiveObject, IViewerList<T> where T : IViewerItem
     {
         private readonly ObservableAsPropertyHelper<List<T>> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private T? _prevSelectedItem;
-        private readonly IProvider<T> _provider;
 
-        public ViewerList(IProvider<T> provider)
+        public BaseViewerList()
         {
-            _provider = provider;
-
             Loading = ReactiveCommand.CreateFromTask<IFilter<T>?, List<T>>(LoadingAsync);
 
             Select = ReactiveCommand.Create<T, T>(s => s);
@@ -88,15 +84,11 @@ namespace FootprintViewer.ViewModels
                 .InvokeCommand(Loading);
         }
 
-        private async Task<List<T>> LoadingAsync(IFilter<T>? filter = null)
-        {
-            return await _provider.GetValuesAsync(filter);
-        }
-
+        protected abstract Task<List<T>> LoadingAsync(IFilter<T>? filter = null);
 
         public void FiringUpdate(string[]? names, double seconds)
         {
-            FiringUpdate(new NameFilter<T>(names), seconds);
+            FiringUpdate(ViewerListBuilder.CreateNameFilter<T>(names), seconds);
         }
 
         public void FiringUpdate(IFilter<T>? filter, double seconds)
@@ -163,21 +155,9 @@ namespace FootprintViewer.ViewModels
             return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
         }
 
-        private async Task AddAsync(T? value)
-        {
-            if (value != null && _provider is IEditableProvider<T> editableProvider)
-            {
-                await editableProvider.AddAsync(value);
-            }
-        }
+        protected abstract Task AddAsync(T? value);
 
-        private async Task RemoveAsync(T? value)
-        {
-            if (value != null && _provider is IEditableProvider<T> editableProvider)
-            {
-                await editableProvider.RemoveAsync(value);
-            }
-        }
+        protected abstract Task RemoveAsync(T? value);
 
         public List<T> Items => _items.Value;
 
