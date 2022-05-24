@@ -1,8 +1,8 @@
-<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.SceneSearchFilterView"
-             xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
+             x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates.FootprintPreviewFilterView"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"   
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"        
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
@@ -33,11 +33,11 @@
         <Viewbox Width="18" Height="18">
           <Image Source="{DynamicResource IconToday}"/>
         </Viewbox>
-        <TextBlock Text="Дата" Classes="Body2" Margin="8,0,0,0" 
+        <TextBlock Text="Дата" Classes="Body2" Margin="8,0,0,0"
                    VerticalAlignment="Center"/>
       </StackPanel>
-      
-      <Grid ColumnDefinitions="*,10,*" Margin="0,0,0,20">       
+
+      <Grid ColumnDefinitions="*,10,*" Margin="0,0,0,20">
         <DatePicker x:Name="FromDatePicker"/>
         <DatePicker x:Name="ToDatePicker" Grid.Column="2"/>
       </Grid>
@@ -52,11 +52,11 @@
                      Text="{Binding Value, StringFormat={}≤ {0} %, ElementName=CloudinessSlider}">
           </TextBlock>
         </DockPanel>
-        <Slider x:Name="CloudinessSlider" 
+        <Slider x:Name="CloudinessSlider"
                 Margin="4,0,0,0"
                 Classes="Modern"
-                Minimum="0" 
-                Maximum="100" 
+                Minimum="0"
+                Maximum="100"
                 TickFrequency="1"
                 IsSnapToTickEnabled="True"
                 Value="{Binding Cloudiness}"/>
@@ -75,8 +75,8 @@
         <Slider x:Name="AngleSlider"
                 Margin="4,0,0,0"
                 Classes="Modern"
-                Minimum="0" 
-                Maximum="90" 
+                Minimum="0"
+                Maximum="90"
                 TickFrequency="1"
                 IsSnapToTickEnabled="True"
                 Value="{Binding MinSunElevation}"/>
@@ -91,7 +91,7 @@
           <Image Source="{DynamicResource IconSatelliteMain}"/>
         </Viewbox>
         <TextBlock Text="Сенсоры" Classes="Body2" Margin="8,0,0,0"/>
-        <CheckBox Content="Все сенсоры"                   
+        <CheckBox Content="Все сенсоры"
                   IsChecked="{Binding IsAllSensorActive}"
                   HorizontalAlignment="Right"/>
       </DockPanel>
@@ -99,9 +99,9 @@
       <ItemsControl Items="{Binding Sensors}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Border Padding="16,8">                         
-              <CheckBox IsChecked="{Binding IsActive}"                          
-                        Content="{Binding Name}"/>                   
+            <Border Padding="16,8">
+              <CheckBox IsChecked="{Binding IsActive}"
+                        Content="{Binding Name}"/>
             </Border>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

@@ -16,33 +16,30 @@
   <Design.DataContext>
     <vmd:DesignTimeFootprintObserver/>
   </Design.DataContext>
-  
-  <Grid>
 
-    <controls:Flyout x:Name="FlyoutObserverView" 
+  <Grid RowDefinitions="Auto,Auto,*,50">
+
+    <controls:Flyout x:Name="FlyoutObserverView"
                      Placement="Left"
-                     Margin="0,10,0,0"               
+                     Margin="0,10,0,0"
                      Target="{Binding ElementName=SearchToggleButton}"
                      IsOpen="{Binding IsFilterOpen}"
                      Content="{Binding Filter}"
                      Background="{StaticResource MainBackgroundBrush}">
       <controls:Flyout.ContentTemplate>
         <DataTemplate>
-          <views:FootprintObserverFilterView DataContext="{Binding}"/>
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding}"/>
         </DataTemplate>
       </controls:Flyout.ContentTemplate>
     </controls:Flyout>
-    
-    <Grid RowDefinitions="Auto,*,50">
 
-      <ToggleButton x:Name="SearchToggleButton"
-                    Classes="FilterToggleButton"                  
-                    Content="Настройки поиска"/>
-                 
-      <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                      
-                                    Grid.Row="1"/>
-      
-    </Grid>
+    <ToggleButton x:Name="SearchToggleButton"
+                  Grid.Row="1"
+                  Classes="FilterToggleButton"
+                  Content="Настройки поиска"/>
+
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                                 
+                                  Grid.Row="2"/>
 
   </Grid>
   

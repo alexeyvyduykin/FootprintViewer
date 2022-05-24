@@ -1,4 +1,4 @@
-<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FootprintObserverFilterView"
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates.FootprintInfoFilterView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -25,7 +25,7 @@
       </Setter>
     </Style>
   </UserControl.Styles>
-    
+
   <styles:Card Padding="20">
     <StackPanel>
 
@@ -78,23 +78,23 @@
 
       </Grid>
 
-      <CheckBox IsChecked="{Binding IsLeftStrip}" 
-                Margin="0,0,0,4" 
+      <CheckBox IsChecked="{Binding IsLeftStrip}"
+                Margin="0,0,0,4"
                 Content="Левая полоса обзора"/>
 
-      <CheckBox IsChecked="{Binding IsRightStrip}" 
-                Margin="0,4,0,20" 
+      <CheckBox IsChecked="{Binding IsRightStrip}"
+                Margin="0,4,0,20"
                 Content="Правая полоса обзора"/>
 
       <DockPanel LastChildFill="True" Margin="0,0,0,10">
         <Viewbox Width="18" Height="18" VerticalAlignment="Center">
           <Image Source="{DynamicResource IconSatelliteMain}"/>
         </Viewbox>
-        <TextBlock Text="Спутники" 
+        <TextBlock Text="Спутники"
                    Classes="Body2"
                    VerticalAlignment="Center"
                    Margin="8,0,0,0"/>
-        <CheckBox Content="Все спутники" 
+        <CheckBox Content="Все спутники"
                   IsChecked="{Binding IsAllSatelliteActive}"
                   HorizontalAlignment="Right"/>
       </DockPanel>
@@ -102,9 +102,9 @@
       <ItemsControl Items="{Binding Satellites}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Border Padding="16,8">                             
-              <CheckBox IsChecked="{Binding IsActive}" 
-                        Content="{Binding Name}"/>                       
+            <Border Padding="16,8">
+              <CheckBox IsChecked="{Binding IsActive}"
+                        Content="{Binding Name}"/>
             </Border>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
@@ -112,5 +112,5 @@
 
     </StackPanel>
   </styles:Card>
-  
+
 </UserControl>

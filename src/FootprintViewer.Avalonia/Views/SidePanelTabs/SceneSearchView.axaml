@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"            
+             xmlns:reactiveUi="http://reactiveui.net"
              x:Name="SceneSearchTabName"
              MinWidth="380" mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
@@ -24,7 +25,7 @@
                      Content="{Binding Filter}">
       <controls:Flyout.ContentTemplate>
         <DataTemplate>
-          <views:SceneSearchFilterView DataContext="{Binding}"/>
+          <reactiveUi:ViewModelViewHost ViewModel="{Binding}"/>
         </DataTemplate>
       </controls:Flyout.ContentTemplate>
     </controls:Flyout>

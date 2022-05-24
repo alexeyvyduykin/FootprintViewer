@@ -5,11 +5,11 @@ using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Avalonia.Views.SidePanelTabs
+namespace FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates
 {
-    public partial class SceneSearchFilterView : ReactiveUserControl<SceneSearchFilter>
+    public partial class FootprintPreviewFilterView : ReactiveUserControl<SceneSearchFilter>
     {
-        public SceneSearchFilterView()
+        public FootprintPreviewFilterView()
         {
             InitializeComponent();
 

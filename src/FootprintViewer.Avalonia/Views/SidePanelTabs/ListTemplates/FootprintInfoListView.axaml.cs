@@ -3,11 +3,11 @@ using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Avalonia.Views.SidePanelTabs
+namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class FootprintObserverListView : ReactiveUserControl<FootprintObserverList>
+    public partial class FootprintInfoListView : ReactiveUserControl<ViewerList<FootprintInfo>>
     {
-        public FootprintObserverListView()
+        public FootprintInfoListView()
         {
             InitializeComponent();
 
