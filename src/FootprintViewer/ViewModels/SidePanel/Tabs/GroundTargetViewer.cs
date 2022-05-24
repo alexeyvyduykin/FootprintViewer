@@ -21,8 +21,6 @@ namespace FootprintViewer.ViewModels
 
     public class GroundTargetViewer : SidePanelTab
     {
-        private readonly IViewerList<GroundTargetInfo> _groundTargetViewerList;
-        private readonly PreviewMainContent _previewContent;
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTargetInfo> _groundTargetProvider;
@@ -34,7 +32,7 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных целей";
 
-            _previewContent = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
+            Preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
             ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
 
@@ -42,32 +40,15 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            _groundTargetViewerList = new GroundTargetViewerList(_groundTargetProvider);
+            ViewerList = new GroundTargetViewerList(_groundTargetProvider);
 
-            _groundTargetViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
+            ViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
 
             this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_source.Refresh);
 
-            _source.Refresh.Where(_ => IsActive == true).Subscribe(names =>
-            {
-                IsEnable = !(names == null);
+            _source.Refresh.Where(_ => IsActive == true).Subscribe(names => IsEnable = !(names == null));
 
-                if (IsEnable == true)
-                {
-                    MainContent = (GroundTargetViewerList)_groundTargetViewerList;
-                }
-                else
-                {
-                    MainContent = _previewContent;
-                }
-            });
-
-            _source.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names =>
-            {
-                _groundTargetViewerList.Update(names);
-            });
-
-            MainContent = _previewContent;
+            _source.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names => ViewerList.FiringUpdate(names));
         }
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
@@ -111,8 +92,12 @@ namespace FootprintViewer.ViewModels
         public ReactiveCommand<Unit, Unit> HideHighlight { get; }
 
         [Reactive]
-        public ReactiveObject MainContent { get; set; }
+        public bool IsEnable { get; set; }
 
-        private bool IsEnable { get; set; }
+        [Reactive]
+        public PreviewMainContent Preview { get; private set; }
+
+        [Reactive]
+        public IViewerList<GroundTargetInfo> ViewerList { get; private set; }
     }
 }

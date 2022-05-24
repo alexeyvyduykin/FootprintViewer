@@ -13,9 +13,13 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
             this.WhenActivated(disposables =>
             {
-                // MainContentControl
+                // PreviewContent
+                this.OneWayBind(ViewModel, vm => vm.IsEnable, v => v.PreviewContent.IsVisible, value => !value).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.Preview, v => v.PreviewContent.DataContext).DisposeWith(disposables);
 
-                this.OneWayBind(ViewModel, vm => vm.MainContent, v => v.MainContentControl.ViewModel).DisposeWith(disposables);
+                // ViewerList
+                this.OneWayBind(ViewModel, vm => vm.IsEnable, v => v.ViewerList.IsVisible).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.ViewerList, v => v.ViewerList.DataContext).DisposeWith(disposables);
             });
         }
     }

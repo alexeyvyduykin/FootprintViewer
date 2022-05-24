@@ -12,7 +12,9 @@ namespace FootprintViewer.ViewModels
 {
     public interface IViewerList<T>
     {
-        void Update(string[]? names = null);
+        void FiringUpdate(string[]? names, double seconds = 1.0);
+
+        void FiringUpdate(IFilter<T>? filter, double seconds = 1.0);
 
         ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
 
@@ -56,7 +58,6 @@ namespace FootprintViewer.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private T? _prevSelectedItem;
         private readonly IProvider<T> _provider;
-        private IFilter<T>? _filter;
 
         public ViewerList(IProvider<T> provider)
         {
@@ -78,9 +79,13 @@ namespace FootprintViewer.ViewModels
 
             _items = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Items);
 
-            this.WhenAnyValue(s => s.Checker).Throttle(TimeSpan.FromSeconds(1)).Select(_ => _filter).InvokeCommand(Loading);
-
             _isLoading = Loading.IsExecuting.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.IsLoading);
+
+            this.WhenAnyValue(s => s.Updater)
+                .Where(s => s != null)
+                .Throttle(s => s!.ThrottleDuration!)
+                .Select(s => s!.Filter)
+                .InvokeCommand(Loading);
         }
 
         private async Task<List<T>> LoadingAsync(IFilter<T>? filter = null)
@@ -88,10 +93,19 @@ namespace FootprintViewer.ViewModels
             return await _provider.GetValuesAsync(filter);
         }
 
-        public void Update(string[]? names = null)
+
+        public void FiringUpdate(string[]? names, double seconds)
         {
-            _filter = new NameFilter<T>(names);
-            Checker = !Checker;
+            FiringUpdate(new NameFilter<T>(names), seconds);
+        }
+
+        public void FiringUpdate(IFilter<T>? filter, double seconds)
+        {
+            Updater = new ViewerListUpdater()
+            {
+                Filter = filter,
+                ThrottleDuration = Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(seconds)),
+            };
         }
 
         public ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
@@ -169,12 +183,19 @@ namespace FootprintViewer.ViewModels
 
         public bool IsLoading => _isLoading.Value;
 
-        [Reactive]
-        private bool Checker { get; set; }
-
         public IObservable<T?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
 
         [Reactive]
         public T? SelectedItem { get; set; }
+
+        [Reactive]
+        private ViewerListUpdater? Updater { get; set; }
+
+        private class ViewerListUpdater
+        {
+            public IFilter<T>? Filter { get; set; }
+
+            public IObservable<Unit>? ThrottleDuration { get; set; }
+        }
     }
 }
