@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:reactiveUi="http://reactiveui.net"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
@@ -12,17 +13,8 @@
     <vmd:DesignTimeGroundStationViewer/>
   </Design.DataContext>
     
-  <Panel>
-    <ScrollViewer HorizontalScrollBarVisibility="Hidden" 
-                  VerticalScrollBarVisibility="Auto">
-      <ItemsControl x:Name="ItemsControl">
-        <!--<ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <items:GroundStationInfoView DataContext="{Binding}"/>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>-->
-      </ItemsControl>
-    </ScrollViewer>
-  </Panel>
+  <Grid>     
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl" />
+  </Grid>
 
 </UserControl>

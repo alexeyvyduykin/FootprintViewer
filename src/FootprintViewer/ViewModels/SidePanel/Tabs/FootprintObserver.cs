@@ -9,17 +9,8 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    //public class FootprintObserverList : ViewerList<FootprintInfo>
-    //{
-    //    public FootprintObserverList(IProvider<FootprintInfo> provider) : base(provider)
-    //    {
-
-    //    }
-    //}
-
     public class FootprintObserver : SidePanelTab
     {
-        //private readonly IViewerList<FootprintInfo> _footprintObserverList;
         private readonly IFilter<FootprintInfo> _filter;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
@@ -29,7 +20,7 @@ namespace FootprintViewer.ViewModels
 
             _filter = new FootprintObserverFilter(dependencyResolver);
 
-            ViewerList = new ViewerList<FootprintInfo>(footprintProvider);
+            ViewerList = ViewerListBuilder.CreateViewerList(footprintProvider);
 
             Title = "Просмотр рабочей программы";
 
@@ -46,8 +37,6 @@ namespace FootprintViewer.ViewModels
             _filter.Update.InvokeCommand(ViewerList.Loading);
 
             this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
-
-            //MainContent = (FootprintObserverList)_footprintObserverList;
         }
 
         public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
@@ -75,7 +64,7 @@ namespace FootprintViewer.ViewModels
         public bool IsFilterOpen { get; private set; }
 
         [Reactive]
-        public IViewerList<FootprintInfo> ViewerList { get; set; }
+        public IViewerList<FootprintInfo> ViewerList { get; private set; }
 
         [Reactive]
         public bool ScrollToCenter { get; set; } = false;

@@ -9,14 +9,6 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundStationList : ViewerList<GroundStationInfo>
-    {
-        public GroundStationList(IProvider<GroundStationInfo> provider) : base(provider)
-        {
-
-        }
-    }
-
     public class GroundStationViewer : SidePanelTab
     {
         private readonly IProvider<GroundStationInfo> _provider;
@@ -30,7 +22,7 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных станций";
 
-            ViewerList = new GroundStationList(_provider);
+            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
 
             this.WhenAnyValue(s => s.IsActive)
                 .Where(active => active == true && _first == true)

@@ -31,12 +31,15 @@ namespace FootprintViewer.Avalonia
 
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
 
+            // lists
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.FootprintInfoListView(), typeof(IViewFor<ViewerList<FootprintInfo>>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundStationInfoListView(), typeof(IViewFor<ViewerList<GroundStationInfo>>));
+
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchFilterView(), typeof(IViewFor<SceneSearchFilter>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.FootprintInfoListView(), typeof(IViewFor<ViewerList<FootprintInfo>>));
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FootprintObserverFilterView(), typeof(IViewFor<FootprintObserverFilter>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.GroundTargetViewerListView(), typeof(IViewFor<GroundTargetViewerList>));
-
+            
             // filters
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FilterTemplates.FootprintInfoFilterView(), typeof(IViewFor<FootprintObserverFilter>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FilterTemplates.FootprintPreviewFilterView(), typeof(IViewFor<SceneSearchFilter>));
