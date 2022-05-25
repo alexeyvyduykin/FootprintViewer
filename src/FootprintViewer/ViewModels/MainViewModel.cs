@@ -147,7 +147,7 @@ namespace FootprintViewer.ViewModels
 
             LoadingProviders = ReactiveCommand.CreateFromTask(LoadingProvidersAsync);
 
-            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(10)));
+            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(8)));
 
             command.Execute().InvokeCommand(LoadingProviders);
         }
@@ -156,28 +156,12 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingProvidersAsync()
         {
-            await Task.Delay(TimeSpan.FromSeconds(3));
-            await Task.Run(() =>
-            {
-                var userGeometryProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
-                var footprintProvider = _dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
-                var satelliteProvider = _dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
-                var groundTargetProvider = _dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
-                var groundStationProvider = _dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
-                var mapProvider = _dependencyResolver.GetExistingService<IProvider<MapResource>>();
-
-                mapProvider.Loading.Execute().Subscribe();
-
-                //          userGeometryProvider.Loading.Execute().Subscribe();
-
-                //          footprintProvider.Loading.Execute().Subscribe();
-
-                //           satelliteProvider.Loading.Execute().Subscribe();
-
-                //           groundTargetProvider.Loading.Execute().Subscribe();
-
-                //           groundStationProvider.Loading.Execute().Subscribe();    
-            });
+            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<MapResource>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<FootprintInfo>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>().Loading.Execute().Subscribe());
         }
 
         private void ResetInteractivity()

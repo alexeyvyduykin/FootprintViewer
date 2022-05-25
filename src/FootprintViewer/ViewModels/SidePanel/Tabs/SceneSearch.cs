@@ -2,7 +2,6 @@
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
-using Mapsui.Nts.Extensions;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -39,7 +38,7 @@ namespace FootprintViewer.ViewModels
             Title = "Поиск сцены";
 
             LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_ => _footprintPreviewGeometryProvider.GetValuesAsync(null));
-            
+
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
             // TODO: duplicates           
@@ -60,18 +59,15 @@ namespace FootprintViewer.ViewModels
             Filter.Init.Select(_ => Filter).InvokeCommand(ViewerList.Loading);
             Filter.Init.Subscribe(_ => _firstLoading = false);
 
+            // Filter
 
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
-
-            //       ViewerList.SelectedItemObservable.Subscribe(s => SelectFootprint(s));
             //       ViewerList.MouseOverEnter.Subscribe(s => ShowFootprintBorder(s));
             //        ViewerList.MouseOverLeave.Subscribe(_ => HideFootprintBorder());
- 
-            //       Filter.Update.InvokeCommand(ViewerList.Loading);
 
-            //         this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
-
-            //         this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
+            //       Filter.Update.InvokeCommand(ViewerList.Loading);    
         }
 
         public void SetAOI(NetTopologySuite.Geometries.Geometry aoi) => ((SceneSearchFilter)Filter).AOI = aoi;
@@ -108,23 +104,6 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        private void SelectFootprint(FootprintPreview? footprint)
-        {
-            if (footprint != null && _map != null && footprint.Path != null)
-            {
-                var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
-
-                _map.ReplaceLayer(layer, LayerType.FootprintImage);
-
-                CurrentFootprint?.Invoke(this, EventArgs.Empty);
-
-                if (IsGeometry(footprint) == true)
-                {
-                    _mapNavigator.SetFocusToPoint(GetCenter(footprint));
-                }
-            }
-        }
-
         private bool IsGeometry(FootprintPreview footprint)
         {
             return Geometries.ContainsKey(footprint.Name!);
@@ -133,11 +112,6 @@ namespace FootprintViewer.ViewModels
         private NetTopologySuite.Geometries.Geometry ToGeometry(FootprintPreview footprint)
         {
             return Geometries[footprint.Name!];
-        }
-
-        private MPoint GetCenter(FootprintPreview footprint)
-        {
-            return Geometries[footprint.Name!].Centroid.ToMPoint();// BoundingBox.Centroid;
         }
 
         private void FilterClickImpl()
@@ -154,6 +128,6 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public bool IsFilterOpen { get; private set; }
 
-        private IDictionary<string, NetTopologySuite.Geometries.Geometry> Geometries => _geometries.Value;
+        public IDictionary<string, NetTopologySuite.Geometries.Geometry> Geometries => _geometries.Value;
     }
 }

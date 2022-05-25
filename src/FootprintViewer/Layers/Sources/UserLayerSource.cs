@@ -56,6 +56,7 @@ namespace FootprintViewer.Layers
 
             Clear();
             AddRange(arr);
+            DataHasChanged();
         }
 
         private async Task<List<UserGeometryInfo>> UpdateAsync()

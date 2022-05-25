@@ -39,6 +39,7 @@ namespace FootprintViewer.Layers
         {
             Clear();
             AddRange(Build(footprints.Select(s => s.Footprint!)));
+            DataHasChanged();
         }
 
         public IFeature? GetFeature(string name) => GetFeatures().Where(s => s.Fields.Contains("Name") && s["Name"]!.Equals(name)).FirstOrDefault();

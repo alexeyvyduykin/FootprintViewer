@@ -6,6 +6,7 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+             xmlns:lists="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates"
              xmlns:reactiveUi="http://reactiveui.net"              
              MinWidth="380"  
              mc:Ignorable="d"                                                         
@@ -16,8 +17,10 @@
   </Design.DataContext>
   
   <Panel Width="380">
-    <reactiveUi:ViewModelViewHost x:Name="PreviewContent"/>
-    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>   
+    <views:PreviewMainContentView x:Name="PreviewContent"/>
+    <!--<reactiveUi:ViewModelViewHost x:Name="PreviewContent"/>-->
+    <lists:GroundTargetInfoListView x:Name="MainContentControl"/>
+    <!--<reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>-->   
   </Panel>
   
 </UserControl>

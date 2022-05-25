@@ -63,6 +63,7 @@ namespace FootprintViewer.Layers
 
             Clear();
             AddRange(_featuresCache);
+            DataHasChanged();
         }
 
         public void SelectGroundTarget(string name)

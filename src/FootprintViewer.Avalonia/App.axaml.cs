@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
@@ -97,12 +96,12 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
             services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-            services.RegisterConstant(new SceneSearch(resolver), typeof(SceneSearch));
-            services.RegisterConstant(new SatelliteViewer(resolver), typeof(SatelliteViewer));
-            services.RegisterConstant(new GroundTargetViewer(resolver), typeof(GroundTargetViewer));
-            services.RegisterConstant(new FootprintObserver(resolver), typeof(FootprintObserver));
-            services.RegisterConstant(new UserGeometryViewer(resolver), typeof(UserGeometryViewer));
-            services.RegisterConstant(new GroundStationViewer(resolver), typeof(GroundStationViewer));
+            services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
+            services.RegisterConstant(factory.CreateSatelliteViewer(), typeof(SatelliteViewer));
+            services.RegisterConstant(factory.CreateGroundTargetViewer(), typeof(GroundTargetViewer));
+            services.RegisterConstant(factory.CreateFootprintObserver(), typeof(FootprintObserver));
+            services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
+            services.RegisterConstant(factory.CreateGroundStationViewer(), typeof(GroundStationViewer));
 
             services.RegisterConstant(factory.CreateWorldMapSelector(), typeof(WorldMapSelector));
 
@@ -123,36 +122,6 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
         }
 
-        public static void Initialization(IReadonlyDependencyResolver dependencyResolver)
-        {
-            //Task.Run(async () => await LoadingAsync(dependencyResolver));
-        }
-
-        public async static Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
-        {
-            await Task.Run(() =>
-            {
-                var userGeometryProvider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
-                var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
-                var satelliteProvider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
-                var groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
-                var groundStationProvider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
-                var mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
-
-                //mapProvider.Loading.Execute().Subscribe();
-
-                //          userGeometryProvider.Loading.Execute().Subscribe();
-
-                //          footprintProvider.Loading.Execute().Subscribe();
-
-                //           satelliteProvider.Loading.Execute().Subscribe();
-
-                //           groundTargetProvider.Loading.Execute().Subscribe();
-
-                //           groundStationProvider.Loading.Execute().Subscribe();    
-            });
-        }
-
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
 
         public override void OnFrameworkInitializationCompleted()
@@ -162,8 +131,6 @@ namespace FootprintViewer.Avalonia
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
-
-                Initialization(Locator.Current);
 
                 var mainViewModel = GetExistingService<MainViewModel>();
 

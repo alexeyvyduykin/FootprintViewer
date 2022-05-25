@@ -3,9 +3,11 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
+using Mapsui.Nts.Extensions;
 using Splat;
 using System;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace FootprintViewer
 {
@@ -174,6 +176,85 @@ namespace FootprintViewer
             worldMapSelector.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
 
             return worldMapSelector;
+        }
+
+        public SceneSearch CreateSceneSearch()
+        {
+            var map = (Map)_dependencyResolver.GetExistingService<IMap>();
+            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+
+            var sceneSearch = new SceneSearch(_dependencyResolver);
+
+            sceneSearch.ViewerList.SelectedItemObservable.Subscribe(footprint =>
+            {
+                if (footprint != null && footprint.Path != null)
+                {
+                    var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
+
+                    map.ReplaceLayer(layer, LayerType.FootprintImage);
+
+                    if (sceneSearch.Geometries.ContainsKey(footprint.Name!) == true)
+                    {
+                        mapNavigator.SetFocusToPoint(sceneSearch.Geometries[footprint.Name!].Centroid.ToMPoint());
+                    }
+                }
+            });
+
+            return sceneSearch;
+        }
+
+        public FootprintObserver CreateFootprintObserver()
+        {
+            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+
+            var footprintObserver = new FootprintObserver(_dependencyResolver);
+
+            footprintObserver.ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+
+            return footprintObserver;
+        }
+
+        public GroundTargetViewer CreateGroundTargetViewer()
+        {
+            var source = _dependencyResolver.GetExistingService<ITargetLayerSource>();
+
+            var groundTargetViewer = new GroundTargetViewer(_dependencyResolver);
+
+            groundTargetViewer.ViewerList.SelectedItemObservable.Subscribe(groundTarget =>
+            {
+                if (groundTarget != null)
+                {
+                    var name = groundTarget.Name;
+
+                    if (string.IsNullOrEmpty(name) == false)
+                    {
+                        source.SelectGroundTarget(name);
+                    }
+                }
+            });
+
+            return groundTargetViewer;
+        }
+
+        public SatelliteViewer CreateSatelliteViewer()
+        {
+            var satelliteViewer = new SatelliteViewer(_dependencyResolver);
+
+            return satelliteViewer;
+        }
+
+        public GroundStationViewer CreateGroundStationViewer()
+        {
+            var groundStationViewer = new GroundStationViewer(_dependencyResolver);
+
+            return groundStationViewer;
+        }
+
+        public UserGeometryViewer CreateUserGeometryViewer()
+        {
+            var userGeometryViewer = new UserGeometryViewer(_dependencyResolver);
+
+            return userGeometryViewer;
         }
     }
 }

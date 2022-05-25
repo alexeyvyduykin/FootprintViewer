@@ -36,6 +36,7 @@ namespace FootprintViewer.Layers
 
                         _source.ActiveFeatures = activeFeatures;
 
+                        // TODO: throttle this point
                         _source.Refresh.Execute().Subscribe();
                     }
                     else

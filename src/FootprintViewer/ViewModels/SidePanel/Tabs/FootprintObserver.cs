@@ -13,8 +13,7 @@ namespace FootprintViewer.ViewModels
         private bool _firstLoading = true;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
-        {
-            //          var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+        {       
             var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
 
             ViewerList = ViewerListBuilder.CreateViewerList(footprintProvider);
@@ -37,15 +36,13 @@ namespace FootprintViewer.ViewModels
             Filter.Init.Select(_ => Filter).InvokeCommand(ViewerList.Loading);
             Filter.Init.Subscribe(_ => _firstLoading = false);
 
+            // Filter
+            
+            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);            
+            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
 
-            //          this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
-
-            //          ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
-
-            //          _filter.Update.InvokeCommand(ViewerList.Loading);
-
-            //          this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
+            //          _filter.Update.InvokeCommand(ViewerList.Loading);     
         }
 
         public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
