@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using InteractiveGeometry;
 using InteractiveGeometry.UI;
 using Mapsui;
@@ -6,15 +7,13 @@ using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
-using Mapsui.Tiling.Layers;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +21,7 @@ namespace FootprintViewer.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {
+        private readonly IReadonlyDependencyResolver _dependencyResolver;
         private readonly Map _map;
         private readonly InfoPanel _infoPanel;
         private readonly InfoPanel _clickInfoPanel;
@@ -46,6 +46,7 @@ namespace FootprintViewer.ViewModels
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
+            _dependencyResolver = dependencyResolver;
             var factory = dependencyResolver.GetExistingService<ProjectFactory>();
             // TODO: make _map as IMap
             _map = (Map)dependencyResolver.GetExistingService<IMap>();
@@ -59,19 +60,12 @@ namespace FootprintViewer.ViewModels
             _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
             _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
-            var worldMapSelector = dependencyResolver.GetExistingService<WorldMapSelector>();
 
             _infoPanel = factory.CreateInfoPanel();
 
             _clickInfoPanel = factory.CreateInfoPanel();
 
             _scaleMapBar = factory.CreateScaleMapBar();
-
-            _map.DataChanged += Map_DataChanged;
-
-            worldMapSelector.Loading.Subscribe(s => _map.SetWorldMapLayer(s.First()));
-
-            worldMapSelector.WorldMapChanged.Subscribe(s => _map.SetWorldMapLayer(s));
 
             AOIChanged += (s, e) =>
             {
@@ -150,6 +144,40 @@ namespace FootprintViewer.ViewModels
                     return;
                 }
             });
+
+            LoadingProviders = ReactiveCommand.CreateFromTask(LoadingProvidersAsync);
+
+            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(10)));
+
+            command.Execute().InvokeCommand(LoadingProviders);
+        }
+
+        private ReactiveCommand<Unit, Unit> LoadingProviders { get; }
+
+        private async Task LoadingProvidersAsync()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            await Task.Run(() =>
+            {
+                var userGeometryProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
+                var footprintProvider = _dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
+                var satelliteProvider = _dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
+                var groundTargetProvider = _dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
+                var groundStationProvider = _dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
+                var mapProvider = _dependencyResolver.GetExistingService<IProvider<MapResource>>();
+
+                mapProvider.Loading.Execute().Subscribe();
+
+                //          userGeometryProvider.Loading.Execute().Subscribe();
+
+                //          footprintProvider.Loading.Execute().Subscribe();
+
+                //           satelliteProvider.Loading.Execute().Subscribe();
+
+                //           groundTargetProvider.Loading.Execute().Subscribe();
+
+                //           groundStationProvider.Loading.Execute().Subscribe();    
+            });
         }
 
         private void ResetInteractivity()
@@ -202,40 +230,6 @@ namespace FootprintViewer.ViewModels
         }
 
         public event EventHandler? AOIChanged;
-
-        private void Map_DataChanged(object sender, Mapsui.Fetcher.DataChangedEventArgs e)
-        {
-            var list = new List<MapLayer>();
-
-            if (Map != null)
-            {
-                foreach (var layer in Map.Layers)
-                {
-                    //   string crs = string.Empty;
-                    string format = string.Empty;
-
-                    if (layer is TileLayer tileLayer)
-                    {
-                        // crs = tileLayer.TileSource.Schema.Srs;
-                        format = tileLayer.TileSource.Schema.Format;
-                    }
-
-                    // if (string.IsNullOrEmpty(crs) == true)
-                    {
-                        //     crs = layer.CRS;
-                    }
-
-                    list.Add(new MapLayer()
-                    {
-                        Name = layer.Name,
-                        //     CRS = crs,
-                        Format = format,
-                    });
-                }
-            }
-
-            MapLayers = new ObservableCollection<MapLayer>(list);
-        }
 
         private void RectangleCommand()
         {
@@ -844,9 +838,6 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public IMapNavigator MapNavigator { get; set; }
-
-        [Reactive]
-        public ObservableCollection<MapLayer>? MapLayers { get; set; }
 
         [Reactive]
         public IController ActualController { get; set; }

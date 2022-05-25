@@ -4,6 +4,8 @@ using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Splat;
+using System;
+using System.Linq;
 
 namespace FootprintViewer
 {
@@ -159,6 +161,19 @@ namespace FootprintViewer
         public ScaleMapBar CreateScaleMapBar()
         {
             return new ScaleMapBar();
+        }
+
+        public WorldMapSelector CreateWorldMapSelector()
+        {
+            var map = (Map)_dependencyResolver.GetExistingService<IMap>();
+
+            var worldMapSelector = new WorldMapSelector(_dependencyResolver);
+
+            worldMapSelector.Loading.Subscribe(s => { map.SetWorldMapLayer(s.First()); });
+
+            worldMapSelector.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
+
+            return worldMapSelector;
         }
     }
 }

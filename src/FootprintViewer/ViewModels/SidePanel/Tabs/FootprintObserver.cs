@@ -3,7 +3,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -11,16 +10,16 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintObserver : SidePanelTab
     {
-        private readonly IFilter<FootprintInfo> _filter;
+        private bool _firstLoading = true;
 
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
-            var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+            //          var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
             var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
 
-            _filter = new FootprintObserverFilter(dependencyResolver);
-
             ViewerList = ViewerListBuilder.CreateViewerList(footprintProvider);
+
+            Filter = new FootprintObserverFilter(dependencyResolver);
 
             Title = "Просмотр рабочей программы";
 
@@ -28,15 +27,25 @@ namespace FootprintViewer.ViewModels
 
             FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => _filter).InvokeCommand(ViewerList.Loading);
+            // First loading
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+            this.WhenAnyValue(s => s.IsActive)
+                .Where(active => active == true && _firstLoading == true)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Filter.Init);
 
-            ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+            Filter.Init.Select(_ => Filter).InvokeCommand(ViewerList.Loading);
+            Filter.Init.Subscribe(_ => _firstLoading = false);
 
-            _filter.Update.InvokeCommand(ViewerList.Loading);
 
-            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
+
+            //          this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+
+            //          ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+
+            //          _filter.Update.InvokeCommand(ViewerList.Loading);
+
+            //          this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
         }
 
         public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
@@ -58,7 +67,8 @@ namespace FootprintViewer.ViewModels
             IsFilterOpen = !IsFilterOpen;
         }
 
-        public IFilter<FootprintInfo> Filter => _filter;
+        [Reactive]
+        public IFilter<FootprintInfo> Filter { get; private set; }
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }

@@ -14,7 +14,7 @@ namespace FootprintViewer.ViewModels
         private readonly IProvider<SatelliteInfo> _provider;
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
-        private bool _first = true;
+        private bool _firstLoading = true;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -26,12 +26,14 @@ namespace FootprintViewer.ViewModels
 
             ViewerList = ViewerListBuilder.CreateViewerList(_provider);
 
+            // First loading
+
             this.WhenAnyValue(s => s.IsActive)
-                .Where(active => active == true && _first == true)
+                .Where(active => active == true && _firstLoading == true)
                 .Select(_ => (IFilter<SatelliteInfo>?)null)
                 .InvokeCommand(ViewerList.Loading);
 
-            ViewerList.Loading.Subscribe(_ => _first = false);
+            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
         }
 
         public void UpdateTrack(SatelliteInfo satelliteInfo)

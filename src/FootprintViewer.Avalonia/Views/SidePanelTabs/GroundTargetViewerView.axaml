@@ -15,8 +15,8 @@
     <vmd:DesignTimeGroundTargetViewer/>
   </Design.DataContext>
   
-  <Panel Width="380">    
-    <views:PreviewMainContentView x:Name="PreviewContent"/>
+  <Panel Width="380">
+    <reactiveUi:ViewModelViewHost x:Name="PreviewContent"/>
     <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>   
   </Panel>
   

@@ -16,31 +16,37 @@ namespace FootprintViewer.ViewModels
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTargetInfo> _groundTargetProvider;
+        private bool _firstLoading = true;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
-        {
+        {   
             _groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>();
-            _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
+  //          _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
             Title = "Просмотр наземных целей";
 
             Preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
-
-            ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
-
-            HideHighlight = ReactiveCommand.Create(HideHighlightImpl);
-
-            _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
-
+            
             ViewerList = ViewerListBuilder.CreateViewerList(_groundTargetProvider);
 
-            ViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
+            //          ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
 
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_source.Refresh);
+            //          HideHighlight = ReactiveCommand.Create(HideHighlightImpl);
 
-            _source.Refresh.Where(_ => IsActive == true).Subscribe(names => IsEnable = !(names == null));
+            //          _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            _source.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names => ViewerList.FiringUpdate(names));
+            //          ViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
+
+            // First loading
+
+            IsEnable = false;
+
+
+            //          this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(_source.Refresh);
+
+            //          _source.Refresh.Where(_ => IsActive == true).Subscribe(names => IsEnable = !(names == null));
+
+            //          _source.Refresh.Where(_ => IsActive == true && IsEnable == true).Subscribe(names => ViewerList.FiringUpdate(names));
         }
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)

@@ -26,39 +26,26 @@ namespace FootprintViewer.ViewModels
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
             // TODO: make _map as IMap
-            _map = (Map)dependencyResolver.GetExistingService<IMap>();
-            _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+            //       _map = (Map)dependencyResolver.GetExistingService<IMap>();
+            //       _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
 
             var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
-
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
             ViewerList = ViewerListBuilder.CreateViewerList(footprintPreviewProvider);
 
-            Title = "Поиск сцены";
-
             Filter = new SceneSearchFilter(dependencyResolver);
 
-            ViewerList.SelectedItemObservable.Subscribe(s => SelectFootprint(s));
-            ViewerList.MouseOverEnter.Subscribe(s => ShowFootprintBorder(s));
-            ViewerList.MouseOverLeave.Subscribe(_ => HideFootprintBorder());
-
-            FilterClick = ReactiveCommand.Create(FilterClickImpl);
-
-            Filter.Update.InvokeCommand(ViewerList.Loading);
-
-            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
+            Title = "Поиск сцены";
 
             LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_ => _footprintPreviewGeometryProvider.GetValuesAsync(null));
+            
+            FilterClick = ReactiveCommand.Create(FilterClickImpl);
 
-            // TODO: duplicates
+            // TODO: duplicates           
             _geometries = LoadFootprintPreviewGeometry.Select(s => s.ToDictionary(s => s.Item1, s => s.Item2)).ToProperty(this, x => x.Geometries);
 
-            // TODO: avoid from first loading design
-            this.WhenAnyValue(s => s.IsActive)
-                .Where(active => active == true && _firstLoading == true)
-                .Select(_ => Filter)
-                .InvokeCommand(ViewerList.Loading);
+            // First loading
 
             this.WhenAnyValue(s => s.IsActive)
                 .Where(active => active == true && _firstLoading == true)
@@ -70,9 +57,21 @@ namespace FootprintViewer.ViewModels
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Filter.Init);
 
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+            Filter.Init.Select(_ => Filter).InvokeCommand(ViewerList.Loading);
+            Filter.Init.Subscribe(_ => _firstLoading = false);
 
-            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
+
+
+
+            //       ViewerList.SelectedItemObservable.Subscribe(s => SelectFootprint(s));
+            //       ViewerList.MouseOverEnter.Subscribe(s => ShowFootprintBorder(s));
+            //        ViewerList.MouseOverLeave.Subscribe(_ => HideFootprintBorder());
+ 
+            //       Filter.Update.InvokeCommand(ViewerList.Loading);
+
+            //         this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
+
+            //         this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
         }
 
         public void SetAOI(NetTopologySuite.Geometries.Geometry aoi) => ((SceneSearchFilter)Filter).AOI = aoi;
@@ -150,7 +149,7 @@ namespace FootprintViewer.ViewModels
         public IViewerList<FootprintPreview> ViewerList { get; private set; }
 
         [Reactive]
-        public IFilter<FootprintPreview> Filter { get; set; }
+        public IFilter<FootprintPreview> Filter { get; private set; }
 
         [Reactive]
         public bool IsFilterOpen { get; private set; }

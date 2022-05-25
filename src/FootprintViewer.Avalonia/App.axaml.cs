@@ -104,7 +104,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new UserGeometryViewer(resolver), typeof(UserGeometryViewer));
             services.RegisterConstant(new GroundStationViewer(resolver), typeof(GroundStationViewer));
 
-            services.RegisterConstant(new WorldMapSelector(resolver), typeof(WorldMapSelector));
+            services.RegisterConstant(factory.CreateWorldMapSelector(), typeof(WorldMapSelector));
 
             services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
 
@@ -125,7 +125,7 @@ namespace FootprintViewer.Avalonia
 
         public static void Initialization(IReadonlyDependencyResolver dependencyResolver)
         {
-            Task.Run(async () => await LoadingAsync(dependencyResolver));
+            //Task.Run(async () => await LoadingAsync(dependencyResolver));
         }
 
         public async static Task LoadingAsync(IReadonlyDependencyResolver dependencyResolver)
@@ -139,17 +139,17 @@ namespace FootprintViewer.Avalonia
                 var groundStationProvider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
                 var mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
 
-                userGeometryProvider.Loading.Execute().Subscribe();
+                //mapProvider.Loading.Execute().Subscribe();
 
-                footprintProvider.Loading.Execute().Subscribe();
+                //          userGeometryProvider.Loading.Execute().Subscribe();
 
-                satelliteProvider.Loading.Execute().Subscribe();
+                //          footprintProvider.Loading.Execute().Subscribe();
 
-                groundTargetProvider.Loading.Execute().Subscribe();
+                //           satelliteProvider.Loading.Execute().Subscribe();
 
-                groundStationProvider.Loading.Execute().Subscribe();
+                //           groundTargetProvider.Loading.Execute().Subscribe();
 
-                mapProvider.Loading.Execute().Subscribe();
+                //           groundStationProvider.Loading.Execute().Subscribe();    
             });
         }
 

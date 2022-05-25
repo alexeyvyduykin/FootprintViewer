@@ -22,7 +22,7 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.RegisterConstant(logger, typeof(ILogger));
 
             // IViewFor
-            Locator.CurrentMutable.Register(() => new Views.MainView(), typeof(IViewFor<MainViewModel>));
+            //Locator.CurrentMutable.Register(() => new Views.MainView(), typeof(IViewFor<MainViewModel>));
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
 
             // lists
