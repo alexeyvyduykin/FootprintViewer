@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates;assembly=FootprintViewer.Avalonia"
+             xmlns:reactiveUi="http://reactiveui.net"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
              MinWidth="380">
 
@@ -13,11 +12,8 @@
     <vmd:DesignTimeSatelliteViewer/>
   </Design.DataContext>
     
-  <Panel >
-    <ScrollViewer HorizontalScrollBarVisibility="Hidden" 
-                  VerticalScrollBarVisibility="Auto">
-      <ItemsControl x:Name="ItemsControl"/>
-    </ScrollViewer>
-  </Panel>
+  <Grid>
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl" />
+  </Grid>
   
 </UserControl>

@@ -29,6 +29,7 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.FootprintInfoListView(), typeof(IViewFor<ViewerList<FootprintInfo>>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundStationInfoListView(), typeof(IViewFor<ViewerList<GroundStationInfo>>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundTargetInfoListView(), typeof(IViewFor<ViewerList<GroundTargetInfo>>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.SatelliteInfoListView(), typeof(IViewFor<ViewerList<SatelliteInfo>>));
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
             //Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.SceneSearchFilterView(), typeof(IViewFor<SceneSearchFilter>));

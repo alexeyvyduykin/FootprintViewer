@@ -9,14 +9,6 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SatelliteList : ViewerList<SatelliteInfo>
-    {
-        public SatelliteList(IProvider<SatelliteInfo> provider) : base(provider)
-        {
-
-        }
-    }
-
     public class SatelliteViewer : SidePanelTab
     {
         private readonly IProvider<SatelliteInfo> _provider;
@@ -32,7 +24,7 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр спутников";
 
-            ViewerList = new SatelliteList(_provider);
+            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
 
             this.WhenAnyValue(s => s.IsActive)
                 .Where(active => active == true && _first == true)

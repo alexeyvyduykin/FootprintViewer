@@ -5,9 +5,9 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class GroundStationInfoListView : ReactiveUserControl<ViewerList<GroundStationInfo>>
+    public partial class SatelliteInfoListView : ReactiveUserControl<ViewerList<SatelliteInfo>>
     {
-        public GroundStationInfoListView()
+        public SatelliteInfoListView()
         {
             InitializeComponent();
 
