@@ -1,6 +1,6 @@
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
+using ReactiveUI;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
@@ -9,11 +9,11 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
         public PreviewMainContentView()
         {
             InitializeComponent();
-        }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            this.WhenActivated(disposables =>
+            {
+
+            });
         }
     }
 }

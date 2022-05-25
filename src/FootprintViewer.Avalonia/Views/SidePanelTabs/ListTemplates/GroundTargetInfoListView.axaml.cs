@@ -4,11 +4,11 @@ using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Avalonia.Views.SidePanelTabs
+namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class GroundTargetViewerListView : ReactiveUserControl<GroundTargetViewerList>
+    public partial class GroundTargetInfoListView : ReactiveUserControl<ViewerList<GroundTargetInfo>>
     {
-        public GroundTargetViewerListView()
+        public GroundTargetInfoListView()
         {
             InitializeComponent();
 

@@ -16,8 +16,8 @@
   </Design.DataContext>
   
   <Panel Width="380">    
-    <views:PreviewMainContentView x:Name="PreviewContent"/>    
-    <views:GroundTargetViewerListView x:Name="ViewerList"/>      
+    <views:PreviewMainContentView x:Name="PreviewContent"/>
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>   
   </Panel>
   
 </UserControl>

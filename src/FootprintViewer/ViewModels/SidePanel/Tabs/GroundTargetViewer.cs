@@ -11,14 +11,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundTargetViewerList : ViewerList<GroundTargetInfo>
-    {
-        public GroundTargetViewerList(IProvider<GroundTargetInfo> provider) : base(provider)
-        {
-
-        }
-    }
-
     public class GroundTargetViewer : SidePanelTab
     {
         private readonly ReactiveCommand<GroundTargetInfo?, Unit> _selectedItem;
@@ -40,7 +32,7 @@ namespace FootprintViewer.ViewModels
 
             _selectedItem = ReactiveCommand.Create<GroundTargetInfo?>(SelectedItemIml);
 
-            ViewerList = new GroundTargetViewerList(_groundTargetProvider);
+            ViewerList = ViewerListBuilder.CreateViewerList(_groundTargetProvider);
 
             ViewerList.SelectedItemObservable.Select(s => s).InvokeCommand(_selectedItem);
 
