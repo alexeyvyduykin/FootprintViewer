@@ -9,14 +9,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class UserGeometryList : ViewerList<UserGeometryInfo>
-    {
-        public UserGeometryList(IEditableProvider<UserGeometryInfo> provider) : base(provider)
-        {
-
-        }
-    }
-
     public class UserGeometryViewer : SidePanelTab
     {
         private readonly IEditableProvider<UserGeometryInfo> _provider;
@@ -27,7 +19,7 @@ namespace FootprintViewer.ViewModels
 
             Title = "Пользовательская геометрия";
 
-            ViewerList = new UserGeometryList(_provider);
+            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
 
             _provider.Update.Select(_ => (IFilter<UserGeometryInfo>?)null).InvokeCommand(ViewerList.Loading);
 

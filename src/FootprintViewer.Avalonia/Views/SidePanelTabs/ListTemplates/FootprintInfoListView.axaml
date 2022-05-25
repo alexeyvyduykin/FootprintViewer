@@ -22,13 +22,7 @@
                  IsIndeterminate="True"/>
 
     <ListBox x:Name="ListBox"
-             behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <items:FootprintInfoView DataContext="{Binding}"/>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+             behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}"/>
   </Grid>
 
 </UserControl>

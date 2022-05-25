@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"             
+             xmlns:reactiveUi="http://reactiveui.net"
              Width="380" 
              mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="450">
@@ -14,21 +14,7 @@
   </Design.DataContext>
 
   <Grid>
-
-    <ProgressBar x:Name="ProgressBar" 
-                 Classes="Circle"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center"
-                 IsIndeterminate="True"/>
-
-    <ListBox x:Name="ListBox">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <items:UserGeometryInfoView DataContext="{Binding}"/>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>
   </Grid>
 
 </UserControl>
