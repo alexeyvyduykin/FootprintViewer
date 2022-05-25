@@ -14,14 +14,6 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SceneSearchList : ViewerList<FootprintPreview>
-    {
-        public SceneSearchList(IProvider<FootprintPreview> provider) : base(provider)
-        {
-
-        }
-    }
-
     public class SceneSearch : SidePanelTab
     {
         private readonly IProvider<(string, NetTopologySuite.Geometries.Geometry)> _footprintPreviewGeometryProvider;
@@ -41,7 +33,7 @@ namespace FootprintViewer.ViewModels
 
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
-            ViewerList = new SceneSearchList(footprintPreviewProvider);
+            ViewerList = ViewerListBuilder.CreateViewerList(footprintPreviewProvider);
 
             Title = "Поиск сцены";
 

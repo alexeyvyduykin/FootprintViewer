@@ -36,10 +36,9 @@
                     x:Name="ToggleButtonSearch"              
                     Classes="FilterToggleButton"                                            
                     Content="Настройки поиска"/>
-    
-      <ListBox x:Name="ListBoxFootprints"       
-               Grid.Row="1"             
-               ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+
+      <reactiveUi:ViewModelViewHost x:Name="MainContentControl"
+                                    Grid.Row="1"/>     
     </Grid>
 
   
