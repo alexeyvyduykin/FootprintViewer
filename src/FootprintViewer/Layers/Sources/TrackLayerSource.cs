@@ -1,40 +1,31 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 
 namespace FootprintViewer.Layers
 {
-    public interface ITrackLayerSource : ILayer
+    public interface ITrackLayerSource : ILayerSource
     {
         void Update(SatelliteInfo info);
     }
 
-    public class TrackLayerSource : WritableLayer, ITrackLayerSource
+    public class TrackLayerSource : BaseLayerSource<SatelliteInfo>, ITrackLayerSource
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public TrackLayerSource(IProvider<SatelliteInfo> provider)
+        public TrackLayerSource(IProvider<SatelliteInfo> provider) : base(provider)
         {
             _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             _cache = new Dictionary<string, List<IFeature>>();
-
-            Loading = ReactiveCommand.Create<List<SatelliteInfo>>(LoadingImpl);
-
-            provider.Loading.InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<List<SatelliteInfo>, Unit> Loading { get; }
-
-        private void LoadingImpl(List<SatelliteInfo> satellites)
+        protected override void LoadingImpl(List<SatelliteInfo> satellites)
         {
             var tracks = TrackBuilder.Create(satellites.Select(s => s.Satellite));
 

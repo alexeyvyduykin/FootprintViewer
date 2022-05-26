@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -14,33 +13,19 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public interface ITargetLayerSource : ILayer
+    public interface ITargetLayerSource : ILayerSource
     {
         ReactiveCommand<Unit, string[]?> Refresh { get; }
 
         IEnumerable<IFeature>? ActiveFeatures { get; set; }
-
-        void SelectGroundTarget(string name);
-
-        void ShowHighlight(string name);
-
-        void HideHighlight();
     }
 
-    public class TargetLayerSource : WritableLayer, ITargetLayerSource
+    public class TargetLayerSource : BaseLayerSource<GroundTargetInfo>, ITargetLayerSource
     {
-        private IFeature? _lastSelected;
-
-        public TargetLayerSource(IProvider<GroundTargetInfo> provider)
+        public TargetLayerSource(IProvider<GroundTargetInfo> provider) : base(provider)
         {
-            Loading = ReactiveCommand.Create<List<GroundTargetInfo>>(LoadingImpl);
-
-            provider.Loading.InvokeCommand(Loading);
-
             Refresh = ReactiveCommand.Create(RefreshImpl);
         }
-
-        private ReactiveCommand<List<GroundTargetInfo>, Unit> Loading { get; }
 
         public ReactiveCommand<Unit, string[]?> Refresh { get; }
 
@@ -56,45 +41,10 @@ namespace FootprintViewer.Layers
             return ActiveFeatures.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]!).ToArray();
         }
 
-        private void LoadingImpl(List<GroundTargetInfo> groundTargets)
+        protected override void LoadingImpl(List<GroundTargetInfo> groundTargets)
         {
             Clear();
             AddRange(Build(groundTargets.Select(s => s.GroundTarget)));
-            DataHasChanged();
-        }
-
-        public void SelectGroundTarget(string name)
-        {
-            var feature = GetFeatures().Where(s => name.Equals((string)s["Name"]!)).First();
-
-            if (_lastSelected != null)
-            {
-                _lastSelected["State"] = "Unselected";
-            }
-
-            feature["State"] = "Selected";
-
-            _lastSelected = feature;
-
-            DataHasChanged();
-        }
-
-        public void ShowHighlight(string name)
-        {
-            var feature = GetFeatures().Where(s => name.Equals((string)s["Name"]!)).First();
-
-            feature["Highlight"] = true;
-
-            DataHasChanged();
-        }
-
-        public void HideHighlight()
-        {
-            foreach (var item in GetFeatures())
-            {
-                item["Highlight"] = false;
-            }
-
             DataHasChanged();
         }
 

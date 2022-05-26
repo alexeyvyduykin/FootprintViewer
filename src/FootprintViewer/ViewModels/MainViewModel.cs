@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
 using InteractiveGeometry;
 using InteractiveGeometry.UI;
 using Mapsui;
@@ -147,7 +146,7 @@ namespace FootprintViewer.ViewModels
 
             LoadingProviders = ReactiveCommand.CreateFromTask(LoadingProvidersAsync);
 
-            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(1)));
+            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(0)));
 
             command.Execute().InvokeCommand(LoadingProviders);
         }
@@ -156,12 +155,13 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingProvidersAsync()
         {
-            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<MapResource>>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<FootprintInfo>>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<GroundTargetInfo>>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<WorldMapSelector>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IUserLayerSource>().Init.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IFootprintLayerSource>().Init.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<ITrackLayerSource>().Init.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<ISensorLayerSource>().Init.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<ITargetLayerSource>().Init.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<IGroundStationLayerSource>().Init.Execute().Subscribe());
         }
 
         private void ResetInteractivity()

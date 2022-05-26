@@ -13,42 +13,32 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers
 {
-    public interface IUserLayerSource : ILayer
+    public interface IUserLayerSource : ILayerSource
     {
         void EditFeature(IFeature feature);
 
         void AddUserGeometry(IFeature feature, UserGeometryType type);
     }
 
-    public class UserLayerSource : WritableLayer, IUserLayerSource
+    public class UserLayerSource : BaseLayerSource<UserGeometryInfo>, IUserLayerSource
     {
-        private readonly IEditableProvider<UserGeometryInfo> _provider;
-
-        public UserLayerSource(IEditableProvider<UserGeometryInfo> provider)
+        public UserLayerSource(IEditableProvider<UserGeometryInfo> provider) : base(provider)
         {
-            _provider = provider;
-
             Update = ReactiveCommand.CreateFromTask(UpdateAsync);
 
-            Loading = ReactiveCommand.Create<List<UserGeometryInfo>>(LoadingImpl);
-
-            Update.InvokeCommand(Loading);
+            Update.InvokeCommand(Init);
 
             provider.Update.InvokeCommand(Update);
-
-            provider.Loading.InvokeCommand(Loading);
         }
 
         private ReactiveCommand<Unit, List<UserGeometryInfo>> Update { get; }
-
-        private ReactiveCommand<List<UserGeometryInfo>, Unit> Loading { get; }
 
         private static string GenerateName(UserGeometryType type)
         {
             return $"{type}_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}";
         }
 
-        private void LoadingImpl(List<UserGeometryInfo> userGeometries)
+        protected override void LoadingImpl(List<UserGeometryInfo> userGeometries)
         {
             var arr = userGeometries
                 .Where(s => s.Geometry != null)
@@ -61,7 +51,7 @@ namespace FootprintViewer.Layers
 
         private async Task<List<UserGeometryInfo>> UpdateAsync()
         {
-            return await _provider.GetValuesAsync(null);
+            return await Provider.GetValuesAsync(null);
         }
 
         public void EditFeature(IFeature feature)
@@ -76,7 +66,7 @@ namespace FootprintViewer.Layers
 
                         var geometry = gf.Geometry!;
 
-                        await _provider.EditAsync(name,
+                        await ((IEditableProvider<UserGeometryInfo>)Provider).EditAsync(name,
                             new UserGeometryInfo(
                                 new UserGeometry()
                                 {
@@ -106,7 +96,7 @@ namespace FootprintViewer.Layers
                         Geometry = gf.Geometry
                     };
 
-                    await _provider.AddAsync(new UserGeometryInfo(model));
+                    await ((IEditableProvider<UserGeometryInfo>)Provider).AddAsync(new UserGeometryInfo(model));
                 });
             }
         }

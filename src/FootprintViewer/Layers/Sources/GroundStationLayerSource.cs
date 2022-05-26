@@ -1,42 +1,33 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public interface IGroundStationLayerSource : ILayer
+    public interface IGroundStationLayerSource : ILayerSource
     {
         void Update(GroundStationInfo info);
 
         void Change(GroundStationInfo info);
     }
 
-    public class GroundStationLayerSource : WritableLayer, IGroundStationLayerSource
+    public class GroundStationLayerSource : BaseLayerSource<GroundStationInfo>, IGroundStationLayerSource
     {
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public GroundStationLayerSource(IProvider<GroundStationInfo> provider)
+        public GroundStationLayerSource(IProvider<GroundStationInfo> provider) : base(provider)
         {
             _cache = new Dictionary<string, List<IFeature>>();
-
-            Loading = ReactiveCommand.Create<List<GroundStationInfo>>(LoadingImpl);
-
-            provider.Loading.InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<List<GroundStationInfo>, Unit> Loading { get; }
-
-        private void LoadingImpl(List<GroundStationInfo> groundStations)
+        protected override void LoadingImpl(List<GroundStationInfo> groundStations)
         {
             foreach (var item in groundStations)
             {

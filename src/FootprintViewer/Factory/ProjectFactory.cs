@@ -255,7 +255,7 @@ namespace FootprintViewer
 
                     if (string.IsNullOrEmpty(name) == false)
                     {
-                        source.SelectGroundTarget(name);
+                        source.SelectFeature(name);
                     }
                 }
             });

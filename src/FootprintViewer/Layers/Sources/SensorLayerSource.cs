@@ -2,43 +2,34 @@
 using FootprintViewer.Data.Science;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 
 namespace FootprintViewer.Layers
 {
-    public interface ISensorLayerSource : ILayer
+    public interface ISensorLayerSource : ILayerSource
     {
         void Update(SatelliteInfo info);
     }
 
-    public class SensorLayerSource : WritableLayer, ISensorLayerSource
+    public class SensorLayerSource : BaseLayerSource<SatelliteInfo>, ISensorLayerSource
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft;
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright;
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public SensorLayerSource(IProvider<SatelliteInfo> provider)
+        public SensorLayerSource(IProvider<SatelliteInfo> provider) : base(provider)
         {
             _cache = new Dictionary<string, List<IFeature>>();
 
             _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-
-            Loading = ReactiveCommand.Create<List<SatelliteInfo>>(LoadingImpl);
-
-            provider.Loading.InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<List<SatelliteInfo>, Unit> Loading { get; }
-
-        private void LoadingImpl(List<SatelliteInfo> satellites)
+        protected override void LoadingImpl(List<SatelliteInfo> satellites)
         {
             var leftStrips = StripBuilder.CreateLeft(satellites.Select(s => s.Satellite));
             var rightStrips = StripBuilder.CreateRight(satellites.Select(s => s.Satellite));

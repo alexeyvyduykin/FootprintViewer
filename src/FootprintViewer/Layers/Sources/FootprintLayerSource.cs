@@ -1,48 +1,30 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public interface IFootprintLayerSource : ILayer
+    public interface IFootprintLayerSource : ILayerSource
     {
-        IEnumerable<IFeature> GetFeatures();
-
-        IFeature? GetFeature(string name);
+    
     }
 
-    public class FootprintLayerSource : WritableLayer, IFootprintLayerSource
+    public class FootprintLayerSource : BaseLayerSource<FootprintInfo>, IFootprintLayerSource
     {
-        private readonly IProvider<FootprintInfo> _provider;
+        public FootprintLayerSource(IProvider<FootprintInfo> provider) : base(provider) { }
 
-        public FootprintLayerSource(IProvider<FootprintInfo> provider)
-        {
-            _provider = provider;
-
-            Loading = ReactiveCommand.Create<List<FootprintInfo>>(LoadingImpl);
-
-            _provider.Loading.InvokeCommand(Loading);
-        }
-
-        private ReactiveCommand<List<FootprintInfo>, Unit> Loading { get; }
-
-        private void LoadingImpl(List<FootprintInfo> footprints)
+        protected override void LoadingImpl(List<FootprintInfo> footprints)
         {
             Clear();
             AddRange(Build(footprints.Select(s => s.Footprint!)));
             DataHasChanged();
         }
-
-        public IFeature? GetFeature(string name) => GetFeatures().Where(s => s.Fields.Contains("Name") && s["Name"]!.Equals(name)).FirstOrDefault();
 
         private static List<IFeature> Build(IEnumerable<Footprint> footprints)
         {
