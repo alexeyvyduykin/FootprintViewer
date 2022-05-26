@@ -19,7 +19,14 @@ namespace FootprintViewer.Data.Sources
         {
             var context = new FootprintViewerDbContext(_options);
 
-            return await context.Footprints.Select(s => new FootprintInfo(s)).ToListAsync();
+            if (filter == null)
+            {
+                return await context.Footprints.Select(s => new FootprintInfo(s)).ToListAsync();
+            }
+
+            var res = await context.Footprints.Select(s => new FootprintInfo(s)).ToListAsync();
+
+            return await Task.Run(() => res.Where(s => filter.Filtering(s)).ToList());
         }
     }
 }

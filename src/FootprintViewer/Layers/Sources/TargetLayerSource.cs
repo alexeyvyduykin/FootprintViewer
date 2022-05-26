@@ -29,7 +29,6 @@ namespace FootprintViewer.Layers
 
     public class TargetLayerSource : WritableLayer, ITargetLayerSource
     {
-        private List<IFeature> _featuresCache = new();
         private IFeature? _lastSelected;
 
         public TargetLayerSource(IProvider<GroundTargetInfo> provider)
@@ -59,16 +58,14 @@ namespace FootprintViewer.Layers
 
         private void LoadingImpl(List<GroundTargetInfo> groundTargets)
         {
-            _featuresCache = Build(groundTargets.Select(s => s.GroundTarget));
-
             Clear();
-            AddRange(_featuresCache);
+            AddRange(Build(groundTargets.Select(s => s.GroundTarget)));
             DataHasChanged();
         }
 
         public void SelectGroundTarget(string name)
         {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
+            var feature = GetFeatures().Where(s => name.Equals((string)s["Name"]!)).First();
 
             if (_lastSelected != null)
             {
@@ -84,7 +81,7 @@ namespace FootprintViewer.Layers
 
         public void ShowHighlight(string name)
         {
-            var feature = _featuresCache.Where(s => name.Equals((string)s["Name"]!)).First();
+            var feature = GetFeatures().Where(s => name.Equals((string)s["Name"]!)).First();
 
             feature["Highlight"] = true;
 
@@ -93,7 +90,10 @@ namespace FootprintViewer.Layers
 
         public void HideHighlight()
         {
-            _featuresCache.ForEach(s => s["Highlight"] = false);
+            foreach (var item in GetFeatures())
+            {
+                item["Highlight"] = false;
+            }
 
             DataHasChanged();
         }

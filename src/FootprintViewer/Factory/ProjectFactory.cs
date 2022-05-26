@@ -3,6 +3,7 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
+using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Splat;
 using System;
@@ -200,6 +201,32 @@ namespace FootprintViewer
                 }
             });
 
+            sceneSearch.ViewerList.MouseOverEnter.Subscribe(footprint =>
+            {
+                if (sceneSearch.Geometries.ContainsKey(footprint.Name!) == true)
+                {
+                    var layer = map.GetLayer(LayerType.FootprintImageBorder);
+
+                    if (layer != null && layer is WritableLayer writableLayer)
+                    {
+                        writableLayer.Clear();
+                        writableLayer.Add(new GeometryFeature() { Geometry = sceneSearch.Geometries[footprint.Name!] });
+                        writableLayer.DataHasChanged();
+                    }
+                }
+            });
+
+            sceneSearch.ViewerList.MouseOverLeave.Subscribe(_ =>
+            {
+                var layer = map.GetLayer(LayerType.FootprintImageBorder);
+
+                if (layer != null && layer is WritableLayer writableLayer)
+                {
+                    writableLayer.Clear();
+                    writableLayer.DataHasChanged();
+                }
+            });
+
             return sceneSearch;
         }
 
@@ -231,6 +258,21 @@ namespace FootprintViewer
                         source.SelectGroundTarget(name);
                     }
                 }
+            });
+
+            groundTargetViewer.ViewerList.MouseOverEnter.Subscribe(groundTarget =>
+            {
+                var name = groundTarget.Name;
+
+                if (name != null)
+                {
+                    source.ShowHighlight(name);
+                }
+            });
+
+            groundTargetViewer.ViewerList.MouseOverLeave.Subscribe(_ =>
+            {
+                source.HideHighlight();
             });
 
             return groundTargetViewer;

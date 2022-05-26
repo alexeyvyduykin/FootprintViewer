@@ -39,19 +39,14 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
         {
             _groundTargetViewer ??= Locator.Current.GetExistingService<GroundTargetViewer>();
 
-            _groundTargetViewer?.ShowHighlight.Execute(ViewModel).Subscribe();
+            _groundTargetViewer?.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
         }
 
         private void LeaveImpl()
         {
             _groundTargetViewer ??= Locator.Current.GetExistingService<GroundTargetViewer>();
 
-            _groundTargetViewer?.HideHighlight.Execute().Subscribe();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            _groundTargetViewer?.ViewerList.MouseOverLeave.Execute().Subscribe();
         }
     }
 }

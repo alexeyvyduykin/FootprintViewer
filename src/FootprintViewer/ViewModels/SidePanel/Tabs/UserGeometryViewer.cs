@@ -23,8 +23,6 @@ namespace FootprintViewer.ViewModels
 
             ViewerList = ViewerListBuilder.CreateViewerList(_provider);
 
-            //       _provider.Update.Select(_ => (IFilter<UserGeometryInfo>?)null).InvokeCommand(ViewerList.Loading);
-
             // First loading
 
             this.WhenAnyValue(s => s.IsActive)
@@ -33,6 +31,10 @@ namespace FootprintViewer.ViewModels
                 .InvokeCommand(ViewerList.Loading);
 
             ViewerList.Loading.Subscribe(_ => _firstLoading = false);
+
+            // Updating
+
+            _provider.Update.Select(_ => (IFilter<UserGeometryInfo>?)null).InvokeCommand(ViewerList.Loading);
         }
 
         public async Task<List<UserGeometryInfo>> GetUserGeometryInfoAsync(string name)

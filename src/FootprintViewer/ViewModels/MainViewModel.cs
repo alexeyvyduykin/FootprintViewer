@@ -147,7 +147,7 @@ namespace FootprintViewer.ViewModels
 
             LoadingProviders = ReactiveCommand.CreateFromTask(LoadingProvidersAsync);
 
-            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(8)));
+            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(1)));
 
             command.Execute().InvokeCommand(LoadingProviders);
         }

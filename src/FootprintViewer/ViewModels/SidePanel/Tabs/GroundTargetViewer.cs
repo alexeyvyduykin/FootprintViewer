@@ -5,7 +5,6 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -27,10 +26,6 @@ namespace FootprintViewer.ViewModels
 
             ViewerList = ViewerListBuilder.CreateViewerList(_groundTargetProvider);
 
-            //          ShowHighlight = ReactiveCommand.Create<GroundTargetInfo?>(ShowHighlightImpl);
-
-            //          HideHighlight = ReactiveCommand.Create(HideHighlightImpl);
-
             // First loading
 
             IsEnable = false;
@@ -51,30 +46,8 @@ namespace FootprintViewer.ViewModels
             return await _groundTargetProvider.GetValuesAsync(new NameFilter<GroundTargetInfo>(new[] { name }));
         }
 
-        private void ShowHighlightImpl(GroundTargetInfo? groundTarget)
-        {
-            if (groundTarget != null)
-            {
-                var name = groundTarget.Name;
-
-                if (name != null)
-                {
-                    _source.ShowHighlight(name);
-                }
-            }
-        }
-
-        private void HideHighlightImpl()
-        {
-            _source.HideHighlight();
-        }
-
         [Reactive]
         private string[]? Names { get; set; }
-
-        public ReactiveCommand<GroundTargetInfo?, Unit> ShowHighlight { get; }
-
-        public ReactiveCommand<Unit, Unit> HideHighlight { get; }
 
         [Reactive]
         public bool IsEnable { get; set; }

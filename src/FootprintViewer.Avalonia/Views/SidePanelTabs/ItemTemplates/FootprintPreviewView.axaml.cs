@@ -29,9 +29,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
             this.WhenActivated(disposables =>
             {
-                this.FootprintImageBorder.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
+                FootprintImageBorder.Events().PointerEnter.Select(args => Unit.Default).InvokeCommand(this, v => v._enter).DisposeWith(disposables);
 
-                this.FootprintImageBorder.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
+                FootprintImageBorder.Events().PointerLeave.Select(args => Unit.Default).InvokeCommand(this, v => v._leave).DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.Image, v => v.FootprintImageImage.Source, value => Convert(value)).DisposeWith(disposables);
             });
