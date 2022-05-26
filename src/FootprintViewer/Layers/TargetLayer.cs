@@ -1,7 +1,9 @@
 ﻿using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Styles;
+using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
@@ -9,12 +11,16 @@ namespace FootprintViewer.Layers
     public class TargetLayer : BaseCustomLayer<ITargetLayerSource>
     {
         private MRect _lastExtent = new(1, 1, 1, 1);
-        private readonly ITargetLayerSource _source;
 
         public TargetLayer(ITargetLayerSource source) : base(source)
         {
-            _source = source;
+            Refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, IEnumerable<IFeature>?>(s => s);
+
+            Refresh.Throttle(TimeSpan.FromSeconds(1))
+                   .InvokeCommand(source.Refresh);
         }
+
+        private readonly ReactiveCommand<IEnumerable<IFeature>?, IEnumerable<IFeature>?> Refresh;
 
         public override void RefreshData(FetchInfo fetchInfo)
         {
@@ -34,16 +40,11 @@ namespace FootprintViewer.Layers
 
                         var activeFeatures = GetFeatures(box, resolution);
 
-                        _source.ActiveFeatures = activeFeatures;
-
-                        // TODO: throttle this point
-                        _source.Refresh.Execute().Subscribe();
+                        Refresh.Execute(activeFeatures).Subscribe();
                     }
                     else
                     {
-                        _source.ActiveFeatures = null;
-
-                        _source.Refresh.Execute().Subscribe();
+                        Refresh.Execute(null).Subscribe();
                     }
 
                     _lastExtent = extent.Copy();

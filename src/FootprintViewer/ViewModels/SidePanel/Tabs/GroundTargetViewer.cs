@@ -38,7 +38,7 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive, s => s.IsEnable, s => s.Names)
                 .Where((s) => s.Item1 == true && s.Item2 == true)
-                .Subscribe(_ => ViewerList.FiringUpdate(Names));
+                .Subscribe(_ => ViewerList.FiringUpdate(Names, 0.0));
         }
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)

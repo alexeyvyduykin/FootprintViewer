@@ -8,37 +8,32 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
     public interface ITargetLayerSource : ILayerSource
     {
-        ReactiveCommand<Unit, string[]?> Refresh { get; }
-
-        IEnumerable<IFeature>? ActiveFeatures { get; set; }
+        ReactiveCommand<IEnumerable<IFeature>?, string[]?> Refresh { get; }
     }
 
     public class TargetLayerSource : BaseLayerSource<GroundTargetInfo>, ITargetLayerSource
     {
         public TargetLayerSource(IProvider<GroundTargetInfo> provider) : base(provider)
         {
-            Refresh = ReactiveCommand.Create(RefreshImpl);
+            Refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, string[]?>(s => RefreshImpl(s));
         }
 
-        public ReactiveCommand<Unit, string[]?> Refresh { get; }
+        public ReactiveCommand<IEnumerable<IFeature>?, string[]?> Refresh { get; }
 
-        public IEnumerable<IFeature>? ActiveFeatures { get; set; }
-
-        private string[]? RefreshImpl()
+        private static string[]? RefreshImpl(IEnumerable<IFeature>? features)
         {
-            if (ActiveFeatures == null)
+            if (features == null)
             {
                 return null;
             }
 
-            return ActiveFeatures.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]!).ToArray();
+            return features.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]!).ToArray();
         }
 
         protected override void LoadingImpl(List<GroundTargetInfo> groundTargets)
