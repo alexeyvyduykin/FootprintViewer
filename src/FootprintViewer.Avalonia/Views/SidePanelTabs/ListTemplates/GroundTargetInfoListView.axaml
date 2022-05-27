@@ -6,13 +6,19 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d"  
-             d:DesignWidth="280" d:DesignHeight="450"
+             d:DesignWidth="380" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates.GroundTargetInfoListView">
 
   <Design.DataContext>
     <vmd:DesignTimeGroundTargetInfoList/>
   </Design.DataContext>
-
+    
+  <UserControl.Styles>
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="12,4"/>
+    </Style>
+  </UserControl.Styles>
+  
   <Panel>
     <ProgressBar x:Name="ProgressBar"
                  Classes="Circle"

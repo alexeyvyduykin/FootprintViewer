@@ -11,6 +11,12 @@
     <vmd:DesignTimeUserGeometryInfoList/>
   </Design.DataContext>
 
+  <UserControl.Styles>
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="12,4"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid>
 
     <ProgressBar x:Name="ProgressBar"
