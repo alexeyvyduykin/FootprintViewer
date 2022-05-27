@@ -4,6 +4,7 @@ using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Utilities;
+using SkiaSharp;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace FootprintViewer.Data.Sources
             });
         }
 
-        private static System.Drawing.Image CreatePreviewImage(string path)
+        private static SKImage CreatePreviewImage(string path)
         {
             var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
@@ -108,9 +109,11 @@ namespace FootprintViewer.Data.Sources
                 Resolution = ZoomHelper.DetermineResolution(extent.Width, extent.Height, _previewWidth, _previewHeight)
             };
 
-            var bitmap = new Mapsui.Rendering.Skia.MapRenderer().RenderToBitmapStream(viewport, new[] { layer }/*, _backgroundColorMask*/);
+            var memoryStream = new Mapsui.Rendering.Skia.MapRenderer().RenderToBitmapStream(viewport, new[] { layer }/*, _backgroundColorMask*/);
 
-            return System.Drawing.Image.FromStream(bitmap!);
+            var data = memoryStream!.ToArray();
+
+            return SKImage.FromEncodedData(data);
         }
     }
 }

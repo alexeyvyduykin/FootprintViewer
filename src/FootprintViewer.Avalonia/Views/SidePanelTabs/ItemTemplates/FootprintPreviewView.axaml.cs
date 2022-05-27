@@ -6,6 +6,7 @@ using Avalonia.Platform;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
+using SkiaSharp;
 using Splat;
 using System;
 using System.IO;
@@ -55,7 +56,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
             _sceneSearch.ViewerList.MouseOverLeave.Execute().Subscribe();
         }
 
-        private static object Convert(System.Drawing.Image? image)
+        private static object Convert(SKImage? image)
         {
             //if (value is null || !(value is Image myImage))
             //{
@@ -75,13 +76,14 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
                 throw new ArgumentException($"Cannot convert System.Drawing.Image with either dimension greater than {Int16.MaxValue} to BitmapImage.\nProvided image's dimensions: {image.Width}x{image.Height}", nameof(image));
             }
 
-            using var bitmap = new System.Drawing.Bitmap(image);
+            using var bitmap = SKBitmap.FromImage(image);
 
             Bitmap? avBitmap;
 
             using (var memory = new MemoryStream())
             {
-                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                SKData d = SKImage.FromBitmap(bitmap).Encode(SKEncodedImageFormat.Png, 100);
+                d.SaveTo(memory);
                 memory.Position = 0;
                 avBitmap = new Bitmap(memory);
             }

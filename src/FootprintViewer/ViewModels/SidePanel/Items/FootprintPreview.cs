@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
-using System.Drawing;
+using SkiaSharp;
 
 namespace FootprintViewer.ViewModels
 {
@@ -24,7 +24,7 @@ namespace FootprintViewer.ViewModels
 
         public string? Path { get; set; }
 
-        public Image? Image { get; set; }
+        public SKImage? Image { get; set; }
 
         public bool IsShowInfo { get; set; }
     }
