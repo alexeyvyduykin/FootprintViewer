@@ -7,11 +7,14 @@ namespace FootprintViewer.Layers
 {
     public class InteractiveCircle : InteractiveFeature
     {
-        private readonly MPoint _center;
+        private readonly MPoint _center = new();
 
         public InteractiveCircle(GeometryFeature feature) : base(feature)
         {
-            _center = feature.Geometry.Centroid.ToMPoint();// BoundingBox.Centroid;
+            if (Geometry != null)
+            {
+                _center = Geometry.Centroid.ToMPoint();
+            }
         }
 
         public override IList<MPoint> EditVertices() => new List<MPoint>() { _center };
