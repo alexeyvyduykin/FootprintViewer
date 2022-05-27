@@ -5,11 +5,12 @@
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"  
+             d:DesignWidth="280" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates.GroundTargetInfoListView">
 
   <Design.DataContext>
-    <vmd:DesignTimeGroundTargetViewerList/>
+    <vmd:DesignTimeGroundTargetInfoList/>
   </Design.DataContext>
 
   <Panel>

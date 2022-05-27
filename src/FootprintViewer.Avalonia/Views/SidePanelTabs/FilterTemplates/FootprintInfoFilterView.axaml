@@ -11,7 +11,7 @@
              d:DesignWidth="400" d:DesignHeight="440">
 
   <Design.DataContext>
-    <vmd:DesignTimeFootprintObserverFilter/>
+    <vmd:DesignTimeFootprintInfoFilter/>
   </Design.DataContext>
 
   <UserControl.Styles>

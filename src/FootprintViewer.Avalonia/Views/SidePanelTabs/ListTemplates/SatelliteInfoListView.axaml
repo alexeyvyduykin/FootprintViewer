@@ -5,11 +5,12 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates;assembly=FootprintViewer.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"  
+             d:DesignWidth="380" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates.SatelliteInfoListView">
 
   <Design.DataContext>
-    <vmd:DesignTimeSatelliteViewer/>
+    <vmd:DesignTimeSatelliteInfoList/>
   </Design.DataContext>
 
   <Grid>

@@ -9,7 +9,7 @@
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates.GroundStationInfoListView">
 
   <Design.DataContext>
-    <vmd:DesignTimeGroundStationViewer/>
+    <vmd:DesignTimeGroundStationInfoList/>
   </Design.DataContext>
 
   <Grid>

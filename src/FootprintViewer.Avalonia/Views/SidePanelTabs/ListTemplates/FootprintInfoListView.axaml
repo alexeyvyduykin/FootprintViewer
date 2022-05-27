@@ -11,7 +11,7 @@
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates.FootprintInfoListView">
 
   <Design.DataContext>
-    <vmd:DesignTimeFootprintObserverList/>
+    <vmd:DesignTimeFootprintInfoList/>
   </Design.DataContext>
 
   <Grid>

@@ -35,6 +35,8 @@ namespace FootprintViewer.ViewModels
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
             _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
+            Sensors = new ObservableCollection<Sensor>();
+
             Cloudiness = 0.0;
             MinSunElevation = 0.0;
             MaxSunElevation = 90.0;
@@ -64,12 +66,9 @@ namespace FootprintViewer.ViewModels
 
         private void AddSensors(List<string> sensors)
         {
-            Sensors.Clear();
+            var list = sensors.OrderBy(s => s).Select(s => new Sensor() { Name = s }).ToList();
 
-            foreach (var item in sensors.OrderBy(s => s))
-            {
-                Sensors.Add(new Sensor() { Name = item });
-            }
+            Sensors = new ObservableCollection<Sensor>(list);
 
             var databasesValid = Sensors
                 .ToObservableChangeSet()
@@ -142,7 +141,7 @@ namespace FootprintViewer.ViewModels
         public bool IsFullCoverAOI { get; set; }
 
         [Reactive]
-        public ObservableCollection<Sensor> Sensors { get; set; } = new ObservableCollection<Sensor>();
+        public ObservableCollection<Sensor> Sensors { get; set; }
 
         [Reactive]
         public bool IsAllSensorActive { get; set; }
