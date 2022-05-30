@@ -25,6 +25,7 @@
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/Flyout.axaml"/>
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/SidePanelItem.axaml"/>
     <StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/SidePanel.axaml"/>
+    <StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/BottomPanel.axaml"/>
 
   </Application.Styles>
   
