@@ -20,15 +20,22 @@ namespace FootprintViewer.FileSystem
             _solutionDirectory = GetSolutionDirectory();
 
             _folderDirectory = Path.Combine(_solutionDirectory, name);
-
-            CreateIfMissing(_folderDirectory);
         }
 
         public static string SourceFolder => "src";
 
         public string DataFolder => _name;
 
-        public string FolderDirectory => _folderDirectory;
+        public string FolderDirectory
+        {
+            get
+            {
+                // TODO: FolderDirectory empty if name not exist, refactoring this (DesignTime throw exception if in ctor)
+                CreateIfMissing(_folderDirectory);
+
+                return _folderDirectory;
+            }
+        }
 
         public string SolutionDirectory => _solutionDirectory;
 

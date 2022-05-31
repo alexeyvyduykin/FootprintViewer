@@ -124,6 +124,7 @@ namespace FootprintViewer.Avalonia
             if (e.NewValue != null && e.NewValue is IMapNavigator mapNavigator)
             {
                 mapNavigator.Navigator = mapControl.Navigator;
+                mapNavigator.Viewport = mapControl.Viewport;
             }
         }
 

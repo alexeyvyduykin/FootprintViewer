@@ -1,9 +1,15 @@
 ﻿using CliWrap;
 using FootprintViewer.FileSystem;
+using FootprintViewer.Helpers;
+using Mapsui;
+using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using SkiaSharp;
+using Splat;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -18,21 +24,59 @@ namespace FootprintViewer.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _openFolder;
         private readonly SolutionFolder _solutionFolder;
 
-        public SnapshotMaker()
+        public SnapshotMaker(IReadonlyDependencyResolver dependencyResolver)
         {
+            var map = (Map)dependencyResolver.GetExistingService<IMap>();
+            var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+
             _solutionFolder = new SolutionFolder("snapshots");
 
-            _extensions = new List<string>() { "*.png", "*.jrpg", "*.pdf" };
+            _extensions = ValidExtensions();
 
-            SelectedExtension = Extensions.FirstOrDefault();
+            SelectedExtension = Extensions.FirstOrDefault() ?? ToExt(SKEncodedImageFormat.Png);
 
             _create = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
-                Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(1)));
-
-            var openFolderCommand = Cli.Wrap("cmd").WithArguments($"/K start {_solutionFolder.FolderDirectory} && exit");
+            Observable.Start(() =>
+            {
+                Save(mapNavigator.Viewport, map.Layers);
+            }).Delay(TimeSpan.FromSeconds(1)));
 
             _openFolder = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
-                Observable.Start(() => { openFolderCommand.ExecuteAsync(); }));
+            Observable.Start(() =>
+            {
+                var path = _solutionFolder.FolderDirectory;
+                Cli.Wrap("cmd").WithArguments($"/K start {path} && exit").ExecuteAsync();
+            }));
+        }
+
+        private static List<string> ValidExtensions()
+        {
+            return new[] { SKEncodedImageFormat.Png, SKEncodedImageFormat.Jpeg, SKEncodedImageFormat.Webp }.Select(s => ToExt(s)).ToList();
+        }
+
+        private static string ToExt(SKEncodedImageFormat type)
+        {
+            return $"*.{Enum.GetName(type)!.ToLower()}";
+        }
+
+        private void Save(IReadOnlyViewport? viewport, IEnumerable<ILayer> layers)
+        {
+            using var memoryStream = new Mapsui.Rendering.Skia.MapRenderer().RenderToBitmapStream(viewport, layers);
+
+            if (memoryStream != null)
+            {
+                var ext = SelectedExtension.Replace("*.", "");
+                var type = Enum.Parse<SKEncodedImageFormat>(ext[..1].ToUpper() + ext[1..].ToString());
+
+                var snapshot = UniqueNameHelper.Create("Snapshot", ext);
+                var path = Path.Combine(_solutionFolder.FolderDirectory, snapshot);
+
+                using var image = SKImage.FromEncodedData(memoryStream.ToArray());
+                using var data = image.Encode(type, 100);
+                using var stream = File.OpenWrite(path);
+
+                data.SaveTo(stream);
+            }
         }
 
         public ICommand Create => _create;
@@ -40,7 +84,7 @@ namespace FootprintViewer.ViewModels
         public ICommand OpenFolder => _openFolder;
 
         [Reactive]
-        public string? SelectedExtension { get; set; }
+        public string SelectedExtension { get; set; }
 
         public List<string> Extensions => _extensions;
 

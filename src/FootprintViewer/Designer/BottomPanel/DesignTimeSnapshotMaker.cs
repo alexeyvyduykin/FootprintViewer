@@ -4,7 +4,7 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeSnapshotMaker : SnapshotMaker
     {
-        public DesignTimeSnapshotMaker() : base()
+        public DesignTimeSnapshotMaker() : base(new DesignTimeData())
         {
 
         }

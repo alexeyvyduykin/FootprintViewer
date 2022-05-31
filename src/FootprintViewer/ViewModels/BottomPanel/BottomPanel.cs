@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 
 namespace FootprintViewer.ViewModels
 {
@@ -6,9 +7,9 @@ namespace FootprintViewer.ViewModels
     {
         private readonly SnapshotMaker _snapshotMaker;
 
-        public BottomPanel()
+        public BottomPanel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _snapshotMaker = new SnapshotMaker();
+            _snapshotMaker = new SnapshotMaker(dependencyResolver);
         }
 
         public SnapshotMaker SnapshotMaker => _snapshotMaker;

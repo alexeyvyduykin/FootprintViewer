@@ -163,7 +163,7 @@ namespace FootprintViewer
 
         public BottomPanel CreateBottomPanel()
         {
-            return new BottomPanel();
+            return new BottomPanel(_dependencyResolver);
         }
 
         public ScaleMapBar CreateScaleMapBar()

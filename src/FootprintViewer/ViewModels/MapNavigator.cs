@@ -18,6 +18,8 @@ namespace FootprintViewer.ViewModels
         void SetFocusToPoint(MPoint center);
 
         INavigator? Navigator { get; set; }
+
+        IReadOnlyViewport? Viewport { get; set; }
     }
 
     public class MapNavigator : ReactiveObject, IMapNavigator
@@ -48,5 +50,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public INavigator? Navigator { get; set; }
+
+        [Reactive]
+        public IReadOnlyViewport? Viewport { get; set; }
     }
 }
