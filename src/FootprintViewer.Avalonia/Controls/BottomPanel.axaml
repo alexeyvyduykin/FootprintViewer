@@ -4,27 +4,33 @@
 
   <Design.PreviewWith>
     <Border Margin="20" Height="220" Width="480"
-            BorderThickness="1"
-            BorderBrush="WhiteSmoke">
-
-      <controls:BottomPanel Background="Blue" IsExpanded="True">
-        <StackPanel Orientation="Horizontal">
-          <Button Margin="8" Content="Button1"/>
-          <Button Content="Button2"/>
-          <TextBlock Text="Text"/>
-          <Grid Margin="2" ColumnDefinitions="*,80">
-            <Button Content="Snapshot"/>
-            <ComboBox Grid.Column="1" 
-                      SelectedIndex="0">
-              <TextBlock>*.png</TextBlock>
-              <TextBlock>*.jprg</TextBlock>
-              <TextBlock>*.pdf</TextBlock>
-            </ComboBox>
-          </Grid>
-          <Button Margin="8">Button3</Button>
-        </StackPanel>
+            Background="WhiteSmoke">
+      <controls:BottomPanel IsExpanded="True" Background="Gray">
+        <controls:BottomPanel.Styles>
+          <Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
+            <Setter Property="Opacity" Value="0.65"/>
+          </Style>
+        </controls:BottomPanel.Styles>
+        <Grid>
+          <Border Background="Gray"
+                  Opacity="0.65"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Margin="8" Content="Button1"/>
+            <Button Content="Button2"/>
+            <TextBlock Text="Text"/>
+            <Grid Margin="2" ColumnDefinitions="*,80">
+              <Button Content="Snapshot"/>
+              <ComboBox Grid.Column="1"
+                        SelectedIndex="0">
+                <TextBlock>*.png</TextBlock>
+                <TextBlock>*.jprg</TextBlock>
+                <TextBlock>*.pdf</TextBlock>
+              </ComboBox>
+            </Grid>
+            <Button Margin="8">Button3</Button>
+          </StackPanel>
+        </Grid>
       </controls:BottomPanel>
-
     </Border>
   </Design.PreviewWith>
 
@@ -48,7 +54,6 @@
         <Grid RowDefinitions="Auto, *"
               Background="Transparent">
           <Grid Grid.Row="0"
-                Background="Transparent"
                 ColumnDefinitions="22,66">
             <ToggleButton Name="PART_toggle"
                           Grid.Column="1"
@@ -58,15 +63,16 @@
                           IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
                           HorizontalContentAlignment="Left" />
           </Grid>
+
           <ContentPresenter Name="PART_ContentPresenter"
                             Grid.Row="1"
-                            Background="{TemplateBinding Background}"
                             IsVisible="{TemplateBinding IsExpanded}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             Content="{TemplateBinding Content}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                             Padding="{TemplateBinding Padding}" />
+
         </Grid>
       </ControlTemplate>
     </Setter>

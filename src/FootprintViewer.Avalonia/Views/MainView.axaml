@@ -5,6 +5,7 @@
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"                     
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"                     
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"                     
+             xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"                     
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"        
              xmlns:reactiveUi="http://reactiveui.net"    
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                 
@@ -48,11 +49,16 @@
         <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"                               
                               VerticalAlignment="Bottom"              
                               HorizontalAlignment="Right"              
-                              Margin="0,0,15,30"/>  
-        
-        <views:ScaleMapBarView DataContext="{Binding ScaleMapBar}"                               
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Stretch"/>        
+                              Margin="0,0,15,30"/>
+
+        <Grid VerticalAlignment="Bottom"
+              HorizontalAlignment="Stretch"
+              RowDefinitions="Auto,Auto">
+          <bottomPanel:BottomPanelView Grid.Row="0"
+                                       DataContext="{Binding BottomPanel}"/>
+          <views:ScaleMapBarView Grid.Row="1"
+                                 DataContext="{Binding ScaleMapBar}"/>
+        </Grid>
       </Panel>
       
       <views:SidePanelView Grid.Column="1"

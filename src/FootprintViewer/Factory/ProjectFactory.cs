@@ -161,6 +161,11 @@ namespace FootprintViewer
             return new InfoPanel();
         }
 
+        public BottomPanel CreateBottomPanel()
+        {
+            return new BottomPanel();
+        }
+
         public ScaleMapBar CreateScaleMapBar()
         {
             return new ScaleMapBar();

@@ -25,6 +25,7 @@ namespace FootprintViewer.ViewModels
         private readonly InfoPanel _infoPanel;
         private readonly InfoPanel _clickInfoPanel;
         private readonly SidePanel _sidePanel;
+        private readonly BottomPanel _bottomPanel;
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintObserver _footprintObserver;
         private readonly GroundTargetViewer _groundTargetViewer;
@@ -65,6 +66,8 @@ namespace FootprintViewer.ViewModels
             _clickInfoPanel = factory.CreateInfoPanel();
 
             _scaleMapBar = factory.CreateScaleMapBar();
+
+            _bottomPanel = factory.CreateBottomPanel();
 
             AOIChanged += (s, e) =>
             {
@@ -813,6 +816,8 @@ namespace FootprintViewer.ViewModels
         public SidePanel SidePanel => _sidePanel;
 
         public InfoPanel InfoPanel => _infoPanel;
+
+        public BottomPanel BottomPanel => _bottomPanel;
 
         public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
