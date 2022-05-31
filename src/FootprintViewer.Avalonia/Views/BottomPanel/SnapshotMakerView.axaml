@@ -15,7 +15,8 @@
   <Grid>
     <Grid ColumnDefinitions="Auto,4,Auto,4,100"
           VerticalAlignment="Center">
-      <Button Background="{DynamicResource PrimaryHueMidBrush}" >
+      <Button Background="{DynamicResource PrimaryHueMidBrush}" 
+              Command="{Binding OpenFolder}">
         <icons:MaterialIcon Width="20"
                             Height="20"
                             Foreground="{Binding #ComboBox.Foreground}"

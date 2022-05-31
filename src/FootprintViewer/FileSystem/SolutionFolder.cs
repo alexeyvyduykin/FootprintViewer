@@ -20,6 +20,8 @@ namespace FootprintViewer.FileSystem
             _solutionDirectory = GetSolutionDirectory();
 
             _folderDirectory = Path.Combine(_solutionDirectory, name);
+
+            CreateIfMissing(_folderDirectory);
         }
 
         public static string SourceFolder => "src";
@@ -106,7 +108,7 @@ namespace FootprintViewer.FileSystem
             return new List<string>();
         }
 
-        private void CreateIfMissing(string path)
+        private static void CreateIfMissing(string path)
         {
             bool folderExists = Directory.Exists(path);
 
