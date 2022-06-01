@@ -17,10 +17,7 @@
   </Design.DataContext>
   
   <Panel Width="380">
-    <views:PreviewMainContentView x:Name="PreviewContent"/>
-    <!--<reactiveUi:ViewModelViewHost x:Name="PreviewContent"/>-->
-    <lists:GroundTargetInfoListView x:Name="MainContentControl"/>
-    <!--<reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>-->   
+    <reactiveUi:ViewModelViewHost x:Name="MainContent"/>      
   </Panel>
   
 </UserControl>

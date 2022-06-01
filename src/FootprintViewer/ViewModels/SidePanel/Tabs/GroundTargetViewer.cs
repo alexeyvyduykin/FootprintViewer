@@ -14,6 +14,8 @@ namespace FootprintViewer.ViewModels
     {
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTargetInfo> _groundTargetProvider;
+        private string[]? _names;
+        private readonly ViewerList<GroundTargetInfo> _viewerList;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -22,23 +24,39 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных целей";
 
-            Preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
+            var preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
-            ViewerList = ViewerListBuilder.CreateViewerList(_groundTargetProvider);
-
-            // First loading
-
-            IsEnable = false;
+            _viewerList = (ViewerList<GroundTargetInfo>)ViewerListBuilder.CreateViewerList(_groundTargetProvider);
 
             // Update
 
-            _source.Refresh.Subscribe(s => Names = s);
+            _source.Refresh.Subscribe(names =>
+            {
+                _names = names;
 
-            this.WhenAnyValue(s => s.Names).Subscribe(s => IsEnable = !(s == null));
+                if (IsActive == true)
+                {
+                    IsEnable = (names != null);
 
-            this.WhenAnyValue(s => s.IsActive, s => s.IsEnable, s => s.Names)
-                .Where((s) => s.Item1 == true && s.Item2 == true)
-                .Subscribe(_ => ViewerList.FiringUpdate(Names, 0.0));
+                    if (IsEnable == true)
+                    {
+                        _viewerList.FiringUpdate(_names, 0.0);
+                    }
+                }
+            });
+
+            this.WhenAnyValue(s => s.IsEnable).Where(s => s == true).Subscribe(_ => MainContent = _viewerList);
+            this.WhenAnyValue(s => s.IsEnable).Where(s => s == false).Subscribe(_ => MainContent = preview);
+
+            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ =>
+            {
+                IsEnable = (_names != null);
+
+                if (IsEnable == true)
+                {
+                    _viewerList.FiringUpdate(_names, 0.0);
+                }
+            });
         }
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
@@ -47,15 +65,11 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        private string[]? Names { get; set; }
+        private bool IsEnable { get; set; }
 
         [Reactive]
-        public bool IsEnable { get; set; }
+        public ReactiveObject? MainContent { get; private set; }
 
-        [Reactive]
-        public PreviewMainContent Preview { get; private set; }
-
-        [Reactive]
-        public IViewerList<GroundTargetInfo> ViewerList { get; private set; }
+        public IViewerList<GroundTargetInfo> ViewerList => _viewerList;
     }
 }
