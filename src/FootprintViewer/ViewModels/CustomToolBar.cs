@@ -1,8 +1,5 @@
 ﻿using FootprintViewer.Models;
-using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -13,8 +10,6 @@ namespace FootprintViewer.ViewModels
         public CustomToolBar(IReadonlyDependencyResolver dependencyResolver) : base()
         {
             _worldMapSelector = dependencyResolver.GetExistingService<WorldMapSelector>();
-
-            _worldMapSelector.WorldMapChanged.Subscribe(_ => IsWorldMapSelectorOpen = false);
 
             ZoomIn = new ToolClick()
             {
@@ -61,13 +56,11 @@ namespace FootprintViewer.ViewModels
                 Group = "Group1",
             };
 
-            WorldMaps = new ToolClick()
+            WorldMaps = new ToolCheck()
             {
                 Title = "WorldMaps",
                 Tooltip = "Список слоев",
             };
-
-            WorldMaps.Click.Subscribe(_ => { IsWorldMapSelectorOpen = !IsWorldMapSelectorOpen; });
 
             SelectGeometry = new ToolCheck()
             {
@@ -179,7 +172,7 @@ namespace FootprintViewer.ViewModels
 
         public ToolCheck RouteDistance { get; }
 
-        public ToolClick WorldMaps { get; }
+        public ToolCheck WorldMaps { get; }
 
         public ToolCheck SelectGeometry { get; }
 
@@ -208,8 +201,5 @@ namespace FootprintViewer.ViewModels
         public ToolCheck Polygon { get; }
 
         public WorldMapSelector WorldMapSelector => _worldMapSelector;
-
-        [Reactive]
-        public bool IsWorldMapSelectorOpen { get; set; }
     }
 }

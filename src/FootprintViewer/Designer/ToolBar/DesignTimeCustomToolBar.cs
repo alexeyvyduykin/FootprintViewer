@@ -1,11 +1,15 @@
 ﻿using FootprintViewer.ViewModels;
+using System;
 
 namespace FootprintViewer.Designer
 {
     public class DesignTimeCustomToolBar : CustomToolBar
     {
-        public DesignTimeCustomToolBar() : base(new DesignTimeData())
+        private static readonly DesignTimeData _designTimeData = new();
+
+        public DesignTimeCustomToolBar() : base(_designTimeData)
         {
+            _designTimeData.GetExistingService<WorldMapSelector>().Loading.Execute().Subscribe();
         }
     }
 }

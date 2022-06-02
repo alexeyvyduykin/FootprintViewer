@@ -19,9 +19,21 @@
     <Style Selector="v|ToolCheckView, v|ToolClickView">
       <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
-            
-  </UserControl.Styles>
 
+    <Style Selector="ToggleButton.toolCheck">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Opacity" Value="0.75"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+      <Setter Property="ToolTip.ShowDelay" Value="0"/>
+    </Style>
+        
+    <Style Selector="FlyoutPresenter">
+      <Setter Property="Padding" Value="8,0,0,0"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+  </UserControl.Styles>
+  
   <Panel>
     <StackPanel>
 
@@ -36,22 +48,24 @@
       <v:ToolCheckView DataContext="{Binding RouteDistance}" 
                        Margin="0,1,0,0"/>
 
-      <controls:Flyout Placement="Right"                 
-                       Target="{Binding #LayerSelectorButton}"                                                      
-                       IsOpen="{Binding IsWorldMapSelectorOpen}"                
-                       Background="{StaticResource MainBackgroundBrush}"                 
-                       Content="{Binding WorldMapSelector}">
-        <controls:Flyout.ContentTemplate>
-          <DataTemplate>
-            <views:WorldMapSelectorView DataContext="{Binding}"/>
-          </DataTemplate>
-        </controls:Flyout.ContentTemplate>
-      </controls:Flyout>
-       
-      <v:ToolClickView x:Name="LayerSelectorButton" 
-                       DataContext="{Binding WorldMaps}"
-                       Margin="0,10,0,0"/>
-        
+      <!-- WorldMaps -->
+      <ToggleButton x:Name="LayerSelectorButton"                                   
+                    Margin="0,10,0,0"             
+                    Classes="toolCheck"
+                    IsChecked="{Binding WorldMaps.IsCheck}">
+        <ToolTip.Tip>
+          <ToolTip Content="{Binding WorldMaps.Tooltip}" Classes="FastTooltip"/>
+        </ToolTip.Tip>
+        <ToggleButton.Flyout>
+          <Flyout Placement="RightEdgeAlignedTop">         
+            <views:WorldMapSelectorView DataContext="{Binding WorldMapSelector}"/>
+          </Flyout>
+        </ToggleButton.Flyout>
+                
+        <ContentControl Content="{Binding WorldMaps}"
+                        ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+      </ToggleButton>
+                  
       <v:ToolCheckView DataContext="{Binding SelectGeometry}"
                        Margin="0,10,0,0"/>
 
