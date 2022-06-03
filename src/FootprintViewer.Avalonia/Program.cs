@@ -35,10 +35,6 @@ namespace FootprintViewer.Avalonia
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
 
-            // filters
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FilterTemplates.FootprintInfoFilterView(), typeof(IViewFor<FootprintObserverFilter>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.FilterTemplates.FootprintPreviewFilterView(), typeof(IViewFor<SceneSearchFilter>));
-
             // items
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintInfoView(), typeof(IViewFor<FootprintInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreview>));

@@ -2,16 +2,12 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
     public class FootprintObserver : SidePanelTab
     {
-        private bool _firstLoading = true;
-
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
             var footprintProvider = dependencyResolver.GetExistingService<IProvider<FootprintInfo>>();
@@ -24,29 +20,20 @@ namespace FootprintViewer.ViewModels
 
             ClickOnItem = ReactiveCommand.Create<FootprintInfo?, FootprintInfo?>(s => { ViewerList.ClickOnItem(s); return s; });
 
-            FilterClick = ReactiveCommand.Create(FilterClickImpl);
-
             // First loading
 
             this.WhenAnyValue(s => s.IsActive)
-                .Where(active => active == true && _firstLoading == true)
-                .Select(_ => Unit.Default)
-                .InvokeCommand(Filter.Init);
-
-            Filter.Init.Select(_ => Filter).InvokeCommand(ViewerList.Loading);
-            Filter.Init.Subscribe(_ => _firstLoading = false);
+                .Take(1)
+                .Where(active => active == true)
+                .Select(_ => Filter)
+                .InvokeCommand(ViewerList.Loading);
 
             // Filter
-
-            this.WhenAnyValue(s => s.IsActive).Where(active => active == false).Subscribe(_ => IsFilterOpen = false);
-            this.WhenAnyValue(s => s.IsExpanded).Where(c => c == false).Subscribe(_ => IsFilterOpen = false);
 
             Filter.Update.InvokeCommand(ViewerList.Loading);
         }
 
         public ReactiveCommand<FootprintInfo?, FootprintInfo?> ClickOnItem { get; }
-
-        public ReactiveCommand<Unit, Unit> FilterClick { get; }
 
         public void SelectFootprintInfo(string name)
         {
@@ -58,16 +45,8 @@ namespace FootprintViewer.ViewModels
             return ViewerList.GetItem(name);
         }
 
-        private void FilterClickImpl()
-        {
-            IsFilterOpen = !IsFilterOpen;
-        }
-
         [Reactive]
         public IFilter<FootprintInfo> Filter { get; private set; }
-
-        [Reactive]
-        public bool IsFilterOpen { get; private set; }
 
         [Reactive]
         public IViewerList<FootprintInfo> ViewerList { get; private set; }

@@ -12,7 +12,7 @@
     <vmd:DesignTimeWorldMapSelector/>
   </Design.DataContext>
 
-  <styles:Card Padding="0">
+  <styles:ColorZone Padding="0">
     <ListBox Items="{Binding WorldMaps}"
              SelectedItem="{Binding SelectedWorldMap}">
       <ListBox.ItemTemplate>
@@ -21,6 +21,6 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-  </styles:Card>
+  </styles:ColorZone>
 
 </UserControl>

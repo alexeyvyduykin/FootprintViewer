@@ -49,9 +49,11 @@ namespace FootprintViewer.ViewModels
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Update);
+
+            Observable.StartAsync(CreateSensorList).Subscribe();
         }
 
-        protected async override Task InitImpl()
+        private async Task CreateSensorList()
         {
             var footprints = await _footprintPreviewProvider.GetValuesAsync(null);
             var dicts = await _footprintPreviewGeometryProvider.GetValuesAsync();

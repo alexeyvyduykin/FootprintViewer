@@ -42,16 +42,13 @@ namespace FootprintViewer.ViewModels
                 .Throttle(TimeSpan.FromSeconds(1))
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Update);
+
+            Observable.StartAsync(CreateSatelliteList).Subscribe();
         }
 
-        protected async override Task InitImpl()
+        private async Task CreateSatelliteList()
         {
-            await CreateSatelliteList(_satelliteProvider);
-        }
-
-        private async Task CreateSatelliteList(IProvider<SatelliteInfo> provider)
-        {
-            var satellites = await provider.GetValuesAsync();
+            var satellites = await _satelliteProvider.GetValuesAsync();
             var satelliteNames = satellites?.Select(s => s.Name).ToList();
 
             if (satelliteNames != null)

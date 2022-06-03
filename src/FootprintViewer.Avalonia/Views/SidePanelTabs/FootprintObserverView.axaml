@@ -2,46 +2,43 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                 
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"  
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
+             xmlns:filters="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates"
              xmlns:reactiveUi="http://reactiveui.net"
-             x:Name="userControl"                                    
+             x:Name="userControl"
              MinWidth="380"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
   <Design.DataContext>
     <vmd:DesignTimeFootprintObserver/>
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,Auto,*,50">
+  <UserControl.Styles>
+    <Style Selector="FlyoutPresenter">
+      <Setter Property="Padding" Value="0,0,0,0"/>    
+    </Style>
+  </UserControl.Styles>
 
-    <controls:Flyout x:Name="FlyoutObserverView"
-                     Placement="Left"
-                     Margin="0,10,0,0"
-                     Target="{Binding ElementName=SearchToggleButton}"
-                     IsOpen="{Binding IsFilterOpen}"
-                     Content="{Binding Filter}"
-                     Background="{StaticResource MainBackgroundBrush}">
-      <controls:Flyout.ContentTemplate>
-        <DataTemplate>
-          <reactiveUi:ViewModelViewHost ViewModel="{Binding}"/>
-        </DataTemplate>
-      </controls:Flyout.ContentTemplate>
-    </controls:Flyout>
+  <Grid RowDefinitions="Auto,Auto,*,50">
 
     <ToggleButton x:Name="SearchToggleButton"
                   Grid.Row="1"
                   Classes="FilterToggleButton"
-                  Content="Настройки поиска"/>
+                  Content="Настройки поиска">
+      <ToggleButton.Flyout>     
+        <Flyout Placement="LeftEdgeAlignedTop">
+          <filters:FootprintInfoFilterView DataContext="{Binding Filter}"/>
+        </Flyout>
+      </ToggleButton.Flyout>
+    </ToggleButton>
 
-    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"                                 
+    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"
                                   Grid.Row="2"/>
-
   </Grid>
-  
-  
+
 </UserControl>
