@@ -21,50 +21,47 @@
     <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
   </UserControl.Resources>
 
-  <Grid>
-    <Grid x:Name="GridOverlay"
-          ColumnDefinitions="*,Auto">
+  <Grid ColumnDefinitions="*,Auto">
 
-      <Panel>
-        <local:UserMapControl x:Name="UserMapControl"                          
-                              MapSource="{Binding Map}"     
-                              Controller="{Binding ActualController}"
-                              Behavior="{Binding Behavior}"
-                              TipSource="{Binding Tip}"        
-                              ScaleMapBar="{Binding ScaleMapBar}"
-                              MapNavigator="{Binding MapNavigator}"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"/>
+    <Panel>
+      <local:UserMapControl x:Name="UserMapControl"
+                            MapSource="{Binding Map}"
+                            Controller="{Binding ActualController}"
+                            Behavior="{Binding Behavior}"
+                            TipSource="{Binding Tip}"
+                            ScaleMapBar="{Binding ScaleMapBar}"
+                            MapNavigator="{Binding MapNavigator}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
 
-        <toolBar:CustomToolBarView DataContext="{Binding ToolBar}"                                                                             
-                                   VerticalAlignment="Center"                                                   
-                                   HorizontalAlignment="Left"                                                    
-                                   Margin="8"/>
-                   
-        <panels:InfoPanelView DataContext="{Binding InfoPanel}"
-                              VerticalAlignment="Bottom"              
-                              HorizontalAlignment="Center"              
-                              Margin="0,0,0,60"/>
-                  
-        <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"                               
-                              VerticalAlignment="Bottom"              
-                              HorizontalAlignment="Right"              
-                              Margin="0,0,15,30"/>
+      <toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 Margin="8"/>
 
-        <Grid VerticalAlignment="Bottom"
-              HorizontalAlignment="Stretch"
-              RowDefinitions="Auto,Auto">
-          <bottomPanel:BottomPanelView Grid.Row="0"
-                                       DataContext="{Binding BottomPanel}"/>
-          <views:ScaleMapBarView Grid.Row="1"
-                                 DataContext="{Binding ScaleMapBar}"/>
-        </Grid>
-      </Panel>
-      
-      <views:SidePanelView Grid.Column="1"
-                           DataContext="{Binding SidePanel}"/>
+      <panels:InfoPanelView DataContext="{Binding InfoPanel}"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,60"/>
 
-    </Grid>
+      <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"
+                            Margin="0,0,15,30"/>
+
+      <Grid VerticalAlignment="Bottom"
+            HorizontalAlignment="Stretch"
+            RowDefinitions="Auto,Auto">
+        <bottomPanel:BottomPanelView Grid.Row="0"
+                                     DataContext="{Binding BottomPanel}"/>
+        <views:ScaleMapBarView Grid.Row="1"
+                               DataContext="{Binding ScaleMapBar}"/>
+      </Grid>
+    </Panel>
+
+    <views:SidePanelView Grid.Column="1"
+                         DataContext="{Binding SidePanel}"/>
+
   </Grid>
 
 </UserControl>
