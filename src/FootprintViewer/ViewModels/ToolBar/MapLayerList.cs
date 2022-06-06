@@ -31,6 +31,7 @@ namespace FootprintViewer.ViewModels
     public class MapLayerList : ReactiveObject, IActivatableViewModel
     {
         private readonly Map _map;
+        private bool _skip;
 
         public ViewModelActivator Activator { get; }
 
@@ -42,11 +43,41 @@ namespace FootprintViewer.ViewModels
 
             Layers = new List<MapLayerItem>();
 
+            CheckAll = true;
+
+            this.WhenAnyValue(s => s.CheckAll).Subscribe(s =>
+            {
+                if (_skip == true)
+                {
+                    return;
+                }
+
+                foreach (var item in Layers)
+                {
+                    item.IsVisible = s;
+                }
+            });
+
             this.WhenActivated((CompositeDisposable disposables) =>
             {
-                Layers = _map.Layers.Select(s => new MapLayerItem(s)).ToList();
+                Layers = _map.Layers.Select(s =>
+                {
+                    var item = new MapLayerItem(s);
+
+                    item.WhenAnyValue(s => s.IsVisible).Subscribe(s =>
+                    {
+                        _skip = true;
+                        CheckAll = Layers.Select(s => s.IsVisible).All(s => s);
+                        _skip = false;
+                    });
+
+                    return item;
+                }).ToList();
             });
         }
+
+        [Reactive]
+        public bool CheckAll { get; set; }
 
         public List<MapLayerItem> Layers { get; private set; }
     }
