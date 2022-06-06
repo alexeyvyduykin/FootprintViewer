@@ -48,12 +48,18 @@
         </Viewbox>
       </DataTemplate>
 
-      <DataTemplate x:Key="WorldMaps">
+      <DataTemplate x:Key="MapBackgrounds">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
         </Viewbox>
       </DataTemplate>
 
+      <DataTemplate x:Key="MapLayers">
+        <Viewbox Width="36" Height="36">
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-layers-o}"/>
+        </Viewbox>
+      </DataTemplate>
+      
       <DataTemplate x:Key="Select">
         <Viewbox Width="36" Height="36">
           <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>

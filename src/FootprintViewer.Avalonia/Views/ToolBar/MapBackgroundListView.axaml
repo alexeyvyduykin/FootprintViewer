@@ -11,10 +11,10 @@
   <Design.DataContext>
     <vmd:DesignTimeMapBackgroundList/>
   </Design.DataContext>
-
+    
   <styles:ColorZone Padding="0">
-    <ListBox Items="{Binding WorldMaps}"
-             SelectedItem="{Binding SelectedWorldMap}">
+    <ListBox Items="{Binding MapBackgrounds}"
+             SelectedItem="{Binding SelectedMapBackground}">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <TextBlock Classes="Body2" Text="{Binding Name}"/>

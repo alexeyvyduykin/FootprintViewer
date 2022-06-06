@@ -184,6 +184,11 @@ namespace FootprintViewer
             return mapBackgroundList;
         }
 
+        public MapLayerList CreateMapLayerList()
+        {
+            return new MapLayerList(_dependencyResolver);
+        }
+
         public SceneSearch CreateSceneSearch()
         {
             var map = (Map)_dependencyResolver.GetExistingService<IMap>();

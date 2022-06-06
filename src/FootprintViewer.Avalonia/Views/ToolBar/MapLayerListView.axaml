@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d"
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.MapLayerListView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeMapLayerList/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Margin" Value="8,0,8,8"/>
+    </Style>
+
+    <Style Selector="ItemsControl > ContentPresenter:nth-child(1)">
+      <Setter Property="Margin" Value="8,8,8,8"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <styles:ColorZone Padding="0">
+    <ItemsControl x:Name="ItemsControl">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate DataType="vm:MapLayerItem">
+          <Grid ColumnDefinitions="*,8,Auto" HorizontalAlignment="Stretch">
+            <TextBlock Classes="Body2" Text="{Binding Name}"/>
+            <CheckBox Grid.Column="2"
+                      Padding="0"
+                      IsChecked="{Binding IsVisible}"/>
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </styles:ColorZone>
+
+</UserControl>

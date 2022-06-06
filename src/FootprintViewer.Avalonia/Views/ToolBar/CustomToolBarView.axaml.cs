@@ -18,9 +18,13 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
 
             this.WhenActivated(disposables =>
             {
-                LayerSelectorButton.Flyout?.Events().Closing.Subscribe(_ => LayerSelectorButton.IsChecked = false).DisposeWith(disposables);
+                // MapBackgroundSelectorButton
+                MapBackgroundSelectorButton.Flyout?.Events().Closing.Subscribe(_ => MapBackgroundSelectorButton.IsChecked = false).DisposeWith(disposables);
 
-                ViewModel?.MapBackgroundList.WhenAnyValue(s => s.SelectedWorldMap).Subscribe(_ => LayerSelectorButton.Flyout?.Hide()).DisposeWith(disposables);
+                ViewModel?.MapBackgroundList.WhenAnyValue(s => s.SelectedMapBackground).Subscribe(_ => MapBackgroundSelectorButton.Flyout?.Hide()).DisposeWith(disposables);
+
+                // MapLayerSelectorButton
+                MapLayerSelectorButton.Flyout?.Events().Closing.Subscribe(_ => MapLayerSelectorButton.IsChecked = false).DisposeWith(disposables);
             });
         }
     }

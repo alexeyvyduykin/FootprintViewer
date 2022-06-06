@@ -7,7 +7,7 @@
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
 
   <Design.DataContext>
@@ -48,13 +48,13 @@
       <toolBar:ToolCheckView DataContext="{Binding RouteDistance}"
                        Margin="0,1,0,0"/>
 
-      <!-- WorldMaps -->
-      <ToggleButton x:Name="LayerSelectorButton"
+      <!-- MapBackgrounds -->
+      <ToggleButton x:Name="MapBackgroundSelectorButton"
                     Margin="0,10,0,0"
                     Classes="toolCheck"
-                    IsChecked="{Binding WorldMaps.IsCheck}">
+                    IsChecked="{Binding MapBackgrounds.IsCheck}">
         <ToolTip.Tip>
-          <ToolTip Content="{Binding WorldMaps.Tooltip}" Classes="FastTooltip"/>
+          <ToolTip Content="{Binding MapBackgrounds.Tooltip}" Classes="FastTooltip"/>
         </ToolTip.Tip>
         <ToggleButton.Flyout>
           <Flyout Placement="RightEdgeAlignedTop">
@@ -62,10 +62,28 @@
           </Flyout>
         </ToggleButton.Flyout>
 
-        <ContentControl Content="{Binding WorldMaps}"
+        <ContentControl Content="{Binding MapBackgrounds}"
                         ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
       </ToggleButton>
 
+      <!-- MapLayers -->
+      <ToggleButton x:Name="MapLayerSelectorButton"
+                    Margin="0,1,0,0"
+                    Classes="toolCheck"
+                    IsChecked="{Binding MapLayers.IsCheck}">
+        <ToolTip.Tip>
+          <ToolTip Content="{Binding MapLayers.Tooltip}" Classes="FastTooltip"/>
+        </ToolTip.Tip>
+        <ToggleButton.Flyout>
+          <Flyout Placement="RightEdgeAlignedTop">
+            <toolBar:MapLayerListView DataContext="{Binding MapLayerList}"/>
+          </Flyout>
+        </ToggleButton.Flyout>
+
+        <ContentControl Content="{Binding MapLayers}"
+                        ContentTemplate="{DynamicResource ToolIconDataSelector}"/>        
+      </ToggleButton>
+            
       <toolBar:ToolCheckView DataContext="{Binding SelectGeometry}"
                        Margin="0,10,0,0"/>
 

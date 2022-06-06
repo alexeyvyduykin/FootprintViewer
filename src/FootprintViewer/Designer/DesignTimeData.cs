@@ -1,6 +1,8 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
+using Mapsui;
+using Mapsui.Layers;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeData : IReadonlyDependencyResolver
     {
-        private Mapsui.Map? _map;
+        private Map? _map;
         private IMapNavigator? _mapNavigator;
         private ProjectFactory? _projectFactory;
 
@@ -50,9 +52,20 @@ namespace FootprintViewer.Designer
             {
                 return _projectFactory ??= new ProjectFactory(this);
             }
-            else if (serviceType == typeof(Mapsui.IMap))
+            else if (serviceType == typeof(IMap))
             {
-                return _map ??= new Mapsui.Map();
+                return _map ??= CreateMap();
+
+                static Map CreateMap()
+                {
+                    var map = new Map();
+                    map.AddLayer(new Layer(), LayerType.WorldMap);
+                    map.AddLayer(new Layer(), LayerType.Footprint);
+                    map.AddLayer(new Layer(), LayerType.GroundTarget);
+                    map.AddLayer(new Layer(), LayerType.GroundStation);
+                    map.AddLayer(new Layer(), LayerType.User);
+                    return map;
+                }
             }
             else if (serviceType == typeof(IMapNavigator))
             {

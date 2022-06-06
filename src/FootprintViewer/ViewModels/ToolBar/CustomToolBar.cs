@@ -6,10 +6,13 @@ namespace FootprintViewer.ViewModels
     public class CustomToolBar : ToolBar
     {
         private readonly MapBackgroundList _mapBackgroundList;
+        private readonly MapLayerList _mapLayerList;
 
         public CustomToolBar(IReadonlyDependencyResolver dependencyResolver) : base()
         {
             _mapBackgroundList = dependencyResolver.GetExistingService<MapBackgroundList>();
+
+            _mapLayerList = dependencyResolver.GetExistingService<ProjectFactory>().CreateMapLayerList();
 
             ZoomIn = new ToolClick()
             {
@@ -56,9 +59,15 @@ namespace FootprintViewer.ViewModels
                 Group = "Group1",
             };
 
-            WorldMaps = new ToolCheck()
+            MapBackgrounds = new ToolCheck()
             {
-                Title = "WorldMaps",
+                Title = "MapBackgrounds",
+                Tooltip = "Список фоновых карт",
+            };
+
+            MapLayers = new ToolCheck()
+            {
+                Title = "MapLayers",
                 Tooltip = "Список слоев",
             };
 
@@ -172,7 +181,9 @@ namespace FootprintViewer.ViewModels
 
         public ToolCheck RouteDistance { get; }
 
-        public ToolCheck WorldMaps { get; }
+        public ToolCheck MapBackgrounds { get; }
+
+        public ToolCheck MapLayers { get; }
 
         public ToolCheck SelectGeometry { get; }
 
@@ -201,5 +212,7 @@ namespace FootprintViewer.ViewModels
         public ToolCheck Polygon { get; }
 
         public MapBackgroundList MapBackgroundList => _mapBackgroundList;
+
+        public MapLayerList MapLayerList => _mapLayerList;
     }
 }

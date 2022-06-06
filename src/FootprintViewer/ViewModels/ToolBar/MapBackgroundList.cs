@@ -11,7 +11,7 @@ namespace FootprintViewer.ViewModels
     public class MapBackgroundList : ReactiveObject
     {
         private readonly IProvider<MapResource> _mapProvider;
-        private readonly ObservableAsPropertyHelper<List<MapResource>> _worldMaps;
+        private readonly ObservableAsPropertyHelper<List<MapResource>> _mapBackgrounds;
 
         public MapBackgroundList(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -21,18 +21,18 @@ namespace FootprintViewer.ViewModels
 
             Loading = ReactiveCommand.CreateFromTask(s => _mapProvider.GetValuesAsync(null));
 
-            _worldMaps = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.WorldMaps);
+            _mapBackgrounds = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.MapBackgrounds);
 
-            this.WhenAnyValue(x => x.SelectedWorldMap!).InvokeCommand(WorldMapChanged);
+            this.WhenAnyValue(x => x.SelectedMapBackground!).InvokeCommand(WorldMapChanged);
         }
 
         public ReactiveCommand<MapResource, MapResource> WorldMapChanged { get; }
 
         public ReactiveCommand<Unit, List<MapResource>> Loading { get; }
 
-        public List<MapResource> WorldMaps => _worldMaps.Value;
+        public List<MapResource> MapBackgrounds => _mapBackgrounds.Value;
 
         [Reactive]
-        public MapResource? SelectedWorldMap { get; set; }
+        public MapResource? SelectedMapBackground { get; set; }
     }
 }
