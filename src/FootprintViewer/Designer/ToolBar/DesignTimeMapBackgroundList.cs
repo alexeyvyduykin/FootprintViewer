@@ -3,9 +3,9 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeWorldMapSelector : WorldMapSelector
+    public class DesignTimeMapBackgroundList : MapBackgroundList
     {
-        public DesignTimeWorldMapSelector() : base(new DesignTimeData())
+        public DesignTimeMapBackgroundList() : base(new DesignTimeData())
         {
             Loading.Execute().Subscribe();
         }

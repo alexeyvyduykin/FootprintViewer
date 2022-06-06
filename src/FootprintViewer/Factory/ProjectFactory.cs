@@ -171,17 +171,17 @@ namespace FootprintViewer
             return new ScaleMapBar();
         }
 
-        public WorldMapSelector CreateWorldMapSelector()
+        public MapBackgroundList CreateMapBackgroundList()
         {
             var map = (Map)_dependencyResolver.GetExistingService<IMap>();
 
-            var worldMapSelector = new WorldMapSelector(_dependencyResolver);
+            var mapBackgroundList = new MapBackgroundList(_dependencyResolver);
 
-            worldMapSelector.Loading.Subscribe(s => { map.SetWorldMapLayer(s.First()); });
+            mapBackgroundList.Loading.Subscribe(s => { map.SetWorldMapLayer(s.First()); });
 
-            worldMapSelector.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
+            mapBackgroundList.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
 
-            return worldMapSelector;
+            return mapBackgroundList;
         }
 
         public SceneSearch CreateSceneSearch()

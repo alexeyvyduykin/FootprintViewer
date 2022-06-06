@@ -20,7 +20,7 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
             {
                 LayerSelectorButton.Flyout?.Events().Closing.Subscribe(_ => LayerSelectorButton.IsChecked = false).DisposeWith(disposables);
 
-                ViewModel?.WorldMapSelector.WhenAnyValue(s => s.SelectedWorldMap).Subscribe(_ => LayerSelectorButton.Flyout?.Hide()).DisposeWith(disposables);
+                ViewModel?.MapBackgroundList.WhenAnyValue(s => s.SelectedWorldMap).Subscribe(_ => LayerSelectorButton.Flyout?.Hide()).DisposeWith(disposables);
             });
         }
     }

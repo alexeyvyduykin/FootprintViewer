@@ -8,12 +8,12 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class WorldMapSelector : ReactiveObject
+    public class MapBackgroundList : ReactiveObject
     {
         private readonly IProvider<MapResource> _mapProvider;
         private readonly ObservableAsPropertyHelper<List<MapResource>> _worldMaps;
 
-        public WorldMapSelector(IReadonlyDependencyResolver dependencyResolver)
+        public MapBackgroundList(IReadonlyDependencyResolver dependencyResolver)
         {
             _mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
 

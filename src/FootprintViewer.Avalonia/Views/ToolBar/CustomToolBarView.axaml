@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
-             xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"     
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"   
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+             xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
@@ -16,7 +16,7 @@
 
   <UserControl.Styles>
 
-    <Style Selector="v|ToolCheckView, v|ToolClickView">
+    <Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
       <Setter Property="HorizontalAlignment" Value="Left"/>
     </Style>
 
@@ -26,62 +26,62 @@
       <Setter Property="HorizontalAlignment" Value="Left"/>
       <Setter Property="ToolTip.ShowDelay" Value="0"/>
     </Style>
-        
+
     <Style Selector="FlyoutPresenter">
       <Setter Property="Padding" Value="8,0,0,0"/>
       <Setter Property="Background" Value="Transparent"/>
     </Style>
-    
+
   </UserControl.Styles>
-  
+
   <Panel>
     <StackPanel>
 
-      <v:ToolClickView DataContext="{Binding ZoomIn}"/>
+      <toolBar:ToolClickView DataContext="{Binding ZoomIn}"/>
 
-      <v:ToolClickView DataContext="{Binding ZoomOut}"
+      <toolBar:ToolClickView DataContext="{Binding ZoomOut}"
                        Margin="0,1,0,0"/>
 
-      <v:ToolCollectionView DataContext="{Binding AOICollection}"
+      <toolBar:ToolCollectionView DataContext="{Binding AOICollection}"
                             Margin="0,10,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding RouteDistance}" 
+      <toolBar:ToolCheckView DataContext="{Binding RouteDistance}"
                        Margin="0,1,0,0"/>
 
       <!-- WorldMaps -->
-      <ToggleButton x:Name="LayerSelectorButton"                                   
-                    Margin="0,10,0,0"             
+      <ToggleButton x:Name="LayerSelectorButton"
+                    Margin="0,10,0,0"
                     Classes="toolCheck"
                     IsChecked="{Binding WorldMaps.IsCheck}">
         <ToolTip.Tip>
           <ToolTip Content="{Binding WorldMaps.Tooltip}" Classes="FastTooltip"/>
         </ToolTip.Tip>
         <ToggleButton.Flyout>
-          <Flyout Placement="RightEdgeAlignedTop">         
-            <views:WorldMapSelectorView DataContext="{Binding WorldMapSelector}"/>
+          <Flyout Placement="RightEdgeAlignedTop">
+            <toolBar:MapBackgroundListView DataContext="{Binding MapBackgroundList}"/>
           </Flyout>
         </ToggleButton.Flyout>
-                
+
         <ContentControl Content="{Binding WorldMaps}"
                         ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
       </ToggleButton>
-                  
-      <v:ToolCheckView DataContext="{Binding SelectGeometry}"
+
+      <toolBar:ToolCheckView DataContext="{Binding SelectGeometry}"
                        Margin="0,10,0,0"/>
 
-      <v:ToolCollectionView DataContext="{Binding GeometryCollection}"
+      <toolBar:ToolCollectionView DataContext="{Binding GeometryCollection}"
                             Margin="0,1,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding TranslateGeometry}"
+      <toolBar:ToolCheckView DataContext="{Binding TranslateGeometry}"
                        Margin="0,1,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding RotateGeometry}"
+      <toolBar:ToolCheckView DataContext="{Binding RotateGeometry}"
                        Margin="0,1,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding ScaleGeometry}"
+      <toolBar:ToolCheckView DataContext="{Binding ScaleGeometry}"
                        Margin="0,1,0,0"/>
 
-      <v:ToolCheckView DataContext="{Binding EditGeometry}"
+      <toolBar:ToolCheckView DataContext="{Binding EditGeometry}"
                        Margin="0,1,0,0"/>
 
     </StackPanel>

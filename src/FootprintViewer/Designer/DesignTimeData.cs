@@ -42,7 +42,7 @@ namespace FootprintViewer.Designer
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
         private CustomToolBar? _customToolBar;
-        private WorldMapSelector? _worldMapSelector;
+        private MapBackgroundList? _mapBackgroundList;
 
         public object? GetService(Type? serviceType, string? contract = null)
         {
@@ -62,9 +62,9 @@ namespace FootprintViewer.Designer
             {
                 return _satelliteProvider ??= new DesignTimeSatelliteProvider();
             }
-            else if (serviceType == typeof(WorldMapSelector))
+            else if (serviceType == typeof(MapBackgroundList))
             {
-                return _worldMapSelector ??= new WorldMapSelector(this);
+                return _mapBackgroundList ??= new MapBackgroundList(this);
             }
             else if (serviceType == typeof(ISensorLayerSource))
             {

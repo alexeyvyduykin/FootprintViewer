@@ -103,7 +103,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
             services.RegisterConstant(factory.CreateGroundStationViewer(), typeof(GroundStationViewer));
 
-            services.RegisterConstant(factory.CreateWorldMapSelector(), typeof(WorldMapSelector));
+            services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
 
             services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
 

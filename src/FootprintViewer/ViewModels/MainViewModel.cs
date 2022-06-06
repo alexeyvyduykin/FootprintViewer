@@ -158,7 +158,7 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingProvidersAsync()
         {
-            await Task.Run(() => _dependencyResolver.GetExistingService<WorldMapSelector>().Loading.Execute().Subscribe());
+            await Task.Run(() => _dependencyResolver.GetExistingService<MapBackgroundList>().Loading.Execute().Subscribe());
             await Task.Run(() => _dependencyResolver.GetExistingService<IUserLayerSource>().Init.Execute().Subscribe());
             await Task.Run(() => _dependencyResolver.GetExistingService<IFootprintLayerSource>().Init.Execute().Subscribe());
             await Task.Run(() => _dependencyResolver.GetExistingService<ITrackLayerSource>().Init.Execute().Subscribe());

@@ -1,15 +1,15 @@
-<UserControl x:Class="FootprintViewer.Avalonia.Views.WorldMapSelectorView"
-             xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d" 
              d:DesignWidth="380" d:DesignHeight="250"
-             mc:Ignorable="d">
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.MapBackgroundListView">
 
   <Design.DataContext>
-    <vmd:DesignTimeWorldMapSelector/>
+    <vmd:DesignTimeMapBackgroundList/>
   </Design.DataContext>
 
   <styles:ColorZone Padding="0">

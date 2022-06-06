@@ -5,11 +5,11 @@ namespace FootprintViewer.ViewModels
 {
     public class CustomToolBar : ToolBar
     {
-        private readonly WorldMapSelector _worldMapSelector;
+        private readonly MapBackgroundList _mapBackgroundList;
 
         public CustomToolBar(IReadonlyDependencyResolver dependencyResolver) : base()
         {
-            _worldMapSelector = dependencyResolver.GetExistingService<WorldMapSelector>();
+            _mapBackgroundList = dependencyResolver.GetExistingService<MapBackgroundList>();
 
             ZoomIn = new ToolClick()
             {
@@ -200,6 +200,6 @@ namespace FootprintViewer.ViewModels
 
         public ToolCheck Polygon { get; }
 
-        public WorldMapSelector WorldMapSelector => _worldMapSelector;
+        public MapBackgroundList MapBackgroundList => _mapBackgroundList;
     }
 }
