@@ -41,7 +41,6 @@ namespace FootprintViewer.Avalonia
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 
-            IDataSource<FootprintInfo> footprintDataSource;
             IDataSource<SatelliteInfo> satelliteDataSource;
             IEditableDataSource<UserGeometryInfo> userGeometryDataSource;
 
@@ -49,18 +48,15 @@ namespace FootprintViewer.Avalonia
             {
                 var options = GetOptions();
                 satelliteDataSource = new Data.Sources.SatelliteDataSource(options);
-                footprintDataSource = new Data.Sources.FootprintDataSource(options);
                 userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
             }
             else
             {
                 satelliteDataSource = new Data.Sources.RandomSatelliteDataSource();
-                footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
                 userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
             }
 
             services.RegisterConstant(new Provider<SatelliteInfo>(new[] { satelliteDataSource }), typeof(IProvider<SatelliteInfo>));
-            services.RegisterConstant(new Provider<FootprintInfo>(new[] { footprintDataSource }), typeof(IProvider<FootprintInfo>));
             services.RegisterConstant(new Provider<MapResource>(new[]
             {
                 new Data.Sources.MapDataSource("*.mbtiles", "data", "world"),
@@ -79,6 +75,7 @@ namespace FootprintViewer.Avalonia
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
             services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTargetInfo>));
+            services.RegisterConstant(factory.CreateFootprintProvider(), typeof(IProvider<FootprintInfo>));
 
             services.RegisterConstant(new EditableProvider<UserGeometryInfo>(new[] { userGeometryDataSource }), typeof(IEditableProvider<UserGeometryInfo>));
 

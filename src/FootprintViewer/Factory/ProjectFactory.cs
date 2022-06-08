@@ -412,6 +412,56 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public IProvider<FootprintInfo> CreateFootprintProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.FootprintSources.Count == 0)
+            {
+                // settings.FootprintSources.Add(new RandomSourceInfo("RandomFootprint"));
+                settings.FootprintSources.Add(new DatabaseSourceInfo()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "Footprints"
+                });
+            }
+
+            var dataSources = settings.FootprintSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<FootprintInfo>(dataSources);
+
+            settings.WhenAnyValue(s => s.FootprintSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.Update);
+
+            return provider;
+
+            static IDataSource<FootprintInfo> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo)
+                {
+                    throw new Exception();
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    return new FootprintDataSource(DbOptions.Build<FootprintDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    // TODO: temporary solution, all random sources not chaining
+                    var satelliteDataSource = new RandomSatelliteDataSource();
+                    return new RandomFootprintDataSource(satelliteDataSource);
+                }
+
+                throw new Exception();
+            }
+        }
     }
 
     public static class DbOptions

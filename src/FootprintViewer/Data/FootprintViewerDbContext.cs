@@ -56,10 +56,36 @@ namespace FootprintViewer.Data
         }
     }
 
+    public class FootprintDbContext : DbContext
+    {
+        public DbSet<Footprint> Footprints { get; set; }
+
+        public FootprintDbContext(DbContextOptions<FootprintDbContext> options) : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasPostgresExtension("postgis");
+
+            // Footprints
+            modelBuilder.Entity<Footprint>(FootprintConfigure);
+        }
+
+        protected static void FootprintConfigure(EntityTypeBuilder<Footprint> builder)
+        {
+            builder.Property(b => b.Name).IsRequired();
+            builder.HasKey(b => b.Name);
+            builder.Property(e => e.Direction).HasConversion(
+                v => v.ToString(),
+                v => (SatelliteStripDirection)Enum.Parse(typeof(SatelliteStripDirection), v));
+        }
+    }
+
     public class FootprintViewerDbContext : DbContext
     {
         public DbSet<Satellite> Satellites { get; set; }
-        public DbSet<Footprint> Footprints { get; set; }
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
         public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
@@ -74,9 +100,6 @@ namespace FootprintViewer.Data
             // Satellites
             modelBuilder.Entity<Satellite>(SatelliteConfigure);
 
-            // Footprints
-            modelBuilder.Entity<Footprint>(FootprintConfigure);
-
             // UserGeometries
             modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
         }
@@ -85,15 +108,6 @@ namespace FootprintViewer.Data
         {
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
-        }
-
-        protected static void FootprintConfigure(EntityTypeBuilder<Footprint> builder)
-        {
-            builder.Property(b => b.Name).IsRequired();
-            builder.HasKey(b => b.Name);
-            builder.Property(e => e.Direction).HasConversion(
-                v => v.ToString(),
-                v => (SatelliteStripDirection)Enum.Parse(typeof(SatelliteStripDirection), v));
         }
 
         protected static void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)

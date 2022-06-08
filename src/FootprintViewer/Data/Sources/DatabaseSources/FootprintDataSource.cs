@@ -8,16 +8,16 @@ namespace FootprintViewer.Data.Sources
 {
     public class FootprintDataSource : IDataSource<FootprintInfo>
     {
-        private readonly DbContextOptions<FootprintViewerDbContext> _options;
+        private readonly DbContextOptions<FootprintDbContext> _options;
 
-        public FootprintDataSource(DbContextOptions<FootprintViewerDbContext> options)
+        public FootprintDataSource(DbContextOptions<FootprintDbContext> options)
         {
             _options = options;
         }
 
         public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
         {
-            var context = new FootprintViewerDbContext(_options);
+            var context = new FootprintDbContext(_options);
 
             if (filter == null)
             {
