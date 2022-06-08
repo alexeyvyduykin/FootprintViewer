@@ -41,7 +41,6 @@ namespace FootprintViewer.Avalonia
 
             var factory = resolver.GetExistingService<ProjectFactory>();
 
-            IDataSource<GroundTargetInfo> groundTargetDataSource;
             IDataSource<FootprintInfo> footprintDataSource;
             IDataSource<SatelliteInfo> satelliteDataSource;
             IEditableDataSource<UserGeometryInfo> userGeometryDataSource;
@@ -50,7 +49,6 @@ namespace FootprintViewer.Avalonia
             {
                 var options = GetOptions();
                 satelliteDataSource = new Data.Sources.SatelliteDataSource(options);
-                groundTargetDataSource = new Data.Sources.GroundTargetDataSource(options);
                 footprintDataSource = new Data.Sources.FootprintDataSource(options);
                 userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
             }
@@ -58,13 +56,11 @@ namespace FootprintViewer.Avalonia
             {
                 satelliteDataSource = new Data.Sources.RandomSatelliteDataSource();
                 footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
-                groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);
                 userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
             }
 
             services.RegisterConstant(new Provider<SatelliteInfo>(new[] { satelliteDataSource }), typeof(IProvider<SatelliteInfo>));
             services.RegisterConstant(new Provider<FootprintInfo>(new[] { footprintDataSource }), typeof(IProvider<FootprintInfo>));
-            services.RegisterConstant(new Provider<GroundTargetInfo>(new[] { groundTargetDataSource }), typeof(IProvider<GroundTargetInfo>));
             services.RegisterConstant(new Provider<MapResource>(new[]
             {
                 new Data.Sources.MapDataSource("*.mbtiles", "data", "world"),
@@ -80,7 +76,9 @@ namespace FootprintViewer.Avalonia
                 new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"),
             }), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
 
+            // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
+            services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTargetInfo>));
 
             services.RegisterConstant(new EditableProvider<UserGeometryInfo>(new[] { userGeometryDataSource }), typeof(IEditableProvider<UserGeometryInfo>));
 

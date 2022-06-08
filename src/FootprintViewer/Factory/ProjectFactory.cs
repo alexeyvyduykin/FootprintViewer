@@ -361,6 +361,57 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public IProvider<GroundTargetInfo> CreateGroundTargetProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.GroundTargetSources.Count == 0)
+            {
+                // settings.GroundTargetSources.Add(new RandomSourceInfo("RandomGroundTarget"));
+                settings.GroundTargetSources.Add(new DatabaseSourceInfo()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "GroundTargets"
+                });
+            }
+
+            var dataSources = settings.GroundTargetSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<GroundTargetInfo>(dataSources);
+
+            settings.WhenAnyValue(s => s.GroundTargetSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.Update);
+
+            return provider;
+
+            static IDataSource<GroundTargetInfo> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo)
+                {
+                    throw new Exception();
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    return new GroundTargetDataSource(DbOptions.Build<GroundTargetDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    // TODO: temporary solution, all random sources not chaining
+                    var satelliteDataSource = new RandomSatelliteDataSource();
+                    var footprintDataSource = new RandomFootprintDataSource(satelliteDataSource);
+                    return new RandomGroundTargetDataSource(footprintDataSource);
+                }
+
+                throw new Exception();
+            }
+        }
     }
 
     public static class DbOptions
