@@ -83,9 +83,32 @@ namespace FootprintViewer.Data
         }
     }
 
-    public class FootprintViewerDbContext : DbContext
+    public class SatelliteDbContext : DbContext
     {
         public DbSet<Satellite> Satellites { get; set; }
+
+        public SatelliteDbContext(DbContextOptions<SatelliteDbContext> options) : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasPostgresExtension("postgis");
+
+            // Satellites
+            modelBuilder.Entity<Satellite>(SatelliteConfigure);
+        }
+
+        protected static void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
+        {
+            builder.Property(b => b.Name).IsRequired();
+            builder.HasKey(b => b.Name);
+        }
+    }
+
+    public class FootprintViewerDbContext : DbContext
+    {
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
         public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
@@ -97,17 +120,8 @@ namespace FootprintViewer.Data
         {
             modelBuilder.HasPostgresExtension("postgis");
 
-            // Satellites
-            modelBuilder.Entity<Satellite>(SatelliteConfigure);
-
             // UserGeometries
             modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
-        }
-
-        protected static void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
-        {
-            builder.Property(b => b.Name).IsRequired();
-            builder.HasKey(b => b.Name);
         }
 
         protected static void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)

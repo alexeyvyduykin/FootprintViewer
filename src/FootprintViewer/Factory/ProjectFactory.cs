@@ -462,6 +462,54 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public IProvider<SatelliteInfo> CreateSatelliteProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.SatelliteSources.Count == 0)
+            {
+                // settings.SatelliteSources.Add(new RandomSourceInfo("RandomSatellite"));
+                settings.SatelliteSources.Add(new DatabaseSourceInfo()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "Satellites"
+                });
+            }
+
+            var dataSources = settings.SatelliteSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<SatelliteInfo>(dataSources);
+
+            settings.WhenAnyValue(s => s.SatelliteSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.Update);
+
+            return provider;
+
+            static IDataSource<SatelliteInfo> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo)
+                {
+                    throw new Exception();
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    return new SatelliteDataSource(DbOptions.Build<SatelliteDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    return new RandomSatelliteDataSource();
+                }
+
+                throw new Exception();
+            }
+        }
     }
 
     public static class DbOptions
