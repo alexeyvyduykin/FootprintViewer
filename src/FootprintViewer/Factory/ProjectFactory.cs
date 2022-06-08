@@ -1,10 +1,15 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.Sources;
+using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.Settings;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Microsoft.EntityFrameworkCore;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Linq;
@@ -307,6 +312,75 @@ namespace FootprintViewer
             var userGeometryViewer = new UserGeometryViewer(_dependencyResolver);
 
             return userGeometryViewer;
+        }
+
+        public IProvider<GroundStationInfo> CreateGroundStationProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.GroundStationSources.Count == 0)
+            {
+                // settings.GroundStationSources.Add(new RandomSourceInfo("RandomGroundStation"));
+                settings.GroundStationSources.Add(new DatabaseSourceInfo()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "GroundStations"
+                });
+            }
+
+            var dataSources = settings.GroundStationSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<GroundStationInfo>(dataSources);
+
+            settings.WhenAnyValue(s => s.GroundStationSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.Update);
+
+            return provider;
+
+            static IDataSource<GroundStationInfo> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo)
+                {
+                    throw new Exception();
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    return new GroundStationDataSource(DbOptions.Build<GroundStationDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    return new RandomGroundStationDataSource();
+                }
+
+                throw new Exception();
+            }
+        }
+    }
+
+    public static class DbOptions
+    {
+        public static DbContextOptions<T> Build<T>(IDatabaseSourceInfo info) where T : DbContext
+        {
+            string connectionString = $"Host={info.Host};Port={info.Port};Database={info.Database};Username={info.Username};Password={info.Password}";
+            var res = info.Version!.Split(new[] { '.' });
+            var major = int.Parse(res[0]);
+            var minor = int.Parse(res[1]);
+
+            var optionsBuilder = new DbContextOptionsBuilder<T>();
+
+            var options = optionsBuilder.UseNpgsql(connectionString, options =>
+            {
+                options.SetPostgresVersion(new Version(major, minor));
+                options.UseNetTopologySuite();
+            }).Options;
+
+            return options;
         }
     }
 }

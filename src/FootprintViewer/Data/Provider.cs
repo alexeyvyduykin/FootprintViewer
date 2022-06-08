@@ -1,5 +1,8 @@
 ﻿using FootprintViewer.ViewModels;
+using ReactiveUI;
+using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
@@ -11,7 +14,7 @@ namespace FootprintViewer.Data
 
     public abstract class BaseProvider<T>
     {
-        private readonly IList<T> _sources = new List<T>();
+        protected List<T> _sources = new List<T>();
 
         public void AddSource(T source)
         {
@@ -23,7 +26,12 @@ namespace FootprintViewer.Data
 
     public class Provider<T> : BaseProvider<IDataSource<T>>, IProvider<T>
     {
-        public Provider() { }
+        public Provider()
+        {
+            _sources = new List<IDataSource<T>>();
+
+            UpdateSources = ReactiveCommand.Create(() => _sources);
+        }
 
         public Provider(IDataSource<T>[] sources) : this()
         {
@@ -31,6 +39,15 @@ namespace FootprintViewer.Data
             {
                 AddSource(item);
             }
+        }
+
+        public ReactiveCommand<Unit, List<IDataSource<T>>> UpdateSources { get; }
+
+        public void Update(IDataSource<T>[] sources)
+        {
+            _sources = new List<IDataSource<T>>(sources);
+
+            UpdateSources.Execute().Subscribe();
         }
 
         public async Task<List<T>> GetValuesAsync(IFilter<T>? filter)

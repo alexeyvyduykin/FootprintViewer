@@ -5,13 +5,36 @@ using System;
 
 namespace FootprintViewer.Data
 {
+    public class GroundStationDbContext : DbContext
+    {
+        public DbSet<GroundStation> GroundStations { get; set; }
+
+        public GroundStationDbContext(DbContextOptions<GroundStationDbContext> options) : base(options)
+        {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasPostgresExtension("postgis");
+
+            // GroundStations
+            modelBuilder.Entity<GroundStation>(GroundStationsConfigure);
+        }
+
+        protected static void GroundStationsConfigure(EntityTypeBuilder<GroundStation> builder)
+        {
+            builder.Property(b => b.Name).IsRequired();
+            builder.HasKey(b => b.Name);
+        }
+    }
+
     public class FootprintViewerDbContext : DbContext
     {
         public DbSet<Satellite> Satellites { get; set; }
         public DbSet<GroundTarget> GroundTargets { get; set; }
         public DbSet<Footprint> Footprints { get; set; }
         public DbSet<UserGeometry> UserGeometries { get; set; }
-        public DbSet<GroundStation> GroundStations { get; set; }
 
         public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
         {
@@ -33,9 +56,6 @@ namespace FootprintViewer.Data
 
             // UserGeometries
             modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
-
-            // GroundStations
-            modelBuilder.Entity<GroundStation>(GroundStationsConfigure);
         }
 
         protected static void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
@@ -69,12 +89,6 @@ namespace FootprintViewer.Data
             builder.Property(e => e.Type).HasConversion(
                 v => v.ToString(),
                 v => (UserGeometryType)Enum.Parse(typeof(UserGeometryType), v));
-        }
-
-        protected static void GroundStationsConfigure(EntityTypeBuilder<GroundStation> builder)
-        {
-            builder.Property(b => b.Name).IsRequired();
-            builder.HasKey(b => b.Name);
         }
     }
 }

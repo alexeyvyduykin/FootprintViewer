@@ -45,7 +45,6 @@ namespace FootprintViewer.Avalonia
             IDataSource<FootprintInfo> footprintDataSource;
             IDataSource<SatelliteInfo> satelliteDataSource;
             IEditableDataSource<UserGeometryInfo> userGeometryDataSource;
-            IDataSource<GroundStationInfo> groundStationDataSource;
 
             if (IsConnectionValid() == true)
             {
@@ -54,7 +53,6 @@ namespace FootprintViewer.Avalonia
                 groundTargetDataSource = new Data.Sources.GroundTargetDataSource(options);
                 footprintDataSource = new Data.Sources.FootprintDataSource(options);
                 userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
-                groundStationDataSource = new Data.Sources.GroundStationDataSource(options);
             }
             else
             {
@@ -62,7 +60,6 @@ namespace FootprintViewer.Avalonia
                 footprintDataSource = new Data.Sources.RandomFootprintDataSource(satelliteDataSource);
                 groundTargetDataSource = new Data.Sources.RandomGroundTargetDataSource(footprintDataSource);
                 userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
-                groundStationDataSource = new Data.Sources.RandomGroundStationDataSource();
             }
 
             services.RegisterConstant(new Provider<SatelliteInfo>(new[] { satelliteDataSource }), typeof(IProvider<SatelliteInfo>));
@@ -82,7 +79,9 @@ namespace FootprintViewer.Avalonia
             {
                 new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"),
             }), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
-            services.RegisterConstant(new Provider<GroundStationInfo>(new[] { groundStationDataSource }), typeof(IProvider<GroundStationInfo>));
+
+            services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
+
             services.RegisterConstant(new EditableProvider<UserGeometryInfo>(new[] { userGeometryDataSource }), typeof(IEditableProvider<UserGeometryInfo>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
