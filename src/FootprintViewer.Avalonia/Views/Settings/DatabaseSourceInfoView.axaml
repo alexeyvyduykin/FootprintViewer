@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             mc:Ignorable="d"
+             MinWidth="320"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.DatabaseSourceInfoView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeDatabaseSourceInfo/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Margin" Value="0,0,8,0"></Setter>
+    </Style>
+  </UserControl.Styles>
+  
+
+  <styles:Card>
+
+    <StackPanel>
+
+      <Grid ColumnDefinitions="Auto,*"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                
+        <TextBlock Text="Version" Grid.Row="0"/>
+        <TextBlock Text="Host" Grid.Row="1"/>
+        <TextBlock Text="Port" Grid.Row="2"/>
+        <TextBlock Text="Database" Grid.Row="3"/>
+        <TextBlock Text="Username" Grid.Row="4"/>
+        <TextBlock Text="Password" Grid.Row="5"/>
+        <TextBlock Text="Table" Grid.Row="6"/>
+
+        <TextBox Text="{Binding Version}" Grid.Column="1" Grid.Row="0"/>
+        <TextBox Text="{Binding Host}" Grid.Column="1" Grid.Row="1"/>
+        <TextBox Text="{Binding Port}" Grid.Column="1" Grid.Row="2"/>
+        <TextBox Text="{Binding Database}" Grid.Column="1" Grid.Row="3"/>
+        <TextBox Text="{Binding Username}" Grid.Column="1" Grid.Row="4"/>
+        <TextBox Text="{Binding Password}" Grid.Column="1" Grid.Row="5"/>
+        <TextBox Text="{Binding Table}" Grid.Column="1" Grid.Row="6"/>
+                               
+      </Grid>
+                  
+      <Grid ColumnDefinitions="1*,1*">
+        <Button Content="Add"></Button>
+        <Button Grid.Column="1"
+                Content="Cancel"></Button>
+      </Grid>
+    </StackPanel>
+
+  </styles:Card>
+  
+  
+</UserControl>

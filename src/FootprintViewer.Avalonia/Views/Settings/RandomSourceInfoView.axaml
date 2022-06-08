@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             mc:Ignorable="d"                              
+             MinWidth="320"             
+             x:Class="FootprintViewer.Avalonia.Views.Settings.RandomSourceInfoView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeRandomSourceInfo/>
+  </Design.DataContext>
+  
+  <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Margin" Value="0,0,8,0"></Setter>
+    </Style>
+  </UserControl.Styles>
+
+  <styles:Card>
+
+    <StackPanel>
+
+      <Grid ColumnDefinitions="Auto,*">
+        <TextBlock Text="GenerateCount"/>
+        <TextBox Text="{Binding GenerateCount}" Grid.Column="1"/>
+      </Grid>
+
+      <Grid ColumnDefinitions="1*,1*">
+        <Button Content="Add"></Button>
+        <Button Grid.Column="1"
+                Content="Cancel"></Button>
+      </Grid>
+    </StackPanel>
+
+  </styles:Card>
+  
+</UserControl>
