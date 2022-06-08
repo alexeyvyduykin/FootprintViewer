@@ -107,11 +107,11 @@ namespace FootprintViewer.Data
         }
     }
 
-    public class FootprintViewerDbContext : DbContext
+    public class UserGeometryDbContext : DbContext
     {
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
-        public FootprintViewerDbContext(DbContextOptions<FootprintViewerDbContext> options) : base(options)
+        public UserGeometryDbContext(DbContextOptions<UserGeometryDbContext> options) : base(options)
         {
 
         }

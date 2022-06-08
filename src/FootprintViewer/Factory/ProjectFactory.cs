@@ -339,7 +339,7 @@ namespace FootprintViewer
 
             settings.WhenAnyValue(s => s.GroundStationSources)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.Update);
+                    .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -387,7 +387,7 @@ namespace FootprintViewer
 
             settings.WhenAnyValue(s => s.GroundTargetSources)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.Update);
+                    .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -438,7 +438,7 @@ namespace FootprintViewer
 
             settings.WhenAnyValue(s => s.FootprintSources)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.Update);
+                    .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -488,7 +488,7 @@ namespace FootprintViewer
 
             settings.WhenAnyValue(s => s.SatelliteSources)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.Update);
+                    .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -505,6 +505,53 @@ namespace FootprintViewer
                 else if (info is IRandomSourceInfo)
                 {
                     return new RandomSatelliteDataSource();
+                }
+
+                throw new Exception();
+            }
+        }
+
+        public IEditableProvider<UserGeometryInfo> CreateUserGeometryProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.UserGeometrySources.Count == 0)
+            {
+                settings.UserGeometrySources.Add(new DatabaseSourceInfo()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "UserGeometries"
+                });
+            }
+
+            var dataSources = settings.UserGeometrySources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new EditableProvider<UserGeometryInfo>(dataSources);
+
+            settings.WhenAnyValue(s => s.UserGeometrySources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.ChangeSources);
+
+            return provider;
+
+            static IDataSource<UserGeometryInfo> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo)
+                {
+                    throw new Exception();
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    return new UserGeometryDataSource(DbOptions.Build<UserGeometryDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    throw new Exception();
                 }
 
                 throw new Exception();

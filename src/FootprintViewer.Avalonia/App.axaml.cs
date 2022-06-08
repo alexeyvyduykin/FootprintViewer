@@ -4,19 +4,15 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.Data;
-using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.Settings;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Npgsql;
 using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace FootprintViewer.Avalonia
@@ -34,24 +30,10 @@ namespace FootprintViewer.Avalonia
 
             // Load the saved view model state.
             var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
-
             services.RegisterConstant(settings, typeof(AppSettings));
 
             services.Register(() => new ProjectFactory(resolver));
-
             var factory = resolver.GetExistingService<ProjectFactory>();
-
-            IEditableDataSource<UserGeometryInfo> userGeometryDataSource;
-
-            if (IsConnectionValid() == true)
-            {
-                var options = GetOptions();
-                userGeometryDataSource = new Data.Sources.UserGeometryDataSource(options);
-            }
-            else
-            {
-                userGeometryDataSource = new Data.Sources.LocalUserGeometryDataSource();
-            }
 
             services.RegisterConstant(new Provider<MapResource>(new[]
             {
@@ -73,8 +55,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTargetInfo>));
             services.RegisterConstant(factory.CreateFootprintProvider(), typeof(IProvider<FootprintInfo>));
             services.RegisterConstant(factory.CreateSatelliteProvider(), typeof(IProvider<SatelliteInfo>));
-
-            services.RegisterConstant(new EditableProvider<UserGeometryInfo>(new[] { userGeometryDataSource }), typeof(IEditableProvider<UserGeometryInfo>));
+            services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometryInfo>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
@@ -157,11 +138,11 @@ namespace FootprintViewer.Avalonia
             base.OnFrameworkInitializationCompleted();
         }
 
-        private static bool IsConnectionValid()
+        private static bool IsConnectionValid(string? connectionString)
         {
             try
             {
-                using (var connection = new NpgsqlConnection(GetConnectionString()))
+                using (var connection = new NpgsqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -174,38 +155,6 @@ namespace FootprintViewer.Avalonia
             {
                 return false;
             }
-        }
-
-        private static string GetConnectionString()
-        {
-            var builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json");
-            return builder.Build().GetConnectionString("DefaultConnection");
-        }
-
-        private static DbContextOptions<FootprintViewerDbContext> GetOptions()
-        {
-            var builder = new ConfigurationBuilder();
-            // установка пути к текущему каталогу
-            builder.SetBasePath(SolutionFolder.GetAppSettingsBasePath("appsettings.json"));
-            // получаем конфигурацию из файла appsettings.json
-            builder.AddJsonFile("appsettings.json");
-            // создаем конфигурацию
-            var config = builder.Build();
-            // получаем строку подключения
-            string connectionString = config.GetConnectionString("DefaultConnection");
-            var major = int.Parse(config["PostgresVersionMajor"]);
-            var minor = int.Parse(config["PostgresVersionMinor"]);
-
-            var optionsBuilder = new DbContextOptionsBuilder<FootprintViewerDbContext>();
-            var options = optionsBuilder.UseNpgsql(connectionString, options =>
-            {
-                options.SetPostgresVersion(new Version(major, minor));
-                options.UseNetTopologySuite();
-            }).Options;
-
-            return options;
         }
 
         public static Window? GetWindow()

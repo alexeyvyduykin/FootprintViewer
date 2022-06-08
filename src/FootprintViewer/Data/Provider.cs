@@ -43,7 +43,7 @@ namespace FootprintViewer.Data
 
         public ReactiveCommand<Unit, List<IDataSource<T>>> UpdateSources { get; }
 
-        public void Update(IDataSource<T>[] sources)
+        public void ChangeSources(IDataSource<T>[] sources)
         {
             _sources = new List<IDataSource<T>>(sources);
 
