@@ -19,6 +19,8 @@ namespace FootprintViewer.ViewModels.Settings
             SatelliteSources = new List<ISourceInfo>();
 
             UserGeometrySources = new List<ISourceInfo>();
+
+            FootprintPreviewGeometrySources = new List<ISourceInfo>();
         }
 
         [DataMember]
@@ -43,5 +45,9 @@ namespace FootprintViewer.ViewModels.Settings
         [DataMember]
         [Reactive]
         public List<ISourceInfo> UserGeometrySources { get; private set; }
+
+        [DataMember]
+        [Reactive]
+        public List<ISourceInfo> FootprintPreviewGeometrySources { get; private set; }
     }
 }

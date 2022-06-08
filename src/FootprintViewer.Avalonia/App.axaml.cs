@@ -45,10 +45,6 @@ namespace FootprintViewer.Avalonia
                 new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "data", "footprints"),
                 new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "userData", "footprints"),
             }), typeof(IProvider<FootprintPreview>));
-            services.RegisterConstant(new Provider<(string, NetTopologySuite.Geometries.Geometry)>(new[]
-            {
-                new Data.Sources.FootprintPreviewGeometryDataSource("mosaic-tiff-ruonly.shp", "data", "mosaics-geotiff"),
-            }), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
 
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
@@ -56,6 +52,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateFootprintProvider(), typeof(IProvider<FootprintInfo>));
             services.RegisterConstant(factory.CreateSatelliteProvider(), typeof(IProvider<SatelliteInfo>));
             services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometryInfo>));
+            services.RegisterConstant(factory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 

@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
+using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
@@ -548,6 +549,50 @@ namespace FootprintViewer
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
                     return new UserGeometryDataSource(DbOptions.Build<UserGeometryDbContext>(databaseInfo));
+                }
+                else if (info is IRandomSourceInfo)
+                {
+                    throw new Exception();
+                }
+
+                throw new Exception();
+            }
+        }
+
+        public IProvider<(string, NetTopologySuite.Geometries.Geometry)> CreateFootprintPreviewGeometryProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.FootprintPreviewGeometrySources.Count == 0)
+            {
+                var folder = new SolutionFolder("data");
+                var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
+
+                settings.FootprintPreviewGeometrySources.Add(new FileSourceInfo()
+                {
+                    Path = path,
+                });
+            }
+
+            var dataSources = settings.FootprintPreviewGeometrySources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<(string, NetTopologySuite.Geometries.Geometry)>(dataSources);
+
+            settings.WhenAnyValue(s => s.FootprintPreviewGeometrySources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.ChangeSources);
+
+            return provider;
+
+            static IDataSource<(string, NetTopologySuite.Geometries.Geometry)> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFileSourceInfo fileInfo)
+                {
+                    return new FootprintPreviewGeometryDataSource(fileInfo.Path);
+                }
+                else if (info is IDatabaseSourceInfo databaseInfo)
+                {
+                    throw new Exception();
                 }
                 else if (info is IRandomSourceInfo)
                 {

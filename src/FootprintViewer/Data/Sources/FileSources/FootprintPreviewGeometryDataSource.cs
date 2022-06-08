@@ -1,9 +1,7 @@
-﻿using FootprintViewer.FileSystem;
-using FootprintViewer.ViewModels;
+﻿using FootprintViewer.ViewModels;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,31 +10,18 @@ namespace FootprintViewer.Data.Sources
 {
     public class FootprintPreviewGeometryDataSource : IDataSource<(string, Geometry)>
     {
-        private readonly SolutionFolder _dataFolder;
-        private readonly string _file;
-        private readonly string? _subFolder;
+        private readonly string? _path;
 
-        public FootprintPreviewGeometryDataSource(string file, string folder, string? subFolder = null)
+        public FootprintPreviewGeometryDataSource(string? path)
         {
-            _file = file;
-
-            if (file.Contains("*.") == true)
-            {
-                throw new Exception();
-            }
-
-            _subFolder = subFolder;
-
-            _dataFolder = new SolutionFolder(folder);
+            _path = path;
         }
 
         public async Task<List<(string, Geometry)>> GetValuesAsync(IFilter<(string, Geometry)>? filter = null)
         {
             return await Task.Run(() =>
             {
-                var shapeFileName = _dataFolder.GetPath(_file, _subFolder);
-
-                var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(shapeFileName);
+                var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(_path);
 
                 var list = new List<(string, Geometry)>();
 
