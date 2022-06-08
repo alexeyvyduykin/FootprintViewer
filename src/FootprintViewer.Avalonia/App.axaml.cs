@@ -2,14 +2,17 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using FootprintViewer.Data;
 using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -28,6 +31,11 @@ namespace FootprintViewer.Avalonia
         private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
             services.InitializeSplat();
+
+            // Load the saved view model state.
+            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
+
+            services.RegisterConstant(settings, typeof(AppSettings));
 
             services.Register(() => new ProjectFactory(resolver));
 
@@ -127,6 +135,12 @@ namespace FootprintViewer.Avalonia
         public override void OnFrameworkInitializationCompleted()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            // Create the AutoSuspendHelper.
+            var suspension = new AutoSuspendHelper(ApplicationLifetime!);
+            RxApp.SuspensionHost.CreateNewAppState = () => new AppSettings();
+            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("_appsettings.json"));
+            suspension.OnFrameworkInitializationCompleted();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
