@@ -23,6 +23,8 @@ namespace FootprintViewer.ViewModels.Settings
             FootprintPreviewGeometrySources = new List<ISourceInfo>();
 
             MapBackgroundSources = new List<ISourceInfo>();
+
+            FootprintPreviewSources = new List<ISourceInfo>();
         }
 
         [DataMember]
@@ -55,5 +57,9 @@ namespace FootprintViewer.ViewModels.Settings
         [DataMember]
         [Reactive]
         public List<ISourceInfo> MapBackgroundSources { get; private set; }
+
+        [DataMember]
+        [Reactive]
+        public List<ISourceInfo> FootprintPreviewSources { get; private set; }
     }
 }

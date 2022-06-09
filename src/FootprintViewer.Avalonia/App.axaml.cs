@@ -35,12 +35,6 @@ namespace FootprintViewer.Avalonia
             services.Register(() => new ProjectFactory(resolver));
             var factory = resolver.GetExistingService<ProjectFactory>();
 
-            services.RegisterConstant(new Provider<FootprintPreview>(new[]
-            {
-                new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "data", "footprints"),
-                new Data.Sources.FootprintPreviewDataSource("*.mbtiles", "userData", "footprints"),
-            }), typeof(IProvider<FootprintPreview>));
-
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
             services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTargetInfo>));
@@ -49,6 +43,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometryInfo>));
             services.RegisterConstant(factory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
             services.RegisterConstant(factory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));
+            services.RegisterConstant(factory.CreateFootprintPreviewProvider(), typeof(IProvider<FootprintPreview>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 

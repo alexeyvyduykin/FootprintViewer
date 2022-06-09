@@ -645,6 +645,49 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.FootprintPreviewSources.Count == 0)
+            {
+                var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
+                var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
+
+                settings.FootprintPreviewSources.Add(new FolderSourceInfo()
+                {
+                    Directory = directory1,
+                    SearchPattern = "*.mbtiles",
+                });
+
+                settings.FootprintPreviewSources.Add(new FolderSourceInfo()
+                {
+                    Directory = directory2,
+                    SearchPattern = "*.mbtiles",
+                });
+            }
+
+            var dataSources = settings.FootprintPreviewSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<FootprintPreview>(dataSources);
+
+            settings.WhenAnyValue(s => s.FootprintPreviewSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.ChangeSources);
+
+            return provider;
+
+            static IDataSource<FootprintPreview> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFolderSourceInfo folderInfo)
+                {
+                    return new FootprintPreviewDataSource(folderInfo.Directory, folderInfo.SearchPattern);
+                }
+
+                throw new Exception();
+            }
+        }
     }
 
     public static class DbOptions

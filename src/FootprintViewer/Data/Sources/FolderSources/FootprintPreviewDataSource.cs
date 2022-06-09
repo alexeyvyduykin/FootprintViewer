@@ -1,5 +1,4 @@
 ﻿using BruTile.MbTiles;
-using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
@@ -8,6 +7,7 @@ using SkiaSharp;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,27 +17,16 @@ namespace FootprintViewer.Data.Sources
     {
         private readonly Random _random = new();
         private readonly DateTime _date;
-        private readonly SolutionFolder _dataFolder;
-        private readonly string _file;
-        private readonly string? _subFolder;
         private readonly string? _searchPattern;
+        private readonly string? _directory;
         //private readonly Mapsui.Styles.Color _backgroundColorMask = new() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                                                                                                                                                 
         private const int _previewWidth = 200;
         private const int _previewHeight = 200;
 
-        public FootprintPreviewDataSource(string file, string folder, string? subFolder = null)
+        public FootprintPreviewDataSource(string? directory, string? searchPattern)
         {
-            _file = file;
-
-            if (file.Contains("*.mbtiles") == true)
-            {
-                _searchPattern = file;
-            }
-
-            _subFolder = subFolder;
-
-            _dataFolder = new SolutionFolder(folder);
-
+            _directory = directory;
+            _searchPattern = searchPattern;
             _date = DateTime.UtcNow;
         }
 
@@ -47,42 +36,36 @@ namespace FootprintViewer.Data.Sources
             {
                 var list = new List<FootprintPreview>();
 
-                IEnumerable<string?> paths;
+                if (_directory != null && _searchPattern != null)
+                {
+                    var paths = Directory.GetFiles(_directory, _searchPattern).Select(Path.GetFullPath);
 
-                if (_searchPattern == null)
-                {
-                    paths = new[] { _dataFolder.GetPath(_file, _subFolder) };
-                }
-                else
-                {
-                    paths = _dataFolder.GetPaths(_searchPattern, _subFolder);
-                }
-
-                foreach (var path in paths)
-                {
-                    if (string.IsNullOrEmpty(path) == false)
+                    foreach (var path in paths)
                     {
-                        var filename = System.IO.Path.GetFileNameWithoutExtension(path);
-                        var name = filename?.Split('_').FirstOrDefault();
-
-                        if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
+                        if (string.IsNullOrEmpty(path) == false)
                         {
-                            var tileNumber = name.Replace("-", "").ToUpper();
+                            var filename = System.IO.Path.GetFileNameWithoutExtension(path);
+                            var name = filename?.Split('_').FirstOrDefault();
 
-                            var footprintPreview = new FootprintPreview(filename)
+                            if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
                             {
-                                Date = _date.Date.ToShortDateString(),
-                                SatelliteName = $"Satellite{_random.Next(1, 6):00}",
-                                SunElevation = _random.Next(0, 90),
-                                CloudCoverFull = _random.Next(0, 100),
-                                TileNumber = tileNumber,
-                                Path = path,
-                                Image = CreatePreviewImage(path),
-                            };
+                                var tileNumber = name.Replace("-", "").ToUpper();
 
-                            if (filter == null || filter.Filtering(footprintPreview))
-                            {
-                                list.Add(footprintPreview);
+                                var footprintPreview = new FootprintPreview(filename)
+                                {
+                                    Date = _date.Date.ToShortDateString(),
+                                    SatelliteName = $"Satellite{_random.Next(1, 6):00}",
+                                    SunElevation = _random.Next(0, 90),
+                                    CloudCoverFull = _random.Next(0, 100),
+                                    TileNumber = tileNumber,
+                                    Path = path,
+                                    Image = CreatePreviewImage(path),
+                                };
+
+                                if (filter == null || filter.Filtering(footprintPreview))
+                                {
+                                    list.Add(footprintPreview);
+                                }
                             }
                         }
                     }
