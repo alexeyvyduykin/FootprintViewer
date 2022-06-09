@@ -1,4 +1,6 @@
-﻿namespace FootprintViewer.ViewModels.Settings
+﻿using System.IO;
+
+namespace FootprintViewer.ViewModels.Settings
 {
     public interface IFolderSourceInfo : ISourceInfo
     {
@@ -14,7 +16,24 @@
 
         }
 
-        public string? Name => System.IO.Path.GetDirectoryName(Directory);
+        private static string GetName(string directory)
+        {
+            string[] res = directory.Split(Path.DirectorySeparatorChar);
+
+            if (res.Length > 1)
+            {
+                return $"{res[^2]}/{res[^1]}";
+            }
+
+            if (res.Length > 0)
+            {
+                return res[^1];
+            }
+
+            return string.Empty;
+        }
+
+        public string? Name => Directory != null ? GetName(Directory) : string.Empty;
 
         public string? Directory { get; set; }
 

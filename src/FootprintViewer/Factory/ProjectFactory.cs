@@ -602,6 +602,49 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public IProvider<MapResource> CreateMapBackgroundProvider()
+        {
+            var settings = _dependencyResolver.GetService<AppSettings>()!;
+
+            if (settings.MapBackgroundSources.Count == 0)
+            {
+                var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+                var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
+
+                settings.MapBackgroundSources.Add(new FolderSourceInfo()
+                {
+                    Directory = directory1,
+                    SearchPattern = "*.mbtiles",
+                });
+
+                settings.MapBackgroundSources.Add(new FolderSourceInfo()
+                {
+                    Directory = directory2,
+                    SearchPattern = "*.mbtiles",
+                });
+            }
+
+            var dataSources = settings.MapBackgroundSources.Select(s => ToDataSource(s)).ToArray();
+
+            var provider = new Provider<MapResource>(dataSources);
+
+            settings.WhenAnyValue(s => s.MapBackgroundSources)
+                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+                    .Subscribe(provider.ChangeSources);
+
+            return provider;
+
+            static IDataSource<MapResource> ToDataSource(ISourceInfo info)
+            {
+                if (info is IFolderSourceInfo folderInfo)
+                {
+                    return new MapDataSource(folderInfo.Directory, folderInfo.SearchPattern);
+                }
+
+                throw new Exception();
+            }
+        }
     }
 
     public static class DbOptions
