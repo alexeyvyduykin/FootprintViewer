@@ -1,12 +1,14 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Runtime.Serialization;
+using System.Windows.Input;
 
-namespace FootprintViewer.ViewModels.Settings
+namespace FootprintViewer.ViewModels
 {
     [DataContract]
-    public class AppSettings : ReactiveObject
+    public class AppSettings : SidePanelTab//ReactiveObject
     {
         public AppSettings()
         {
@@ -25,7 +27,11 @@ namespace FootprintViewer.ViewModels.Settings
             MapBackgroundSources = new List<ISourceInfo>();
 
             FootprintPreviewSources = new List<ISourceInfo>();
+
+
         }
+
+        public ReactiveCommand<ISourceInfo, Unit> RemoveItem { get; }
 
         [DataMember]
         public string? LastOpenDirectory { get; set; }

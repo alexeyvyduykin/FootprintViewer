@@ -1,0 +1,160 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.AppSettingsView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"         
+             MinWidth="380"
+             mc:Ignorable="d"
+             d:DesignWidth="380" d:DesignHeight="850">
+
+  <Design.DataContext>
+    <vmd:DesignTimeAppSettings/>
+  </Design.DataContext>
+
+  <UserControl.Resources>
+
+    <DataTemplate x:Key="t1" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button x:Name="Button_X" Width="20" Height="20" Padding="0"
+                Click="RemoveItem_Clicked"
+                Content="X">   
+        </Button>
+        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+      </StackPanel>
+    </DataTemplate>
+      
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+
+    <Style Selector="Menu">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Background" Value="Green"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+    </Style>
+
+    <Style Selector="MenuItem.t2">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+
+  </UserControl.Styles>
+  
+  <Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                  VerticalScrollBarVisibility="Auto">
+    
+  <StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="Footprints"/>
+      <ItemsControl Items="{Binding FootprintSources}"
+                    ItemTemplate="{StaticResource t1}"
+                    Margin="8"/>      
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add random" Click="AddFootprintRandomSource_Clicked"/>
+          <MenuItem Header="Add database" Click="AddFootprintDatabaseSource_Clicked"/>        
+        </MenuItem>
+      </Menu>      
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="GroundTargets"/>
+      <ItemsControl Items="{Binding GroundTargetSources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add random" Click="AddGroundTargetRandomSource_Clicked"/>
+          <MenuItem Header="Add database" Click="AddGroundTargetDatabaseSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="GroundStations"/>
+      <ItemsControl Items="{Binding GroundStationSources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add random" Click="AddGroundStationRandomSource_Clicked"/>
+          <MenuItem Header="Add database" Click="AddGroundStationDatabaseSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="Satellites"/>
+      <ItemsControl Items="{Binding SatelliteSources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add random" Click="AddSatelliteRandomSource_Clicked"/>
+          <MenuItem Header="Add database" Click="AddSatelliteDatabaseSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="UserGeometries"/>
+      <ItemsControl Items="{Binding UserGeometrySources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add database" Click="AddUserGeometryDatabaseSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="FootprintPreviewGeometries"/>
+      <ItemsControl Items="{Binding FootprintPreviewGeometrySources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add file" Click="AddFootprintPreviewGeometryFileSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+
+    <StackPanel Margin="8">
+      <TextBlock Text="MapBackgrounds"/>
+      <ItemsControl Items="{Binding MapBackgroundSources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add folder" Click="AddMapBackgroundFolderSource_Clicked"/>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+    <StackPanel Margin="8">
+      <TextBlock Text="FootprintPreviews"/>
+      <ItemsControl Items="{Binding FootprintPreviewSources}"
+                    Margin="8"
+                    ItemTemplate="{StaticResource t1}"/>
+      <Menu>
+        <MenuItem Header="+" Classes="t2">
+          <MenuItem Header="Add folder" Click="AddFootprintPreviewFolderSource_Clicked"></MenuItem>
+        </MenuItem>
+      </Menu>
+    </StackPanel>
+
+  </StackPanel>
+    </ScrollViewer>
+  </Grid>
+  
+</UserControl>

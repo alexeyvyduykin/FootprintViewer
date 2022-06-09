@@ -4,7 +4,6 @@ using FootprintViewer.FileSystem;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
-using FootprintViewer.ViewModels.Settings;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;

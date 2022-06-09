@@ -7,13 +7,14 @@ using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
-using FootprintViewer.ViewModels.Settings;
 using Npgsql;
 using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
@@ -83,6 +84,7 @@ namespace FootprintViewer.Avalonia
                 resolver.GetExistingService<GroundTargetViewer>(),
                 resolver.GetExistingService<FootprintObserver>(),
                 resolver.GetExistingService<UserGeometryViewer>(),
+                resolver.GetExistingService<AppSettings>(),
             };
 
             services.RegisterConstant(new SidePanel() { Tabs = new List<SidePanelTab>(tabs) }, typeof(SidePanel));
@@ -143,6 +145,29 @@ namespace FootprintViewer.Avalonia
             {
                 return false;
             }
+        }
+       
+        public static async Task<string> OpenDialog(string? directory = null)
+        {
+            var settings = Locator.Current.GetService<AppSettings>()!;
+
+            var dialog = new OpenFileDialog
+            {
+                Directory = directory ?? settings.LastOpenDirectory,
+            };
+
+            dialog.Filters.Add(new FileDialogFilter() { Name = "Text", Extensions = { "txt" } });
+
+            var result = await dialog.ShowAsync(GetWindow()!);
+
+            if (result == null)
+            {
+                return string.Empty;
+            }
+
+            settings.LastOpenDirectory = dialog.Directory;
+
+            return result.First();
         }
 
         public static Window? GetWindow()

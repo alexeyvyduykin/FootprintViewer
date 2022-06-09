@@ -1,4 +1,4 @@
-﻿using FootprintViewer.ViewModels.Settings;
+﻿using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.Designer
 {

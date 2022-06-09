@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.ViewModels.Settings
+﻿namespace FootprintViewer.ViewModels
 {
     public interface IRandomSourceInfo : ISourceInfo
     {

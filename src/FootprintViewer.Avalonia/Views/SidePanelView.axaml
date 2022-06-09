@@ -41,7 +41,11 @@
     <DataTemplate DataType="vm:GroundStationViewer">
       <views:GroundStationViewerView/>
     </DataTemplate>
-    
+
+    <DataTemplate DataType="vm:AppSettings">
+      <views:AppSettingsView/>
+    </DataTemplate>
+
   </UserControl.DataTemplates>
   
   <UserControl.Resources>
@@ -81,7 +85,6 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-
       <DataTemplate x:Key="GroundStationViewer">
         <Grid>
           <Viewbox Margin="8">
@@ -89,7 +92,13 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-
+      <DataTemplate x:Key="AppSettings">
+        <Grid>
+          <Viewbox Margin="8">
+            <Image Source="{DynamicResource IconTune}"/>
+          </Viewbox>
+        </Grid>
+      </DataTemplate>
     </selectors:DataTemplateSelector>
   </UserControl.Resources>
 

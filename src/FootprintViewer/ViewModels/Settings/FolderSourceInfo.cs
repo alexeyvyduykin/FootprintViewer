@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FootprintViewer.ViewModels.Settings
+namespace FootprintViewer.ViewModels
 {
     public interface IFolderSourceInfo : ISourceInfo
     {
