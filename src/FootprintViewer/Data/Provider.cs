@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
@@ -14,7 +15,7 @@ namespace FootprintViewer.Data
 
     public abstract class BaseProvider<T>
     {
-        protected List<T> _sources = new List<T>();
+        protected List<T> _sources = new();
 
         public void AddSource(T source)
         {
@@ -30,7 +31,7 @@ namespace FootprintViewer.Data
         {
             _sources = new List<IDataSource<T>>();
 
-            UpdateSources = ReactiveCommand.Create(() => _sources);
+            UpdateSources = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => { }));
         }
 
         public Provider(IDataSource<T>[] sources) : this()
@@ -41,7 +42,7 @@ namespace FootprintViewer.Data
             }
         }
 
-        public ReactiveCommand<Unit, List<IDataSource<T>>> UpdateSources { get; }
+        public ReactiveCommand<Unit, Unit> UpdateSources { get; }
 
         public void ChangeSources(IDataSource<T>[] sources)
         {

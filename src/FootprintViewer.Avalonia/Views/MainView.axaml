@@ -7,7 +7,6 @@
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"                     
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"                     
              xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
-             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"        
              xmlns:reactiveUi="http://reactiveui.net"    
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
@@ -23,20 +22,6 @@
   <UserControl.Resources>
     <!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
     <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-    <selectors:DataTemplateSelector x:Key="dialogHostSelector">      
-      <!--<DataTemplate x:Key="FileSourceInfo" DataType="vm:FileSourceInfo">
-        <settings:FileSourceInfoView DataContext="{Binding}"/>
-      </DataTemplate>
-      <DataTemplate x:Key="FolderSourceInfo" DataType="vm:FolderSourceInfo">
-        <settings:FolderSourceInfoView DataContext="{Binding}"/>
-      </DataTemplate>
-      <DataTemplate x:Key="DatabaseSourceInfo" DataType="vm:DatabaseSourceInfo">
-        <settings:DatabaseSourceInfoView DataContext="{Binding}"/>
-      </DataTemplate>
-      <DataTemplate x:Key="RandomSourceInfo" DataType="vm:RandomSourceInfo">
-        <settings:RandomSourceInfoView DataContext="{Binding}"/>
-      </DataTemplate>-->
-    </selectors:DataTemplateSelector>
   </UserControl.Resources>
 
   <dialogHost:DialogHost Identifier="MainDialogHost">
@@ -54,9 +39,6 @@
         <settings:RandomSourceInfoView DataContext="{Binding}"/>
       </DataTemplate>
     </dialogHost:DialogHost.DataTemplates>
-    
-    
-    
     
     <Grid ColumnDefinitions="*,Auto">
 

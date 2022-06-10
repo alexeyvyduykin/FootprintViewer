@@ -24,7 +24,7 @@
 
         }
 
-        public string? Name => Database;
+        public string? Name => $"{Database}.{Table}";
 
         public string? Version { get; set; }
 

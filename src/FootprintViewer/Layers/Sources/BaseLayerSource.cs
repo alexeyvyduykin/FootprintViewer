@@ -2,6 +2,7 @@
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -32,6 +33,11 @@ namespace FootprintViewer.Layers
             _provider = provider;
 
             Init = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => LoadingImpl(provider.GetValuesAsync(null).Result)));
+
+            if (provider is Provider<T> pvd)
+            {
+                pvd.UpdateSources.InvokeCommand(Init);
+            }
         }
 
         public IFeature? GetFeature(string name)

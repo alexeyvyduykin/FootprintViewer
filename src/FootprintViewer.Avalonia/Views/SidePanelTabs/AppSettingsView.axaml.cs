@@ -1,13 +1,7 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
-using System.Windows.Input;
-using System.IO;
-using System;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
@@ -23,52 +17,8 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
             });
         }
 
-    
-
-        public void RemoveItem_Clicked(object sender, RoutedEventArgs args)
-        {
-            if (sender is Button btn && btn.DataContext is ISourceInfo info)
-            {
-                var context = (AppSettings)this.DataContext!;
-
-                int hghg = 0;
-
-                //        context.RemoveFromSource1(info);
-            }
-        }
-
-        public void RemoveItem1_Clicked(object sender, RoutedEventArgs args)
-        {
-            if (sender is Button btn && btn.DataContext is ISourceInfo info)
-            {
-                var context = (AppSettings)this.DataContext!;
-
-        //        context.RemoveFromSource1(info);
-            }
-        }
-
-        public void RemoveItem2_Clicked(object sender, RoutedEventArgs args)
-        {
-            if (sender is Button btn && btn.DataContext is ISourceInfo info)
-            {
-                var context = (AppSettings)this.DataContext!;
-
-       //         context.RemoveFromSource2(info);
-            }
-        }
-
-        public void RemoveItem3_Clicked(object sender, RoutedEventArgs args)
-        {
-            if (sender is Button btn && btn.DataContext is ISourceInfo info)
-            {
-                var context = (AppSettings)this.DataContext!;
-
-       //         context.RemoveFromSource3(info);
-            }
-        }
-
         public void AddFootprintDatabaseSource_Clicked(object sender, RoutedEventArgs args)
-        {    
+        {
             DialogHost.DialogHost.Show(new DatabaseSourceInfo(), "MainDialogHost");
         }
 
@@ -119,12 +69,12 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
         public void AddMapBackgroundFolderSource_Clicked(object sender, RoutedEventArgs args)
         {
-            DialogHost.DialogHost.Show(new FolderSourceInfo(), "MainDialogHost");
+            DialogHost.DialogHost.Show(new FolderSourceInfo() { SearchPattern = "*.mbtiles" }, "MainDialogHost");
         }
 
         public void AddFootprintPreviewFolderSource_Clicked(object sender, RoutedEventArgs args)
         {
-            DialogHost.DialogHost.Show(new FolderSourceInfo(), "MainDialogHost");
+            DialogHost.DialogHost.Show(new FolderSourceInfo() { SearchPattern = "*.mbtiles" }, "MainDialogHost");
         }
     }
 }

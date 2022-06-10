@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"         
              MinWidth="380"
@@ -12,148 +13,242 @@
   <Design.DataContext>
     <vmd:DesignTimeAppSettings/>
   </Design.DataContext>
-
-  <UserControl.Resources>
-
-    <DataTemplate x:Key="t1" DataType="vm:ISourceInfo">
-      <StackPanel Orientation="Horizontal">
-        <Button x:Name="Button_X" Width="20" Height="20" Padding="0"
-                Click="RemoveItem_Clicked"
-                Content="X">   
-        </Button>
-        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-      </StackPanel>
-    </DataTemplate>
-      
-  </UserControl.Resources>
-
+  
   <UserControl.Styles>
 
     <Style Selector="Menu">
       <Setter Property="Width" Value="20"></Setter>
       <Setter Property="Height" Value="20"></Setter>
       <Setter Property="Padding" Value="0"></Setter>
-      <Setter Property="Background" Value="Green"></Setter>
       <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+      <Setter Property="Margin" Value="0,2,0,0"></Setter>
     </Style>
 
-    <Style Selector="MenuItem.t2">
+    <Style Selector="MenuItem.mn">
       <Setter Property="Width" Value="20"></Setter>
       <Setter Property="Height" Value="20"></Setter>
       <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Foreground" Value="White"></Setter>
     </Style>
 
+    <Style Selector="Button.rmvBtn">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Content" Value="-"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.tbItem">
+      <Setter Property="Margin" Value="8,0,0,0"></Setter>
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Padding" Value="0"></Setter> 
+    </Style>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Margin" Value="0,2,0,0"></Setter>  
+    </Style>
+        
   </UserControl.Styles>
-  
+
+  <UserControl.Resources>
+
+    <DataTemplate x:Key="t1" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #FootprintItemsControl.DataContext.RemoveFootprintSource}"   
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t2" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #GroundTargetItemsControl.DataContext.RemoveGroundTargetSource}"                
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t3" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #GroundStationItemsControl.DataContext.RemoveGroundStationSource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t4" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #SatelliteItemsControl.DataContext.RemoveSatelliteSource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t5" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #UserGeometryItemsControl.DataContext.RemoveUserGeometrySource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t6" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #FootprintPreviewGeometryItemsControl.DataContext.RemoveFootprintPreviewGeometrySource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t7" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #MapBackgroundItemsControl.DataContext.RemoveMapBackgroundSource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="t8" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #FootprintPreviewItemsControl.DataContext.RemoveFootprintPreviewSource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+  </UserControl.Resources>
+
   <Grid>
     <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Auto">
-    
-  <StackPanel>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="Footprints"/>
-      <ItemsControl Items="{Binding FootprintSources}"
-                    ItemTemplate="{StaticResource t1}"
-                    Margin="8"/>      
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add random" Click="AddFootprintRandomSource_Clicked"/>
-          <MenuItem Header="Add database" Click="AddFootprintDatabaseSource_Clicked"/>        
-        </MenuItem>
-      </Menu>      
-    </StackPanel>
+      <StackPanel>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="GroundTargets"/>
-      <ItemsControl Items="{Binding GroundTargetSources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="Footprints" Classes="Headline6"/>
+            <ItemsControl x:Name="FootprintItemsControl" 
+                          Items="{Binding FootprintSources}"
+                          ItemTemplate="{StaticResource t1}"/>            
+            <Menu>
+              <MenuItem Header="+" Classes="mn" Padding="0" Margin="0" >
+                <MenuItem Header="Add random" Padding="0" Margin="0" Click="AddFootprintRandomSource_Clicked"/>
+                <MenuItem Header="Add database" Padding="0" Click="AddFootprintDatabaseSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add random" Click="AddGroundTargetRandomSource_Clicked"/>
-          <MenuItem Header="Add database" Click="AddGroundTargetDatabaseSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="GroundTargets" Classes="Headline6"/>
+            <ItemsControl x:Name="GroundTargetItemsControl" 
+                          Items="{Binding GroundTargetSources}"
+                          ItemTemplate="{StaticResource t2}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add random" Click="AddGroundTargetRandomSource_Clicked"/>
+                <MenuItem Header="Add database" Click="AddGroundTargetDatabaseSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="GroundStations"/>
-      <ItemsControl Items="{Binding GroundStationSources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add random" Click="AddGroundStationRandomSource_Clicked"/>
-          <MenuItem Header="Add database" Click="AddGroundStationDatabaseSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="GroundStations" Classes="Headline6"/>
+            <ItemsControl x:Name="GroundStationItemsControl" 
+                          Items="{Binding GroundStationSources}"
+                          ItemTemplate="{StaticResource t3}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add random" Click="AddGroundStationRandomSource_Clicked"/>
+                <MenuItem Header="Add database" Click="AddGroundStationDatabaseSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="Satellites"/>
-      <ItemsControl Items="{Binding SatelliteSources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add random" Click="AddSatelliteRandomSource_Clicked"/>
-          <MenuItem Header="Add database" Click="AddSatelliteDatabaseSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="Satellites" Classes="Headline6"/>
+            <ItemsControl x:Name="SatelliteItemsControl" 
+                          Items="{Binding SatelliteSources}"
+                          ItemTemplate="{StaticResource t4}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add random" Click="AddSatelliteRandomSource_Clicked"/>
+                <MenuItem Header="Add database" Click="AddSatelliteDatabaseSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="UserGeometries"/>
-      <ItemsControl Items="{Binding UserGeometrySources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add database" Click="AddUserGeometryDatabaseSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="UserGeometries" Classes="Headline6"/>
+            <ItemsControl x:Name="UserGeometryItemsControl" 
+                          Items="{Binding UserGeometrySources}"
+                          ItemTemplate="{StaticResource t5}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add database" Click="AddUserGeometryDatabaseSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="FootprintPreviewGeometries"/>
-      <ItemsControl Items="{Binding FootprintPreviewGeometrySources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add file" Click="AddFootprintPreviewGeometryFileSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="FootprintPreviewGeometries" Classes="Headline6"/>
+            <ItemsControl x:Name="FootprintPreviewGeometryItemsControl" 
+                          Items="{Binding FootprintPreviewGeometrySources}"
+                          ItemTemplate="{StaticResource t6}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add file" Click="AddFootprintPreviewGeometryFileSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="MapBackgrounds" Classes="Headline6"/>
+            <ItemsControl x:Name="MapBackgroundItemsControl" 
+                          Items="{Binding MapBackgroundSources}"
+                          ItemTemplate="{StaticResource t7}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add folder" Click="AddMapBackgroundFolderSource_Clicked"/>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="MapBackgrounds"/>
-      <ItemsControl Items="{Binding MapBackgroundSources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add folder" Click="AddMapBackgroundFolderSource_Clicked"/>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
+        <styles:Card Margin="8">
+          <StackPanel>
+            <TextBlock Text="FootprintPreviews" Classes="Headline6"/>
+            <ItemsControl x:Name="FootprintPreviewItemsControl" 
+                          Items="{Binding FootprintPreviewSources}"
+                          ItemTemplate="{StaticResource t8}"/>
+            <Menu>
+              <MenuItem Header="+" Classes="mn">
+                <MenuItem Header="Add folder" Click="AddFootprintPreviewFolderSource_Clicked"></MenuItem>
+              </MenuItem>
+            </Menu>
+          </StackPanel>
+        </styles:Card>
 
-    <StackPanel Margin="8">
-      <TextBlock Text="FootprintPreviews"/>
-      <ItemsControl Items="{Binding FootprintPreviewSources}"
-                    Margin="8"
-                    ItemTemplate="{StaticResource t1}"/>
-      <Menu>
-        <MenuItem Header="+" Classes="t2">
-          <MenuItem Header="Add folder" Click="AddFootprintPreviewFolderSource_Clicked"></MenuItem>
-        </MenuItem>
-      </Menu>
-    </StackPanel>
-
-  </StackPanel>
+      </StackPanel>
     </ScrollViewer>
   </Grid>
   

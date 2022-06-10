@@ -1,6 +1,9 @@
 ﻿using FootprintViewer.Data;
+using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
@@ -14,7 +17,15 @@ namespace FootprintViewer.ViewModels
 
         public static IViewerList<T> CreateViewerList<T>(IProvider<T> provider) where T : IViewerItem
         {
-            return new ViewerList<T>(provider);
+            var viewerList = new ViewerList<T>(provider);
+
+            if (provider is Provider<T> prvd)
+            {
+                // TODO: add to viewerList Update<Unit,Unit> command
+                prvd.UpdateSources.Select(s => (IFilter<T>?)null).InvokeCommand(viewerList.Loading);
+            }
+
+            return viewerList;
         }
     }
 

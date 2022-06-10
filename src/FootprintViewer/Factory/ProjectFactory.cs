@@ -338,6 +338,7 @@ namespace FootprintViewer
             var provider = new Provider<GroundStationInfo>(dataSources);
 
             settings.WhenAnyValue(s => s.GroundStationSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -386,6 +387,7 @@ namespace FootprintViewer
             var provider = new Provider<GroundTargetInfo>(dataSources);
 
             settings.WhenAnyValue(s => s.GroundTargetSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -437,6 +439,7 @@ namespace FootprintViewer
             var provider = new Provider<FootprintInfo>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -487,6 +490,7 @@ namespace FootprintViewer
             var provider = new Provider<SatelliteInfo>(dataSources);
 
             settings.WhenAnyValue(s => s.SatelliteSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -534,6 +538,7 @@ namespace FootprintViewer
             var provider = new EditableProvider<UserGeometryInfo>(dataSources);
 
             settings.WhenAnyValue(s => s.UserGeometrySources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -578,6 +583,7 @@ namespace FootprintViewer
             var provider = new Provider<(string, NetTopologySuite.Geometries.Geometry)>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintPreviewGeometrySources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -629,6 +635,7 @@ namespace FootprintViewer
             var provider = new Provider<MapResource>(dataSources);
 
             settings.WhenAnyValue(s => s.MapBackgroundSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
@@ -672,6 +679,7 @@ namespace FootprintViewer
             var provider = new Provider<FootprintPreview>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintPreviewSources)
+                    .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
