@@ -19,20 +19,28 @@
 
       <TextBlock Text="{Binding SearchPattern, StringFormat={}Directory with {0}}"/>
 
-      <Grid ColumnDefinitions="*,Auto">
-        <TextBox IsReadOnly="True"
+      <Grid ColumnDefinitions="*,8,32">
+        <TextBox x:Name="txtBox" 
+                 IsReadOnly="True"
                  Text="{Binding Directory}"/>
-        <Button Grid.Column="1"
-                Margin="8,0,0,0"
+        <Button Grid.Column="2" 
+                Padding="0"
+                Height="32"
+                Click="AddPath_Clicked"               
                 Content="..."/>
       </Grid>
 
-      <Grid ColumnDefinitions="1*,1*">
-        <Button Content="Add"></Button>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="Add"
+                IsEnabled="{Binding !!#txtBox.Text}"
+                Width="80"
+                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
+                CommandParameter="{Binding}"/>
         <Button Grid.Column="1"
+                Margin="8,0,0,0"
                 Content="Cancel"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
-      </Grid>
+      </StackPanel>
     </StackPanel>
 
   </styles:Card>

@@ -19,7 +19,8 @@
       <TextBlock Text="Path"/>
 
       <Grid ColumnDefinitions="*,8,32">
-        <TextBox IsReadOnly="True"
+        <TextBox x:Name="txtBox" 
+                 IsReadOnly="True"
                  Text="{Binding Path}"/>
         <Button Grid.Column="2"
                 Padding="0"
@@ -29,7 +30,8 @@
       </Grid>
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Content="Add"
+        <Button Content="Add" 
+                IsEnabled="{Binding !!#txtBox.Text}"
                 Width="80"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
                 CommandParameter="{Binding}"/>

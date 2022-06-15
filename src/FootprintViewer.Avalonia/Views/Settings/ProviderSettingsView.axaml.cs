@@ -29,7 +29,7 @@ namespace FootprintViewer.Avalonia.Views.Settings
         {
             if (e.Parameter != null && e.Parameter is ISourceInfo sourceInfo)
             {
-                ViewModel!.AddSource(sourceInfo);
+                ViewModel!.AddSource.Execute(sourceInfo).Subscribe();
             }
         }
     }

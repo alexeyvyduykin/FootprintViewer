@@ -685,6 +685,8 @@ namespace FootprintViewer
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
+
+
             return provider;
 
             static IDataSource<FootprintPreview> ToDataSource(ISourceInfo info)
@@ -701,9 +703,14 @@ namespace FootprintViewer
 
     public static class DbOptions
     {
+        public static string BuildConnectionString(IDatabaseSourceInfo info)
+        {
+            return $"Host={info.Host};Port={info.Port};Database={info.Database};Username={info.Username};Password={info.Password}";
+        }
+
         public static DbContextOptions<T> Build<T>(IDatabaseSourceInfo info) where T : DbContext
         {
-            string connectionString = $"Host={info.Host};Port={info.Port};Database={info.Database};Username={info.Username};Password={info.Password}";
+            var connectionString = BuildConnectionString(info);
             var res = info.Version!.Split(new[] { '.' });
             var major = int.Parse(res[0]);
             var minor = int.Parse(res[1]);

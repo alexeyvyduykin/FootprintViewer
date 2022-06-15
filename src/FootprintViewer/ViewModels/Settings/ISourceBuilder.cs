@@ -12,9 +12,25 @@ namespace FootprintViewer.ViewModels
 
     public class DatabaseSourceBuilder : ReactiveObject, ISourceBuilder
     {
+        private readonly AppSettings? _settings;
+
         public DatabaseSourceBuilder()
         {
-            Build = ReactiveCommand.Create<ISourceInfo>(() => new DatabaseSourceInfo());
+            Build = ReactiveCommand.Create<ISourceInfo>(() => new DatabaseSourceInfo()
+            {
+                Version = _settings?.LastDatabaseSource?.Version,
+                Host = _settings?.LastDatabaseSource?.Host,
+                Port = (_settings?.LastDatabaseSource != null) ? _settings.LastDatabaseSource.Port : 0,
+                Database = _settings?.LastDatabaseSource?.Database,
+                Username = _settings?.LastDatabaseSource?.Username,
+                Password = _settings?.LastDatabaseSource?.Password,
+                Table = _settings?.LastDatabaseSource?.Table,
+            });
+        }
+
+        public DatabaseSourceBuilder(AppSettings settings) : this()
+        {
+            _settings = settings;
         }
 
         public string Name => "Add database";

@@ -1,94 +1,106 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Runtime.Serialization;
 
 namespace FootprintViewer.ViewModels
 {
     [DataContract]
-    public class AppSettings : SidePanelTab//ReactiveObject
+    public class AppSettings : SidePanelTab
     {
         public AppSettings()
         {
-            FootprintProvider = new ProviderSettings()
-            {
-                Type = ProviderType.Footprints,
-                AvailableSources = new List<ISourceBuilder>()
+            FootprintProvider = CreateProviderSettings(
+                ProviderType.Footprints,
+                new ISourceBuilder[]
                 {
                     new RandomSourceBuilder("RandomFootprints"),
-                    new DatabaseSourceBuilder(),
-                }
-            };
+                    new DatabaseSourceBuilder(this),
+                });
 
-            GroundTargetProvider = new ProviderSettings()
-            {
-                Type = ProviderType.GroundTargets,
-                AvailableSources = new List<ISourceBuilder>()
+            GroundTargetProvider = CreateProviderSettings(
+                ProviderType.GroundTargets,
+                new ISourceBuilder[]
                 {
                     new RandomSourceBuilder("RandomGroundTargets"),
-                    new DatabaseSourceBuilder(),
-                }
-            };
+                    new DatabaseSourceBuilder(this),
+                });
 
-            GroundStationProvider = new ProviderSettings()
-            {
-                Type = ProviderType.GroundStations,
-                AvailableSources = new List<ISourceBuilder>()
+            GroundStationProvider = CreateProviderSettings(
+                ProviderType.GroundStations,
+                new ISourceBuilder[]
                 {
                     new RandomSourceBuilder("RandomGroundStations"),
-                    new DatabaseSourceBuilder(),
-                }
-            };
+                    new DatabaseSourceBuilder(this),
+                });
 
-            SatelliteProvider = new ProviderSettings()
-            {
-                Type = ProviderType.Satellites,
-                AvailableSources = new List<ISourceBuilder>()
+            SatelliteProvider = CreateProviderSettings(
+                ProviderType.Satellites,
+                new ISourceBuilder[]
                 {
                     new RandomSourceBuilder("RandomSatellites"),
-                    new DatabaseSourceBuilder(),
-                }
-            };
+                    new DatabaseSourceBuilder(this),
+                });
 
-            UserGeometryProvider = new ProviderSettings()
-            {
-                Type = ProviderType.UserGeometries,
-                AvailableSources = new List<ISourceBuilder>()
+            UserGeometryProvider = CreateProviderSettings(
+                ProviderType.UserGeometries,
+                new ISourceBuilder[]
                 {
-                    new DatabaseSourceBuilder(),
-                }
-            };
+                    new DatabaseSourceBuilder(this),
+                });
 
-            FootprintPreviewGeometryProvider = new ProviderSettings()
-            {
-                Type = ProviderType.FootprintPreviewGeometries,
-                AvailableSources = new List<ISourceBuilder>()
+            FootprintPreviewGeometryProvider = CreateProviderSettings(
+                ProviderType.FootprintPreviewGeometries,
+                new ISourceBuilder[]
                 {
                     new FileSourceBuilder("Shapefile", "shp"),
-                }
-            };
+                });
 
-            MapBackgroundProvider = new ProviderSettings()
-            {
-                Type = ProviderType.MapBackgrounds,
-                AvailableSources = new List<ISourceBuilder>()
+            MapBackgroundProvider = CreateProviderSettings(
+                ProviderType.MapBackgrounds,
+                new ISourceBuilder[]
                 {
                     new FolderSourceBuilder("*.mbtiles"),
-                }
-            };
+                });
 
-            FootprintPreviewProvider = new ProviderSettings()
-            {
-                Type = ProviderType.FootprintPreviews,
-                AvailableSources = new List<ISourceBuilder>()
+            FootprintPreviewProvider = CreateProviderSettings(
+                ProviderType.FootprintPreviews,
+                new ISourceBuilder[]
                 {
                     new FolderSourceBuilder("*.mbtiles"),
-                }
-            };
+                });
 
             Title = "Пользовательские настройки";
         }
 
+        private ProviderSettings CreateProviderSettings(ProviderType type, IEnumerable<ISourceBuilder> builders)
+        {
+            var settings = new ProviderSettings()
+            {
+                Type = type,
+                AvailableSources = new List<ISourceBuilder>(builders)
+            };
+
+            settings.AddSource.Where(s => s is IDatabaseSourceInfo)
+                              .Cast<IDatabaseSourceInfo>()
+                              .Subscribe(s => LastDatabaseSource = s);
+
+            settings.AddSource.Where(s => s is IFolderSourceInfo)
+                              .Cast<IFolderSourceInfo>()
+                              .Subscribe(s => LastOpenDirectory = s.Directory);
+
+            settings.AddSource.Where(s => s is IFileSourceInfo)
+                              .Cast<IFileSourceInfo>()
+                              .Subscribe(s => LastOpenDirectory = System.IO.Path.GetDirectoryName(s.Path));
+
+            return settings;
+        }
+
         [DataMember]
         public string? LastOpenDirectory { get; set; }
+
+        [DataMember]
+        public IDatabaseSourceInfo? LastDatabaseSource { get; set; }
 
         [DataMember]
         public ProviderSettings FootprintProvider { get; private set; }

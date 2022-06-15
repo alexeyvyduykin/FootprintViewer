@@ -167,9 +167,21 @@ namespace FootprintViewer.Avalonia
                 return string.Empty;
             }
 
-            settings.LastOpenDirectory = dialog.Directory;
-
             return result.First();
+        }
+
+        public static async Task<string> OpenFolderDialog(string? directory)
+        {
+            var settings = Locator.Current.GetService<AppSettings>()!;
+
+            var dialog = new OpenFolderDialog()
+            {
+                Directory = directory ?? settings.LastOpenDirectory
+            };
+
+            var result = await dialog.ShowAsync(GetWindow()!);
+
+            return result ?? string.Empty;
         }
 
         public static Window? GetWindow()

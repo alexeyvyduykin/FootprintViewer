@@ -28,9 +28,13 @@ namespace FootprintViewer.ViewModels
             AvailableSources = new List<ISourceBuilder>();
 
             RemoveSource = ReactiveCommand.Create<ISourceInfo>(RemoveSourceImpl);
+
+            AddSource = ReactiveCommand.Create<ISourceInfo, ISourceInfo>(AddSourceImpl);
         }
 
         public ReactiveCommand<ISourceInfo, Unit> RemoveSource { get; }
+
+        public ReactiveCommand<ISourceInfo, ISourceInfo> AddSource { get; }
 
         private void RemoveSourceImpl(ISourceInfo item)
         {
@@ -41,13 +45,15 @@ namespace FootprintViewer.ViewModels
             Sources = new List<ISourceInfo>(temp);
         }
 
-        public void AddSource(ISourceInfo item)
+        private ISourceInfo AddSourceImpl(ISourceInfo item)
         {
             var temp = new List<ISourceInfo>(Sources);
 
             temp.Add(item);
 
             Sources = new List<ISourceInfo>(temp);
+
+            return item;
         }
 
         [DataMember]
