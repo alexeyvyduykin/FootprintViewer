@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             mc:Ignorable="d"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.ProviderSettingsView">
+
+  <Design.DataContext>
+    <vmd:DesignTimeProviderSettings/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+
+    <Style Selector="Menu">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+      <Setter Property="Margin" Value="0,2,0,0"></Setter>
+    </Style>
+
+    <Style Selector="MenuItem.mn">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Foreground" Value="White"></Setter>
+    </Style>
+
+    <Style Selector="Button.rmvBtn">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Content" Value="-"></Setter>
+    </Style>
+
+    <Style Selector="Button.addBtn">
+      <Setter Property="Width" Value="20"></Setter>
+      <Setter Property="Height" Value="20"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Content" Value="+"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.tbItem">
+      <Setter Property="Margin" Value="8,0,0,0"></Setter>
+      <Setter Property="VerticalAlignment" Value="Center"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+    </Style>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Margin" Value="0,2,0,0"></Setter>
+    </Style>
+
+    <Style Selector="FlyoutPresenter">
+      <Setter Property="Margin" Value="8,0,0,0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    </Style>
+
+    <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+    </Style>
+
+   <Style Selector="ListBoxItem:selected /template/ Border#selectedBorder">
+      <Setter Property="Opacity" Value="0.0" />    
+   </Style>
+    
+    <Style Selector="ListBoxItem:selected:pointerover /template/ Border#pointerOverBorder">
+      <Setter Property="Opacity" Value="0.56" />
+    </Style>
+    
+  </UserControl.Styles>
+
+  <UserControl.Resources>
+
+    <DataTemplate x:Key="t1" DataType="vm:ISourceInfo">
+      <StackPanel Orientation="Horizontal">
+        <Button Command="{Binding #ItemsControl.DataContext.RemoveSource}"
+                CommandParameter="{Binding}"
+                Classes="rmvBtn"/>
+        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+      </StackPanel>
+    </DataTemplate>
+
+  </UserControl.Resources>
+
+  <styles:Card>
+    <StackPanel>
+      <TextBlock Text="{Binding Type}" Classes="Headline6"/>
+      <ItemsControl x:Name="ItemsControl"
+                    Items="{Binding Sources}"
+                    ItemTemplate="{StaticResource t1}"/>
+
+      <Button x:Name="AddSourceButton"
+              Margin="0,2,0,0"
+              Classes="addBtn">
+        <Button.Flyout>
+          <Flyout Placement="RightEdgeAlignedTop">
+            <styles:ColorZone Padding="0">
+              <ListBox Items="{Binding AvailableSources}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <MenuItem Header="{Binding Name}" Command="{Binding Build}"/>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </styles:ColorZone>
+          </Flyout>
+        </Button.Flyout>
+      </Button>
+
+    </StackPanel>
+  </styles:Card>
+
+</UserControl>

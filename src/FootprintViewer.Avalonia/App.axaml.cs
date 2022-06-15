@@ -146,8 +146,8 @@ namespace FootprintViewer.Avalonia
                 return false;
             }
         }
-       
-        public static async Task<string> OpenDialog(string? directory = null)
+
+        public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
         {
             var settings = Locator.Current.GetService<AppSettings>()!;
 
@@ -156,7 +156,9 @@ namespace FootprintViewer.Avalonia
                 Directory = directory ?? settings.LastOpenDirectory,
             };
 
-            dialog.Filters.Add(new FileDialogFilter() { Name = "Text", Extensions = { "txt" } });
+            var ext = filterExtension ?? "*";
+
+            dialog.Filters.Add(new FileDialogFilter() { Name = filterName, Extensions = { ext } });
 
             var result = await dialog.ShowAsync(GetWindow()!);
 

@@ -6,88 +6,59 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeAppSettings() : base()
         {
-            FootprintSources.Add(new DatabaseSourceInfo()
+            FootprintProvider.Sources.Add(new DatabaseSourceInfo()
             {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
+                Database = "database",
                 Table = "Footprints"
             });
 
-            GroundTargetSources.Add(new DatabaseSourceInfo()
+            GroundTargetProvider.Sources.Add(new DatabaseSourceInfo()
             {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
+                Database = "database",
                 Table = "GroundTargets"
             });
 
-            GroundStationSources.Add(new DatabaseSourceInfo()
+            GroundStationProvider.Sources.Add(new DatabaseSourceInfo()
             {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
+                Database = "database",
                 Table = "GroundStations"
             });
 
-            SatelliteSources.Add(new DatabaseSourceInfo()
+            SatelliteProvider.Sources.Add(new DatabaseSourceInfo()
             {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
+                Database = "database",
                 Table = "Satellites"
             });
 
-            UserGeometrySources.Add(new DatabaseSourceInfo()
+            UserGeometryProvider.Sources.Add(new DatabaseSourceInfo()
             {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
+                Database = "database",
                 Table = "UserGeometries"
             });
 
-            FootprintPreviewGeometrySources.Add(new FileSourceInfo()
+            FootprintPreviewGeometryProvider.Sources.Add(new FileSourceInfo()
             {
-                Path = @"C:\Users\User\AlexeyVyduykin\CSharpProjects\FootprintViewer\data\mosaics-geotiff\mosaic-tiff-ruonly.shp",
+                Path = @"\FootprintViewer\data\mosaics-geotiff\mosaic-tiff-ruonly.shp",
             });
 
-            MapBackgroundSources.Add(new FolderSourceInfo()
+            MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
             {
-                Directory = @"C:\Users\User\AlexeyVyduykin\CSharpProjects\FootprintViewer\data\world",
-                SearchPattern = "*.mbtiles",
+                Directory = @"\FootprintViewer\data\world",
             });
 
-            MapBackgroundSources.Add(new FolderSourceInfo()
+            MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
             {
-                Directory = @"C:\Users\User\AlexeyVyduykin\CSharpProjects\FootprintViewer\userData\world",
-                SearchPattern = "*.mbtiles",
+                Directory = @"\FootprintViewer\userData\world",
             });
 
-            FootprintPreviewSources.Add(new FolderSourceInfo()
+            FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
             {
-                Directory = @"C:\Users\User\AlexeyVyduykin\CSharpProjects\FootprintViewer\data\footprints",
-                SearchPattern = "*.mbtiles",
+                Directory = @"\FootprintViewer\data\footprints",
             });
 
-            FootprintPreviewSources.Add(new FolderSourceInfo()
+            FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
             {
-                Directory = @"C:\Users\User\AlexeyVyduykin\CSharpProjects\FootprintViewer\userData\footprints",
-                SearchPattern = "*.mbtiles",
+                Directory = @"\FootprintViewer\userData\footprints",
             });
         }
     }
