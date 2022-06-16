@@ -29,12 +29,13 @@ namespace FootprintViewer.Avalonia
         {
             services.InitializeSplat();
 
-            // Load the saved view model state.
-            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
-            services.RegisterConstant(settings, typeof(AppSettings));
-
             services.Register(() => new ProjectFactory(resolver));
             var factory = resolver.GetExistingService<ProjectFactory>();
+
+            // Load the saved view model state.
+            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
+            settings.Init(factory);
+            services.RegisterConstant(settings, typeof(AppSettings));
 
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
@@ -101,7 +102,7 @@ namespace FootprintViewer.Avalonia
             // Create the AutoSuspendHelper.
             var suspension = new AutoSuspendHelper(ApplicationLifetime!);
             RxApp.SuspensionHost.CreateNewAppState = () => new AppSettings();
-            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("_appsettings.json"));
+            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("appsettings.json"));
             suspension.OnFrameworkInitializationCompleted();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)

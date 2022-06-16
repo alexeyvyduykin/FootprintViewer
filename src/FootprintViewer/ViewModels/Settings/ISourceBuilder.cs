@@ -1,5 +1,8 @@
 ﻿using ReactiveUI;
-using System.Windows.Input;
+using Splat;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
@@ -7,70 +10,104 @@ namespace FootprintViewer.ViewModels
     {
         string Name { get; }
 
-        ICommand Build { get; set; }
+        ReactiveCommand<Unit, ISourceInfo?> Build { get; }
+
+        Interaction<ISourceInfo, ISourceInfo?> ShowBuilderDialog { get; }
     }
 
-    public class DatabaseSourceBuilder : ReactiveObject, ISourceBuilder
+    public abstract class BaseSourceBuilder : ReactiveObject, ISourceBuilder
     {
-        private readonly AppSettings? _settings;
-
-        public DatabaseSourceBuilder()
+        public BaseSourceBuilder()
         {
-            Build = ReactiveCommand.Create<ISourceInfo>(() => new DatabaseSourceInfo()
+            Build = ReactiveCommand.CreateFromTask(BuildAsync);
+
+            ShowBuilderDialog = new Interaction<ISourceInfo, ISourceInfo?>();
+        }
+
+        public abstract string Name { get; }
+
+        public ReactiveCommand<Unit, ISourceInfo?> Build { get; }
+
+        public Interaction<ISourceInfo, ISourceInfo?> ShowBuilderDialog { get; }
+
+        protected abstract ISourceInfo GetDefaultSource();
+
+        private async Task<ISourceInfo?> BuildAsync()
+        {
+            return await ShowBuilderDialog.Handle(GetDefaultSource());
+        }
+    }
+
+    public class DatabaseSourceBuilder : BaseSourceBuilder
+    {
+        private readonly IReadonlyDependencyResolver? _dependencyResolver;
+
+        public DatabaseSourceBuilder(IReadonlyDependencyResolver? dependencyResolver) : base()
+        {
+            _dependencyResolver = dependencyResolver;
+        }
+
+        public override string Name => "Add database";
+
+        protected override ISourceInfo GetDefaultSource()
+        {
+            var settings = _dependencyResolver?.GetService<AppSettings>();
+
+            return new DatabaseSourceInfo()
             {
-                Version = _settings?.LastDatabaseSource?.Version,
-                Host = _settings?.LastDatabaseSource?.Host,
-                Port = (_settings?.LastDatabaseSource != null) ? _settings.LastDatabaseSource.Port : 0,
-                Database = _settings?.LastDatabaseSource?.Database,
-                Username = _settings?.LastDatabaseSource?.Username,
-                Password = _settings?.LastDatabaseSource?.Password,
-                Table = _settings?.LastDatabaseSource?.Table,
-            });
+                Version = settings?.LastDatabaseSource?.Version,
+                Host = settings?.LastDatabaseSource?.Host,
+                Port = (settings?.LastDatabaseSource != null) ? settings.LastDatabaseSource.Port : 0,
+                Database = settings?.LastDatabaseSource?.Database,
+                Username = settings?.LastDatabaseSource?.Username,
+                Password = settings?.LastDatabaseSource?.Password,
+                Table = settings?.LastDatabaseSource?.Table,
+            };
         }
-
-        public DatabaseSourceBuilder(AppSettings settings) : this()
-        {
-            _settings = settings;
-        }
-
-        public string Name => "Add database";
-
-        public ICommand Build { get; set; }
     }
 
-    public class RandomSourceBuilder : ReactiveObject, ISourceBuilder
+    public class RandomSourceBuilder : BaseSourceBuilder
     {
-        public RandomSourceBuilder(string name) : base()
+        private readonly string _name;
+
+        public RandomSourceBuilder(string name)
         {
-            Build = ReactiveCommand.Create<ISourceInfo>(() => new RandomSourceInfo(name));
+            _name = name;
         }
 
-        public string Name => "Add random";
+        public override string Name => "Add random";
 
-        public ICommand Build { get; set; }
+        protected override ISourceInfo GetDefaultSource() => new RandomSourceInfo(_name);
     }
 
-    public class FileSourceBuilder : ReactiveObject, ISourceBuilder
+    public class FileSourceBuilder : BaseSourceBuilder
     {
+        private readonly string _filterName;
+        private readonly string _filterExtension;
+
         public FileSourceBuilder(string filterName, string filterExtension) : base()
         {
-            Build = ReactiveCommand.Create<ISourceInfo>(() => new FileSourceInfo() { FilterName = filterName, FilterExtension = filterExtension });
+            _filterName = filterName;
+
+            _filterExtension = filterExtension;
         }
 
-        public string Name => "Add file";
+        public override string Name => "Add file";
 
-        public ICommand Build { get; set; }
+        protected override ISourceInfo GetDefaultSource() => new FileSourceInfo() { FilterName = _filterName, FilterExtension = _filterExtension };
     }
 
-    public class FolderSourceBuilder : ReactiveObject, ISourceBuilder
+    public class FolderSourceBuilder : BaseSourceBuilder
     {
+        private readonly string _searchPattern;
+
         public FolderSourceBuilder(string searchPattern) : base()
         {
-            Build = ReactiveCommand.Create<ISourceInfo>(() => new FolderSourceInfo() { SearchPattern = searchPattern });
+            _searchPattern = searchPattern;
         }
 
-        public string Name => "Add folder";
+        public override string Name => "Add folder";
 
-        public ICommand Build { get; set; }
+        protected override ISourceInfo GetDefaultSource() => new FolderSourceInfo() { SearchPattern = _searchPattern };
     }
 }

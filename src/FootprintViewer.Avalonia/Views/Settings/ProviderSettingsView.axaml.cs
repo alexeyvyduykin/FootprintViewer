@@ -1,9 +1,6 @@
 using Avalonia.ReactiveUI;
-using DialogHost;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
-using System;
-using System.Reactive;
 using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.Settings
@@ -18,19 +15,16 @@ namespace FootprintViewer.Avalonia.Views.Settings
             {
                 foreach (var item in ViewModel!.AvailableSources)
                 {
-                    ((ReactiveCommand<Unit, ISourceInfo>)item.Build).Subscribe(s => AddSourceButton.Flyout?.Hide()).DisposeWith(disposables);
-
-                    ((ReactiveCommand<Unit, ISourceInfo>)item.Build).Subscribe(s => DialogHost.DialogHost.Show(s, "MainDialogHost", OnDialogClosing)).DisposeWith(disposables);
+                    item.ShowBuilderDialog.RegisterHandler(
+                        async interaction =>
+                        {
+                            AddSourceButton.Flyout?.Hide();
+                            var res = await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
+                            var source = (res is ISourceInfo info) ? info : null;
+                            interaction.SetOutput(source);
+                        }).DisposeWith(disposables);
                 }
             });
-        }
-
-        private void OnDialogClosing(object? sender, DialogClosingEventArgs e)
-        {
-            if (e.Parameter != null && e.Parameter is ISourceInfo sourceInfo)
-            {
-                ViewModel!.AddSource.Execute(sourceInfo).Subscribe();
-            }
         }
     }
 }

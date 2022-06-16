@@ -699,6 +699,185 @@ namespace FootprintViewer
                 throw new Exception();
             }
         }
+
+        public ISourceBuilder[] CreateFootprintProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                new RandomSourceBuilder("RandomFootprints"),
+                CreateDatabaseSourceBuilder(),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build
+                    .Where(s => s != null)
+                    .Select(s => s!)
+                    .InvokeCommand(
+                    settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateGroundTargetProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                new RandomSourceBuilder("RandomGroundTargets"),
+                CreateDatabaseSourceBuilder(),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateGroundStationProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                new RandomSourceBuilder("RandomGroundStations"),
+                CreateDatabaseSourceBuilder(),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateSatelliteProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                new RandomSourceBuilder("RandomSatellites"),
+                CreateDatabaseSourceBuilder(),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateUserGeometryProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                CreateDatabaseSourceBuilder(),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateFootprintPreviewGeometryProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                CreateFileSourceBuilder("Shapefile", "shp"),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateMapBackgroundProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+               CreateFolderSourceBuilder("*.mbtiles"),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        public ISourceBuilder[] CreateFootprintPreviewProviderBuilders(ProviderSettings settings)
+        {
+            var builders = new ISourceBuilder[]
+            {
+                CreateFolderSourceBuilder("*.mbtiles"),
+            };
+
+            foreach (var item in builders)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
+            }
+
+            return builders;
+        }
+
+        private ISourceBuilder CreateDatabaseSourceBuilder()
+        {
+            var builder = new DatabaseSourceBuilder(_dependencyResolver);
+
+            builder.Build.Subscribe(s =>
+            {
+                if (s is IDatabaseSourceInfo info)
+                {
+                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+
+                    settings.LastDatabaseSource = info;
+                }
+            });
+
+            return builder;
+        }
+
+        private ISourceBuilder CreateFolderSourceBuilder(string searchPattern)
+        {
+            var builder = new FolderSourceBuilder(searchPattern);
+
+            builder.Build.Subscribe(s =>
+            {
+                if (s is IFolderSourceInfo info)
+                {
+                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+
+                    settings.LastOpenDirectory = info.Directory;
+                }
+            });
+
+            return builder;
+        }
+
+        private ISourceBuilder CreateFileSourceBuilder(string fileName, string fileExtension)
+        {
+            var builder = new FileSourceBuilder(fileName, fileExtension);
+
+            builder.Build.Subscribe(s =>
+            {
+                if (s is IFileSourceInfo info)
+                {
+                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+
+                    settings.LastOpenDirectory = System.IO.Path.GetDirectoryName(info.Path);
+                }
+            });
+
+            return builder;
+        }
     }
 
     public static class DbOptions

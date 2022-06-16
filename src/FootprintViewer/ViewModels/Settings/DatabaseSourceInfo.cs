@@ -30,32 +30,16 @@ namespace FootprintViewer.ViewModels
     {
         public DatabaseSourceInfo()
         {
-            AvailableTables = new List<string>();
-
             this.WhenAnyValue(s => s.Host, s => s.Port, s => s.Database, s => s.Username, s => s.Password)
                 .Throttle(TimeSpan.FromSeconds(1.2))
-                .Subscribe(_ =>
-                {
-                    if (IsConnectionValid(DbOptions.BuildConnectionString(this)) == true)
-                    {
-                        AvailableTables = new List<string>(GetTablesNames(DbOptions.BuildConnectionString(this)));
-                    }
-                    else
-                    {
-                        AvailableTables = new List<string>();
-                    }
-                });
+                .Select(s => BuildConnectionString(s))
+                .Select(s => IsConnectionValid(s) ? new List<string>(GetTablesNames(s)) : new List<string>())
+                .ToPropertyEx(this, s => s.AvailableTables);
+        }
 
-            this.WhenAnyValue(s => s.Table)
-                .Subscribe(s =>
-                {
-                    IsValid = false;
-
-                    if (string.IsNullOrEmpty(s) == false)
-                    {
-                        IsValid = true;
-                    }
-                });
+        private static string BuildConnectionString((string? host, int port, string? database, string? username, string? password) info)
+        {
+            return $"Host={info.host};Port={info.port};Database={info.database};Username={info.username};Password={info.password}";
         }
 
         private static bool IsConnectionValid(string? connectionString)
@@ -76,6 +60,9 @@ namespace FootprintViewer.ViewModels
                 return false;
             }
         }
+
+        [ObservableAsProperty]
+        public List<string> AvailableTables { get; } = new List<string>();
 
         private static IEnumerable<string> GetTablesNames(string? connectionString)
         {
@@ -122,11 +109,5 @@ namespace FootprintViewer.ViewModels
         [DataMember]
         [Reactive]
         public string? Table { get; set; }
-
-        [Reactive]
-        public List<string> AvailableTables { get; set; }
-
-        [Reactive]
-        public bool IsValid { get; set; }
     }
 }

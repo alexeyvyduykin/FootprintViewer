@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace FootprintViewer.ViewModels
 {
@@ -10,90 +7,44 @@ namespace FootprintViewer.ViewModels
     {
         public AppSettings()
         {
-            FootprintProvider = CreateProviderSettings(
-                ProviderType.Footprints,
-                new ISourceBuilder[]
-                {
-                    new RandomSourceBuilder("RandomFootprints"),
-                    new DatabaseSourceBuilder(this),
-                });
+            FootprintProvider = new ProviderSettings() { Type = ProviderType.Footprints };
 
-            GroundTargetProvider = CreateProviderSettings(
-                ProviderType.GroundTargets,
-                new ISourceBuilder[]
-                {
-                    new RandomSourceBuilder("RandomGroundTargets"),
-                    new DatabaseSourceBuilder(this),
-                });
+            GroundTargetProvider = new ProviderSettings() { Type = ProviderType.GroundTargets };
 
-            GroundStationProvider = CreateProviderSettings(
-                ProviderType.GroundStations,
-                new ISourceBuilder[]
-                {
-                    new RandomSourceBuilder("RandomGroundStations"),
-                    new DatabaseSourceBuilder(this),
-                });
+            GroundStationProvider = new ProviderSettings() { Type = ProviderType.GroundStations };
 
-            SatelliteProvider = CreateProviderSettings(
-                ProviderType.Satellites,
-                new ISourceBuilder[]
-                {
-                    new RandomSourceBuilder("RandomSatellites"),
-                    new DatabaseSourceBuilder(this),
-                });
+            SatelliteProvider = new ProviderSettings() { Type = ProviderType.Satellites };
 
-            UserGeometryProvider = CreateProviderSettings(
-                ProviderType.UserGeometries,
-                new ISourceBuilder[]
-                {
-                    new DatabaseSourceBuilder(this),
-                });
+            UserGeometryProvider = new ProviderSettings() { Type = ProviderType.UserGeometries };
 
-            FootprintPreviewGeometryProvider = CreateProviderSettings(
-                ProviderType.FootprintPreviewGeometries,
-                new ISourceBuilder[]
-                {
-                    new FileSourceBuilder("Shapefile", "shp"),
-                });
+            FootprintPreviewGeometryProvider = new ProviderSettings() { Type = ProviderType.FootprintPreviewGeometries };
 
-            MapBackgroundProvider = CreateProviderSettings(
-                ProviderType.MapBackgrounds,
-                new ISourceBuilder[]
-                {
-                    new FolderSourceBuilder("*.mbtiles"),
-                });
+            MapBackgroundProvider = new ProviderSettings() { Type = ProviderType.MapBackgrounds };
 
-            FootprintPreviewProvider = CreateProviderSettings(
-                ProviderType.FootprintPreviews,
-                new ISourceBuilder[]
-                {
-                    new FolderSourceBuilder("*.mbtiles"),
-                });
+            FootprintPreviewProvider = new ProviderSettings() { Type = ProviderType.FootprintPreviews };
 
             Title = "Пользовательские настройки";
         }
 
-        private ProviderSettings CreateProviderSettings(ProviderType type, IEnumerable<ISourceBuilder> builders)
+        public void Init(ProjectFactory factory)
         {
-            var settings = new ProviderSettings()
-            {
-                Type = type,
-                AvailableSources = new List<ISourceBuilder>(builders)
-            };
+            FootprintProvider.AvailableSources = new(factory.CreateFootprintProviderBuilders(FootprintProvider));
 
-            settings.AddSource.Where(s => s is IDatabaseSourceInfo)
-                              .Cast<IDatabaseSourceInfo>()
-                              .Subscribe(s => LastDatabaseSource = s);
+            GroundTargetProvider.AvailableSources = new(factory.CreateGroundTargetProviderBuilders(GroundTargetProvider));
 
-            settings.AddSource.Where(s => s is IFolderSourceInfo)
-                              .Cast<IFolderSourceInfo>()
-                              .Subscribe(s => LastOpenDirectory = s.Directory);
+            GroundStationProvider.AvailableSources = new(factory.CreateGroundStationProviderBuilders(GroundStationProvider));
 
-            settings.AddSource.Where(s => s is IFileSourceInfo)
-                              .Cast<IFileSourceInfo>()
-                              .Subscribe(s => LastOpenDirectory = System.IO.Path.GetDirectoryName(s.Path));
+            SatelliteProvider.AvailableSources = new(factory.CreateSatelliteProviderBuilders(SatelliteProvider));
 
-            return settings;
+            UserGeometryProvider.AvailableSources = new(factory.CreateUserGeometryProviderBuilders(UserGeometryProvider));
+
+            FootprintPreviewGeometryProvider.AvailableSources = new(factory.CreateFootprintPreviewGeometryProviderBuilders(FootprintPreviewGeometryProvider));
+
+            MapBackgroundProvider.AvailableSources = new(factory.CreateMapBackgroundProviderBuilders(MapBackgroundProvider));
+
+            FootprintPreviewProvider.AvailableSources = new(factory.CreateFootprintPreviewProviderBuilders(FootprintPreviewProvider));
+
+            Title = "Пользовательские настройки";
         }
 
         [DataMember]

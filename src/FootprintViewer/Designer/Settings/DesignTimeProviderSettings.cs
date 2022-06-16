@@ -12,7 +12,7 @@ namespace FootprintViewer.Designer
             AvailableSources = new List<ISourceBuilder>()
             {
                 new RandomSourceBuilder("RandomGroundTargets"),
-                new DatabaseSourceBuilder(),
+                new DatabaseSourceBuilder(new DesignTimeData()),
             };
 
             Sources.Add(new DatabaseSourceInfo()
