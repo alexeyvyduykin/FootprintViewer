@@ -3,21 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"  
-             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"  
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"  
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
+             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                           
-             mc:Ignorable="d"          
-             d:DesignHeight="450" d:DesignWidth="420">
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d"
+             d:DesignHeight="550" d:DesignWidth="420">
 
   <Design.DataContext>
     <vmd:DesignTimeSidePanel/>
   </Design.DataContext>
 
   <UserControl.DataTemplates>
-    
+
     <DataTemplate DataType="vm:SceneSearch">
       <views:SceneSearchView/>
     </DataTemplate>
@@ -47,7 +48,7 @@
     </DataTemplate>
 
   </UserControl.DataTemplates>
-  
+
   <UserControl.Resources>
     <selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
       <DataTemplate x:Key="SceneSearch">
@@ -93,11 +94,9 @@
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="AppSettings">
-        <Grid>
-          <Viewbox Margin="8">
-            <Image Source="{DynamicResource IconTune}"/>
-          </Viewbox>
-        </Grid>
+        <Viewbox Margin="4">
+          <materialIcons:MaterialIcon Kind="AccountCog" />
+        </Viewbox>
       </DataTemplate>
     </selectors:DataTemplateSelector>
   </UserControl.Resources>
@@ -107,15 +106,27 @@
       <Setter Property="Title" Value="{Binding Title}"/>
       <Setter Property="IsSelected" Value="{Binding IsActive}"/>
     </Style>
+    <Style Selector="controls|SidePanelItem">
+      <Setter Property="DockPanel.Dock" Value="Top"/>
+    </Style>
+    <Style Selector="controls|SidePanelItem:nth-last-child(1)">
+      <Setter Property="DockPanel.Dock" Value="Bottom"/>
+      <Setter Property="VerticalAlignment" Value="Bottom"/>
+    </Style>
   </UserControl.Styles>
 
   <Panel>
-
     <controls:SidePanel Items="{Binding Tabs}"
                         IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                         ItemTemplate="{DynamicResource SidePanelIconSelector}"
-                        SelectedItem="{Binding SelectedTab}"/>
-  </Panel>
+                        SelectedItem="{Binding SelectedTab}">
 
+      <controls:SidePanel.ItemsPanel>
+        <ItemsPanelTemplate>
+          <DockPanel/>
+        </ItemsPanelTemplate>
+      </controls:SidePanel.ItemsPanel>
+    </controls:SidePanel>
+  </Panel>
 
 </UserControl>

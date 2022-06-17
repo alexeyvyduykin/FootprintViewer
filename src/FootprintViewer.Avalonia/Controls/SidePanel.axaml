@@ -11,7 +11,21 @@
         <PathIcon x:Key="PathIconPolygon" Data="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z"/>
         <PathIcon x:Key="PathIconCircle" Data="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
       </Border.Resources>
+      <Border.Styles>
+        <Style Selector="controls|SidePanelItem">
+          <Setter Property="DockPanel.Dock" Value="Top"/>
+        </Style>
+        <Style Selector="controls|SidePanelItem:nth-last-child(1)">
+          <Setter Property="DockPanel.Dock" Value="Bottom"/>
+          <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
+      </Border.Styles>
       <controls:SidePanel x:Name="SidePanel">
+        <controls:SidePanel.ItemsPanel>
+          <ItemsPanelTemplate>
+            <DockPanel/>
+          </ItemsPanelTemplate>
+        </controls:SidePanel.ItemsPanel>
         <controls:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
           <Panel>
             <Border Width="200" Height="200" Background="Red" />
@@ -136,25 +150,20 @@
                      OpenPaneLength="{DynamicResource PaneWidth}">
 
             <SplitView.Pane>
-              <DockPanel>
-
+              <Grid RowDefinitions="Auto,*">
                 <ToggleButton x:Name="PART_toggle"
                               Classes="t2"
                               Background="{TemplateBinding TitleBackground}"
-                              DockPanel.Dock="Top"
                               IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
 
                 <ItemsPresenter Name="PART_ItemsPresenter"
+                                VerticalAlignment="Stretch"
                                 Grid.Row="1"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
+                                ItemsPanel="{TemplateBinding ItemsPanel}"
                                 Items="{TemplateBinding Items}">
-                  <ItemsPresenter.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <StackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                  </ItemsPresenter.ItemsPanel>
                 </ItemsPresenter>
-              </DockPanel>
+              </Grid>
             </SplitView.Pane>
             <SplitView.Content>
 
