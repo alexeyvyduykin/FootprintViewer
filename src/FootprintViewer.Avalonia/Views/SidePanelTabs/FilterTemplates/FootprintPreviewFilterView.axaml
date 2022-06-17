@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates.FootprintPreviewFilterView"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"   
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"        
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
@@ -29,10 +30,8 @@
   <styles:ColorZone Padding="20">
     <StackPanel>
 
-      <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-        <Viewbox Width="18" Height="18">
-          <Image Source="{DynamicResource IconToday}"/>
-        </Viewbox>
+      <StackPanel Orientation="Horizontal" Margin="0,0,0,10">                 
+        <materialIcons:MaterialIcon Kind="DateRange"/>      
         <TextBlock Text="Дата" Classes="Body2" Margin="8,0,0,0"
                    VerticalAlignment="Center"/>
       </StackPanel>
@@ -64,7 +63,7 @@
 
       <StackPanel Margin="0,0,0,20">
         <DockPanel LastChildFill="True">
-          <Viewbox Width="18" Height="18">
+          <Viewbox Width="18" Height="18">       
             <Image Source="{DynamicResource IconSunElevationMain}"/>
           </Viewbox>
           <TextBlock Text="Угол падения солнечных лучей" Classes="Body2" Margin="8,0,0,0"></TextBlock>

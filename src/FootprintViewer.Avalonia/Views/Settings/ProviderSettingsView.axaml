@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              mc:Ignorable="d"
              x:Class="FootprintViewer.Avalonia.Views.Settings.ProviderSettingsView">
@@ -32,15 +33,13 @@
     <Style Selector="Button.rmvBtn">
       <Setter Property="Width" Value="20"></Setter>
       <Setter Property="Height" Value="20"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-      <Setter Property="Content" Value="-"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>     
     </Style>
 
     <Style Selector="Button.addBtn">
       <Setter Property="Width" Value="20"></Setter>
       <Setter Property="Height" Value="20"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-      <Setter Property="Content" Value="+"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>     
       <Setter Property="HorizontalAlignment" Value="Left"></Setter>
     </Style>
 
@@ -92,7 +91,11 @@
       <StackPanel Orientation="Horizontal">
         <Button Command="{Binding #ItemsControl.DataContext.RemoveSource}"
                 CommandParameter="{Binding}"
-                Classes="rmvBtn"/>
+                Classes="rmvBtn">
+          <Viewbox Margin="2">
+            <materialIcons:MaterialIcon Kind="Minus"/>
+          </Viewbox>
+        </Button>
         <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
       </StackPanel>
     </DataTemplate>
@@ -122,6 +125,9 @@
             </styles:ColorZone>
           </Flyout>
         </Button.Flyout>
+        <Viewbox Margin="2">
+          <materialIcons:MaterialIcon Kind="Plus"/>
+        </Viewbox>
       </Button>
 
     </StackPanel>

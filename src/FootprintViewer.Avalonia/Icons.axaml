@@ -1,50 +1,37 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-  <Style Selector="ContentPresenter.small">
-    <Setter Property="Background" Value="#373737"></Setter>
-    <Setter Property="ContentTemplate">
-      <Setter.Value>
-        <DataTemplate>
-          <Viewbox Width="36" Height="36" Margin="1">
-            <Border>
-              <Image Margin="8.5" Width="19" Height="19" Source="{Binding}"/>
-            </Border>
-          </Viewbox>
-        </DataTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
-  <Style Selector="ContentPresenter.t1">
-    <Setter Property="ContentTemplate">
-      <Setter.Value>
-        <DataTemplate>
-          <Viewbox>
-            <Image Source="{Binding}"/>
-          </Viewbox>
-        </DataTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
   <Design.PreviewWith>
     <Border Padding="20" Width="400">
+      <Border.Styles>
+        <Style Selector="ContentPresenter.small">
+          <Setter Property="Background" Value="#373737"></Setter>
+          <Setter Property="ContentTemplate">
+            <Setter.Value>
+              <DataTemplate>
+                <Viewbox Width="36" Height="36" Margin="1">
+                  <Border>
+                    <Image Margin="8.5" Width="19" Height="19" Source="{Binding}"/>
+                  </Border>
+                </Viewbox>
+              </DataTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+        <Style Selector="ContentPresenter.t1">
+          <Setter Property="ContentTemplate">
+            <Setter.Value>
+              <DataTemplate>
+                <Viewbox>
+                  <Image Source="{Binding}"/>
+                </Viewbox>
+              </DataTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </Border.Styles>
       <StackPanel>
         <WrapPanel>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomIn}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconZoomOut}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconAddRectangle}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconAddPolygon}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconCircle}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconAddCircle}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconScale}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconChevronLeft}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconChevronRight}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconImage}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconTune}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconClose}"/>
-
           <Border Width="36" Height="36"
                   Background="#373737"
                   Margin="1"
@@ -55,23 +42,9 @@
               </Border>
             </Viewbox>
           </Border>
-
           <ContentPresenter Classes="small" Content="{DynamicResource IconSunElevation}"/>
           <ContentPresenter Classes="small" Content="{DynamicResource IconCloudy}"/>
           <ContentPresenter Classes="small" Content="{DynamicResource IconGrid}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconToday}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconSquare}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconBorderCircle}"/>
-
-          <Border Width="36" Height="36" Background="#373737" Margin="1" Padding="2">
-            <Panel>
-              <ContentPresenter Classes="t1" Content="{DynamicResource IconBorderCircle}"/>
-              <ContentPresenter Classes="t1" Margin="8.5" Content="{DynamicResource IconSquare}"/>
-            </Panel>
-          </Border>
-
-          <ContentPresenter Classes="small" Content="{DynamicResource IconMap}"/>
-          <ContentPresenter Classes="small" Content="{DynamicResource IconGroundStation}"/>
         </WrapPanel>
 
         <WrapPanel>
@@ -268,126 +241,7 @@
         <Color R="214" G="217" B="221" A="255"></Color>
       </SolidColorBrush.Color>-->
     </SolidColorBrush>
-
-    <DrawingImage x:Key="IconZoomIn">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconZoomOut">
-      <DrawingImage.Drawing>
-        <DrawingGroup>
-          <GeometryDrawing Brush="Transparent" Geometry="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-          <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,13H5V11H19V13Z" />
-        </DrawingGroup>
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconAddRectangle">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconAddPolygon">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconCircle">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}"
-                         Geometry="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconAddCircle">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconGroundStation">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M11.86,2L11.34,3.93C15.75,4.78 19.2,8.23 20.05,12.65L22,12.13C20.95,7.03 16.96,3.04 11.86,2M10.82,5.86L10.3,7.81C13.34,8.27 15.72,10.65 16.18,13.68L18.12,13.16C17.46,9.44 14.55,6.5 10.82,5.86M3.72,9.69C3.25,10.73 3,11.86 3,13C3,14.95 3.71,16.82 5,18.28V22H8V20.41C8.95,20.8 9.97,21 11,21C12.14,21 13.27,20.75 14.3,20.28L3.72,9.69M9.79,9.76L9.26,11.72A3,3 0 0,1 12.26,14.72L14.23,14.2C14,11.86 12.13,10 9.79,9.76Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-
-    <!-- ClipGeometry="M0,0 V512.035 H512.035 V0 H0 Z" -->
-    <DrawingImage x:Key="IconScale">
-      <DrawingImage.Drawing>
-        <DrawingGroup >
-          <DrawingGroup.Transform>
-            <TranslateTransform X="1" Y="0" />
-          </DrawingGroup.Transform>
-          <DrawingGroup Opacity="1" Transform="1,0,0,1,1,0">
-            <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M109.933,256.035L255,401.101 109.933,401.101 109.933,256.035z M7.533,8.568L7.533,503.501 502.466,503.501 7.533,8.568z" />
-            <DrawingGroup Opacity="1">
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M50.2,87.075C46.787,90.488 46.787,95.608 50.2,99.022 51.907,100.729 54.467,101.582 56.173,101.582 57.879,101.582 60.44,100.729 62.146,99.022L80.066,81.102 80.066,81.102 68.12,69.155 68.12,69.155 50.2,87.075z" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M109.933,159.608C111.64,161.315 114.2,162.168 115.906,162.168 118.466,162.168 120.173,161.315 121.879,159.608L139.799,141.688 127.852,129.741 109.932,147.661C106.52,151.075,106.52,156.195,109.933,159.608" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M170.52,220.195C172.227,221.902 174.787,222.755 176.493,222.755 178.2,222.755 180.76,221.902 182.466,220.195L200.386,202.275 188.439,190.328 170.519,208.248C167.107,210.808,167.107,216.781,170.52,220.195" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M231.107,279.928C232.814,281.635 235.374,282.488 237.08,282.488 239.64,282.488 241.347,281.635 243.053,279.928L260.973,262.008 249.026,250.061 231.106,267.981C227.693,271.395,227.693,276.515,231.107,279.928" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M290.84,340.515C292.547,342.222 295.107,343.075 296.813,343.075 298.52,343.075 301.08,342.222 302.786,340.515L320.706,322.595 308.759,310.648 290.839,328.568C288.28,331.981,288.28,337.101,290.84,340.515" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M351.427,389.155C348.014,392.568 348.014,397.688 351.427,401.102 353.134,402.809 355.694,403.662 357.4,403.662 359.106,403.662 361.667,402.809 363.373,401.102L381.293,383.182 381.293,383.182 369.346,371.235 369.346,371.235 351.427,389.155z" />
-              <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M512.035,512.035z M0,0z M412.013,460.835C413.72,462.542 416.28,463.395 417.986,463.395 419.693,463.395 422.253,462.542 423.959,460.835L441.879,442.915 429.932,430.968 412.012,448.888C408.6,452.301,408.6,458.275,412.013,460.835" />
-            </DrawingGroup>
-            <GeometryDrawing Geometry="F1 M512.035,512.035z M0,0z M502.467,512.035L7.533,512.035C2.413,512.035,-0.999999999999999,508.622,-0.999999999999999,503.502L-0.999999999999999,8.568C-0.999999999999999,5.155 0.707000000000001,1.741 4.12,0.888 7.533,-0.819 10.947,0.0349999999999999 13.507,2.595L508.44,497.528C511,500.088 511.853,503.501 510.147,506.915 509.293,510.328 505.88,512.035 502.467,512.035z M16.067,494.968L481.987,494.968 16.067,29.048 16.067,494.968z" />
-            <GeometryDrawing Geometry="F1 M512.035,512.035z M0,0z M255,409.635L109.933,409.635C104.813,409.635,101.4,406.222,101.4,401.102L101.4,256.035C101.4,252.622 103.107,249.208 106.52,248.355 109.933,246.648 113.347,247.502 115.907,250.062L260.974,395.129C263.534,397.689 264.387,401.102 262.681,404.516 261.827,407.928 258.413,409.635 255,409.635z M118.467,392.568L234.52,392.568 118.467,276.515 118.467,392.568z" />
-            <GeometryDrawing Brush="Black" Geometry="F1 M512.035,512.035z M0,0z M115.907,162.168C113.347,162.168 111.64,161.315 109.934,159.608 106.521,156.195 106.521,151.075 109.934,147.661L127.854,129.741C131.267,126.328 136.387,126.328 139.801,129.741 143.214,133.154 143.214,138.274 139.801,141.688L121.881,159.608C120.173,161.315,118.467,162.168,115.907,162.168z" />
-            <GeometryDrawing Brush="Black" Geometry="F1 M512.035,512.035z M0,0z M176.493,221.901C173.933,221.901 172.226,221.048 170.52,219.341 167.107,215.928 167.107,210.808 170.52,207.394L188.44,189.474C191.853,186.061 196.973,186.061 200.387,189.474 203.801,192.887 203.8,198.007 200.387,201.421L182.467,219.341C180.76,221.901,179.053,221.901,176.493,221.901z" />
-            <GeometryDrawing Brush="Black" Geometry="F1 M512.035,512.035z M0,0z M237.08,282.488C234.52,282.488 232.813,281.635 231.107,279.928 227.694,276.515 227.694,271.395 231.107,267.981L249.027,250.061C252.44,246.648 257.56,246.648 260.974,250.061 264.388,253.474 264.387,258.594 260.974,262.008L243.054,279.928C241.347,281.635,238.787,282.488,237.08,282.488z" />
-            <GeometryDrawing Brush="Black" Geometry="F1 M512.035,512.035z M0,0z M297.667,343.075C295.107,343.075 293.4,342.222 291.694,340.515 288.281,337.102 288.281,331.982 291.694,328.568L309.614,310.648C313.027,307.235 318.147,307.235 321.561,310.648 324.974,314.061 324.974,319.181 321.561,322.595L303.641,340.515C301.933,342.221,299.373,343.075,297.667,343.075z" />
-            <GeometryDrawing Brush="Black" Geometry="F1 M512.035,512.035z M0,0z M357.4,403.661C354.84,403.661 353.133,402.808 351.427,401.101 348.014,397.688 348.014,392.568 351.427,389.154L369.347,371.234C372.76,367.821 377.88,367.821 381.294,371.234 384.707,374.647 384.707,379.767 381.294,383.181L363.374,401.101C361.667,402.808,359.96,403.661,357.4,403.661z" />
-          </DrawingGroup>
-        </DrawingGroup>
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconChevronRight">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="White" Geometry="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconChevronLeft">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="White" Geometry="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconImage">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconTune">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="White" Geometry="M3,17V19H9V17H3M3,5V7H13V5H3M13,21V19H21V17H13V15H11V21H13M7,9V11H3V13H7V15H9V9H7M21,13V11H11V13H21M15,9H17V7H21V5H17V3H15V9Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconTuneBack">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="#4c9ae7" Geometry="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconTuneClose">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="White" Geometry="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconClose">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
+    
     <!-- ClipGeometry="M0,0 V90 H90 V0 H0 Z" -->
     <DrawingImage x:Key="IconSatellite">
       <DrawingImage.Drawing>
@@ -499,44 +353,7 @@
         </DrawingGroup>
       </DrawingImage.Drawing>
     </DrawingImage>
-
-    <DrawingImage x:Key="IconToday">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M7,10H12V15H7M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconSquare">
-      <DrawingImage.Drawing>
-        <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="M2,2H8V4H16V2H22V8H20V16H22V22H16V20H8V22H2V16H4V8H2V2M16,8V6H8V8H6V16H8V18H16V16H18V8H16M4,4V6H6V4H4M18,4V6H20V4H18M4,18V20H6V18H4M18,18V20H20V18H18Z" />
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <DrawingImage x:Key="IconBorderCircle">
-      <DrawingImage.Drawing>
-        <DrawingGroup Opacity="0.2">
-          <GeometryDrawing Geometry="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z">
-            <GeometryDrawing.Pen>
-              <Pen Brush="{StaticResource IconMainBrush}"/>
-            </GeometryDrawing.Pen>
-          </GeometryDrawing>
-        </DrawingGroup>
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
-    <!-- ClipGeometry="M0,0 V490 H490 V0 H0 Z" -->
-    <DrawingImage x:Key="IconMap">
-      <DrawingImage.Drawing>
-        <DrawingGroup>
-          <DrawingGroup Opacity="1">
-            <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M490,490z M0,0z M0,437.8L0,437.8 145.9,484.9 145.9,52.2 0,5.1z" />
-            <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M490,490z M0,0z M344.1,5.1L344.1,5.1 344.1,437.8 490,484.9 490,52.2z" />
-            <GeometryDrawing Brush="{StaticResource IconMainBrush}" Geometry="F1 M490,490z M0,0z M171.9,484.9L171.9,484.9 318.1,437.8 318.1,5.1 171.9,52.2z" />
-          </DrawingGroup>
-        </DrawingGroup>
-      </DrawingImage.Drawing>
-    </DrawingImage>
-
+    
     <!-- font-gis -->
     <!-- https://github.com/Viglino/font-gis -->
 

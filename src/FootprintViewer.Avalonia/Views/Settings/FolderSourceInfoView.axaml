@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              mc:Ignorable="d"  
              MinWidth="680"
@@ -26,8 +27,11 @@
         <Button Grid.Column="2" 
                 Padding="0"
                 Height="32"
-                Click="AddPath_Clicked"               
-                Content="..."/>
+                Click="AddPath_Clicked">
+          <Viewbox Margin="4">          
+            <materialIcons:MaterialIcon Kind="FolderSettingsOutline"/>
+          </Viewbox>
+        </Button>
       </Grid>
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

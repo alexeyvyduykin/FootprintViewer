@@ -18,9 +18,11 @@
   
   <ToggleButton x:Name="ToggleButton"
                 Padding="0"
-                Opacity="0.75"            
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
+                Opacity="0.75"       
+                Content="{Binding}"
+                ContentTemplate="{DynamicResource ToolIconDataSelector}"    
+                VerticalContentAlignment="Center"         
+                HorizontalContentAlignment="Center"
                 IsChecked="{Binding IsCheck}"
                 ToolTip.ShowDelay="0">
     
@@ -28,8 +30,8 @@
       <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
     </ToolTip.Tip>
 
-    <ContentControl Content="{Binding}"                  
-                    ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+    <!--<ContentControl Content="{Binding}"                  
+                    ContentTemplate=""/>-->
     
   </ToggleButton>
   

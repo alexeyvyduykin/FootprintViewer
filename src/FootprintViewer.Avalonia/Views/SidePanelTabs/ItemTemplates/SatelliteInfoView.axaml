@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"             
-             xmlns:icons="using:Material.Icons.Avalonia"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"    
              mc:Ignorable="d" d:DesignWidth="280">
@@ -30,7 +30,7 @@
           <ToggleButton x:Name="ShowInfoToggleButton" 
                         IsChecked="{Binding IsShowInfo}"
                         Classes="Icon NoFeedback">
-            <icons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>          
+            <materialIcons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>          
           </ToggleButton>
           <ToggleSwitch x:Name="ShowToggleSwitch"        
                         IsChecked="{Binding IsShow}"

@@ -1,5 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialIcons="using:Material.Icons.Avalonia"
         xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors">
     <Design.PreviewWith>
         <Border Padding="20">
@@ -13,44 +14,32 @@
     <selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
 
       <DataTemplate x:Key="AddRectangle">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="AddPolygon">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="AddCircle">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="Route">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconScale}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="28" Height="28" Kind="SetSquare" Foreground="#d6d9dd"/>
       </DataTemplate>
 
-      <DataTemplate x:Key="ZoomIn">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomIn}"/>
-        </Viewbox>
+      <DataTemplate x:Key="ZoomIn">             
+        <materialIcons:MaterialIcon Width="35" Height="35" Kind="Plus" Foreground="#d6d9dd"/>       
       </DataTemplate>
 
-      <DataTemplate x:Key="ZoomOut">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconZoomOut}"/>
-        </Viewbox>
+      <DataTemplate x:Key="ZoomOut">                
+        <materialIcons:MaterialIcon Width="35" Height="35" Kind="Minus" Foreground="#d6d9dd"/>      
       </DataTemplate>
 
       <DataTemplate x:Key="MapBackgrounds">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconMap}"/>
+          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-map}"/>
         </Viewbox>
       </DataTemplate>
 
@@ -73,21 +62,15 @@
       </DataTemplate>
 
       <DataTemplate x:Key="Rectangle">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddRectangle}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="Circle">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddCircle}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="Polygon">
-        <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource IconAddPolygon}"/>
-        </Viewbox>
+        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
       </DataTemplate>
 
       <DataTemplate x:Key="Translate">

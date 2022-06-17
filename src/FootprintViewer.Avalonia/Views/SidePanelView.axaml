@@ -52,11 +52,9 @@
   <UserControl.Resources>
     <selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
       <DataTemplate x:Key="SceneSearch">
-        <Grid>
-          <Viewbox Margin="8">
-            <Image Source="{DynamicResource IconImage}"/>
-          </Viewbox>
-        </Grid>
+        <Viewbox Margin="4">
+          <materialIcons:MaterialIcon Kind="Image"/>
+        </Viewbox>
       </DataTemplate>
       <DataTemplate x:Key="SatelliteViewer">
         <Grid>
@@ -87,11 +85,9 @@
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="GroundStationViewer">
-        <Grid>
-          <Viewbox Margin="8">
-            <Image Source="{DynamicResource IconGroundStation}"/>
-          </Viewbox>
-        </Grid>
+        <Viewbox Margin="4">
+          <materialIcons:MaterialIcon Kind="SatelliteUplink"/>
+        </Viewbox>
       </DataTemplate>
       <DataTemplate x:Key="AppSettings">
         <Viewbox Margin="4">

@@ -3,21 +3,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"                 
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
 
   <Design.DataContext>
     <vmd:DesignTimeCustomToolBar/>
   </Design.DataContext>
 
+  <UserControl.Resources>    
+    <DataTemplate x:Key="zoomInIcon">           
+      <materialIcons:MaterialIcon Background="Red" Kind="Plus" Foreground="#d6d9dd"/>  
+    </DataTemplate>    
+  </UserControl.Resources>
+
   <UserControl.Styles>
 
     <Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
       <Setter Property="HorizontalAlignment" Value="Left"/>
+      <Setter Property="Width" Value="36"/>
+      <Setter Property="Height" Value="36"/>
     </Style>
 
     <Style Selector="ToggleButton.toolCheck">
@@ -32,21 +41,36 @@
       <Setter Property="Background" Value="Transparent"/>
     </Style>
 
+
+    <Style Selector="Button.clickView">
+      <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"></Setter>
+      <Setter Property="Padding" Value="0"></Setter>
+      <Setter Property="Width" Value="36"></Setter>
+      <Setter Property="Height" Value="36"></Setter>
+      <Setter Property="Opacity" Value="0.75"></Setter>
+      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+      <Setter Property="ToolTip.ShowDelay" Value="0"></Setter>
+    </Style>
+    
   </UserControl.Styles>
 
+
+  
   <Panel>
     <StackPanel>
-
+      
       <toolBar:ToolClickView DataContext="{Binding ZoomIn}"/>
+      
+      <toolBar:ToolClickView DataContext="{Binding ZoomOut}"                      
+                             Margin="0,1,0,0"/>
 
-      <toolBar:ToolClickView DataContext="{Binding ZoomOut}"
-                       Margin="0,1,0,0"/>
+      <toolBar:ToolCollectionView DataContext="{Binding AOICollection}"                           
+                                  Margin="0,10,0,0"/>
 
-      <toolBar:ToolCollectionView DataContext="{Binding AOICollection}"
-                            Margin="0,10,0,0"/>
-
-      <toolBar:ToolCheckView DataContext="{Binding RouteDistance}"
-                       Margin="0,1,0,0"/>
+      <toolBar:ToolCheckView DataContext="{Binding RouteDistance}"                       
+                             Margin="0,1,0,0"/>
 
       <!-- MapBackgrounds -->
       <ToggleButton x:Name="MapBackgroundSelectorButton"
@@ -102,7 +126,8 @@
       <toolBar:ToolCheckView DataContext="{Binding EditGeometry}"
                        Margin="0,1,0,0"/>
 
-    </StackPanel>
+    
+  </StackPanel>
   </Panel>
 
 </UserControl>

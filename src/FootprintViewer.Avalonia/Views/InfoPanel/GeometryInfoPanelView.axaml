@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-             xmlns:icons="using:Material.Icons.Avalonia"             
+             xmlns:materialIcons="using:Material.Icons.Avalonia"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
              mc:Ignorable="d"       
@@ -20,20 +20,20 @@
       <DataTemplate x:Key="Route">
         <Panel>
           <Viewbox>
-            <Image Source="{DynamicResource IconCircle}"/>
+            <materialIcons:MaterialIcon Kind="CircleOutline"/>        
           </Viewbox>
-          <Viewbox Margin="8.5">
-            <Image Source="{DynamicResource IconScale}"/>
+          <Viewbox Margin="6">
+            <materialIcons:MaterialIcon Kind="SetSquare"/>         
           </Viewbox>
         </Panel>
       </DataTemplate>
       <DataTemplate x:Key="AOI">
         <Panel>
           <Viewbox>
-            <Image Source="{DynamicResource IconCircle}"/>
+            <materialIcons:MaterialIcon Kind="CircleOutline"/>     
           </Viewbox>
-          <Viewbox Margin="8.5">
-            <Image Source="{DynamicResource IconSquare}"/>
+          <Viewbox Margin="8">
+            <materialIcons:MaterialIcon Kind="VectorSquare"/>
           </Viewbox>
         </Panel>
       </DataTemplate>
@@ -46,7 +46,7 @@
                  Opacity="0.85">
       <Grid ColumnDefinitions="Auto,*,Auto">
 
-        <Grid Width="32" Height="32">
+        <Grid Width="34" Height="34">
           <ContentControl Content="{Binding}"                        
                           ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
         </Grid>
@@ -70,10 +70,10 @@
           <ToolTip.Tip>
             <ToolTip Content="Закрыть" Classes="FastTooltip"/>
           </ToolTip.Tip>
-          <icons:MaterialIcon Width="20" 
-                              Height="20" 
-                              Foreground="{Binding #TextBlock.Foreground}"
-                              Kind="CloseThick" />
+          <Viewbox Margin="4">          
+            <materialIcons:MaterialIcon Foreground="{Binding #TextBlock.Foreground}"                                                                   
+                                        Kind="CloseThick" />
+          </Viewbox>
         </Button>
 
       </Grid>

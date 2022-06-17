@@ -11,18 +11,17 @@
   </Design.DataContext>
 
   <Button x:Name="Button"    
+          Content="{Binding}"
+          ContentTemplate="{DynamicResource ToolIconDataSelector}"
           Background="{DynamicResource MaterialDesignPaper}"
           Padding="0"
           Opacity="0.75"
-          VerticalAlignment="Center" 
-          HorizontalAlignment="Center"
+          VerticalContentAlignment="Center"
+          HorizontalContentAlignment="Center"
           ToolTip.ShowDelay="0">
     <ToolTip.Tip>
       <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
     </ToolTip.Tip>
-
-    <ContentControl Content="{Binding}"                
-                    ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
   </Button>
   
 </UserControl>
