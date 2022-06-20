@@ -59,28 +59,28 @@
       <DataTemplate x:Key="SatelliteViewer">
         <Grid>
           <Viewbox Margin="8">
-            <Image Source="{DynamicResource fg-satellite}"/>
+            <PathIcon Data="{DynamicResource fg-satellite}"/>
           </Viewbox>
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="GroundTargetViewer">
         <Grid>
           <Viewbox Margin="8">
-            <Image Source="{DynamicResource fg-pois}"/>
+            <PathIcon Data="{DynamicResource fg-pois}"/>
           </Viewbox>
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="FootprintObserver">
         <Grid>
           <Viewbox Margin="8">
-            <Image Source="{DynamicResource fg-satellite-earth}"/>
+            <PathIcon Data="{DynamicResource fg-satellite-earth}"/>
           </Viewbox>
         </Grid>
       </DataTemplate>
       <DataTemplate x:Key="UserGeometryViewer">
         <Grid>
           <Viewbox Margin="8">
-            <Image Source="{DynamicResource fg-map-user}"/>
+            <PathIcon Data="{DynamicResource fg-map-user}"/>
           </Viewbox>
         </Grid>
       </DataTemplate>

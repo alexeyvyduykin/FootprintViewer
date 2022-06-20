@@ -88,7 +88,8 @@
 
       <DockPanel LastChildFill="True" Margin="0,0,0,10">
         <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-          <Image Source="{DynamicResource IconSatelliteMain}"/>
+          <PathIcon Foreground="{StaticResource IconAccentBrush}"
+                    Data="{DynamicResource IconSatellite}"/>
         </Viewbox>
         <TextBlock Text="Спутники"
                    Classes="Body2"

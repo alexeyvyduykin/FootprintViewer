@@ -37,7 +37,8 @@
                          Margin="0,4,8,4"
                          Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
-                <Image Source="{DynamicResource IconSatellite}"/>
+                <PathIcon Foreground="{StaticResource IconAccentBrush}"
+                          Data="{DynamicResource IconSatellite}"/>
               </Viewbox>
             </StackPanel>
 
@@ -46,7 +47,8 @@
                          Margin="0,4,8,4"
                          Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
-                <Image Source="{DynamicResource IconSunElevation}"/>
+                <PathIcon Foreground="{StaticResource IconAccentBrush}"
+                          Data="{DynamicResource IconSunElevation}"/>
               </Viewbox>
             </StackPanel>
 
@@ -55,7 +57,8 @@
                          Margin="0,4,8,4"
                          Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
-                <Image Source="{DynamicResource IconCloudy}"/>
+                <PathIcon Foreground="{StaticResource IconAccentBrush}"
+                          Data="{DynamicResource IconCloudy}"/>
               </Viewbox>
             </StackPanel>
 
@@ -64,7 +67,8 @@
                          Margin="0,4,8,4"
                          Classes="Subtitle2"/>
               <Viewbox Width="16" Height="16">
-                <Image Source="{DynamicResource IconGrid}"/>
+                <PathIcon Foreground="{StaticResource IconAccentBrush}" 
+                          Data="{DynamicResource IconGrid}"/>
               </Viewbox>
             </StackPanel>
           </StackPanel>

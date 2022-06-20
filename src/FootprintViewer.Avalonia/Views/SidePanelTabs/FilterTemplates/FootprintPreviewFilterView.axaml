@@ -44,7 +44,8 @@
       <StackPanel Margin="0,0,0,20">
         <DockPanel LastChildFill="True">
           <Viewbox Width="18" Height="18">
-            <Image Source="{DynamicResource IconCloudyMain}"/>
+            <PathIcon Foreground="{StaticResource IconAccentBrush}" 
+                      Data="{DynamicResource IconCloudy}"/>
           </Viewbox>
           <TextBlock Text="Облачность" Classes="Body2" Margin="8,0,0,0"></TextBlock>
           <TextBlock HorizontalAlignment="Right" Classes="Body2"
@@ -63,10 +64,13 @@
 
       <StackPanel Margin="0,0,0,20">
         <DockPanel LastChildFill="True">
-          <Viewbox Width="18" Height="18">       
-            <Image Source="{DynamicResource IconSunElevationMain}"/>
+          <Viewbox Width="18" Height="18" VerticalAlignment="Center">       
+            <PathIcon Foreground="{StaticResource IconAccentBrush}" 
+                      Data="{DynamicResource IconSunElevation}"/>
           </Viewbox>
-          <TextBlock Text="Угол падения солнечных лучей" Classes="Body2" Margin="8,0,0,0"></TextBlock>
+          <TextBlock Text="Угол падения солнечных лучей" 
+                     VerticalAlignment="Center"
+                     Classes="Body2" Margin="8,0,0,0"></TextBlock>
           <TextBlock HorizontalAlignment="Right" Classes="Body2"
                                 Text="{Binding Value, StringFormat={}{0} - 90 °, ElementName=AngleSlider}">
           </TextBlock>
@@ -86,8 +90,9 @@
                 Content="Полное перекрытие AOI"/>
 
       <DockPanel LastChildFill="True" Margin="0,0,0,10">
-        <Viewbox Width="18" Height="18">
-          <Image Source="{DynamicResource IconSatelliteMain}"/>
+        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
+          <PathIcon Foreground="{StaticResource IconAccentBrush}" 
+                    Data="{DynamicResource IconSatellite}"/>
         </Viewbox>
         <TextBlock Text="Сенсоры" Classes="Body2" Margin="8,0,0,0"/>
         <CheckBox Content="Все сенсоры"

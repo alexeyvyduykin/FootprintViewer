@@ -17,7 +17,7 @@
     <selectors:DataTemplateSelector x:Key="UserGeometryInfoIconSelector">
       <DataTemplate x:Key="Point">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
+          <PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-poi}"/>
         </Viewbox>
       </DataTemplate>
       <DataTemplate x:Key="Rectangle">
@@ -27,7 +27,7 @@
       </DataTemplate>
       <DataTemplate x:Key="Polygon">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-regular-shape-o}"/>
+          <PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-regular-shape-o}"/>
         </Viewbox>
       </DataTemplate>
       <DataTemplate x:Key="Circle">

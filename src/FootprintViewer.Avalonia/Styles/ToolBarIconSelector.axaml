@@ -39,25 +39,25 @@
 
       <DataTemplate x:Key="MapBackgrounds">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-map}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-map}"/>
         </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="MapLayers">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-layers-o}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-layers-o}"/>
         </Viewbox>
       </DataTemplate>
       
       <DataTemplate x:Key="Select">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-arrow}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-arrow}"/>
         </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Point">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-poi}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-poi}"/>
         </Viewbox>
       </DataTemplate>
 
@@ -75,25 +75,25 @@
 
       <DataTemplate x:Key="Translate">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-move}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-move}"/>
         </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Rotate">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-rotate}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-rotate}"/>
         </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Scale">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-scale-poly}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-scale-poly}"/>
         </Viewbox>
       </DataTemplate>
 
       <DataTemplate x:Key="Edit">
         <Viewbox Width="36" Height="36">
-          <Image Margin="8.5" Width="19" Height="19" Source="{DynamicResource fg-modify-poly-o}"/>
+          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-modify-poly-o}"/>
         </Viewbox>
       </DataTemplate>
 
