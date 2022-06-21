@@ -504,7 +504,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new SatelliteDataSource(DbOptions.Build<SatelliteDbContext>(databaseInfo));
+                    var tableName = databaseInfo.Table;
+                    return new SatelliteDataSource(tableName, DbOptions.Build<SatelliteDbContext>(databaseInfo));
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -705,7 +706,7 @@ namespace FootprintViewer
             var builders = new ISourceBuilder[]
             {
                 new RandomSourceBuilder("RandomFootprints"),
-                CreateDatabaseSourceBuilder(),
+                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Footprint }),
             };
 
             foreach (var item in builders)
@@ -725,7 +726,7 @@ namespace FootprintViewer
             var builders = new ISourceBuilder[]
             {
                 new RandomSourceBuilder("RandomGroundTargets"),
-                CreateDatabaseSourceBuilder(),
+                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundTarget }),
             };
 
             foreach (var item in builders)
@@ -741,7 +742,7 @@ namespace FootprintViewer
             var builders = new ISourceBuilder[]
             {
                 new RandomSourceBuilder("RandomGroundStations"),
-                CreateDatabaseSourceBuilder(),
+                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundStation }),
             };
 
             foreach (var item in builders)
@@ -757,7 +758,7 @@ namespace FootprintViewer
             var builders = new ISourceBuilder[]
             {
                 new RandomSourceBuilder("RandomSatellites"),
-                CreateDatabaseSourceBuilder(),
+                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Satellite }),
             };
 
             foreach (var item in builders)
@@ -772,7 +773,7 @@ namespace FootprintViewer
         {
             var builders = new ISourceBuilder[]
             {
-                CreateDatabaseSourceBuilder(),
+                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.UserGeometry }),
             };
 
             foreach (var item in builders)
@@ -828,9 +829,13 @@ namespace FootprintViewer
             return builders;
         }
 
-        private ISourceBuilder CreateDatabaseSourceBuilder()
+        private enum TableType { Footprint, GroundTarget, Satellite, GroundStation, UserGeometry };
+
+        private ISourceBuilder CreateDatabaseSourceBuilder(TableInfo tableInfo)
         {
             var builder = new DatabaseSourceBuilder(_dependencyResolver);
+
+            builder.TableInfo = tableInfo;
 
             builder.Build.Subscribe(s =>
             {

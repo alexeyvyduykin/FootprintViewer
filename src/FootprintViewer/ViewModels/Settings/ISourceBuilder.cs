@@ -47,6 +47,8 @@ namespace FootprintViewer.ViewModels
             _dependencyResolver = dependencyResolver;
         }
 
+        public TableInfo? TableInfo { get; set; }
+
         public override string Name => "Add database";
 
         protected override ISourceInfo GetDefaultSource()
@@ -62,6 +64,7 @@ namespace FootprintViewer.ViewModels
                 Username = settings?.LastDatabaseSource?.Username,
                 Password = settings?.LastDatabaseSource?.Password,
                 Table = settings?.LastDatabaseSource?.Table,
+                TableInfo = TableInfo,
             };
         }
     }

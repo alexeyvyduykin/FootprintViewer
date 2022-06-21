@@ -23,6 +23,8 @@ namespace FootprintViewer.ViewModels
         string? Password { get; set; }
 
         string? Table { get; set; }
+
+        TableInfo? TableInfo { get; set; }
     }
 
     [DataContract]
@@ -81,6 +83,9 @@ namespace FootprintViewer.ViewModels
         }
 
         public string? Name => $"{Database}.{Table}";
+
+        [Reactive]
+        public TableInfo? TableInfo { get; set; }
 
         [DataMember]
         [Reactive]

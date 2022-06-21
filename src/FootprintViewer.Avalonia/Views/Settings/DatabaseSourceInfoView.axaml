@@ -2,9 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              mc:Ignorable="d"
              Width="320"
              x:Class="FootprintViewer.Avalonia.Views.Settings.DatabaseSourceInfoView">
@@ -25,23 +28,30 @@
 
     <Style Selector="ComboBox.cmbBoxFake[SelectedIndex=-1]">
       <Setter Property="IsEnabled" Value="False"></Setter>
-    </Style>    
+    </Style>
   </UserControl.Styles>
-  
+
   <styles:Card>
     <StackPanel>
 
       <Grid ColumnDefinitions="Auto,*"
             RowDefinitions="54,54,54,54,54,54,54">
-        
+
         <TextBlock Text="Version" Grid.Row="0" Classes="t1"/>
         <TextBlock Text="Host" Grid.Row="1" Classes="t1"/>
         <TextBlock Text="Port" Grid.Row="2" Classes="t1"/>
         <TextBlock Text="Database" Grid.Row="3" Classes="t1"/>
         <TextBlock Text="Username" Grid.Row="4" Classes="t1"/>
         <TextBlock Text="Password" Grid.Row="5" Classes="t1"/>
-        <TextBlock Text="Table" Grid.Row="6" Classes="t1"/>
- 
+        <StackPanel Grid.Row="6" Orientation="Horizontal">
+          <TextBlock Text="Table" Classes="t1"/>
+          <Button x:Name="ShowInfoToggleButton"
+                  Margin="-16,0,0,0"
+                  Click="TableInfo_Clicked"
+                  Classes="Icon NoFeedback">
+            <materialIcons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>
+          </Button>
+        </StackPanel>
         <TextBox Text="{Binding Version}" Grid.Column="1" Grid.Row="0"/>
         <TextBox Text="{Binding Host}" Grid.Column="1" Grid.Row="1"/>
         <TextBox Text="{Binding Port}" Grid.Column="1" Grid.Row="2"/>
@@ -52,16 +62,16 @@
                   SelectedItem="{Binding Table}"
                   Margin="0,0,0,8"
                   Grid.Column="1" Grid.Row="6"/>
-        <ComboBox x:Name="cmbBox" 
+        <ComboBox x:Name="cmbBox"
                   Classes="cmbBoxFake"
                   IsVisible="False"
                   Items="{Binding AvailableTables}"
-                  SelectedItem="{Binding Table}"                  
+                  SelectedItem="{Binding Table}"
                   Grid.Column="1" Grid.Row="6"/>
       </Grid>
-                  
+
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Content="Add"          
+        <Button Content="Add"
                 IsEnabled="{Binding #cmbBox.IsEnabled}"
                 Width="80"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
@@ -71,8 +81,8 @@
                 Content="Cancel"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
       </StackPanel>
-      
+
     </StackPanel>
   </styles:Card>
-    
+
 </UserControl>
