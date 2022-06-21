@@ -8,16 +8,18 @@ namespace FootprintViewer.Data.Sources
 {
     public class GroundStationDataSource : IDataSource<GroundStationInfo>
     {
-        private readonly DbContextOptions<GroundStationDbContext> _options;
+        private readonly DbContextOptions<DbCustomContext> _options;
+        private readonly string? _tableName;
 
-        public GroundStationDataSource(DbContextOptions<GroundStationDbContext> options)
+        public GroundStationDataSource(IDatabaseSourceInfo databaseInfo)
         {
-            _options = options;
+            _options = databaseInfo.BuildDbContextOptions<DbCustomContext>();
+            _tableName = databaseInfo.Table;
         }
 
         public async Task<List<GroundStationInfo>> GetValuesAsync(IFilter<GroundStationInfo>? filter = null)
         {
-            var context = new GroundStationDbContext(_options);
+            using var context = new GroundStationDbContext(_tableName, _options);
 
             return await context.GroundStations.Select(s => new GroundStationInfo(s)).ToListAsync();
         }

@@ -9,15 +9,17 @@ namespace FootprintViewer.Data.Sources
     public class FootprintDataSource : IDataSource<FootprintInfo>
     {
         private readonly DbContextOptions<FootprintDbContext> _options;
+        private readonly string? _tableName;
 
-        public FootprintDataSource(DbContextOptions<FootprintDbContext> options)
+        public FootprintDataSource(IDatabaseSourceInfo databaseInfo)
         {
-            _options = options;
+            _options = databaseInfo.BuildDbContextOptions<FootprintDbContext>();
+            _tableName = databaseInfo.Table;
         }
 
         public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
         {
-            var context = new FootprintDbContext(_options);
+            using var context = new FootprintDbContext(_tableName, _options);
 
             if (filter == null)
             {

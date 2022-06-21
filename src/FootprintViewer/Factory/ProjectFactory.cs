@@ -8,7 +8,6 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using Splat;
 using System;
@@ -352,7 +351,7 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new GroundStationDataSource(DbOptions.Build<GroundStationDbContext>(databaseInfo));
+                    return new GroundStationDataSource(databaseInfo);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -401,7 +400,7 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new GroundTargetDataSource(DbOptions.Build<GroundTargetDbContext>(databaseInfo));
+                    return new GroundTargetDataSource(databaseInfo);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -453,7 +452,7 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new FootprintDataSource(DbOptions.Build<FootprintDbContext>(databaseInfo));
+                    return new FootprintDataSource(databaseInfo);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -504,8 +503,7 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    var tableName = databaseInfo.Table;
-                    return new SatelliteDataSource(tableName, DbOptions.Build<SatelliteDbContext>(databaseInfo));
+                    return new SatelliteDataSource(databaseInfo);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -553,7 +551,7 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new UserGeometryDataSource(DbOptions.Build<UserGeometryDbContext>(databaseInfo));
+                    return new UserGeometryDataSource(databaseInfo);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -882,32 +880,6 @@ namespace FootprintViewer
             });
 
             return builder;
-        }
-    }
-
-    public static class DbOptions
-    {
-        public static string BuildConnectionString(IDatabaseSourceInfo info)
-        {
-            return $"Host={info.Host};Port={info.Port};Database={info.Database};Username={info.Username};Password={info.Password}";
-        }
-
-        public static DbContextOptions<T> Build<T>(IDatabaseSourceInfo info) where T : DbContext
-        {
-            var connectionString = BuildConnectionString(info);
-            var res = info.Version!.Split(new[] { '.' });
-            var major = int.Parse(res[0]);
-            var minor = int.Parse(res[1]);
-
-            var optionsBuilder = new DbContextOptionsBuilder<T>();
-
-            var options = optionsBuilder.UseNpgsql(connectionString, options =>
-            {
-                options.SetPostgresVersion(new Version(major, minor));
-                options.UseNetTopologySuite();
-            }).Options;
-
-            return options;
         }
     }
 }

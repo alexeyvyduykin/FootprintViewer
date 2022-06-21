@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
@@ -11,10 +12,11 @@ namespace FootprintViewer.Data.Sources
         private readonly DbContextOptions<SatelliteDbContext> _options;
         private readonly string? _tableName;
 
-        public SatelliteDataSource(string? tableName, DbContextOptions<SatelliteDbContext> options)
+        public SatelliteDataSource(IDatabaseSourceInfo databaseInfo)
         {
-            _tableName = tableName;
-            _options = options;
+            _tableName = databaseInfo.Table;
+
+            _options = databaseInfo.BuildDbContextOptions<SatelliteDbContext>();
         }
 
         public async Task<List<SatelliteInfo>> GetValuesAsync(IFilter<SatelliteInfo>? filter = null)

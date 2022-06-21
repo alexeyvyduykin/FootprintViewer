@@ -11,15 +11,17 @@ namespace FootprintViewer.Data.Sources
     public class UserGeometryDataSource : IEditableDataSource<UserGeometryInfo>
     {
         private readonly DbContextOptions<UserGeometryDbContext> _options;
+        private readonly string? _tableName;
 
-        public UserGeometryDataSource(DbContextOptions<UserGeometryDbContext> options)
+        public UserGeometryDataSource(IDatabaseSourceInfo databaseInfo)
         {
-            _options = options;
+            _options = databaseInfo.BuildDbContextOptions<UserGeometryDbContext>();
+            _tableName = databaseInfo.Table;
         }
 
         public async Task AddAsync(UserGeometryInfo value)
         {
-            var context = new UserGeometryDbContext(_options);
+            using var context = new UserGeometryDbContext(_tableName, _options);
 
             await context.UserGeometries.AddAsync(value.Geometry);
 
@@ -28,7 +30,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task RemoveAsync(UserGeometryInfo value)
         {
-            var context = new UserGeometryDbContext(_options);
+            using var context = new UserGeometryDbContext(_tableName, _options);
 
             context.UserGeometries.Remove(value.Geometry);
 
@@ -37,7 +39,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task EditAsync(string key, UserGeometryInfo value)
         {
-            var context = new UserGeometryDbContext(_options);
+            using var context = new UserGeometryDbContext(_tableName, _options);
 
             var userGeometry = await context.UserGeometries
                 .Where(b => b.Name == key)
@@ -53,7 +55,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task<List<UserGeometryInfo>> GetValuesAsync(IFilter<UserGeometryInfo>? filter)
         {
-            var context = new UserGeometryDbContext(_options);
+            using var context = new UserGeometryDbContext(_tableName, _options);
 
             if (filter == null || filter.Names == null)
             {
