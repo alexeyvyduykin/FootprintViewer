@@ -13,16 +13,19 @@ namespace FootprintViewer.Avalonia.Views.Settings
 
             this.WhenActivated(disposables =>
             {
-                foreach (var item in ViewModel!.AvailableSources)
+                if (ViewModel != null)
                 {
-                    item.ShowBuilderDialog.RegisterHandler(
-                        async interaction =>
-                        {
-                            AddSourceButton.Flyout?.Hide();
-                            var res = await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
-                            var source = (res is ISourceInfo info) ? info : null;
-                            interaction.SetOutput(source);
-                        }).DisposeWith(disposables);
+                    foreach (var item in ViewModel.AvailableSources)
+                    {
+                        item.ShowBuilderDialog.RegisterHandler(
+                            async interaction =>
+                            {
+                                AddSourceButton.Flyout?.Hide();
+                                var res = await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
+                                var source = (res is ISourceInfo info) ? info : null;
+                                interaction.SetOutput(source);
+                            }).DisposeWith(disposables);
+                    }
                 }
             });
         }

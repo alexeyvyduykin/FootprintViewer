@@ -23,74 +23,11 @@ namespace FootprintViewer.Avalonia
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-        }
 
-        private static void RegisterBootstrapper(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
-        {
-            services.InitializeSplat();
-
-            services.Register(() => new ProjectFactory(resolver));
-            var factory = resolver.GetExistingService<ProjectFactory>();
-
-            // Load the saved view model state.
-            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
-            settings.Init(factory);
-            services.RegisterConstant(settings, typeof(AppSettings));
-
-            // Providers
-            services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStationInfo>));
-            services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTargetInfo>));
-            services.RegisterConstant(factory.CreateFootprintProvider(), typeof(IProvider<FootprintInfo>));
-            services.RegisterConstant(factory.CreateSatelliteProvider(), typeof(IProvider<SatelliteInfo>));
-            services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometryInfo>));
-            services.RegisterConstant(factory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
-            services.RegisterConstant(factory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));
-            services.RegisterConstant(factory.CreateFootprintPreviewProvider(), typeof(IProvider<FootprintPreview>));
-
-            services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
-
-            var satelliteProvider = resolver.GetExistingService<IProvider<SatelliteInfo>>();
-            var footprintProvider = resolver.GetExistingService<IProvider<FootprintInfo>>();
-            var groundTargetProvider = resolver.GetExistingService<IProvider<GroundTargetInfo>>();
-            var groundStationProvider = resolver.GetExistingService<IProvider<GroundStationInfo>>();
-            var userGeometryProvider = resolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
-
-            services.RegisterConstant(new TrackLayerSource(satelliteProvider), typeof(ITrackLayerSource));
-            services.RegisterConstant(new SensorLayerSource(satelliteProvider), typeof(ISensorLayerSource));
-            services.RegisterConstant(new FootprintLayerSource(footprintProvider), typeof(IFootprintLayerSource));
-            services.RegisterConstant(new TargetLayerSource(groundTargetProvider), typeof(ITargetLayerSource));
-            services.RegisterConstant(new UserLayerSource(userGeometryProvider), typeof(IUserLayerSource));
-            services.RegisterConstant(new GroundStationLayerSource(groundStationProvider), typeof(IGroundStationLayerSource));
-            services.RegisterConstant(new EditLayerSource(), typeof(IEditLayerSource));
-
-            services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
-            services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
-
-            services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
-            services.RegisterConstant(factory.CreateSatelliteViewer(), typeof(SatelliteViewer));
-            services.RegisterConstant(factory.CreateGroundTargetViewer(), typeof(GroundTargetViewer));
-            services.RegisterConstant(factory.CreateFootprintObserver(), typeof(FootprintObserver));
-            services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
-            services.RegisterConstant(factory.CreateGroundStationViewer(), typeof(GroundStationViewer));
-
-            services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
-
-            services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
-
-            var tabs = new SidePanelTab[]
+            if (Design.IsDesignMode == false)
             {
-                resolver.GetExistingService<SceneSearch>(),
-                resolver.GetExistingService<SatelliteViewer>(),
-                resolver.GetExistingService<GroundStationViewer>(),
-                resolver.GetExistingService<GroundTargetViewer>(),
-                resolver.GetExistingService<FootprintObserver>(),
-                resolver.GetExistingService<UserGeometryViewer>(),
-                resolver.GetExistingService<AppSettings>(),
-            };
-
-            services.RegisterConstant(new SidePanel() { Tabs = new List<SidePanelTab>(tabs) }, typeof(SidePanel));
-
-            services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
+                LoadSettings();
+            }
         }
 
         private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
@@ -102,12 +39,12 @@ namespace FootprintViewer.Avalonia
             // Create the AutoSuspendHelper.
             var suspension = new AutoSuspendHelper(ApplicationLifetime!);
             RxApp.SuspensionHost.CreateNewAppState = () => new AppSettings();
-            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("appsettings.json"));
+            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("_suspendAppSettings.json"));
             suspension.OnFrameworkInitializationCompleted();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                RegisterBootstrapper(Locator.CurrentMutable, Locator.Current);
+                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
 
                 var mainViewModel = GetExistingService<MainViewModel>();
 
@@ -117,8 +54,6 @@ namespace FootprintViewer.Avalonia
                     {
                         DataContext = mainViewModel
                     };
-
-                    WindowsManager.AllWindows.Add(desktopLifetime.MainWindow);
                 }
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime)
@@ -129,23 +64,20 @@ namespace FootprintViewer.Avalonia
             base.OnFrameworkInitializationCompleted();
         }
 
-        private static bool IsConnectionValid(string? connectionString)
+        private void LoadSettings()
         {
-            try
-            {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                    connection.Close();
-                }
+            //// Create the AutoSuspendHelper.
+            //var suspension = new AutoSuspendHelper(ApplicationLifetime!);
+            //RxApp.SuspensionHost.CreateNewAppState = () => new MyLocalizationService();
+            //RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("suspendAppSettings.json"));
+            //suspension.OnFrameworkInitializationCompleted();
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            //var localizationService = GetRequiredService<ILocalizationService>();
+            //var languageManager = GetRequiredService<ILanguageManager>();
+
+            //languageManager.SetLanguage(localizationService.CurrentLanguage.Code);
         }
 
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
@@ -194,10 +126,5 @@ namespace FootprintViewer.Avalonia
 
             return null;
         }
-    }
-
-    public class WindowsManager
-    {
-        public static List<Window> AllWindows { get; } = new();
     }
 }
