@@ -23,18 +23,18 @@ namespace FootprintViewer.Layers
         void HideHighlight();
     }
 
-    public abstract class BaseLayerSource<T> : WritableLayer, ILayerSource
+    public abstract class BaseLayerSource<TNative> : WritableLayer, ILayerSource
     {
-        private readonly IProvider<T> _provider;
+        private readonly IProvider<TNative> _provider;
         private IFeature? _lastSelected;
 
-        public BaseLayerSource(IProvider<T> provider)
+        public BaseLayerSource(IProvider<TNative> provider)
         {
             _provider = provider;
 
-            Init = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => LoadingImpl(provider.GetValuesAsync(null).Result)));
+            Init = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => LoadingImpl(provider.GetNativeValuesAsync(null).Result)));
 
-            if (provider is Provider<T> pvd)
+            if (provider is Provider<TNative> pvd)
             {
                 pvd.UpdateSources.InvokeCommand(Init);
             }
@@ -80,10 +80,10 @@ namespace FootprintViewer.Layers
             DataHasChanged();
         }
 
-        protected IProvider<T> Provider => _provider;
+        protected IProvider<TNative> Provider => _provider;
 
         public ReactiveCommand<Unit, Unit> Init { get; }
 
-        protected abstract void LoadingImpl(List<T> values);
+        protected abstract void LoadingImpl(List<TNative> values);
     }
 }

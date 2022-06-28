@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public interface IDataSource<TNative>
+    public interface IProvider<TNative>
     {
         Task<List<TNative>> GetNativeValuesAsync(IFilter<TNative>? filter);
 

@@ -34,16 +34,16 @@ namespace FootprintViewer
             };
 
             map.AddLayer(new Layer(), LayerType.WorldMap);
-            map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
-            map.AddLayer(CreateGroundStationLayer(_dependencyResolver), LayerType.GroundStation);
+            //   map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
+            //   map.AddLayer(CreateGroundStationLayer(_dependencyResolver), LayerType.GroundStation);
             map.AddLayer(CreateTargetLayer(_dependencyResolver), LayerType.GroundTarget);
             map.AddLayer(CreateSensorLayer(_dependencyResolver), LayerType.Sensor);
             map.AddLayer(CreateTrackLayer(_dependencyResolver), LayerType.Track);
             map.AddLayer(CreateFootprintLayer(_dependencyResolver), LayerType.Footprint);
-            map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
+            //   map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
             map.AddLayer(CreateEditLayer(_dependencyResolver), LayerType.Edit);
             map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
-            map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
+            //   map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
 
             return map;
         }
@@ -313,7 +313,7 @@ namespace FootprintViewer
             return userGeometryViewer;
         }
 
-        public IProvider<GroundStationInfo> CreateGroundStationProvider()
+        public IProvider<GroundStation> CreateGroundStationProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -334,7 +334,7 @@ namespace FootprintViewer
 
             var dataSources = settings.GroundStationProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<GroundStationInfo>(dataSources);
+            var provider = new Provider<GroundStation>(dataSources);
 
             settings.WhenAnyValue(s => s.GroundStationProvider.Sources)
                     .Skip(1)
@@ -343,7 +343,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<GroundStationInfo> ToDataSource(ISourceInfo info)
+            static IDataSource<GroundStation> ToDataSource(ISourceInfo info)
             {
                 if (info is IFileSourceInfo)
                 {
@@ -351,7 +351,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new GroundStationDataSource(databaseInfo);
+                    var options = databaseInfo.BuildDbContextOptions<DbCustomContext>();
+                    return new GroundStationDataSource(options, databaseInfo.Table!);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -362,7 +363,7 @@ namespace FootprintViewer
             }
         }
 
-        public IProvider<GroundTargetInfo> CreateGroundTargetProvider()
+        public IProvider<GroundTarget> CreateGroundTargetProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -383,7 +384,7 @@ namespace FootprintViewer
 
             var dataSources = settings.GroundTargetProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<GroundTargetInfo>(dataSources);
+            var provider = new Provider<GroundTarget>(dataSources);
 
             settings.WhenAnyValue(s => s.GroundTargetProvider.Sources)
                     .Skip(1)
@@ -392,7 +393,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<GroundTargetInfo> ToDataSource(ISourceInfo info)
+            static IDataSource<GroundTarget> ToDataSource(ISourceInfo info)
             {
                 if (info is IFileSourceInfo)
                 {
@@ -400,7 +401,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new GroundTargetDataSource(databaseInfo);
+                    var options = databaseInfo.BuildDbContextOptions<DbCustomContext>();
+                    return new GroundTargetDataSource(options, databaseInfo.Table!);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -414,7 +416,7 @@ namespace FootprintViewer
             }
         }
 
-        public IProvider<FootprintInfo> CreateFootprintProvider()
+        public IProvider<Footprint> CreateFootprintProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -435,7 +437,7 @@ namespace FootprintViewer
 
             var dataSources = settings.FootprintProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<FootprintInfo>(dataSources);
+            var provider = new Provider<Footprint>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintProvider.Sources)
                     .Skip(1)
@@ -444,7 +446,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<FootprintInfo> ToDataSource(ISourceInfo info)
+            static IDataSource<Footprint> ToDataSource(ISourceInfo info)
             {
                 if (info is IFileSourceInfo)
                 {
@@ -452,7 +454,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new FootprintDataSource(databaseInfo);
+                    var options = databaseInfo.BuildDbContextOptions<FootprintDbContext>();
+                    return new FootprintDataSource(options, databaseInfo.Table!);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -465,7 +468,7 @@ namespace FootprintViewer
             }
         }
 
-        public IProvider<SatelliteInfo> CreateSatelliteProvider()
+        public IProvider<Satellite> CreateSatelliteProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -486,7 +489,7 @@ namespace FootprintViewer
 
             var dataSources = settings.SatelliteProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<SatelliteInfo>(dataSources);
+            var provider = new Provider<Satellite>(dataSources);
 
             settings.WhenAnyValue(s => s.SatelliteProvider.Sources)
                     .Skip(1)
@@ -495,7 +498,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<SatelliteInfo> ToDataSource(ISourceInfo info)
+            static IDataSource<Satellite> ToDataSource(ISourceInfo info)
             {
                 if (info is IFileSourceInfo)
                 {
@@ -503,7 +506,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new SatelliteDataSource(databaseInfo);
+                    var options = databaseInfo.BuildDbContextOptions<SatelliteDbContext>();
+                    return new SatelliteDataSource(options, databaseInfo.Table!);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -514,7 +518,7 @@ namespace FootprintViewer
             }
         }
 
-        public IEditableProvider<UserGeometryInfo> CreateUserGeometryProvider()
+        public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -534,7 +538,7 @@ namespace FootprintViewer
 
             var dataSources = settings.UserGeometryProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new EditableProvider<UserGeometryInfo>(dataSources);
+            var provider = new EditableProvider<UserGeometry>(dataSources);
 
             settings.WhenAnyValue(s => s.UserGeometryProvider.Sources)
                     .Skip(1)
@@ -543,7 +547,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<UserGeometryInfo> ToDataSource(ISourceInfo info)
+            static IDataSource<UserGeometry> ToDataSource(ISourceInfo info)
             {
                 if (info is IFileSourceInfo)
                 {
@@ -551,7 +555,8 @@ namespace FootprintViewer
                 }
                 else if (info is IDatabaseSourceInfo databaseInfo)
                 {
-                    return new UserGeometryDataSource(databaseInfo);
+                    var options = databaseInfo.BuildDbContextOptions<UserGeometryDbContext>();
+                    return new UserGeometryDataSource(options, databaseInfo.Table!);
                 }
                 else if (info is IRandomSourceInfo)
                 {
@@ -653,7 +658,7 @@ namespace FootprintViewer
             }
         }
 
-        public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
+        public IProvider<Data.FootprintPreview> CreateFootprintPreviewProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -677,7 +682,7 @@ namespace FootprintViewer
 
             var dataSources = settings.FootprintPreviewProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<FootprintPreview>(dataSources);
+            var provider = new Provider<Data.FootprintPreview>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintPreviewProvider.Sources)
                     .Skip(1)
@@ -688,7 +693,7 @@ namespace FootprintViewer
 
             return provider;
 
-            static IDataSource<FootprintPreview> ToDataSource(ISourceInfo info)
+            static IDataSource<Data.FootprintPreview> ToDataSource(ISourceInfo info)
             {
                 if (info is IFolderSourceInfo folderInfo)
                 {

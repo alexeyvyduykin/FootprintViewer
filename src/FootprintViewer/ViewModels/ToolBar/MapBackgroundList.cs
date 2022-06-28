@@ -19,7 +19,7 @@ namespace FootprintViewer.ViewModels
 
             WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
 
-            Loading = ReactiveCommand.CreateFromTask(s => _mapProvider.GetValuesAsync(null));
+            Loading = ReactiveCommand.CreateFromTask(s => _mapProvider.GetNativeValuesAsync(null));
 
             _mapBackgrounds = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.MapBackgrounds);
 

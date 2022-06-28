@@ -12,16 +12,16 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryViewer : SidePanelTab
     {
-        private readonly IEditableProvider<UserGeometryInfo> _provider;
+        private readonly IEditableProvider<UserGeometry> _provider;
         private bool _firstLoading = true;
 
         public UserGeometryViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometryInfo>>();
+            _provider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
             Title = "Пользовательская геометрия";
 
-            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
+            //ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new UserGeometryInfo(s), s => new UserGeometry());
 
             // First loading
 
@@ -39,7 +39,7 @@ namespace FootprintViewer.ViewModels
 
         public async Task<List<UserGeometryInfo>> GetUserGeometryInfoAsync(string name)
         {
-            return await _provider.GetValuesAsync(new NameFilter<UserGeometryInfo>(new[] { name }));
+            return await _provider.GetValuesAsync<UserGeometryInfo>(new NameFilter<UserGeometryInfo>(new[] { name }), s => new UserGeometryInfo(s));
         }
 
         [Reactive]

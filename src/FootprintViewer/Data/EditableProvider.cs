@@ -6,34 +6,23 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public interface IEditableProvider<T> : IProvider<T>
-    {
-        ReactiveCommand<Unit, Unit> Update { get; }
-
-        Task AddAsync(T value);
-
-        Task RemoveAsync(T value);
-
-        Task EditAsync(string key, T value);
-    }
-
-    public class EditableProvider<T> : Provider<T>, IEditableProvider<T>
+    public class EditableProvider<TNative> : Provider<TNative>, IEditableProvider<TNative>
     {
         public EditableProvider() : base()
         {
             Update = ReactiveCommand.Create(() => { });
         }
 
-        public EditableProvider(IDataSource<T>[] sources) : base(sources)
+        public EditableProvider(IDataSource<TNative>[] sources) : base(sources)
         {
             Update = ReactiveCommand.Create(() => { });
         }
 
         public ReactiveCommand<Unit, Unit> Update { get; }
 
-        public async Task EditAsync(string key, T value)
+        public async Task EditAsync(string key, TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<T>).Cast<IEditableDataSource<T>>())
+            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
             {
                 await source.EditAsync(key, value);
             }
@@ -41,9 +30,9 @@ namespace FootprintViewer.Data
             Update.Execute().Subscribe();
         }
 
-        public async Task AddAsync(T value)
+        public async Task AddAsync(TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<T>).Cast<IEditableDataSource<T>>())
+            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
             {
                 await source.AddAsync(value);
             }
@@ -51,9 +40,9 @@ namespace FootprintViewer.Data
             Update.Execute().Subscribe();
         }
 
-        public async Task RemoveAsync(T value)
+        public async Task RemoveAsync(TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<T>).Cast<IEditableDataSource<T>>())
+            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
             {
                 await source.RemoveAsync(value);
             }

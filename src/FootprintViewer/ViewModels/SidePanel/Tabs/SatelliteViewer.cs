@@ -11,20 +11,20 @@ namespace FootprintViewer.ViewModels
 {
     public class SatelliteViewer : SidePanelTab
     {
-        private readonly IProvider<SatelliteInfo> _provider;
+        private readonly IProvider<Satellite> _provider;
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
         private bool _firstLoading = true;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
+            _provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
             _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
             _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
 
             Title = "Просмотр спутников";
 
-            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
+            ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new SatelliteInfo(s), s => s.Satellite);
 
             // First loading
 

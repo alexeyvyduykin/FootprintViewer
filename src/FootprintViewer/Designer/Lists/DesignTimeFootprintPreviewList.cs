@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFootprintPreviewList : ViewerList<FootprintPreview>
+    public class DesignTimeFootprintPreviewList //: ViewerList<FootprintPreview>
     {
-        public DesignTimeFootprintPreviewList() : base(new DesignTimeData().GetExistingService<IProvider<FootprintPreview>>())
+        public DesignTimeFootprintPreviewList() //: base(new DesignTimeData().GetExistingService<IProvider<FootprintPreview>>())
         {
-            Loading.Execute().Subscribe();
+            //Loading.Execute().Subscribe();
         }
     }
 }

@@ -2,12 +2,12 @@
 
 namespace FootprintViewer.Data
 {
-    public interface IEditableDataSource<T> : IDataSource<T>
+    public interface IEditableDataSource<TNative> : IDataSource<TNative>
     {
-        Task AddAsync(T value);
+        Task AddAsync(TNative value);
 
-        Task RemoveAsync(T value);
+        Task RemoveAsync(TNative value);
 
-        Task EditAsync(string key, T value);
+        Task EditAsync(string key, TNative value);
     }
 }

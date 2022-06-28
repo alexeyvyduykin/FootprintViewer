@@ -1,34 +1,47 @@
-﻿using FootprintViewer.ViewModels;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomFootprintDataSource : IDataSource<FootprintInfo>
+    public class RandomFootprintDataSource : IDataSource<Footprint>
     {
-        private List<FootprintInfo>? _footprints;
-        private readonly IDataSource<SatelliteInfo> _source;
+        private List<Footprint>? _footprints;
+        private readonly IDataSource<Satellite> _source;
 
-        public RandomFootprintDataSource(IDataSource<SatelliteInfo> source)
+        public RandomFootprintDataSource(IDataSource<Satellite> source)
         {
             _source = source;
         }
 
-        public async Task<List<FootprintInfo>> GetValuesAsync(IFilter<FootprintInfo>? filter = null)
+        public async Task<List<Footprint>> GetNativeValuesAsync(IFilter<Footprint>? filter)
         {
             return await Task.Run(async () =>
             {
                 if (_footprints == null)
                 {
-                    var satellites = await _source.GetValuesAsync(null);
+                    var satellites = await _source.GetNativeValuesAsync(null);
 
-                    var footprints = FootprintBuilder.Create(satellites.Select(s => s.Satellite));
-
-                    _footprints = footprints.Select(s => new FootprintInfo(s)).ToList();
+                    _footprints = FootprintBuilder.Create(satellites).ToList();
                 }
 
                 return _footprints;
+            });
+        }
+
+        public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<Footprint, T> converter)
+        {
+            return await Task.Run(async () =>
+            {
+                if (_footprints == null)
+                {
+                    var satellites = await _source.GetNativeValuesAsync(null);
+
+                    _footprints = FootprintBuilder.Create(satellites).ToList();
+                }
+
+                return _footprints.Select(s => converter(s)).ToList();
             });
         }
     }

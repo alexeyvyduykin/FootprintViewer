@@ -14,13 +14,13 @@ namespace FootprintViewer.Layers
         void Update(SatelliteInfo info);
     }
 
-    public class SensorLayerSource : BaseLayerSource<SatelliteInfo>, ISensorLayerSource
+    public class SensorLayerSource : BaseLayerSource<Satellite>, ISensorLayerSource
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft;
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright;
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public SensorLayerSource(IProvider<SatelliteInfo> provider) : base(provider)
+        public SensorLayerSource(IProvider<Satellite> provider) : base(provider)
         {
             _cache = new Dictionary<string, List<IFeature>>();
 
@@ -29,10 +29,10 @@ namespace FootprintViewer.Layers
             _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
         }
 
-        protected override void LoadingImpl(List<SatelliteInfo> satellites)
+        protected override void LoadingImpl(List<Satellite> satellites)
         {
-            var leftStrips = StripBuilder.CreateLeft(satellites.Select(s => s.Satellite));
-            var rightStrips = StripBuilder.CreateRight(satellites.Select(s => s.Satellite));
+            var leftStrips = StripBuilder.CreateLeft(satellites);
+            var rightStrips = StripBuilder.CreateRight(satellites);
 
             _dictLeft.Clear();
             _dictright.Clear();

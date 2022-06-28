@@ -28,12 +28,12 @@ namespace FootprintViewer.ViewModels
     {
         private IDictionary<string, Geometry>? _geometries;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
-        private readonly IProvider<FootprintPreview> _footprintPreviewProvider;
+        private readonly IProvider<Data.FootprintPreview> _footprintPreviewProvider;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
-            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<Data.FootprintPreview>>();
 
             Sensors = new ObservableCollection<Sensor>();
 
@@ -55,8 +55,8 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSensorList()
         {
-            var footprints = await _footprintPreviewProvider.GetValuesAsync(null);
-            var dicts = await _footprintPreviewGeometryProvider.GetValuesAsync();
+            var footprints = await _footprintPreviewProvider.GetNativeValuesAsync(null);
+            var dicts = await _footprintPreviewGeometryProvider.GetNativeValuesAsync(null);
 
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();
 

@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeSatelliteInfoList : ViewerList<SatelliteInfo>
+    public class DesignTimeSatelliteInfoList //: ViewerList<SatelliteInfo>
     {
-        public DesignTimeSatelliteInfoList() : base(new DesignTimeData().GetExistingService<IProvider<SatelliteInfo>>())
+        public DesignTimeSatelliteInfoList() //: base(new DesignTimeData().GetExistingService<IProvider<SatelliteInfo>>())
         {
-            Loading.Execute().Subscribe();
+            //Loading.Execute().Subscribe();
         }
     }
 }

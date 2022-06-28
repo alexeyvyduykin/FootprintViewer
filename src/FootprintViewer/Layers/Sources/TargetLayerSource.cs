@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
@@ -17,9 +16,9 @@ namespace FootprintViewer.Layers
         ReactiveCommand<IEnumerable<IFeature>?, string[]?> Refresh { get; }
     }
 
-    public class TargetLayerSource : BaseLayerSource<GroundTargetInfo>, ITargetLayerSource
+    public class TargetLayerSource : BaseLayerSource<GroundTarget>, ITargetLayerSource
     {
-        public TargetLayerSource(IProvider<GroundTargetInfo> provider) : base(provider)
+        public TargetLayerSource(IProvider<GroundTarget> provider) : base(provider)
         {
             Refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, string[]?>(s => RefreshImpl(s));
         }
@@ -36,10 +35,10 @@ namespace FootprintViewer.Layers
             return features.Where(s => s.Fields.Contains("Name")).Select(s => (string)s["Name"]!).ToArray();
         }
 
-        protected override void LoadingImpl(List<GroundTargetInfo> groundTargets)
+        protected override void LoadingImpl(List<GroundTarget> groundTargets)
         {
             Clear();
-            AddRange(Build(groundTargets.Select(s => s.GroundTarget)));
+            AddRange(Build(groundTargets));
             DataHasChanged();
         }
 

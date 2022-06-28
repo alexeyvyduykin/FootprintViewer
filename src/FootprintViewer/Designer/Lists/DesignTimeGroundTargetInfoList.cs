@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeGroundTargetInfoList : ViewerList<GroundTargetInfo>
+    public class DesignTimeGroundTargetInfoList //: ViewerList<GroundTargetInfo>
     {
-        public DesignTimeGroundTargetInfoList() : base(new DesignTimeData().GetExistingService<IProvider<GroundTargetInfo>>())
+        public DesignTimeGroundTargetInfoList() //: base(new DesignTimeData().GetExistingService<IProvider<GroundTargetInfo>>())
         {
-            Loading.Execute().Subscribe();
+            //Loading.Execute().Subscribe();
         }
     }
 }

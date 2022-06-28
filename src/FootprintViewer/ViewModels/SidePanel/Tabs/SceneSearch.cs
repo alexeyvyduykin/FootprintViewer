@@ -16,16 +16,16 @@ namespace FootprintViewer.ViewModels
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<Data.FootprintPreview>>();
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
-            ViewerList = ViewerListBuilder.CreateViewerList(footprintPreviewProvider);
+            //ViewerList = ViewerListBuilder.CreateViewerList(footprintPreviewProvider, s => new FootprintPreview(s.Name), s => new Data.FootprintPreview());
 
             Filter = new SceneSearchFilter(dependencyResolver);
 
             Title = "Поиск сцены";
 
-            LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_ => _footprintPreviewGeometryProvider.GetValuesAsync(null));
+            LoadFootprintPreviewGeometry = ReactiveCommand.CreateFromTask(_ => _footprintPreviewGeometryProvider.GetNativeValuesAsync(null));
 
             // TODO: duplicates           
             _geometries = LoadFootprintPreviewGeometry.Select(s => s.ToDictionary(s => s.Item1, s => s.Item2)).ToProperty(this, x => x.Geometries);

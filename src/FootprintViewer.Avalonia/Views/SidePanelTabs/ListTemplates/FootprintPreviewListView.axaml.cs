@@ -5,7 +5,7 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class FootprintPreviewListView : ReactiveUserControl<ViewerList<FootprintPreview>>
+    public partial class FootprintPreviewListView : ReactiveUserControl<ViewerList<Data.FootprintPreview, FootprintPreview>>
     {
         public FootprintPreviewListView()
         {

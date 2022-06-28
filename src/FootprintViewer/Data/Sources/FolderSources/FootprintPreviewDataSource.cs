@@ -1,6 +1,5 @@
 ﻿using BruTile.MbTiles;
 using FootprintViewer.Layers;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Utilities;
 using SkiaSharp;
@@ -30,7 +29,7 @@ namespace FootprintViewer.Data.Sources
             _date = DateTime.UtcNow;
         }
 
-        public async Task<List<FootprintPreview>> GetValuesAsync(IFilter<FootprintPreview>? filter = null)
+        public async Task<List<FootprintPreview>> GetNativeValuesAsync(IFilter<FootprintPreview>? filter)
         {
             return await Task.Run(() =>
             {
@@ -51,7 +50,7 @@ namespace FootprintViewer.Data.Sources
                             {
                                 var tileNumber = name.Replace("-", "").ToUpper();
 
-                                var footprintPreview = new FootprintPreview(filename)
+                                var footprintPreview = new FootprintPreview()
                                 {
                                     Date = _date.Date.ToShortDateString(),
                                     SatelliteName = $"Satellite{_random.Next(1, 6):00}",
@@ -98,5 +97,7 @@ namespace FootprintViewer.Data.Sources
 
             return SKImage.FromEncodedData(data);
         }
+
+        public Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<FootprintPreview, T> converter) => throw new NotImplementedException();
     }
 }

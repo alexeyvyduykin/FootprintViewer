@@ -1,5 +1,4 @@
-﻿using FootprintViewer.ViewModels;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,24 +7,44 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class GroundTargetDataSource : IDataSource<GroundTargetInfo>
+    public class GroundTargetDataSource : IDataSource<GroundTarget>
     {
         private readonly DbContextOptions<DbCustomContext> _options;
         private readonly string? _tableName;
 
-        public GroundTargetDataSource(IDatabaseSourceInfo databaseInfo)
+        public GroundTargetDataSource(DbContextOptions<DbCustomContext> options, string tableName)
         {
-            _options = databaseInfo.BuildDbContextOptions<DbCustomContext>();
-            _tableName = databaseInfo.Table;
+            _options = options;
+            _tableName = tableName;
         }
 
-        public async Task<List<GroundTargetInfo>> GetValuesAsync(IFilter<GroundTargetInfo>? filter)
+        public async Task<List<GroundTarget>> GetNativeValuesAsync(IFilter<GroundTarget>? filter)
         {
             using var context = new GroundTargetDbContext(_tableName, _options);
 
             if (filter == null || filter.Names == null)
             {
-                return await context.GroundTargets.Select(s => new GroundTargetInfo(s)).ToListAsync();
+                return await context.GroundTargets.ToListAsync();
+            }
+
+            var list = filter.Names.ToList();
+
+            Expression<Func<GroundTarget, bool>> predicate = s => false;
+
+            foreach (var name in list)
+                predicate = predicate.Or(s => string.Equals(s.Name, name));
+
+            return await context.GroundTargets
+                  .Where(predicate).ToListAsync();
+        }
+
+        public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<GroundTarget, T> converter)
+        {
+            using var context = new GroundTargetDbContext(_tableName, _options);
+
+            if (filter == null || filter.Names == null)
+            {
+                return await context.GroundTargets.Select(s => converter(s)).ToListAsync();
             }
 
             var list = filter.Names.ToList();
@@ -37,7 +56,7 @@ namespace FootprintViewer.Data.Sources
 
             return await context.GroundTargets
                   .Where(predicate)
-                  .Select(s => new GroundTargetInfo(s)).ToListAsync();
+                  .Select(s => converter(s)).ToListAsync();
         }
     }
 

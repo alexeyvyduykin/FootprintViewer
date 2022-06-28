@@ -15,11 +15,11 @@ namespace FootprintViewer.ViewModels
             return new NameFilter<T>(names);
         }
 
-        public static IViewerList<T> CreateViewerList<T>(IProvider<T> provider) where T : IViewerItem
+        public static IViewerList<T> CreateViewerList<TNative, T>(IProvider<TNative> provider, Func<TNative, T> converter, Func<T, TNative> converterBack) where T : IViewerItem
         {
-            var viewerList = new ViewerList<T>(provider);
+            var viewerList = new ViewerList<TNative, T>(provider, converter, converterBack);
 
-            if (provider is Provider<T> prvd)
+            if (provider is Provider<TNative> prvd)
             {
                 // TODO: add to viewerList Update<Unit,Unit> command
                 prvd.UpdateSources.Select(s => (IFilter<T>?)null).InvokeCommand(viewerList.Loading);
@@ -46,33 +46,39 @@ namespace FootprintViewer.ViewModels
         }
     }
 
-    public class ViewerList<T> : BaseViewerList<T> where T : IViewerItem
+    public class ViewerList<TNative, T> : BaseViewerList<T> where T : IViewerItem
     {
-        private readonly IProvider<T> _provider;
+        private readonly IProvider<TNative> _provider;
+        private Func<TNative, T> _converter;
+        private Func<T, TNative> _converterBack;
 
-        public ViewerList(IProvider<T> provider) : base()
+        public ViewerList(IProvider<TNative> provider, Func<TNative, T> converter, Func<T, TNative> converterBack) : base()
         {
             _provider = provider;
+
+            _converter = converter;
+
+            _converterBack = converterBack;
         }
 
         protected override async Task<List<T>> LoadingAsync(IFilter<T>? filter = null)
         {
-            return await _provider.GetValuesAsync(filter);
+            return await _provider.GetValuesAsync(filter, _converter);
         }
 
         protected override async Task AddAsync(T? value)
         {
-            if (value != null && _provider is IEditableProvider<T> editableProvider)
+            if (value != null && _provider is IEditableProvider<TNative> editableProvider)
             {
-                await editableProvider.AddAsync(value);
+                await editableProvider.AddAsync(_converterBack(value));
             }
         }
 
         protected override async Task RemoveAsync(T? value)
         {
-            if (value != null && _provider is IEditableProvider<T> editableProvider)
+            if (value != null && _provider is IEditableProvider<TNative> editableProvider)
             {
-                await editableProvider.RemoveAsync(value);
+                await editableProvider.RemoveAsync(_converterBack(value));
             }
         }
     }

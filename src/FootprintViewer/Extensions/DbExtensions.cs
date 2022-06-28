@@ -1,8 +1,9 @@
-﻿using FootprintViewer.ViewModels;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer
 {
     public static class DbExtensions
     {

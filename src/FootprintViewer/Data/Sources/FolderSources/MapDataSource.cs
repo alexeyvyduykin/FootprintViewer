@@ -1,5 +1,4 @@
-﻿using FootprintViewer.ViewModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ namespace FootprintViewer.Data.Sources
             _searchPattern = searchPattern;
         }
 
-        public async Task<List<MapResource>> GetValuesAsync(IFilter<MapResource>? filter = null)
+        public async Task<List<MapResource>> GetNativeValuesAsync(IFilter<MapResource>? filter)
         {
             return await Task.Run(() =>
             {
@@ -41,5 +40,7 @@ namespace FootprintViewer.Data.Sources
                 return list;
             });
         }
+
+        public Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, System.Func<MapResource, T> converter) => throw new System.NotImplementedException();
     }
 }

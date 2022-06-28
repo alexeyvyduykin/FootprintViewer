@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.Data;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;

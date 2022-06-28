@@ -24,11 +24,11 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintObserverFilter : ViewerListFilter<FootprintInfo>
     {
-        private readonly IProvider<SatelliteInfo> _satelliteProvider;
+        private readonly IProvider<Satellite> _satelliteProvider;
 
         public FootprintObserverFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            _satelliteProvider = dependencyResolver.GetExistingService<IProvider<SatelliteInfo>>();
+            _satelliteProvider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
 
             Satellites = new ObservableCollection<SatelliteItem>();
 
@@ -48,7 +48,7 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSatelliteList()
         {
-            var satellites = await _satelliteProvider.GetValuesAsync();
+            var satellites = await _satelliteProvider.GetNativeValuesAsync(null);
             var satelliteNames = satellites?.Select(s => s.Name).ToList();
 
             if (satelliteNames != null)

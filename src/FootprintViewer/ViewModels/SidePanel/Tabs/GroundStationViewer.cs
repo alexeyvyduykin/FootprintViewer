@@ -11,18 +11,18 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundStationViewer : SidePanelTab
     {
-        private readonly IProvider<GroundStationInfo> _provider;
+        private readonly IProvider<GroundStation> _provider;
         private readonly IGroundStationLayerSource _groundStationLayerSource;
         private bool _firstLoading = true;
 
         public GroundStationViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<GroundStationInfo>>();
+            _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
 
             Title = "Просмотр наземных станций";
 
-            ViewerList = ViewerListBuilder.CreateViewerList(_provider);
+            //ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new GroundStationInfo(s), s => new GroundStation());
 
             // First loading
 

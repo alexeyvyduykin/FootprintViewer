@@ -1,7 +1,5 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
-using Mapsui.Layers;
 using Mapsui.Nts;
 using ReactiveUI;
 using System;
@@ -20,9 +18,9 @@ namespace FootprintViewer.Layers
         void AddUserGeometry(IFeature feature, UserGeometryType type);
     }
 
-    public class UserLayerSource : BaseLayerSource<UserGeometryInfo>, IUserLayerSource
+    public class UserLayerSource : BaseLayerSource<UserGeometry>, IUserLayerSource
     {
-        public UserLayerSource(IEditableProvider<UserGeometryInfo> provider) : base(provider)
+        public UserLayerSource(IEditableProvider<UserGeometry> provider) : base(provider)
         {
             Update = ReactiveCommand.CreateFromTask(UpdateAsync);
 
@@ -31,27 +29,27 @@ namespace FootprintViewer.Layers
             provider.Update.InvokeCommand(Update);
         }
 
-        private ReactiveCommand<Unit, List<UserGeometryInfo>> Update { get; }
+        private ReactiveCommand<Unit, List<UserGeometry>> Update { get; }
 
         private static string GenerateName(UserGeometryType type)
         {
             return $"{type}_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}";
         }
 
-        protected override void LoadingImpl(List<UserGeometryInfo> userGeometries)
+        protected override void LoadingImpl(List<UserGeometry> userGeometries)
         {
             var arr = userGeometries
                 .Where(s => s.Geometry != null)
-                .Select(s => s.Geometry.Geometry!.ToFeature(s.Name));
+                .Select(s => s.Geometry!.ToFeature(s.Name!));
 
             Clear();
             AddRange(arr);
             DataHasChanged();
         }
 
-        private async Task<List<UserGeometryInfo>> UpdateAsync()
+        private async Task<List<UserGeometry>> UpdateAsync()
         {
-            return await Provider.GetValuesAsync(null);
+            return await Provider.GetNativeValuesAsync(null);
         }
 
         public void EditFeature(IFeature feature)
@@ -66,12 +64,11 @@ namespace FootprintViewer.Layers
 
                         var geometry = gf.Geometry!;
 
-                        await ((IEditableProvider<UserGeometryInfo>)Provider).EditAsync(name,
-                            new UserGeometryInfo(
-                                new UserGeometry()
-                                {
-                                    Geometry = geometry
-                                }));
+                        await ((IEditableProvider<UserGeometry>)Provider).EditAsync(name,
+                            new UserGeometry()
+                            {
+                                Geometry = geometry
+                            });
                     }
                 });
             }
@@ -96,7 +93,7 @@ namespace FootprintViewer.Layers
                         Geometry = gf.Geometry
                     };
 
-                    await ((IEditableProvider<UserGeometryInfo>)Provider).AddAsync(new UserGeometryInfo(model));
+                    await ((IEditableProvider<UserGeometry>)Provider).AddAsync(model);
                 });
             }
         }

@@ -1,28 +1,25 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
     public interface IFootprintLayerSource : ILayerSource
     {
-    
+
     }
 
-    public class FootprintLayerSource : BaseLayerSource<FootprintInfo>, IFootprintLayerSource
+    public class FootprintLayerSource : BaseLayerSource<Footprint>, IFootprintLayerSource
     {
-        public FootprintLayerSource(IProvider<FootprintInfo> provider) : base(provider) { }
+        public FootprintLayerSource(IProvider<Footprint> provider) : base(provider) { }
 
-        protected override void LoadingImpl(List<FootprintInfo> footprints)
+        protected override void LoadingImpl(List<Footprint> footprints)
         {
             Clear();
-            AddRange(Build(footprints.Select(s => s.Footprint!)));
+            AddRange(Build(footprints));
             DataHasChanged();
         }
 

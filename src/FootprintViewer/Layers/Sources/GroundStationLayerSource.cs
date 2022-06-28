@@ -18,16 +18,16 @@ namespace FootprintViewer.Layers
         void Change(GroundStationInfo info);
     }
 
-    public class GroundStationLayerSource : BaseLayerSource<GroundStationInfo>, IGroundStationLayerSource
+    public class GroundStationLayerSource : BaseLayerSource<GroundStation>, IGroundStationLayerSource
     {
         private readonly Dictionary<string, List<IFeature>> _cache;
 
-        public GroundStationLayerSource(IProvider<GroundStationInfo> provider) : base(provider)
+        public GroundStationLayerSource(IProvider<GroundStation> provider) : base(provider)
         {
             _cache = new Dictionary<string, List<IFeature>>();
         }
 
-        protected override void LoadingImpl(List<GroundStationInfo> groundStations)
+        protected override void LoadingImpl(List<GroundStation> groundStations)
         {
             foreach (var item in groundStations)
             {
