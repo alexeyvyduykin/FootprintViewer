@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -10,7 +9,7 @@ namespace FootprintViewer.Layers
 {
     public interface ITrackLayerSource : ILayerSource
     {
-        void Update(SatelliteInfo info);
+        void Update(string name, int node, bool isShow);
     }
 
     public class TrackLayerSource : BaseLayerSource<Satellite>, ITrackLayerSource
@@ -57,18 +56,14 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Update(SatelliteInfo info)
+        public void Update(string name, int node, bool isShow)
         {
-            var name = info.Name;
-
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();
 
-                if (info.IsShow == true && info.IsTrack == true)
+                if (isShow == true)
                 {
-                    var node = info.CurrentNode;
-
                     if (_dict.ContainsKey(name) == true && _dict[name].ContainsKey(node) == true)
                     {
                         var features = _dict[name][node];

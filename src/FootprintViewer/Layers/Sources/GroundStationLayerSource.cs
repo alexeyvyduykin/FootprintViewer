@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
@@ -13,9 +12,9 @@ namespace FootprintViewer.Layers
 {
     public interface IGroundStationLayerSource : ILayerSource
     {
-        void Update(GroundStationInfo info);
+        void Update(string name, Point center, double[] angles, bool isShow);
 
-        void Change(GroundStationInfo info);
+        void Change(string name, Point center, double[] angles, bool isShow);
     }
 
     public class GroundStationLayerSource : BaseLayerSource<GroundStation>, IGroundStationLayerSource
@@ -38,21 +37,19 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Update(GroundStationInfo info)
+        public void Update(string name, Point center, double[] angles, bool isShow)
         {
-            var name = info.Name;
-
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();
 
-                if (info.IsShow == true)
+                if (isShow == true)
                 {
                     var groundStation = new GroundStation()
                     {
                         Name = name,
-                        Center = new Point(info.Center),
-                        Angles = info.GetAngles(),
+                        Center = center,
+                        Angles = angles,
                     };
 
                     _cache[name] = Build(groundStation);
@@ -64,21 +61,19 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Change(GroundStationInfo info)
+        public void Change(string name, Point center, double[] angles, bool isShow)
         {
-            var name = info.Name;
-
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();
 
-                if (info.IsShow == true)
+                if (isShow == true)
                 {
                     var groundStation = new GroundStation()
                     {
-                        Name = info.Name,
-                        Center = new Point(info.Center),
-                        Angles = info.GetAngles(),
+                        Name = name,
+                        Center = center,
+                        Angles = angles,
                     };
 
                     _cache[name] = Build(groundStation);

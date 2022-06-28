@@ -38,12 +38,21 @@ namespace FootprintViewer.ViewModels
 
         public void UpdateTrack(SatelliteInfo satelliteInfo)
         {
-            _trackLayerSource.Update(satelliteInfo);
+            var name = satelliteInfo.Name;
+            var node = satelliteInfo.CurrentNode;
+            var isShow = satelliteInfo.IsShow && satelliteInfo.IsTrack;
+
+            _trackLayerSource.Update(name, node, isShow);
         }
 
         public void UpdateStrips(SatelliteInfo satelliteInfo)
         {
-            _sensorLayerSource.Update(satelliteInfo);
+            var name = satelliteInfo.Name;
+            var node = satelliteInfo.CurrentNode;
+            var isShow1 = satelliteInfo.IsShow && satelliteInfo.IsLeftStrip;
+            var isShow2 = satelliteInfo.IsShow && satelliteInfo.IsRightStrip;
+
+            _sensorLayerSource.Update(name, node, isShow1, isShow2);
         }
 
         [Reactive]

@@ -36,12 +36,22 @@ namespace FootprintViewer.ViewModels
 
         public void Update(GroundStationInfo groundStationInfo)
         {
-            _groundStationLayerSource.Update(groundStationInfo);
+            var name = groundStationInfo.Name;
+            var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
+            var angles = groundStationInfo.GetAngles();
+            var isShow = groundStationInfo.IsShow;
+
+            _groundStationLayerSource.Update(name, center, angles, isShow);
         }
 
         public void Change(GroundStationInfo groundStationInfo)
         {
-            _groundStationLayerSource.Change(groundStationInfo);
+            var name = groundStationInfo.Name;
+            var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
+            var angles = groundStationInfo.GetAngles();
+            var isShow = groundStationInfo.IsShow;
+
+            _groundStationLayerSource.Change(name, center, angles, isShow);
         }
 
         [Reactive]

@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Science;
-using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -11,7 +10,7 @@ namespace FootprintViewer.Layers
 {
     public interface ISensorLayerSource : ILayerSource
     {
-        void Update(SatelliteInfo info);
+        void Update(string name, int node, bool isShowLeft, bool isShowRight);
     }
 
     public class SensorLayerSource : BaseLayerSource<Satellite>, ISensorLayerSource
@@ -55,34 +54,27 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Update(SatelliteInfo info)
+        public void Update(string name, int node, bool isShowLeft, bool isShowRight)
         {
-            var name = info.Name;
-
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();
 
-                if (info.IsShow == true)
+                if (isShowLeft == true)
                 {
-                    var node = info.CurrentNode;
-
-                    if (info.IsLeftStrip == true)
+                    if (_dictLeft.ContainsKey(name) == true && _dictLeft[name].ContainsKey(node) == true)
                     {
-                        if (_dictLeft.ContainsKey(name) == true && _dictLeft[name].ContainsKey(node) == true)
-                        {
-                            var features = _dictLeft[name][node];
-                            _cache[name].AddRange(features);
-                        }
+                        var features = _dictLeft[name][node];
+                        _cache[name].AddRange(features);
                     }
+                }
 
-                    if (info.IsRightStrip == true)
+                if (isShowRight == true)
+                {
+                    if (_dictright.ContainsKey(name) == true && _dictright[name].ContainsKey(node) == true)
                     {
-                        if (_dictright.ContainsKey(name) == true && _dictright[name].ContainsKey(node) == true)
-                        {
-                            var features = _dictright[name][node];
-                            _cache[name].AddRange(features);
-                        }
+                        var features = _dictright[name][node];
+                        _cache[name].AddRange(features);
                     }
                 }
 
