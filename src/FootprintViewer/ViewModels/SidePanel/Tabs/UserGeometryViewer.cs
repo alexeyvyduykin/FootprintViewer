@@ -18,10 +18,11 @@ namespace FootprintViewer.ViewModels
         public UserGeometryViewer(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Пользовательская геометрия";
 
-            //ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new UserGeometryInfo(s), s => new UserGeometry());
+            ViewerList = viewModelFactory.CreateUserGeometryViewerList(_provider);
 
             // First loading
 

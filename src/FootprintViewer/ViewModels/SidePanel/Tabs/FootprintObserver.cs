@@ -11,8 +11,9 @@ namespace FootprintViewer.ViewModels
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
             var footprintProvider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            ViewerList = ViewerListBuilder.CreateViewerList(footprintProvider, s => new FootprintInfo(s), s => s.Footprint);
+            ViewerList = viewModelFactory.CreateFootprintViewerList(footprintProvider);
 
             Filter = new FootprintObserverFilter(dependencyResolver);
 

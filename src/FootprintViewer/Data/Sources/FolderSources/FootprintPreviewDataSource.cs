@@ -29,48 +29,50 @@ namespace FootprintViewer.Data.Sources
             _date = DateTime.UtcNow;
         }
 
+        private IEnumerable<FootprintPreview> GetFootprintPreviews()
+        {
+            if (_directory != null && _searchPattern != null)
+            {
+                var paths = Directory.GetFiles(_directory, _searchPattern).Select(Path.GetFullPath);
+
+                foreach (var path in paths)
+                {
+                    if (string.IsNullOrEmpty(path) == false)
+                    {
+                        var filename = System.IO.Path.GetFileNameWithoutExtension(path);
+                        var name = filename?.Split('_').FirstOrDefault();
+
+                        if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
+                        {
+                            var tileNumber = name.Replace("-", "").ToUpper();
+
+                            yield return new FootprintPreview()
+                            {
+                                Name = name,
+                                Date = _date.Date.ToShortDateString(),
+                                SatelliteName = $"Satellite{_random.Next(1, 6):00}",
+                                SunElevation = _random.Next(0, 90),
+                                CloudCoverFull = _random.Next(0, 100),
+                                TileNumber = tileNumber,
+                                Path = path,
+                                Image = CreatePreviewImage(path),
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
         public async Task<List<FootprintPreview>> GetNativeValuesAsync(IFilter<FootprintPreview>? filter)
         {
             return await Task.Run(() =>
             {
-                var list = new List<FootprintPreview>();
-
-                if (_directory != null && _searchPattern != null)
+                if (filter == null)
                 {
-                    var paths = Directory.GetFiles(_directory, _searchPattern).Select(Path.GetFullPath);
-
-                    foreach (var path in paths)
-                    {
-                        if (string.IsNullOrEmpty(path) == false)
-                        {
-                            var filename = System.IO.Path.GetFileNameWithoutExtension(path);
-                            var name = filename?.Split('_').FirstOrDefault();
-
-                            if (string.IsNullOrEmpty(filename) == false && string.IsNullOrEmpty(name) == false)
-                            {
-                                var tileNumber = name.Replace("-", "").ToUpper();
-
-                                var footprintPreview = new FootprintPreview()
-                                {
-                                    Date = _date.Date.ToShortDateString(),
-                                    SatelliteName = $"Satellite{_random.Next(1, 6):00}",
-                                    SunElevation = _random.Next(0, 90),
-                                    CloudCoverFull = _random.Next(0, 100),
-                                    TileNumber = tileNumber,
-                                    Path = path,
-                                    Image = CreatePreviewImage(path),
-                                };
-
-                                if (filter == null || filter.Filtering(footprintPreview))
-                                {
-                                    list.Add(footprintPreview);
-                                }
-                            }
-                        }
-                    }
+                    return GetFootprintPreviews().ToList();
                 }
 
-                return list;
+                return GetFootprintPreviews().Where(s => filter.Filtering(s)).ToList();
             });
         }
 
@@ -98,6 +100,17 @@ namespace FootprintViewer.Data.Sources
             return SKImage.FromEncodedData(data);
         }
 
-        public Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<FootprintPreview, T> converter) => throw new NotImplementedException();
+        public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<FootprintPreview, T> converter)
+        {
+            return await Task.Run(() =>
+            {
+                if (filter == null)
+                {
+                    return GetFootprintPreviews().Select(s => converter(s)).ToList();
+                }
+
+                return GetFootprintPreviews().Select(s => converter(s)).Where(s => filter.Filtering(s)).ToList();
+            });
+        }
     }
 }

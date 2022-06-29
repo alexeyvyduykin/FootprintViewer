@@ -21,10 +21,11 @@ namespace FootprintViewer.ViewModels
             _provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
             _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
             _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр спутников";
 
-            ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new SatelliteInfo(s), s => s.Satellite);
+            ViewerList = viewModelFactory.CreateSatelliteViewerList(_provider);
 
             // First loading
 

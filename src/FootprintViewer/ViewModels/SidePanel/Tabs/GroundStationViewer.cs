@@ -19,10 +19,11 @@ namespace FootprintViewer.ViewModels
         {
             _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр наземных станций";
 
-            //ViewerList = ViewerListBuilder.CreateViewerList(_provider, s => new GroundStationInfo(s), s => new GroundStation());
+            ViewerList = viewModelFactory.CreateGroundStationViewerList(_provider);
 
             // First loading
 

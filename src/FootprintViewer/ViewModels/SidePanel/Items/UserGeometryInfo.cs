@@ -5,20 +5,20 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryInfo : ReactiveObject, IViewerItem, ISelectorItem
     {
-        private readonly UserGeometry _geometry;
+        private readonly UserGeometry _model;
 
-        public UserGeometryInfo(UserGeometry geometry)
+        public UserGeometryInfo(UserGeometry model)
         {
-            _geometry = geometry;
+            _model = model;
         }
 
-        public string GetKey() => _geometry.Type.ToString();
+        public string GetKey() => _model.Type.ToString();
 
-        public UserGeometry Geometry => _geometry;
+        public UserGeometry Model => _model;
 
-        public string Name => _geometry.Name!;
+        public string Name => _model.Name!;
 
-        public UserGeometryType Type => _geometry.Type;
+        public UserGeometryType Type => _model.Type;
 
         public bool IsShowInfo { get; set; }
     }

@@ -1,12 +1,11 @@
 using Avalonia.ReactiveUI;
-using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class GroundStationInfoListView : ReactiveUserControl<ViewerList<GroundStation, GroundStationInfo>>
+    public partial class GroundStationInfoListView : ReactiveUserControl<GroundStationViewerList>
     {
         public GroundStationInfoListView()
         {

@@ -10,48 +10,6 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public interface IViewerList<T>
-    {
-        void FiringUpdate(string[]? names, double seconds = 1.0);
-
-        void FiringUpdate(IFilter<T>? filter, double seconds = 1.0);
-
-        ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
-
-        ReactiveCommand<T, T> Select { get; }
-
-        ReactiveCommand<T, T> Unselect { get; }
-
-        ReactiveCommand<T, T> MouseOverEnter { get; }
-
-        ReactiveCommand<Unit, Unit> MouseOverLeave { get; }
-
-        ReactiveCommand<T?, Unit> Add { get; }
-
-        ReactiveCommand<T?, Unit> Remove { get; }
-
-        void ClickOnItem(T? item);
-
-        void SelectItem(string name);
-
-        T? GetItem(string name);
-
-        IObservable<T?> SelectedItemObservable { get; }
-
-        bool IsLoading { get; }
-
-        T? SelectedItem { get; set; }
-
-        List<T> Items { get; }
-    }
-
-    public interface IViewerItem
-    {
-        string Name { get; }
-
-        bool IsShowInfo { get; set; }
-    }
-
     public abstract class BaseViewerList<T> : ReactiveObject, IViewerList<T> where T : IViewerItem
     {
         private readonly ObservableAsPropertyHelper<List<T>> _items;
@@ -89,7 +47,8 @@ namespace FootprintViewer.ViewModels
 
         public void FiringUpdate(string[]? names, double seconds)
         {
-            FiringUpdate(ViewerListBuilder.CreateNameFilter<T>(names), seconds);
+            var filter = new NameFilter<T>(names);
+            FiringUpdate(filter, seconds);
         }
 
         public void FiringUpdate(IFilter<T>? filter, double seconds)
@@ -177,6 +136,23 @@ namespace FootprintViewer.ViewModels
             public IFilter<T>? Filter { get; set; }
 
             public IObservable<Unit>? ThrottleDuration { get; set; }
+        }
+    }
+
+    public class NameFilter<T> : ViewerListFilter<T> where T : IViewerItem
+    {
+        private readonly string[]? _names;
+
+        public NameFilter(string[]? names) : base()
+        {
+            _names = names;
+        }
+
+        public override string[]? Names => _names;
+
+        public override bool Filtering(T value)
+        {
+            return (_names == null) || _names.Contains(value.Name);
         }
     }
 }

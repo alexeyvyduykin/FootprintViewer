@@ -24,16 +24,16 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class SceneSearchFilter : ViewerListFilter<FootprintPreview>
+    public class SceneSearchFilter : ViewerListFilter<FootprintPreviewInfo>
     {
         private IDictionary<string, Geometry>? _geometries;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
-        private readonly IProvider<Data.FootprintPreview> _footprintPreviewProvider;
+        private readonly IProvider<FootprintPreview> _footprintPreviewProvider;
 
         public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
-            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<Data.FootprintPreview>>();
+            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
             Sensors = new ObservableCollection<Sensor>();
 
@@ -88,7 +88,7 @@ namespace FootprintViewer.ViewModels
             Cloudiness = temp;
         }
 
-        public override bool Filtering(FootprintPreview value)
+        public override bool Filtering(FootprintPreviewInfo value)
         {
             bool isAoiCondition = false;
 

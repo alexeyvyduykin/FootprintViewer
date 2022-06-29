@@ -16,10 +16,11 @@ namespace FootprintViewer.ViewModels
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<Data.FootprintPreview>>();
+            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            //ViewerList = ViewerListBuilder.CreateViewerList(footprintPreviewProvider, s => new FootprintPreview(s.Name), s => new Data.FootprintPreview());
+            ViewerList = viewModelFactory.CreateFootprintPreviewViewerList(footprintPreviewProvider);
 
             Filter = new SceneSearchFilter(dependencyResolver);
 
@@ -56,10 +57,10 @@ namespace FootprintViewer.ViewModels
         private ReactiveCommand<Unit, List<(string, NetTopologySuite.Geometries.Geometry)>> LoadFootprintPreviewGeometry { get; }
 
         [Reactive]
-        public IViewerList<FootprintPreview> ViewerList { get; private set; }
+        public IViewerList<FootprintPreviewInfo> ViewerList { get; private set; }
 
         [Reactive]
-        public IFilter<FootprintPreview> Filter { get; private set; }
+        public IFilter<FootprintPreviewInfo> Filter { get; private set; }
 
         public IDictionary<string, NetTopologySuite.Geometries.Geometry> Geometries => _geometries.Value;
     }

@@ -6,7 +6,7 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates
 {
-    public partial class UserGeometryInfoListView : ReactiveUserControl<ViewerList<UserGeometry, UserGeometryInfo>>
+    public partial class UserGeometryInfoListView : ReactiveUserControl<UserGeometryViewerList>
     {
         public UserGeometryInfoListView()
         {

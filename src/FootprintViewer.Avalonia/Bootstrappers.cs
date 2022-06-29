@@ -18,6 +18,8 @@ namespace FootprintViewer.Avalonia
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             services.Register(() => new ProjectFactory(resolver));
+            services.Register(() => new ViewModelFactory(resolver));
+
             var factory = resolver.GetExistingService<ProjectFactory>();
 
             // Load the saved view model state.
@@ -33,7 +35,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
             services.RegisterConstant(factory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
             services.RegisterConstant(factory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));
-            services.RegisterConstant(factory.CreateFootprintPreviewProvider(), typeof(IProvider<Data.FootprintPreview>));
+            services.RegisterConstant(factory.CreateFootprintPreviewProvider(), typeof(IProvider<FootprintPreview>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
@@ -54,12 +56,12 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
             services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-            //        services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
+            services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
             services.RegisterConstant(factory.CreateSatelliteViewer(), typeof(SatelliteViewer));
             services.RegisterConstant(factory.CreateGroundTargetViewer(), typeof(GroundTargetViewer));
             services.RegisterConstant(factory.CreateFootprintObserver(), typeof(FootprintObserver));
-            //       services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
-            //       services.RegisterConstant(factory.CreateGroundStationViewer(), typeof(GroundStationViewer));
+            services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
+            services.RegisterConstant(factory.CreateGroundStationViewer(), typeof(GroundStationViewer));
 
             services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
 
@@ -67,12 +69,12 @@ namespace FootprintViewer.Avalonia
 
             var tabs = new SidePanelTab[]
             {
-                //resolver.GetExistingService<SceneSearch>(),
+                resolver.GetExistingService<SceneSearch>(),
                 resolver.GetExistingService<SatelliteViewer>(),
-                //resolver.GetExistingService<GroundStationViewer>(),
+                resolver.GetExistingService<GroundStationViewer>(),
                 resolver.GetExistingService<GroundTargetViewer>(),
                 resolver.GetExistingService<FootprintObserver>(),
-                //resolver.GetExistingService<UserGeometryViewer>(),
+                resolver.GetExistingService<UserGeometryViewer>(),
                 resolver.GetExistingService<AppSettings>(),
             };
 
@@ -80,6 +82,5 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
         }
-
     }
 }

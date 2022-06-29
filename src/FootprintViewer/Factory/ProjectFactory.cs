@@ -34,16 +34,16 @@ namespace FootprintViewer
             };
 
             map.AddLayer(new Layer(), LayerType.WorldMap);
-            //   map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
-            //   map.AddLayer(CreateGroundStationLayer(_dependencyResolver), LayerType.GroundStation);
+            map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
+            map.AddLayer(CreateGroundStationLayer(_dependencyResolver), LayerType.GroundStation);
             map.AddLayer(CreateTargetLayer(_dependencyResolver), LayerType.GroundTarget);
             map.AddLayer(CreateSensorLayer(_dependencyResolver), LayerType.Sensor);
             map.AddLayer(CreateTrackLayer(_dependencyResolver), LayerType.Track);
             map.AddLayer(CreateFootprintLayer(_dependencyResolver), LayerType.Footprint);
-            //   map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
+            map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
             map.AddLayer(CreateEditLayer(_dependencyResolver), LayerType.Edit);
             map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
-            //   map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
+            map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
 
             return map;
         }
@@ -682,18 +682,16 @@ namespace FootprintViewer
 
             var dataSources = settings.FootprintPreviewProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<Data.FootprintPreview>(dataSources);
+            var provider = new Provider<FootprintPreview>(dataSources);
 
             settings.WhenAnyValue(s => s.FootprintPreviewProvider.Sources)
                     .Skip(1)
                     .Select(s => s.Select(s => ToDataSource(s)).ToArray())
                     .Subscribe(provider.ChangeSources);
 
-
-
             return provider;
 
-            static IDataSource<Data.FootprintPreview> ToDataSource(ISourceInfo info)
+            static IDataSource<FootprintPreview> ToDataSource(ISourceInfo info)
             {
                 if (info is IFolderSourceInfo folderInfo)
                 {

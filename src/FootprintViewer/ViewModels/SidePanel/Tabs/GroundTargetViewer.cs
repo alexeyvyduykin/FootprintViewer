@@ -15,18 +15,19 @@ namespace FootprintViewer.ViewModels
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTarget> _groundTargetProvider;
         private string[]? _names;
-        private readonly ViewerList<GroundTarget, GroundTargetInfo> _viewerList;
+        private readonly IViewerList<GroundTargetInfo> _viewerList;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
             _groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
+            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр наземных целей";
 
             var preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
-            _viewerList = (ViewerList<GroundTarget, GroundTargetInfo>)ViewerListBuilder.CreateViewerList(_groundTargetProvider, s => new GroundTargetInfo(s), s => s.GroundTarget);
+            _viewerList = viewModelFactory.CreateGroundTargetViewerList(_groundTargetProvider);
 
             // Update
 
@@ -45,7 +46,7 @@ namespace FootprintViewer.ViewModels
                 }
             });
 
-            this.WhenAnyValue(s => s.IsEnable).Where(s => s == true).Subscribe(_ => MainContent = _viewerList);
+            this.WhenAnyValue(s => s.IsEnable).Where(s => s == true).Subscribe(_ => MainContent = (ReactiveObject)_viewerList);
             this.WhenAnyValue(s => s.IsEnable).Where(s => s == false).Subscribe(_ => MainContent = preview);
 
             this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ =>

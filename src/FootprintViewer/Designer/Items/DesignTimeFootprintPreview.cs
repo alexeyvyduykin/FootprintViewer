@@ -1,24 +1,17 @@
-﻿using FootprintViewer.ViewModels;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using SkiaSharp;
 using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFootprintPreview : FootprintPreview
+    public class DesignTimeFootprintPreview : FootprintPreviewInfo
     {
         private static readonly Random _random = new();
 
-        public DesignTimeFootprintPreview() : base("38-50-lr_3857")
+        public DesignTimeFootprintPreview() : base(Build())
         {
-            var unitBitmap = new SKBitmap(1, 1);
-            unitBitmap.SetPixel(0, 0, SKColors.White);
 
-            Date = new DateTime(2001, 6, 1, 12, 0, 0).ToShortDateString();
-            SatelliteName = "Satellite1";
-            SunElevation = 71.0;
-            CloudCoverFull = 84.0;
-            TileNumber = "38-50-lr_3857";
-            Image = SKImage.FromBitmap(unitBitmap);
         }
 
         public static FootprintPreview Build()
@@ -32,8 +25,9 @@ namespace FootprintViewer.Designer
             var unitBitmap = new SKBitmap(1, 1);
             unitBitmap.SetPixel(0, 0, SKColors.White);
 
-            return new FootprintPreview(name.ToUpper())
+            return new FootprintPreview()
             {
+                Name = name.ToUpper(),
                 Date = date.Date.ToShortDateString(),
                 SatelliteName = satellites[_random.Next(0, satellites.Length)],
                 SunElevation = _random.Next(0, 91),

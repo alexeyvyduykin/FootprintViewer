@@ -16,7 +16,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class FootprintPreviewView : ReactiveUserControl<FootprintPreview>
+    public partial class FootprintPreviewView : ReactiveUserControl<FootprintPreviewInfo>
     {
         private static SceneSearch? _sceneSearch;
 

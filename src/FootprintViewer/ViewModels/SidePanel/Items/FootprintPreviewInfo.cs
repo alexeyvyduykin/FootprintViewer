@@ -1,13 +1,21 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.Data;
+using ReactiveUI;
 using SkiaSharp;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintPreview : ReactiveObject, IViewerItem
+    public class FootprintPreviewInfo : ReactiveObject, IViewerItem
     {
-        public FootprintPreview(string name)
+        public FootprintPreviewInfo(FootprintPreview model)
         {
-            Name = name;
+            Name = model.Name!;
+            Date = model.Date;
+            SatelliteName = model.SatelliteName;
+            SunElevation = model.SunElevation;
+            CloudCoverFull = model.CloudCoverFull;
+            TileNumber = model.TileNumber;
+            Path = model.Path;
+            Image = model.Image;
         }
 
         public string Name { get; }

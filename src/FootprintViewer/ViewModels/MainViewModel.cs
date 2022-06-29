@@ -29,9 +29,9 @@ namespace FootprintViewer.ViewModels
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintObserver _footprintObserver;
         private readonly GroundTargetViewer _groundTargetViewer;
-  //      private readonly UserGeometryViewer _userGeometryViewer;
-  //      private readonly SceneSearch _sceneSearch;
-  //      private readonly IUserLayerSource _userLayerSource;
+        private readonly UserGeometryViewer _userGeometryViewer;
+        private readonly SceneSearch _sceneSearch;
+        private readonly IUserLayerSource _userLayerSource;
         private readonly IFootprintLayerSource _footprintSource;
         private readonly IEditLayerSource _editSource;
         private readonly ScaleMapBar _scaleMapBar;
@@ -53,13 +53,13 @@ namespace FootprintViewer.ViewModels
             MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-       //     _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
+            _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintSource = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
             _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
             _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
-       //     _userGeometryV/iewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
-       //     _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
+            _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
+            _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
             _infoPanel = factory.CreateInfoPanel();
 
@@ -75,12 +75,12 @@ namespace FootprintViewer.ViewModels
                 {
                     if (s is Geometry geometry)
                     {
-      //                  _sceneSearch.SetAOI(geometry);
+                        _sceneSearch.SetAOI(geometry);
                     }
                 }
                 else
                 {
-      //              _sceneSearch.ResetAOI();
+                    _sceneSearch.ResetAOI();
                 }
             };
 
@@ -456,48 +456,48 @@ namespace FootprintViewer.ViewModels
             return groundTargetSelectDecorator;
         }
 
-        //private ISelectDecorator? CreateUserGeometrySelector()
-        //{
-        //    var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
+        private ISelectDecorator? CreateUserGeometrySelector()
+        {
+            var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
 
-        //    if (userGeometryLayer == null)
-        //    {
-        //        return null;
-        //    }
+            if (userGeometryLayer == null)
+            {
+                return null;
+            }
 
-        //    var userGeometrySelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, userGeometryLayer);
+            var userGeometrySelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, userGeometryLayer);
 
-        //    userGeometrySelectDecorator.Select += (s, e) =>
-        //    {
-        //        var decorator = (ISelectDecorator)s!;
+            userGeometrySelectDecorator.Select += (s, e) =>
+            {
+                var decorator = (ISelectDecorator)s!;
 
-        //        var feature = decorator.SelectedFeature!;
+                var feature = decorator.SelectedFeature!;
 
-        //        if (feature.Fields.Contains("Name"))
-        //        {
-        //            var name = (string)feature["Name"]!;
+                if (feature.Fields.Contains("Name"))
+                {
+                    var name = (string)feature["Name"]!;
 
-        //            Task.Run(async () =>
-        //            {
-        //                var infos = await _userGeometryViewer.GetUserGeometryInfoAsync(name);
+                    Task.Run(async () =>
+                    {
+                        var infos = await _userGeometryViewer.GetUserGeometryInfoAsync(name);
 
-        //                var info = infos.FirstOrDefault();
+                        var info = infos.FirstOrDefault();
 
-        //                if (info != null)
-        //                {
-        //                    ClickInfoPanel.Show(new UserGeometryClickInfoPanel(info));
-        //                }
-        //            });
-        //        }
-        //    };
+                        if (info != null)
+                        {
+                            ClickInfoPanel.Show(new UserGeometryClickInfoPanel(info));
+                        }
+                    });
+                }
+            };
 
-        //    userGeometrySelectDecorator.Unselect += (_s, e) =>
-        //    {
-        //        ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
-        //    };
+            userGeometrySelectDecorator.Unselect += (_s, e) =>
+            {
+                ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
+            };
 
-        //    return userGeometrySelectDecorator;
-        //}
+            return userGeometrySelectDecorator;
+        }
 
         private void SelectCommand()
         {
@@ -507,7 +507,7 @@ namespace FootprintViewer.ViewModels
 
             _groundTargetSelectDecorator ??= CreateGroundTargetSelector();
 
-    //        _userGeometrySelectDecorator ??= CreateUserGeometrySelector();
+            _userGeometrySelectDecorator ??= CreateUserGeometrySelector();
         }
 
         private void ScaleCommand()
@@ -532,7 +532,7 @@ namespace FootprintViewer.ViewModels
 
             _selectScaleDecorator.Unselect += (s, e) =>
             {
-     //           _userLayerSource.EditFeature(selectFeature!);
+                _userLayerSource.EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -560,7 +560,7 @@ namespace FootprintViewer.ViewModels
 
             _selectTranslateDecorator.Unselect += (s, e) =>
             {
-      //          _userLayerSource.EditFeature(selectFeature!);
+                _userLayerSource.EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -588,7 +588,7 @@ namespace FootprintViewer.ViewModels
 
             _selectRotateDecorator.Unselect += (s, e) =>
             {
-      //          _userLayerSource.EditFeature(selectFeature!);
+                _userLayerSource.EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -616,7 +616,7 @@ namespace FootprintViewer.ViewModels
 
             _selectEditDecorator.Unselect += (s, e) =>
             {
-     //           _userLayerSource.EditFeature(selectFeature!);
+                _userLayerSource.EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -675,7 +675,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-        //        _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
 
                 Tip = null;
 
@@ -704,7 +704,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-      //          _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
                 Tip = null;
 
@@ -732,7 +732,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-      //          _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
 
                 Tip = null;
 
@@ -797,7 +797,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-     //           _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
+                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
 
                 Tip = null;
 
