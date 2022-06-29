@@ -19,8 +19,10 @@ namespace FootprintViewer.Avalonia
 
             services.Register(() => new ProjectFactory(resolver));
             services.Register(() => new ViewModelFactory(resolver));
+            services.Register(() => new MapFactory(resolver));
 
             var factory = resolver.GetExistingService<ProjectFactory>();
+            var mapFactory = resolver.GetExistingService<MapFactory>();
 
             // Load the saved view model state.
             var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
@@ -53,7 +55,7 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new GroundStationLayerSource(groundStationProvider), typeof(IGroundStationLayerSource));
             services.RegisterConstant(new EditLayerSource(), typeof(IEditLayerSource));
 
-            services.RegisterConstant(factory.CreateMap(), typeof(Mapsui.IMap));
+            services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
             services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
             services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
