@@ -26,27 +26,6 @@ namespace FootprintViewer.ViewModels
             Title = "Пользовательские настройки";
         }
 
-        public void Init(ProjectFactory factory)
-        {
-            FootprintProvider.AvailableSources = new(factory.CreateFootprintProviderBuilders(FootprintProvider));
-
-            GroundTargetProvider.AvailableSources = new(factory.CreateGroundTargetProviderBuilders(GroundTargetProvider));
-
-            GroundStationProvider.AvailableSources = new(factory.CreateGroundStationProviderBuilders(GroundStationProvider));
-
-            SatelliteProvider.AvailableSources = new(factory.CreateSatelliteProviderBuilders(SatelliteProvider));
-
-            UserGeometryProvider.AvailableSources = new(factory.CreateUserGeometryProviderBuilders(UserGeometryProvider));
-
-            FootprintPreviewGeometryProvider.AvailableSources = new(factory.CreateFootprintPreviewGeometryProviderBuilders(FootprintPreviewGeometryProvider));
-
-            MapBackgroundProvider.AvailableSources = new(factory.CreateMapBackgroundProviderBuilders(MapBackgroundProvider));
-
-            FootprintPreviewProvider.AvailableSources = new(factory.CreateFootprintPreviewProviderBuilders(FootprintPreviewProvider));
-
-            Title = "Пользовательские настройки";
-        }
-
         [DataMember]
         public string? LastOpenDirectory { get; set; }
 

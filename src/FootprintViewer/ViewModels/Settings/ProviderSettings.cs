@@ -1,7 +1,9 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Runtime.Serialization;
 
 namespace FootprintViewer.ViewModels
@@ -21,15 +23,45 @@ namespace FootprintViewer.ViewModels
     [DataContract]
     public class ProviderSettings : ReactiveObject
     {
+        private bool _isActivated;
+        private IEnumerable<string> _availableBuilders = Array.Empty<string>();
+        private ProjectFactory? _factory;
+
         public ProviderSettings()
         {
             Sources = new List<ISourceInfo>();
-
-            AvailableSources = new List<ISourceBuilder>();
+         
+            SourceBuilderItems = new List<ISourceBuilderItem>();
 
             RemoveSource = ReactiveCommand.Create<ISourceInfo>(RemoveSourceImpl);
 
             AddSource = ReactiveCommand.Create<ISourceInfo, ISourceInfo>(AddSourceImpl);
+        }
+
+        public void AddAvailableBuilders(IEnumerable<string> builders, ProjectFactory factory)
+        {
+            _availableBuilders = builders;
+            _factory = factory;
+            _isActivated = false;
+        }
+
+        public void Activate()
+        {
+            if (_isActivated || _factory == null)
+            {
+                return;
+            }
+
+            _isActivated = true;
+
+            var items = _factory.CreateSourceBuilderItems(_availableBuilders);
+
+            SourceBuilderItems = new List<ISourceBuilderItem>(items);
+
+            foreach (var item in SourceBuilderItems)
+            {
+                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(AddSource);
+            }
         }
 
         public ReactiveCommand<ISourceInfo, Unit> RemoveSource { get; }
@@ -64,8 +96,6 @@ namespace FootprintViewer.ViewModels
         public List<ISourceInfo> Sources { get; private set; }
 
         [Reactive]
-        public List<ISourceBuilder> AvailableSources { get; set; }
+        public List<ISourceBuilderItem> SourceBuilderItems { get; private set; }
     }
-
-
 }

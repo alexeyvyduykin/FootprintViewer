@@ -1,7 +1,11 @@
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
+using System;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
@@ -13,20 +17,7 @@ namespace FootprintViewer.Avalonia.Views.Settings
 
             this.WhenActivated(disposables =>
             {
-                if (ViewModel != null)
-                {
-                    foreach (var item in ViewModel.AvailableSources)
-                    {
-                        item.ShowBuilderDialog.RegisterHandler(
-                            async interaction =>
-                            {
-                                AddSourceButton.Flyout?.Hide();
-                                var res = await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
-                                var source = (res is ISourceInfo info) ? info : null;
-                                interaction.SetOutput(source);
-                            }).DisposeWith(disposables);
-                    }
-                }
+
             });
         }
     }

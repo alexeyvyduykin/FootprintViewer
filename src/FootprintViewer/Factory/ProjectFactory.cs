@@ -10,6 +10,7 @@ using Mapsui.Nts.Extensions;
 using ReactiveUI;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -527,7 +528,7 @@ namespace FootprintViewer
             }
         }
 
-        public IProvider<Data.FootprintPreview> CreateFootprintPreviewProvider()
+        public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
         {
             var settings = _dependencyResolver.GetService<AppSettings>()!;
 
@@ -579,15 +580,6 @@ namespace FootprintViewer
                 CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Footprint }),
             };
 
-            foreach (var item in builders)
-            {
-                item.Build
-                    .Where(s => s != null)
-                    .Select(s => s!)
-                    .InvokeCommand(
-                    settings.AddSource);
-            }
-
             return builders;
         }
 
@@ -598,11 +590,6 @@ namespace FootprintViewer
                 new RandomSourceBuilder("RandomGroundTargets"),
                 CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundTarget }),
             };
-
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
 
             return builders;
         }
@@ -615,11 +602,6 @@ namespace FootprintViewer
                 CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundStation }),
             };
 
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
-
             return builders;
         }
 
@@ -631,11 +613,6 @@ namespace FootprintViewer
                 CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Satellite }),
             };
 
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
-
             return builders;
         }
 
@@ -645,11 +622,6 @@ namespace FootprintViewer
             {
                 CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.UserGeometry }),
             };
-
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
 
             return builders;
         }
@@ -661,11 +633,6 @@ namespace FootprintViewer
                 CreateFileSourceBuilder("Shapefile", "shp"),
             };
 
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
-
             return builders;
         }
 
@@ -676,11 +643,6 @@ namespace FootprintViewer
                CreateFolderSourceBuilder("*.mbtiles"),
             };
 
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
-
             return builders;
         }
 
@@ -690,11 +652,6 @@ namespace FootprintViewer
             {
                 CreateFolderSourceBuilder("*.mbtiles"),
             };
-
-            foreach (var item in builders)
-            {
-                item.Build.Where(s => s != null).Select(s => s!).InvokeCommand(settings.AddSource);
-            }
 
             return builders;
         }
@@ -752,6 +709,34 @@ namespace FootprintViewer
             });
 
             return builder;
+        }
+
+
+        private ISourceInfo CreateSource(SourceType type)
+        {
+            return type switch
+            {
+                SourceType.File => new FileSourceInfo(/*"FileSource"*/),                             
+                SourceType.Folder => new FolderSourceInfo(/*"FolderSource"*/),
+                SourceType.Database => new DatabaseSourceInfo(/*"FootprintDatabase.Satellites"*/),
+                SourceType.Random => new RandomSourceInfo("random"),
+                _ => throw new Exception(),
+            };
+        }
+
+        public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders)
+        {
+            var list = new List<ISourceBuilderItem>();
+
+            foreach (var item in builders)
+            {
+                if (Enum.TryParse(item.ToTitleCase(), out SourceType type) == true)
+                {
+                    list.Add(new SourceBuilderItem(type, () => CreateSource(type)));
+                }
+            }
+
+            return list;
         }
     }
 }

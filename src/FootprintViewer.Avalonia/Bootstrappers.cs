@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
+using FootprintViewer.Settings;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -11,24 +12,43 @@ namespace FootprintViewer.Avalonia
 {
     public static class Bootstrapper
     {
+        public static void RegisterSettings(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        {
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+            var sourceConfig = new SourceBuilderConfiguration();
+
+            configuration.GetSection("SourceBuilders").Bind(sourceConfig);
+
+            var factory = resolver.GetExistingService<ProjectFactory>();
+
+            // Load the saved view model state.
+            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();         
+            services.RegisterConstant(settings, typeof(AppSettings));
+
+            settings.FootprintProvider.AddAvailableBuilders(sourceConfig.FootprintSourceBuilders, factory);
+            settings.GroundTargetProvider.AddAvailableBuilders(sourceConfig.GroundTargetSourceBuilders, factory);
+            settings.GroundStationProvider.AddAvailableBuilders(sourceConfig.GroundStationSourceBuilders, factory);
+            settings.SatelliteProvider.AddAvailableBuilders(sourceConfig.SatelliteSourceBuilders, factory);
+            settings.UserGeometryProvider.AddAvailableBuilders(sourceConfig.UserGeometrySourceBuilders, factory);
+            settings.FootprintPreviewGeometryProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewGeometrySourceBuilders, factory);
+            settings.MapBackgroundProvider.AddAvailableBuilders(sourceConfig.MapBackgroundSourceBuilders, factory);
+            settings.FootprintPreviewProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewSourceBuilders, factory);           
+        }
+
         public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
             services.InitializeSplat();
 
-            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
             services.Register(() => new ProjectFactory(resolver));
             services.Register(() => new ViewModelFactory(resolver));
             services.Register(() => new MapFactory(resolver));
+            
+            RegisterSettings(services, resolver);
 
             var factory = resolver.GetExistingService<ProjectFactory>();
             var mapFactory = resolver.GetExistingService<MapFactory>();
-
-            // Load the saved view model state.
-            var settings = RxApp.SuspensionHost.GetAppState<AppSettings>();
-            settings.Init(factory);
-            services.RegisterConstant(settings, typeof(AppSettings));
-
+          
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));
             services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));

@@ -9,11 +9,11 @@ namespace FootprintViewer.Designer
         {
             Type = ProviderType.GroundTargets;
 
-            AvailableSources = new List<ISourceBuilder>()
-            {
-                new RandomSourceBuilder("RandomGroundTargets"),
-                new DatabaseSourceBuilder(new DesignTimeData()),
-            };
+            //AvailableSources = new List<ISourceBuilder>()
+            //{
+            //    new RandomSourceBuilder("RandomGroundTargets"),
+            //    new DatabaseSourceBuilder(new DesignTimeData()),
+            //};
 
             Sources.Add(new DatabaseSourceInfo()
             {
