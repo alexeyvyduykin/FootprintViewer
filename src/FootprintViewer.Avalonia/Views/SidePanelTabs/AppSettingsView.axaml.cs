@@ -4,7 +4,7 @@ using ReactiveUI;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class AppSettingsView : ReactiveUserControl<AppSettings>
+    public partial class AppSettingsView : ReactiveUserControl<SettingsTabViewModel>
     {
         public AppSettingsView()
         {

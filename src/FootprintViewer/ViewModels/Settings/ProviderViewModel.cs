@@ -2,6 +2,7 @@
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.Serialization;
@@ -20,17 +21,16 @@ namespace FootprintViewer.ViewModels
         FootprintPreviews
     };
 
-    [DataContract]
-    public class ProviderSettings : ReactiveObject
+    public class ProviderViewModel : ReactiveObject
     {
         private bool _isActivated;
         private IEnumerable<string> _availableBuilders = Array.Empty<string>();
         private ProjectFactory? _factory;
 
-        public ProviderSettings()
+        public ProviderViewModel()
         {
             Sources = new List<ISourceInfo>();
-         
+
             SourceBuilderItems = new List<ISourceBuilderItem>();
 
             RemoveSource = ReactiveCommand.Create<ISourceInfo>(RemoveSourceImpl);
@@ -87,11 +87,9 @@ namespace FootprintViewer.ViewModels
 
             return item;
         }
-
-        [DataMember]
+ 
         public ProviderType Type { get; init; }
-
-        [DataMember]
+     
         [Reactive]
         public List<ISourceInfo> Sources { get; private set; }
 

@@ -38,7 +38,7 @@ namespace FootprintViewer.Avalonia
 
             // Create the AutoSuspendHelper.
             var suspension = new AutoSuspendHelper(ApplicationLifetime!);
-            RxApp.SuspensionHost.CreateNewAppState = () => new AppSettings();
+            RxApp.SuspensionHost.CreateNewAppState = () => new AppSettingsState();
             RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("_suspendAppSettings.json"));
             suspension.OnFrameworkInitializationCompleted();
 
@@ -82,7 +82,7 @@ namespace FootprintViewer.Avalonia
 
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
         {
-            var settings = Locator.Current.GetService<AppSettings>()!;
+            var settings = Locator.Current.GetService<AppSettingsState>()!;
 
             var dialog = new OpenFileDialog
             {
@@ -105,7 +105,7 @@ namespace FootprintViewer.Avalonia
 
         public static async Task<string> OpenFolderDialog(string? directory)
         {
-            var settings = Locator.Current.GetService<AppSettings>()!;
+            var settings = Locator.Current.GetService<AppSettingsState>()!;
 
             var dialog = new OpenFolderDialog()
             {

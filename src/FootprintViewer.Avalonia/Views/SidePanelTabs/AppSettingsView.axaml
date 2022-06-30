@@ -16,7 +16,16 @@
   <Grid>
     <ScrollViewer HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Auto">
-      <StackPanel>
+      <ItemsControl Items="{Binding Providers}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        
+      </ItemsControl>
+            
+      <!--<StackPanel>
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding FootprintProvider}"/>
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding GroundTargetProvider}"/>
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding GroundStationProvider}"/>
@@ -25,7 +34,7 @@
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding FootprintPreviewGeometryProvider}"/>
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding MapBackgroundProvider}"/>
         <settings:ProviderSettingsView Margin="8" DataContext="{Binding FootprintPreviewProvider}"/>
-      </StackPanel>
+      </StackPanel>-->
     </ScrollViewer>
   </Grid>
 

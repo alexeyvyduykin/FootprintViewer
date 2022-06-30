@@ -43,7 +43,7 @@
       <views:GroundStationViewerView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:AppSettings">
+    <DataTemplate DataType="vm:SettingsTabViewModel">
       <views:AppSettingsView/>
     </DataTemplate>
 
@@ -89,7 +89,7 @@
           <materialIcons:MaterialIcon Kind="SatelliteUplink"/>
         </Viewbox>
       </DataTemplate>
-      <DataTemplate x:Key="AppSettings">
+      <DataTemplate x:Key="SettingsTabViewModel">
         <Viewbox Margin="4">
           <materialIcons:MaterialIcon Kind="AccountCog" />
         </Viewbox>

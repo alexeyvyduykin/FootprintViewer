@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class SourceBuilderItemsList : ReactiveUserControl<ProviderSettings>
+    public partial class SourceBuilderItemsList : ReactiveUserControl<ProviderViewModel>
     {
         public SourceBuilderItemsList()
         {

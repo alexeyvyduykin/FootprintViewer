@@ -97,5 +97,12 @@ namespace FootprintViewer
 
             return viewerList;
         }
+
+        public SettingsTabViewModel CreateSettingsTabViewModel()
+        {
+            var settingsViewer = new SettingsTabViewModel(_dependencyResolver);
+
+            return settingsViewer;
+        }
     }
 }

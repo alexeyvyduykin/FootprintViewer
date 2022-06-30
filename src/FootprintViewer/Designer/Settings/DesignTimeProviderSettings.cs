@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeProviderSettings : ProviderSettings
+    public class DesignTimeProviderSettings //: ProviderSettings
     {
-        public DesignTimeProviderSettings() : base()
+        public DesignTimeProviderSettings() //: base()
         {
-            Type = ProviderType.GroundTargets;
+            //Type = ProviderType.GroundTargets;
 
             //AvailableSources = new List<ISourceBuilder>()
             //{
@@ -15,11 +15,11 @@ namespace FootprintViewer.Designer
             //    new DatabaseSourceBuilder(new DesignTimeData()),
             //};
 
-            Sources.Add(new DatabaseSourceInfo()
-            {
-                Database = "database",
-                Table = "GroundTargets"
-            });
+            //Sources.Add(new DatabaseSourceInfo()
+            //{
+            //    Database = "database",
+            //    Table = "GroundTargets"
+            //});
         }
     }
 }

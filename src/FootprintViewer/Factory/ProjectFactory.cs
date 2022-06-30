@@ -185,7 +185,7 @@ namespace FootprintViewer
 
         public IProvider<GroundStation> CreateGroundStationProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.GroundStationProvider.Sources.Count == 0)
             {
@@ -235,7 +235,7 @@ namespace FootprintViewer
 
         public IProvider<GroundTarget> CreateGroundTargetProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.GroundTargetProvider.Sources.Count == 0)
             {
@@ -288,7 +288,7 @@ namespace FootprintViewer
 
         public IProvider<Footprint> CreateFootprintProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.FootprintProvider.Sources.Count == 0)
             {
@@ -340,7 +340,7 @@ namespace FootprintViewer
 
         public IProvider<Satellite> CreateSatelliteProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.SatelliteProvider.Sources.Count == 0)
             {
@@ -390,7 +390,7 @@ namespace FootprintViewer
 
         public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.UserGeometryProvider.Sources.Count == 0)
             {
@@ -439,7 +439,7 @@ namespace FootprintViewer
 
         public IProvider<(string, NetTopologySuite.Geometries.Geometry)> CreateFootprintPreviewGeometryProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.FootprintPreviewGeometryProvider.Sources.Count == 0)
             {
@@ -486,7 +486,7 @@ namespace FootprintViewer
 
         public IProvider<MapResource> CreateMapBackgroundProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.MapBackgroundProvider.Sources.Count == 0)
             {
@@ -530,7 +530,7 @@ namespace FootprintViewer
 
         public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettings>()!;
+            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
             if (settings.FootprintPreviewProvider.Sources.Count == 0)
             {
@@ -572,144 +572,144 @@ namespace FootprintViewer
             }
         }
 
-        public ISourceBuilder[] CreateFootprintProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                new RandomSourceBuilder("RandomFootprints"),
-                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Footprint }),
-            };
+        //public ISourceBuilder[] CreateFootprintProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        new RandomSourceBuilder("RandomFootprints"),
+        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Footprint }),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateGroundTargetProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                new RandomSourceBuilder("RandomGroundTargets"),
-                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundTarget }),
-            };
+        //public ISourceBuilder[] CreateGroundTargetProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        new RandomSourceBuilder("RandomGroundTargets"),
+        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundTarget }),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateGroundStationProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                new RandomSourceBuilder("RandomGroundStations"),
-                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundStation }),
-            };
+        //public ISourceBuilder[] CreateGroundStationProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        new RandomSourceBuilder("RandomGroundStations"),
+        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundStation }),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateSatelliteProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                new RandomSourceBuilder("RandomSatellites"),
-                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Satellite }),
-            };
+        //public ISourceBuilder[] CreateSatelliteProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        new RandomSourceBuilder("RandomSatellites"),
+        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Satellite }),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateUserGeometryProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.UserGeometry }),
-            };
+        //public ISourceBuilder[] CreateUserGeometryProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.UserGeometry }),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateFootprintPreviewGeometryProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                CreateFileSourceBuilder("Shapefile", "shp"),
-            };
+        //public ISourceBuilder[] CreateFootprintPreviewGeometryProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        CreateFileSourceBuilder("Shapefile", "shp"),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateMapBackgroundProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-               CreateFolderSourceBuilder("*.mbtiles"),
-            };
+        //public ISourceBuilder[] CreateMapBackgroundProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //       CreateFolderSourceBuilder("*.mbtiles"),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        public ISourceBuilder[] CreateFootprintPreviewProviderBuilders(ProviderSettings settings)
-        {
-            var builders = new ISourceBuilder[]
-            {
-                CreateFolderSourceBuilder("*.mbtiles"),
-            };
+        //public ISourceBuilder[] CreateFootprintPreviewProviderBuilders(ProviderSettings settings)
+        //{
+        //    var builders = new ISourceBuilder[]
+        //    {
+        //        CreateFolderSourceBuilder("*.mbtiles"),
+        //    };
 
-            return builders;
-        }
+        //    return builders;
+        //}
 
-        private enum TableType { Footprint, GroundTarget, Satellite, GroundStation, UserGeometry };
+        //private enum TableType { Footprint, GroundTarget, Satellite, GroundStation, UserGeometry };
 
-        private ISourceBuilder CreateDatabaseSourceBuilder(TableInfo tableInfo)
-        {
-            var builder = new DatabaseSourceBuilder(_dependencyResolver);
+        //private ISourceBuilder CreateDatabaseSourceBuilder(TableInfo tableInfo)
+        //{
+        //    var builder = new DatabaseSourceBuilder(_dependencyResolver);
 
-            builder.TableInfo = tableInfo;
+        //    builder.TableInfo = tableInfo;
 
-            builder.Build.Subscribe(s =>
-            {
-                if (s is IDatabaseSourceInfo info)
-                {
-                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+        //    builder.Build.Subscribe(s =>
+        //    {
+        //        if (s is IDatabaseSourceInfo info)
+        //        {
+        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
 
-                    settings.LastDatabaseSource = info;
-                }
-            });
+        //            settings.LastDatabaseSource = info;
+        //        }
+        //    });
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
-        private ISourceBuilder CreateFolderSourceBuilder(string searchPattern)
-        {
-            var builder = new FolderSourceBuilder(searchPattern);
+        //private ISourceBuilder CreateFolderSourceBuilder(string searchPattern)
+        //{
+        //    var builder = new FolderSourceBuilder(searchPattern);
 
-            builder.Build.Subscribe(s =>
-            {
-                if (s is IFolderSourceInfo info)
-                {
-                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+        //    builder.Build.Subscribe(s =>
+        //    {
+        //        if (s is IFolderSourceInfo info)
+        //        {
+        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
 
-                    settings.LastOpenDirectory = info.Directory;
-                }
-            });
+        //            settings.LastOpenDirectory = info.Directory;
+        //        }
+        //    });
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
-        private ISourceBuilder CreateFileSourceBuilder(string fileName, string fileExtension)
-        {
-            var builder = new FileSourceBuilder(fileName, fileExtension);
+        //private ISourceBuilder CreateFileSourceBuilder(string fileName, string fileExtension)
+        //{
+        //    var builder = new FileSourceBuilder(fileName, fileExtension);
 
-            builder.Build.Subscribe(s =>
-            {
-                if (s is IFileSourceInfo info)
-                {
-                    var settings = _dependencyResolver.GetExistingService<AppSettings>();
+        //    builder.Build.Subscribe(s =>
+        //    {
+        //        if (s is IFileSourceInfo info)
+        //        {
+        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
 
-                    settings.LastOpenDirectory = System.IO.Path.GetDirectoryName(info.Path);
-                }
-            });
+        //            settings.LastOpenDirectory = System.IO.Path.GetDirectoryName(info.Path);
+        //        }
+        //    });
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
 
         private ISourceInfo CreateSource(SourceType type)
