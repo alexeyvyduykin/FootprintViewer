@@ -27,17 +27,6 @@ namespace FootprintViewer.Avalonia
             var sourceConfig = new SourceBuilderConfiguration();
             configuration.GetSection("SourceBuilders").Bind(sourceConfig);
             services.RegisterConstant(sourceConfig, typeof(SourceBuilderConfiguration));
-
-            //         var factory = resolver.GetExistingService<ProjectFactory>();
-
-            //         settings.FootprintProvider.AddAvailableBuilders(sourceConfig.FootprintSourceBuilders, factory);
-            //         settings.GroundTargetProvider.AddAvailableBuilders(sourceConfig.GroundTargetSourceBuilders, factory);
-            //         settings.GroundStationProvider.AddAvailableBuilders(sourceConfig.GroundStationSourceBuilders, factory);
-            //         settings.SatelliteProvider.AddAvailableBuilders(sourceConfig.SatelliteSourceBuilders, factory);
-            //         settings.UserGeometryProvider.AddAvailableBuilders(sourceConfig.UserGeometrySourceBuilders, factory);
-            //        settings.FootprintPreviewGeometryProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewGeometrySourceBuilders, factory);
-            //         settings.MapBackgroundProvider.AddAvailableBuilders(sourceConfig.MapBackgroundSourceBuilders, factory);
-            //         settings.FootprintPreviewProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewSourceBuilders, factory);           
         }
 
         private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)

@@ -1,14 +1,11 @@
-﻿using FootprintViewer.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using FootprintViewer.Configurations;
+using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
-using SQLitePCL;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FootprintViewer
 {
@@ -101,19 +98,53 @@ namespace FootprintViewer
 
         public SettingsTabViewModel CreateSettingsTabViewModel()
         {
+            var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
+
             var providers = new List<ProviderViewModel>()
             {
-                new ProviderViewModel(){ Type = ProviderType.Footprints },
-                new ProviderViewModel(){ Type = ProviderType.GroundTargets },
-                new ProviderViewModel(){ Type = ProviderType.GroundStations },
-                new ProviderViewModel(){ Type = ProviderType.Satellites },
-                new ProviderViewModel(){ Type = ProviderType.UserGeometries },
-                new ProviderViewModel(){ Type = ProviderType.FootprintPreviewGeometries },
-                new ProviderViewModel(){ Type = ProviderType.MapBackgrounds },
-                new ProviderViewModel(){ Type = ProviderType.FootprintPreviews }
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.Footprints,
+                    AvailableBuilders = configuration.FootprintSourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.GroundTargets,
+                    AvailableBuilders = configuration.GroundTargetSourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.GroundStations,
+                    AvailableBuilders = configuration.GroundStationSourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.Satellites,
+                    AvailableBuilders = configuration.SatelliteSourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.UserGeometries,
+                    AvailableBuilders = configuration.UserGeometrySourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.FootprintPreviewGeometries,
+                    AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.MapBackgrounds,
+                    AvailableBuilders = configuration.MapBackgroundSourceBuilders,
+                },
+                new ProviderViewModel(_dependencyResolver)
+                {
+                    Type = ProviderType.FootprintPreviews,
+                    AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
+                }
             };
 
-            var settingsViewer = new SettingsTabViewModel(_dependencyResolver) 
+            var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
                 Providers = providers
             };

@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 
 namespace FootprintViewer.ViewModels
 {
     public class ProviderViewModel : ReactiveObject
     {
         private bool _isActivated;
-        private IEnumerable<string> _availableBuilders = Array.Empty<string>();
-        private ProjectFactory? _factory;
+        private readonly ProjectFactory _factory;
 
-        public ProviderViewModel()
+        public ProviderViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
+            _factory = dependencyResolver.GetExistingService<ProjectFactory>();
+
             Sources = new List<ISourceInfo>();
 
             SourceBuilderItems = new List<ISourceBuilderItem>();
@@ -26,23 +27,16 @@ namespace FootprintViewer.ViewModels
             AddSource = ReactiveCommand.Create<ISourceInfo, ISourceInfo>(AddSourceImpl);
         }
 
-        public void AddAvailableBuilders(IEnumerable<string> builders, ProjectFactory factory)
-        {
-            _availableBuilders = builders;
-            _factory = factory;
-            _isActivated = false;
-        }
-
         public void Activate()
         {
-            if (_isActivated || _factory == null)
+            if (_isActivated || AvailableBuilders == null)
             {
                 return;
             }
 
             _isActivated = true;
 
-            var items = _factory.CreateSourceBuilderItems(_availableBuilders);
+            var items = _factory.CreateSourceBuilderItems(AvailableBuilders);
 
             SourceBuilderItems = new List<ISourceBuilderItem>(items);
 
@@ -77,6 +71,8 @@ namespace FootprintViewer.ViewModels
         }
 
         public ProviderType Type { get; init; }
+
+        public IEnumerable<string>? AvailableBuilders { get; init; }
 
         [Reactive]
         public List<ISourceInfo> Sources { get; private set; }
