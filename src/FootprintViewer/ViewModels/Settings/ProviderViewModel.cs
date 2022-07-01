@@ -12,11 +12,11 @@ namespace FootprintViewer.ViewModels
     public class ProviderViewModel : ReactiveObject
     {
         private bool _isActivated;
-        private readonly ProjectFactory _factory;
+        private readonly ViewModelFactory _factory;
 
         public ProviderViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
-            _factory = dependencyResolver.GetExistingService<ProjectFactory>();
+            _factory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Sources = new List<ISourceInfo>();
 

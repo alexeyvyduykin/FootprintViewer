@@ -12,11 +12,12 @@ namespace FootprintViewer.Avalonia
 {
     public static class Bootstrapper
     {
-        public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver, AppMode mode)
         {
             services.InitializeSplat();
 
             RegisterConfigurations(services, resolver);
+            RegisterVariableViewModels(services, resolver, mode);
             RegisterViewModels(services, resolver);
         }
 
@@ -29,6 +30,36 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(sourceConfig, typeof(SourceBuilderConfiguration));
         }
 
+        private static void RegisterVariableViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver, AppMode mode)
+        {
+            switch (mode)
+            {
+                case AppMode.Release:
+                {
+                    services.Register<IDataFactory>(() => new ReleaseDataFactory());
+                    break;
+                }
+                case AppMode.Demo:
+                {
+                    services.Register<IDataFactory>(() => new DemoDataFactory());
+                    break;
+                }
+                case AppMode.DevWork:
+                {
+                    services.Register<IDataFactory>(() => new DevWorkDataFactory());
+                    break;
+                }
+                case AppMode.DevHome:
+                {
+                    services.Register<IDataFactory>(() => new DevHomeDataFactory());
+                    break;
+                }
+                default:
+                    services.Register<IDataFactory>(() => new ReleaseDataFactory());
+                    break;
+            }
+        }
+
         private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
             services.Register(() => new ProjectFactory(resolver));
@@ -36,18 +67,19 @@ namespace FootprintViewer.Avalonia
             services.Register(() => new MapFactory(resolver));
 
             var factory = resolver.GetExistingService<ProjectFactory>();
+            var dataFactory = resolver.GetExistingService<IDataFactory>();
             var mapFactory = resolver.GetExistingService<MapFactory>();
             var viewModelFactory = resolver.GetExistingService<ViewModelFactory>();
 
             // Providers
-            services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));
-            services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
-            services.RegisterConstant(factory.CreateFootprintProvider(), typeof(IProvider<Footprint>));
-            services.RegisterConstant(factory.CreateSatelliteProvider(), typeof(IProvider<Satellite>));
-            services.RegisterConstant(factory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
-            services.RegisterConstant(factory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
-            services.RegisterConstant(factory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));
-            services.RegisterConstant(factory.CreateFootprintPreviewProvider(), typeof(IProvider<FootprintPreview>));
+            services.RegisterConstant(dataFactory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));
+            services.RegisterConstant(dataFactory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
+            services.RegisterConstant(dataFactory.CreateFootprintProvider(), typeof(IProvider<Footprint>));
+            services.RegisterConstant(dataFactory.CreateSatelliteProvider(), typeof(IProvider<Satellite>));
+            services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
+            services.RegisterConstant(dataFactory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
+            services.RegisterConstant(dataFactory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));
+            services.RegisterConstant(dataFactory.CreateFootprintPreviewProvider(), typeof(IProvider<FootprintPreview>));
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 

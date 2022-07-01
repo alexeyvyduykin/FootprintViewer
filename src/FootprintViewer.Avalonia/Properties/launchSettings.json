@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FootprintViewer.Avalonia": {
+      "commandName": "Project",
+      "commandLineArgs": "devhome"
+    }
+  }
+}

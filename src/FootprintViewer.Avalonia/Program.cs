@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
@@ -11,17 +12,30 @@ namespace FootprintViewer.Avalonia
         // Initialization code. Don't use any Avalonia, third-party APIs or any
         // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
         // yet and stuff might break.
-        public static void Main(string[] args) => BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+        public static void Main(string[] args)
+        {
+            AppMode mode = AppMode.Release;
 
-        // Avalonia configuration, don't remove; also used by visual designer.
-        public static AppBuilder BuildAvaloniaApp()
+            if (args.Length != 0)
+            {
+                if (Enum.TryParse(typeof(AppMode), args[0], true, out var res) == true)
+                {
+                    mode = (AppMode)res!;
+                }
+            }
+
+            RegisterBootstrapper(mode);
+
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        }
+
+        private static void RegisterBootstrapper(AppMode mode)
         {
             // I only want to hear about errors
             var logger = new ConsoleLogger() { Level = Splat.LogLevel.Error };
             Locator.CurrentMutable.RegisterConstant(logger, typeof(ILogger));
 
-            Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
+            Bootstrapper.Register(Locator.CurrentMutable, Locator.Current, mode);
 
             // IViewFor
             //Locator.CurrentMutable.Register(() => new Views.MainView(), typeof(IViewFor<MainViewModel>));
@@ -44,7 +58,11 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundStationInfoView(), typeof(IViewFor<GroundStationInfo>));
-            
+        }
+
+        // Avalonia configuration, don't remove; also used by visual designer.
+        public static AppBuilder BuildAvaloniaApp()
+        {
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()
