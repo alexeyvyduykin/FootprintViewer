@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using FootprintViewer.Data;
 
-namespace FootprintViewer.ViewModels
+namespace FootprintViewer.AppStates
 {
     [DataContract]
-    public class AppSettingsState
+    public class MainState
     {
-        public AppSettingsState()
+        public MainState()
         {
             FootprintProvider = new ProviderState() { Type = ProviderType.Footprints };
 
@@ -44,7 +45,7 @@ namespace FootprintViewer.ViewModels
         public string? LastOpenDirectory { get; set; }
 
         [DataMember]
-        public IDatabaseSourceInfo? LastDatabaseSource { get; set; }
+        public DatabaseSourceState? LastDatabaseSource { get; set; }
 
         [DataMember]
         public ProviderState FootprintProvider { get; private set; }

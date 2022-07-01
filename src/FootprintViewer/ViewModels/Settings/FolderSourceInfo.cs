@@ -1,7 +1,6 @@
-﻿using ReactiveUI;
+﻿using System.IO;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.IO;
-using System.Runtime.Serialization;
 
 namespace FootprintViewer.ViewModels
 {
@@ -12,7 +11,6 @@ namespace FootprintViewer.ViewModels
         string? SearchPattern { get; set; }
     }
 
-    [DataContract]
     public class FolderSourceInfo : ReactiveObject, IFolderSourceInfo
     {
         public FolderSourceInfo()
@@ -39,11 +37,9 @@ namespace FootprintViewer.ViewModels
 
         public string? Name => Directory != null ? GetName(Directory) : string.Empty;
 
-        [DataMember]
         [Reactive]
         public string? Directory { get; set; }
 
-        [DataMember]
         public string? SearchPattern { get; set; }
     }
 }

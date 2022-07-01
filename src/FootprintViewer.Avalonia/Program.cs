@@ -21,6 +21,8 @@ namespace FootprintViewer.Avalonia
             var logger = new ConsoleLogger() { Level = Splat.LogLevel.Error };
             Locator.CurrentMutable.RegisterConstant(logger, typeof(ILogger));
 
+            Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
+
             // IViewFor
             //Locator.CurrentMutable.Register(() => new Views.MainView(), typeof(IViewFor<MainViewModel>));
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
@@ -42,7 +44,7 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundStationInfoView(), typeof(IViewFor<GroundStationInfo>));
-
+            
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()

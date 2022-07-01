@@ -2,6 +2,7 @@
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,7 +101,22 @@ namespace FootprintViewer
 
         public SettingsTabViewModel CreateSettingsTabViewModel()
         {
-            var settingsViewer = new SettingsTabViewModel(_dependencyResolver);
+            var providers = new List<ProviderViewModel>()
+            {
+                new ProviderViewModel(){ Type = ProviderType.Footprints },
+                new ProviderViewModel(){ Type = ProviderType.GroundTargets },
+                new ProviderViewModel(){ Type = ProviderType.GroundStations },
+                new ProviderViewModel(){ Type = ProviderType.Satellites },
+                new ProviderViewModel(){ Type = ProviderType.UserGeometries },
+                new ProviderViewModel(){ Type = ProviderType.FootprintPreviewGeometries },
+                new ProviderViewModel(){ Type = ProviderType.MapBackgrounds },
+                new ProviderViewModel(){ Type = ProviderType.FootprintPreviews }
+            };
+
+            var settingsViewer = new SettingsTabViewModel(_dependencyResolver) 
+            {
+                Providers = providers
+            };
 
             return settingsViewer;
         }

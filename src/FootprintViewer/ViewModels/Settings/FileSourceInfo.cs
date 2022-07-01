@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Runtime.Serialization;
 
 namespace FootprintViewer.ViewModels
 {
@@ -13,7 +12,6 @@ namespace FootprintViewer.ViewModels
         public string? FilterExtension { get; set; }
     }
 
-    [DataContract]
     public class FileSourceInfo : ReactiveObject, IFileSourceInfo
     {
         public FileSourceInfo()
@@ -23,14 +21,11 @@ namespace FootprintViewer.ViewModels
 
         public string? Name => System.IO.Path.GetFileName(Path);
 
-        [DataMember]
         [Reactive]
         public string? Path { get; set; }
 
-        [DataMember]
         public string? FilterName { get; set; }
 
-        [DataMember]
         public string? FilterExtension { get; set; }
     }
 }

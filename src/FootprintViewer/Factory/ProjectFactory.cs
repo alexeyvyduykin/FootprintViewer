@@ -51,7 +51,7 @@ namespace FootprintViewer
 
             var mapBackgroundList = new MapBackgroundList(_dependencyResolver);
 
-            mapBackgroundList.Loading.Subscribe(s => { map.SetWorldMapLayer(s.First()); });
+            mapBackgroundList.Loading.Where(s => s.Count != 0).Subscribe(s => { map.SetWorldMapLayer(s.First()); });
 
             mapBackgroundList.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
 
@@ -185,31 +185,31 @@ namespace FootprintViewer
 
         public IProvider<GroundStation> CreateGroundStationProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+     //       var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.GroundStationProvider.Sources.Count == 0)
-            {
-                // settings.GroundStationSources.Add(new RandomSourceInfo("RandomGroundStation"));
-                settings.GroundStationProvider.Sources.Add(new DatabaseSourceInfo()
-                {
-                    Version = "14.1",
-                    Host = "localhost",
-                    Port = 5432,
-                    Database = "FootprintViewerDatabase",
-                    Username = "postgres",
-                    Password = "user",
-                    Table = "GroundStations"
-                });
-            }
+            //if (settings.GroundStationProvider.Sources.Count == 0)
+            //{
+            //    // settings.GroundStationSources.Add(new RandomSourceInfo("RandomGroundStation"));
+            //    settings.GroundStationProvider.Sources.Add(new DatabaseSourceInfo()
+            //    {
+            //        Version = "14.1",
+            //        Host = "localhost",
+            //        Port = 5432,
+            //        Database = "FootprintViewerDatabase",
+            //        Username = "postgres",
+            //        Password = "user",
+            //        Table = "GroundStations"
+            //    });
+            //}
 
-            var dataSources = settings.GroundStationProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+           // var dataSources = settings.GroundStationProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<GroundStation>(dataSources);
+            var provider = new Provider<GroundStation>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.GroundStationProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.GroundStationProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -235,31 +235,31 @@ namespace FootprintViewer
 
         public IProvider<GroundTarget> CreateGroundTargetProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+   //         var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.GroundTargetProvider.Sources.Count == 0)
-            {
-                // settings.GroundTargetSources.Add(new RandomSourceInfo("RandomGroundTarget"));
-                settings.GroundTargetProvider.Sources.Add(new DatabaseSourceInfo()
-                {
-                    Version = "14.1",
-                    Host = "localhost",
-                    Port = 5432,
-                    Database = "FootprintViewerDatabase",
-                    Username = "postgres",
-                    Password = "user",
-                    Table = "GroundTargets"
-                });
-            }
+            //if (settings.GroundTargetProvider.Sources.Count == 0)
+            //{
+            //    // settings.GroundTargetSources.Add(new RandomSourceInfo("RandomGroundTarget"));
+            //    settings.GroundTargetProvider.Sources.Add(new DatabaseSourceInfo()
+            //    {
+            //        Version = "14.1",
+            //        Host = "localhost",
+            //        Port = 5432,
+            //        Database = "FootprintViewerDatabase",
+            //        Username = "postgres",
+            //        Password = "user",
+            //        Table = "GroundTargets"
+            //    });
+            //}
 
-            var dataSources = settings.GroundTargetProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+         //   var dataSources = settings.GroundTargetProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<GroundTarget>(dataSources);
+            var provider = new Provider<GroundTarget>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.GroundTargetProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.GroundTargetProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -288,31 +288,31 @@ namespace FootprintViewer
 
         public IProvider<Footprint> CreateFootprintProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+     //       var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.FootprintProvider.Sources.Count == 0)
-            {
-                // settings.FootprintSources.Add(new RandomSourceInfo("RandomFootprint"));
-                settings.FootprintProvider.Sources.Add(new DatabaseSourceInfo()
-                {
-                    Version = "14.1",
-                    Host = "localhost",
-                    Port = 5432,
-                    Database = "FootprintViewerDatabase",
-                    Username = "postgres",
-                    Password = "user",
-                    Table = "Footprints"
-                });
-            }
+            //if (settings.FootprintProvider.Sources.Count == 0)
+            //{
+            //    // settings.FootprintSources.Add(new RandomSourceInfo("RandomFootprint"));
+            //    settings.FootprintProvider.Sources.Add(new DatabaseSourceInfo()
+            //    {
+            //        Version = "14.1",
+            //        Host = "localhost",
+            //        Port = 5432,
+            //        Database = "FootprintViewerDatabase",
+            //        Username = "postgres",
+            //        Password = "user",
+            //        Table = "Footprints"
+            //    });
+            //}
 
-            var dataSources = settings.FootprintProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+       //     var dataSources = settings.FootprintProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<Footprint>(dataSources);
+            var provider = new Provider<Footprint>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.FootprintProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.FootprintProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -340,31 +340,31 @@ namespace FootprintViewer
 
         public IProvider<Satellite> CreateSatelliteProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+      //      var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.SatelliteProvider.Sources.Count == 0)
-            {
-                // settings.SatelliteSources.Add(new RandomSourceInfo("RandomSatellite"));
-                settings.SatelliteProvider.Sources.Add(new DatabaseSourceInfo()
-                {
-                    Version = "14.1",
-                    Host = "localhost",
-                    Port = 5432,
-                    Database = "FootprintViewerDatabase",
-                    Username = "postgres",
-                    Password = "user",
-                    Table = "Satellites"
-                });
-            }
+            //if (settings.SatelliteProvider.Sources.Count == 0)
+            //{
+            //    // settings.SatelliteSources.Add(new RandomSourceInfo("RandomSatellite"));
+            //    settings.SatelliteProvider.Sources.Add(new DatabaseSourceInfo()
+            //    {
+            //        Version = "14.1",
+            //        Host = "localhost",
+            //        Port = 5432,
+            //        Database = "FootprintViewerDatabase",
+            //        Username = "postgres",
+            //        Password = "user",
+            //        Table = "Satellites"
+            //    });
+            //}
 
-            var dataSources = settings.SatelliteProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+        //    var dataSources = settings.SatelliteProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<Satellite>(dataSources);
+            var provider = new Provider<Satellite>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.SatelliteProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.SatelliteProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -390,30 +390,30 @@ namespace FootprintViewer
 
         public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+     //       var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.UserGeometryProvider.Sources.Count == 0)
-            {
-                settings.UserGeometryProvider.Sources.Add(new DatabaseSourceInfo()
-                {
-                    Version = "14.1",
-                    Host = "localhost",
-                    Port = 5432,
-                    Database = "FootprintViewerDatabase",
-                    Username = "postgres",
-                    Password = "user",
-                    Table = "UserGeometries"
-                });
-            }
+            //if (settings.UserGeometryProvider.Sources.Count == 0)
+            //{
+            //    settings.UserGeometryProvider.Sources.Add(new DatabaseSourceInfo()
+            //    {
+            //        Version = "14.1",
+            //        Host = "localhost",
+            //        Port = 5432,
+            //        Database = "FootprintViewerDatabase",
+            //        Username = "postgres",
+            //        Password = "user",
+            //        Table = "UserGeometries"
+            //    });
+            //}
 
-            var dataSources = settings.UserGeometryProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+           // var dataSources = settings.UserGeometryProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new EditableProvider<UserGeometry>(dataSources);
+            var provider = new EditableProvider<UserGeometry>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.UserGeometryProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.UserGeometryProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -439,29 +439,29 @@ namespace FootprintViewer
 
         public IProvider<(string, NetTopologySuite.Geometries.Geometry)> CreateFootprintPreviewGeometryProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+    //        var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.FootprintPreviewGeometryProvider.Sources.Count == 0)
-            {
-                var folder = new SolutionFolder("data");
-                var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
+            //if (settings.FootprintPreviewGeometryProvider.Sources.Count == 0)
+            //{
+            //    var folder = new SolutionFolder("data");
+            //    var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
 
-                settings.FootprintPreviewGeometryProvider.Sources.Add(new FileSourceInfo()
-                {
-                    Path = path,
-                    FilterName = "Shapefile",
-                    FilterExtension = "shp",
-                });
-            }
+            //    settings.FootprintPreviewGeometryProvider.Sources.Add(new FileSourceInfo()
+            //    {
+            //        Path = path,
+            //        FilterName = "Shapefile",
+            //        FilterExtension = "shp",
+            //    });
+            //}
 
-            var dataSources = settings.FootprintPreviewGeometryProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+         //   var dataSources = settings.FootprintPreviewGeometryProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<(string, NetTopologySuite.Geometries.Geometry)>(dataSources);
+            var provider = new Provider<(string, NetTopologySuite.Geometries.Geometry)>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.FootprintPreviewGeometryProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.FootprintPreviewGeometryProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -486,34 +486,45 @@ namespace FootprintViewer
 
         public IProvider<MapResource> CreateMapBackgroundProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+            //        var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.MapBackgroundProvider.Sources.Count == 0)
+            //if (settings.MapBackgroundProvider.Sources.Count == 0)
+            //{
+            //    var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+            //    var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
+
+            //    settings.MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
+            //    {
+            //        Directory = directory1,
+            //        SearchPattern = "*.mbtiles",
+            //    });
+
+            //    settings.MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
+            //    {
+            //        Directory = directory2,
+            //        SearchPattern = "*.mbtiles",
+            //    });
+            //}
+
+            //var dataSources = settings.MapBackgroundProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+
+            var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+      
+            var defaultSources = new [] 
             {
-                var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
-                var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
+                ToDataSource(new FolderSourceInfo()           
+                {              
+                    Directory = directory1,               
+                    SearchPattern = "*.mbtiles",            
+                })
+            };
 
-                settings.MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
-                {
-                    Directory = directory1,
-                    SearchPattern = "*.mbtiles",
-                });
+            var provider = new Provider<MapResource>(defaultSources/*dataSources*/);
 
-                settings.MapBackgroundProvider.Sources.Add(new FolderSourceInfo()
-                {
-                    Directory = directory2,
-                    SearchPattern = "*.mbtiles",
-                });
-            }
-
-            var dataSources = settings.MapBackgroundProvider.Sources.Select(s => ToDataSource(s)).ToArray();
-
-            var provider = new Provider<MapResource>(dataSources);
-
-            settings.WhenAnyValue(s => s.MapBackgroundProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.MapBackgroundProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 
@@ -530,34 +541,34 @@ namespace FootprintViewer
 
         public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
         {
-            var settings = _dependencyResolver.GetService<AppSettingsState>()!;
+     //       var settings = _dependencyResolver.GetService<AppSettingsState>()!;
 
-            if (settings.FootprintPreviewProvider.Sources.Count == 0)
-            {
-                var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
-                var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
+            //if (settings.FootprintPreviewProvider.Sources.Count == 0)
+            //{
+            //    var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
+            //    var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
 
-                settings.FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
-                {
-                    Directory = directory1,
-                    SearchPattern = "*.mbtiles",
-                });
+            //    settings.FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
+            //    {
+            //        Directory = directory1,
+            //        SearchPattern = "*.mbtiles",
+            //    });
 
-                settings.FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
-                {
-                    Directory = directory2,
-                    SearchPattern = "*.mbtiles",
-                });
-            }
+            //    settings.FootprintPreviewProvider.Sources.Add(new FolderSourceInfo()
+            //    {
+            //        Directory = directory2,
+            //        SearchPattern = "*.mbtiles",
+            //    });
+            //}
 
-            var dataSources = settings.FootprintPreviewProvider.Sources.Select(s => ToDataSource(s)).ToArray();
+        //    var dataSources = settings.FootprintPreviewProvider.Sources.Select(s => ToDataSource(s)).ToArray();
 
-            var provider = new Provider<FootprintPreview>(dataSources);
+            var provider = new Provider<FootprintPreview>(/*dataSources*/);
 
-            settings.WhenAnyValue(s => s.FootprintPreviewProvider.Sources)
-                    .Skip(1)
-                    .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-                    .Subscribe(provider.ChangeSources);
+            //settings.WhenAnyValue(s => s.FootprintPreviewProvider.Sources)
+            //        .Skip(1)
+            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
+            //        .Subscribe(provider.ChangeSources);
 
             return provider;
 

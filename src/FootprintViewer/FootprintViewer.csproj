@@ -33,4 +33,8 @@
     <ProjectReference Include="..\..\samples\InteractiveGeometry\InteractiveGeometry.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Settings\" />
+  </ItemGroup>
+
 </Project>

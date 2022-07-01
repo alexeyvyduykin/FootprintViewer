@@ -1,26 +1,14 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Runtime.Serialization;
+using FootprintViewer.Data;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
 {
-    public enum ProviderType
-    {
-        Footprints,
-        GroundTargets,
-        GroundStations,
-        Satellites,
-        UserGeometries,
-        FootprintPreviewGeometries,
-        MapBackgrounds,
-        FootprintPreviews
-    };
-
     public class ProviderViewModel : ReactiveObject
     {
         private bool _isActivated;
@@ -87,9 +75,9 @@ namespace FootprintViewer.ViewModels
 
             return item;
         }
- 
+
         public ProviderType Type { get; init; }
-     
+
         [Reactive]
         public List<ISourceInfo> Sources { get; private set; }
 

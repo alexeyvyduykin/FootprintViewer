@@ -1,18 +1,26 @@
-﻿using FootprintViewer.Data;
+﻿using System.Collections.Generic;
+using FootprintViewer.Configurations;
+using FootprintViewer.Data;
 using FootprintViewer.Layers;
-using FootprintViewer.Settings;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
-using System.Collections.Generic;
 
 namespace FootprintViewer.Avalonia
 {
     public static class Bootstrapper
     {
-        public static void RegisterSettings(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        {
+            services.InitializeSplat();
+
+            RegisterConfigurations(services, resolver);
+            RegisterViewModels(services, resolver);
+        }
+
+        private static void RegisterConfigurations(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
@@ -20,35 +28,28 @@ namespace FootprintViewer.Avalonia
             configuration.GetSection("SourceBuilders").Bind(sourceConfig);
             services.RegisterConstant(sourceConfig, typeof(SourceBuilderConfiguration));
 
+            //         var factory = resolver.GetExistingService<ProjectFactory>();
 
-   //         var factory = resolver.GetExistingService<ProjectFactory>();
-
-
-
-   //         settings.FootprintProvider.AddAvailableBuilders(sourceConfig.FootprintSourceBuilders, factory);
-   //         settings.GroundTargetProvider.AddAvailableBuilders(sourceConfig.GroundTargetSourceBuilders, factory);
-   //         settings.GroundStationProvider.AddAvailableBuilders(sourceConfig.GroundStationSourceBuilders, factory);
-   //         settings.SatelliteProvider.AddAvailableBuilders(sourceConfig.SatelliteSourceBuilders, factory);
-   //         settings.UserGeometryProvider.AddAvailableBuilders(sourceConfig.UserGeometrySourceBuilders, factory);
-    //        settings.FootprintPreviewGeometryProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewGeometrySourceBuilders, factory);
-   //         settings.MapBackgroundProvider.AddAvailableBuilders(sourceConfig.MapBackgroundSourceBuilders, factory);
-   //         settings.FootprintPreviewProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewSourceBuilders, factory);           
+            //         settings.FootprintProvider.AddAvailableBuilders(sourceConfig.FootprintSourceBuilders, factory);
+            //         settings.GroundTargetProvider.AddAvailableBuilders(sourceConfig.GroundTargetSourceBuilders, factory);
+            //         settings.GroundStationProvider.AddAvailableBuilders(sourceConfig.GroundStationSourceBuilders, factory);
+            //         settings.SatelliteProvider.AddAvailableBuilders(sourceConfig.SatelliteSourceBuilders, factory);
+            //         settings.UserGeometryProvider.AddAvailableBuilders(sourceConfig.UserGeometrySourceBuilders, factory);
+            //        settings.FootprintPreviewGeometryProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewGeometrySourceBuilders, factory);
+            //         settings.MapBackgroundProvider.AddAvailableBuilders(sourceConfig.MapBackgroundSourceBuilders, factory);
+            //         settings.FootprintPreviewProvider.AddAvailableBuilders(sourceConfig.FootprintPreviewSourceBuilders, factory);           
         }
 
-        public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
-            services.InitializeSplat();
-
             services.Register(() => new ProjectFactory(resolver));
             services.Register(() => new ViewModelFactory(resolver));
             services.Register(() => new MapFactory(resolver));
-            
-            RegisterSettings(services, resolver);
 
             var factory = resolver.GetExistingService<ProjectFactory>();
             var mapFactory = resolver.GetExistingService<MapFactory>();
             var viewModelFactory = resolver.GetExistingService<ViewModelFactory>();
-          
+
             // Providers
             services.RegisterConstant(factory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));
             services.RegisterConstant(factory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
@@ -104,19 +105,6 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(new SidePanel() { Tabs = new List<SidePanelTab>(tabs) }, typeof(SidePanel));
 
             services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
-
-            Init(services, resolver);
-        }
-
-        private static void Init(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
-        {            
-            // Load the saved view model state.
-            var settings = RxApp.SuspensionHost.GetAppState<AppSettingsState>();
-            services.RegisterConstant(settings, typeof(AppSettingsState));
-
-
-            var settingsViewer = resolver.GetExistingService<SettingsTabViewModel>();
-        //    settingsViewer.Providers = settings.GetProviderStates();
         }
     }
 }

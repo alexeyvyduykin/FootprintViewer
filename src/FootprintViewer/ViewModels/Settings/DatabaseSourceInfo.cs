@@ -1,10 +1,9 @@
-﻿using Npgsql;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
-using System.Runtime.Serialization;
+using Npgsql;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
 {
@@ -27,7 +26,6 @@ namespace FootprintViewer.ViewModels
         TableInfo? TableInfo { get; set; }
     }
 
-    [DataContract]
     public class DatabaseSourceInfo : ReactiveObject, IDatabaseSourceInfo
     {
         public DatabaseSourceInfo()
@@ -87,31 +85,24 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public TableInfo? TableInfo { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Version { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Host { get; set; }
 
-        [DataMember]
         [Reactive]
         public int Port { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Database { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Username { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Password { get; set; }
 
-        [DataMember]
         [Reactive]
         public string? Table { get; set; }
     }

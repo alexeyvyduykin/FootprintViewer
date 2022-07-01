@@ -1,20 +1,16 @@
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using FootprintViewer.Data;
-using FootprintViewer.Layers;
-using FootprintViewer.Styles;
+using FootprintViewer.AppStates;
 using FootprintViewer.ViewModels;
-using Npgsql;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
@@ -34,18 +30,8 @@ namespace FootprintViewer.Avalonia
 
         public override void OnFrameworkInitializationCompleted()
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            // Create the AutoSuspendHelper.
-            var suspension = new AutoSuspendHelper(ApplicationLifetime!);
-            RxApp.SuspensionHost.CreateNewAppState = () => new AppSettingsState();
-            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("_suspendAppSettings.json"));
-            suspension.OnFrameworkInitializationCompleted();
-
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
-                Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
-
                 var mainViewModel = GetExistingService<MainViewModel>();
 
                 if (mainViewModel != null)
@@ -66,13 +52,13 @@ namespace FootprintViewer.Avalonia
 
         private void LoadSettings()
         {
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            //// Create the AutoSuspendHelper.
-            //var suspension = new AutoSuspendHelper(ApplicationLifetime!);
-            //RxApp.SuspensionHost.CreateNewAppState = () => new MyLocalizationService();
-            //RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("suspendAppSettings.json"));
-            //suspension.OnFrameworkInitializationCompleted();
+            // Create the AutoSuspendHelper.
+            var suspension = new AutoSuspendHelper(ApplicationLifetime!);
+            RxApp.SuspensionHost.CreateNewAppState = () => new MainState();
+            RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("appstate.json"));
+            suspension.OnFrameworkInitializationCompleted();
 
             //var localizationService = GetRequiredService<ILocalizationService>();
             //var languageManager = GetRequiredService<ILanguageManager>();
@@ -80,13 +66,23 @@ namespace FootprintViewer.Avalonia
             //languageManager.SetLanguage(localizationService.CurrentLanguage.Code);
         }
 
+        private static void Init(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        {
+            // Load the saved view model state.
+            var settings = RxApp.SuspensionHost.GetAppState<MainState>();
+            services.RegisterConstant(settings, typeof(MainState));
+
+            //    var settingsViewer = resolver.GetExistingService<SettingsTabViewModel>();
+            //    settingsViewer.Providers = settings.GetProviderStates();
+        }
+
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
         {
-            var settings = Locator.Current.GetService<AppSettingsState>()!;
+            var mainState = Locator.Current.GetExistingService<MainState>();
 
             var dialog = new OpenFileDialog
             {
-                Directory = directory ?? settings.LastOpenDirectory,
+                Directory = directory ?? mainState.LastOpenDirectory,
             };
 
             var ext = filterExtension ?? "*";
@@ -105,11 +101,11 @@ namespace FootprintViewer.Avalonia
 
         public static async Task<string> OpenFolderDialog(string? directory)
         {
-            var settings = Locator.Current.GetService<AppSettingsState>()!;
+            var mainState = Locator.Current.GetExistingService<MainState>();
 
             var dialog = new OpenFolderDialog()
             {
-                Directory = directory ?? settings.LastOpenDirectory
+                Directory = directory ?? mainState.LastOpenDirectory
             };
 
             var result = await dialog.ShowAsync(GetWindow()!);

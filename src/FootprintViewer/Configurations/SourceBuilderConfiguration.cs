@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Settings
+﻿namespace FootprintViewer.Configurations
 {
     public class SourceBuilderConfiguration
     {
