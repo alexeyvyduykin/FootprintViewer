@@ -1,6 +1,6 @@
 ﻿namespace FootprintViewer.ViewModels
 {
-    public interface ISourceInfo
+    public interface ISourceViewModel
     {
         string? Name { get; }
     }

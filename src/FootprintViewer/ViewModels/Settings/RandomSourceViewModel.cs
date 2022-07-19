@@ -1,15 +1,15 @@
 ﻿namespace FootprintViewer.ViewModels
 {
-    public interface IRandomSourceInfo : ISourceInfo
+    public interface IRandomSourceViewModel : ISourceViewModel
     {
         int GenerateCount { get; set; }
     }
 
-    public class RandomSourceInfo : IRandomSourceInfo
+    public class RandomSourceViewModel : IRandomSourceViewModel
     {
         private readonly string _name;
 
-        public RandomSourceInfo(string name)
+        public RandomSourceViewModel(string name)
         {
             _name = name;
         }

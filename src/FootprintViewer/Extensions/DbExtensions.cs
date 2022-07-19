@@ -7,15 +7,15 @@ namespace FootprintViewer
 {
     public static class DbExtensions
     {
-        public static string ToConnectionString(this IDatabaseSourceInfo info)
+        public static string ToConnectionString(this IDatabaseSourceViewModel vm)
         {
-            return $"Host={info.Host};Port={info.Port};Database={info.Database};Username={info.Username};Password={info.Password}";
+            return $"Host={vm.Host};Port={vm.Port};Database={vm.Database};Username={vm.Username};Password={vm.Password}";
         }
 
-        public static DbContextOptions<T> BuildDbContextOptions<T>(this IDatabaseSourceInfo info) where T : DbCustomContext
+        public static DbContextOptions<T> BuildDbContextOptions<T>(this IDatabaseSourceViewModel vm) where T : DbCustomContext
         {
-            var connectionString = info.ToConnectionString();
-            var res = info.Version!.Split(new[] { '.' });
+            var connectionString = vm.ToConnectionString();
+            var res = vm.Version!.Split(new[] { '.' });
             var major = int.Parse(res[0]);
             var minor = int.Parse(res[1]);
 

@@ -3,7 +3,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
 {
-    public interface IFileSourceInfo : ISourceInfo
+    public interface IFileSourceViewModel : ISourceViewModel
     {
         string? Path { get; set; }
 
@@ -12,9 +12,9 @@ namespace FootprintViewer.ViewModels
         public string? FilterExtension { get; set; }
     }
 
-    public class FileSourceInfo : ReactiveObject, IFileSourceInfo
+    public class FileSourceViewModel : ReactiveObject, IFileSourceViewModel
     {
-        public FileSourceInfo()
+        public FileSourceViewModel()
         {
 
         }

@@ -36,6 +36,8 @@ namespace FootprintViewer.Data
             }
         }
 
+        public IEnumerable<IDataSource<TNative>> GetSources() => _sources;        
+
         public ReactiveCommand<Unit, Unit> UpdateSources { get; }
 
         public void ChangeSources(IDataSource<TNative>[] sources)

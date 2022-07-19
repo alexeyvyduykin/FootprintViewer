@@ -18,13 +18,13 @@ namespace FootprintViewer.ViewModels
         {
             _factory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            Sources = new List<ISourceInfo>();
+            Sources = new List<ISourceViewModel>();
 
             SourceBuilderItems = new List<ISourceBuilderItem>();
 
-            RemoveSource = ReactiveCommand.Create<ISourceInfo>(RemoveSourceImpl);
+            RemoveSource = ReactiveCommand.Create<ISourceViewModel>(RemoveSourceImpl);
 
-            AddSource = ReactiveCommand.Create<ISourceInfo, ISourceInfo>(AddSourceImpl);
+            AddSource = ReactiveCommand.Create<ISourceViewModel, ISourceViewModel>(AddSourceImpl);
         }
 
         public void Activate()
@@ -46,26 +46,26 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public ReactiveCommand<ISourceInfo, Unit> RemoveSource { get; }
+        public ReactiveCommand<ISourceViewModel, Unit> RemoveSource { get; }
 
-        public ReactiveCommand<ISourceInfo, ISourceInfo> AddSource { get; }
+        public ReactiveCommand<ISourceViewModel, ISourceViewModel> AddSource { get; }
 
-        private void RemoveSourceImpl(ISourceInfo item)
+        private void RemoveSourceImpl(ISourceViewModel item)
         {
-            var temp = new List<ISourceInfo>(Sources);
+            var temp = new List<ISourceViewModel>(Sources);
 
             temp.Remove(item);
 
-            Sources = new List<ISourceInfo>(temp);
+            Sources = new List<ISourceViewModel>(temp);
         }
 
-        private ISourceInfo AddSourceImpl(ISourceInfo item)
+        private ISourceViewModel AddSourceImpl(ISourceViewModel item)
         {
-            var temp = new List<ISourceInfo>(Sources);
+            var temp = new List<ISourceViewModel>(Sources);
 
             temp.Add(item);
 
-            Sources = new List<ISourceInfo>(temp);
+            Sources = new List<ISourceViewModel>(temp);
 
             return item;
         }
@@ -75,7 +75,7 @@ namespace FootprintViewer.ViewModels
         public IEnumerable<string>? AvailableBuilders { get; init; }
 
         [Reactive]
-        public List<ISourceInfo> Sources { get; private set; }
+        public List<ISourceViewModel> Sources { get; private set; }
 
         [Reactive]
         public List<ISourceBuilderItem> SourceBuilderItems { get; private set; }

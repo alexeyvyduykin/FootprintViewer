@@ -5,9 +5,9 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class GroundStationViewerView : ReactiveUserControl<GroundStationViewer>
+    public partial class GroundStationTabView : ReactiveUserControl<GroundStationTab>
     {
-        public GroundStationViewerView()
+        public GroundStationTabView()
         {
             InitializeComponent();
 

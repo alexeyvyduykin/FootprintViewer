@@ -9,13 +9,13 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundStationViewer : SidePanelTab
+    public class GroundStationTab : SidePanelTab
     {
         private readonly IProvider<GroundStation> _provider;
         private readonly IGroundStationLayerSource _groundStationLayerSource;
         private bool _firstLoading = true;
 
-        public GroundStationViewer(IReadonlyDependencyResolver dependencyResolver)
+        public GroundStationTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
@@ -29,13 +29,13 @@ namespace FootprintViewer.ViewModels
 
             this.WhenAnyValue(s => s.IsActive)
                 .Where(active => active == true && _firstLoading == true)
-                .Select(_ => (IFilter<GroundStationInfo>?)null)
+                .Select(_ => (IFilter<GroundStationViewModel>?)null)
                 .InvokeCommand(ViewerList.Loading);
 
             ViewerList.Loading.Subscribe(_ => _firstLoading = false);
         }
 
-        public void Update(GroundStationInfo groundStationInfo)
+        public void Update(GroundStationViewModel groundStationInfo)
         {
             var name = groundStationInfo.Name;
             var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
@@ -45,7 +45,7 @@ namespace FootprintViewer.ViewModels
             _groundStationLayerSource.Update(name, center, angles, isShow);
         }
 
-        public void Change(GroundStationInfo groundStationInfo)
+        public void Change(GroundStationViewModel groundStationInfo)
         {
             var name = groundStationInfo.Name;
             var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
@@ -56,6 +56,6 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public IViewerList<GroundStationInfo> ViewerList { get; private set; }
+        public IViewerList<GroundStationViewModel> ViewerList { get; private set; }
     }
 }

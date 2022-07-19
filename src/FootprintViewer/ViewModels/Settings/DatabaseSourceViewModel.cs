@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using FootprintViewer.Data.Sources;
 using Npgsql;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
 {
-    public interface IDatabaseSourceInfo : ISourceInfo
+    public interface IDatabaseSourceViewModel : ISourceViewModel
     {
         string? Version { get; set; }
 
@@ -26,15 +27,26 @@ namespace FootprintViewer.ViewModels
         TableInfo? TableInfo { get; set; }
     }
 
-    public class DatabaseSourceInfo : ReactiveObject, IDatabaseSourceInfo
+    public class DatabaseSourceViewModel : ReactiveObject, IDatabaseSourceViewModel
     {
-        public DatabaseSourceInfo()
+        public DatabaseSourceViewModel()
         {
             this.WhenAnyValue(s => s.Host, s => s.Port, s => s.Database, s => s.Username, s => s.Password)
                 .Throttle(TimeSpan.FromSeconds(1.2))
                 .Select(s => BuildConnectionString(s))
                 .Select(s => IsConnectionValid(s) ? new List<string>(GetTablesNames(s)) : new List<string>())
                 .ToPropertyEx(this, s => s.AvailableTables);
+        }
+
+        public DatabaseSourceViewModel(IDatabaseSource databaseSource) : this()
+        {
+            Version = databaseSource.Version;
+            Host = databaseSource.Host;
+            Port = databaseSource.Port;
+            Database = databaseSource.Database;
+            Username = databaseSource.Username;
+            Password = databaseSource.Password;
+            Table = databaseSource.Table;
         }
 
         private static string BuildConnectionString((string? host, int port, string? database, string? username, string? password) info)

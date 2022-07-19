@@ -13,7 +13,7 @@ namespace FootprintViewer.Designer
             {
                 new SceneSearch(data),
                 new SatelliteViewer(data),
-                new GroundStationViewer(data),
+                new GroundStationTab(data),
                 new GroundTargetViewer(data),
                 new FootprintObserver(data),
                 new UserGeometryViewer(data),

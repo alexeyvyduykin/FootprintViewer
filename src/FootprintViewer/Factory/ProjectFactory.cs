@@ -164,13 +164,6 @@ namespace FootprintViewer
             return satelliteViewer;
         }
 
-        public GroundStationViewer CreateGroundStationViewer()
-        {
-            var groundStationViewer = new GroundStationViewer(_dependencyResolver);
-
-            return groundStationViewer;
-        }
-
         public UserGeometryViewer CreateUserGeometryViewer()
         {
             var userGeometryViewer = new UserGeometryViewer(_dependencyResolver);

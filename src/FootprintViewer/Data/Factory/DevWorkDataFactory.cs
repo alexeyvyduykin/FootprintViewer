@@ -43,51 +43,86 @@ namespace FootprintViewer.Data
 
         protected override IDataSource<UserGeometry>[] GetUserGeometrySources()
         {
-            var options = BuildDbContextOptions<UserGeometryDbContext>("14.1", "localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-
             return new[]
             {
-                new UserGeometryDataSource(options, "UserGeometries"),
+                new UserGeometryDataSource()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "UserGeometries"
+                },
             };
         }
 
         protected override IDataSource<Satellite>[] GetSatelliteSources()
         {
-            var options = BuildDbContextOptions<SatelliteDbContext>("14.1", "localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-
             return new[]
             {
-                new SatelliteDataSource(options, "Satellites"),
+                new SatelliteDataSource()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "Satellites"
+                },
             };
         }
 
         protected override IDataSource<Footprint>[] GetFootprintSources()
         {
-            var options = BuildDbContextOptions<FootprintDbContext>("14.1", "localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-
             return new[]
             {
-                new FootprintDataSource(options, "Footprints"),
+                new FootprintDataSource()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "Footprints"
+                },
             };
         }
 
         protected override IDataSource<GroundTarget>[] GetGroundTargetSources()
         {
-            var options = BuildDbContextOptions<DbCustomContext>("14.1", "localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-
             return new[]
             {
-                new GroundTargetDataSource(options, "GroundTargets"),
+                new GroundTargetDataSource()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "GroundTargets"
+                },
             };
         }
 
         protected override IDataSource<GroundStation>[] GetGroundStationSources()
         {
-            var options = BuildDbContextOptions<DbCustomContext>("14.1", "localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-
             return new[]
             {
-                new GroundStationDataSource(options, "GroundStations"),
+                new GroundStationDataSource()
+                {
+                    Version = "14.1",
+                    Host = "localhost",
+                    Port = 5432,
+                    Database = "FootprintViewerDatabase",
+                    Username = "postgres",
+                    Password = "user",
+                    Table = "GroundStations"
+                },
             };
         }
     }

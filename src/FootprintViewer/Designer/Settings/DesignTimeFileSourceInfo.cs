@@ -2,9 +2,9 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFileSourceInfo : FileSourceInfo
+    public class DesignTimeFileSourceViewModel : FileSourceViewModel
     {
-        public DesignTimeFileSourceInfo() : base()
+        public DesignTimeFileSourceViewModel() : base()
         {
             Path = @"C:\Users\User\source\repos\AvaloniaDataPersistence\data\Provider1\data01.txt";
         }

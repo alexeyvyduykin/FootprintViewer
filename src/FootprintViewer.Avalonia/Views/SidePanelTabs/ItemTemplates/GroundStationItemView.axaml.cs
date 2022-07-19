@@ -11,16 +11,16 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class GroundStationInfoView : ReactiveUserControl<GroundStationInfo>
+    public partial class GroundStationItemView : ReactiveUserControl<GroundStationViewModel>
     {
-        private GroundStationViewer? _groundStationViewer;
+        private GroundStationTab? _groundStationTab;
 
-        public GroundStationInfoView()
+        public GroundStationItemView()
         {
             InitializeComponent();
 
             _update = ReactiveCommand.Create(UpdateImpl);
-            _change = ReactiveCommand.Create<GroundStationInfo>(ChangeImpl);
+            _change = ReactiveCommand.Create<GroundStationViewModel>(ChangeImpl);
 
             Slider1.Minimum = 0;
             Slider1.Maximum = 50;
@@ -45,22 +45,22 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private readonly ReactiveCommand<Unit, Unit> _update;
 
-        private readonly ReactiveCommand<GroundStationInfo, Unit> _change;
+        private readonly ReactiveCommand<GroundStationViewModel, Unit> _change;
 
         private void UpdateImpl()
         {
-            _groundStationViewer ??= Locator.Current.GetExistingService<GroundStationViewer>();
+            _groundStationTab ??= Locator.Current.GetExistingService<GroundStationTab>();
 
-            _groundStationViewer.Update(ViewModel!);
+            _groundStationTab.Update(ViewModel!);
         }
 
-        private void ChangeImpl(GroundStationInfo info)
+        private void ChangeImpl(GroundStationViewModel info)
         {
-            _groundStationViewer ??= Locator.Current.GetExistingService<GroundStationViewer>();
+            _groundStationTab ??= Locator.Current.GetExistingService<GroundStationTab>();
 
             if (info != null)
             {
-                _groundStationViewer.Change(info);
+                _groundStationTab.Change(info);
             }
         }
 

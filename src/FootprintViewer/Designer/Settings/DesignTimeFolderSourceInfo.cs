@@ -2,9 +2,9 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFolderSourceInfo : FolderSourceInfo
+    public class DesignTimeFolderSourceViewModel : FolderSourceViewModel
     {
-        public DesignTimeFolderSourceInfo() : base()
+        public DesignTimeFolderSourceViewModel() : base()
         {
             Directory = @"C:\Users\User\source\repos\AvaloniaDataPersistence\data\Provider1\";
 

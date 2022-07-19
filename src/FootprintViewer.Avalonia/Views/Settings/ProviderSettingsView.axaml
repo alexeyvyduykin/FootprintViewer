@@ -49,7 +49,7 @@
 
   <UserControl.Resources>
 
-    <DataTemplate x:Key="t1" DataType="vm:ISourceInfo">
+    <DataTemplate x:Key="t1" DataType="vm:ISourceViewModel">
       <StackPanel Orientation="Horizontal">
         <Button Command="{Binding #ItemsControl.DataContext.RemoveSource}"
                 CommandParameter="{Binding}"

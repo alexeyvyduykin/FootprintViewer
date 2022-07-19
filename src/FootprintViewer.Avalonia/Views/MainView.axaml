@@ -32,17 +32,17 @@
 
     <dialogHost:DialogHost Identifier="MainDialogHost">
       <dialogHost:DialogHost.DataTemplates>
-        <DataTemplate DataType="vm:FileSourceInfo">
-          <settings:FileSourceInfoView DataContext="{Binding}"/>
+        <DataTemplate DataType="vm:FileSourceViewModel">
+          <settings:FileSourceView DataContext="{Binding}"/>
         </DataTemplate>
-        <DataTemplate DataType="vm:FolderSourceInfo">
-          <settings:FolderSourceInfoView DataContext="{Binding}"/>
+        <DataTemplate DataType="vm:FolderSourceViewModel">
+          <settings:FolderSourceView DataContext="{Binding}"/>
         </DataTemplate>
-        <DataTemplate DataType="vm:DatabaseSourceInfo">
-          <settings:DatabaseSourceInfoView DataContext="{Binding}"/>
+        <DataTemplate DataType="vm:DatabaseSourceViewModel">
+          <settings:DatabaseSourceView DataContext="{Binding}"/>
         </DataTemplate>
-        <DataTemplate DataType="vm:RandomSourceInfo">
-          <settings:RandomSourceInfoView DataContext="{Binding}"/>
+        <DataTemplate DataType="vm:RandomSourceViewModel">
+          <settings:RandomSourceView DataContext="{Binding}"/>
         </DataTemplate>
       </dialogHost:DialogHost.DataTemplates>
 

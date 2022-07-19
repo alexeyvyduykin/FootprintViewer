@@ -39,8 +39,8 @@
       <views:UserGeometryViewerView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:GroundStationViewer">
-      <views:GroundStationViewerView/>
+    <DataTemplate DataType="vm:GroundStationTab">
+      <views:GroundStationTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:SettingsTabViewModel">
@@ -84,7 +84,7 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-      <DataTemplate x:Key="GroundStationViewer">
+      <DataTemplate x:Key="GroundStationTab">
         <Viewbox Margin="4">
           <materialIcons:MaterialIcon Kind="SatelliteUplink"/>
         </Viewbox>

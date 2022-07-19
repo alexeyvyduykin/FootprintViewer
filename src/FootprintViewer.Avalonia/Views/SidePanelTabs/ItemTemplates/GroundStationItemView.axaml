@@ -8,10 +8,10 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="280"
-             x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundStationInfoView">
+             x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundStationItemView">
 
   <Design.DataContext>
-    <vmd:DesignTimeGroundStationInfo/>
+    <vmd:DesignTimeGroundStationViewModel/>
   </Design.DataContext>
   
   <styles:ColorZone Padding="8">

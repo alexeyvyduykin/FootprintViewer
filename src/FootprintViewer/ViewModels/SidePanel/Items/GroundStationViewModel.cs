@@ -18,13 +18,13 @@ namespace FootprintViewer.ViewModels
         public double Angle { get; set; }
     }
 
-    public class GroundStationInfo : ReactiveObject, IViewerItem
+    public class GroundStationViewModel : ReactiveObject, IViewerItem
     {
         private readonly Coordinate _center;
         private readonly string _name;
         private readonly double[] _defaultAngles;
 
-        public GroundStationInfo(GroundStation groundStation)
+        public GroundStationViewModel(GroundStation groundStation)
         {
             _name = groundStation.Name!;
             _center = groundStation.Center.Coordinate.Copy();
@@ -198,7 +198,7 @@ namespace FootprintViewer.ViewModels
         [ObservableAsProperty]
         public List<GroundStationAreaItem> AreaItems { get; }
 
-        private GroundStationInfo ChangeImpl()
+        private GroundStationViewModel ChangeImpl()
         {
             //var count = AreaCount;
             //var inner = InnerAngle;
@@ -221,7 +221,7 @@ namespace FootprintViewer.ViewModels
             return;
         }
 
-        public readonly ReactiveCommand<Unit, GroundStationInfo> Change;
+        public readonly ReactiveCommand<Unit, GroundStationViewModel> Change;
         public readonly ReactiveCommand<Unit, Unit> Update;
 
         public string Name => _name;

@@ -6,9 +6,9 @@ using System.IO;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class FileSourceInfoView : ReactiveUserControl<FileSourceInfo>
+    public partial class FolderSourceView : ReactiveUserControl<FolderSourceViewModel>
     {
-        public FileSourceInfoView()
+        public FolderSourceView()
         {
             InitializeComponent();
 
@@ -22,14 +22,14 @@ namespace FootprintViewer.Avalonia.Views.Settings
         {
             if (ViewModel != null)
             {
-                string _path = await App.OpenFileDialog(null, ViewModel.FilterName, ViewModel.FilterExtension);
+                string _path = await App.OpenFolderDialog(null);
 
-                if (File.Exists(_path) == false)
+                if (Directory.Exists(_path) == false)
                 {
                     return;
                 }
 
-                ViewModel.Path = _path;
+                ViewModel.Directory = _path;
             }
         }
     }

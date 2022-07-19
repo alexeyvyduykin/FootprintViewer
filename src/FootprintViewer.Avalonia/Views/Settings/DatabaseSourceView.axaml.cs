@@ -5,9 +5,9 @@ using ReactiveUI;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class DatabaseSourceInfoView : ReactiveUserControl<DatabaseSourceInfo>
+    public partial class DatabaseSourceView : ReactiveUserControl<DatabaseSourceViewModel>
     {
-        public DatabaseSourceInfoView()
+        public DatabaseSourceView()
         {
             InitializeComponent();
 

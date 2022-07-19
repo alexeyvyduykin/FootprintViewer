@@ -18,33 +18,33 @@ namespace FootprintViewer.ViewModels
     {
         public string Name { get; }
 
-        ReactiveCommand<Unit, ISourceInfo?> Build { get; }
+        ReactiveCommand<Unit, ISourceViewModel?> Build { get; }
 
-        Interaction<ISourceInfo, ISourceInfo?> BuildDialog { get; }
+        Interaction<ISourceViewModel, ISourceViewModel?> BuildDialog { get; }
     }
 
     public class SourceBuilderItem : ISourceBuilderItem
     {
         private readonly SourceType _type;
-        private readonly Func<ISourceInfo> _builder;
+        private readonly Func<ISourceViewModel> _builder;
 
-        public SourceBuilderItem(SourceType type, Func<ISourceInfo> builder)
+        public SourceBuilderItem(SourceType type, Func<ISourceViewModel> builder)
         {
             _type = type;
 
             _builder = builder;
 
-            BuildDialog = new Interaction<ISourceInfo, ISourceInfo?>();
+            BuildDialog = new Interaction<ISourceViewModel, ISourceViewModel?>();
 
             Build = ReactiveCommand.CreateFromTask(BuildAsync);
         }
 
-        private async Task<ISourceInfo?> BuildAsync() => await BuildDialog.Handle(_builder.Invoke());
+        private async Task<ISourceViewModel?> BuildAsync() => await BuildDialog.Handle(_builder.Invoke());
 
-        public ReactiveCommand<Unit, ISourceInfo?> Build { get; }
+        public ReactiveCommand<Unit, ISourceViewModel?> Build { get; }
 
         public string Name => _type.ToString();
 
-        public Interaction<ISourceInfo, ISourceInfo?> BuildDialog { get; }
+        public Interaction<ISourceViewModel, ISourceViewModel?> BuildDialog { get; }
     }
 }

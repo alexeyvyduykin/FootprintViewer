@@ -2,9 +2,9 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeDatabaseSourceInfo : DatabaseSourceInfo
+    public class DesignTimeDatabaseSourceViewModel : DatabaseSourceViewModel
     {
-        public DesignTimeDatabaseSourceInfo() : base()
+        public DesignTimeDatabaseSourceViewModel() : base()
         {
             Version = "14.1";
 

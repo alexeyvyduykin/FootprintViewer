@@ -7,20 +7,11 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class UserGeometryDataSource : IEditableDataSource<UserGeometry>
+    public class UserGeometryDataSource : BaseDatabaseSource<UserGeometryDbContext>, IEditableDataSource<UserGeometry>
     {
-        private readonly DbContextOptions<UserGeometryDbContext> _options;
-        private readonly string? _tableName;
-
-        public UserGeometryDataSource(DbContextOptions<UserGeometryDbContext> options, string tableName)
-        {
-            _options = options;
-            _tableName = tableName;
-        }
-
         public async Task AddAsync(UserGeometry value)
         {
-            using var context = new UserGeometryDbContext(_tableName, _options);
+            using var context = new UserGeometryDbContext(Table, Options);
 
             await context.UserGeometries.AddAsync(value);
 
@@ -29,7 +20,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task RemoveAsync(UserGeometry value)
         {
-            using var context = new UserGeometryDbContext(_tableName, _options);
+            using var context = new UserGeometryDbContext(Table, Options);
 
             context.UserGeometries.Remove(value);
 
@@ -38,7 +29,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task EditAsync(string key, UserGeometry value)
         {
-            using var context = new UserGeometryDbContext(_tableName, _options);
+            using var context = new UserGeometryDbContext(Table, Options);
 
             var userGeometry = await context.UserGeometries
                 .Where(b => b.Name == key)
@@ -54,7 +45,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task<List<UserGeometry>> GetNativeValuesAsync(IFilter<UserGeometry>? filter)
         {
-            using var context = new UserGeometryDbContext(_tableName, _options);
+            using var context = new UserGeometryDbContext(Table, Options);
 
             if (filter == null || filter.Names == null)
             {
@@ -74,7 +65,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<UserGeometry, T> converter)
         {
-            using var context = new UserGeometryDbContext(_tableName, _options);
+            using var context = new UserGeometryDbContext(Table, Options);
 
             if (filter == null || filter.Names == null)
             {

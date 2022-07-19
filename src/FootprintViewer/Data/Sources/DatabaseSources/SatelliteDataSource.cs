@@ -7,28 +7,18 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class SatelliteDataSource : IDataSource<Satellite>
+    public class SatelliteDataSource : BaseDatabaseSource<SatelliteDbContext>, IDataSource<Satellite> 
     {
-        private readonly DbContextOptions<SatelliteDbContext> _options;
-        private readonly string? _tableName;
-
-        public SatelliteDataSource(DbContextOptions<SatelliteDbContext> options, string tableName)
-        {
-            _options = options;
-
-            _tableName = tableName;
-        }
-
         public async Task<List<Satellite>> GetNativeValuesAsync(IFilter<Satellite>? filter)
         {
-            using var context = new SatelliteDbContext(_tableName, _options);
+            using var context = new SatelliteDbContext(Table, Options);
 
             return await context.Satellites.OrderBy(s => s.Name).ToListAsync();
         }
 
         public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<Satellite, T> converter)
         {
-            using var context = new SatelliteDbContext(_tableName, _options);
+            using var context = new SatelliteDbContext(Table, Options);
 
             return await context.Satellites.OrderBy(s => s.Name).Select(s => converter(s)).ToListAsync();
         }

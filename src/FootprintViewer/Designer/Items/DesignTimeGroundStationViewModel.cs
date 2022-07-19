@@ -3,9 +3,9 @@ using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeGroundStationInfo : GroundStationInfo
+    public class DesignTimeGroundStationViewModel : GroundStationViewModel
     {
-        public DesignTimeGroundStationInfo() : base(BuildModel())
+        public DesignTimeGroundStationViewModel() : base(BuildModel())
         {
             IsShow = true;
         }

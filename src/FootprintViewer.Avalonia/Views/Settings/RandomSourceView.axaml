@@ -7,10 +7,10 @@
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              mc:Ignorable="d"                              
              MinWidth="320"             
-             x:Class="FootprintViewer.Avalonia.Views.Settings.RandomSourceInfoView">
+             x:Class="FootprintViewer.Avalonia.Views.Settings.RandomSourceView">
 
   <Design.DataContext>
-    <vmd:DesignTimeRandomSourceInfo/>
+	  <vmd:DesignTimeRandomSourceViewModel/>
   </Design.DataContext>
   
   <UserControl.Styles>

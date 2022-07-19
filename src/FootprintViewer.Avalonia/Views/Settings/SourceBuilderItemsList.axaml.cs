@@ -19,9 +19,9 @@ namespace FootprintViewer.Avalonia.Views.Settings
                 ViewModel?.SourceBuilderItems.ForEach(s => s.BuildDialog.RegisterHandler(DoShowDialogAsync).DisposeWith(disposables));
             });
         }
-        private async Task DoShowDialogAsync(InteractionContext<ISourceInfo, ISourceInfo?> interaction)
-        {         
-            var source = (ISourceInfo?)await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
+        private async Task DoShowDialogAsync(InteractionContext<ISourceViewModel, ISourceViewModel?> interaction)
+        {
+            var source = (ISourceViewModel?)await DialogHost.DialogHost.Show(interaction.Input, "MainDialogHost");
 
             interaction.SetOutput(source);
         }

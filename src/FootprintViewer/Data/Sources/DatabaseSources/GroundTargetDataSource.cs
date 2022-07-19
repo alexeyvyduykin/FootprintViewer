@@ -7,20 +7,11 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class GroundTargetDataSource : IDataSource<GroundTarget>
+    public class GroundTargetDataSource : BaseDatabaseSource<DbCustomContext>, IDataSource<GroundTarget>
     {
-        private readonly DbContextOptions<DbCustomContext> _options;
-        private readonly string? _tableName;
-
-        public GroundTargetDataSource(DbContextOptions<DbCustomContext> options, string tableName)
-        {
-            _options = options;
-            _tableName = tableName;
-        }
-
         public async Task<List<GroundTarget>> GetNativeValuesAsync(IFilter<GroundTarget>? filter)
         {
-            using var context = new GroundTargetDbContext(_tableName, _options);
+            using var context = new GroundTargetDbContext(Table, Options);
 
             if (filter == null || filter.Names == null)
             {
@@ -40,7 +31,7 @@ namespace FootprintViewer.Data.Sources
 
         public async Task<List<T>> GetValuesAsync<T>(IFilter<T>? filter, Func<GroundTarget, T> converter)
         {
-            using var context = new GroundTargetDbContext(_tableName, _options);
+            using var context = new GroundTargetDbContext(Table, Options);
 
             if (filter == null || filter.Names == null)
             {

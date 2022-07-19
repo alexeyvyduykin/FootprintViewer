@@ -2,51 +2,50 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
-             mc:Ignorable="d"  
-             MinWidth="680"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.FolderSourceInfoView">
+             mc:Ignorable="d"
+             Width="680"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.FileSourceView">
 
   <Design.DataContext>
-    <vmd:DesignTimeFolderSourceInfo/>
+	  <vmd:DesignTimeFileSourceViewModel/>
   </Design.DataContext>
 
   <styles:Card>
-
     <StackPanel>
 
-      <TextBlock Text="{Binding SearchPattern, StringFormat={}Directory with {0}}"/>
+      <TextBlock Text="Path"/>
 
       <Grid ColumnDefinitions="*,8,32">
         <TextBox x:Name="txtBox" 
                  IsReadOnly="True"
-                 Text="{Binding Directory}"/>
-        <Button Grid.Column="2" 
+                 Text="{Binding Path}"/>
+        <Button Grid.Column="2"
                 Padding="0"
-                Height="32"
+                Height="32"                
                 Click="AddPath_Clicked">
           <Viewbox Margin="4">          
-            <materialIcons:MaterialIcon Kind="FolderSettingsOutline"/>
+            <materialIcons:MaterialIcon Kind="FileSettingsOutline"/>
           </Viewbox>
         </Button>
       </Grid>
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Content="Add"
+        <Button Content="Add" 
                 IsEnabled="{Binding !!#txtBox.Text}"
                 Width="80"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
                 CommandParameter="{Binding}"/>
-        <Button Grid.Column="1"
+        <Button Width="80"
                 Margin="8,0,0,0"
                 Content="Cancel"
                 Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
       </StackPanel>
-    </StackPanel>
 
+    </StackPanel>
   </styles:Card>
 
 </UserControl>

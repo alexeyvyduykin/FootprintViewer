@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using FootprintViewer.Configurations;
 using FootprintViewer.Data;
+using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
@@ -58,14 +59,14 @@ namespace FootprintViewer
             return viewerList;
         }
 
-        public IViewerList<GroundStationInfo> CreateGroundStationViewerList(IProvider<GroundStation> provider)
+        public IViewerList<GroundStationViewModel> CreateGroundStationViewerList(IProvider<GroundStation> provider)
         {
             var viewerList = new GroundStationViewerList(provider);
 
             if (provider is Provider<GroundStation> prvd)
             {
                 // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<GroundStationInfo>?)null).InvokeCommand(viewerList.Loading);
+                prvd.UpdateSources.Select(s => (IFilter<GroundStationViewModel>?)null).InvokeCommand(viewerList.Loading);
             }
 
             return viewerList;
@@ -101,6 +102,17 @@ namespace FootprintViewer
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
 
+            var groundStationProvider = _dependencyResolver.GetExistingService<IProvider<GroundStation>>();
+            var groundStationSources = ((Provider<GroundStation>)groundStationProvider).GetSources();
+
+            var groundStationProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.GroundStations,
+                AvailableBuilders = configuration.GroundStationSourceBuilders,
+            };
+     
+            groundStationProviderViewModel.Sources.AddRange(groundStationSources.Select(s => CreateSourceViewModel(s)));
+
             var providers = new List<ProviderViewModel>()
             {
                 new ProviderViewModel(_dependencyResolver)
@@ -113,11 +125,7 @@ namespace FootprintViewer
                     Type = ProviderType.GroundTargets,
                     AvailableBuilders = configuration.GroundTargetSourceBuilders,
                 },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.GroundStations,
-                    AvailableBuilders = configuration.GroundStationSourceBuilders,
-                },
+                groundStationProviderViewModel,
                 new ProviderViewModel(_dependencyResolver)
                 {
                     Type = ProviderType.Satellites,
@@ -153,14 +161,26 @@ namespace FootprintViewer
             return settingsViewer;
         }
 
-        private ISourceInfo CreateSource(SourceType type)
+        private ISourceViewModel CreateSourceViewModel<T>(IDataSource<T> dataSource)
+        {
+            if (dataSource is IDatabaseSource databaseSource)
+            {
+                return new DatabaseSourceViewModel(databaseSource);
+            }
+            else 
+            {
+                throw new Exception();
+            }
+        }
+
+        private ISourceViewModel CreateSource(SourceType type)
         {
             return type switch
             {
-                SourceType.File => new FileSourceInfo(/*"FileSource"*/),
-                SourceType.Folder => new FolderSourceInfo(/*"FolderSource"*/),
-                SourceType.Database => new DatabaseSourceInfo(/*"FootprintDatabase.Satellites"*/),
-                SourceType.Random => new RandomSourceInfo("random"),
+                SourceType.File => new FileSourceViewModel(/*"FileSource"*/),
+                SourceType.Folder => new FolderSourceViewModel(/*"FolderSource"*/),
+                SourceType.Database => new DatabaseSourceViewModel(/*"FootprintDatabase.Satellites"*/),
+                SourceType.Random => new RandomSourceViewModel("random"),
                 _ => throw new Exception(),
             };
         }
@@ -178,6 +198,13 @@ namespace FootprintViewer
             }
 
             return list;
+        }
+
+        public GroundStationTab CreateGroundStationTab()
+        {
+            var tab = new GroundStationTab(_dependencyResolver);
+
+            return tab;
         }
     }
 }

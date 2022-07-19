@@ -4,9 +4,9 @@ using ReactiveUI;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class RandomSourceInfoView : ReactiveUserControl<RandomSourceInfo>
+    public partial class RandomSourceView : ReactiveUserControl<RandomSourceViewModel>
     {
-        public RandomSourceInfoView()
+        public RandomSourceView()
         {
             InitializeComponent();
 

@@ -4,16 +4,16 @@ using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
 {
-    public interface IFolderSourceInfo : ISourceInfo
+    public interface IFolderSourceViewModel : ISourceViewModel
     {
         string? Directory { get; set; }
 
         string? SearchPattern { get; set; }
     }
 
-    public class FolderSourceInfo : ReactiveObject, IFolderSourceInfo
+    public class FolderSourceViewModel : ReactiveObject, IFolderSourceViewModel
     {
-        public FolderSourceInfo()
+        public FolderSourceViewModel()
         {
 
         }
