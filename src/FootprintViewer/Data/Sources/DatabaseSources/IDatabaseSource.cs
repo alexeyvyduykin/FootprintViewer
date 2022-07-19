@@ -2,18 +2,18 @@
 {
     public interface IDatabaseSource
     {
-        string Version { get; init; }
+        string Version { get; }
 
-        string Host { get; init; }
+        string Host { get; }
 
-        int Port { get; init; }
+        int Port { get; }
 
-        string Database { get; init; }
+        string Database { get; }
 
-        string Username { get; init; }
+        string Username { get; }
 
-        string Password { get; init; }
+        string Password { get; }
 
-        string Table { get; init; }
+        string Table { get; }
     }
 }

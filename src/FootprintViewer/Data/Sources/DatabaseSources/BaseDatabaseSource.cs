@@ -15,14 +15,14 @@ namespace FootprintViewer.Data.Sources
             return $"Host={host};Port={port};Database={database};Username={username};Password={password}";
         }
 
-        protected static DbContextOptions<T> BuildDbContextOptions<T>(string version, string host, int port, string database, string username, string password) where T : DbCustomContext
+        protected static DbContextOptions<T2> BuildDbContextOptions<T2>(string version, string host, int port, string database, string username, string password) where T2 : DbCustomContext
         {
             var connectionString = ToConnectionString(host, port, database, username, password);
             var res = version!.Split(new[] { '.' });
             var major = int.Parse(res[0]);
             var minor = int.Parse(res[1]);
 
-            var optionsBuilder = new DbContextOptionsBuilder<T>();
+            var optionsBuilder = new DbContextOptionsBuilder<T2>();
 
             var options = optionsBuilder.UseNpgsql(connectionString, options =>
             {

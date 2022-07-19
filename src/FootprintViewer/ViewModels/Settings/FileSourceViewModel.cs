@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.Data.Sources;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace FootprintViewer.ViewModels
@@ -17,6 +18,11 @@ namespace FootprintViewer.ViewModels
         public FileSourceViewModel()
         {
 
+        }
+
+        public FileSourceViewModel(IFileSource fileSource) : this()
+        {
+            Path = fileSource.Path;
         }
 
         public string? Name => System.IO.Path.GetFileName(Path);

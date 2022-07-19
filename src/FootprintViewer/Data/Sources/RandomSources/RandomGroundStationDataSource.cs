@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomGroundStationDataSource : IDataSource<GroundStation>
+    public class RandomGroundStationDataSource : BaseRandomSource, IDataSource<GroundStation>
     {
         private readonly List<GroundStation> _groundStations;
 

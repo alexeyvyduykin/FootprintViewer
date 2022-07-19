@@ -13,8 +13,16 @@ namespace FootprintViewer.Data
 
             return new[]
             {
-                new FootprintPreviewDataSource(directory1, "*.mbtiles"),
-                new FootprintPreviewDataSource(directory2, "*.mbtiles"),
+                new FootprintPreviewDataSource()
+                {                
+                    Directory = directory1,                
+                    SearchPattern = "*.mbtiles",
+                },
+                new FootprintPreviewDataSource()
+                {               
+                    Directory = directory2,                      
+                    SearchPattern = "*.mbtiles",
+                },
             };
         }
 
@@ -25,19 +33,30 @@ namespace FootprintViewer.Data
 
             return new[]
             {
-                new MapDataSource(directory1, "*.mbtiles"),
-                new MapDataSource(directory2, "*.mbtiles"),
+                new MapDataSource()                
+                {
+                    Directory = directory1,
+                    SearchPattern = "*.mbtiles",
+                },
+                new MapDataSource()                
+                {
+                    Directory = directory2,
+                    SearchPattern = "*.mbtiles",
+                },
             };
         }
 
         protected override IDataSource<(string, Geometry)>[] GetFootprintPreviewGeometrySources()
         {
             var folder = new SolutionFolder("data");
-            var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff");
+            var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff") ?? string.Empty;
 
             return new[]
             {
-                new FootprintPreviewGeometryDataSource(path),
+                new FootprintPreviewGeometryDataSource()
+                {                
+                    Path = path,
+                },
             };
         }
 

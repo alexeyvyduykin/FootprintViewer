@@ -12,28 +12,24 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class FootprintPreviewDataSource : IDataSource<FootprintPreview>
+    public class FootprintPreviewDataSource : BaseFolderSource, IDataSource<FootprintPreview>
     {
         private readonly Random _random = new();
         private readonly DateTime _date;
-        private readonly string? _searchPattern;
-        private readonly string? _directory;
         //private readonly Mapsui.Styles.Color _backgroundColorMask = new() { R = 66, G = 66, B = 66, A = 255 }; // #424242                                                                                                                                                                                                                                                                 
         private const int _previewWidth = 200;
         private const int _previewHeight = 200;
 
-        public FootprintPreviewDataSource(string? directory, string? searchPattern)
+        public FootprintPreviewDataSource()
         {
-            _directory = directory;
-            _searchPattern = searchPattern;
             _date = DateTime.UtcNow;
         }
 
         private IEnumerable<FootprintPreview> GetFootprintPreviews()
         {
-            if (_directory != null && _searchPattern != null)
+            if (Directory != null && SearchPattern != null)
             {
-                var paths = Directory.GetFiles(_directory, _searchPattern).Select(Path.GetFullPath);
+                var paths = System.IO.Directory.GetFiles(Directory, SearchPattern).Select(Path.GetFullPath);
 
                 foreach (var path in paths)
                 {

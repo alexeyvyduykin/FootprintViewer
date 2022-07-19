@@ -8,20 +8,13 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class FootprintPreviewGeometryDataSource : IDataSource<(string, Geometry)>
+    public class FootprintPreviewGeometryDataSource : BaseFileSource, IDataSource<(string, Geometry)>
     {
-        private readonly string? _path;
-
-        public FootprintPreviewGeometryDataSource(string? path)
-        {
-            _path = path;
-        }
-
         public async Task<List<(string, Geometry)>> GetNativeValuesAsync(IFilter<(string, Geometry)>? filter)
         {
             return await Task.Run(() =>
             {
-                var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(_path);
+                var shp = new NetTopologySuite.IO.ShapeFile.Extended.ShapeDataReader(Path);
 
                 var list = new List<(string, Geometry)>();
 

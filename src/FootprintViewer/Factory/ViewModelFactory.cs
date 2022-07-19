@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using FootprintViewer.Configurations;
+﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 
 namespace FootprintViewer
 {
@@ -102,55 +102,82 @@ namespace FootprintViewer
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
 
-            var groundStationProvider = _dependencyResolver.GetExistingService<IProvider<GroundStation>>();
-            var groundStationSources = ((Provider<GroundStation>)groundStationProvider).GetSources();
+            var groundStationSources = ((Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>()).GetSources();
+            var satelliteSources = ((Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>()).GetSources();
+            var footprintSources = ((Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>()).GetSources();
+            var groundTargetSources = ((Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>()).GetSources();
+            var userGeometrySources = ((EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>()).GetSources();
+            var mapBackgroundSources = ((Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>()).GetSources();
+            var footprintPreviewSources = ((Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>()).GetSources();
+            var footprintPreviewGeometrySources = ((Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>()).GetSources();
 
             var groundStationProviderViewModel = new ProviderViewModel(_dependencyResolver)
             {
                 Type = ProviderType.GroundStations,
                 AvailableBuilders = configuration.GroundStationSourceBuilders,
             };
-     
+
+            var satelliteProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.Satellites,
+                AvailableBuilders = configuration.SatelliteSourceBuilders,
+            };
+
+            var footprintProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.Footprints,
+                AvailableBuilders = configuration.FootprintSourceBuilders,
+            };
+
+            var groundTargetProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.GroundTargets,
+                AvailableBuilders = configuration.GroundTargetSourceBuilders,
+            };
+
+            var userGeometryProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.UserGeometries,
+                AvailableBuilders = configuration.UserGeometrySourceBuilders,
+            };
+
+            var mapBackgroundProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.MapBackgrounds,
+                AvailableBuilders = configuration.MapBackgroundSourceBuilders,
+            };
+
+            var footprintPreviewProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.FootprintPreviews,
+                AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
+            };
+
+            var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            {
+                Type = ProviderType.FootprintPreviewGeometries,
+                AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
+            };
+
             groundStationProviderViewModel.Sources.AddRange(groundStationSources.Select(s => CreateSourceViewModel(s)));
+            satelliteProviderViewModel.Sources.AddRange(satelliteSources.Select(s => CreateSourceViewModel(s)));
+            footprintProviderViewModel.Sources.AddRange(footprintSources.Select(s => CreateSourceViewModel(s)));
+            groundTargetProviderViewModel.Sources.AddRange(groundTargetSources.Select(s => CreateSourceViewModel(s)));
+            userGeometryProviderViewModel.Sources.AddRange(userGeometrySources.Select(s => CreateSourceViewModel(s)));
+            mapBackgroundProviderViewModel.Sources.AddRange(mapBackgroundSources.Select(s => CreateSourceViewModel(s)));
+            footprintPreviewProviderViewModel.Sources.AddRange(footprintPreviewSources.Select(s => CreateSourceViewModel(s)));
+            footprintPreviewGeometryProviderViewModel.Sources.AddRange(footprintPreviewGeometrySources.Select(s => CreateSourceViewModel(s)));
 
             var providers = new List<ProviderViewModel>()
             {
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.Footprints,
-                    AvailableBuilders = configuration.FootprintSourceBuilders,
-                },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.GroundTargets,
-                    AvailableBuilders = configuration.GroundTargetSourceBuilders,
-                },
+                footprintProviderViewModel,
+                groundTargetProviderViewModel,
                 groundStationProviderViewModel,
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.Satellites,
-                    AvailableBuilders = configuration.SatelliteSourceBuilders,
-                },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.UserGeometries,
-                    AvailableBuilders = configuration.UserGeometrySourceBuilders,
-                },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.FootprintPreviewGeometries,
-                    AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
-                },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.MapBackgrounds,
-                    AvailableBuilders = configuration.MapBackgroundSourceBuilders,
-                },
-                new ProviderViewModel(_dependencyResolver)
-                {
-                    Type = ProviderType.FootprintPreviews,
-                    AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
-                }
+                satelliteProviderViewModel,
+                userGeometryProviderViewModel,
+                footprintPreviewGeometryProviderViewModel,
+                mapBackgroundProviderViewModel,
+                footprintPreviewProviderViewModel,
             };
 
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
@@ -167,7 +194,19 @@ namespace FootprintViewer
             {
                 return new DatabaseSourceViewModel(databaseSource);
             }
-            else 
+            else if (dataSource is IFileSource fileSource)
+            {
+                return new FileSourceViewModel(fileSource);
+            }
+            else if (dataSource is IFolderSource folderSource)
+            {
+                return new FolderSourceViewModel(folderSource);
+            }
+            else if (dataSource is IRandomSource randomSource)
+            {
+                return new RandomSourceViewModel(randomSource);
+            }
+            else
             {
                 throw new Exception();
             }

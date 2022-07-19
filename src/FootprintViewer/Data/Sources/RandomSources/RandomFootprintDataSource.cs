@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Sources
 {
-    public class RandomFootprintDataSource : IDataSource<Footprint>
+    public class RandomFootprintDataSource : BaseRandomSource, IDataSource<Footprint>
     {
         private List<Footprint>? _footprints;
         private readonly IDataSource<Satellite> _source;

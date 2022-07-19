@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using FootprintViewer.Data.Sources;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -16,6 +17,12 @@ namespace FootprintViewer.ViewModels
         public FolderSourceViewModel()
         {
 
+        }
+
+        public FolderSourceViewModel(IFolderSource folderSource) : this()
+        {
+            Directory = folderSource.Directory;
+            SearchPattern = folderSource.SearchPattern;
         }
 
         private static string GetName(string directory)

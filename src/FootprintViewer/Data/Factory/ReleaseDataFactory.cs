@@ -18,7 +18,11 @@ namespace FootprintViewer.Data
 
             return new[]
             {
-                new MapDataSource(directory1, "*.mbtiles"),
+                new MapDataSource()
+                {                
+                    Directory = directory1,                
+                    SearchPattern = "*.mbtiles",
+                },
             };
         }
 

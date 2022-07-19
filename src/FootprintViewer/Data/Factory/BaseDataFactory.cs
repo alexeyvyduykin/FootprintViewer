@@ -1,34 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using System;
 
 namespace FootprintViewer.Data
 {
     public abstract class BaseDataFactory : IDataFactory
     {
-        protected static string ToConnectionString(string host, int port, string database, string username, string password)
-        {
-            return $"Host={host};Port={port};Database={database};Username={username};Password={password}";
-        }
-
-        protected static DbContextOptions<T> BuildDbContextOptions<T>(string version, string host, int port, string database, string username, string password) where T : DbCustomContext
-        {
-            var connectionString = ToConnectionString(host, port, database, username, password);
-            var res = version!.Split(new[] { '.' });
-            var major = int.Parse(res[0]);
-            var minor = int.Parse(res[1]);
-
-            var optionsBuilder = new DbContextOptionsBuilder<T>();
-
-            var options = optionsBuilder.UseNpgsql(connectionString, options =>
-            {
-                options.SetPostgresVersion(new Version(major, minor));
-                options.UseNetTopologySuite();
-            }).Options;
-
-            return options;
-        }
-
         public IProvider<GroundStation> CreateGroundStationProvider()
         {
             var provider = new Provider<GroundStation>(GetGroundStationSources());
