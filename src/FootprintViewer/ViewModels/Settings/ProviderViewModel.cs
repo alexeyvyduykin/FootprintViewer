@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
 
             SourceBuilderItems = new List<ISourceBuilderItem>();
 
-            RemoveSource = ReactiveCommand.Create<ISourceViewModel>(RemoveSourceImpl);
+            RemoveSource = ReactiveCommand.Create<ISourceViewModel, ISourceViewModel>(RemoveSourceImpl);
 
             AddSource = ReactiveCommand.Create<ISourceViewModel, ISourceViewModel>(AddSourceImpl);
         }
@@ -46,17 +46,19 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public ReactiveCommand<ISourceViewModel, Unit> RemoveSource { get; }
+        public ReactiveCommand<ISourceViewModel, ISourceViewModel> RemoveSource { get; }
 
         public ReactiveCommand<ISourceViewModel, ISourceViewModel> AddSource { get; }
 
-        private void RemoveSourceImpl(ISourceViewModel item)
+        private ISourceViewModel RemoveSourceImpl(ISourceViewModel item)
         {
             var temp = new List<ISourceViewModel>(Sources);
 
             temp.Remove(item);
 
-            Sources = new List<ISourceViewModel>(temp);
+            Sources = new List<ISourceViewModel>(temp); 
+            
+            return item;
         }
 
         private ISourceViewModel AddSourceImpl(ISourceViewModel item)

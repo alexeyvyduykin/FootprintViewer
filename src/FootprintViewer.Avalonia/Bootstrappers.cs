@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FootprintViewer.Configurations;
+﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
@@ -7,6 +6,7 @@ using FootprintViewer.ViewModels;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
+using System.Collections.Generic;
 
 namespace FootprintViewer.Avalonia
 {
@@ -35,25 +35,25 @@ namespace FootprintViewer.Avalonia
             switch (mode)
             {
                 case AppMode.Release:
-                {
-                    services.Register<IDataFactory>(() => new ReleaseDataFactory());
-                    break;
-                }
+                    {
+                        services.Register<IDataFactory>(() => new ReleaseDataFactory());
+                        break;
+                    }
                 case AppMode.Demo:
-                {
-                    services.Register<IDataFactory>(() => new DemoDataFactory());
-                    break;
-                }
+                    {
+                        services.Register<IDataFactory>(() => new DemoDataFactory());
+                        break;
+                    }
                 case AppMode.DevWork:
-                {
-                    services.Register<IDataFactory>(() => new DevWorkDataFactory());
-                    break;
-                }
+                    {
+                        services.Register<IDataFactory>(() => new DevWorkDataFactory());
+                        break;
+                    }
                 case AppMode.DevHome:
-                {
-                    services.Register<IDataFactory>(() => new DevHomeDataFactory());
-                    break;
-                }
+                    {
+                        services.Register<IDataFactory>(() => new DevHomeDataFactory());
+                        break;
+                    }
                 default:
                     services.Register<IDataFactory>(() => new ReleaseDataFactory());
                     break;

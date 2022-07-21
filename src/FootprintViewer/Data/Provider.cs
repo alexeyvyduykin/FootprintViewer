@@ -1,34 +1,27 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public abstract class BaseProvider<TSource>
+    public class Provider<TNative> : IProvider<TNative>
     {
-        protected List<TSource> _sources = new();
+        protected List<IDataSource> _sources = new();
+        protected readonly List<IDataManager<TNative>> _managers = new();
 
-        public void AddSource(TSource source)
-        {
-            _sources.Add(source);
-        }
-
-        protected IEnumerable<TSource> Sources => _sources;
-    }
-
-    public class Provider<TNative> : BaseProvider<IDataSource<TNative>>, IProvider<TNative>
-    {
         public Provider()
         {
-            _sources = new List<IDataSource<TNative>>();
+            _sources = new List<IDataSource>();
+            _managers = new List<IDataManager<TNative>>();
 
             UpdateSources = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => { }));
         }
 
-        public Provider(IDataSource<TNative>[] sources) : this()
+        public Provider(IDataSource[] sources) : this()
         {
             foreach (var item in sources)
             {
@@ -36,16 +29,9 @@ namespace FootprintViewer.Data
             }
         }
 
-        public IEnumerable<IDataSource<TNative>> GetSources() => _sources;        
-
         public ReactiveCommand<Unit, Unit> UpdateSources { get; }
 
-        public void ChangeSources(IDataSource<TNative>[] sources)
-        {
-            _sources = new List<IDataSource<TNative>>(sources);
-
-            UpdateSources.Execute().Subscribe();
-        }
+        public IEnumerable<IDataSource> GetSources() => _sources;
 
         public async Task<List<TNative>> GetNativeValuesAsync(IFilter<TNative>? filter)
         {
@@ -55,9 +41,20 @@ namespace FootprintViewer.Data
 
                 foreach (var source in Sources)
                 {
-                    var values = await source.GetNativeValuesAsync(filter);
+                    var sourceType = source.GetType().GetInterfaces().First();
 
-                    list.AddRange(values);
+                    var manager = _managers.Where(s =>
+                    {
+                        var res = s.GetType().BaseType?.GetGenericArguments()[1];
+                        return Equals(res, sourceType);
+                    }).FirstOrDefault();
+
+                    if (manager != null)
+                    {
+                        var values = await manager.GetNativeValuesAsync(source, filter);
+
+                        list.AddRange(values);
+                    }
                 }
 
                 return list;
@@ -72,13 +69,48 @@ namespace FootprintViewer.Data
 
                 foreach (var source in Sources)
                 {
-                    var values = await source.GetValuesAsync<T>(filter, converter);
+                    var sourceType = source.GetType().GetInterfaces().First();
 
-                    list.AddRange(values);
+                    var manager = _managers.Where(s =>
+                    {
+                        var res = s.GetType().BaseType?.GetGenericArguments()[1];
+                        return Equals(res, sourceType);
+                    }).FirstOrDefault();
+
+                    if (manager != null)
+                    {
+                        var values = await manager.GetValuesAsync(source, filter, converter);
+
+                        list.AddRange(values);
+                    }
                 }
 
                 return list;
             });
+        }
+
+        public void AddSource(IDataSource source)
+        {
+            _sources.Add(source);
+        }
+
+        public void AddSources(IEnumerable<IDataSource> sources)
+        {
+            _sources.AddRange(sources);
+        }
+
+        public void AddManagers(IEnumerable<IDataManager<TNative>> managers)
+        {
+            _managers.AddRange(managers);
+        }
+
+        protected IEnumerable<IDataSource> Sources => _sources;
+
+        public void ChangeSources(IDataSource[] sources)
+        {
+            _sources = new List<IDataSource>(sources);
+
+            UpdateSources.Execute().Subscribe();
         }
     }
 }

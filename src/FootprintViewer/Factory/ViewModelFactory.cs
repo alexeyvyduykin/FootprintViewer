@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
-using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
@@ -102,14 +101,14 @@ namespace FootprintViewer
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
 
-            var groundStationSources = ((Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>()).GetSources();
-            var satelliteSources = ((Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>()).GetSources();
-            var footprintSources = ((Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>()).GetSources();
-            var groundTargetSources = ((Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>()).GetSources();
-            var userGeometrySources = ((EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>()).GetSources();
-            var mapBackgroundSources = ((Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>()).GetSources();
-            var footprintPreviewSources = ((Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>()).GetSources();
-            var footprintPreviewGeometrySources = ((Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>()).GetSources();
+            var groundStationProvider = (Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>();
+            var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
+            var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            var groundTargetProvider = (Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+            var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+            var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
+            var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
             var groundStationProviderViewModel = new ProviderViewModel(_dependencyResolver)
             {
@@ -159,66 +158,46 @@ namespace FootprintViewer
                 AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
             };
 
-            groundStationProviderViewModel.Sources.AddRange(groundStationSources.Select(s => CreateSourceViewModel(s)));
-            satelliteProviderViewModel.Sources.AddRange(satelliteSources.Select(s => CreateSourceViewModel(s)));
-            footprintProviderViewModel.Sources.AddRange(footprintSources.Select(s => CreateSourceViewModel(s)));
-            groundTargetProviderViewModel.Sources.AddRange(groundTargetSources.Select(s => CreateSourceViewModel(s)));
-            userGeometryProviderViewModel.Sources.AddRange(userGeometrySources.Select(s => CreateSourceViewModel(s)));
-            mapBackgroundProviderViewModel.Sources.AddRange(mapBackgroundSources.Select(s => CreateSourceViewModel(s)));
-            footprintPreviewProviderViewModel.Sources.AddRange(footprintPreviewSources.Select(s => CreateSourceViewModel(s)));
-            footprintPreviewGeometryProviderViewModel.Sources.AddRange(footprintPreviewGeometrySources.Select(s => CreateSourceViewModel(s)));
+            groundStationProviderViewModel.Sources.AddRange(groundStationProvider.GetSources().Select(s => s.ToViewModel()));
+            satelliteProviderViewModel.Sources.AddRange(satelliteProvider.GetSources().Select(s => s.ToViewModel()));
+            footprintProviderViewModel.Sources.AddRange(footprintProvider.GetSources().Select(s => s.ToViewModel()));
+            groundTargetProviderViewModel.Sources.AddRange(groundTargetProvider.GetSources().Select(s => s.ToViewModel()));
+            userGeometryProviderViewModel.Sources.AddRange(userGeometryProvider.GetSources().Select(s => s.ToViewModel()));
+            mapBackgroundProviderViewModel.Sources.AddRange(mapBackgroundProvider.GetSources().Select(s => s.ToViewModel()));
+            footprintPreviewProviderViewModel.Sources.AddRange(footprintPreviewProvider.GetSources().Select(s => s.ToViewModel()));
+            footprintPreviewGeometryProviderViewModel.Sources.AddRange(footprintPreviewGeometryProvider.GetSources().Select(s => s.ToViewModel()));
 
-            var providers = new List<ProviderViewModel>()
-            {
-                footprintProviderViewModel,
-                groundTargetProviderViewModel,
-                groundStationProviderViewModel,
-                satelliteProviderViewModel,
-                userGeometryProviderViewModel,
-                footprintPreviewGeometryProviderViewModel,
-                mapBackgroundProviderViewModel,
-                footprintPreviewProviderViewModel,
-            };
+            //groundStationProviderViewModel.AddSource.Subscribe(source => 
+            //{
+            //    groundStationProvider.AddSource();
+            //});
+            //groundStationProviderViewModel.RemoveSource.Subscribe();
 
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
-                Providers = providers
+                Providers = new List<ProviderViewModel>()
+                {
+                    footprintProviderViewModel,
+                    groundTargetProviderViewModel,
+                    groundStationProviderViewModel,
+                    satelliteProviderViewModel,
+                    userGeometryProviderViewModel,
+                    footprintPreviewGeometryProviderViewModel,
+                    mapBackgroundProviderViewModel,
+                    footprintPreviewProviderViewModel,
+                }
             };
 
             return settingsViewer;
-        }
-
-        private ISourceViewModel CreateSourceViewModel<T>(IDataSource<T> dataSource)
-        {
-            if (dataSource is IDatabaseSource databaseSource)
-            {
-                return new DatabaseSourceViewModel(databaseSource);
-            }
-            else if (dataSource is IFileSource fileSource)
-            {
-                return new FileSourceViewModel(fileSource);
-            }
-            else if (dataSource is IFolderSource folderSource)
-            {
-                return new FolderSourceViewModel(folderSource);
-            }
-            else if (dataSource is IRandomSource randomSource)
-            {
-                return new RandomSourceViewModel(randomSource);
-            }
-            else
-            {
-                throw new Exception();
-            }
         }
 
         private ISourceViewModel CreateSource(SourceType type)
         {
             return type switch
             {
-                SourceType.File => new FileSourceViewModel(/*"FileSource"*/),
-                SourceType.Folder => new FolderSourceViewModel(/*"FolderSource"*/),
-                SourceType.Database => new DatabaseSourceViewModel(/*"FootprintDatabase.Satellites"*/),
+                SourceType.File => new FileSourceViewModel(),
+                SourceType.Folder => new FolderSourceViewModel(),
+                SourceType.Database => new DatabaseSourceViewModel(),
                 SourceType.Random => new RandomSourceViewModel("random"),
                 _ => throw new Exception(),
             };
@@ -245,5 +224,57 @@ namespace FootprintViewer
 
             return tab;
         }
+    }
+
+    public static class extns
+    {
+        public static ISourceViewModel ToViewModel(this IDataSource dataSource)
+        {
+            if (dataSource is IDatabaseSource databaseSource)
+            {
+                return new DatabaseSourceViewModel(databaseSource);
+            }
+            else if (dataSource is IFileSource fileSource)
+            {
+                return new FileSourceViewModel(fileSource);
+            }
+            else if (dataSource is IFolderSource folderSource)
+            {
+                return new FolderSourceViewModel(folderSource);
+            }
+            else if (dataSource is IRandomSource randomSource)
+            {
+                return new RandomSourceViewModel(randomSource);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
+        //public static IDataSource<T> ToModel<T>(this ISourceViewModel dataSource)
+        //{
+        //    if (dataSource is DatabaseSourceViewModel databaseSource)
+        //    {
+        //        return new DatabaseSourceViewModel(databaseSource);
+        //    }
+        //    else if (dataSource is IFileSource fileSource)
+        //    {
+        //        return new FileSourceViewModel(fileSource);
+        //    }
+        //    else if (dataSource is IFolderSource folderSource)
+        //    {
+        //        return new FolderSourceViewModel(folderSource);
+        //    }
+        //    else if (dataSource is IRandomSource randomSource)
+        //    {
+        //        return new RandomSourceViewModel(randomSource);
+        //    }
+        //    else
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
+
     }
 }

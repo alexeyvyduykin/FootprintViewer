@@ -1,7 +1,7 @@
-﻿using System.IO;
-using FootprintViewer.Data.Sources;
+﻿using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System.IO;
 
 namespace FootprintViewer.ViewModels
 {

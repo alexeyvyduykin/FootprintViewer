@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data.Sources;
+﻿using FootprintViewer.Data;
 
 namespace FootprintViewer.ViewModels
 {
@@ -18,7 +18,7 @@ namespace FootprintViewer.ViewModels
 
         public RandomSourceViewModel(IRandomSource randomSource) : this(randomSource.Name)
         {
-            
+
         }
 
         public string? Name => _name;

@@ -13,7 +13,7 @@ namespace FootprintViewer.Data
             Update = ReactiveCommand.Create(() => { });
         }
 
-        public EditableProvider(IDataSource<TNative>[] sources) : base(sources)
+        public EditableProvider(IDataSource[] sources) : base(sources)
         {
             Update = ReactiveCommand.Create(() => { });
         }
@@ -22,9 +22,20 @@ namespace FootprintViewer.Data
 
         public async Task EditAsync(string key, TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
+            foreach (var source in Sources)
             {
-                await source.EditAsync(key, value);
+                var sourceType = source.GetType().GetInterfaces().First();
+
+                var manager = _managers.Where(s =>
+                {
+                    var res = s.GetType().BaseType?.GetGenericArguments()[1];
+                    return Equals(res, sourceType);
+                }).FirstOrDefault();
+
+                if (manager != null && manager is IEditableDataManager<TNative> editable)
+                {
+                    await editable.EditAsync(source, key, value);
+                }
             }
 
             Update.Execute().Subscribe();
@@ -32,9 +43,20 @@ namespace FootprintViewer.Data
 
         public async Task AddAsync(TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
+            foreach (var source in Sources)
             {
-                await source.AddAsync(value);
+                var sourceType = source.GetType().GetInterfaces().First();
+
+                var manager = _managers.Where(s =>
+                {
+                    var res = s.GetType().BaseType?.GetGenericArguments()[1];
+                    return Equals(res, sourceType);
+                }).FirstOrDefault();
+
+                if (manager != null && manager is IEditableDataManager<TNative> editable)
+                {
+                    await editable.AddAsync(source, value);
+                }
             }
 
             Update.Execute().Subscribe();
@@ -42,9 +64,20 @@ namespace FootprintViewer.Data
 
         public async Task RemoveAsync(TNative value)
         {
-            foreach (var source in Sources.Where(s => s is IEditableDataSource<TNative>).Cast<IEditableDataSource<TNative>>())
+            foreach (var source in Sources)
             {
-                await source.RemoveAsync(value);
+                var sourceType = source.GetType().GetInterfaces().First();
+
+                var manager = _managers.Where(s =>
+                {
+                    var res = s.GetType().BaseType?.GetGenericArguments()[1];
+                    return Equals(res, sourceType);
+                }).FirstOrDefault();
+
+                if (manager != null && manager is IEditableDataManager<TNative> editable)
+                {
+                    await editable.RemoveAsync(source, value);
+                }
             }
 
             Update.Execute().Subscribe();

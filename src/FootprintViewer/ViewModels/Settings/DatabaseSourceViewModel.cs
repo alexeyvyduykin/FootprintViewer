@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using FootprintViewer.Data.Sources;
+﻿using FootprintViewer.Data;
 using Npgsql;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
