@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeUserGeometryInfo : UserGeometryInfo
+    public class DesignTimeUserGeometryViewModel : UserGeometryViewModel
     {
         private static readonly Random _random = new Random();
 
-        public DesignTimeUserGeometryInfo() : base(BuildModel())
+        public DesignTimeUserGeometryViewModel() : base(BuildModel())
         {
 
         }

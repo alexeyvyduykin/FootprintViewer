@@ -29,7 +29,7 @@ namespace FootprintViewer.ViewModels
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintTab _footprintTab;
         private readonly GroundTargetTab _groundTargetTab;
-        private readonly UserGeometryViewer _userGeometryViewer;
+        private readonly UserGeometryTab _userGeometryTab;
         private readonly FootprintPreviewTab _footprintPreviewTab;
         private readonly IUserLayerSource _userLayerSource;
         private readonly IFootprintLayerSource _footprintSource;
@@ -58,7 +58,7 @@ namespace FootprintViewer.ViewModels
             _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
             _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
             _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
-            _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
+            _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTab>();
             _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTab>();
 
             _infoPanel = factory.CreateInfoPanel();
@@ -479,13 +479,13 @@ namespace FootprintViewer.ViewModels
 
                     Task.Run(async () =>
                     {
-                        var infos = await _userGeometryViewer.GetUserGeometryInfoAsync(name);
+                        var viewModels = await _userGeometryTab.GetUserGeometryViewModelsAsync(name);
 
-                        var info = infos.FirstOrDefault();
+                        var vm = viewModels.FirstOrDefault();
 
-                        if (info != null)
+                        if (vm != null)
                         {
-                            ClickInfoPanel.Show(new UserGeometryClickInfoPanel(info));
+                            ClickInfoPanel.Show(new UserGeometryClickInfoPanel(vm));
                         }
                     });
                 }

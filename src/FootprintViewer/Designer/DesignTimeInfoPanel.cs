@@ -10,7 +10,7 @@ namespace FootprintViewer.Designer
             Show(new AOIInfoPanel() { Text = "Description" });
             Show(new FootprintClickInfoPanel(new FootprintViewModel(DesignTimeFootprintViewModel.BuildModel())));
             Show(new GroundTargetClickInfoPanel(new GroundTargetViewModel(DesignTimeGroundTargetViewModel.BuildModel())));
-            Show(new UserGeometryClickInfoPanel(new UserGeometryInfo(DesignTimeUserGeometryInfo.BuildModel())));
+            Show(new UserGeometryClickInfoPanel(new UserGeometryViewModel(DesignTimeUserGeometryViewModel.BuildModel())));
         }
     }
 
@@ -40,7 +40,7 @@ namespace FootprintViewer.Designer
 
     public class DesignTimeUserGeometryClickInfoPanelItem : UserGeometryClickInfoPanel
     {
-        public DesignTimeUserGeometryClickInfoPanelItem() : base(new UserGeometryInfo(DesignTimeUserGeometryInfo.BuildModel()))
+        public DesignTimeUserGeometryClickInfoPanelItem() : base(new UserGeometryViewModel(DesignTimeUserGeometryViewModel.BuildModel()))
         {
 
         }

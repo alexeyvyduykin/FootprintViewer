@@ -89,11 +89,17 @@
     <Compile Update="Views\SidePanelTabs\ItemTemplates\SatelliteItemView.axaml.cs">
       <DependentUpon>SatelliteItemView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SidePanelTabs\ItemTemplates\UserGeometryItemView.axaml.cs">
+      <DependentUpon>UserGeometryItemView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
       <DependentUpon>SatelliteTabView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SidePanelTabs\FootprintPreviewTabView.axaml.cs">
       <DependentUpon>FootprintPreviewTabView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SidePanelTabs\UserGeometryTabView.axaml.cs">
+      <DependentUpon>UserGeometryTabView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

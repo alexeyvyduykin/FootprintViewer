@@ -16,7 +16,7 @@ namespace FootprintViewer.Designer
                 new GroundStationTab(data),
                 new GroundTargetTab(data),
                 new FootprintTab(data),
-                new UserGeometryViewer(data),
+                new UserGeometryTab(data),
                 //new AppSettings(),
             };
 

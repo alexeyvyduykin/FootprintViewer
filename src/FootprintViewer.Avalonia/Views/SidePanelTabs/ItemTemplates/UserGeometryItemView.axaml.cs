@@ -10,11 +10,11 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class UserGeometryInfoView : ReactiveUserControl<UserGeometryInfo>
+    public partial class UserGeometryItemView : ReactiveUserControl<UserGeometryViewModel>
     {
-        private UserGeometryViewer? _userGeometryViewer;
+        private UserGeometryTab? _userGeometryTab;
 
-        public UserGeometryInfoView()
+        public UserGeometryItemView()
         {
             InitializeComponent();
 
@@ -34,9 +34,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private void ClickImpl()
         {
-            _userGeometryViewer ??= Locator.Current.GetExistingService<UserGeometryViewer>();
+            _userGeometryTab ??= Locator.Current.GetExistingService<UserGeometryTab>();
 
-            _userGeometryViewer.ViewerList.Remove.Execute(ViewModel).Subscribe();
+            _userGeometryTab.ViewerList.Remove.Execute(ViewModel).Subscribe();
         }
     }
 }

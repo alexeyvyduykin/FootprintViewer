@@ -7,10 +7,10 @@
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="380"  
-             x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView">
+             x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryItemView">
 
   <Design.DataContext>
-    <vmd:DesignTimeUserGeometryInfo/>
+    <vmd:DesignTimeUserGeometryViewModel/>
   </Design.DataContext>
 
   <UserControl.Resources>

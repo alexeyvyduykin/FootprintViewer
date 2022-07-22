@@ -47,14 +47,14 @@
 
     public class UserGeometryClickInfoPanel : CustomInfoPanel
     {
-        private readonly UserGeometryInfo _userGeometryInfo;
+        private readonly UserGeometryViewModel _userGeometryViewModel;
 
-        public UserGeometryClickInfoPanel(UserGeometryInfo userGeometryInfo)
+        public UserGeometryClickInfoPanel(UserGeometryViewModel userGeometryViewModel)
         {
-            _userGeometryInfo = userGeometryInfo;
+            _userGeometryViewModel = userGeometryViewModel;
         }
 
-        public UserGeometryInfo Info => _userGeometryInfo;
+        public UserGeometryViewModel UserGeometryViewModel => _userGeometryViewModel;
 
         public override string GetKey() => "UserGeometryClick";
     }

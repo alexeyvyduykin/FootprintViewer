@@ -35,8 +35,8 @@
       <views:FootprintTabView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:UserGeometryViewer">
-      <views:UserGeometryViewerView/>
+    <DataTemplate DataType="vm:UserGeometryTab">
+      <views:UserGeometryTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:GroundStationTab">
@@ -77,7 +77,7 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-      <DataTemplate x:Key="UserGeometryViewer">
+      <DataTemplate x:Key="UserGeometryTab">
         <Grid>
           <Viewbox Margin="8">
             <PathIcon Data="{DynamicResource fg-map-user}"/>

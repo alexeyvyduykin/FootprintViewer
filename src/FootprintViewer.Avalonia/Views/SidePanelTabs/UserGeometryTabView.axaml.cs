@@ -5,9 +5,9 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class UserGeometryViewerView : ReactiveUserControl<UserGeometryViewer>
+    public partial class UserGeometryTabView : ReactiveUserControl<UserGeometryTab>
     {
-        public UserGeometryViewerView()
+        public UserGeometryTabView()
         {
             InitializeComponent();
 

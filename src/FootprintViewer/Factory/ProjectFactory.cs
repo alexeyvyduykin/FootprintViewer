@@ -162,13 +162,9 @@ namespace FootprintViewer
             return new SatelliteTab(_dependencyResolver);
         }
 
-        public UserGeometryViewer CreateUserGeometryViewer()
+        public UserGeometryTab CreateUserGeometryTab()
         {
-            var userGeometryViewer = new UserGeometryViewer(_dependencyResolver);
-
-            return userGeometryViewer;
+            return new UserGeometryTab(_dependencyResolver);
         }
-
-
     }
 }

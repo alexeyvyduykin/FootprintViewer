@@ -3,11 +3,11 @@ using ReactiveUI;
 
 namespace FootprintViewer.ViewModels
 {
-    public class UserGeometryInfo : ReactiveObject, IViewerItem, ISelectorItem
+    public class UserGeometryViewModel : ReactiveObject, IViewerItem, ISelectorItem
     {
         private readonly UserGeometry _model;
 
-        public UserGeometryInfo(UserGeometry model)
+        public UserGeometryViewModel(UserGeometry model)
         {
             _model = model;
         }

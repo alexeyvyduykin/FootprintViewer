@@ -42,7 +42,7 @@ namespace FootprintViewer
             return new FootprintPreviewViewerList(provider);
         }
 
-        public IViewerList<UserGeometryInfo> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
+        public IViewerList<UserGeometryViewModel> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
         {
             return new UserGeometryViewerList(provider);
         }
