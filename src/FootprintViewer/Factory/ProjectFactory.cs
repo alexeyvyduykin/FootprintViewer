@@ -58,14 +58,14 @@ namespace FootprintViewer
             return new MapLayerList(_dependencyResolver);
         }
 
-        public SceneSearch CreateSceneSearch()
+        public FootprintPreviewTab CreateFootprintPreviewTab()
         {
             var map = (Map)_dependencyResolver.GetExistingService<IMap>();
             var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
 
-            var sceneSearch = new SceneSearch(_dependencyResolver);
+            var footprintPreviewTab = new FootprintPreviewTab(_dependencyResolver);
 
-            sceneSearch.ViewerList.SelectedItemObservable.Subscribe(footprint =>
+            footprintPreviewTab.ViewerList.SelectedItemObservable.Subscribe(footprint =>
             {
                 if (footprint != null && footprint.Path != null)
                 {
@@ -73,29 +73,29 @@ namespace FootprintViewer
 
                     map.ReplaceLayer(layer, LayerType.FootprintImage);
 
-                    if (sceneSearch.Geometries.ContainsKey(footprint.Name!) == true)
+                    if (footprintPreviewTab.Geometries.ContainsKey(footprint.Name!) == true)
                     {
-                        mapNavigator.SetFocusToPoint(sceneSearch.Geometries[footprint.Name!].Centroid.ToMPoint());
+                        mapNavigator.SetFocusToPoint(footprintPreviewTab.Geometries[footprint.Name!].Centroid.ToMPoint());
                     }
                 }
             });
 
-            sceneSearch.ViewerList.MouseOverEnter.Subscribe(footprint =>
+            footprintPreviewTab.ViewerList.MouseOverEnter.Subscribe(footprint =>
             {
-                if (sceneSearch.Geometries.ContainsKey(footprint.Name!) == true)
+                if (footprintPreviewTab.Geometries.ContainsKey(footprint.Name!) == true)
                 {
                     var layer = map.GetLayer(LayerType.FootprintImageBorder);
 
                     if (layer != null && layer is WritableLayer writableLayer)
                     {
                         writableLayer.Clear();
-                        writableLayer.Add(new GeometryFeature() { Geometry = sceneSearch.Geometries[footprint.Name!] });
+                        writableLayer.Add(new GeometryFeature() { Geometry = footprintPreviewTab.Geometries[footprint.Name!] });
                         writableLayer.DataHasChanged();
                     }
                 }
             });
 
-            sceneSearch.ViewerList.MouseOverLeave.Subscribe(_ =>
+            footprintPreviewTab.ViewerList.MouseOverLeave.Subscribe(_ =>
             {
                 var layer = map.GetLayer(LayerType.FootprintImageBorder);
 
@@ -106,7 +106,7 @@ namespace FootprintViewer
                 }
             });
 
-            return sceneSearch;
+            return footprintPreviewTab;
         }
 
         public FootprintTab CreateFootprintTab()

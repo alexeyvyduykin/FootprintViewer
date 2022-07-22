@@ -11,7 +11,7 @@ namespace FootprintViewer.Designer
 
             var tabs = new SidePanelTab[]
             {
-                new SceneSearch(data),
+                new FootprintPreviewTab(data),
                 new SatelliteTab(data),
                 new GroundStationTab(data),
                 new GroundTargetTab(data),

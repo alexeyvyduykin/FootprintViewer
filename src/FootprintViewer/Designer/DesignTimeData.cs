@@ -41,7 +41,7 @@ namespace FootprintViewer.Designer
         private GroundTargetTab? _groundTargetTab;
         private GroundStationTab? _groundStationTab;
         private UserGeometryViewer? _userGeometryViewer;
-        private SceneSearch? _sceneSearch;
+        private FootprintPreviewTab? _footprintPreviewTab;
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
         private CustomToolBar? _customToolBar;

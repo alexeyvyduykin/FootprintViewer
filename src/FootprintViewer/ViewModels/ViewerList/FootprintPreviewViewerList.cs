@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintPreviewViewerList : BaseViewerList<FootprintPreviewInfo>
+    public class FootprintPreviewViewerList : BaseViewerList<FootprintPreviewViewModel>
     {
         private readonly IProvider<FootprintPreview> _provider;
 
@@ -14,13 +14,13 @@ namespace FootprintViewer.ViewModels
             _provider = provider;
         }
 
-        protected override async Task<List<FootprintPreviewInfo>> LoadingAsync(IFilter<FootprintPreviewInfo>? filter = null)
+        protected override async Task<List<FootprintPreviewViewModel>> LoadingAsync(IFilter<FootprintPreviewViewModel>? filter = null)
         {
-            return await _provider.GetValuesAsync(filter, s => new FootprintPreviewInfo(s));
+            return await _provider.GetValuesAsync(filter, s => new FootprintPreviewViewModel(s));
         }
 
-        protected override Task AddAsync(FootprintPreviewInfo? value) => throw new Exception();
+        protected override Task AddAsync(FootprintPreviewViewModel? value) => throw new Exception();
 
-        protected override Task RemoveAsync(FootprintPreviewInfo? value) => throw new Exception();
+        protected override Task RemoveAsync(FootprintPreviewViewModel? value) => throw new Exception();
     }
 }

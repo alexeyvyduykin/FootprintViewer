@@ -10,9 +10,9 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class SceneSearchView : ReactiveUserControl<SceneSearch>
+    public partial class FootprintPreviewTabView : ReactiveUserControl<FootprintPreviewTab>
     {
-        public SceneSearchView()
+        public FootprintPreviewTabView()
         {
             InitializeComponent();
 

@@ -16,11 +16,11 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class FootprintPreviewView : ReactiveUserControl<FootprintPreviewInfo>
+    public partial class FootprintPreviewItemView : ReactiveUserControl<FootprintPreviewViewModel>
     {
-        private static SceneSearch? _sceneSearch;
+        private static FootprintPreviewTab? _footprintPreviewTab;
 
-        public FootprintPreviewView()
+        public FootprintPreviewItemView()
         {
             InitializeComponent();
 
@@ -44,16 +44,16 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private void EnterImpl()
         {
-            _sceneSearch ??= Locator.Current.GetExistingService<SceneSearch>();
+            _footprintPreviewTab ??= Locator.Current.GetExistingService<FootprintPreviewTab>();
 
-            _sceneSearch.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
+            _footprintPreviewTab.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
         }
 
         private void LeaveImpl()
         {
-            _sceneSearch ??= Locator.Current.GetExistingService<SceneSearch>();
+            _footprintPreviewTab ??= Locator.Current.GetExistingService<FootprintPreviewTab>();
 
-            _sceneSearch.ViewerList.MouseOverLeave.Execute().Subscribe();
+            _footprintPreviewTab.ViewerList.MouseOverLeave.Execute().Subscribe();
         }
 
         private static object Convert(SKImage? image)

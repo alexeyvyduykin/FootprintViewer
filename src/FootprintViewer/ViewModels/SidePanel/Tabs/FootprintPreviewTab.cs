@@ -9,12 +9,12 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SceneSearch : SidePanelTab
+    public class FootprintPreviewTab : SidePanelTab
     {
         private readonly IProvider<(string, NetTopologySuite.Geometries.Geometry)> _footprintPreviewGeometryProvider;
         private readonly ObservableAsPropertyHelper<IDictionary<string, NetTopologySuite.Geometries.Geometry>> _geometries;
 
-        public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
+        public FootprintPreviewTab(IReadonlyDependencyResolver dependencyResolver)
         {
             var provider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
@@ -59,10 +59,10 @@ namespace FootprintViewer.ViewModels
         private ReactiveCommand<Unit, List<(string, NetTopologySuite.Geometries.Geometry)>> LoadFootprintPreviewGeometry { get; }
 
         [Reactive]
-        public IViewerList<FootprintPreviewInfo> ViewerList { get; private set; }
+        public IViewerList<FootprintPreviewViewModel> ViewerList { get; private set; }
 
         [Reactive]
-        public IFilter<FootprintPreviewInfo> Filter { get; private set; }
+        public IFilter<FootprintPreviewViewModel> Filter { get; private set; }
 
         public IDictionary<string, NetTopologySuite.Geometries.Geometry> Geometries => _geometries.Value;
     }

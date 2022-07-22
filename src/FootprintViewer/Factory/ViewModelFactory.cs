@@ -37,7 +37,7 @@ namespace FootprintViewer
             return new GroundStationViewerList(provider);
         }
 
-        public IViewerList<FootprintPreviewInfo> CreateFootprintPreviewViewerList(IProvider<FootprintPreview> provider)
+        public IViewerList<FootprintPreviewViewModel> CreateFootprintPreviewViewerList(IProvider<FootprintPreview> provider)
         {
             return new FootprintPreviewViewerList(provider);
         }

@@ -24,7 +24,7 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class SceneSearchFilter : ViewerListFilter<FootprintPreviewInfo>
+    public class SceneSearchFilter : ViewerListFilter<FootprintPreviewViewModel>
     {
         private IDictionary<string, Geometry>? _geometries;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
@@ -88,7 +88,7 @@ namespace FootprintViewer.ViewModels
             Cloudiness = temp;
         }
 
-        public override bool Filtering(FootprintPreviewInfo value)
+        public override bool Filtering(FootprintPreviewViewModel value)
         {
             bool isAoiCondition = false;
 

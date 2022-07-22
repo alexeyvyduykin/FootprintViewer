@@ -30,7 +30,7 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintTab _footprintTab;
         private readonly GroundTargetTab _groundTargetTab;
         private readonly UserGeometryViewer _userGeometryViewer;
-        private readonly SceneSearch _sceneSearch;
+        private readonly FootprintPreviewTab _footprintPreviewTab;
         private readonly IUserLayerSource _userLayerSource;
         private readonly IFootprintLayerSource _footprintSource;
         private readonly IEditLayerSource _editSource;
@@ -59,7 +59,7 @@ namespace FootprintViewer.ViewModels
             _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
             _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
             _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
-            _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
+            _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTab>();
 
             _infoPanel = factory.CreateInfoPanel();
 
@@ -75,12 +75,12 @@ namespace FootprintViewer.ViewModels
                 {
                     if (s is Geometry geometry)
                     {
-                        _sceneSearch.SetAOI(geometry);
+                        _footprintPreviewTab.SetAOI(geometry);
                     }
                 }
                 else
                 {
-                    _sceneSearch.ResetAOI();
+                    _footprintPreviewTab.ResetAOI();
                 }
             };
 

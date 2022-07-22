@@ -77,6 +77,9 @@
     <Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintItemView.axaml.cs">
       <DependentUpon>FootprintItemView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintPreviewItemView.axaml.cs">
+      <DependentUpon>FootprintPreviewItemView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SidePanelTabs\ItemTemplates\GroundStationItemView.axaml.cs">
       <DependentUpon>GroundStationItemView.axaml</DependentUpon>
     </Compile>
@@ -88,6 +91,9 @@
     </Compile>
     <Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
       <DependentUpon>SatelliteTabView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SidePanelTabs\FootprintPreviewTabView.axaml.cs">
+      <DependentUpon>FootprintPreviewTabView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

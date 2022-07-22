@@ -19,8 +19,8 @@
 
   <UserControl.DataTemplates>
 
-    <DataTemplate DataType="vm:SceneSearch">
-      <views:SceneSearchView/>
+    <DataTemplate DataType="vm:FootprintPreviewTab">
+		<views:FootprintPreviewTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:SatelliteTab">
@@ -51,7 +51,7 @@
 
   <UserControl.Resources>
     <selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
-      <DataTemplate x:Key="SceneSearch">
+      <DataTemplate x:Key="FootprintPreviewTab">
         <Viewbox Margin="4">
           <materialIcons:MaterialIcon Kind="Image"/>
         </Viewbox>

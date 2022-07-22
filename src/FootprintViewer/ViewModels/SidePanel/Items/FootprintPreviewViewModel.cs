@@ -4,9 +4,9 @@ using SkiaSharp;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintPreviewInfo : ReactiveObject, IViewerItem
+    public class FootprintPreviewViewModel : ReactiveObject, IViewerItem
     {
-        public FootprintPreviewInfo(FootprintPreview model)
+        public FootprintPreviewViewModel(FootprintPreview model)
         {
             Name = model.Name!;
             Date = model.Date;
