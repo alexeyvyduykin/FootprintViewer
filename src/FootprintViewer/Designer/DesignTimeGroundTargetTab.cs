@@ -2,11 +2,11 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeGroundTargetViewer : GroundTargetViewer
+    public class DesignTimeGroundTargetTab : GroundTargetTab
     {
         private static readonly DesignTimeData _designTimeData = new();
 
-        public DesignTimeGroundTargetViewer() : base(_designTimeData)
+        public DesignTimeGroundTargetTab() : base(_designTimeData)
         {
 
         }

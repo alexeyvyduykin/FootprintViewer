@@ -27,8 +27,8 @@
       <views:SatelliteViewerView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:GroundTargetViewer">
-      <views:GroundTargetViewerView/>
+    <DataTemplate DataType="vm:GroundTargetTab">
+      <views:GroundTargetTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:FootprintTab">
@@ -63,7 +63,7 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-      <DataTemplate x:Key="GroundTargetViewer">
+      <DataTemplate x:Key="GroundTargetTab">
         <Grid>
           <Viewbox Margin="8">
             <PathIcon Data="{DynamicResource fg-pois}"/>

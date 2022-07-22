@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundTargetViewerList : BaseViewerList<GroundTargetInfo>
+    public class GroundTargetViewerList : BaseViewerList<GroundTargetViewModel>
     {
         private readonly IProvider<GroundTarget> _provider;
 
@@ -14,13 +14,13 @@ namespace FootprintViewer.ViewModels
             _provider = provider;
         }
 
-        protected override async Task<List<GroundTargetInfo>> LoadingAsync(IFilter<GroundTargetInfo>? filter = null)
+        protected override async Task<List<GroundTargetViewModel>> LoadingAsync(IFilter<GroundTargetViewModel>? filter = null)
         {
-            return await _provider.GetValuesAsync(filter, s => new GroundTargetInfo(s));
+            return await _provider.GetValuesAsync(filter, s => new GroundTargetViewModel(s));
         }
 
-        protected override Task AddAsync(GroundTargetInfo? value) => throw new Exception();
+        protected override Task AddAsync(GroundTargetViewModel? value) => throw new Exception();
 
-        protected override Task RemoveAsync(GroundTargetInfo? value) => throw new Exception();
+        protected override Task RemoveAsync(GroundTargetViewModel? value) => throw new Exception();
     }
 }

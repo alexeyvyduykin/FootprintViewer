@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class GroundTargetViewer : SidePanelTab
+    public class GroundTargetTab : SidePanelTab
     {
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTarget> _provider;
         private string[]? _names;
-        private readonly IViewerList<GroundTargetInfo> _viewerList;
+        private readonly IViewerList<GroundTargetViewModel> _viewerList;
 
-        public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
+        public GroundTargetTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
@@ -29,7 +29,7 @@ namespace FootprintViewer.ViewModels
 
             _viewerList = viewModelFactory.CreateGroundTargetViewerList(_provider);
 
-            _provider.Observable.Skip(1).Select(s => (IFilter<GroundTargetInfo>?)null).InvokeCommand(_viewerList.Loading);
+            _provider.Observable.Skip(1).Select(s => (IFilter<GroundTargetViewModel>?)null).InvokeCommand(_viewerList.Loading);
 
             // Update
 
@@ -62,9 +62,9 @@ namespace FootprintViewer.ViewModels
             });
         }
 
-        public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
+        public async Task<List<GroundTargetViewModel>> GetGroundTargetViewModelsAsync(string name)
         {
-            return await _provider.GetValuesAsync(new NameFilter<GroundTargetInfo>(new[] { name }), s => new GroundTargetInfo(s));
+            return await _provider.GetValuesAsync(new NameFilter<GroundTargetViewModel>(new[] { name }), s => new GroundTargetViewModel(s));
         }
 
         [Reactive]
@@ -73,6 +73,6 @@ namespace FootprintViewer.ViewModels
         [Reactive]
         public ReactiveObject? MainContent { get; private set; }
 
-        public IViewerList<GroundTargetInfo> ViewerList => _viewerList;
+        public IViewerList<GroundTargetViewModel> ViewerList => _viewerList;
     }
 }

@@ -14,7 +14,7 @@ namespace FootprintViewer.Designer
                 new SceneSearch(data),
                 new SatelliteViewer(data),
                 new GroundStationTab(data),
-                new GroundTargetViewer(data),
+                new GroundTargetTab(data),
                 new FootprintTab(data),
                 new UserGeometryViewer(data),
                 //new AppSettings(),

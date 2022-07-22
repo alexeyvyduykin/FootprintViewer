@@ -27,7 +27,7 @@ namespace FootprintViewer
             return new FootprintViewerList(provider);
         }
 
-        public IViewerList<GroundTargetInfo> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
+        public IViewerList<GroundTargetViewModel> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
         {
             return new GroundTargetViewerList(provider);
         }

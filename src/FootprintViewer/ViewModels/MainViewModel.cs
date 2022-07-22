@@ -28,7 +28,7 @@ namespace FootprintViewer.ViewModels
         private readonly BottomPanel _bottomPanel;
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintTab _footprintTab;
-        private readonly GroundTargetViewer _groundTargetViewer;
+        private readonly GroundTargetTab _groundTargetTab;
         private readonly UserGeometryViewer _userGeometryViewer;
         private readonly SceneSearch _sceneSearch;
         private readonly IUserLayerSource _userLayerSource;
@@ -57,7 +57,7 @@ namespace FootprintViewer.ViewModels
             _footprintSource = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
             _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
-            _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
+            _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
             _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
 
@@ -436,13 +436,13 @@ namespace FootprintViewer.ViewModels
 
                     Task.Run(async () =>
                     {
-                        var infos = await _groundTargetViewer.GetGroundTargetInfoAsync(name);
+                        var viewModels = await _groundTargetTab.GetGroundTargetViewModelsAsync(name);
 
-                        var info = infos.FirstOrDefault();
+                        var vm = viewModels.FirstOrDefault();
 
-                        if (info != null)
+                        if (vm != null)
                         {
-                            ClickInfoPanel.Show(new GroundTargetClickInfoPanel(info));
+                            ClickInfoPanel.Show(new GroundTargetClickInfoPanel(vm));
                         }
                     });
                 }

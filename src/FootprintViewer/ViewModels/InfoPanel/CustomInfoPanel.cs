@@ -33,14 +33,14 @@
 
     public class GroundTargetClickInfoPanel : CustomInfoPanel
     {
-        private readonly GroundTargetInfo _groundTargetInfo;
+        private readonly GroundTargetViewModel _groundTargetViewModel;
 
-        public GroundTargetClickInfoPanel(GroundTargetInfo groundTargetInfo)
+        public GroundTargetClickInfoPanel(GroundTargetViewModel groundTargetViewModel)
         {
-            _groundTargetInfo = groundTargetInfo;
+            _groundTargetViewModel = groundTargetViewModel;
         }
 
-        public GroundTargetInfo Info => _groundTargetInfo;
+        public GroundTargetViewModel GroundTargetViewModel => _groundTargetViewModel;
 
         public override string GetKey() => "GroundTargetClick";
     }

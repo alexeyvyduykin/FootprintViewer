@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -11,11 +10,11 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class GroundTargetInfoView : ReactiveUserControl<GroundTargetInfo>
+    public partial class GroundTargetItemView : ReactiveUserControl<GroundTargetViewModel>
     {
-        private static GroundTargetViewer? _groundTargetViewer;
+        private static GroundTargetTab? _groundTargetTab;
 
-        public GroundTargetInfoView()
+        public GroundTargetItemView()
         {
             InitializeComponent();
 
@@ -37,16 +36,16 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private void EnterImpl()
         {
-            _groundTargetViewer ??= Locator.Current.GetExistingService<GroundTargetViewer>();
+            _groundTargetTab ??= Locator.Current.GetExistingService<GroundTargetTab>();
 
-            _groundTargetViewer?.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
+            _groundTargetTab?.ViewerList.MouseOverEnter.Execute(ViewModel!).Subscribe();
         }
 
         private void LeaveImpl()
         {
-            _groundTargetViewer ??= Locator.Current.GetExistingService<GroundTargetViewer>();
+            _groundTargetTab ??= Locator.Current.GetExistingService<GroundTargetTab>();
 
-            _groundTargetViewer?.ViewerList.MouseOverLeave.Execute().Subscribe();
+            _groundTargetTab?.ViewerList.MouseOverLeave.Execute().Subscribe();
         }
     }
 }

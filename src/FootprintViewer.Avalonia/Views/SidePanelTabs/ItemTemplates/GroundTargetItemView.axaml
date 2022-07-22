@@ -1,4 +1,4 @@
-<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundTargetInfoView"
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundTargetItemView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,7 +10,7 @@
              mc:Ignorable="d" d:DesignWidth="280">
 
   <Design.DataContext>
-    <vmd:DesignTimeGroundTargetInfo/>
+    <vmd:DesignTimeGroundTargetViewModel/>
   </Design.DataContext>
 
   <UserControl.Resources>

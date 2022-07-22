@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeGroundTargetInfo : GroundTargetInfo
+    public class DesignTimeGroundTargetViewModel : GroundTargetViewModel
     {
         private readonly static Random _random = new Random();
 
-        public DesignTimeGroundTargetInfo() : base(BuildModel())
+        public DesignTimeGroundTargetViewModel() : base(BuildModel())
         {
 
         }

@@ -120,11 +120,11 @@ namespace FootprintViewer
             return footprintObserver;
         }
 
-        public GroundTargetViewer CreateGroundTargetViewer()
+        public GroundTargetTab CreateGroundTargetTab()
         {
             var source = _dependencyResolver.GetExistingService<ITargetLayerSource>();
 
-            var groundTargetViewer = new GroundTargetViewer(_dependencyResolver);
+            var groundTargetViewer = new GroundTargetTab(_dependencyResolver);
 
             groundTargetViewer.ViewerList.SelectedItemObservable.Subscribe(groundTarget =>
             {

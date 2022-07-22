@@ -102,7 +102,7 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterLazySingleton<SceneSearch>(() => factory.CreateSceneSearch());
             services.RegisterLazySingleton<SatelliteViewer>(() => factory.CreateSatelliteViewer());
-            services.RegisterLazySingleton<GroundTargetViewer>(() => factory.CreateGroundTargetViewer());
+            services.RegisterLazySingleton<GroundTargetTab>(() => factory.CreateGroundTargetTab());
             services.RegisterLazySingleton<FootprintTab>(() => factory.CreateFootprintTab());
             services.RegisterLazySingleton<UserGeometryViewer>(() => factory.CreateUserGeometryViewer());
             services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
@@ -119,7 +119,7 @@ namespace FootprintViewer.Avalonia
                     resolver.GetExistingService<SceneSearch>(),
                     resolver.GetExistingService<SatelliteViewer>(),
                     resolver.GetExistingService<GroundStationTab>(),
-                    resolver.GetExistingService<GroundTargetViewer>(),
+                    resolver.GetExistingService<GroundTargetTab>(),
                     resolver.GetExistingService<FootprintTab>(),
                     resolver.GetExistingService<UserGeometryViewer>(),
                     resolver.GetExistingService<SettingsTabViewModel>(),
