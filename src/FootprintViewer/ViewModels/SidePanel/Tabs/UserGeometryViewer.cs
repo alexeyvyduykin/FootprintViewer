@@ -2,7 +2,6 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -13,7 +12,6 @@ namespace FootprintViewer.ViewModels
     public class UserGeometryViewer : SidePanelTab
     {
         private readonly IEditableProvider<UserGeometry> _provider;
-        private bool _firstLoading = true;
 
         public UserGeometryViewer(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -24,14 +22,15 @@ namespace FootprintViewer.ViewModels
 
             ViewerList = viewModelFactory.CreateUserGeometryViewerList(_provider);
 
+            _provider.Observable.Skip(1).Select(s => (IFilter<UserGeometryInfo>?)null).InvokeCommand(ViewerList.Loading);
+
             // First loading
 
             this.WhenAnyValue(s => s.IsActive)
-                .Where(s => s == true && _firstLoading == true)
+                .Take(1)
+                .Where(active => active == true)
                 .Select(_ => (IFilter<UserGeometryInfo>?)null)
                 .InvokeCommand(ViewerList.Loading);
-
-            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
 
             // Updating
 

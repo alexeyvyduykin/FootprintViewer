@@ -10,16 +10,18 @@ namespace FootprintViewer.ViewModels
     {
         public FootprintObserver(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintProvider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            var provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
             var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            ViewerList = viewModelFactory.CreateFootprintViewerList(footprintProvider);
+            ViewerList = viewModelFactory.CreateFootprintViewerList(provider);
 
             Filter = new FootprintObserverFilter(dependencyResolver);
 
             Title = "Просмотр рабочей программы";
 
             ClickOnItem = ReactiveCommand.Create<FootprintInfo?, FootprintInfo?>(s => { ViewerList.ClickOnItem(s); return s; });
+
+            provider.Observable.Skip(1).Select(s => Filter).InvokeCommand(ViewerList.Loading);
 
             // First loading
 

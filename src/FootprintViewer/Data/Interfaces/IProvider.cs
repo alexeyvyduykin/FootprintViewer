@@ -8,6 +8,8 @@ namespace FootprintViewer.Data
     public interface IProvider
     {
         SourceList<IDataSource> Sources { get; }
+
+        IObservable<IChangeSet<IDataSource>> Observable { get; }
     }
 
     public interface IProvider<TNative> : IProvider

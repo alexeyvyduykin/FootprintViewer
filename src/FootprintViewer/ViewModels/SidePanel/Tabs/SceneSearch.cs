@@ -16,12 +16,12 @@ namespace FootprintViewer.ViewModels
 
         public SceneSearch(IReadonlyDependencyResolver dependencyResolver)
         {
-            var footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            var provider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
             var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            ViewerList = viewModelFactory.CreateFootprintPreviewViewerList(footprintPreviewProvider);
-
+            ViewerList = viewModelFactory.CreateFootprintPreviewViewerList(provider);
+         
             Filter = new SceneSearchFilter(dependencyResolver);
 
             Title = "Поиск сцены";
@@ -30,6 +30,8 @@ namespace FootprintViewer.ViewModels
 
             // TODO: duplicates           
             _geometries = LoadFootprintPreviewGeometry.Select(s => s.ToDictionary(s => s.Item1, s => s.Item2)).ToProperty(this, x => x.Geometries);
+
+            provider.Observable.Skip(1).Select(s => Filter).InvokeCommand(ViewerList.Loading);
 
             // First loading
 

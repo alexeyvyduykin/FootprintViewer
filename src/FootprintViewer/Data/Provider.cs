@@ -1,9 +1,7 @@
 ﻿using DynamicData;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -16,8 +14,6 @@ namespace FootprintViewer.Data
         public Provider()
         {
             _managers = new List<IDataManager<TNative>>();
-
-            UpdateSources = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => { }));
         }
 
         public Provider(IDataSource[] sources) : this()
@@ -25,9 +21,9 @@ namespace FootprintViewer.Data
             Sources.AddRange(sources);
         }
 
-        public SourceList<IDataSource> Sources { get; } = new();
+        public IObservable<IChangeSet<IDataSource>> Observable => Sources.Connect();
 
-        public ReactiveCommand<Unit, Unit> UpdateSources { get; }
+        public SourceList<IDataSource> Sources { get; } = new();
 
         public IEnumerable<IDataSource> GetSources() => Sources.Items;
 

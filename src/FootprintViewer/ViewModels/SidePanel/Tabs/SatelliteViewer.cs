@@ -3,7 +3,6 @@ using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -11,30 +10,30 @@ namespace FootprintViewer.ViewModels
 {
     public class SatelliteViewer : SidePanelTab
     {
-        private readonly IProvider<Satellite> _provider;
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
-        private bool _firstLoading = true;
 
         public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
+            var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
             _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
             _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
             var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр спутников";
 
-            ViewerList = viewModelFactory.CreateSatelliteViewerList(_provider);
+            ViewerList = viewModelFactory.CreateSatelliteViewerList(provider);
+
+            provider.Observable.Skip(1).Select(s => (IFilter<SatelliteInfo>?)null).InvokeCommand(ViewerList.Loading);
 
             // First loading
 
+            // TODO: with Take(1) not call
             this.WhenAnyValue(s => s.IsActive)
-                .Where(active => active == true && _firstLoading == true)
+                .Take(2)
+                .Where(active => active == true)
                 .Select(_ => (IFilter<SatelliteInfo>?)null)
                 .InvokeCommand(ViewerList.Loading);
-
-            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
         }
 
         public void UpdateTrack(SatelliteInfo satelliteInfo)

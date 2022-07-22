@@ -3,7 +3,6 @@ using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -11,28 +10,28 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundStationTab : SidePanelTab
     {
-        private readonly IProvider<GroundStation> _provider;
         private readonly IGroundStationLayerSource _groundStationLayerSource;
-        private bool _firstLoading = true;
 
         public GroundStationTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
+            var provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
             var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр наземных станций";
 
-            ViewerList = viewModelFactory.CreateGroundStationViewerList(_provider);
+            ViewerList = viewModelFactory.CreateGroundStationViewerList(provider);
+
+            provider.Observable.Skip(1).Select(s => (IFilter<GroundStationViewModel>?)null).InvokeCommand(ViewerList.Loading);
 
             // First loading
 
+            // TODO: with Take(1) not call
             this.WhenAnyValue(s => s.IsActive)
-                .Where(active => active == true && _firstLoading == true)
+                .Take(2)
+                .Where(active => active == true)
                 .Select(_ => (IFilter<GroundStationViewModel>?)null)
                 .InvokeCommand(ViewerList.Loading);
-
-            ViewerList.Loading.Subscribe(_ => _firstLoading = false);
         }
 
         public void Update(GroundStationViewModel groundStationInfo)

@@ -2,12 +2,9 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
-using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
 
 namespace FootprintViewer
 {
@@ -22,80 +19,32 @@ namespace FootprintViewer
 
         public IViewerList<SatelliteInfo> CreateSatelliteViewerList(IProvider<Satellite> provider)
         {
-            var viewerList = new SatelliteViewerList(provider);
-
-            if (provider is Provider<Satellite> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<SatelliteInfo>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new SatelliteViewerList(provider);
         }
 
         public IViewerList<FootprintInfo> CreateFootprintViewerList(IProvider<Footprint> provider)
         {
-            var viewerList = new FootprintViewerList(provider);
-
-            if (provider is Provider<Footprint> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<FootprintInfo>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new FootprintViewerList(provider);
         }
 
         public IViewerList<GroundTargetInfo> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
         {
-            var viewerList = new GroundTargetViewerList(provider);
-
-            if (provider is Provider<GroundTarget> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<GroundTargetInfo>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new GroundTargetViewerList(provider);
         }
 
         public IViewerList<GroundStationViewModel> CreateGroundStationViewerList(IProvider<GroundStation> provider)
         {
-            var viewerList = new GroundStationViewerList(provider);
-
-            if (provider is Provider<GroundStation> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<GroundStationViewModel>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new GroundStationViewerList(provider);
         }
 
         public IViewerList<FootprintPreviewInfo> CreateFootprintPreviewViewerList(IProvider<FootprintPreview> provider)
         {
-            var viewerList = new FootprintPreviewViewerList(provider);
-
-            if (provider is Provider<FootprintPreview> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<FootprintPreviewInfo>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new FootprintPreviewViewerList(provider);
         }
 
         public IViewerList<UserGeometryInfo> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
         {
-            var viewerList = new UserGeometryViewerList(provider);
-
-            if (provider is EditableProvider<UserGeometry> prvd)
-            {
-                // TODO: add to viewerList Update<Unit,Unit> command
-                prvd.UpdateSources.Select(s => (IFilter<UserGeometryInfo>?)null).InvokeCommand(viewerList.Loading);
-            }
-
-            return viewerList;
+            return new UserGeometryViewerList(provider);
         }
 
         public SettingsTabViewModel CreateSettingsTabViewModel()
@@ -242,7 +191,7 @@ namespace FootprintViewer
         {
             if (source is IDatabaseSourceViewModel databaseSource)
             {
-                return new DatabaseSource() 
+                return new DatabaseSource()
                 {
                     Version = databaseSource.Version ?? string.Empty,
                     Host = databaseSource.Host ?? string.Empty,
@@ -255,14 +204,14 @@ namespace FootprintViewer
             }
             else if (source is IFileSourceViewModel fileSource)
             {
-                return new FileSource() 
-                {                
+                return new FileSource()
+                {
                     Path = fileSource.Path ?? string.Empty,
                 };
             }
             else if (source is IFolderSourceViewModel folderSource)
             {
-                return new FolderSource() 
+                return new FolderSource()
                 {
                     Directory = folderSource.Directory ?? string.Empty,
                     SearchPattern = folderSource.SearchPattern ?? string.Empty,
@@ -270,8 +219,8 @@ namespace FootprintViewer
             }
             else if (source is IRandomSourceViewModel randomSource)
             {
-                return new RandomSource() 
-                {                
+                return new RandomSource()
+                {
                     Name = randomSource.Name ?? "RandomSourceDefault",
                 };
             }

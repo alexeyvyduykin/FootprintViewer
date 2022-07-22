@@ -13,13 +13,13 @@ namespace FootprintViewer.ViewModels
     public class GroundTargetViewer : SidePanelTab
     {
         private readonly ITargetLayerSource _source;
-        private readonly IProvider<GroundTarget> _groundTargetProvider;
+        private readonly IProvider<GroundTarget> _provider;
         private string[]? _names;
         private readonly IViewerList<GroundTargetInfo> _viewerList;
 
         public GroundTargetViewer(IReadonlyDependencyResolver dependencyResolver)
         {
-            _groundTargetProvider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+            _provider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
             var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
@@ -27,7 +27,9 @@ namespace FootprintViewer.ViewModels
 
             var preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
 
-            _viewerList = viewModelFactory.CreateGroundTargetViewerList(_groundTargetProvider);
+            _viewerList = viewModelFactory.CreateGroundTargetViewerList(_provider);
+
+            _provider.Observable.Skip(1).Select(s => (IFilter<GroundTargetInfo>?)null).InvokeCommand(_viewerList.Loading);
 
             // Update
 
@@ -62,7 +64,7 @@ namespace FootprintViewer.ViewModels
 
         public async Task<List<GroundTargetInfo>> GetGroundTargetInfoAsync(string name)
         {
-            return await _groundTargetProvider.GetValuesAsync(new NameFilter<GroundTargetInfo>(new[] { name }), s => new GroundTargetInfo(s));
+            return await _provider.GetValuesAsync(new NameFilter<GroundTargetInfo>(new[] { name }), s => new GroundTargetInfo(s));
         }
 
         [Reactive]

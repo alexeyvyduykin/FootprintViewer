@@ -34,10 +34,7 @@ namespace FootprintViewer.Layers
 
             Init = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => LoadingImpl(provider.GetNativeValuesAsync(null).Result)));
 
-            if (provider is Provider<TNative> pvd)
-            {
-                pvd.UpdateSources.InvokeCommand(Init);
-            }
+            provider.Observable.Skip(1).Select(s => Unit.Default).InvokeCommand(Init);
         }
 
         public IFeature? GetFeature(string name)
