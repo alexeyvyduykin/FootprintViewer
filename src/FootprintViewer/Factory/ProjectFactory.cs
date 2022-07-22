@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Splat;
+using System;
+using System.Linq;
+using System.Reactive.Linq;
 
 namespace FootprintViewer
 {
@@ -109,11 +109,11 @@ namespace FootprintViewer
             return sceneSearch;
         }
 
-        public FootprintObserver CreateFootprintObserver()
+        public FootprintTab CreateFootprintTab()
         {
             var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
 
-            var footprintObserver = new FootprintObserver(_dependencyResolver);
+            var footprintObserver = new FootprintTab(_dependencyResolver);
 
             footprintObserver.ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 

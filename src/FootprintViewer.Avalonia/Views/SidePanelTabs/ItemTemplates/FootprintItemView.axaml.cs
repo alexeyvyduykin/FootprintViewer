@@ -11,11 +11,11 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class FootprintInfoView : ReactiveUserControl<FootprintInfo>
+    public partial class FootprintItemView : ReactiveUserControl<FootprintViewModel>
     {
-        private static FootprintObserver? _footprintObserver;
+        private static FootprintTab? _footprintTab;
 
-        public FootprintInfoView()
+        public FootprintItemView()
         {
             InitializeComponent();
 
@@ -47,9 +47,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private void CommandImpl()
         {
-            _footprintObserver ??= Locator.Current.GetExistingService<FootprintObserver>();
+            _footprintTab ??= Locator.Current.GetExistingService<FootprintTab>();
 
-            _footprintObserver?.ClickOnItem.Execute(ViewModel).Subscribe();
+            _footprintTab?.ClickOnItem.Execute(ViewModel).Subscribe();
         }
     }
 }

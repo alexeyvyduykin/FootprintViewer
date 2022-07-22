@@ -19,14 +19,14 @@
 
     public class FootprintClickInfoPanel : CustomInfoPanel
     {
-        private readonly FootprintInfo _footprintInfo;
+        private readonly FootprintViewModel _footprintViewModel;
 
-        public FootprintClickInfoPanel(FootprintInfo footprintInfo)
+        public FootprintClickInfoPanel(FootprintViewModel footprintViewModel)
         {
-            _footprintInfo = footprintInfo;
+            _footprintViewModel = footprintViewModel;
         }
 
-        public FootprintInfo Info => _footprintInfo;
+        public FootprintViewModel FootprintViewModel => _footprintViewModel;
 
         public override string GetKey() => "FootprintClick";
     }

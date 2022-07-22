@@ -5,11 +5,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFootprintInfo : FootprintInfo
+    public class DesignTimeFootprintViewModel : FootprintViewModel
     {
         private readonly static Random _random = new Random();
 
-        public DesignTimeFootprintInfo() : base(BuildModel())
+        public DesignTimeFootprintViewModel() : base(BuildModel())
         {
             IsShowInfo = true;
         }

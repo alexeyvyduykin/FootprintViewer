@@ -27,7 +27,7 @@ namespace FootprintViewer.ViewModels
         private readonly SidePanel _sidePanel;
         private readonly BottomPanel _bottomPanel;
         private readonly CustomToolBar _customToolBar;
-        private readonly FootprintObserver _footprintObserver;
+        private readonly FootprintTab _footprintTab;
         private readonly GroundTargetViewer _groundTargetViewer;
         private readonly UserGeometryViewer _userGeometryViewer;
         private readonly SceneSearch _sceneSearch;
@@ -56,7 +56,7 @@ namespace FootprintViewer.ViewModels
             _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
             _footprintSource = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
-            _footprintObserver = dependencyResolver.GetExistingService<FootprintObserver>();
+            _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
             _groundTargetViewer = dependencyResolver.GetExistingService<GroundTargetViewer>();
             _userGeometryViewer = dependencyResolver.GetExistingService<UserGeometryViewer>();
             _sceneSearch = dependencyResolver.GetExistingService<SceneSearch>();
@@ -128,7 +128,7 @@ namespace FootprintViewer.ViewModels
             _customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
             _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
 
-            _footprintObserver.ClickOnItem.Subscribe(s =>
+            _footprintTab.ClickOnItem.Subscribe(s =>
             {
                 var name = s?.Name;
 
@@ -391,16 +391,16 @@ namespace FootprintViewer.ViewModels
                 if (feature.Fields.Contains("Name"))
                 {
                     var name = (string)feature["Name"]!;
-                    var info = _footprintObserver.GetFootprintInfo(name);
+                    var vm = _footprintTab.GetFootprintViewModel(name);
 
-                    if (info != null)
+                    if (vm != null)
                     {
-                        ClickInfoPanel.Show(new FootprintClickInfoPanel(info));
+                        ClickInfoPanel.Show(new FootprintClickInfoPanel(vm));
                     }
 
-                    if (_footprintObserver.IsActive == true)
+                    if (_footprintTab.IsActive == true)
                     {
-                        _footprintObserver.SelectFootprintInfo(name);
+                        _footprintTab.SelectFootprintInfo(name);
                     }
                 }
             };

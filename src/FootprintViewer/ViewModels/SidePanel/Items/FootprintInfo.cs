@@ -6,7 +6,7 @@ using System;
 
 namespace FootprintViewer.ViewModels
 {
-    public class FootprintInfo : ReactiveObject, IViewerItem
+    public class FootprintViewModel : ReactiveObject, IViewerItem
     {
         private readonly Footprint? _footprint;
         private readonly string _name;
@@ -17,7 +17,7 @@ namespace FootprintViewer.ViewModels
         private readonly int _node;
         private readonly SatelliteStripDirection _direction;
 
-        public FootprintInfo(Footprint footprint)
+        public FootprintViewModel(Footprint footprint)
         {
             _footprint = footprint;
             _name = footprint.Name!;

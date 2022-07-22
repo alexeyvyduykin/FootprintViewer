@@ -22,7 +22,7 @@ namespace FootprintViewer
             return new SatelliteViewerList(provider);
         }
 
-        public IViewerList<FootprintInfo> CreateFootprintViewerList(IProvider<Footprint> provider)
+        public IViewerList<FootprintViewModel> CreateFootprintViewerList(IProvider<Footprint> provider)
         {
             return new FootprintViewerList(provider);
         }

@@ -31,8 +31,8 @@
       <views:GroundTargetViewerView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:FootprintObserver">
-      <views:FootprintObserverView/>
+    <DataTemplate DataType="vm:FootprintTab">
+      <views:FootprintTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:UserGeometryViewer">
@@ -70,7 +70,7 @@
           </Viewbox>
         </Grid>
       </DataTemplate>
-      <DataTemplate x:Key="FootprintObserver">
+      <DataTemplate x:Key="FootprintTab">
         <Grid>
           <Viewbox Margin="8">
             <PathIcon Data="{DynamicResource fg-satellite-earth}"/>

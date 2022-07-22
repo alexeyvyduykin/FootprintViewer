@@ -65,8 +65,14 @@
     <Compile Update="Views\Settings\RandomSourceView.axaml.cs">
       <DependentUpon>RandomSourceView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SidePanelTabs\FootprintTabView.axaml.cs">
+      <DependentUpon>FootprintTabView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SidePanelTabs\GroundStationTabView.axaml.cs">
       <DependentUpon>GroundStationTabView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintItemView.axaml.cs">
+      <DependentUpon>FootprintItemView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SidePanelTabs\ItemTemplates\GroundStationItemView.axaml.cs">
       <DependentUpon>GroundStationItemView.axaml</DependentUpon>

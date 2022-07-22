@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class FootprintObserverFilter : ViewerListFilter<FootprintInfo>
+    public class FootprintObserverFilter : ViewerListFilter<FootprintViewModel>
     {
         private readonly IProvider<Satellite> _satelliteProvider;
 
@@ -68,7 +68,7 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public override bool Filtering(FootprintInfo footprint)
+        public override bool Filtering(FootprintViewModel footprint)
         {
             if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
             {

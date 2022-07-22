@@ -13,8 +13,9 @@ namespace FootprintViewer.Designer
             {
                 new SceneSearch(_designTimeData),
                 new SatelliteViewer(_designTimeData),
+                new GroundStationTab(_designTimeData),
                 new GroundTargetViewer(_designTimeData),
-                new FootprintObserver(_designTimeData),
+                new FootprintTab(_designTimeData),
                 new UserGeometryViewer(_designTimeData),
             };
 
