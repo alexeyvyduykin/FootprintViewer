@@ -1,4 +1,6 @@
-﻿namespace FootprintViewer.Data.Sources
+﻿using System;
+
+namespace FootprintViewer.Data.Sources
 {
     public class DatabaseSource : IDatabaseSource
     {
@@ -15,5 +17,23 @@
         public string Password { get; init; } = string.Empty;
 
         public string Table { get; init; } = string.Empty;
+
+        public bool Equals(IDataSource? other)
+        {
+            if (other is IDatabaseSource source)
+            {
+                if (source.Version == Version &&
+                   source.Host == Host &&
+                   source.Database == Database &&
+                   source.Username == Username &&
+                   source.Password == Password &&
+                   source.Table == Table)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

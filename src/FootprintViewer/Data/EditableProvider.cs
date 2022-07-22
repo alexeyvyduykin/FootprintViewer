@@ -22,7 +22,7 @@ namespace FootprintViewer.Data
 
         public async Task EditAsync(string key, TNative value)
         {
-            foreach (var source in Sources)
+            foreach (var source in GetSources())
             {
                 var sourceType = source.GetType().GetInterfaces().First();
 
@@ -43,7 +43,7 @@ namespace FootprintViewer.Data
 
         public async Task AddAsync(TNative value)
         {
-            foreach (var source in Sources)
+            foreach (var source in GetSources())
             {
                 var sourceType = source.GetType().GetInterfaces().First();
 
@@ -64,7 +64,7 @@ namespace FootprintViewer.Data
 
         public async Task RemoveAsync(TNative value)
         {
-            foreach (var source in Sources)
+            foreach (var source in GetSources())
             {
                 var sourceType = source.GetType().GetInterfaces().First();
 

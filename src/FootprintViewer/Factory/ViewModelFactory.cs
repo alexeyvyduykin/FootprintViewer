@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
+using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
@@ -110,68 +111,53 @@ namespace FootprintViewer
             var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
             var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
-            var groundStationProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var groundStationProviderViewModel = new ProviderViewModel(groundStationProvider, _dependencyResolver)
             {
                 Type = ProviderType.GroundStations,
                 AvailableBuilders = configuration.GroundStationSourceBuilders,
             };
 
-            var satelliteProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var satelliteProviderViewModel = new ProviderViewModel(satelliteProvider, _dependencyResolver)
             {
                 Type = ProviderType.Satellites,
                 AvailableBuilders = configuration.SatelliteSourceBuilders,
             };
 
-            var footprintProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
             {
                 Type = ProviderType.Footprints,
                 AvailableBuilders = configuration.FootprintSourceBuilders,
             };
 
-            var groundTargetProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var groundTargetProviderViewModel = new ProviderViewModel(groundTargetProvider, _dependencyResolver)
             {
                 Type = ProviderType.GroundTargets,
                 AvailableBuilders = configuration.GroundTargetSourceBuilders,
             };
 
-            var userGeometryProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
             {
                 Type = ProviderType.UserGeometries,
                 AvailableBuilders = configuration.UserGeometrySourceBuilders,
             };
 
-            var mapBackgroundProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var mapBackgroundProviderViewModel = new ProviderViewModel(mapBackgroundProvider, _dependencyResolver)
             {
                 Type = ProviderType.MapBackgrounds,
                 AvailableBuilders = configuration.MapBackgroundSourceBuilders,
             };
 
-            var footprintPreviewProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var footprintPreviewProviderViewModel = new ProviderViewModel(footprintPreviewProvider, _dependencyResolver)
             {
                 Type = ProviderType.FootprintPreviews,
                 AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
             };
 
-            var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(_dependencyResolver)
+            var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(footprintPreviewGeometryProvider, _dependencyResolver)
             {
                 Type = ProviderType.FootprintPreviewGeometries,
                 AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
             };
-
-            groundStationProviderViewModel.Sources.AddRange(groundStationProvider.GetSources().Select(s => s.ToViewModel()));
-            satelliteProviderViewModel.Sources.AddRange(satelliteProvider.GetSources().Select(s => s.ToViewModel()));
-            footprintProviderViewModel.Sources.AddRange(footprintProvider.GetSources().Select(s => s.ToViewModel()));
-            groundTargetProviderViewModel.Sources.AddRange(groundTargetProvider.GetSources().Select(s => s.ToViewModel()));
-            userGeometryProviderViewModel.Sources.AddRange(userGeometryProvider.GetSources().Select(s => s.ToViewModel()));
-            mapBackgroundProviderViewModel.Sources.AddRange(mapBackgroundProvider.GetSources().Select(s => s.ToViewModel()));
-            footprintPreviewProviderViewModel.Sources.AddRange(footprintPreviewProvider.GetSources().Select(s => s.ToViewModel()));
-            footprintPreviewGeometryProviderViewModel.Sources.AddRange(footprintPreviewGeometryProvider.GetSources().Select(s => s.ToViewModel()));
-
-            //groundStationProviderViewModel.AddSource.Subscribe(source => 
-            //{
-            //    groundStationProvider.AddSource();
-            //});
-            //groundStationProviderViewModel.RemoveSource.Subscribe();
 
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
@@ -252,29 +238,47 @@ namespace FootprintViewer
             }
         }
 
-        //public static IDataSource<T> ToModel<T>(this ISourceViewModel dataSource)
-        //{
-        //    if (dataSource is DatabaseSourceViewModel databaseSource)
-        //    {
-        //        return new DatabaseSourceViewModel(databaseSource);
-        //    }
-        //    else if (dataSource is IFileSource fileSource)
-        //    {
-        //        return new FileSourceViewModel(fileSource);
-        //    }
-        //    else if (dataSource is IFolderSource folderSource)
-        //    {
-        //        return new FolderSourceViewModel(folderSource);
-        //    }
-        //    else if (dataSource is IRandomSource randomSource)
-        //    {
-        //        return new RandomSourceViewModel(randomSource);
-        //    }
-        //    else
-        //    {
-        //        throw new Exception();
-        //    }
-        //}
-
+        public static IDataSource ToModel(this ISourceViewModel source)
+        {
+            if (source is IDatabaseSourceViewModel databaseSource)
+            {
+                return new DatabaseSource() 
+                {
+                    Version = databaseSource.Version ?? string.Empty,
+                    Host = databaseSource.Host ?? string.Empty,
+                    Port = databaseSource.Port,
+                    Database = databaseSource.Database ?? string.Empty,
+                    Username = databaseSource.Username ?? string.Empty,
+                    Password = databaseSource.Password ?? string.Empty,
+                    Table = databaseSource.Table ?? string.Empty,
+                };
+            }
+            else if (source is IFileSourceViewModel fileSource)
+            {
+                return new FileSource() 
+                {                
+                    Path = fileSource.Path ?? string.Empty,
+                };
+            }
+            else if (source is IFolderSourceViewModel folderSource)
+            {
+                return new FolderSource() 
+                {
+                    Directory = folderSource.Directory ?? string.Empty,
+                    SearchPattern = folderSource.SearchPattern ?? string.Empty,
+                };
+            }
+            else if (source is IRandomSourceViewModel randomSource)
+            {
+                return new RandomSource() 
+                {                
+                    Name = randomSource.Name ?? "RandomSourceDefault",
+                };
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
     }
 }

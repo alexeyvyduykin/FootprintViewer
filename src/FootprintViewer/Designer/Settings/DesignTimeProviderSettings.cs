@@ -1,25 +1,33 @@
-﻿using FootprintViewer.ViewModels;
-using System.Collections.Generic;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.Sources;
+using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeProviderSettings //: ProviderSettings
+    public class DesignTimeProviderSettings : ProviderViewModel
     {
-        public DesignTimeProviderSettings() //: base()
+        private static readonly IDataSource _dataSource1 = new DatabaseSource() { Database = "FootprintViewerDatabase", Table = "Satellites" };
+        private static readonly IDataSource _dataSource2 = new FolderSource() { Directory = "C:/data" };
+        private static readonly IDataSource _dataSource3 = new FileSource() { Path = "C:/data/worldMap.mbtiles" };
+        private static readonly IDataSource _dataSource4 = new RandomSource() { Name = "SatelliteRandom" };
+
+        private static readonly IProvider _provider = new Provider<Satellite>(new IDataSource[]
         {
-            //Type = ProviderType.GroundTargets;
+            _dataSource1,       
+            _dataSource2,       
+            _dataSource3,       
+            _dataSource4,
+        });
 
-            //AvailableSources = new List<ISourceBuilder>()
-            //{
-            //    new RandomSourceBuilder("RandomGroundTargets"),
-            //    new DatabaseSourceBuilder(new DesignTimeData()),
-            //};
+        public DesignTimeProviderSettings() : base(_provider, new DesignTimeData())
+        {
+            Type = ProviderType.Satellites;
 
-            //Sources.Add(new DatabaseSourceInfo()
-            //{
-            //    Database = "database",
-            //    Table = "GroundTargets"
-            //});
+            AvailableBuilders = new[]
+            {
+                "random",
+                "database",
+            };
         }
     }
 }

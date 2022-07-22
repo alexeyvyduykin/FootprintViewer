@@ -100,32 +100,33 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
             services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-            services.RegisterConstant(factory.CreateSceneSearch(), typeof(SceneSearch));
-            services.RegisterConstant(factory.CreateSatelliteViewer(), typeof(SatelliteViewer));
-            services.RegisterConstant(factory.CreateGroundTargetViewer(), typeof(GroundTargetViewer));
-            services.RegisterConstant(factory.CreateFootprintObserver(), typeof(FootprintObserver));
-            services.RegisterConstant(factory.CreateUserGeometryViewer(), typeof(UserGeometryViewer));
-            services.RegisterConstant(viewModelFactory.CreateGroundStationTab(), typeof(GroundStationTab));
-            services.RegisterConstant(viewModelFactory.CreateSettingsTabViewModel(), typeof(SettingsTabViewModel));
+            services.RegisterLazySingleton<SceneSearch>(() => factory.CreateSceneSearch());
+            services.RegisterLazySingleton<SatelliteViewer>(() => factory.CreateSatelliteViewer());
+            services.RegisterLazySingleton<GroundTargetViewer>(() => factory.CreateGroundTargetViewer());
+            services.RegisterLazySingleton<FootprintObserver>(() => factory.CreateFootprintObserver());
+            services.RegisterLazySingleton<UserGeometryViewer>(() => factory.CreateUserGeometryViewer());
+            services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
+            services.RegisterLazySingleton<SettingsTabViewModel>(() => viewModelFactory.CreateSettingsTabViewModel());
 
             services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
 
             services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
 
-            var tabs = new SidePanelTab[]
+            services.RegisterLazySingleton<SidePanel>(() => new SidePanel()
             {
-                resolver.GetExistingService<SceneSearch>(),
-                resolver.GetExistingService<SatelliteViewer>(),
-                resolver.GetExistingService<GroundStationTab>(),
-                resolver.GetExistingService<GroundTargetViewer>(),
-                resolver.GetExistingService<FootprintObserver>(),
-                resolver.GetExistingService<UserGeometryViewer>(),
-                resolver.GetExistingService<SettingsTabViewModel>(),
-            };
+                Tabs = new List<SidePanelTab>(new SidePanelTab[]
+                {
+                    resolver.GetExistingService<SceneSearch>(),
+                    resolver.GetExistingService<SatelliteViewer>(),
+                    resolver.GetExistingService<GroundStationTab>(),
+                    resolver.GetExistingService<GroundTargetViewer>(),
+                    resolver.GetExistingService<FootprintObserver>(),
+                    resolver.GetExistingService<UserGeometryViewer>(),
+                    resolver.GetExistingService<SettingsTabViewModel>(),
+                })
+            });
 
-            services.RegisterConstant(new SidePanel() { Tabs = new List<SidePanelTab>(tabs) }, typeof(SidePanel));
-
-            services.RegisterConstant(new MainViewModel(resolver), typeof(MainViewModel));
+            services.RegisterLazySingleton<MainViewModel>(() => new MainViewModel(resolver));
         }
     }
 }

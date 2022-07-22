@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
+﻿using DynamicData;
 using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -13,18 +16,24 @@ namespace FootprintViewer.ViewModels
     {
         private bool _isActivated;
         private readonly ViewModelFactory _factory;
+        private readonly ReadOnlyObservableCollection<ISourceViewModel> _sources;
 
-        public ProviderViewModel(IReadonlyDependencyResolver dependencyResolver)
+        public ProviderViewModel(IProvider provider, IReadonlyDependencyResolver dependencyResolver)
         {
             _factory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
-            Sources = new List<ISourceViewModel>();
-
             SourceBuilderItems = new List<ISourceBuilderItem>();
 
-            RemoveSource = ReactiveCommand.Create<ISourceViewModel, ISourceViewModel>(RemoveSourceImpl);
+            provider.Sources
+                .Connect()
+                .Transform(s => s.ToViewModel())
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _sources)
+                .Subscribe();
 
-            AddSource = ReactiveCommand.Create<ISourceViewModel, ISourceViewModel>(AddSourceImpl);
+            RemoveSource = ReactiveCommand.Create<ISourceViewModel>(s => provider.Sources.Remove(s.ToModel()));
+
+            AddSource = ReactiveCommand.Create<ISourceViewModel>(s => provider.Sources.Add(s.ToModel()));
         }
 
         public void Activate()
@@ -46,38 +55,15 @@ namespace FootprintViewer.ViewModels
             }
         }
 
-        public ReactiveCommand<ISourceViewModel, ISourceViewModel> RemoveSource { get; }
+        public ReactiveCommand<ISourceViewModel, Unit> RemoveSource { get; }
 
-        public ReactiveCommand<ISourceViewModel, ISourceViewModel> AddSource { get; }
-
-        private ISourceViewModel RemoveSourceImpl(ISourceViewModel item)
-        {
-            var temp = new List<ISourceViewModel>(Sources);
-
-            temp.Remove(item);
-
-            Sources = new List<ISourceViewModel>(temp); 
-            
-            return item;
-        }
-
-        private ISourceViewModel AddSourceImpl(ISourceViewModel item)
-        {
-            var temp = new List<ISourceViewModel>(Sources);
-
-            temp.Add(item);
-
-            Sources = new List<ISourceViewModel>(temp);
-
-            return item;
-        }
+        public ReactiveCommand<ISourceViewModel, Unit> AddSource { get; }
 
         public ProviderType Type { get; init; }
 
         public IEnumerable<string>? AvailableBuilders { get; init; }
 
-        [Reactive]
-        public List<ISourceViewModel> Sources { get; private set; }
+        public ReadOnlyObservableCollection<ISourceViewModel> Sources => _sources;
 
         [Reactive]
         public List<ISourceBuilderItem> SourceBuilderItems { get; private set; }

@@ -10,9 +10,9 @@
              mc:Ignorable="d"
              x:Class="FootprintViewer.Avalonia.Views.Settings.ProviderSettingsView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeProviderSettings/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeProviderSettings/>
+	</Design.DataContext>
 
   <UserControl.Styles>
 
@@ -64,28 +64,28 @@
 
   </UserControl.Resources>
 
-  <styles:Card>
-    <StackPanel>
-      <TextBlock Text="{Binding Type}" Classes="Headline6"/>
-      <ItemsControl x:Name="ItemsControl"
-                    Items="{Binding Sources}"
-                    ItemTemplate="{StaticResource t1}"/>
+	<styles:Card>
+		<StackPanel>
+			<TextBlock Text="{Binding Type}" Classes="Headline6"/>
+			<ItemsControl x:Name="ItemsControl"
+						  Items="{Binding Sources}"
+						  ItemTemplate="{StaticResource t1}"/>
 
-      <Button x:Name="AddSourceButton"
-              Margin="0,2,0,0"
-              Classes="addBtn">
-        <Button.Flyout>
-          <Flyout Placement="RightEdgeAlignedTop"
-                  ShowMode="TransientWithDismissOnPointerMoveAway">
-            <views:SourceBuilderItemsList DataContext="{Binding}"/>           
-          </Flyout>
-        </Button.Flyout>
-        <Viewbox Margin="2">
-          <materialIcons:MaterialIcon Kind="Plus"/>
-        </Viewbox>
-      </Button>
-
-    </StackPanel>
-  </styles:Card>
+			<Button x:Name="AddSourceButton"
+					Margin="0,2,0,0"
+					Classes="addBtn">
+				<Button.Flyout>
+					<Flyout Placement="RightEdgeAlignedTop"
+							ShowMode="TransientWithDismissOnPointerMoveAway">
+						<views:SourceBuilderItemsList DataContext="{Binding}"/>
+					</Flyout>
+				</Button.Flyout>
+				<Viewbox Margin="2">
+					<materialIcons:MaterialIcon Kind="Plus"/>
+				</Viewbox>
+			</Button>
+			
+		</StackPanel>
+	</styles:Card>
 
 </UserControl>

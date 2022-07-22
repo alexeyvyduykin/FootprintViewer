@@ -17,6 +17,7 @@ namespace FootprintViewer.Designer
         private Map? _map;
         private IMapNavigator? _mapNavigator;
         private ProjectFactory? _projectFactory;
+        private ViewModelFactory? _viewModelFactory;
 
         //private IProvider<SatelliteInfo>? _satelliteProvider;
         //private IProvider<MapResource>? _mapProvider;
@@ -46,146 +47,145 @@ namespace FootprintViewer.Designer
         private CustomToolBar? _customToolBar;
         private MapBackgroundList? _mapBackgroundList;
 
-        //public object? GetService(Type? serviceType, string? contract = null)
-        //{
-        //    if (serviceType == typeof(ProjectFactory))
-        //    {
-        //        return _projectFactory ??= new ProjectFactory(this);
-        //    }
-        //    else if (serviceType == typeof(IMap))
-        //    {
-        //        return _map ??= CreateMap();
-
-        //        static Map CreateMap()
-        //        {
-        //            var map = new Map();
-        //            map.AddLayer(new Layer(), LayerType.WorldMap);
-        //            map.AddLayer(new Layer(), LayerType.Footprint);
-        //            map.AddLayer(new Layer(), LayerType.GroundTarget);
-        //            map.AddLayer(new Layer(), LayerType.GroundStation);
-        //            map.AddLayer(new Layer(), LayerType.User);
-        //            return map;
-        //        }
-        //    }
-        //    else if (serviceType == typeof(IMapNavigator))
-        //    {
-        //        return _mapNavigator ??= new MapNavigator();
-        //    }
-        //    else if (serviceType == typeof(IProvider<SatelliteInfo>))
-        //    {
-        //        return _satelliteProvider ??= new DesignTimeSatelliteProvider();
-        //    }
-        //    else if (serviceType == typeof(MapBackgroundList))
-        //    {
-        //        return _mapBackgroundList ??= new MapBackgroundList(this);
-        //    }
-        //    else if (serviceType == typeof(ISensorLayerSource))
-        //    {
-        //        var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
-        //        return _sensorLayerSource ??= new SensorLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(ITrackLayerSource))
-        //    {
-        //        var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
-        //        return _trackLayerSource ??= new TrackLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(IEditLayerSource))
-        //    {
-        //        return _editLayerSource ??= new EditLayerSource();
-        //    }
-        //    else if (serviceType == typeof(IProvider<MapResource>))
-        //    {
-        //        return _mapProvider ??= new DesignTimeMapProvider();
-        //    }
-        //    else if (serviceType == typeof(IProvider<FootprintPreview>))
-        //    {
-        //        return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
-        //    }
-        //    else if (serviceType == typeof(IProvider<(string, nts.Geometry)>))
-        //    {
-        //        return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
-        //    }
-        //    else if (serviceType == typeof(IProvider<GroundTargetInfo>))
-        //    {
-        //        return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
-        //    }
-        //    else if (serviceType == typeof(ITargetLayerSource))
-        //    {
-        //        var provider = (IProvider<GroundTargetInfo>)GetService(typeof(IProvider<GroundTargetInfo>), contract)!;
-        //        return _targetLayerSource ??= new TargetLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(IProvider<FootprintInfo>))
-        //    {
-        //        return _footprintProvider ??= new DesignDataFootprintProvider();
-        //    }
-        //    else if (serviceType == typeof(IFootprintLayerSource))
-        //    {
-        //        var provider = (IProvider<FootprintInfo>)GetService(typeof(IProvider<FootprintInfo>), contract)!;
-        //        return _footprintLayerSource ??= new FootprintLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(IEditableProvider<UserGeometryInfo>))
-        //    {
-        //        return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
-        //    }
-        //    else if (serviceType == typeof(IUserLayerSource))
-        //    {
-        //        var provider = (IEditableProvider<UserGeometryInfo>)GetService(typeof(IEditableProvider<UserGeometryInfo>), contract)!;
-        //        return _userLayerSource ??= new UserLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(IProvider<GroundStationInfo>))
-        //    {
-        //        return _groundStationProvider ??= new DesignTimeGroundStationProvider();
-        //    }
-        //    else if (serviceType == typeof(IGroundStationLayerSource))
-        //    {
-        //        var provider = (IProvider<GroundStationInfo>)GetService(typeof(IProvider<GroundStationInfo>), contract)!;
-        //        return _groundStationLayerSource ??= new GroundStationLayerSource(provider);
-        //    }
-        //    else if (serviceType == typeof(SatelliteViewer))
-        //    {
-        //        return _satelliteViewer ??= new SatelliteViewer(this);
-        //    }
-        //    else if (serviceType == typeof(GroundStationViewer))
-        //    {
-        //        return _groundStationViewer ??= new GroundStationViewer(this);
-        //    }
-        //    else if (serviceType == typeof(FootprintObserver))
-        //    {
-        //        return _footprintObserver ??= new FootprintObserver(this);
-        //    }
-        //    else if (serviceType == typeof(GroundTargetViewer))
-        //    {
-        //        return _groundTargetViewer ??= new GroundTargetViewer(this);
-        //    }
-        //    else if (serviceType == typeof(SceneSearch))
-        //    {
-        //        return _sceneSearch ??= new SceneSearch(this);
-        //    }
-        //    else if (serviceType == typeof(UserGeometryViewer))
-        //    {
-        //        return _userGeometryViewer ??= new UserGeometryViewer(this);
-        //    }
-        //    else if (serviceType == typeof(CustomToolBar))
-        //    {
-        //        return _customToolBar ??= new CustomToolBar(this);
-        //    }
-        //    else if (serviceType == typeof(SidePanel))
-        //    {
-        //        return _sidePanel ??= new SidePanel();
-        //    }
-        //    else if (serviceType == typeof(MainViewModel))
-        //    {
-        //        return _mainViewModel ??= new MainViewModel(this);
-        //    }
-
-        //    throw new Exception();
-        //}
-        
         public object? GetService(Type? serviceType, string? contract = null)
         {
+            if (serviceType == typeof(ProjectFactory))
+            {           
+                return _projectFactory ??= new ProjectFactory(this);
+            }
+            else if (serviceType == typeof(ViewModelFactory))
+            {         
+                return _viewModelFactory ??= new ViewModelFactory(this);
+            }
+            //    else if (serviceType == typeof(IMap))
+            //    {
+            //        return _map ??= CreateMap();
+
+            //        static Map CreateMap()
+            //        {
+            //            var map = new Map();
+            //            map.AddLayer(new Layer(), LayerType.WorldMap);
+            //            map.AddLayer(new Layer(), LayerType.Footprint);
+            //            map.AddLayer(new Layer(), LayerType.GroundTarget);
+            //            map.AddLayer(new Layer(), LayerType.GroundStation);
+            //            map.AddLayer(new Layer(), LayerType.User);
+            //            return map;
+            //        }
+            //    }
+            //    else if (serviceType == typeof(IMapNavigator))
+            //    {
+            //        return _mapNavigator ??= new MapNavigator();
+            //    }
+            //    else if (serviceType == typeof(IProvider<SatelliteInfo>))
+            //    {
+            //        return _satelliteProvider ??= new DesignTimeSatelliteProvider();
+            //    }
+            //    else if (serviceType == typeof(MapBackgroundList))
+            //    {
+            //        return _mapBackgroundList ??= new MapBackgroundList(this);
+            //    }
+            //    else if (serviceType == typeof(ISensorLayerSource))
+            //    {
+            //        var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
+            //        return _sensorLayerSource ??= new SensorLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(ITrackLayerSource))
+            //    {
+            //        var provider = (IProvider<SatelliteInfo>)GetService(typeof(IProvider<SatelliteInfo>), contract)!;
+            //        return _trackLayerSource ??= new TrackLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(IEditLayerSource))
+            //    {
+            //        return _editLayerSource ??= new EditLayerSource();
+            //    }
+            //    else if (serviceType == typeof(IProvider<MapResource>))
+            //    {
+            //        return _mapProvider ??= new DesignTimeMapProvider();
+            //    }
+            //    else if (serviceType == typeof(IProvider<FootprintPreview>))
+            //    {
+            //        return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
+            //    }
+            //    else if (serviceType == typeof(IProvider<(string, nts.Geometry)>))
+            //    {
+            //        return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
+            //    }
+            //    else if (serviceType == typeof(IProvider<GroundTargetInfo>))
+            //    {
+            //        return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
+            //    }
+            //    else if (serviceType == typeof(ITargetLayerSource))
+            //    {
+            //        var provider = (IProvider<GroundTargetInfo>)GetService(typeof(IProvider<GroundTargetInfo>), contract)!;
+            //        return _targetLayerSource ??= new TargetLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(IProvider<FootprintInfo>))
+            //    {
+            //        return _footprintProvider ??= new DesignDataFootprintProvider();
+            //    }
+            //    else if (serviceType == typeof(IFootprintLayerSource))
+            //    {
+            //        var provider = (IProvider<FootprintInfo>)GetService(typeof(IProvider<FootprintInfo>), contract)!;
+            //        return _footprintLayerSource ??= new FootprintLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(IEditableProvider<UserGeometryInfo>))
+            //    {
+            //        return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
+            //    }
+            //    else if (serviceType == typeof(IUserLayerSource))
+            //    {
+            //        var provider = (IEditableProvider<UserGeometryInfo>)GetService(typeof(IEditableProvider<UserGeometryInfo>), contract)!;
+            //        return _userLayerSource ??= new UserLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(IProvider<GroundStationInfo>))
+            //    {
+            //        return _groundStationProvider ??= new DesignTimeGroundStationProvider();
+            //    }
+            //    else if (serviceType == typeof(IGroundStationLayerSource))
+            //    {
+            //        var provider = (IProvider<GroundStationInfo>)GetService(typeof(IProvider<GroundStationInfo>), contract)!;
+            //        return _groundStationLayerSource ??= new GroundStationLayerSource(provider);
+            //    }
+            //    else if (serviceType == typeof(SatelliteViewer))
+            //    {
+            //        return _satelliteViewer ??= new SatelliteViewer(this);
+            //    }
+            //    else if (serviceType == typeof(GroundStationViewer))
+            //    {
+            //        return _groundStationViewer ??= new GroundStationViewer(this);
+            //    }
+            //    else if (serviceType == typeof(FootprintObserver))
+            //    {
+            //        return _footprintObserver ??= new FootprintObserver(this);
+            //    }
+            //    else if (serviceType == typeof(GroundTargetViewer))
+            //    {
+            //        return _groundTargetViewer ??= new GroundTargetViewer(this);
+            //    }
+            //    else if (serviceType == typeof(SceneSearch))
+            //    {
+            //        return _sceneSearch ??= new SceneSearch(this);
+            //    }
+            //    else if (serviceType == typeof(UserGeometryViewer))
+            //    {
+            //        return _userGeometryViewer ??= new UserGeometryViewer(this);
+            //    }
+            //    else if (serviceType == typeof(CustomToolBar))
+            //    {
+            //        return _customToolBar ??= new CustomToolBar(this);
+            //    }
+            //    else if (serviceType == typeof(SidePanel))
+            //    {
+            //        return _sidePanel ??= new SidePanel();
+            //    }
+            //    else if (serviceType == typeof(MainViewModel))
+            //    {
+            //        return _mainViewModel ??= new MainViewModel(this);
+            //    }
+
             throw new Exception();
         }
-
+        
         public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             throw new Exception();
