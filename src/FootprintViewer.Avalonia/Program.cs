@@ -55,7 +55,7 @@ namespace FootprintViewer.Avalonia
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintItemView(), typeof(IViewFor<FootprintViewModel>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.FootprintPreviewView(), typeof(IViewFor<FootprintPreviewInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetItemView(), typeof(IViewFor<GroundTargetViewModel>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteInfoView(), typeof(IViewFor<SatelliteInfo>));
+            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteItemView(), typeof(IViewFor<SatelliteViewModel>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryInfoView(), typeof(IViewFor<UserGeometryInfo>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundStationItemView(), typeof(IViewFor<GroundStationViewModel>));
         }

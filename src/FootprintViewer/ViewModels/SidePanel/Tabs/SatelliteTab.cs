@@ -8,12 +8,12 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SatelliteViewer : SidePanelTab
+    public class SatelliteTab : SidePanelTab
     {
         private readonly ITrackLayerSource _trackLayerSource;
         private readonly ISensorLayerSource _sensorLayerSource;
 
-        public SatelliteViewer(IReadonlyDependencyResolver dependencyResolver)
+        public SatelliteTab(IReadonlyDependencyResolver dependencyResolver)
         {
             var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
             _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
@@ -24,7 +24,7 @@ namespace FootprintViewer.ViewModels
 
             ViewerList = viewModelFactory.CreateSatelliteViewerList(provider);
 
-            provider.Observable.Skip(1).Select(s => (IFilter<SatelliteInfo>?)null).InvokeCommand(ViewerList.Loading);
+            provider.Observable.Skip(1).Select(s => (IFilter<SatelliteViewModel>?)null).InvokeCommand(ViewerList.Loading);
 
             // First loading
 
@@ -32,11 +32,11 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsActive)
                 .Take(2)
                 .Where(active => active == true)
-                .Select(_ => (IFilter<SatelliteInfo>?)null)
+                .Select(_ => (IFilter<SatelliteViewModel>?)null)
                 .InvokeCommand(ViewerList.Loading);
         }
 
-        public void UpdateTrack(SatelliteInfo satelliteInfo)
+        public void UpdateTrack(SatelliteViewModel satelliteInfo)
         {
             var name = satelliteInfo.Name;
             var node = satelliteInfo.CurrentNode;
@@ -45,7 +45,7 @@ namespace FootprintViewer.ViewModels
             _trackLayerSource.Update(name, node, isShow);
         }
 
-        public void UpdateStrips(SatelliteInfo satelliteInfo)
+        public void UpdateStrips(SatelliteViewModel satelliteInfo)
         {
             var name = satelliteInfo.Name;
             var node = satelliteInfo.CurrentNode;
@@ -56,6 +56,6 @@ namespace FootprintViewer.ViewModels
         }
 
         [Reactive]
-        public IViewerList<SatelliteInfo> ViewerList { get; private set; }
+        public IViewerList<SatelliteViewModel> ViewerList { get; private set; }
     }
 }

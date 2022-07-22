@@ -2,9 +2,9 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeSatelliteViewer : SatelliteViewer
+    public class DesignTimeSatelliteTab : SatelliteTab
     {
-        public DesignTimeSatelliteViewer() : base(new DesignTimeData())
+        public DesignTimeSatelliteTab() : base(new DesignTimeData())
         {
             IsActive = true;
         }

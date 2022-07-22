@@ -113,11 +113,11 @@ namespace FootprintViewer
         {
             var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
 
-            var footprintObserver = new FootprintTab(_dependencyResolver);
+            var tab = new FootprintTab(_dependencyResolver);
 
-            footprintObserver.ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+            tab.ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 
-            return footprintObserver;
+            return tab;
         }
 
         public GroundTargetTab CreateGroundTargetTab()
@@ -157,11 +157,9 @@ namespace FootprintViewer
             return groundTargetViewer;
         }
 
-        public SatelliteViewer CreateSatelliteViewer()
+        public SatelliteTab CreateSatelliteTab()
         {
-            var satelliteViewer = new SatelliteViewer(_dependencyResolver);
-
-            return satelliteViewer;
+            return new SatelliteTab(_dependencyResolver);
         }
 
         public UserGeometryViewer CreateUserGeometryViewer()

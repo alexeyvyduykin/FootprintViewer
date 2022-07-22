@@ -17,7 +17,7 @@ namespace FootprintViewer
             _dependencyResolver = dependencyResolver;
         }
 
-        public IViewerList<SatelliteInfo> CreateSatelliteViewerList(IProvider<Satellite> provider)
+        public IViewerList<SatelliteViewModel> CreateSatelliteViewerList(IProvider<Satellite> provider)
         {
             return new SatelliteViewerList(provider);
         }

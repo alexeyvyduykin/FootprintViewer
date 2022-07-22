@@ -5,14 +5,14 @@ using System.Reactive;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SatelliteInfo : ReactiveObject, IViewerItem
+    public class SatelliteViewModel : ReactiveObject, IViewerItem
     {
         private readonly string _name;
         private readonly Satellite _satellite;
         private readonly int _minNode = 1;
         private readonly int _maxNode;
 
-        public SatelliteInfo(Satellite satellite)
+        public SatelliteViewModel(Satellite satellite)
         {
             _satellite = satellite;
 

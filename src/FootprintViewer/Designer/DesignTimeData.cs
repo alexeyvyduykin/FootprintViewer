@@ -36,7 +36,7 @@ namespace FootprintViewer.Designer
         private IGroundStationLayerSource? _groundStationLayerSource;
         private IEditLayerSource? _editLayerSource;
 
-        private SatelliteViewer? _satelliteViewer;
+        private SatelliteTab? _satelliteTab;
         private FootprintTab? _footprintTab;
         private GroundTargetTab? _groundTargetTab;
         private GroundStationTab? _groundStationTab;

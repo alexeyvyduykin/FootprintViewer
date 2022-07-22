@@ -4,11 +4,11 @@ using System;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeSatelliteInfo : SatelliteInfo
+    public class DesignTimeSatelliteViewModel : SatelliteViewModel
     {
         private readonly static Random _random = new Random();
 
-        public DesignTimeSatelliteInfo() : base(BuildModel())
+        public DesignTimeSatelliteViewModel() : base(BuildModel())
         {
             IsShow = true;
             IsShowInfo = true;

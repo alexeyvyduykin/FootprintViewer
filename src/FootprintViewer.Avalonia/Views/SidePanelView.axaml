@@ -23,8 +23,8 @@
       <views:SceneSearchView/>
     </DataTemplate>
 
-    <DataTemplate DataType="vm:SatelliteViewer">
-      <views:SatelliteViewerView/>
+    <DataTemplate DataType="vm:SatelliteTab">
+      <views:SatelliteTabView/>
     </DataTemplate>
 
     <DataTemplate DataType="vm:GroundTargetTab">
@@ -56,7 +56,7 @@
           <materialIcons:MaterialIcon Kind="Image"/>
         </Viewbox>
       </DataTemplate>
-      <DataTemplate x:Key="SatelliteViewer">
+      <DataTemplate x:Key="SatelliteTab">
         <Grid>
           <Viewbox Margin="8">
             <PathIcon Data="{DynamicResource fg-satellite}"/>

@@ -83,6 +83,12 @@
     <Compile Update="Views\SidePanelTabs\ItemTemplates\GroundTargetItemView.axaml.cs">
       <DependentUpon>GroundTargetItemView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SidePanelTabs\ItemTemplates\SatelliteItemView.axaml.cs">
+      <DependentUpon>SatelliteItemView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
+      <DependentUpon>SatelliteTabView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

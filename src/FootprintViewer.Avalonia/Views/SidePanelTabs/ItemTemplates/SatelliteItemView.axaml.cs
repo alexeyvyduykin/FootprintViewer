@@ -10,11 +10,11 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class SatelliteInfoView : ReactiveUserControl<SatelliteInfo>
+    public partial class SatelliteItemView : ReactiveUserControl<SatelliteViewModel>
     {
-        private SatelliteViewer? _satelliteViewer;
+        private SatelliteTab? _satelliteTab;
 
-        public SatelliteInfoView()
+        public SatelliteItemView()
         {
             InitializeComponent();
 
@@ -42,16 +42,16 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 
         private void UpdateTrackImpl()
         {
-            _satelliteViewer ??= Locator.Current.GetExistingService<SatelliteViewer>();
+            _satelliteTab ??= Locator.Current.GetExistingService<SatelliteTab>();
 
-            _satelliteViewer.UpdateTrack(ViewModel!);
+            _satelliteTab.UpdateTrack(ViewModel!);
         }
 
         private void UpdateStripsImpl()
         {
-            _satelliteViewer ??= Locator.Current.GetExistingService<SatelliteViewer>();
+            _satelliteTab ??= Locator.Current.GetExistingService<SatelliteTab>();
 
-            _satelliteViewer.UpdateStrips(ViewModel!);
+            _satelliteTab.UpdateStrips(ViewModel!);
         }
 
         private static IBrush ConvertToBrush(string? name)

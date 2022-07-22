@@ -5,9 +5,9 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class SatelliteViewerView : ReactiveUserControl<SatelliteViewer>
+    public partial class SatelliteTabView : ReactiveUserControl<SatelliteTab>
     {
-        public SatelliteViewerView()
+        public SatelliteTabView()
         {
             InitializeComponent();
 

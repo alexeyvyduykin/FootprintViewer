@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class SatelliteViewerList : BaseViewerList<SatelliteInfo>
+    public class SatelliteViewerList : BaseViewerList<SatelliteViewModel>
     {
         private readonly IProvider<Satellite> _provider;
 
@@ -14,13 +14,13 @@ namespace FootprintViewer.ViewModels
             _provider = provider;
         }
 
-        protected override async Task<List<SatelliteInfo>> LoadingAsync(IFilter<SatelliteInfo>? filter = null)
+        protected override async Task<List<SatelliteViewModel>> LoadingAsync(IFilter<SatelliteViewModel>? filter = null)
         {
-            return await _provider.GetValuesAsync(filter, s => new SatelliteInfo(s));
+            return await _provider.GetValuesAsync(filter, s => new SatelliteViewModel(s));
         }
 
-        protected override Task AddAsync(SatelliteInfo? value) => throw new Exception();
+        protected override Task AddAsync(SatelliteViewModel? value) => throw new Exception();
 
-        protected override Task RemoveAsync(SatelliteInfo? value) => throw new Exception();
+        protected override Task RemoveAsync(SatelliteViewModel? value) => throw new Exception();
     }
 }
