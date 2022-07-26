@@ -15,5 +15,8 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public List<ProviderViewModel> Providers { get; set; }
+
+        [Reactive]
+        public LanguageSettingsViewModel? LanguageSettings { get; set; }
     }
 }

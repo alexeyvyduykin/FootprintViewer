@@ -176,9 +176,9 @@
                           Padding="15,8,0,8"
                           DockPanel.Dock="Top">
 
-                    <TextBlock VerticalAlignment="Center"
-                               Classes="Headline6"
-                               Text="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
+                    <TextBlock x:Name="PART_title"							 
+							   VerticalAlignment="Center"
+                               Classes="Headline6"/>
                   </Border>
 
                   <ContentPresenter Name="PART_SelectedContentHost"
@@ -196,6 +196,10 @@
     </Setter>
   </Style>
 
+	<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">				
+		<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>		
+	</Style>
+			
   <Style Selector="controls|SidePanel[IsExpanded=false] /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
     <Setter Property="RenderTransform" Value="rotate(180deg)"/>
   </Style>

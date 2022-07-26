@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
+using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using Splat;
 using System;
@@ -50,6 +51,7 @@ namespace FootprintViewer
         public SettingsTabViewModel CreateSettingsTabViewModel()
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
+            var languagesConfiguration = _dependencyResolver.GetExistingService<LanguagesConfiguration>();
 
             var groundStationProvider = (Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
@@ -108,6 +110,8 @@ namespace FootprintViewer
                 AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
             };
 
+            var languageManager = new LanguageManager(languagesConfiguration);
+            
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
                 Providers = new List<ProviderViewModel>()
@@ -120,7 +124,8 @@ namespace FootprintViewer
                     footprintPreviewGeometryProviderViewModel,
                     mapBackgroundProviderViewModel,
                     footprintPreviewProviderViewModel,
-                }
+                },
+                LanguageSettings = new LanguageSettingsViewModel(languageManager),
             };
 
             return settingsViewer;

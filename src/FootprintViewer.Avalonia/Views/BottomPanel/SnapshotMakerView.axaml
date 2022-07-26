@@ -4,34 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:icons="using:Material.Icons.Avalonia"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             mc:Ignorable="d"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d"
              d:DesignHeight="250"
              x:Class="FootprintViewer.Avalonia.Views.BottomPanel.SnapshotMakerView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeSnapshotMaker/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeSnapshotMaker/>
+	</Design.DataContext>
 
-  <Grid>
-    <Grid ColumnDefinitions="Auto,4,Auto,4,100"
-          VerticalAlignment="Center">
-      <Button Background="{DynamicResource PrimaryHueMidBrush}" 
-              Command="{Binding OpenFolder}">
-        <icons:MaterialIcon Width="20"
-                            Height="20"
-                            Foreground="{Binding #ComboBox.Foreground}"
-                            Kind="FolderOpen" />
-      </Button>
-      <Button Grid.Column="2"
-              Background="{DynamicResource PrimaryHueMidBrush}"
-              Foreground="{Binding #ComboBox.Foreground}"
-              Command="{Binding Create}"
-              Content="Snapshot"/>
-      <ComboBox x:Name="ComboBox"
-                Grid.Column="4"
-                Items="{Binding Extensions}"
-                SelectedItem="{Binding SelectedExtension}"/>
-    </Grid>
-  </Grid>
+	<Grid>
+		<Grid ColumnDefinitions="Auto,4,Auto,4,100"
+			  VerticalAlignment="Center">
+			<Button Background="{DynamicResource PrimaryHueMidBrush}"
+					Command="{Binding OpenFolder}">
+				<icons:MaterialIcon Width="20"
+									Height="20"
+									Foreground="{Binding #ComboBox.Foreground}"
+									Kind="FolderOpen" />
+			</Button>
+			<Button Grid.Column="2"
+					Background="{DynamicResource PrimaryHueMidBrush}"
+					Foreground="{Binding #ComboBox.Foreground}"
+					Command="{Binding Create}"
+					Content="{x:Static prop:Resources.Snapshot}"
+			  />
+			<ComboBox x:Name="ComboBox"
+					  Grid.Column="4"
+					  Items="{Binding Extensions}"
+					  SelectedItem="{Binding SelectedExtension}"/>
+		</Grid>
+	</Grid>
 
 </UserControl>

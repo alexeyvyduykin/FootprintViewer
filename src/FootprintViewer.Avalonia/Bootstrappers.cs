@@ -28,6 +28,10 @@ namespace FootprintViewer.Avalonia
             var sourceConfig = new SourceBuilderConfiguration();
             configuration.GetSection("SourceBuilders").Bind(sourceConfig);
             services.RegisterConstant(sourceConfig, typeof(SourceBuilderConfiguration));
+
+            var languagesConfig = new LanguagesConfiguration();
+            configuration.GetSection("Languages").Bind(languagesConfig);
+            services.RegisterConstant(languagesConfig, typeof(LanguagesConfiguration));
         }
 
         private static void RegisterVariableViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver, AppMode mode)

@@ -1,5 +1,7 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Configurations;
+using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
+using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using Splat;
 using System.Collections.Generic;
@@ -117,6 +119,14 @@ namespace FootprintViewer.Designer
                 mapBackgroundProviderViewModel,
                 footprintPreviewProviderViewModel,
             };
+
+            var config = new LanguagesConfiguration() { AvailableLocales = new[] { "en", "ru" } };
+
+            var languageManager = new LanguageManager(config);
+
+            LanguageSettings = new LanguageSettingsViewModel(languageManager);
+
+            LanguageSettings.Activate();
         }
     }
 }

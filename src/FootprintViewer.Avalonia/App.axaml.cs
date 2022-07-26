@@ -1,21 +1,24 @@
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
+using FootprintViewer.Avalonia.Views;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
     public class App : Application
     {
+        private static MainWindow? _mainWindow;
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -36,10 +39,12 @@ namespace FootprintViewer.Avalonia
 
                 if (mainViewModel != null)
                 {
-                    desktopLifetime.MainWindow = new Views.MainWindow()
+                    _mainWindow = new Views.MainWindow()
                     {
                         DataContext = mainViewModel
                     };
+
+                    desktopLifetime.MainWindow = _mainWindow;
                 }
             }
             else if (ApplicationLifetime is ISingleViewApplicationLifetime)
@@ -122,5 +127,7 @@ namespace FootprintViewer.Avalonia
 
             return null;
         }
+
+        public static MainWindow GetMainWindow() => _mainWindow ?? throw new Exception();
     }
 }

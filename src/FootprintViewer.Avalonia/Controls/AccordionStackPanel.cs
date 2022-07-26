@@ -15,7 +15,9 @@ namespace FootprintViewer.Avalonia.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (constraint.Equals(Size.Infinity) == true)
+            if (constraint.Equals(Size.Infinity) == true || 
+                double.IsInfinity(constraint.Width) || 
+                double.IsInfinity(constraint.Height))
             {
                 return Size.Empty;
             }

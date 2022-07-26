@@ -19,5 +19,10 @@ namespace FootprintViewer.Avalonia.Views
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+        public void UpdateComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
     }
 }

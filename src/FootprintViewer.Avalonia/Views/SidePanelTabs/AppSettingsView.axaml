@@ -2,12 +2,16 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"		
-			 xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"        
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:controls="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
              xmlns:controls2="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
+             xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              MinWidth="380"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
@@ -15,6 +19,17 @@
 	<Design.DataContext>
 		<vmd:DesignTimeSettingsTab/>
 	</Design.DataContext>
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="languageTemplate" DataType="vm:LanguageViewModel">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding NativeName, StringFormat={} ({0}}"
+						   Classes="Caption" VerticalAlignment="Center"/>
+				<TextBlock Text="{Binding Code, StringFormat={}\, {0})}"
+						   Classes="Caption" VerticalAlignment="Center"/>
+			</StackPanel>
+		</DataTemplate>
+	</UserControl.Resources>
 
 	<UserControl.Styles>
 		<Style Selector="Expander">
@@ -46,47 +61,84 @@
 		<Style Selector="Expander /template/ ToggleButton#PART_toggle /template/ Border#PART_RootBorder">
 			<Setter Property="Background" Value="Red"/>
 		</Style>
+
+		<Style Selector="RadioButton">
+			<Setter Property="GroupName" Value="a1"></Setter>
+			<Setter Property="Padding" Value="8"></Setter>
+			<Setter Property="Margin" Value="8,4"></Setter>
+		</Style>
 	</UserControl.Styles>
 
-	<StackPanel>
-		<Expander Header="Поставщики данных"		
-				  ExpandDirection="Down"
-				  HorizontalContentAlignment="Stretch"							
-				  >			
-			<ScrollViewer HorizontalScrollBarVisibility="Hidden"
-						  VerticalScrollBarVisibility="Auto">
-				<ItemsControl Items="{Binding Providers}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
-		</Expander>
-		<Expander Header="Локализация"	  
-				  ExpandDirection="Down"			  
-				  HorizontalContentAlignment="Stretch"						  
-				  >
-			<StackPanel>
-				<RadioButton Content="Английский" IsChecked="True"/>
-				<RadioButton Content="Русский"/>
-			</StackPanel>
-		</Expander>
-	</StackPanel>
+	<ItemsControl>
+		<ItemsControl.ItemsPanel>
+			<ItemsPanelTemplate>
+				<StackPanel/>
+			</ItemsPanelTemplate>
+		</ItemsControl.ItemsPanel>
 
-	<!--<Grid>
-		<ScrollViewer HorizontalScrollBarVisibility="Hidden"
-					  VerticalScrollBarVisibility="Auto">
-			<ItemsControl Items="{Binding Providers}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+		<ItemsControl.Items>
+			<Expander Header="{x:Static prop:Resources.SettingsProviders}">
+				<ScrollViewer HorizontalScrollBarVisibility="Hidden"
+							  VerticalScrollBarVisibility="Auto">
+					<ItemsControl Items="{Binding Providers}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Expander>
 
-		</ScrollViewer>
-	</Grid>-->
+			<Expander x:Name="LanguageExpander"
+					  Header="{x:Static prop:Resources.SettingsLanguages}">
+				<StackPanel>
+
+					<RadioButton x:Name="RadioButton1">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock x:Name="LanguageTextBlock1"
+									   Classes="Body1"
+									   VerticalAlignment="Center"/>
+							<ContentControl Content="{Binding LanguageSettings.Languages[0]}"
+											ContentTemplate="{StaticResource languageTemplate}"/>
+						</StackPanel>
+					</RadioButton>
+
+					<RadioButton x:Name="RadioButton2">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock x:Name="LanguageTextBlock2"
+									   Classes="Body1"
+									   VerticalAlignment="Center"/>
+							<ContentControl Content="{Binding LanguageSettings.Languages[1]}"
+											ContentTemplate="{StaticResource languageTemplate}"/>
+						</StackPanel>
+					</RadioButton>
+
+					<!--<ItemsControl Items="{Binding LanguageSettings.Languages}"
+								  Margin="8">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="vm:LanguageViewModel">
+								<RadioButton IsChecked="{Binding IsChecked}"										
+											 GroupName="a1"
+											 Padding="8"
+											 Margin="8,4">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock Text="{Binding Name}"
+												   Classes="Body1" VerticalAlignment="Center"/>
+										<TextBlock Text="{Binding NativeName, StringFormat={} ({0}}"
+												   Classes="Caption" VerticalAlignment="Center"/>
+										<TextBlock Text="{Binding Code, StringFormat={}\, {0})}"
+												   Classes="Caption" VerticalAlignment="Center"/>
+									</StackPanel>
+								</RadioButton>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>-->
+
+				</StackPanel>
+			</Expander>
+		</ItemsControl.Items>
+
+	</ItemsControl>
 
 </UserControl>
