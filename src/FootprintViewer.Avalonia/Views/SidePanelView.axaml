@@ -122,10 +122,10 @@
 
 	<Panel>
 		<controls:SidePanel Items="{Binding Tabs}"
+							PaneWidth="500"
 							IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
 							ItemTemplate="{DynamicResource SidePanelIconSelector}"
 							SelectedItem="{Binding SelectedTab}">
-
 			<controls:SidePanel.ItemsPanel>
 				<ItemsPanelTemplate>
 					<DockPanel/>

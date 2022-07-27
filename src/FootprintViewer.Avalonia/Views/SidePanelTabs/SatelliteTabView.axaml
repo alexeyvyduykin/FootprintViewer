@@ -5,15 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:reactiveUi="http://reactiveui.net"
-             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
-             MinWidth="380">
+             mc:Ignorable="d"
+			 d:DesignWidth="380" d:DesignHeight="450">
 
-  <Design.DataContext>
-    <vmd:DesignTimeSatelliteTab/>
-  </Design.DataContext>
-    
-  <Grid>
-    <reactiveUi:ViewModelViewHost x:Name="MainContentControl" />
-  </Grid>
-  
+	<Design.DataContext>
+		<vmd:DesignTimeSatelliteTab/>
+	</Design.DataContext>
+
+	<Panel>
+		<reactiveUi:ViewModelViewHost x:Name="MainContentControl"/>
+	</Panel>
+
 </UserControl>

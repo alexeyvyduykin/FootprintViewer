@@ -10,35 +10,33 @@
              xmlns:filters="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates"
              xmlns:reactiveUi="http://reactiveui.net"
              x:Name="userControl"
-             MinWidth="380"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
-  <Design.DataContext>
-    <vmd:DesignTimeFootprintTab/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeFootprintTab/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
-    <Style Selector="FlyoutPresenter">
-      <Setter Property="Padding" Value="0,0,0,0"/>    
-    </Style>
-  </UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Padding" Value="0,0,0,0"/>
+		</Style>
+	</UserControl.Styles>
 
-  <Grid RowDefinitions="Auto,Auto,*,50">
+	<Grid RowDefinitions="Auto,*,50">
 
-    <ToggleButton x:Name="SearchToggleButton"
-                  Grid.Row="1"
-                  Classes="FilterToggleButton"
-                  Content="Настройки поиска">
-      <ToggleButton.Flyout>     
-        <Flyout Placement="LeftEdgeAlignedTop">
-          <filters:FootprintInfoFilterView DataContext="{Binding Filter}"/>
-        </Flyout>
-      </ToggleButton.Flyout>
-    </ToggleButton>
+		<ToggleButton x:Name="SearchToggleButton"
+					  Classes="FilterToggleButton"
+					  Content="Настройки поиска">
+			<ToggleButton.Flyout>
+				<Flyout Placement="LeftEdgeAlignedTop">
+					<filters:FootprintInfoFilterView DataContext="{Binding Filter}"/>
+				</Flyout>
+			</ToggleButton.Flyout>
+		</ToggleButton>
 
-    <reactiveUi:ViewModelViewHost x:Name="MainContentControl"
-                                  Grid.Row="2"/>
-  </Grid>
+		<reactiveUi:ViewModelViewHost x:Name="MainContentControl"
+									  Grid.Row="1"/>
+	</Grid>
 
 </UserControl>

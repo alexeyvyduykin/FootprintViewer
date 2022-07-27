@@ -10,7 +10,6 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:tabs="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             MinWidth="380"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
 
@@ -55,7 +54,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<controls:AccordionStackPanel Width="380" VerticalAlignment="Stretch">
+	<controls:AccordionStackPanel>
 
 		<ContentControl Padding="8">
 			<Expander Header="{x:Static prop:Resources.SettingsProviders}"

@@ -11,6 +11,11 @@ namespace FootprintViewer.Avalonia.Controls
 {
     public class SidePanel : TabControl
     {
+        public SidePanel() : base()
+        {
+            AffectsMeasure<SidePanel>(IsExpandedProperty);
+        }
+
         protected override IItemContainerGenerator CreateItemContainerGenerator()
         {
             return new SidePanelItemContainerGenerator(this);
@@ -50,6 +55,24 @@ namespace FootprintViewer.Avalonia.Controls
         {
             get => GetValue(TitleBackgroundProperty);
             set => SetValue(TitleBackgroundProperty, value);
+        }
+
+        public static readonly StyledProperty<double> PaneTitleHeightProperty =
+            AvaloniaProperty.Register<SidePanel, double>(nameof(PaneTitleHeight), 50);
+
+        public double PaneTitleHeight
+        {
+            get => GetValue(PaneTitleHeightProperty);
+            set => SetValue(PaneTitleHeightProperty, value);
+        }
+
+        public static readonly StyledProperty<double> PaneWidthProperty =
+            AvaloniaProperty.Register<SidePanel, double>(nameof(PaneWidth), 100);
+
+        public double PaneWidth
+        {
+            get => GetValue(PaneWidthProperty);
+            set => SetValue(PaneWidthProperty, value);
         }
 
         private class SidePanelItemContainerGenerator : ItemContainerGenerator<SidePanelItem>
