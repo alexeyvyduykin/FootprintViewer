@@ -28,7 +28,6 @@ namespace FootprintViewer.ViewModels
         private readonly BottomPanel _bottomPanel;
         private readonly CustomToolBar _customToolBar;
         private readonly FootprintTab _footprintTab;
-        private readonly NewFootprintTab _newFootprintTab;
         private readonly GroundTargetTab _groundTargetTab;
         private readonly UserGeometryTab _userGeometryTab;
         private readonly FootprintPreviewTab _footprintPreviewTab;
@@ -58,7 +57,6 @@ namespace FootprintViewer.ViewModels
             _footprintSource = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
             _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
-            _newFootprintTab = dependencyResolver.GetExistingService<NewFootprintTab>();
             _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
             _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTab>();
             _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTab>();
@@ -131,25 +129,6 @@ namespace FootprintViewer.ViewModels
             _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
 
             _footprintTab.ClickOnItem.Subscribe(s =>
-            {
-                var name = s?.Name;
-
-                if (string.IsNullOrEmpty(name) == false)
-                {
-                    var feature = _footprintSource.GetFeature(name);
-
-                    if (feature != null)
-                    {
-                        _footprintSelectDecorator ??= CreateFootprintSelector();
-
-                        _footprintSelectDecorator.SelectFeature((BaseFeature)feature);
-                    }
-
-                    return;
-                }
-            });
-
-            _newFootprintTab.ClickOnItem.Subscribe(s =>
             {
                 var name = s?.Name;
 

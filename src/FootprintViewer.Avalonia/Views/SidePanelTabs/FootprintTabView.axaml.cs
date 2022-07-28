@@ -18,13 +18,9 @@ namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 
             this.WhenActivated(disposables =>
             {
-                // MainContentControl
-                this.OneWayBind(ViewModel, vm => vm.ViewerList, v => v.MainContentControl.ViewModel).DisposeWith(disposables);
-
                 // ToggleButton
                 SearchToggleButton.Flyout?.Events().Closing.Subscribe(_ => SearchToggleButton.IsChecked = false).DisposeWith(disposables);
             });
-
         }
     }
 }

@@ -23,11 +23,6 @@ namespace FootprintViewer
             return new SatelliteViewerList(provider);
         }
 
-        public IViewerList<FootprintViewModel> CreateFootprintViewerList(IProvider<Footprint> provider)
-        {
-            return new FootprintViewerList(provider);
-        }
-
         public IViewerList<GroundTargetViewModel> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
         {
             return new GroundTargetViewerList(provider);
@@ -111,7 +106,7 @@ namespace FootprintViewer
             };
 
             var languageManager = new LanguageManager(languagesConfiguration);
-            
+
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
                 Providers = new List<ProviderViewModel>()

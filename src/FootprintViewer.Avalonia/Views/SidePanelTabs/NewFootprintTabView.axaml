@@ -54,7 +54,7 @@
 
 			<ListBox x:Name="ListBox"
 					 IsVisible="{Binding !IsLoading}"
-					 Items="{Binding Footprints}"
+					 Items="{Binding Items}"
 					 VirtualizationMode="Simple">
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="vm:FootprintViewModel">

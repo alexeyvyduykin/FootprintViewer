@@ -1,7 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
@@ -15,7 +14,7 @@ namespace FootprintViewer.ViewModels
     public class NewFootprintTab : SidePanelTab
     {
         private readonly SourceList<FootprintViewModel> _footprints = new();
-        private readonly ReadOnlyObservableCollection<FootprintViewModel> _bindingData;
+        private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
         private readonly IProvider<Footprint> _provider;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private FootprintViewModel? _prevSelectedItem;
@@ -32,7 +31,7 @@ namespace FootprintViewer.ViewModels
                 .Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Filter(((FootprintObserverFilter)Filter).FilterObservable)
-                .Bind(out _bindingData)
+                .Bind(out _items)
                 .Subscribe();
 
             Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
@@ -46,7 +45,7 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsActive)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Where(active => active == true)
-                .Take(1)
+                //.Take(1)
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Loading);
 
@@ -86,7 +85,7 @@ namespace FootprintViewer.ViewModels
             });
         }
 
-        public FootprintViewModel ClickOnItemImpl(FootprintViewModel item)
+        private FootprintViewModel ClickOnItemImpl(FootprintViewModel item)
         {
             if (_prevSelectedItem != null && _prevSelectedItem.Name.Equals(item.Name) == false)
             {
@@ -123,9 +122,8 @@ namespace FootprintViewer.ViewModels
         //    return ViewerList.GetItem(name);
         //}
 
-        [Reactive]
-        public IFilter<FootprintViewModel> Filter { get; private set; }
+        public IFilter<FootprintViewModel> Filter { get; }
 
-        public ReadOnlyObservableCollection<FootprintViewModel> Footprints => _bindingData;
+        public ReadOnlyObservableCollection<FootprintViewModel> Items => _items;
     }
 }

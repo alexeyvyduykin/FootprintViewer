@@ -115,7 +115,7 @@ namespace FootprintViewer
 
             var tab = new FootprintTab(_dependencyResolver);
 
-            tab.ViewerList.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+            tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 
             return tab;
         }
