@@ -120,6 +120,17 @@ namespace FootprintViewer
             return tab;
         }
 
+        public NewFootprintTab CreateNewFootprintTab()
+        {
+            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+
+            var tab = new NewFootprintTab(_dependencyResolver);
+
+            tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+
+            return tab;
+        }
+
         public GroundTargetTab CreateGroundTargetTab()
         {
             var source = _dependencyResolver.GetExistingService<ITargetLayerSource>();

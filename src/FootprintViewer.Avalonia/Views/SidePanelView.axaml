@@ -36,6 +36,10 @@
 			<views:FootprintTabView/>
 		</DataTemplate>
 
+		<DataTemplate DataType="vm:NewFootprintTab">
+			<views:NewFootprintTabView/>
+		</DataTemplate>
+
 		<DataTemplate DataType="vm:UserGeometryTab">
 			<views:UserGeometryTabView/>
 		</DataTemplate>
@@ -74,6 +78,13 @@
 				</Grid>
 			</DataTemplate>
 			<DataTemplate x:Key="FootprintTab">
+				<Grid>
+					<Viewbox Margin="8">
+						<PathIcon Data="{DynamicResource fg-satellite-earth}"/>
+					</Viewbox>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="NewFootprintTab">
 				<Grid>
 					<Viewbox Margin="8">
 						<PathIcon Data="{DynamicResource fg-satellite-earth}"/>

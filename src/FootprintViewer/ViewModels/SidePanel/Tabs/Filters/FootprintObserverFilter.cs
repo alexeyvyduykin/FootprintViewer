@@ -46,6 +46,37 @@ namespace FootprintViewer.ViewModels
             Observable.StartAsync(CreateSatelliteList).Subscribe();
         }
 
+
+        public IObservable<Func<FootprintViewModel, bool>> FilterObservable =>
+            this.WhenAnyValue(s => s.Satellites, s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Switcher)
+                .Throttle(TimeSpan.FromSeconds(1))
+                .Select(_ => this)
+                .Select(CreatePredicate);
+
+        private static Func<FootprintViewModel, bool> CreatePredicate(FootprintObserverFilter filter)
+        {
+            return footprint =>
+            {
+                if (filter.Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
+                {
+                    if (footprint.Node >= filter.FromNode && footprint.Node <= filter.ToNode)
+                    {
+                        if (footprint.Direction == SatelliteStripDirection.Left && filter.IsLeftStrip == true)
+                        {
+                            return true;
+                        }
+
+                        if (footprint.Direction == SatelliteStripDirection.Right && filter.IsRightStrip == true)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            };
+        }
+
         private async Task CreateSatelliteList()
         {
             var satellites = await _satelliteProvider.GetNativeValuesAsync(null);
