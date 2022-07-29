@@ -137,7 +137,7 @@ namespace FootprintViewer
 
             var groundTargetViewer = new GroundTargetTab(_dependencyResolver);
 
-            groundTargetViewer.ViewerList.SelectedItemObservable.Subscribe(groundTarget =>
+            groundTargetViewer.SelectedItemObservable.Subscribe(groundTarget =>
             {
                 if (groundTarget != null)
                 {
@@ -150,7 +150,7 @@ namespace FootprintViewer
                 }
             });
 
-            groundTargetViewer.ViewerList.MouseOverEnter.Subscribe(groundTarget =>
+            groundTargetViewer.Enter.Subscribe(groundTarget =>
             {
                 var name = groundTarget.Name;
 
@@ -160,7 +160,7 @@ namespace FootprintViewer
                 }
             });
 
-            groundTargetViewer.ViewerList.MouseOverLeave.Subscribe(_ =>
+            groundTargetViewer.Leave.Subscribe(_ =>
             {
                 source.HideHighlight();
             });

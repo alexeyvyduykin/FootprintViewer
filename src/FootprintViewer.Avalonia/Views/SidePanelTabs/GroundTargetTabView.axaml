@@ -3,8 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:lists="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates"
              xmlns:reactiveUi="http://reactiveui.net"
@@ -15,8 +18,52 @@
 		<vmd:DesignTimeGroundTargetTab/>
 	</Design.DataContext>
 
+	<UserControl.Styles>
+		<Style Selector="ListBoxItem">
+			<Setter Property="Padding" Value="12,4"/>
+		</Style>
+		<Style Selector="TextBlock.preview">
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="TextWrapping" Value="Wrap"></Setter>
+			<Setter Property="Margin" Value="10"></Setter>
+			<Setter Property="TextAlignment" Value="Center"></Setter>
+		</Style>		
+	</UserControl.Styles>
+
 	<Panel>
-		<reactiveUi:ViewModelViewHost x:Name="MainContent"/>
+		<Panel IsVisible="{Binding !IsEnable}">
+			<TextBlock Classes="Headline4 preview"
+					   Text="{Binding PreviewText}"/>
+		</Panel>
+			
+		<Panel IsVisible="{Binding IsEnable}">
+			<ProgressBar IsVisible="{Binding IsLoading}"
+						 Classes="Circle"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Center"
+						 IsIndeterminate="True"/>
+
+			<ListBox Items="{Binding Items}"
+					 SelectedItem="{Binding SelectedItem}"
+					 IsVisible="{Binding !IsLoading}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<items:GroundTargetItemView x:Name="groundTargetItem" 
+													DataContext="{Binding}">
+							<i:Interaction.Behaviors>
+								<ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #groundTargetItem}">
+									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.Enter}"
+															CommandParameter="{Binding}" />
+								</ia:EventTriggerBehavior>
+								<ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #groundTargetItem}">
+									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+								</ia:EventTriggerBehavior>
+							</i:Interaction.Behaviors>
+						</items:GroundTargetItemView>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Panel>
 	</Panel>
 
 </UserControl>

@@ -18,11 +18,6 @@ namespace FootprintViewer
             _dependencyResolver = dependencyResolver;
         }
 
-        public IViewerList<GroundTargetViewModel> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
-        {
-            return new GroundTargetViewerList(provider);
-        }
-
         public IViewerList<UserGeometryViewModel> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
         {
             return new UserGeometryViewerList(provider);

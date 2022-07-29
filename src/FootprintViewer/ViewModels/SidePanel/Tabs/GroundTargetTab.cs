@@ -1,10 +1,13 @@
-﻿using FootprintViewer.Data;
+﻿using DynamicData;
+using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -14,51 +17,102 @@ namespace FootprintViewer.ViewModels
     {
         private readonly ITargetLayerSource _source;
         private readonly IProvider<GroundTarget> _provider;
-        private string[]? _names;
-        private readonly IViewerList<GroundTargetViewModel> _viewerList;
+        private readonly SourceList<GroundTargetViewModel> _groundTargets = new();
+        private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
+        private readonly ObservableAsPropertyHelper<bool> _isEnable;
+        private readonly ObservableAsPropertyHelper<string[]?> _names;
 
         public GroundTargetTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
-            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр наземных целей";
 
-            var preview = new PreviewMainContent("Наземные цели при текущем приблежение не доступны");
+            PreviewText = "Наземные цели при текущем приблежение не доступны";
 
-            _viewerList = viewModelFactory.CreateGroundTargetViewerList(_provider);
+            NameFilter = new NameFilter<GroundTargetViewModel>(Array.Empty<string>());
 
-            _provider.Observable.Skip(1).Select(s => (IFilter<GroundTargetViewModel>?)null).InvokeCommand(_viewerList.Loading);
+            _groundTargets
+                .Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Filter(NameFilter.FilterObservable)
+                .Bind(out _items)
+                .Subscribe();
 
-            // Update
+            Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
 
-            _source.Refresh.Subscribe(names =>
+            Delay = ReactiveCommand.CreateFromTask(() => Task.Delay(TimeSpan.FromSeconds(1.0)));
+
+            Enter = ReactiveCommand.Create<GroundTargetViewModel, GroundTargetViewModel>(s => s);
+
+            Leave = ReactiveCommand.Create(() => { });
+
+            _isLoading = Delay.IsExecuting
+                              .ObserveOn(RxApp.MainThreadScheduler)
+                              .ToProperty(this, x => x.IsLoading);
+
+            _provider.Observable.Skip(1).Select(_ => Unit.Default).InvokeCommand(Loading);
+
+            _names = _source.Refresh
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToProperty(this, x => x.Names);
+
+            _source.Refresh
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Delay);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Where(active => active == true)
+                .Take(1)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Loading);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Where(active => active == true)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Delay);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Where(active => active == true)
+                .Subscribe(_ => NameFilter.FilterNames = Names);
+
+            this.WhenAnyValue(s => s.Names)
+                .Where(_ => IsActive == true)
+                .Subscribe(names => NameFilter.FilterNames = names);
+
+            _isEnable = this.WhenAnyValue(s => s.NameFilter.FilterNames)
+                .Select(s => s != null)
+                .ToProperty(this, x => x.IsEnable);
+        }
+
+        private NameFilter<GroundTargetViewModel> NameFilter { get; }
+
+        public IObservable<GroundTargetViewModel?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
+
+        private ReactiveCommand<Unit, Unit> Loading { get; }
+
+        private ReactiveCommand<Unit, Unit> Delay { get; }
+
+        public ReactiveCommand<GroundTargetViewModel, GroundTargetViewModel> Enter { get; }
+
+        public ReactiveCommand<Unit, Unit> Leave { get; }
+
+        private string[]? Names => _names.Value;
+
+        private async Task LoadingImpl()
+        {
+            var list = await _provider.GetValuesAsync(null, s => new GroundTargetViewModel(s));
+
+            _groundTargets.Edit(innerList =>
             {
-                _names = names;
-
-                if (IsActive == true)
-                {
-                    IsEnable = (names != null);
-
-                    if (IsEnable == true)
-                    {
-                        _viewerList.FiringUpdate(_names, 0.0);
-                    }
-                }
-            });
-
-            this.WhenAnyValue(s => s.IsEnable).Where(s => s == true).Subscribe(_ => MainContent = (ReactiveObject)_viewerList);
-            this.WhenAnyValue(s => s.IsEnable).Where(s => s == false).Subscribe(_ => MainContent = preview);
-
-            this.WhenAnyValue(s => s.IsActive).Where(s => s == true).Subscribe(_ =>
-            {
-                IsEnable = (_names != null);
-
-                if (IsEnable == true)
-                {
-                    _viewerList.FiringUpdate(_names, 0.0);
-                }
+                innerList.Clear();
+                innerList.AddRange(list);
             });
         }
 
@@ -67,12 +121,15 @@ namespace FootprintViewer.ViewModels
             return await _provider.GetValuesAsync(new NameFilter<GroundTargetViewModel>(new[] { name }), s => new GroundTargetViewModel(s));
         }
 
-        [Reactive]
-        private bool IsEnable { get; set; }
+        public bool IsLoading => _isLoading.Value;
+
+        public bool IsEnable => _isEnable.Value;
+
+        public string PreviewText { get; }
+
+        public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
 
         [Reactive]
-        public ReactiveObject? MainContent { get; private set; }
-
-        public IViewerList<GroundTargetViewModel> ViewerList => _viewerList;
+        public GroundTargetViewModel? SelectedItem { get; set; }
     }
 }

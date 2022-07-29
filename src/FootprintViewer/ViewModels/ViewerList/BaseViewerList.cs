@@ -35,30 +35,9 @@ namespace FootprintViewer.ViewModels
             _items = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.Items);
 
             _isLoading = Loading.IsExecuting.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.IsLoading);
-
-            this.WhenAnyValue(s => s.Updater)
-                .Where(s => s != null)
-                .Throttle(s => s!.ThrottleDuration!)
-                .Select(s => s!.Filter)
-                .InvokeCommand(Loading);
         }
 
         protected abstract Task<List<T>> LoadingAsync(IFilter<T>? filter = null);
-
-        public void FiringUpdate(string[]? names, double seconds)
-        {
-            var filter = new NameFilter<T>(names);
-            FiringUpdate(filter, seconds);
-        }
-
-        public void FiringUpdate(IFilter<T>? filter, double seconds)
-        {
-            Updater = new ViewerListUpdater()
-            {
-                Filter = filter,
-                ThrottleDuration = Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(seconds)),
-            };
-        }
 
         public ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
 
@@ -127,34 +106,5 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public T? SelectedItem { get; set; }
-
-        [Reactive]
-        private ViewerListUpdater? Updater { get; set; }
-
-        private class ViewerListUpdater
-        {
-            public IFilter<T>? Filter { get; set; }
-
-            public IObservable<Unit>? ThrottleDuration { get; set; }
-        }
-    }
-
-    public class NameFilter<T> : BaseFilterViewModel<T> where T : IViewerItem
-    {
-        private readonly string[]? _names;
-
-        public NameFilter(string[]? names) : base()
-        {
-            _names = names;
-        }
-
-        public override string[]? Names => _names;
-
-        public override IObservable<Func<T, bool>> FilterObservable => throw new NotImplementedException();
-
-        public override bool Filtering(T value)
-        {
-            return (_names == null) || _names.Contains(value.Name);
-        }
     }
 }

@@ -8,10 +8,6 @@ namespace FootprintViewer.ViewModels
 {
     public interface IViewerList<T>
     {
-        void FiringUpdate(string[]? names, double seconds = 1.0);
-
-        void FiringUpdate(IFilter<T>? filter, double seconds = 1.0);
-
         ReactiveCommand<IFilter<T>?, List<T>> Loading { get; }
 
         ReactiveCommand<T, T> Select { get; }
