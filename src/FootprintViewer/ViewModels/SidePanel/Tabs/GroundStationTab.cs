@@ -1,60 +1,103 @@
-﻿using FootprintViewer.Data;
+﻿using DynamicData;
+using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
+using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
     public class GroundStationTab : SidePanelTab
     {
         private readonly IGroundStationLayerSource _groundStationLayerSource;
+        private readonly IProvider<GroundStation> _provider;
+        private readonly SourceList<GroundStationViewModel> _groundStation = new();
+        private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public GroundStationTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            var provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
+            _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
-            var viewModelFactory = dependencyResolver.GetExistingService<ViewModelFactory>();
 
             Title = "Просмотр наземных станций";
 
-            ViewerList = viewModelFactory.CreateGroundStationViewerList(provider);
+            _groundStation
+                .Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _items)
+                .Subscribe();
 
-            provider.Observable.Skip(1).Select(s => (IFilter<GroundStationViewModel>?)null).InvokeCommand(ViewerList.Loading);
+            Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
 
-            // First loading
+            Delay = ReactiveCommand.CreateFromTask(() => Task.Delay(TimeSpan.FromSeconds(1.0)));
 
-            // TODO: with Take(1) not call
+            _isLoading = Delay.IsExecuting.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.IsLoading);
+
+            _provider.Observable.Skip(1).Select(s => Unit.Default).InvokeCommand(Loading);
+
             this.WhenAnyValue(s => s.IsActive)
-                .Take(2)
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Where(active => active == true)
-                .Select(_ => (IFilter<GroundStationViewModel>?)null)
-                .InvokeCommand(ViewerList.Loading);
+                .Take(1)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Loading);
+
+            this.WhenAnyValue(s => s.IsActive)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Where(active => active == true)
+                .Select(_ => Unit.Default)
+                .InvokeCommand(Delay);
         }
 
-        public void Update(GroundStationViewModel groundStationInfo)
+        private ReactiveCommand<Unit, Unit> Loading { get; }
+
+        private ReactiveCommand<Unit, Unit> Delay { get; }
+
+        public bool IsLoading => _isLoading.Value;
+
+        private async Task LoadingImpl()
         {
-            var name = groundStationInfo.Name;
-            var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
-            var angles = groundStationInfo.GetAngles();
-            var isShow = groundStationInfo.IsShow;
+            var list = await _provider.GetValuesAsync(null, s => new GroundStationViewModel(s));
+
+            foreach (var item in list)
+            {
+                item.UpdateObservable.Subscribe(Update);
+                item.ChangeObservable.Subscribe(Change);
+            }
+
+            _groundStation.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
+        }
+
+        private void Update(GroundStationViewModel groundStation)
+        {
+            var name = groundStation.Name;
+            var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
+            var angles = groundStation.GetAngles();
+            var isShow = groundStation.IsShow;
 
             _groundStationLayerSource.Update(name, center, angles, isShow);
         }
 
-        public void Change(GroundStationViewModel groundStationInfo)
+        private void Change(GroundStationViewModel groundStation)
         {
-            var name = groundStationInfo.Name;
-            var center = new NetTopologySuite.Geometries.Point(groundStationInfo.Center);
-            var angles = groundStationInfo.GetAngles();
-            var isShow = groundStationInfo.IsShow;
+            var name = groundStation.Name;
+            var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
+            var angles = groundStation.GetAngles();
+            var isShow = groundStation.IsShow;
 
             _groundStationLayerSource.Change(name, center, angles, isShow);
         }
 
-        [Reactive]
-        public IViewerList<GroundStationViewModel> ViewerList { get; private set; }
+        public ReadOnlyObservableCollection<GroundStationViewModel> Items => _items;
     }
 }

@@ -42,7 +42,6 @@ namespace FootprintViewer.Avalonia
             //Locator.CurrentMutable.Register(() => new Views.WorldMapSelectorView(), typeof(IViewFor<WorldMapSelector>));
 
             // lists
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundStationInfoListView(), typeof(IViewFor<GroundStationViewerList>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundTargetInfoListView(), typeof(IViewFor<GroundTargetViewerList>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.UserGeometryInfoListView(), typeof(IViewFor<UserGeometryViewerList>));
 
@@ -51,7 +50,6 @@ namespace FootprintViewer.Avalonia
             // items
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetItemView(), typeof(IViewFor<GroundTargetViewModel>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryItemView(), typeof(IViewFor<UserGeometryViewModel>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundStationItemView(), typeof(IViewFor<GroundStationViewModel>));
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.

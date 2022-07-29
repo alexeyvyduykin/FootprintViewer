@@ -23,11 +23,6 @@ namespace FootprintViewer
             return new GroundTargetViewerList(provider);
         }
 
-        public IViewerList<GroundStationViewModel> CreateGroundStationViewerList(IProvider<GroundStation> provider)
-        {
-            return new GroundStationViewerList(provider);
-        }
-
         public IViewerList<UserGeometryViewModel> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
         {
             return new UserGeometryViewerList(provider);

@@ -6,7 +6,6 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
@@ -40,19 +39,9 @@ namespace FootprintViewer.ViewModels
 
             AreaItems = CreateAreaItems(_defaultAngles);
 
-            Change = ReactiveCommand.Create(ChangeImpl);
-            Update = ReactiveCommand.Create(UpdateImpl);
             ChangeAreaItems = ReactiveCommand.Create<List<GroundStationAreaItem>, List<GroundStationAreaItem>>(s => s);
+
             ChangeAreaItems.ToPropertyEx(this, x => x.AreaItems);
-
-            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
-                .Throttle(TimeSpan.FromSeconds(1.5))
-                .Select(args => Unit.Default)
-                .InvokeCommand(this, v => v.Change);
-
-            this.WhenAnyValue(s => s.IsShow)
-                .Select(args => Unit.Default)
-                .InvokeCommand(this, v => v.Update);
 
             this.WhenAnyValue(s => s.InnerAngle).Subscribe(value =>
             {
@@ -97,6 +86,14 @@ namespace FootprintViewer.ViewModels
                 .InvokeCommand(ChangeAreaItems);
         }
 
+        public IObservable<GroundStationViewModel> UpdateObservable =>
+            this.WhenAnyValue(s => s.IsShow)
+                .Select(_ => this);
+
+        public IObservable<GroundStationViewModel> ChangeObservable =>
+            this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+                .Throttle(TimeSpan.FromSeconds(1.5))
+                .Select(_ => this);
 
         private ReactiveCommand<List<GroundStationAreaItem>, List<GroundStationAreaItem>> ChangeAreaItems { get; }
 
@@ -197,32 +194,6 @@ namespace FootprintViewer.ViewModels
 
         [ObservableAsProperty]
         public List<GroundStationAreaItem> AreaItems { get; }
-
-        private GroundStationViewModel ChangeImpl()
-        {
-            //var count = AreaCount;
-            //var inner = InnerAngle;
-            //var outer = OuterAngle;
-
-            //var val = (outer - inner) / count;
-
-            //var list = new List<double>();
-
-            //for (int i = 0; i < count + 1; i++)
-            //{
-            //    list.Add(inner + val * i);
-            //}
-
-            return this;
-        }
-
-        private void UpdateImpl()
-        {
-            return;
-        }
-
-        public readonly ReactiveCommand<Unit, GroundStationViewModel> Change;
-        public readonly ReactiveCommand<Unit, Unit> Update;
 
         public string Name => _name;
 
