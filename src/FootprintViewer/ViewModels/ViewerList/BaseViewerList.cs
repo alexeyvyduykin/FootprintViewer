@@ -139,7 +139,7 @@ namespace FootprintViewer.ViewModels
         }
     }
 
-    public class NameFilter<T> : ViewerListFilter<T> where T : IViewerItem
+    public class NameFilter<T> : BaseFilterViewModel<T> where T : IViewerItem
     {
         private readonly string[]? _names;
 
@@ -149,6 +149,8 @@ namespace FootprintViewer.ViewModels
         }
 
         public override string[]? Names => _names;
+
+        public override IObservable<Func<T, bool>> FilterObservable => throw new NotImplementedException();
 
         public override bool Filtering(T value)
         {

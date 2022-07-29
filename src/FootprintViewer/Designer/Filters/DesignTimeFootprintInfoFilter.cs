@@ -2,7 +2,7 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFootprintInfoFilter : FootprintObserverFilter
+    public class DesignTimeFootprintInfoFilter : FootprintTabFilter
     {
         public DesignTimeFootprintInfoFilter() : base(new DesignTimeData())
         {

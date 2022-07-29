@@ -33,11 +33,6 @@ namespace FootprintViewer
             return new GroundStationViewerList(provider);
         }
 
-        public IViewerList<FootprintPreviewViewModel> CreateFootprintPreviewViewerList(IProvider<FootprintPreview> provider)
-        {
-            return new FootprintPreviewViewerList(provider);
-        }
-
         public IViewerList<UserGeometryViewModel> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
         {
             return new UserGeometryViewerList(provider);

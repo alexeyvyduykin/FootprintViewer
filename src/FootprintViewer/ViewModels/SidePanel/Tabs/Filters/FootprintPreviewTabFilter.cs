@@ -9,13 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels
 {
-    public class Sensor : ReactiveObject
+    public class SensorItemViewModel : ReactiveObject
     {
         [Reactive]
         public string Name { get; set; } = string.Empty;
@@ -24,18 +23,18 @@ namespace FootprintViewer.ViewModels
         public bool IsActive { get; set; } = true;
     }
 
-    public class SceneSearchFilter : ViewerListFilter<FootprintPreviewViewModel>
+    public class FootprintPreviewTabFilter : BaseFilterViewModel<FootprintPreviewViewModel>
     {
         private IDictionary<string, Geometry>? _geometries;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
         private readonly IProvider<FootprintPreview> _footprintPreviewProvider;
 
-        public SceneSearchFilter(IReadonlyDependencyResolver dependencyResolver)
+        public FootprintPreviewTabFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
             _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
 
-            Sensors = new ObservableCollection<Sensor>();
+            Sensors = new ObservableCollection<SensorItemViewModel>();
 
             Cloudiness = 0.0;
             MinSunElevation = 0.0;
@@ -45,12 +44,52 @@ namespace FootprintViewer.ViewModels
             FromDate = DateTime.Today.AddDays(-1);
             ToDate = DateTime.Today.AddDays(1);
 
-            this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI, s => s.AOI)
-                .Throttle(TimeSpan.FromSeconds(1))
-                .Select(_ => Unit.Default)
-                .InvokeCommand(Update);
-
             Observable.StartAsync(CreateSensorList).Subscribe();
+        }
+
+        public override IObservable<Func<FootprintPreviewViewModel, bool>> FilterObservable =>
+            this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI, s => s.AOI)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(_ => this)
+            .Select(CreatePredicate);
+
+        private static Func<FootprintPreviewViewModel, bool> CreatePredicate(FootprintPreviewTabFilter filter)
+        {
+            return footprintPreview =>
+            {
+                bool isAoiCondition = false;
+
+                if (filter.AOI == null)
+                {
+                    isAoiCondition = true;
+                }
+                else
+                {
+                    if (filter._geometries != null && filter._geometries.ContainsKey(footprintPreview.Name))
+                    {
+                        var footprintPolygon = (Polygon)filter._geometries[footprintPreview.Name];
+                        var aoiPolygon = (Polygon)filter.AOI;
+
+                        isAoiCondition = aoiPolygon.Intersection(footprintPolygon, filter.IsFullCoverAOI);
+                    }
+                }
+
+                if (isAoiCondition == true)
+                {
+                    if (filter.Sensors.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprintPreview.SatelliteName) == true)
+                    {
+                        if (footprintPreview.CloudCoverFull >= filter.Cloudiness)
+                        {
+                            if (footprintPreview.SunElevation >= filter.MinSunElevation && footprintPreview.SunElevation <= filter.MaxSunElevation)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            };
         }
 
         private async Task CreateSensorList()
@@ -68,9 +107,9 @@ namespace FootprintViewer.ViewModels
 
         private void AddSensors(List<string> sensors)
         {
-            var list = sensors.OrderBy(s => s).Select(s => new Sensor() { Name = s }).ToList();
+            var list = sensors.OrderBy(s => s).Select(s => new SensorItemViewModel() { Name = s }).ToList();
 
-            Sensors = new ObservableCollection<Sensor>(list);
+            Sensors = new ObservableCollection<SensorItemViewModel>(list);
 
             var databasesValid = Sensors
                 .ToObservableChangeSet()
@@ -143,7 +182,7 @@ namespace FootprintViewer.ViewModels
         public bool IsFullCoverAOI { get; set; }
 
         [Reactive]
-        public ObservableCollection<Sensor> Sensors { get; set; }
+        public ObservableCollection<SensorItemViewModel> Sensors { get; set; }
 
         [Reactive]
         public bool IsAllSensorActive { get; set; }

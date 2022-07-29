@@ -65,7 +65,7 @@ namespace FootprintViewer
 
             var footprintPreviewTab = new FootprintPreviewTab(_dependencyResolver);
 
-            footprintPreviewTab.ViewerList.SelectedItemObservable.Subscribe(footprint =>
+            footprintPreviewTab.SelectedItemObservable.Subscribe(footprint =>
             {
                 if (footprint != null && footprint.Path != null)
                 {
@@ -80,7 +80,7 @@ namespace FootprintViewer
                 }
             });
 
-            footprintPreviewTab.ViewerList.MouseOverEnter.Subscribe(footprint =>
+            footprintPreviewTab.Enter.Subscribe(footprint =>
             {
                 if (footprintPreviewTab.Geometries.ContainsKey(footprint.Name!) == true)
                 {
@@ -95,7 +95,7 @@ namespace FootprintViewer
                 }
             });
 
-            footprintPreviewTab.ViewerList.MouseOverLeave.Subscribe(_ =>
+            footprintPreviewTab.Leave.Subscribe(_ =>
             {
                 var layer = map.GetLayer(LayerType.FootprintImageBorder);
 

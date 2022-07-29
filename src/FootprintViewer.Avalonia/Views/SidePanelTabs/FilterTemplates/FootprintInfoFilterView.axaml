@@ -102,7 +102,7 @@
 
       <ItemsControl Items="{Binding Satellites}">
         <ItemsControl.ItemTemplate>
-          <DataTemplate>
+          <DataTemplate DataType="vm:SatelliteItemViewModel">
             <Border Padding="16,8">
               <CheckBox IsChecked="{Binding IsActive}"
                         Content="{Binding Name}"/>

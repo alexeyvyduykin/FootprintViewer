@@ -4,7 +4,7 @@ using ReactiveUI;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates
 {
-    public partial class FootprintInfoFilterView : ReactiveUserControl<FootprintObserverFilter>
+    public partial class FootprintInfoFilterView : ReactiveUserControl<FootprintTabFilter>
     {
         public FootprintInfoFilterView()
         {

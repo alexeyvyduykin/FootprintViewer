@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.ViewModels;
+using ReactiveUI;
+using System;
 using System.Reactive;
 
 namespace FootprintViewer.Data
@@ -8,7 +10,7 @@ namespace FootprintViewer.Data
         bool Filtering(T value);
 
         string[]? Names { get; }
-
-        ReactiveCommand<Unit, IFilter<T>> Update { get; }
+    
+        IObservable<Func<T, bool>> FilterObservable { get; }
     }
 }

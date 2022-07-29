@@ -7,7 +7,7 @@ using System.Reactive.Disposables;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates
 {
-    public partial class FootprintPreviewFilterView : ReactiveUserControl<SceneSearchFilter>
+    public partial class FootprintPreviewFilterView : ReactiveUserControl<FootprintPreviewTabFilter>
     {
         public FootprintPreviewFilterView()
         {

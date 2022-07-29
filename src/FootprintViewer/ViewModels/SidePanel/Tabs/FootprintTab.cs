@@ -24,14 +24,14 @@ namespace FootprintViewer.ViewModels
         {
             _provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
 
-            Filter = new FootprintObserverFilter(dependencyResolver);
+            Filter = new FootprintTabFilter(dependencyResolver);
 
             Title = "Просмотр рабочей программы";
 
             _footprints
                 .Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Filter(((FootprintObserverFilter)Filter).FilterObservable)
+                .Filter(Filter.FilterObservable)
                 .Bind(out _items)
                 .Subscribe();
 
