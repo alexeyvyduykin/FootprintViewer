@@ -18,11 +18,6 @@ namespace FootprintViewer
             _dependencyResolver = dependencyResolver;
         }
 
-        public IViewerList<SatelliteViewModel> CreateSatelliteViewerList(IProvider<Satellite> provider)
-        {
-            return new SatelliteViewerList(provider);
-        }
-
         public IViewerList<GroundTargetViewModel> CreateGroundTargetViewerList(IProvider<GroundTarget> provider)
         {
             return new GroundTargetViewerList(provider);

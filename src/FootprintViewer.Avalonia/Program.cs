@@ -44,14 +44,12 @@ namespace FootprintViewer.Avalonia
             // lists
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundStationInfoListView(), typeof(IViewFor<GroundStationViewerList>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.GroundTargetInfoListView(), typeof(IViewFor<GroundTargetViewerList>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.SatelliteInfoListView(), typeof(IViewFor<SatelliteViewerList>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ListTemplates.UserGeometryInfoListView(), typeof(IViewFor<UserGeometryViewerList>));
 
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.PreviewMainContentView(), typeof(IViewFor<PreviewMainContent>));
 
             // items
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundTargetItemView(), typeof(IViewFor<GroundTargetViewModel>));
-            Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.SatelliteItemView(), typeof(IViewFor<SatelliteViewModel>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.UserGeometryItemView(), typeof(IViewFor<UserGeometryViewModel>));
             Locator.CurrentMutable.Register(() => new Views.SidePanelTabs.ItemTemplates.GroundStationItemView(), typeof(IViewFor<GroundStationViewModel>));
         }

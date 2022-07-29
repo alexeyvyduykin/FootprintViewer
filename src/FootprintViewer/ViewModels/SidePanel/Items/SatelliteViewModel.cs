@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
@@ -26,6 +28,12 @@ namespace FootprintViewer.ViewModels
 
             ShowInfoClick = ReactiveCommand.Create(ShowInfoClickImpl);
         }
+
+        public IObservable<SatelliteViewModel> TrackObservable => 
+            this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsTrack).Select(_ => this);
+
+        public IObservable<SatelliteViewModel> StripsObservable => 
+            this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsLeftStrip, s => s.IsRightStrip).Select(_ => this);
 
         private void ShowInfoClickImpl() => IsShowInfo = !IsShowInfo;
 
