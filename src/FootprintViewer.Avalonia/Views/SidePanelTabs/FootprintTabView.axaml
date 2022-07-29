@@ -7,7 +7,7 @@
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"             
+             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
 			 xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
@@ -55,18 +55,18 @@
 					 IsVisible="{Binding !IsLoading}"
 					 Items="{Binding Items}"
 					 VirtualizationMode="Simple">
-				 <!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">-->
+				<!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">-->
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="vm:FootprintViewModel">
-						<items:NewFootprintItemView x:Name="footprintItem"
-													DataContext="{Binding}">
+						<items:FootprintItemView x:Name="footprintItem"													
+												 DataContext="{Binding}">
 							<i:Interaction.Behaviors>
 								<ia:EventTriggerBehavior EventName="PointerPressed" SourceObject="{Binding #footprintItem}">
 									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.ClickOnItem}"
 															CommandParameter="{Binding}" />
 								</ia:EventTriggerBehavior>
 							</i:Interaction.Behaviors>
-						</items:NewFootprintItemView>
+						</items:FootprintItemView>
 
 					</DataTemplate>
 				</ListBox.ItemTemplate>
