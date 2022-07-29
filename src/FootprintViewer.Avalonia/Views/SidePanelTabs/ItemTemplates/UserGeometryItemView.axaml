@@ -6,58 +6,58 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="380"  
+             mc:Ignorable="d" d:DesignWidth="380"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryItemView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeUserGeometryViewModel/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeUserGeometryViewModel/>
+	</Design.DataContext>
 
-  <UserControl.Resources>
-    <selectors:DataTemplateSelector x:Key="UserGeometryInfoIconSelector">
-      <DataTemplate x:Key="Point">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-poi}"/>
-        </Viewbox>
-      </DataTemplate>
-      <DataTemplate x:Key="Rectangle">
-        <Viewbox Margin="2">        
-          <materialIcons:MaterialIcon Kind="RectangleOutline"/>
-        </Viewbox>
-      </DataTemplate>
-      <DataTemplate x:Key="Polygon">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-regular-shape-o}"/>
-        </Viewbox>
-      </DataTemplate>
-      <DataTemplate x:Key="Circle">
-        <Viewbox Margin="2">
-          <materialIcons:MaterialIcon Kind="CircleOutline"/>        
-        </Viewbox>
-      </DataTemplate>
-    </selectors:DataTemplateSelector>
-  </UserControl.Resources>
+	<UserControl.Resources>
+		<selectors:DataTemplateSelector x:Key="UserGeometryInfoIconSelector">
+			<DataTemplate x:Key="Point">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-poi}"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="Rectangle">
+				<Viewbox Margin="2">
+					<materialIcons:MaterialIcon Kind="RectangleOutline"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="Polygon">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-regular-shape-o}"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="Circle">
+				<Viewbox Margin="2">
+					<materialIcons:MaterialIcon Kind="CircleOutline"/>
+				</Viewbox>
+			</DataTemplate>
+		</selectors:DataTemplateSelector>
+	</UserControl.Resources>
 
-  <styles:Card x:Name="MainCard">
-    <Grid ColumnDefinitions="Auto,*,Auto">
+	<styles:Card x:Name="MainCard">
+		<Grid ColumnDefinitions="Auto,*,Auto">
 
-      <Grid Width="32" Height="32">
-        <ContentControl Content="{Binding}"
-                        ContentTemplate="{StaticResource UserGeometryInfoIconSelector}"/>
-      </Grid>
-        
-      <StackPanel Grid.Column="1" Margin="4,0,0,0">
-        <TextBlock x:Name="TypeTextBlock" Classes="Headline6"/>
-        <TextBlock x:Name="NameTextBlock" Classes="Body2"/>
-      </StackPanel>
-      <Button x:Name="RemoveButton"              
-              Classes="Flat"           
-              Grid.Column="2">
-        <Viewbox Width="20" Height="20">       
-          <materialIcons:MaterialIcon Foreground="Red" Kind="CloseThick" />
-        </Viewbox>
-      </Button>
-    </Grid>
-  </styles:Card>
-  
+			<Grid Width="32" Height="32">
+				<ContentControl Content="{Binding}"
+								ContentTemplate="{StaticResource UserGeometryInfoIconSelector}"/>
+			</Grid>
+
+			<StackPanel Grid.Column="1" Margin="4,0,0,0">
+				<TextBlock x:Name="TypeTextBlock" Classes="Headline6"/>
+				<TextBlock Text="{Binding Name}" Classes="Body2"/>
+			</StackPanel>
+			<Button x:Name="RemoveButton"					
+					Classes="Flat"
+					Grid.Column="2">
+				<Viewbox Width="20" Height="20">
+					<materialIcons:MaterialIcon Foreground="Red" Kind="CloseThick" />
+				</Viewbox>
+			</Button>
+		</Grid>
+	</styles:Card>
+
 </UserControl>

@@ -18,11 +18,6 @@ namespace FootprintViewer
             _dependencyResolver = dependencyResolver;
         }
 
-        public IViewerList<UserGeometryViewModel> CreateUserGeometryViewerList(IProvider<UserGeometry> provider)
-        {
-            return new UserGeometryViewerList(provider);
-        }
-
         public SettingsTabViewModel CreateSettingsTabViewModel()
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
