@@ -150,6 +150,15 @@
   <data name="FootprintTabTitle" xml:space="preserve">
     <value>Footprint viewer</value>
   </data>
+  <data name="GroundStationModeEqual" xml:space="preserve">
+    <value>Equal</value>
+  </data>
+  <data name="GroundStationModeGeometric" xml:space="preserve">
+    <value>Geometric</value>
+  </data>
+  <data name="GroundStationModeNone" xml:space="preserve">
+    <value>None</value>
+  </data>
   <data name="GroundStationTabTtile" xml:space="preserve">
     <value>Ground station viewer</value>
   </data>

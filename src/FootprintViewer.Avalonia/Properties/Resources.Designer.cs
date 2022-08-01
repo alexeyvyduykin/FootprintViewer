@@ -160,6 +160,33 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Equal.
+        /// </summary>
+        public static string GroundStationModeEqual {
+            get {
+                return ResourceManager.GetString("GroundStationModeEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Geometric.
+        /// </summary>
+        public static string GroundStationModeGeometric {
+            get {
+                return ResourceManager.GetString("GroundStationModeGeometric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на None.
+        /// </summary>
+        public static string GroundStationModeNone {
+            get {
+                return ResourceManager.GetString("GroundStationModeNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Ground station viewer.
         /// </summary>
         public static string GroundStationTabTtile {

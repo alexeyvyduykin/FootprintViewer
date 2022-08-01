@@ -150,6 +150,15 @@
   <data name="FootprintTabTitle" xml:space="preserve">
     <value>Просмотр рабочей программы</value>
   </data>
+  <data name="GroundStationModeEqual" xml:space="preserve">
+    <value>С равным шагом</value>
+  </data>
+  <data name="GroundStationModeGeometric" xml:space="preserve">
+    <value>С геометрическим шагом</value>
+  </data>
+  <data name="GroundStationModeNone" xml:space="preserve">
+    <value>Отсутствует</value>
+  </data>
   <data name="GroundStationTabTtile" xml:space="preserve">
     <value>Просмотр наземных станций</value>
   </data>
