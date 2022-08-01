@@ -6,8 +6,9 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"    
-             mc:Ignorable="d" d:DesignWidth="280">
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d" d:DesignWidth="380">
 
   <Design.DataContext>
     <vmd:DesignTimeSatelliteViewModel/>
@@ -37,7 +38,7 @@
                         DockPanel.Dock="Right"         
                         Cursor="Hand"
                         VerticalAlignment="Center"/>
-          <TextBlock Text="Show/Hide"   
+          <TextBlock Text="{x:Static prop:Resources.ShowHide}"   
                      Classes="Subtitle2"
                      Margin="0,0,4,0"
                      VerticalAlignment="Center"
@@ -68,7 +69,7 @@
             <CheckBox IsChecked="{Binding IsTrack}"
                       Cursor="Hand"                     
                       DockPanel.Dock="Right"/>
-            <TextBlock Text="IsTrack"
+            <TextBlock Text="{x:Static prop:Resources.SatelliteTrack}"
                        Margin="0,0,4,0"
                        Classes="Subtitle2"
                        HorizontalAlignment="Right"
@@ -78,7 +79,7 @@
             <CheckBox IsChecked="{Binding IsLeftStrip}"
                       Cursor="Hand"
                       DockPanel.Dock="Right"/>
-            <TextBlock Text="IsLeftStrip"
+            <TextBlock Text="{x:Static prop:Resources.SatelliteLeftSwath}"
                        Margin="0,0,4,0"
                        Classes="Subtitle2"
                        VerticalAlignment="Center"
@@ -88,7 +89,7 @@
             <CheckBox IsChecked="{Binding IsRightStrip}"
                       Cursor="Hand"
                       DockPanel.Dock="Right"/>
-            <TextBlock Text="IsRightStrip"
+            <TextBlock Text="{x:Static prop:Resources.SatelliteRightSwath}"
                        Margin="0,0,4,0"
                        Classes="Subtitle2"
                        VerticalAlignment="Center"
@@ -100,25 +101,25 @@
       <Grid IsVisible="{Binding #ShowInfoToggleButton.IsChecked}"                                
             Margin="0,8,0,0"                                             
             Grid.Row="2"              
-            ColumnDefinitions="1*,1.7*" 
+            ColumnDefinitions="1*,1.1*" 
             RowDefinitions="Auto,Auto">
          
            <styles:Card Grid.RowSpan="2"                        
                         Margin="0,0,2,0">
             <StackPanel>
-              <TextBlock Text="Semiaxis" Classes="Caption" HorizontalAlignment="Right"/>
+              <TextBlock Text="{x:Static prop:Resources.SatelliteSemiaxis}" Classes="Caption" HorizontalAlignment="Right"/>
               <TextBlock Text="{Binding Satellite.Semiaxis}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="Eccentricity" Classes="Caption" HorizontalAlignment="Right"/>      
+              <TextBlock Text="{x:Static prop:Resources.SatelliteEccentricity}" Classes="Caption" HorizontalAlignment="Right"/>      
               <TextBlock Text="{Binding Satellite.Eccentricity}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="Inclination" Classes="Caption" HorizontalAlignment="Right"/> 
+              <TextBlock Text="{x:Static prop:Resources.SatelliteInclination}" Classes="Caption" HorizontalAlignment="Right"/> 
               <TextBlock Text="{Binding Satellite.InclinationDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="ArgOfPerigee" Classes="Caption" HorizontalAlignment="Right"/>  
+              <TextBlock Text="{x:Static prop:Resources.SatelliteArgOfPerigee}" Classes="Caption" HorizontalAlignment="Right"/>  
               <TextBlock Text="{Binding Satellite.ArgumentOfPerigeeDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="RAAN" Classes="Caption" HorizontalAlignment="Right"/>  
+              <TextBlock Text="{x:Static prop:Resources.SatelliteRAAN}" Classes="Caption" HorizontalAlignment="Right"/>  
               <TextBlock Text="{Binding Satellite.RightAscensionAscendingNodeDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="LonAN" Classes="Caption" HorizontalAlignment="Right"/>   
+              <TextBlock Text="{x:Static prop:Resources.SatelliteLonAN}" Classes="Caption" HorizontalAlignment="Right"/>   
               <TextBlock Text="{Binding Satellite.LongitudeAscendingNodeDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="Period" Classes="Caption" HorizontalAlignment="Right"/>
+              <TextBlock Text="{x:Static prop:Resources.SatellitePeriod}" Classes="Caption" HorizontalAlignment="Right"/>
               <TextBlock Text="{Binding Satellite.Period}" Classes="Subtitle1" HorizontalAlignment="Right"/>                  
             </StackPanel>
           </styles:Card>
@@ -126,16 +127,16 @@
            <styles:Card Grid.Column="1"
                      Margin="2,0,0,2">
              <StackPanel>
-              <TextBlock Text="Epoch" Classes="Caption" HorizontalAlignment="Right"/>
+              <TextBlock Text="{x:Static prop:Resources.SatelliteEpoch}" Classes="Caption" HorizontalAlignment="Right"/>
               <TextBlock Text="{Binding Satellite.Epoch}" Classes="Subtitle1" HorizontalAlignment="Right"/>
             </StackPanel>
         </styles:Card>
                
            <styles:Card Grid.Column="1" Grid.Row="1" Margin="2,2,0,0">
            <StackPanel>         
-              <TextBlock Text="InnerHalfAngle" Classes="Caption" HorizontalAlignment="Right"/>      
+              <TextBlock Text="{x:Static prop:Resources.SatelliteInnerHalfAngle}" Classes="Caption" HorizontalAlignment="Right"/>      
              <TextBlock Text="{Binding Satellite.InnerHalfAngleDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
-              <TextBlock Text="OuterHalfAngle" Classes="Caption" HorizontalAlignment="Right"/>  
+              <TextBlock Text="{x:Static prop:Resources.SatelliteOuterHalfAngle}" Classes="Caption" HorizontalAlignment="Right"/>  
            <TextBlock Text="{Binding Satellite.OuterHalfAngleDeg}" Classes="Subtitle1" HorizontalAlignment="Right"/>
             </StackPanel>
         </styles:Card>

@@ -196,11 +196,128 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Argument of perigee.
+        /// </summary>
+        public static string SatelliteArgOfPerigee {
+            get {
+                return ResourceManager.GetString("SatelliteArgOfPerigee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Eccentricity.
+        /// </summary>
+        public static string SatelliteEccentricity {
+            get {
+                return ResourceManager.GetString("SatelliteEccentricity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Epoch.
+        /// </summary>
+        public static string SatelliteEpoch {
+            get {
+                return ResourceManager.GetString("SatelliteEpoch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Inclination.
+        /// </summary>
+        public static string SatelliteInclination {
+            get {
+                return ResourceManager.GetString("SatelliteInclination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Inner half angle.
+        /// </summary>
+        public static string SatelliteInnerHalfAngle {
+            get {
+                return ResourceManager.GetString("SatelliteInnerHalfAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Left swath.
+        /// </summary>
+        public static string SatelliteLeftSwath {
+            get {
+                return ResourceManager.GetString("SatelliteLeftSwath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Longitude of the ascending node.
+        /// </summary>
+        public static string SatelliteLonAN {
+            get {
+                return ResourceManager.GetString("SatelliteLonAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Outer half angle.
+        /// </summary>
+        public static string SatelliteOuterHalfAngle {
+            get {
+                return ResourceManager.GetString("SatelliteOuterHalfAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Period.
+        /// </summary>
+        public static string SatellitePeriod {
+            get {
+                return ResourceManager.GetString("SatellitePeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на RAAN.
+        /// </summary>
+        public static string SatelliteRAAN {
+            get {
+                return ResourceManager.GetString("SatelliteRAAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Right swath.
+        /// </summary>
+        public static string SatelliteRightSwath {
+            get {
+                return ResourceManager.GetString("SatelliteRightSwath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Semiaxis.
+        /// </summary>
+        public static string SatelliteSemiaxis {
+            get {
+                return ResourceManager.GetString("SatelliteSemiaxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Satellite viewer.
         /// </summary>
         public static string SatelliteTabTitle {
             get {
                 return ResourceManager.GetString("SatelliteTabTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Track.
+        /// </summary>
+        public static string SatelliteTrack {
+            get {
+                return ResourceManager.GetString("SatelliteTrack", resourceCulture);
             }
         }
         
@@ -219,6 +336,15 @@ namespace FootprintViewer.Avalonia.Properties {
         public static string SettingsProviders {
             get {
                 return ResourceManager.GetString("SettingsProviders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Show/Hide.
+        /// </summary>
+        public static string ShowHide {
+            get {
+                return ResourceManager.GetString("ShowHide", resourceCulture);
             }
         }
         

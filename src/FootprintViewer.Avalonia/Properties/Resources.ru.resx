@@ -162,14 +162,56 @@
   <data name="LanguageRussian" xml:space="preserve">
     <value>Русский</value>
   </data>
+  <data name="SatelliteArgOfPerigee" xml:space="preserve">
+    <value>Аргумент перигея</value>
+  </data>
+  <data name="SatelliteEccentricity" xml:space="preserve">
+    <value>Эксцентриситет</value>
+  </data>
+  <data name="SatelliteEpoch" xml:space="preserve">
+    <value>Эпоха</value>
+  </data>
+  <data name="SatelliteInclination" xml:space="preserve">
+    <value>Наклонение</value>
+  </data>
+  <data name="SatelliteInnerHalfAngle" xml:space="preserve">
+    <value>Внутренний половинный угол</value>
+  </data>
+  <data name="SatelliteLeftSwath" xml:space="preserve">
+    <value>Левая полоса</value>
+  </data>
+  <data name="SatelliteLonAN" xml:space="preserve">
+    <value>Долгота в. у.</value>
+  </data>
+  <data name="SatelliteOuterHalfAngle" xml:space="preserve">
+    <value>Внешний половинный угол</value>
+  </data>
+  <data name="SatellitePeriod" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="SatelliteRAAN" xml:space="preserve">
+    <value>Прямое восхождение в. у.</value>
+  </data>
+  <data name="SatelliteRightSwath" xml:space="preserve">
+    <value>Правая полоса</value>
+  </data>
+  <data name="SatelliteSemiaxis" xml:space="preserve">
+    <value>Большая полоса</value>
+  </data>
   <data name="SatelliteTabTitle" xml:space="preserve">
     <value>Просмотр спутников</value>
+  </data>
+  <data name="SatelliteTrack" xml:space="preserve">
+    <value>Трасса</value>
   </data>
   <data name="SettingsLanguages" xml:space="preserve">
     <value>Языки</value>
   </data>
   <data name="SettingsProviders" xml:space="preserve">
     <value>Поставщики данных</value>
+  </data>
+  <data name="ShowHide" xml:space="preserve">
+    <value>Показать/Спрятать</value>
   </data>
   <data name="Snapshot" xml:space="preserve">
     <value>Снимок</value>

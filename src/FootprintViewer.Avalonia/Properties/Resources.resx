@@ -162,14 +162,56 @@
   <data name="LanguageRussian" xml:space="preserve">
     <value>Russian</value>
   </data>
+  <data name="SatelliteArgOfPerigee" xml:space="preserve">
+    <value>Argument of perigee</value>
+  </data>
+  <data name="SatelliteEccentricity" xml:space="preserve">
+    <value>Eccentricity</value>
+  </data>
+  <data name="SatelliteEpoch" xml:space="preserve">
+    <value>Epoch</value>
+  </data>
+  <data name="SatelliteInclination" xml:space="preserve">
+    <value>Inclination</value>
+  </data>
+  <data name="SatelliteInnerHalfAngle" xml:space="preserve">
+    <value>Inner half angle</value>
+  </data>
+  <data name="SatelliteLeftSwath" xml:space="preserve">
+    <value>Left swath</value>
+  </data>
+  <data name="SatelliteLonAN" xml:space="preserve">
+    <value>Longitude of the ascending node</value>
+  </data>
+  <data name="SatelliteOuterHalfAngle" xml:space="preserve">
+    <value>Outer half angle</value>
+  </data>
+  <data name="SatellitePeriod" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="SatelliteRAAN" xml:space="preserve">
+    <value>RAAN</value>
+  </data>
+  <data name="SatelliteRightSwath" xml:space="preserve">
+    <value>Right swath</value>
+  </data>
+  <data name="SatelliteSemiaxis" xml:space="preserve">
+    <value>Semiaxis</value>
+  </data>
   <data name="SatelliteTabTitle" xml:space="preserve">
     <value>Satellite viewer</value>
+  </data>
+  <data name="SatelliteTrack" xml:space="preserve">
+    <value>Track</value>
   </data>
   <data name="SettingsLanguages" xml:space="preserve">
     <value>Languages</value>
   </data>
   <data name="SettingsProviders" xml:space="preserve">
     <value>Data providers</value>
+  </data>
+  <data name="ShowHide" xml:space="preserve">
+    <value>Show/Hide</value>
   </data>
   <data name="Snapshot" xml:space="preserve">
     <value>Snapshot</value>
