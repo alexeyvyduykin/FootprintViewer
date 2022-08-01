@@ -30,8 +30,6 @@ namespace FootprintViewer.ViewModels
 
             Title = "Просмотр наземных целей";
 
-            PreviewText = "Наземные цели при текущем приблежение не доступны";
-
             NameFilter = new NameFilter<GroundTargetViewModel>(Array.Empty<string>());
 
             _groundTargets
@@ -124,8 +122,6 @@ namespace FootprintViewer.ViewModels
         public bool IsLoading => _isLoading.Value;
 
         public bool IsEnable => _isEnable.Value;
-
-        public string PreviewText { get; }
 
         public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
 

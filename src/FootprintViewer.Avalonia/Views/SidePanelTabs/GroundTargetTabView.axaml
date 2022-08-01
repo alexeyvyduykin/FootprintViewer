@@ -10,7 +10,8 @@
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:lists="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates"
-             xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:reactiveUi="http://reactiveui.net"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
@@ -27,15 +28,15 @@
 			<Setter Property="TextWrapping" Value="Wrap"></Setter>
 			<Setter Property="Margin" Value="10"></Setter>
 			<Setter Property="TextAlignment" Value="Center"></Setter>
-		</Style>		
+		</Style>
 	</UserControl.Styles>
 
 	<Panel>
 		<Panel IsVisible="{Binding !IsEnable}">
 			<TextBlock Classes="Headline4 preview"
-					   Text="{Binding PreviewText}"/>
+					   Text="{x:Static prop:Resources.GroundTargetPreviewText}"/>
 		</Panel>
-			
+
 		<Panel IsVisible="{Binding IsEnable}">
 			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"
@@ -48,7 +49,7 @@
 					 IsVisible="{Binding !IsLoading}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<items:GroundTargetItemView x:Name="groundTargetItem" 
+						<items:GroundTargetItemView x:Name="groundTargetItem"
 													DataContext="{Binding}">
 							<i:Interaction.Behaviors>
 								<ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #groundTargetItem}">

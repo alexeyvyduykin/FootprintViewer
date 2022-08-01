@@ -162,6 +162,9 @@
   <data name="GroundStationTabTtile" xml:space="preserve">
     <value>Просмотр наземных станций</value>
   </data>
+  <data name="GroundTargetPreviewText" xml:space="preserve">
+    <value>Наземные цели при текущем приблежение не доступны</value>
+  </data>
   <data name="GroundTargetTabTitle" xml:space="preserve">
     <value>Просмотр наземных целей</value>
   </data>

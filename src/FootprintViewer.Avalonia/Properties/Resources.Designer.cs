@@ -196,6 +196,15 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Ground targets for this zoom level not access.
+        /// </summary>
+        public static string GroundTargetPreviewText {
+            get {
+                return ResourceManager.GetString("GroundTargetPreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Ground target viewer.
         /// </summary>
         public static string GroundTargetTabTitle {

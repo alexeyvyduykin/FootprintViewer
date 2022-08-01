@@ -162,6 +162,9 @@
   <data name="GroundStationTabTtile" xml:space="preserve">
     <value>Ground station viewer</value>
   </data>
+  <data name="GroundTargetPreviewText" xml:space="preserve">
+    <value>Ground targets for this zoom level not access</value>
+  </data>
   <data name="GroundTargetTabTitle" xml:space="preserve">
     <value>Ground target viewer</value>
   </data>
