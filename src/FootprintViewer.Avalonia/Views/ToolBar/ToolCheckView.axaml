@@ -2,37 +2,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"                                   
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolCheckView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeToolCheck/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeToolCheck/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
-    <Style Selector="ToggleButton:checked">
-      <Setter Property="Opacity" Value="1.0"/>  
-    </Style>
-  </UserControl.Styles>
-  
-  <ToggleButton x:Name="ToggleButton"
-                Padding="0"
-                Opacity="0.75"       
-                Content="{Binding}"
-                ContentTemplate="{DynamicResource ToolIconDataSelector}"    
-                VerticalContentAlignment="Center"         
-                HorizontalContentAlignment="Center"
-                IsChecked="{Binding IsCheck}"
-                ToolTip.ShowDelay="0">
-    
-    <ToolTip.Tip>
-      <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
-    </ToolTip.Tip>
+	<UserControl.Resources>
+		<converters:ToolBarToolTipConverter x:Key="toolBarToolTipConv"/>
+	</UserControl.Resources>
 
-    <!--<ContentControl Content="{Binding}"                  
-                    ContentTemplate=""/>-->
-    
-  </ToggleButton>
-  
+	<UserControl.Styles>
+		<Style Selector="ToggleButton:checked">
+			<Setter Property="Opacity" Value="1.0"/>
+		</Style>
+	</UserControl.Styles>
+
+	<ToggleButton x:Name="ToggleButton"
+				  Padding="0"
+				  Opacity="0.75"
+				  Content="{Binding}"
+				  ContentTemplate="{DynamicResource ToolIconDataSelector}"
+				  VerticalContentAlignment="Center"
+				  HorizontalContentAlignment="Center"
+				  IsChecked="{Binding IsCheck}"
+				  ToolTip.ShowDelay="0">
+
+		<ToolTip.Tip>
+			<ToolTip Content="{Binding Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
+		</ToolTip.Tip>
+
+	</ToggleButton>
+
 </UserControl>

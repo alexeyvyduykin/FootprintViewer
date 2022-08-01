@@ -180,6 +180,57 @@
   <data name="TipInitRoute" xml:space="preserve">
     <value>Нажмите, чтобы начать измерение</value>
   </data>
+  <data name="ToolBarAddCircle" xml:space="preserve">
+    <value>Нарисовать круговую AOI</value>
+  </data>
+  <data name="ToolBarAddPolygon" xml:space="preserve">
+    <value>Нарисовать полигональную AOI</value>
+  </data>
+  <data name="ToolBarAddRectangle" xml:space="preserve">
+    <value>Нарисовать прямоугольную AOI</value>
+  </data>
+  <data name="ToolBarCircle" xml:space="preserve">
+    <value>Нарисовать круг</value>
+  </data>
+  <data name="ToolBarEdit" xml:space="preserve">
+    <value>Редактировать фигуру</value>
+  </data>
+  <data name="ToolBarMapBackgrounds" xml:space="preserve">
+    <value>Список фоновых карт</value>
+  </data>
+  <data name="ToolBarMapLayers" xml:space="preserve">
+    <value>Список слоев</value>
+  </data>
+  <data name="ToolBarPoint" xml:space="preserve">
+    <value>Нарисовать точку</value>
+  </data>
+  <data name="ToolBarPolygon" xml:space="preserve">
+    <value>Нарисовать полигон</value>
+  </data>
+  <data name="ToolBarRectangle" xml:space="preserve">
+    <value>Нарисовать прямоугольник</value>
+  </data>
+  <data name="ToolBarRotate" xml:space="preserve">
+    <value>Повернуть фигуру</value>
+  </data>
+  <data name="ToolBarRoute" xml:space="preserve">
+    <value>Измерить расстояние</value>
+  </data>
+  <data name="ToolBarScale" xml:space="preserve">
+    <value>Изменить размер фигуры</value>
+  </data>
+  <data name="ToolBarSelect" xml:space="preserve">
+    <value>Выбрать фигуру</value>
+  </data>
+  <data name="ToolBarTranslate" xml:space="preserve">
+    <value>Переместить фигуру</value>
+  </data>
+  <data name="ToolBarZoomIn" xml:space="preserve">
+    <value>Приблизить</value>
+  </data>
+  <data name="ToolBarZoomOut" xml:space="preserve">
+    <value>Отдалить</value>
+  </data>
   <data name="UserGeometryTabTitle" xml:space="preserve">
     <value>Пользовательская геометрия</value>
   </data>

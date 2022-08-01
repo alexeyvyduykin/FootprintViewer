@@ -3,131 +3,130 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"                 
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeCustomToolBar/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeCustomToolBar/>
+	</Design.DataContext>
 
-  <UserControl.Resources>    
-    <DataTemplate x:Key="zoomInIcon">           
-      <materialIcons:MaterialIcon Background="Red" Kind="Plus" Foreground="#d6d9dd"/>  
-    </DataTemplate>    
-  </UserControl.Resources>
+	<UserControl.Resources>
+		<DataTemplate x:Key="zoomInIcon">
+			<materialIcons:MaterialIcon Background="Red" Kind="Plus" Foreground="#d6d9dd"/>
+		</DataTemplate>
+		<converters:ToolBarToolTipConverter x:Key="toolBarToolTipConv"/>
+	</UserControl.Resources>
 
-  <UserControl.Styles>
+	<UserControl.Styles>
 
-    <Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
-      <Setter Property="HorizontalAlignment" Value="Left"/>
-      <Setter Property="Width" Value="36"/>
-      <Setter Property="Height" Value="36"/>
-    </Style>
+		<Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="36"/>
+		</Style>
 
-    <Style Selector="ToggleButton.toolCheck">
-      <Setter Property="Padding" Value="0"/>
-      <Setter Property="Opacity" Value="0.75"/>
-      <Setter Property="HorizontalAlignment" Value="Left"/>
-      <Setter Property="ToolTip.ShowDelay" Value="0"/>
-    </Style>
+		<Style Selector="ToggleButton.toolCheck">
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Opacity" Value="0.75"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="ToolTip.ShowDelay" Value="0"/>
+		</Style>
 
-    <Style Selector="FlyoutPresenter">
-      <Setter Property="Padding" Value="8,0,0,0"/>
-      <Setter Property="Background" Value="Transparent"/>
-    </Style>
-
-
-    <Style Selector="Button.clickView">
-      <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-      <Setter Property="Width" Value="36"></Setter>
-      <Setter Property="Height" Value="36"></Setter>
-      <Setter Property="Opacity" Value="0.75"></Setter>
-      <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
-      <Setter Property="ToolTip.ShowDelay" Value="0"></Setter>
-    </Style>
-    
-  </UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Padding" Value="8,0,0,0"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
 
 
-  
-  <Panel>
-    <StackPanel>
-      
-      <toolBar:ToolClickView DataContext="{Binding ZoomIn}"/>
-      
-      <toolBar:ToolClickView DataContext="{Binding ZoomOut}"                      
-                             Margin="0,1,0,0"/>
+		<Style Selector="Button.clickView">
+			<Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="Width" Value="36"></Setter>
+			<Setter Property="Height" Value="36"></Setter>
+			<Setter Property="Opacity" Value="0.75"></Setter>
+			<Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+			<Setter Property="ToolTip.ShowDelay" Value="0"></Setter>
+		</Style>
 
-      <toolBar:ToolCollectionView DataContext="{Binding AOICollection}"                           
-                                  Margin="0,10,0,0"/>
+	</UserControl.Styles>
 
-      <toolBar:ToolCheckView DataContext="{Binding RouteDistance}"                       
-                             Margin="0,1,0,0"/>
+	<Panel>
+		<StackPanel>
+			
+			<toolBar:ToolClickView DataContext="{Binding ZoomIn}"/>
 
-      <!-- MapBackgrounds -->
-      <ToggleButton x:Name="MapBackgroundSelectorButton"
-                    Margin="0,10,0,0"
-                    Classes="toolCheck"
-                    IsChecked="{Binding MapBackgrounds.IsCheck}">
-        <ToolTip.Tip>
-          <ToolTip Content="{Binding MapBackgrounds.Tooltip}" Classes="FastTooltip"/>
-        </ToolTip.Tip>
-        <ToggleButton.Flyout>
-          <Flyout Placement="RightEdgeAlignedTop">
-            <toolBar:MapBackgroundListView DataContext="{Binding MapBackgroundList}"/>
-          </Flyout>
-        </ToggleButton.Flyout>
+			<toolBar:ToolClickView DataContext="{Binding ZoomOut}"
+								   Margin="0,1,0,0"/>
 
-        <ContentControl Content="{Binding MapBackgrounds}"
-                        ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
-      </ToggleButton>
+			<toolBar:ToolCollectionView DataContext="{Binding AOICollection}"
+										Margin="0,10,0,0"/>
 
-      <!-- MapLayers -->
-      <ToggleButton x:Name="MapLayerSelectorButton"
-                    Margin="0,1,0,0"
-                    Classes="toolCheck"
-                    IsChecked="{Binding MapLayers.IsCheck}">
-        <ToolTip.Tip>
-          <ToolTip Content="{Binding MapLayers.Tooltip}" Classes="FastTooltip"/>
-        </ToolTip.Tip>
-        <ToggleButton.Flyout>
-          <Flyout Placement="RightEdgeAlignedTop">
-            <toolBar:MapLayerListView DataContext="{Binding MapLayerList}"/>
-          </Flyout>
-        </ToggleButton.Flyout>
+			<toolBar:ToolCheckView DataContext="{Binding RouteDistance}"
+								   Margin="0,1,0,0"/>
 
-        <ContentControl Content="{Binding MapLayers}"
-                        ContentTemplate="{DynamicResource ToolIconDataSelector}"/>        
-      </ToggleButton>
-            
-      <toolBar:ToolCheckView DataContext="{Binding SelectGeometry}"
-                       Margin="0,10,0,0"/>
+			<!-- MapBackgrounds -->
+			<ToggleButton x:Name="MapBackgroundSelectorButton"
+						  Margin="0,10,0,0"
+						  Classes="toolCheck"
+						  IsChecked="{Binding MapBackgrounds.IsCheck}">
+				<ToolTip.Tip>
+					<ToolTip Content="{Binding MapBackgrounds.Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
+				</ToolTip.Tip>
+				<ToggleButton.Flyout>
+					<Flyout Placement="RightEdgeAlignedTop">
+						<toolBar:MapBackgroundListView DataContext="{Binding MapBackgroundList}"/>
+					</Flyout>
+				</ToggleButton.Flyout>
 
-      <toolBar:ToolCollectionView DataContext="{Binding GeometryCollection}"
-                            Margin="0,1,0,0"/>
+				<ContentControl Content="{Binding MapBackgrounds}"
+								ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+			</ToggleButton>
 
-      <toolBar:ToolCheckView DataContext="{Binding TranslateGeometry}"
-                       Margin="0,1,0,0"/>
+			<!-- MapLayers -->
+			<ToggleButton x:Name="MapLayerSelectorButton"
+						  Margin="0,1,0,0"
+						  Classes="toolCheck"
+						  IsChecked="{Binding MapLayers.IsCheck}">
+				<ToolTip.Tip>
+					<ToolTip Content="{Binding MapLayers.Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
+				</ToolTip.Tip>
+				<ToggleButton.Flyout>
+					<Flyout Placement="RightEdgeAlignedTop">
+						<toolBar:MapLayerListView DataContext="{Binding MapLayerList}"/>
+					</Flyout>
+				</ToggleButton.Flyout>
 
-      <toolBar:ToolCheckView DataContext="{Binding RotateGeometry}"
-                       Margin="0,1,0,0"/>
+				<ContentControl Content="{Binding MapLayers}"
+								ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+			</ToggleButton>
 
-      <toolBar:ToolCheckView DataContext="{Binding ScaleGeometry}"
-                       Margin="0,1,0,0"/>
+			<toolBar:ToolCheckView DataContext="{Binding SelectGeometry}"
+							 Margin="0,10,0,0"/>
 
-      <toolBar:ToolCheckView DataContext="{Binding EditGeometry}"
-                       Margin="0,1,0,0"/>
+			<toolBar:ToolCollectionView DataContext="{Binding GeometryCollection}"
+								  Margin="0,1,0,0"/>
 
-    
-  </StackPanel>
-  </Panel>
+			<toolBar:ToolCheckView DataContext="{Binding TranslateGeometry}"
+							 Margin="0,1,0,0"/>
+
+			<toolBar:ToolCheckView DataContext="{Binding RotateGeometry}"
+							 Margin="0,1,0,0"/>
+
+			<toolBar:ToolCheckView DataContext="{Binding ScaleGeometry}"
+							 Margin="0,1,0,0"/>
+
+			<toolBar:ToolCheckView DataContext="{Binding EditGeometry}"
+							 Margin="0,1,0,0"/>
+
+		</StackPanel>
+	</Panel>
 
 </UserControl>

@@ -8,22 +8,19 @@ namespace FootprintViewer.Designer
         {
             var rectangle = new ToolCheck()
             {
-                Title = "Rectangle",
-                Tooltip = "RectangleGeometry",
+                Tag = "Rectangle",
                 Group = "Group1",
             };
 
             var circle = new ToolCheck()
             {
-                Title = "Circle",
-                Tooltip = "CircleGeometry",
+                Tag = "Circle",
                 Group = "Group1",
             };
 
             var polygon = new ToolCheck()
             {
-                Title = "Polygon",
-                Tooltip = "PolygonGeometry",
+                Tag = "Polygon",
                 Group = "Group1",
             };
 

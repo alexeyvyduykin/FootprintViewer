@@ -180,6 +180,57 @@
   <data name="TipInitRoute" xml:space="preserve">
     <value>Click to start measurement</value>
   </data>
+  <data name="ToolBarAddCircle" xml:space="preserve">
+    <value>Draw circle AOI</value>
+  </data>
+  <data name="ToolBarAddPolygon" xml:space="preserve">
+    <value>Draw polygon AOI</value>
+  </data>
+  <data name="ToolBarAddRectangle" xml:space="preserve">
+    <value>Draw rectangle AOI</value>
+  </data>
+  <data name="ToolBarCircle" xml:space="preserve">
+    <value>Draw circle</value>
+  </data>
+  <data name="ToolBarEdit" xml:space="preserve">
+    <value>Edit geometry</value>
+  </data>
+  <data name="ToolBarMapBackgrounds" xml:space="preserve">
+    <value>List map backgrounds</value>
+  </data>
+  <data name="ToolBarMapLayers" xml:space="preserve">
+    <value>List map layers</value>
+  </data>
+  <data name="ToolBarPoint" xml:space="preserve">
+    <value>Draw point</value>
+  </data>
+  <data name="ToolBarPolygon" xml:space="preserve">
+    <value>Draw polygon</value>
+  </data>
+  <data name="ToolBarRectangle" xml:space="preserve">
+    <value>Draw rectangle</value>
+  </data>
+  <data name="ToolBarRotate" xml:space="preserve">
+    <value>Rotate geometry</value>
+  </data>
+  <data name="ToolBarRoute" xml:space="preserve">
+    <value>Measure route</value>
+  </data>
+  <data name="ToolBarScale" xml:space="preserve">
+    <value>Scale geometry</value>
+  </data>
+  <data name="ToolBarSelect" xml:space="preserve">
+    <value>Select geometry</value>
+  </data>
+  <data name="ToolBarTranslate" xml:space="preserve">
+    <value>Translate geometry</value>
+  </data>
+  <data name="ToolBarZoomIn" xml:space="preserve">
+    <value>Zoom in</value>
+  </data>
+  <data name="ToolBarZoomOut" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
   <data name="UserGeometryTabTitle" xml:space="preserve">
     <value>User geometry</value>
   </data>

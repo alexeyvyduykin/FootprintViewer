@@ -250,6 +250,159 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw circle AOI.
+        /// </summary>
+        public static string ToolBarAddCircle {
+            get {
+                return ResourceManager.GetString("ToolBarAddCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw polygon AOI.
+        /// </summary>
+        public static string ToolBarAddPolygon {
+            get {
+                return ResourceManager.GetString("ToolBarAddPolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw rectangle AOI.
+        /// </summary>
+        public static string ToolBarAddRectangle {
+            get {
+                return ResourceManager.GetString("ToolBarAddRectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw circle.
+        /// </summary>
+        public static string ToolBarCircle {
+            get {
+                return ResourceManager.GetString("ToolBarCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Edit geometry.
+        /// </summary>
+        public static string ToolBarEdit {
+            get {
+                return ResourceManager.GetString("ToolBarEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на List map backgrounds.
+        /// </summary>
+        public static string ToolBarMapBackgrounds {
+            get {
+                return ResourceManager.GetString("ToolBarMapBackgrounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на List map layers.
+        /// </summary>
+        public static string ToolBarMapLayers {
+            get {
+                return ResourceManager.GetString("ToolBarMapLayers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw point.
+        /// </summary>
+        public static string ToolBarPoint {
+            get {
+                return ResourceManager.GetString("ToolBarPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw polygon.
+        /// </summary>
+        public static string ToolBarPolygon {
+            get {
+                return ResourceManager.GetString("ToolBarPolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Draw rectangle.
+        /// </summary>
+        public static string ToolBarRectangle {
+            get {
+                return ResourceManager.GetString("ToolBarRectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Rotate geometry.
+        /// </summary>
+        public static string ToolBarRotate {
+            get {
+                return ResourceManager.GetString("ToolBarRotate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Measure route.
+        /// </summary>
+        public static string ToolBarRoute {
+            get {
+                return ResourceManager.GetString("ToolBarRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Scale geometry.
+        /// </summary>
+        public static string ToolBarScale {
+            get {
+                return ResourceManager.GetString("ToolBarScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Select geometry.
+        /// </summary>
+        public static string ToolBarSelect {
+            get {
+                return ResourceManager.GetString("ToolBarSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Translate geometry.
+        /// </summary>
+        public static string ToolBarTranslate {
+            get {
+                return ResourceManager.GetString("ToolBarTranslate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Zoom in.
+        /// </summary>
+        public static string ToolBarZoomIn {
+            get {
+                return ResourceManager.GetString("ToolBarZoomIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Zoom out.
+        /// </summary>
+        public static string ToolBarZoomOut {
+            get {
+                return ResourceManager.GetString("ToolBarZoomOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на User geometry.
         /// </summary>
         public static string UserGeometryTabTitle {

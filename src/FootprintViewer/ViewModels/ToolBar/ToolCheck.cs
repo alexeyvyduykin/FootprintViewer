@@ -13,19 +13,19 @@ namespace FootprintViewer.ViewModels
         {
             BeforeActivate = ReactiveCommand.Create<IToolCheck>(() =>
             {
-                Debug.WriteLine($"{Title} tool is before activate.");
+                Debug.WriteLine($"{Tag} tool is before activate.");
                 return this;
             });
 
             Activate = ReactiveCommand.Create<IToolCheck>(() =>
             {
-                Debug.WriteLine($"{Title} tool  is activate.");
+                Debug.WriteLine($"{Tag} tool  is activate.");
                 return this;
             });
 
             Deactivate = ReactiveCommand.Create<IToolCheck>(() =>
             {
-                Debug.WriteLine($"{Title} tool is deactivate.");
+                Debug.WriteLine($"{Tag} tool is deactivate.");
                 return this;
             });
 
@@ -36,16 +36,14 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsCheck).Where(s => s == false).Select(_ => Unit.Default).InvokeCommand(Deactivate);
         }
 
-        public string GetKey() => Title ?? string.Empty;
+        public string GetKey() => (string?)Tag ?? string.Empty;
 
         [Reactive]
         public bool IsCheck { get; set; }
 
         public string? Group { get; set; }
 
-        public string? Tooltip { get; set; }
-
-        public string? Title { get; set; }
+        public object? Tag { get; set; }
 
         public ReactiveCommand<Unit, IToolCheck> BeforeActivate { get; }
 

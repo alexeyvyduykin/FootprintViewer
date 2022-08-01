@@ -16,34 +16,29 @@ namespace FootprintViewer.ViewModels
 
             ZoomIn = new ToolClick()
             {
-                Title = "ZoomIn",
-                Tooltip = "Приблизить",
+                Tag = "ZoomIn",
             };
 
             ZoomOut = new ToolClick()
             {
-                Title = "ZoomOut",
-                Tooltip = "Отдалить",
+                Tag = "ZoomOut",
             };
 
             AddRectangle = new ToolCheck()
             {
-                Title = "AddRectangle",
-                Tooltip = "Нарисуйте прямоугольную AOI",
+                Tag = "AddRectangle",
                 Group = "Group1",
             };
 
             AddPolygon = new ToolCheck()
             {
-                Title = "AddPolygon",
-                Tooltip = "Нарисуйте полигональную AOI",
+                Tag = "AddPolygon",
                 Group = "Group1",
             };
 
             AddCircle = new ToolCheck()
             {
-                Title = "AddCircle",
-                Tooltip = "Нарисуйте круговую AOI",
+                Tag = "AddCircle",
                 Group = "Group1",
             };
 
@@ -54,55 +49,47 @@ namespace FootprintViewer.ViewModels
 
             RouteDistance = new ToolCheck()
             {
-                Title = "Route",
-                Tooltip = "Измерить расстояние",
+                Tag = "Route",
                 Group = "Group1",
             };
 
             MapBackgrounds = new ToolCheck()
             {
-                Title = "MapBackgrounds",
-                Tooltip = "Список фоновых карт",
+                Tag = "MapBackgrounds",
             };
 
             MapLayers = new ToolCheck()
             {
-                Title = "MapLayers",
-                Tooltip = "Список слоев",
+                Tag = "MapLayers",
             };
 
             SelectGeometry = new ToolCheck()
             {
-                Title = "Select",
-                Tooltip = "SelectGeometry",
+                Tag = "Select",
                 Group = "Group1",
             };
 
             Point = new ToolCheck()
             {
-                Title = "Point",
-                Tooltip = "PointGeometry",
+                Tag = "Point",
                 Group = "Group1",
             };
 
             Rectangle = new ToolCheck()
             {
-                Title = "Rectangle",
-                Tooltip = "RectangleGeometry",
+                Tag = "Rectangle",
                 Group = "Group1",
             };
 
             Circle = new ToolCheck()
             {
-                Title = "Circle",
-                Tooltip = "CircleGeometry",
+                Tag = "Circle",
                 Group = "Group1",
             };
 
             Polygon = new ToolCheck()
             {
-                Title = "Polygon",
-                Tooltip = "PolygonGeometry",
+                Tag = "Polygon",
                 Group = "Group1",
             };
 
@@ -114,29 +101,25 @@ namespace FootprintViewer.ViewModels
 
             TranslateGeometry = new ToolCheck()
             {
-                Title = "Translate",
-                Tooltip = "TranslateGeometry",
+                Tag = "Translate",
                 Group = "Group1",
             };
 
             RotateGeometry = new ToolCheck()
             {
-                Title = "Rotate",
-                Tooltip = "RotateGeometry",
+                Tag = "Rotate",
                 Group = "Group1",
             };
 
             ScaleGeometry = new ToolCheck()
             {
-                Title = "Scale",
-                Tooltip = "ScaleGeometry",
+                Tag = "Scale",
                 Group = "Group1",
             };
 
             EditGeometry = new ToolCheck()
             {
-                Title = "Edit",
-                Tooltip = "EditGeometry",
+                Tag = "Edit",
                 Group = "Group1",
             };
 

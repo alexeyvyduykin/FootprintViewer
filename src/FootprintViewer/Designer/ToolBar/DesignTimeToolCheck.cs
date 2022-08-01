@@ -6,8 +6,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeToolCheck() : base()
         {
-            Title = "Route";
-            Tooltip = "Измерить расстояние";
+            Tag = "Route";
         }
     }
 }

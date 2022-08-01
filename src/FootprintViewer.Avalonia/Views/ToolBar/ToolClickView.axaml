@@ -2,26 +2,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer" 
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolClickView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeToolClick/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeToolClick/>
+	</Design.DataContext>
 
-  <Button x:Name="Button"    
-          Content="{Binding}"
-          ContentTemplate="{DynamicResource ToolIconDataSelector}"
-          Background="{DynamicResource MaterialDesignPaper}"
-          Padding="0"
-          Opacity="0.75"
-          VerticalContentAlignment="Center"
-          HorizontalContentAlignment="Center"
-          ToolTip.ShowDelay="0">
-    <ToolTip.Tip>
-      <ToolTip Content="{Binding Tooltip}" Classes="FastTooltip"/>
-    </ToolTip.Tip>
-  </Button>
-  
+	<UserControl.Resources>
+		<converters:ToolBarToolTipConverter x:Key="toolBarToolTipConv"/>
+	</UserControl.Resources>
+
+	<Button x:Name="Button"
+			Content="{Binding}"
+			ContentTemplate="{DynamicResource ToolIconDataSelector}"
+			Background="{DynamicResource MaterialDesignPaper}"
+			Padding="0"
+			Opacity="0.75"
+			VerticalContentAlignment="Center"
+			HorizontalContentAlignment="Center"
+			ToolTip.ShowDelay="0">
+		<ToolTip.Tip>
+			<ToolTip Content="{Binding Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
+		</ToolTip.Tip>
+	</Button>
+
 </UserControl>

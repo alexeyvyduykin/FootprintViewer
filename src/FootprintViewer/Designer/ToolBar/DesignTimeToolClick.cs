@@ -6,8 +6,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeToolClick() : base()
         {
-            Title = "ZoomIn";
-            Tooltip = "Приблизить";
+            Tag = "ZoomIn";
         }
     }
 }
