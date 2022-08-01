@@ -123,6 +123,9 @@
   <data name="Distance" xml:space="preserve">
     <value>Distance</value>
   </data>
+  <data name="FilterAllSatellites" xml:space="preserve">
+    <value>All satellites</value>
+  </data>
   <data name="FilterAllSensors" xml:space="preserve">
     <value>All sensors</value>
   </data>
@@ -132,17 +135,26 @@
   <data name="FilterDate" xml:space="preserve">
     <value>Date</value>
   </data>
+  <data name="FilterFromNode" xml:space="preserve">
+    <value>From node:</value>
+  </data>
   <data name="FilterFullCoverAOI" xml:space="preserve">
     <value>Full cover AOI</value>
   </data>
   <data name="FilterOptions" xml:space="preserve">
     <value>Filter options</value>
   </data>
+  <data name="FilterSatellites" xml:space="preserve">
+    <value>Satellites</value>
+  </data>
   <data name="FilterSensors" xml:space="preserve">
     <value>Sensors</value>
   </data>
   <data name="FilterSunElevation" xml:space="preserve">
     <value>Sun elevation</value>
+  </data>
+  <data name="FilterToNode" xml:space="preserve">
+    <value>To node:</value>
   </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Scene search</value>

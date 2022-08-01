@@ -12,7 +12,8 @@
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
 			 xmlns:filters="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates"
-             xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:reactiveUi="http://reactiveui.net"
              x:Name="userControl"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
@@ -35,7 +36,7 @@
 
 		<ToggleButton x:Name="SearchToggleButton"
 					  Classes="FilterToggleButton"
-					  Content="Настройки поиска">
+					  Content="{x:Static prop:Resources.FilterOptions}">
 			<ToggleButton.Flyout>
 				<Flyout Placement="LeftEdgeAlignedTop">
 					<filters:FootprintInfoFilterView DataContext="{Binding Filter}"/>

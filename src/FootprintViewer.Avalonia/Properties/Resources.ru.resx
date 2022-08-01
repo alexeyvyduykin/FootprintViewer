@@ -123,6 +123,9 @@
   <data name="Distance" xml:space="preserve">
     <value>Расстояние</value>
   </data>
+  <data name="FilterAllSatellites" xml:space="preserve">
+    <value>Все спутники</value>
+  </data>
   <data name="FilterAllSensors" xml:space="preserve">
     <value>Все сенсоры</value>
   </data>
@@ -132,17 +135,26 @@
   <data name="FilterDate" xml:space="preserve">
     <value>Дата</value>
   </data>
+  <data name="FilterFromNode" xml:space="preserve">
+    <value>От витка:</value>
+  </data>
   <data name="FilterFullCoverAOI" xml:space="preserve">
     <value>Полное перекрытие AOI</value>
   </data>
   <data name="FilterOptions" xml:space="preserve">
     <value>Настройки поиска</value>
   </data>
+  <data name="FilterSatellites" xml:space="preserve">
+    <value>Спутники</value>
+  </data>
   <data name="FilterSensors" xml:space="preserve">
     <value>Сенсоры</value>
   </data>
   <data name="FilterSunElevation" xml:space="preserve">
     <value>Угол падения солнечных лучей</value>
+  </data>
+  <data name="FilterToNode" xml:space="preserve">
+    <value>До витка:</value>
   </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Поиск сцены</value>

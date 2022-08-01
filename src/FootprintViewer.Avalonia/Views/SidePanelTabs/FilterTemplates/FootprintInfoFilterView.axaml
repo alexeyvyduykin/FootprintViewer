@@ -2,116 +2,117 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"            
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"                     
-             mc:Ignorable="d"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d"
              MinWidth="400"
              d:DesignWidth="400" d:DesignHeight="440">
 
-  <Design.DataContext>
-    <vmd:DesignTimeFootprintInfoFilter/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeFootprintInfoFilter/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
-    <Style Selector="CheckBox">
-      <Setter Property="ContentTemplate">
-        <Setter.Value>
-          <DataTemplate>
-            <TextBlock Text="{Binding}" Classes="Body2"/>
-          </DataTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-  </UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="CheckBox">
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<TextBlock Text="{Binding}" Classes="Body2"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
 
-  <styles:ColorZone Padding="20">
-    <StackPanel>
+	<styles:ColorZone Padding="20">
+		<StackPanel>
 
-      <Grid Margin="0,0,0,20"
-            RowDefinitions="Auto,Auto">
-        <Grid ColumnDefinitions="*,24"
-              HorizontalAlignment="Left">
-          <TextBlock Text="От витка:"                   
-                     VerticalAlignment="Center"
-                     Classes="Body2"/>
-          <TextBlock Grid.Column="1"
-                     VerticalAlignment="Center"
-                     TextAlignment="Center"
-                     Classes="Body2"
-                     Text="{Binding #Slider1.Value}"/>
-        </Grid>
-        <Slider x:Name="Slider1"
-                Classes="Modern Discrete Ticks"
-                Grid.Row="1"
-                Minimum="1"
-                Maximum="15"
-                TickFrequency="1"
-                IsSnapToTickEnabled="True"
-                Value="{Binding FromNode}"/>
-      </Grid>
+			<Grid Margin="0,0,0,20"
+				  RowDefinitions="Auto,Auto">
+				<Grid ColumnDefinitions="*,24"
+					  HorizontalAlignment="Left">
+					<TextBlock Text="{x:Static prop:Resources.FilterFromNode}"
+							   VerticalAlignment="Center"
+							   Classes="Body2"/>
+					<TextBlock Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextAlignment="Center"
+							   Classes="Body2"
+							   Text="{Binding #Slider1.Value}"/>
+				</Grid>
+				<Slider x:Name="Slider1"
+						Classes="Modern Discrete Ticks"
+						Grid.Row="1"
+						Minimum="1"
+						Maximum="15"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding FromNode}"/>
+			</Grid>
 
-      <Grid Margin="0,0,0,20"
-            RowDefinitions="Auto,Auto">
+			<Grid Margin="0,0,0,20"
+				  RowDefinitions="Auto,Auto">
 
-        <Grid ColumnDefinitions="*,24"
-              HorizontalAlignment="Left">
-          <TextBlock Text="До витка:"
-                     VerticalAlignment="Center"
-                     Classes="Body2"/>
-          <TextBlock Grid.Column="1"
-                     VerticalAlignment="Center"
-                     TextAlignment="Center"
-                     Classes="Body2"
-                     Text="{Binding #Slider2.Value}"/>
-        </Grid>
+				<Grid ColumnDefinitions="*,24"
+					  HorizontalAlignment="Left">
+					<TextBlock Text="{x:Static prop:Resources.FilterToNode}"
+							   VerticalAlignment="Center"
+							   Classes="Body2"/>
+					<TextBlock Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextAlignment="Center"
+							   Classes="Body2"
+							   Text="{Binding #Slider2.Value}"/>
+				</Grid>
 
-        <Slider x:Name="Slider2"
-                Classes="Modern Discrete Ticks"
-                Grid.Row="1"
-                Minimum="1"
-                Maximum="15"
-                TickFrequency="1"
-                IsSnapToTickEnabled="True"
-                Value="{Binding ToNode}"/>
+				<Slider x:Name="Slider2"
+						Classes="Modern Discrete Ticks"
+						Grid.Row="1"
+						Minimum="1"
+						Maximum="15"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding ToNode}"/>
 
-      </Grid>
+			</Grid>
 
-      <CheckBox IsChecked="{Binding IsLeftStrip}"
-                Margin="0,0,0,4"
-                Content="Левая полоса обзора"/>
+			<CheckBox IsChecked="{Binding IsLeftStrip}"
+					  Margin="0,0,0,4"
+					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"/>
 
-      <CheckBox IsChecked="{Binding IsRightStrip}"
-                Margin="0,4,0,20"
-                Content="Правая полоса обзора"/>
+			<CheckBox IsChecked="{Binding IsRightStrip}"
+					  Margin="0,4,0,20"
+					  Content="{x:Static prop:Resources.SatelliteRightSwath}"/>
 
-      <DockPanel LastChildFill="True" Margin="0,0,0,10">
-        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-          <PathIcon Foreground="{StaticResource IconAccentBrush}"
-                    Data="{DynamicResource IconSatellite}"/>
-        </Viewbox>
-        <TextBlock Text="Спутники"
-                   Classes="Body2"
-                   VerticalAlignment="Center"
-                   Margin="8,0,0,0"/>
-        <CheckBox Content="Все спутники"
-                  IsChecked="{Binding IsAllSatelliteActive}"
-                  HorizontalAlignment="Right"/>
-      </DockPanel>
+			<DockPanel LastChildFill="True" Margin="0,0,0,10">
+				<Viewbox Width="18" Height="18" VerticalAlignment="Center">
+					<PathIcon Foreground="{StaticResource IconAccentBrush}"
+							  Data="{DynamicResource IconSatellite}"/>
+				</Viewbox>
+				<TextBlock Text="{x:Static prop:Resources.FilterSatellites}"
+						   Classes="Body2"
+						   VerticalAlignment="Center"
+						   Margin="8,0,0,0"/>
+				<CheckBox Content="{x:Static prop:Resources.FilterAllSatellites}"
+						  IsChecked="{Binding IsAllSatelliteActive}"
+						  HorizontalAlignment="Right"/>
+			</DockPanel>
 
-      <ItemsControl Items="{Binding Satellites}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate DataType="vm:SatelliteItemViewModel">
-            <Border Padding="16,8">
-              <CheckBox IsChecked="{Binding IsActive}"
-                        Content="{Binding Name}"/>
-            </Border>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+			<ItemsControl Items="{Binding Satellites}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="vm:SatelliteItemViewModel">
+						<Border Padding="16,8">
+							<CheckBox IsChecked="{Binding IsActive}"
+									  Content="{Binding Name}"/>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 
-    </StackPanel>
-  </styles:ColorZone>
+		</StackPanel>
+	</styles:ColorZone>
 
 </UserControl>

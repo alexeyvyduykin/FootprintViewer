@@ -79,6 +79,15 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на All satellites.
+        /// </summary>
+        public static string FilterAllSatellites {
+            get {
+                return ResourceManager.GetString("FilterAllSatellites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на All sensors.
         /// </summary>
         public static string FilterAllSensors {
@@ -106,6 +115,15 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на From node:.
+        /// </summary>
+        public static string FilterFromNode {
+            get {
+                return ResourceManager.GetString("FilterFromNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Full cover AOI.
         /// </summary>
         public static string FilterFullCoverAOI {
@@ -124,6 +142,15 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Satellites.
+        /// </summary>
+        public static string FilterSatellites {
+            get {
+                return ResourceManager.GetString("FilterSatellites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Sensors.
         /// </summary>
         public static string FilterSensors {
@@ -138,6 +165,15 @@ namespace FootprintViewer.Avalonia.Properties {
         public static string FilterSunElevation {
             get {
                 return ResourceManager.GetString("FilterSunElevation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на To node:.
+        /// </summary>
+        public static string FilterToNode {
+            get {
+                return ResourceManager.GetString("FilterToNode", resourceCulture);
             }
         }
         
