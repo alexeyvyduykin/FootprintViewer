@@ -1,117 +1,119 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"            
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates.FootprintPreviewFilterView"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"   
-             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"        
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"             
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="440">
+             mc:Ignorable="d"
+			 d:DesignWidth="400" d:DesignHeight="440">
 
-  <Design.DataContext>
-    <vmd:DesignTimeFootprintPreviewFilter/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeFootprintPreviewFilter/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
-    <Style Selector="CheckBox">
-      <Setter Property="ContentTemplate">
-        <Setter.Value>
-          <DataTemplate>
-            <TextBlock Text="{Binding}" Classes="Body2"/>
-          </DataTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-  </UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="CheckBox">
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<TextBlock Text="{Binding}" Classes="Body2"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
 
-  <styles:ColorZone Padding="20">
-    <StackPanel>
+	<styles:ColorZone Padding="20">
+		<StackPanel>
 
-      <StackPanel Orientation="Horizontal" Margin="0,0,0,10">                 
-        <materialIcons:MaterialIcon Kind="DateRange"/>      
-        <TextBlock Text="Дата" Classes="Body2" Margin="8,0,0,0"
-                   VerticalAlignment="Center"/>
-      </StackPanel>
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<materialIcons:MaterialIcon Kind="DateRange"/>
+				<TextBlock Text="{x:Static prop:Resources.FilterDate}" Classes="Body2" Margin="8,0,0,0"
+						   VerticalAlignment="Center"/>
+			</StackPanel>
 
-      <Grid ColumnDefinitions="*,10,*" Margin="0,0,0,20">
-        <DatePicker x:Name="FromDatePicker"/>
-        <DatePicker x:Name="ToDatePicker" Grid.Column="2"/>
-      </Grid>
+			<Grid ColumnDefinitions="*,10,*" Margin="0,0,0,20">
+				<DatePicker x:Name="FromDatePicker"/>
+				<DatePicker x:Name="ToDatePicker" Grid.Column="2"/>
+			</Grid>
 
-      <StackPanel Margin="0,0,0,20">
-        <DockPanel LastChildFill="True">
-          <Viewbox Width="18" Height="18">
-            <PathIcon Foreground="{StaticResource IconAccentBrush}" 
-                      Data="{DynamicResource IconCloudy}"/>
-          </Viewbox>
-          <TextBlock Text="Облачность" Classes="Body2" Margin="8,0,0,0"></TextBlock>
-          <TextBlock HorizontalAlignment="Right" Classes="Body2"
-                     Text="{Binding Value, StringFormat={}≤ {0} %, ElementName=CloudinessSlider}">
-          </TextBlock>
-        </DockPanel>
-        <Slider x:Name="CloudinessSlider"
-                Margin="4,0,0,0"
-                Classes="Modern"
-                Minimum="0"
-                Maximum="100"
-                TickFrequency="1"
-                IsSnapToTickEnabled="True"
-                Value="{Binding Cloudiness}"/>
-      </StackPanel>
+			<StackPanel Margin="0,0,0,20">
+				<DockPanel LastChildFill="True">
+					<Viewbox Width="18" Height="18">
+						<PathIcon Foreground="{StaticResource IconAccentBrush}"
+								  Data="{DynamicResource IconCloudy}"/>
+					</Viewbox>
+					<TextBlock Text="{x:Static prop:Resources.FilterCloudiness}" Classes="Body2" Margin="8,0,0,0"></TextBlock>
+					<TextBlock HorizontalAlignment="Right" Classes="Body2"
+							   Text="{Binding Value, StringFormat={}≤ {0} %, ElementName=CloudinessSlider}">
+					</TextBlock>
+				</DockPanel>
+				<Slider x:Name="CloudinessSlider"
+						Margin="4,0,0,0"
+						Classes="Modern"
+						Minimum="0"
+						Maximum="100"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding Cloudiness}"/>
+			</StackPanel>
 
-      <StackPanel Margin="0,0,0,20">
-        <DockPanel LastChildFill="True">
-          <Viewbox Width="18" Height="18" VerticalAlignment="Center">       
-            <PathIcon Foreground="{StaticResource IconAccentBrush}" 
-                      Data="{DynamicResource IconSunElevation}"/>
-          </Viewbox>
-          <TextBlock Text="Угол падения солнечных лучей" 
-                     VerticalAlignment="Center"
-                     Classes="Body2" Margin="8,0,0,0"></TextBlock>
-          <TextBlock HorizontalAlignment="Right" Classes="Body2"
-                                Text="{Binding Value, StringFormat={}{0} - 90 °, ElementName=AngleSlider}">
-          </TextBlock>
-        </DockPanel>
-        <Slider x:Name="AngleSlider"
-                Margin="4,0,0,0"
-                Classes="Modern"
-                Minimum="0"
-                Maximum="90"
-                TickFrequency="1"
-                IsSnapToTickEnabled="True"
-                Value="{Binding MinSunElevation}"/>
-      </StackPanel>
+			<StackPanel Margin="0,0,0,20">
+				<DockPanel LastChildFill="True">
+					<Viewbox Width="18" Height="18" VerticalAlignment="Center">
+						<PathIcon Foreground="{StaticResource IconAccentBrush}"
+								  Data="{DynamicResource IconSunElevation}"/>
+					</Viewbox>
+					<TextBlock Text="{x:Static prop:Resources.FilterSunElevation}"
+							   VerticalAlignment="Center"
+							   Classes="Body2" Margin="8,0,0,0"></TextBlock>
+					<TextBlock HorizontalAlignment="Right" Classes="Body2"
+										  Text="{Binding Value, StringFormat={}{0} - 90 °, ElementName=AngleSlider}">
+					</TextBlock>
+				</DockPanel>
+				<Slider x:Name="AngleSlider"
+						Margin="4,0,0,0"
+						Classes="Modern"
+						Minimum="0"
+						Maximum="90"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding MinSunElevation}"/>
+			</StackPanel>
 
-      <CheckBox Margin="0,0,0,20"
-                IsChecked="{Binding IsFullCoverAOI}"
-                Content="Полное перекрытие AOI"/>
+			<CheckBox Margin="0,0,0,20"
+					  IsChecked="{Binding IsFullCoverAOI}"
+					  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
 
-      <DockPanel LastChildFill="True" Margin="0,0,0,10">
-        <Viewbox Width="18" Height="18" VerticalAlignment="Center">
-          <PathIcon Foreground="{StaticResource IconAccentBrush}" 
-                    Data="{DynamicResource IconSatellite}"/>
-        </Viewbox>
-        <TextBlock Text="Сенсоры" Classes="Body2" Margin="8,0,0,0"/>
-        <CheckBox Content="Все сенсоры"
-                  IsChecked="{Binding IsAllSensorActive}"
-                  HorizontalAlignment="Right"/>
-      </DockPanel>
+			<DockPanel LastChildFill="True" Margin="0,0,0,10">
+				<Viewbox Width="18" Height="18" VerticalAlignment="Center">
+					<PathIcon Foreground="{StaticResource IconAccentBrush}"
+							  Data="{DynamicResource IconSatellite}"/>
+				</Viewbox>
+				<TextBlock Text="{x:Static prop:Resources.FilterSensors}" Classes="Body2" Margin="8,0,0,0"/>
+				<CheckBox Content="{x:Static prop:Resources.FilterAllSensors}"
+						  IsChecked="{Binding IsAllSensorActive}"
+						  HorizontalAlignment="Right"/>
+			</DockPanel>
 
-      <ItemsControl Items="{Binding Sensors}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate DataType="vm:SensorItemViewModel">
-            <Border Padding="16,8">
-              <CheckBox IsChecked="{Binding IsActive}"
-                        Content="{Binding Name}"/>
-            </Border>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+			<ItemsControl Items="{Binding Sensors}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="vm:SensorItemViewModel">
+						<Border Padding="16,8">
+							<CheckBox IsChecked="{Binding IsActive}"
+									  Content="{Binding Name}"/>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 
-    </StackPanel>
-  </styles:ColorZone>
+		</StackPanel>
+	</styles:ColorZone>
 
 </UserControl>

@@ -79,6 +79,69 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на All sensors.
+        /// </summary>
+        public static string FilterAllSensors {
+            get {
+                return ResourceManager.GetString("FilterAllSensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Cloudiness.
+        /// </summary>
+        public static string FilterCloudiness {
+            get {
+                return ResourceManager.GetString("FilterCloudiness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Date.
+        /// </summary>
+        public static string FilterDate {
+            get {
+                return ResourceManager.GetString("FilterDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Full cover AOI.
+        /// </summary>
+        public static string FilterFullCoverAOI {
+            get {
+                return ResourceManager.GetString("FilterFullCoverAOI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Filter options.
+        /// </summary>
+        public static string FilterOptions {
+            get {
+                return ResourceManager.GetString("FilterOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sensors.
+        /// </summary>
+        public static string FilterSensors {
+            get {
+                return ResourceManager.GetString("FilterSensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Sun elevation.
+        /// </summary>
+        public static string FilterSunElevation {
+            get {
+                return ResourceManager.GetString("FilterSunElevation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Scene search.
         /// </summary>
         public static string FootprintPreviewTabTitle {
