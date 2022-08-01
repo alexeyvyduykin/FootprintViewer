@@ -226,9 +226,7 @@ namespace FootprintViewer.ViewModels
             {
                 var area = designer.Area();
 
-                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
-
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                Tip?.HoverCreating(FormatHelper.ToArea(area));
             };
 
             designer.EndCreating += (s, e) =>
@@ -246,7 +244,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+            Tip = DrawingTips.CreateRectangleTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -259,7 +257,7 @@ namespace FootprintViewer.ViewModels
 
             designer.BeginCreating += (s, e) =>
             {
-                Tip!.Text = "Нажмите, чтобы продолжить рисование фигуры";
+                Tip?.BeginCreating();
             };
 
             designer.Creating += (s, e) =>
@@ -268,8 +266,7 @@ namespace FootprintViewer.ViewModels
 
                 if (area != 0.0)
                 {
-                    Tip!.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
-                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                    Tip?.Creating(FormatHelper.ToArea(area));
                 }
             };
 
@@ -288,7 +285,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
+            Tip = DrawingTips.CreatePolygonTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -303,8 +300,7 @@ namespace FootprintViewer.ViewModels
             {
                 var area = designer.Area();
 
-                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                Tip?.HoverCreating(FormatHelper.ToArea(area));
             };
 
             designer.EndCreating += (s, e) =>
@@ -322,7 +318,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+            Tip = DrawingTips.CreateCircleTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -337,8 +333,7 @@ namespace FootprintViewer.ViewModels
             {
                 var distance = designer.Distance();
 
-                Tip!.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+                Tip?.BeginCreating(FormatHelper.ToDistance(distance));
             };
 
             designer.Creating += (s, e) =>
@@ -350,8 +345,7 @@ namespace FootprintViewer.ViewModels
             {
                 var distance = designer.Distance();
 
-                Tip!.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+                Tip?.HoverCreating(FormatHelper.ToDistance(distance));
             };
 
             designer.EndCreating += (s, e) =>
@@ -369,7 +363,7 @@ namespace FootprintViewer.ViewModels
 
             InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
-            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+            Tip = DrawingTips.CreateRouteTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -682,7 +676,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите, чтобы нарисовать точку" };
+            Tip = DrawingTips.CreatePointTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -697,9 +691,7 @@ namespace FootprintViewer.ViewModels
             {
                 var area = designer.Area();
 
-                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
-
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                Tip?.HoverCreating(FormatHelper.ToArea(area));
             };
 
             designer.EndCreating += (s, e) =>
@@ -711,7 +703,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать прямоугольник" };
+            Tip = DrawingTips.CreateRectangleTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -726,8 +718,7 @@ namespace FootprintViewer.ViewModels
             {
                 var area = designer.Area();
 
-                Tip!.Text = "Отпустите клавишу мыши для завершения рисования";
-                Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                Tip?.HoverCreating(FormatHelper.ToArea(area));
             };
 
             designer.EndCreating += (s, e) =>
@@ -739,7 +730,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать круг" };
+            Tip = DrawingTips.CreateCircleTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -754,21 +745,17 @@ namespace FootprintViewer.ViewModels
             {
                 var distance = designer.Distance();
 
-                Tip!.Text = "";
-                Tip.Title = $"Расстояние: {FormatHelper.ToDistance(distance)}";
+                Tip?.HoverCreating(FormatHelper.ToDistance(distance));
             };
 
             designer.EndCreating += (s, e) =>
             {
-                // TODO: user geometry route not enable
-                //_userLayerSource.AddFeature(designer.Feature.Copy());
-
                 Tip = null;
 
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Кликните, чтобы начать измерение" };
+            Tip = DrawingTips.CreateRouteTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -781,7 +768,7 @@ namespace FootprintViewer.ViewModels
 
             designer.BeginCreating += (s, e) =>
             {
-                Tip!.Text = "Нажмите, чтобы продолжить рисование фигуры";
+                Tip?.BeginCreating();
             };
 
             designer.Creating += (s, e) =>
@@ -790,8 +777,7 @@ namespace FootprintViewer.ViewModels
 
                 if (area != 0.0)
                 {
-                    Tip!.Text = "Щелкните по первой точке, чтобы закрыть эту фигуру";
-                    Tip.Title = $"Область: {FormatHelper.ToArea(area)}";
+                    Tip?.Creating(FormatHelper.ToArea(area));
                 }
             };
 
@@ -804,7 +790,7 @@ namespace FootprintViewer.ViewModels
                 _customToolBar.Uncheck();
             };
 
-            Tip = new Tip() { Text = "Нажмите и перетащите, чтобы нарисовать полигон" };
+            Tip = DrawingTips.CreatePolygonTip();
 
             Behavior = new InteractiveBehavior(designer);
 
@@ -832,18 +818,9 @@ namespace FootprintViewer.ViewModels
         public IController ActualController { get; set; }
 
         [Reactive]
-        public Tip? Tip { get; set; }
+        public DrawingTip? Tip { get; set; }
 
         [Reactive]
         public IInteractiveBehavior? Behavior { get; set; }
-    }
-
-    public class MapLayer
-    {
-        public string? Name { get; set; }
-
-        // public string? CRS { get; set; }
-
-        public string? Format { get; set; }
     }
 }

@@ -2,15 +2,13 @@
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeTip : Tip
+    public class DesignTimeTip : DrawingTip
     {
-        public DesignTimeTip() : base()
+        public DesignTimeTip() : base(TipTarget.Rectangle)
         {
-            var area = 34545.432;
+            HoverCreating(34545.432);
 
-            Text = "Отпустите клавишу мыши для завершения рисования";
-
-            Title = $"Область: {FormatHelper.ToArea(area)}";
+            InvalidateVisual();
         }
     }
 }

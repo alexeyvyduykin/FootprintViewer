@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Area" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Scene search</value>
   </data>
@@ -146,6 +152,33 @@
   </data>
   <data name="Snapshot" xml:space="preserve">
     <value>Snapshot</value>
+  </data>
+  <data name="TipBeginCreatingCircle" xml:space="preserve">
+    <value>Click to finish drawing</value>
+  </data>
+  <data name="TipBeginCreatingPolygon" xml:space="preserve">
+    <value>Click to continue drawing the shape</value>
+  </data>
+  <data name="TipBeginCreatingRectangle" xml:space="preserve">
+    <value>Click to finish drawing</value>
+  </data>
+  <data name="TipCreatingPolygon" xml:space="preserve">
+    <value>Click on the first point to close this shape</value>
+  </data>
+  <data name="TipInitCircle" xml:space="preserve">
+    <value>Click and drag to draw a circle</value>
+  </data>
+  <data name="TipInitPoint" xml:space="preserve">
+    <value>Click to draw a point</value>
+  </data>
+  <data name="TipInitPolygon" xml:space="preserve">
+    <value>Click and drag to draw a polygon</value>
+  </data>
+  <data name="TipInitRectangle" xml:space="preserve">
+    <value>Click and drag to draw a rectangle</value>
+  </data>
+  <data name="TipInitRoute" xml:space="preserve">
+    <value>Click to start measurement</value>
   </data>
   <data name="UserGeometryTabTitle" xml:space="preserve">
     <value>User geometry</value>

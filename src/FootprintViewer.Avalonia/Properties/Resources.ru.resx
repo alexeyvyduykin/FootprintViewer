@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Area" xml:space="preserve">
+    <value>Область</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Расстояние</value>
+  </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Поиск сцены</value>
   </data>
@@ -146,6 +152,33 @@
   </data>
   <data name="Snapshot" xml:space="preserve">
     <value>Снимок</value>
+  </data>
+  <data name="TipBeginCreatingCircle" xml:space="preserve">
+    <value>Нажмите для завершения рисования</value>
+  </data>
+  <data name="TipBeginCreatingPolygon" xml:space="preserve">
+    <value>Нажмите, чтобы продолжить рисование фигуры</value>
+  </data>
+  <data name="TipBeginCreatingRectangle" xml:space="preserve">
+    <value>Нажмите для завершения рисования</value>
+  </data>
+  <data name="TipCreatingPolygon" xml:space="preserve">
+    <value>Нажмите по первой точке, чтобы закрыть эту фигуру</value>
+  </data>
+  <data name="TipInitCircle" xml:space="preserve">
+    <value>Нажмите и перетащите, чтобы нарисовать круг</value>
+  </data>
+  <data name="TipInitPoint" xml:space="preserve">
+    <value>Нажмите, чтобы нарисовать точку</value>
+  </data>
+  <data name="TipInitPolygon" xml:space="preserve">
+    <value>Нажмите и перетащите, чтобы нарисовать полигон</value>
+  </data>
+  <data name="TipInitRectangle" xml:space="preserve">
+    <value>Нажмите и перетащите, чтобы нарисовать прямоугольник</value>
+  </data>
+  <data name="TipInitRoute" xml:space="preserve">
+    <value>Нажмите, чтобы начать измерение</value>
   </data>
   <data name="UserGeometryTabTitle" xml:space="preserve">
     <value>Пользовательская геометрия</value>

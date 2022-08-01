@@ -12,7 +12,7 @@ namespace FootprintViewer.ViewModels
         bool IsVisible { get; set; }
     }
 
-    public class TipBase : ReactiveObject, ITip
+    public class Tip : ReactiveObject, ITip
     {
         [Reactive]
         public double X { get; set; }
@@ -22,14 +22,5 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public bool IsVisible { get; set; }
-    }
-
-    public class Tip : TipBase
-    {
-        [Reactive]
-        public string? Title { get; set; }
-
-        [Reactive]
-        public string? Text { get; set; }
     }
 }

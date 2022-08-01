@@ -61,6 +61,24 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Area.
+        /// </summary>
+        public static string Area {
+            get {
+                return ResourceManager.GetString("Area", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Distance.
+        /// </summary>
+        public static string Distance {
+            get {
+                return ResourceManager.GetString("Distance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Scene search.
         /// </summary>
         public static string FootprintPreviewTabTitle {
@@ -147,6 +165,87 @@ namespace FootprintViewer.Avalonia.Properties {
         public static string Snapshot {
             get {
                 return ResourceManager.GetString("Snapshot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click to finish drawing.
+        /// </summary>
+        public static string TipBeginCreatingCircle {
+            get {
+                return ResourceManager.GetString("TipBeginCreatingCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click to continue drawing the shape.
+        /// </summary>
+        public static string TipBeginCreatingPolygon {
+            get {
+                return ResourceManager.GetString("TipBeginCreatingPolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click to finish drawing.
+        /// </summary>
+        public static string TipBeginCreatingRectangle {
+            get {
+                return ResourceManager.GetString("TipBeginCreatingRectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click on the first point to close this shape.
+        /// </summary>
+        public static string TipCreatingPolygon {
+            get {
+                return ResourceManager.GetString("TipCreatingPolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click and drag to draw a circle.
+        /// </summary>
+        public static string TipInitCircle {
+            get {
+                return ResourceManager.GetString("TipInitCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click to draw a point.
+        /// </summary>
+        public static string TipInitPoint {
+            get {
+                return ResourceManager.GetString("TipInitPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click and drag to draw a polygon.
+        /// </summary>
+        public static string TipInitPolygon {
+            get {
+                return ResourceManager.GetString("TipInitPolygon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click and drag to draw a rectangle.
+        /// </summary>
+        public static string TipInitRectangle {
+            get {
+                return ResourceManager.GetString("TipInitRectangle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Click to start measurement.
+        /// </summary>
+        public static string TipInitRoute {
+            get {
+                return ResourceManager.GetString("TipInitRoute", resourceCulture);
             }
         }
         
