@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Localization;
+﻿using FootprintViewer.AppStates;
+using FootprintViewer.Localization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -36,19 +37,15 @@ namespace FootprintViewer.ViewModels
         public bool IsChecked { get; set; }
     }
 
-    public class LanguageSettingsViewModel : ReactiveObject
+    public class LanguageSettingsViewModel : ReactiveObject, ISuspendableState<LocalizationState>
     {
-        //private readonly ILocalizationService _localizationService;
         private readonly ILanguageManager _languageManager;
-        //private ObservableCollection<LanguageViewModel> _languages;
         private bool _isActivated;
+        private LocalizationState? _state;
 
-        public LanguageSettingsViewModel(/*ILocalizationService localizationService,*/ ILanguageManager languageManager)
+        public LanguageSettingsViewModel(ILanguageManager languageManager)
         {
-            //_languages = new ObservableCollection<LanguageViewModel>();
-            //_localizationService = localizationService;
             _languageManager = languageManager;
-            //CurrentLanguage = languageManager.CurrentLanguage;
 
             Save = ReactiveCommand.Create(() => { });
         }
@@ -64,12 +61,11 @@ namespace FootprintViewer.ViewModels
 
             _isActivated = true;
 
-            //var savedLanguage = _localizationService.CurrentLanguage;
-            var currentLanguage = _languageManager.DefaultLanguage;// CurrentLanguage;
+            var savedLanguage = _state?.Language;
 
-            //var languageCode = savedLanguage is null ? currentLanguage.Code : savedLanguage.Code;
-            var languageCode = currentLanguage.Code;
-            //CurrentLanguage = GetLanguageOrDefault(languageCode);
+            var currentLanguage = _languageManager.DefaultLanguage;
+
+            var languageCode = savedLanguage is null ? currentLanguage.Code : savedLanguage.Code;
 
             Languages = new List<LanguageViewModel>(
                 GetSortedLanguages().Select(s =>
@@ -88,17 +84,28 @@ namespace FootprintViewer.ViewModels
                 Save.Execute().Subscribe();
             }
 
-            //_languageManager.SetLanguage(CurrentLanguage);
-
-            //_localizationService.CurrentLanguage = new()
-            //{
-            //    Code = CurrentLanguage.Code,
-            //    Name = CurrentLanguage.Name
-            //};
+            if (_state != null)
+            {
+                _state.Language = _languageManager.CurrentLanguage;
+            }
         }
 
         private IEnumerable<LanguageModel> GetSortedLanguages() =>
             _languageManager.AllLanguages.OrderBy(l => l.Name);
+
+        public void LoadState(LocalizationState state)
+        {
+            _state = state;
+
+            var code = state.Language?.Code;
+
+            if (code != null && _languageManager.CurrentLanguage.Code != code)
+            {
+                _languageManager.SetLanguage(code);
+
+                Save.Execute().Subscribe();
+            }
+        }
 
         //private LanguageModel GetLanguageOrDefault(string languageCode)
         //    => Languages.SingleOrDefault(l => l.Code == languageCode) ?? _languageManager.DefaultLanguage;

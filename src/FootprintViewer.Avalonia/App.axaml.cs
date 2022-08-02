@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
-using FootprintViewer.Avalonia.Views;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
@@ -17,7 +16,7 @@ namespace FootprintViewer.Avalonia
 {
     public class App : Application
     {
-        private static MainWindow? _mainWindow;
+        private static Views.MainWindow? _mainWindow;
 
         public override void Initialize()
         {
@@ -25,6 +24,7 @@ namespace FootprintViewer.Avalonia
 
             if (Design.IsDesignMode == false)
             {
+                CreateAutoSuspendHelper();
                 LoadSettings();
             }
         }
@@ -55,7 +55,7 @@ namespace FootprintViewer.Avalonia
             base.OnFrameworkInitializationCompleted();
         }
 
-        private void LoadSettings()
+        private void CreateAutoSuspendHelper()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -64,21 +64,15 @@ namespace FootprintViewer.Avalonia
             RxApp.SuspensionHost.CreateNewAppState = () => new MainState();
             RxApp.SuspensionHost.SetupDefaultSuspendResume(new Drivers.NewtonsoftJsonSuspensionDriver("appstate.json"));
             suspension.OnFrameworkInitializationCompleted();
-
-            //var localizationService = GetRequiredService<ILocalizationService>();
-            //var languageManager = GetRequiredService<ILanguageManager>();
-
-            //languageManager.SetLanguage(localizationService.CurrentLanguage.Code);
         }
 
-        private static void Init(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        private void LoadSettings()
         {
-            // Load the saved view model state.
-            var settings = RxApp.SuspensionHost.GetAppState<MainState>();
-            services.RegisterConstant(settings, typeof(MainState));
+            var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
 
-            //    var settingsViewer = resolver.GetExistingService<SettingsTabViewModel>();
-            //    settingsViewer.Providers = settings.GetProviderStates();
+            var settings = GetExistingService<SettingsTabViewModel>();
+
+            settings.LanguageSettings?.LoadState(mainState.LocalizationState);
         }
 
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
@@ -118,7 +112,7 @@ namespace FootprintViewer.Avalonia
             return result ?? string.Empty;
         }
 
-        public static Window? GetWindow()
+        private static Window? GetWindow()
         {
             if (Application.Current != null && Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
@@ -128,6 +122,6 @@ namespace FootprintViewer.Avalonia
             return null;
         }
 
-        public static MainWindow GetMainWindow() => _mainWindow ?? throw new Exception();
+        public static Views.MainWindow GetMainWindow() => _mainWindow ?? throw new Exception();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
+using FootprintViewer.Localization;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -74,6 +75,9 @@ namespace FootprintViewer.Avalonia
             var dataFactory = resolver.GetExistingService<IDataFactory>();
             var mapFactory = resolver.GetExistingService<MapFactory>();
             var viewModelFactory = resolver.GetExistingService<ViewModelFactory>();
+
+            // LanguageManager
+            services.RegisterConstant(factory.CreateLanguageManager(), typeof(ILanguageManager));
 
             // Providers
             services.RegisterConstant(dataFactory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));

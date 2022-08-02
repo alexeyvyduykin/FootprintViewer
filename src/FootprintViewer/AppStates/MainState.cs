@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FootprintViewer.Data;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using FootprintViewer.Data;
 
 namespace FootprintViewer.AppStates
 {
@@ -24,6 +24,8 @@ namespace FootprintViewer.AppStates
             MapBackgroundProvider = new ProviderState() { Type = ProviderType.MapBackgrounds };
 
             FootprintPreviewProvider = new ProviderState() { Type = ProviderType.FootprintPreviews };
+
+            LocalizationState = new LocalizationState();
         }
 
         public List<ProviderState> GetProviderStates()
@@ -70,5 +72,8 @@ namespace FootprintViewer.AppStates
 
         [DataMember]
         public ProviderState FootprintPreviewProvider { get; private set; }
+
+        [DataMember]
+        public LocalizationState LocalizationState { get; private set; }
     }
 }

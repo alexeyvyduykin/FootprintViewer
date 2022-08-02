@@ -1,4 +1,6 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Configurations;
+using FootprintViewer.Layers;
+using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
@@ -18,6 +20,13 @@ namespace FootprintViewer
         public ProjectFactory(IReadonlyDependencyResolver dependencyResolver)
         {
             _dependencyResolver = dependencyResolver;
+        }
+
+        public LanguageManager CreateLanguageManager()
+        {
+            var languagesConfiguration = _dependencyResolver.GetExistingService<LanguagesConfiguration>();
+
+            return new LanguageManager(languagesConfiguration);
         }
 
         public InfoPanel CreateInfoPanel()

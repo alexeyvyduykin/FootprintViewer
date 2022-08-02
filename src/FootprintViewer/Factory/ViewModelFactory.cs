@@ -21,7 +21,8 @@ namespace FootprintViewer
         public SettingsTabViewModel CreateSettingsTabViewModel()
         {
             var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
-            var languagesConfiguration = _dependencyResolver.GetExistingService<LanguagesConfiguration>();
+
+            var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
             var groundStationProvider = (Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>();
             var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
@@ -79,8 +80,6 @@ namespace FootprintViewer
                 Type = ProviderType.FootprintPreviewGeometries,
                 AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
             };
-
-            var languageManager = new LanguageManager(languagesConfiguration);
 
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
             {
