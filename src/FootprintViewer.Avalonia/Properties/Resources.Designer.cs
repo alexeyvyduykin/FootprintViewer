@@ -70,6 +70,15 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Distance.
         /// </summary>
         public static string Distance {
@@ -246,6 +255,42 @@ namespace FootprintViewer.Avalonia.Properties {
         public static string GroundTargetTabTitle {
             get {
                 return ResourceManager.GetString("GroundTargetTabTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Begin (Duration).
+        /// </summary>
+        public static string InfoPanelBegin {
+            get {
+                return ResourceManager.GetString("InfoPanelBegin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Center.
+        /// </summary>
+        public static string InfoPanelCenter {
+            get {
+                return ResourceManager.GetString("InfoPanelCenter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Satellite (Node - Direction).
+        /// </summary>
+        public static string InfoPanelSatellite {
+            get {
+                return ResourceManager.GetString("InfoPanelSatellite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Type.
+        /// </summary>
+        public static string InfoPanelType {
+            get {
+                return ResourceManager.GetString("InfoPanelType", resourceCulture);
             }
         }
         

@@ -120,6 +120,9 @@
   <data name="Area" xml:space="preserve">
     <value>Area</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="Distance" xml:space="preserve">
     <value>Distance</value>
   </data>
@@ -179,6 +182,18 @@
   </data>
   <data name="GroundTargetTabTitle" xml:space="preserve">
     <value>Ground target viewer</value>
+  </data>
+  <data name="InfoPanelBegin" xml:space="preserve">
+    <value>Begin (Duration)</value>
+  </data>
+  <data name="InfoPanelCenter" xml:space="preserve">
+    <value>Center</value>
+  </data>
+  <data name="InfoPanelSatellite" xml:space="preserve">
+    <value>Satellite (Node - Direction)</value>
+  </data>
+  <data name="InfoPanelType" xml:space="preserve">
+    <value>Type</value>
   </data>
   <data name="LanguageEnglish" xml:space="preserve">
     <value>English</value>

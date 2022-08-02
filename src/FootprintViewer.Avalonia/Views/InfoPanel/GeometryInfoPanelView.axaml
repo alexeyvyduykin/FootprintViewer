@@ -6,8 +6,9 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"             
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
-             mc:Ignorable="d"       
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d"       
              d:DesignHeight="250" d:DesignWidth="450"
              x:Class="FootprintViewer.Avalonia.Views.InfoPanel.GeometryInfoPanelView">
 
@@ -68,7 +69,7 @@
                 ToolTip.ShowDelay="0"
                 Command="{Binding Close}">
           <ToolTip.Tip>
-            <ToolTip Content="Закрыть" Classes="FastTooltip"/>
+            <ToolTip Content="{x:Static prop:Resources.Close}" Classes="FastTooltip"/>
           </ToolTip.Tip>
           <Viewbox Margin="4">          
             <materialIcons:MaterialIcon Foreground="{Binding #TextBlock.Foreground}"                                                                   

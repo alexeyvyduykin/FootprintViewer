@@ -120,6 +120,9 @@
   <data name="Area" xml:space="preserve">
     <value>Область</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
   <data name="Distance" xml:space="preserve">
     <value>Расстояние</value>
   </data>
@@ -179,6 +182,18 @@
   </data>
   <data name="GroundTargetTabTitle" xml:space="preserve">
     <value>Просмотр наземных целей</value>
+  </data>
+  <data name="InfoPanelBegin" xml:space="preserve">
+    <value>Начало (Продолжительность)</value>
+  </data>
+  <data name="InfoPanelCenter" xml:space="preserve">
+    <value>Центр</value>
+  </data>
+  <data name="InfoPanelSatellite" xml:space="preserve">
+    <value>Спутник (Виток - Направление)</value>
+  </data>
+  <data name="InfoPanelType" xml:space="preserve">
+    <value>Тип</value>
   </data>
   <data name="LanguageEnglish" xml:space="preserve">
     <value>Английский</value>
