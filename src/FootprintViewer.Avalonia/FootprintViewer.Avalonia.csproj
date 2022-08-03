@@ -21,11 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mapsui" Version="4.0.0-beta.3" />
-    <PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.3" />
+    <PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
+    <PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.5" />
     <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.83-nightly" />
     <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.232" />
+    <PackageReference Include="SkiaSharp" Version="2.88.1-preview.63" />
     <PackageReference Include="ReactiveUI" Version="18.0.10" />
     <PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
     <PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />

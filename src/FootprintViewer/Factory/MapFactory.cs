@@ -103,10 +103,13 @@ namespace FootprintViewer
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
-            return new TargetLayer(source)
+            source.MaxVisible = styleManager.MaxVisibleTargetStyle;
+
+            return new TargetLayer()
             {
                 Style = styleManager.TargetStyle,
-                MaxVisible = styleManager.MaxVisibleTargetStyle,
+                //MaxVisible = styleManager.MaxVisibleTargetStyle,
+                DataSource = source,
                 IsMapInfoLayer = true,
             };
         }

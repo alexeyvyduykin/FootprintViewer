@@ -1,54 +1,59 @@
 ﻿using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Styles;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public class TargetLayer : BaseCustomLayer<ITargetLayerSource>
+    public class TargetLayer : Layer
     {
-        private MRect _lastExtent = new(1, 1, 1, 1);
+        private IFeature? _lastSelected;
 
-        public TargetLayer(ITargetLayerSource source) : base(source)
+        public void SelectFeature(string name)
         {
-            Refresh = ReactiveCommand.Create<IEnumerable<IFeature>?, IEnumerable<IFeature>?>(s => s);
+            if (DataSource is ITargetLayerSource source)
+            {
+                var feature = source.GetFeature(name);
 
-            Refresh.Throttle(TimeSpan.FromSeconds(1))
-                   .InvokeCommand(source.Refresh);
+                if (feature != null)
+                {
+                    if (_lastSelected != null)
+                    {
+                        _lastSelected["State"] = "Unselected";
+                    }
+
+                    feature["State"] = "Selected";
+
+                    _lastSelected = feature;
+
+                    DataHasChanged();
+                }
+            }
         }
 
-        private readonly ReactiveCommand<IEnumerable<IFeature>?, IEnumerable<IFeature>?> Refresh;
-
-        public override void RefreshData(FetchInfo fetchInfo)
+        public void ShowHighlight(string name)
         {
-            base.RefreshData(fetchInfo);
-
-            var extent = fetchInfo.Extent;
-            var resolution = fetchInfo.Resolution;
-
-            if (fetchInfo.ChangeType == ChangeType.Discrete)
+            if (DataSource is ITargetLayerSource source)
             {
-                if (extent.Left != _lastExtent.Left && extent.Top != _lastExtent.Top && extent.Right != _lastExtent.Right && extent.Bottom != _lastExtent.Bottom)
+                var feature = source.GetFeature(name);
+
+                if (feature != null)
                 {
-                    if (resolution < MaxVisible && extent.Equals(new MRect(0, 0, 0, 0)) == false)
-                    {
-                        // HACK: change size extent to viewport of view control
-                        var box = extent.Grow(-SymbolStyle.DefaultWidth * 2 * resolution, -SymbolStyle.DefaultHeight * 2 * resolution);
+                    feature["Highlight"] = true;
 
-                        var activeFeatures = GetFeatures(box, resolution);
-
-                        Refresh.Execute(activeFeatures).Subscribe();
-                    }
-                    else
-                    {
-                        Refresh.Execute(null).Subscribe();
-                    }
-
-                    _lastExtent = extent.Copy();
+                    DataHasChanged();
                 }
+            }
+        }
+
+        public void HideHighlight()
+        {
+            if (DataSource is ITargetLayerSource source)
+            {
+                foreach (var item in source.GetFeatures())
+                {
+                    item["Highlight"] = false;
+                }
+
+                DataHasChanged();
             }
         }
     }

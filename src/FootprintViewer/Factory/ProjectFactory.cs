@@ -131,7 +131,9 @@ namespace FootprintViewer
 
         public GroundTargetTab CreateGroundTargetTab()
         {
-            var source = _dependencyResolver.GetExistingService<ITargetLayerSource>();
+            var map = _dependencyResolver.GetExistingService<IMap>();
+
+            var targetLayer = map.GetLayer<TargetLayer>(LayerType.GroundTarget);
 
             var groundTargetViewer = new GroundTargetTab(_dependencyResolver);
 
@@ -143,7 +145,7 @@ namespace FootprintViewer
 
                     if (string.IsNullOrEmpty(name) == false)
                     {
-                        source.SelectFeature(name);
+                        targetLayer?.SelectFeature(name);
                     }
                 }
             });
@@ -154,13 +156,13 @@ namespace FootprintViewer
 
                 if (name != null)
                 {
-                    source.ShowHighlight(name);
+                    targetLayer?.ShowHighlight(name);
                 }
             });
 
             groundTargetViewer.Leave.Subscribe(_ =>
             {
-                source.HideHighlight();
+                targetLayer?.HideHighlight();
             });
 
             return groundTargetViewer;
