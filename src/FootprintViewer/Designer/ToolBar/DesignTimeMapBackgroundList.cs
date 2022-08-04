@@ -5,9 +5,9 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeMapBackgroundList : MapBackgroundList
     {
-        public DesignTimeMapBackgroundList() : base(new DesignTimeData())
+        public DesignTimeMapBackgroundList() //: base(new DesignTimeData())
         {
-            Loading.Execute().Subscribe();
+            //Loading.Execute().Subscribe();
         }
     }
 }

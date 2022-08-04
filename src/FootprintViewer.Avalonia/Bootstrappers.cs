@@ -20,6 +20,8 @@ namespace FootprintViewer.Avalonia
             RegisterConfigurations(services, resolver);
             RegisterVariableViewModels(services, resolver, mode);
             RegisterViewModels(services, resolver);
+
+            resolver.GetExistingService<TaskLoader>().Run();
         }
 
         private static void RegisterConfigurations(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
@@ -67,6 +69,7 @@ namespace FootprintViewer.Avalonia
 
         private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
+            services.RegisterConstant<TaskLoader>(new TaskLoader());
             services.Register(() => new ProjectFactory(resolver));
             services.Register(() => new ViewModelFactory(resolver));
             services.Register(() => new MapFactory(resolver));
@@ -91,18 +94,12 @@ namespace FootprintViewer.Avalonia
 
             services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
-            var satelliteProvider = resolver.GetExistingService<IProvider<Satellite>>();
-            var footprintProvider = resolver.GetExistingService<IProvider<Footprint>>();
-            var groundTargetProvider = resolver.GetExistingService<IProvider<GroundTarget>>();
-            var groundStationProvider = resolver.GetExistingService<IProvider<GroundStation>>();
-            var userGeometryProvider = resolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
-            services.RegisterConstant(new TrackLayerSource(satelliteProvider), typeof(ITrackLayerSource));
-            services.RegisterConstant(new SensorLayerSource(satelliteProvider), typeof(ISensorLayerSource));
-            services.RegisterConstant(new FootprintLayerSource(footprintProvider), typeof(IFootprintLayerSource));
-            services.RegisterConstant(new TargetLayerSource(groundTargetProvider), typeof(ITargetLayerSource));
-            services.RegisterConstant(new UserLayerSource(userGeometryProvider), typeof(IUserLayerSource));
-            services.RegisterConstant(new GroundStationLayerSource(groundStationProvider), typeof(IGroundStationLayerSource));
+            services.RegisterConstant(new TrackLayerSource(), typeof(ITrackLayerSource));
+            services.RegisterConstant(new SensorLayerSource(), typeof(ISensorLayerSource));
+            services.RegisterConstant(new FootprintLayerSource(), typeof(IFootprintLayerSource));
+            services.RegisterConstant(new TargetLayerSource(), typeof(ITargetLayerSource));
+            services.RegisterConstant(new UserLayerSource(), typeof(IUserLayerSource));
+            services.RegisterConstant(new GroundStationLayerSource(), typeof(IGroundStationLayerSource));
             services.RegisterConstant(new EditLayerSource(), typeof(IEditLayerSource));
 
             services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));

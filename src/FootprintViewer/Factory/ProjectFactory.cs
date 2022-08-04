@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Configurations;
+using FootprintViewer.Data;
 using FootprintViewer.Layers;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
@@ -10,6 +11,7 @@ using Splat;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer
 {
@@ -51,15 +53,33 @@ namespace FootprintViewer
 
         public MapBackgroundList CreateMapBackgroundList()
         {
+            var loader = _dependencyResolver.GetExistingService<TaskLoader>();
+            var provider = _dependencyResolver.GetExistingService<IProvider<MapResource>>();
             var map = (Map)_dependencyResolver.GetExistingService<IMap>();
 
-            var mapBackgroundList = new MapBackgroundList(_dependencyResolver);
-
-            mapBackgroundList.Loading.Where(s => s.Count != 0).Subscribe(s => { map.SetWorldMapLayer(s.First()); });
+            var mapBackgroundList = new MapBackgroundList();
 
             mapBackgroundList.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
 
+            loader.AddTaskAsync(() => LoadingAsync());
+
             return mapBackgroundList;
+
+            async Task LoadingAsync()
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+
+                var maps = await provider.GetNativeValuesAsync(null);
+
+                mapBackgroundList.Update(maps);
+
+                var item = maps.FirstOrDefault();
+
+                if (item != null)
+                {
+                    map.SetWorldMapLayer(item);
+                }
+            }
         }
 
         public MapLayerList CreateMapLayerList()

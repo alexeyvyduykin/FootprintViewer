@@ -9,7 +9,7 @@ namespace FootprintViewer.Designer
 
         public DesignTimeCustomToolBar() : base(_designTimeData)
         {
-            _designTimeData.GetExistingService<MapBackgroundList>().Loading.Execute().Subscribe();
+            //_designTimeData.GetExistingService<MapBackgroundList>().Loading.Execute().Subscribe();
         }
     }
 }

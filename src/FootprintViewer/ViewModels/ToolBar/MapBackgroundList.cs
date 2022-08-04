@@ -1,36 +1,44 @@
-﻿using FootprintViewer.Data;
+﻿using DynamicData;
+using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
+using System;
 using System.Collections.Generic;
-using System.Reactive;
+using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels
 {
     public class MapBackgroundList : ReactiveObject
     {
-        private readonly IProvider<MapResource> _mapProvider;
-        private readonly ObservableAsPropertyHelper<List<MapResource>> _mapBackgrounds;
+        private readonly SourceList<MapResource> _mapResources = new();
+        private readonly ReadOnlyObservableCollection<MapResource> _items;
 
-        public MapBackgroundList(IReadonlyDependencyResolver dependencyResolver)
+        public MapBackgroundList()
         {
-            _mapProvider = dependencyResolver.GetExistingService<IProvider<MapResource>>();
-
             WorldMapChanged = ReactiveCommand.Create<MapResource, MapResource>(s => s);
 
-            Loading = ReactiveCommand.CreateFromTask(s => _mapProvider.GetNativeValuesAsync(null));
-
-            _mapBackgrounds = Loading.ObserveOn(RxApp.MainThreadScheduler).ToProperty(this, x => x.MapBackgrounds);
+            _mapResources
+                .Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _items)
+                .Subscribe();
 
             this.WhenAnyValue(x => x.SelectedMapBackground!).InvokeCommand(WorldMapChanged);
         }
 
+        public void Update(IEnumerable<MapResource> maps)
+        {
+            _mapResources.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(maps);
+            });
+        }
+
         public ReactiveCommand<MapResource, MapResource> WorldMapChanged { get; }
 
-        public ReactiveCommand<Unit, List<MapResource>> Loading { get; }
-
-        public List<MapResource> MapBackgrounds => _mapBackgrounds.Value;
+        public ReadOnlyObservableCollection<MapResource> MapBackgrounds => _items;
 
         [Reactive]
         public MapResource? SelectedMapBackground { get; set; }

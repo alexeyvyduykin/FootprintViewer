@@ -10,21 +10,16 @@ namespace FootprintViewer.Layers
     public interface ITrackLayerSource : ILayerSource
     {
         void Update(string name, int node, bool isShow);
+
+        void UpdateData(List<Satellite> satellites);
     }
 
     public class TrackLayerSource : BaseLayerSource<Satellite>, ITrackLayerSource
     {
-        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict;
-        private readonly Dictionary<string, List<IFeature>> _cache;
+        private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new();
+        private readonly Dictionary<string, List<IFeature>> _cache = new();
 
-        public TrackLayerSource(IProvider<Satellite> provider) : base(provider)
-        {
-            _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-
-            _cache = new Dictionary<string, List<IFeature>>();
-        }
-
-        protected override void LoadingImpl(List<Satellite> satellites)
+        public void UpdateData(List<Satellite> satellites)
         {
             var tracks = TrackBuilder.Create(satellites);
 

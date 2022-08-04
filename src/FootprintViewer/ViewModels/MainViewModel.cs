@@ -1,9 +1,11 @@
-﻿using FootprintViewer.Layers;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Layers;
 using InteractiveGeometry;
 using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
+using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -12,7 +14,6 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -146,25 +147,6 @@ namespace FootprintViewer.ViewModels
                     return;
                 }
             });
-
-            LoadingProviders = ReactiveCommand.CreateFromTask(LoadingProvidersAsync);
-
-            var command = ReactiveCommand.CreateFromObservable<Unit, Unit>(_ => Observable.Return(Unit.Default).Delay(TimeSpan.FromSeconds(0)));
-
-            command.Execute().InvokeCommand(LoadingProviders);
-        }
-
-        private ReactiveCommand<Unit, Unit> LoadingProviders { get; }
-
-        private async Task LoadingProvidersAsync()
-        {
-            await Task.Run(() => _dependencyResolver.GetExistingService<MapBackgroundList>().Loading.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IUserLayerSource>().Init.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IFootprintLayerSource>().Init.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<ITrackLayerSource>().Init.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<ISensorLayerSource>().Init.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<ITargetLayerSource>().Init.Execute().Subscribe());
-            await Task.Run(() => _dependencyResolver.GetExistingService<IGroundStationLayerSource>().Init.Execute().Subscribe());
         }
 
         private void ResetInteractivity()
@@ -526,7 +508,7 @@ namespace FootprintViewer.ViewModels
 
             _selectScaleDecorator.Unselect += (s, e) =>
             {
-                _userLayerSource.EditFeature(selectFeature!);
+                EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -554,10 +536,66 @@ namespace FootprintViewer.ViewModels
 
             _selectTranslateDecorator.Unselect += (s, e) =>
             {
-                _userLayerSource.EditFeature(selectFeature!);
+                EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
+        }
+
+        private void EditFeature(IFeature feature)
+        {
+            var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+
+            if (feature is GeometryFeature gf)
+            {
+                Task.Run(async () =>
+                {
+                    if (gf.Fields.Contains("Name") == true)
+                    {
+                        var name = (string)gf["Name"]!;
+
+                        var geometry = gf.Geometry!;
+
+                        await editableProvider.EditAsync(name,
+                            new UserGeometry()
+                            {
+                                Geometry = geometry
+                            });
+                    }
+                });
+            }
+        }
+
+        private void AddUserGeometry(IFeature feature, UserGeometryType type)
+        {
+            var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+
+            if (feature is GeometryFeature gf)
+            {
+                var name = GenerateName(type);
+
+                gf["Name"] = name;
+
+                // TODO: remove this?
+                ((BaseLayerSource<UserGeometry>)_userLayerSource).Add(gf);
+
+                Task.Run(async () =>
+                {
+                    var model = new UserGeometry()
+                    {
+                        Type = type,
+                        Name = name,
+                        Geometry = gf.Geometry
+                    };
+
+                    await editableProvider.AddAsync(model);
+                });
+            }
+
+            string GenerateName(UserGeometryType type)
+            {
+                return $"{type}_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}";
+            }
         }
 
         private void RotateCommand()
@@ -582,7 +620,7 @@ namespace FootprintViewer.ViewModels
 
             _selectRotateDecorator.Unselect += (s, e) =>
             {
-                _userLayerSource.EditFeature(selectFeature!);
+                EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -610,7 +648,7 @@ namespace FootprintViewer.ViewModels
 
             _selectEditDecorator.Unselect += (s, e) =>
             {
-                _userLayerSource.EditFeature(selectFeature!);
+                EditFeature(selectFeature!);
             };
 
             ActualController = new EditController();
@@ -669,7 +707,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
+                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
 
                 Tip = null;
 
@@ -696,7 +734,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
+                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
                 Tip = null;
 
@@ -723,7 +761,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
+                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
 
                 Tip = null;
 
@@ -783,7 +821,7 @@ namespace FootprintViewer.ViewModels
 
             designer.EndCreating += (s, e) =>
             {
-                _userLayerSource.AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
+                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
 
                 Tip = null;
 

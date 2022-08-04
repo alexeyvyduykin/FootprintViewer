@@ -1,19 +1,13 @@
-﻿using FootprintViewer.Data;
-using Mapsui;
+﻿using Mapsui;
 using Mapsui.Layers;
-using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Layers
 {
     public interface ILayerSource : ILayer
     {
-        ReactiveCommand<Unit, Unit> Init { get; }
-
         IFeature? GetFeature(string name);
 
         void SelectFeature(string name);
@@ -25,17 +19,7 @@ namespace FootprintViewer.Layers
 
     public abstract class BaseLayerSource<TNative> : WritableLayer, ILayerSource
     {
-        private readonly IProvider<TNative> _provider;
         private IFeature? _lastSelected;
-
-        public BaseLayerSource(IProvider<TNative> provider)
-        {
-            _provider = provider;
-
-            Init = ReactiveCommand.CreateFromObservable(() => Observable.Start(() => LoadingImpl(provider.GetNativeValuesAsync(null).Result)));
-
-            provider.Observable.Skip(1).Select(s => Unit.Default).InvokeCommand(Init);
-        }
 
         public IFeature? GetFeature(string name)
         {
@@ -76,11 +60,5 @@ namespace FootprintViewer.Layers
 
             DataHasChanged();
         }
-
-        protected IProvider<TNative> Provider => _provider;
-
-        public ReactiveCommand<Unit, Unit> Init { get; }
-
-        protected abstract void LoadingImpl(List<TNative> values);
     }
 }
