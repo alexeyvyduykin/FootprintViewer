@@ -134,7 +134,7 @@ namespace InteractiveSample.ViewModels
                 {
                     var decorator = (ISelectDecorator)s!;
 
-                    var feature = (GeometryFeature)decorator.SelectFeature!;
+                    var feature = (GeometryFeature)decorator.SelectedFeature!;
 
                     var center = SphericalMercator.ToLonLat(feature.Geometry!.Centroid.ToMPoint());
 

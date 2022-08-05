@@ -1,18 +1,13 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
+using Mapsui.Layers;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public interface ISensorLayerSource : ILayerSource
-    {
-        void Update(string name, int node, bool isShowLeft, bool isShowRight);
-
-        void UpdateData(List<Satellite> satellites);
-    }
-
-    public class SensorLayerSource : BaseLayerSource<Satellite>, ISensorLayerSource
+    public class SensorLayer : WritableLayer
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft = new();
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dictright = new();
@@ -44,8 +39,13 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Update(string name, int node, bool isShowLeft, bool isShowRight)
+        public void Update(SatelliteViewModel satellite)
         {
+            var name = satellite.Name;
+            var node = satellite.CurrentNode;
+            var isShowLeft = satellite.IsShow && satellite.IsLeftStrip;
+            var isShowRight = satellite.IsShow && satellite.IsRightStrip;
+
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();

@@ -7,6 +7,7 @@ using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
 using System;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -47,10 +48,9 @@ namespace FootprintViewer
 
         private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
         {
-            var source = dependencyResolver.GetExistingService<IEditLayerSource>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
 
-            return new BaseCustomLayer<IEditLayerSource>(source)
+            return new EditLayer()
             {
                 Style = styleManager.EditStyle,
                 IsMapInfoLayer = false,
@@ -71,14 +71,13 @@ namespace FootprintViewer
         private static ILayer CreateFootprintLayer(IReadonlyDependencyResolver dependencyResolver)
         {
             var loader = dependencyResolver.GetExistingService<TaskLoader>();
-            var source = dependencyResolver.GetExistingService<IFootprintLayerSource>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
             var provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
 
-            var layer = new FootprintLayer(source)
+            var layer = new WritableLayer()
             {
                 Style = styleManager.FootprintStyle,
-                MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
+                //   MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
                 IsMapInfoLayer = true,
             };
 
@@ -97,7 +96,9 @@ namespace FootprintViewer
 
                 var footprints = await provider.GetNativeValuesAsync(null);
 
-                source.UpdateData(footprints);
+                layer.Clear();
+                layer.AddRange(FeatureBuilder.Build(footprints));
+                layer.DataHasChanged();
             }
         }
 
@@ -105,10 +106,9 @@ namespace FootprintViewer
         {
             var loader = dependencyResolver.GetExistingService<TaskLoader>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var source = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
             var provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
 
-            var layer = new BaseCustomLayer<IGroundStationLayerSource>(source)
+            var layer = new GroundStationLayer()
             {
                 Style = styleManager.GroundStationStyle,
                 IsMapInfoLayer = false,
@@ -127,7 +127,7 @@ namespace FootprintViewer
             {
                 var groundStations = await provider.GetNativeValuesAsync(null);
 
-                source.UpdateData(groundStations);
+                layer.UpdateData(groundStations);
             }
         }
 
@@ -135,10 +135,9 @@ namespace FootprintViewer
         {
             var loader = dependencyResolver.GetExistingService<TaskLoader>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var source = dependencyResolver.GetExistingService<ITrackLayerSource>();
             var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
 
-            var layer = new BaseCustomLayer<ITrackLayerSource>(source)
+            var layer = new TrackLayer()
             {
                 Style = styleManager.TrackStyle,
                 IsMapInfoLayer = false,
@@ -157,7 +156,7 @@ namespace FootprintViewer
             {
                 var satellites = await provider.GetNativeValuesAsync(null);
 
-                source.UpdateData(satellites);
+                layer.UpdateData(satellites);
             }
         }
 
@@ -170,7 +169,7 @@ namespace FootprintViewer
 
             source.MaxVisible = styleManager.MaxVisibleTargetStyle;
 
-            var layer = new TargetLayer()
+            var layer = new Layer()
             {
                 Style = styleManager.TargetStyle,
                 //MaxVisible = styleManager.MaxVisibleTargetStyle,
@@ -207,10 +206,9 @@ namespace FootprintViewer
         {
             var loader = dependencyResolver.GetExistingService<TaskLoader>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var source = dependencyResolver.GetExistingService<ISensorLayerSource>();
             var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
 
-            var layer = new BaseCustomLayer<ISensorLayerSource>(source)
+            var layer = new SensorLayer()
             {
                 Style = styleManager.SensorStyle,
                 IsMapInfoLayer = false,
@@ -229,7 +227,7 @@ namespace FootprintViewer
             {
                 var satellites = await provider.GetNativeValuesAsync(null);
 
-                source.UpdateData(satellites);
+                layer.UpdateData(satellites);
             }
         }
 
@@ -237,10 +235,9 @@ namespace FootprintViewer
         {
             var loader = dependencyResolver.GetExistingService<TaskLoader>();
             var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-            var source = dependencyResolver.GetExistingService<IUserLayerSource>();
             var editableProvider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
-            var layer = new BaseCustomLayer<IUserLayerSource>(source)
+            var layer = new WritableLayer()
             {
                 IsMapInfoLayer = true,
                 Style = styleManager.UserStyle,
@@ -261,7 +258,13 @@ namespace FootprintViewer
 
                 var userGeometries = await editableProvider.GetNativeValuesAsync(null);
 
-                source.UpdateData(userGeometries);
+                var arr = userGeometries
+                    .Where(s => s.Geometry != null)
+                    .Select(s => s.Geometry!.ToFeature(s.Name!));
+
+                layer.Clear();
+                layer.AddRange(arr);
+                layer.DataHasChanged();
             }
         }
 

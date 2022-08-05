@@ -1,5 +1,7 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
 using Mapsui;
+using Mapsui.Layers;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
@@ -7,14 +9,7 @@ using System.Linq;
 
 namespace FootprintViewer.Layers
 {
-    public interface ITrackLayerSource : ILayerSource
-    {
-        void Update(string name, int node, bool isShow);
-
-        void UpdateData(List<Satellite> satellites);
-    }
-
-    public class TrackLayerSource : BaseLayerSource<Satellite>, ITrackLayerSource
+    public class TrackLayer : WritableLayer
     {
         private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new();
         private readonly Dictionary<string, List<IFeature>> _cache = new();
@@ -51,8 +46,12 @@ namespace FootprintViewer.Layers
             }
         }
 
-        public void Update(string name, int node, bool isShow)
+        public void Update(SatelliteViewModel satellite)
         {
+            var name = satellite.Name;
+            var node = satellite.CurrentNode;
+            var isShow = satellite.IsShow && satellite.IsTrack;
+
             if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
             {
                 _cache[name].Clear();

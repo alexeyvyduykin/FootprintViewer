@@ -32,9 +32,6 @@ namespace FootprintViewer.ViewModels
         private readonly GroundTargetTab _groundTargetTab;
         private readonly UserGeometryTab _userGeometryTab;
         private readonly FootprintPreviewTab _footprintPreviewTab;
-        private readonly IUserLayerSource _userLayerSource;
-        private readonly IFootprintLayerSource _footprintSource;
-        private readonly IEditLayerSource _editSource;
         private readonly ScaleMapBar _scaleMapBar;
 
         private ISelectDecorator? _footprintSelectDecorator;
@@ -54,9 +51,6 @@ namespace FootprintViewer.ViewModels
             MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
             _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
             _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-            _userLayerSource = dependencyResolver.GetExistingService<IUserLayerSource>();
-            _footprintSource = dependencyResolver.GetExistingService<IFootprintLayerSource>();
-            _editSource = dependencyResolver.GetExistingService<IEditLayerSource>();
             _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
             _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
             _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTab>();
@@ -132,10 +126,12 @@ namespace FootprintViewer.ViewModels
             _footprintTab.ClickOnItem.Subscribe(s =>
             {
                 var name = s?.Name;
+                var layer = _map.GetLayer<WritableLayer>(LayerType.Footprint);
+                var layerManager = layer?.BuildManager(() => layer.GetFeatures());
 
                 if (string.IsNullOrEmpty(name) == false)
                 {
-                    var feature = _footprintSource.GetFeature(name);
+                    var feature = layerManager?.GetFeature(name);
 
                     if (feature != null)
                     {
@@ -215,7 +211,9 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature.Copy();
 
-                _editSource.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
+                var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+                layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
 
                 Tip = null;
 
@@ -256,7 +254,9 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature.Copy();
 
-                _editSource.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
+                var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+                layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
 
                 Tip = null;
 
@@ -289,7 +289,9 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature.Copy();
 
-                _editSource.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
+                var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+                layer?.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
 
                 Tip = null;
 
@@ -310,6 +312,7 @@ namespace FootprintViewer.ViewModels
         private void RouteCommand()
         {
             var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
+            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
             designer.BeginCreating += (s, e) =>
             {
@@ -334,14 +337,14 @@ namespace FootprintViewer.ViewModels
             {
                 var feature = designer.Feature.Copy();
 
-                _editSource.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
+                layer?.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
             };
 
-            _editSource.ClearRoute();
+            layer?.ClearRoute();
 
             InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
@@ -577,7 +580,7 @@ namespace FootprintViewer.ViewModels
                 gf["Name"] = name;
 
                 // TODO: remove this?
-                ((BaseLayerSource<UserGeometry>)_userLayerSource).Add(gf);
+                //            ((BaseLayerSource<UserGeometry>)_userLayerSource).Add(gf);
 
                 Task.Run(async () =>
                 {
@@ -668,7 +671,9 @@ namespace FootprintViewer.ViewModels
 
             panel.Close.Subscribe(_ =>
             {
-                _editSource.ResetAOI();
+                var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+                layer?.ResetAOI();
 
                 AOIChanged?.Invoke(null, EventArgs.Empty);
 
@@ -691,7 +696,9 @@ namespace FootprintViewer.ViewModels
 
             panel.Close.Subscribe(_ =>
             {
-                _editSource.ClearRoute();
+                var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+                layer?.ClearRoute();
 
                 Tip = null;
 

@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
+using Mapsui;
 using ReactiveUI;
 using Splat;
 using System;
@@ -14,8 +15,8 @@ namespace FootprintViewer.ViewModels
 {
     public class SatelliteTab : SidePanelTab
     {
-        private readonly ITrackLayerSource _trackLayerSource;
-        private readonly ISensorLayerSource _sensorLayerSource;
+        private readonly TrackLayer? _trackLayer;
+        private readonly SensorLayer? _sensorLayer;
         private readonly IProvider<Satellite> _provider;
         private readonly SourceList<SatelliteViewModel> _satellites = new();
         private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
@@ -24,8 +25,9 @@ namespace FootprintViewer.ViewModels
         public SatelliteTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
-            _trackLayerSource = dependencyResolver.GetExistingService<ITrackLayerSource>();
-            _sensorLayerSource = dependencyResolver.GetExistingService<ISensorLayerSource>();
+            var map = (Map)dependencyResolver.GetExistingService<IMap>();
+            _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
+            _trackLayer = map.GetLayer<TrackLayer>(LayerType.Track);
 
             Title = "Просмотр спутников";
 
@@ -71,8 +73,8 @@ namespace FootprintViewer.ViewModels
 
             foreach (var item in list)
             {
-                item.TrackObservable.Subscribe(UpdateTrack);
-                item.StripsObservable.Subscribe(UpdateStrips);
+                item.TrackObservable.Subscribe(s => _trackLayer?.Update(s));
+                item.StripsObservable.Subscribe(s => _sensorLayer?.Update(s));
             }
 
             _satellites.Edit(innerList =>
@@ -80,25 +82,6 @@ namespace FootprintViewer.ViewModels
                 innerList.Clear();
                 innerList.AddRange(list);
             });
-        }
-
-        private void UpdateTrack(SatelliteViewModel satelliteInfo)
-        {
-            var name = satelliteInfo.Name;
-            var node = satelliteInfo.CurrentNode;
-            var isShow = satelliteInfo.IsShow && satelliteInfo.IsTrack;
-
-            _trackLayerSource.Update(name, node, isShow);
-        }
-
-        private void UpdateStrips(SatelliteViewModel satelliteInfo)
-        {
-            var name = satelliteInfo.Name;
-            var node = satelliteInfo.CurrentNode;
-            var isShow1 = satelliteInfo.IsShow && satelliteInfo.IsLeftStrip;
-            var isShow2 = satelliteInfo.IsShow && satelliteInfo.IsRightStrip;
-
-            _sensorLayerSource.Update(name, node, isShow1, isShow2);
         }
 
         public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;

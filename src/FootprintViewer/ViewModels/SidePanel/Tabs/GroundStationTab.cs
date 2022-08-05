@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Layers;
+using Mapsui;
 using ReactiveUI;
 using Splat;
 using System;
@@ -14,16 +15,17 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundStationTab : SidePanelTab
     {
-        private readonly IGroundStationLayerSource _groundStationLayerSource;
         private readonly IProvider<GroundStation> _provider;
         private readonly SourceList<GroundStationViewModel> _groundStation = new();
         private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
+        private readonly GroundStationLayer? _layer;
 
         public GroundStationTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _provider = dependencyResolver.GetExistingService<IProvider<GroundStation>>();
-            _groundStationLayerSource = dependencyResolver.GetExistingService<IGroundStationLayerSource>();
+            var map = (Map)dependencyResolver.GetExistingService<IMap>();
+            _layer = map.GetLayer<GroundStationLayer>(LayerType.GroundStation);
 
             Title = "Просмотр наземных станций";
 
@@ -67,8 +69,8 @@ namespace FootprintViewer.ViewModels
 
             foreach (var item in list)
             {
-                item.UpdateObservable.Subscribe(Update);
-                item.ChangeObservable.Subscribe(Change);
+                item.UpdateObservable.Subscribe(s => _layer?.Update(s));
+                item.ChangeObservable.Subscribe(s => _layer?.Update(s));
             }
 
             _groundStation.Edit(innerList =>
@@ -76,26 +78,6 @@ namespace FootprintViewer.ViewModels
                 innerList.Clear();
                 innerList.AddRange(list);
             });
-        }
-
-        private void Update(GroundStationViewModel groundStation)
-        {
-            var name = groundStation.Name;
-            var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
-            var angles = groundStation.GetAngles();
-            var isShow = groundStation.IsShow;
-
-            _groundStationLayerSource.Update(name, center, angles, isShow);
-        }
-
-        private void Change(GroundStationViewModel groundStation)
-        {
-            var name = groundStation.Name;
-            var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
-            var angles = groundStation.GetAngles();
-            var isShow = groundStation.IsShow;
-
-            _groundStationLayerSource.Change(name, center, angles, isShow);
         }
 
         public ReadOnlyObservableCollection<GroundStationViewModel> Items => _items;

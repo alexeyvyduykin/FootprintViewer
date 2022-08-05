@@ -4,26 +4,10 @@ using System.Collections.Generic;
 
 namespace FootprintViewer.Layers
 {
-    public interface IEditLayerSource : ILayer
-    {
-        void AddAOI(InteractiveFeature feature, string name);
-
-        void ResetAOI();
-
-        void AddRoute(InteractiveFeature feature, string name);
-
-        void ClearRoute();
-    }
-
-    public class EditLayerSource : WritableLayer, IEditLayerSource
+    public class EditLayer : WritableLayer
     {
         private readonly List<IFeature> _aoiInfos = new();
         private IFeature? _routeInfo = null;
-
-        public EditLayerSource() : base()
-        {
-
-        }
 
         public void AddAOI(InteractiveFeature feature, string name)
         {

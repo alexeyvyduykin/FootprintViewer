@@ -28,13 +28,13 @@ namespace FootprintViewer.Designer
         //private IEditableProvider<UserGeometryInfo>? _userGeometryProvider;
         //private IProvider<GroundStationInfo>? _groundStationProvider;
 
-        private IFootprintLayerSource? _footprintLayerSource;
-        private ISensorLayerSource? _sensorLayerSource;
+        //private IFootprintLayerSource? _footprintLayerSource;
+        //private ISensorLayerSource? _sensorLayerSource;
         private ITargetLayerSource? _targetLayerSource;
-        private ITrackLayerSource? _trackLayerSource;
-        private IUserLayerSource? _userLayerSource;
-        private IGroundStationLayerSource? _groundStationLayerSource;
-        private IEditLayerSource? _editLayerSource;
+        //private ITrackLayerSource? _trackLayerSource;
+        //private IUserLayerSource? _userLayerSource;
+        //private IGroundStationLayerSource? _groundStationLayerSource;
+        //private IEditLayerSource? _editLayerSource;
 
         private SatelliteTab? _satelliteTab;
         private FootprintTab? _footprintTab;
