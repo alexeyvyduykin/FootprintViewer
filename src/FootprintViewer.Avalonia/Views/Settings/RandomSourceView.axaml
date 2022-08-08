@@ -2,41 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"               
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
-             mc:Ignorable="d"                              
-             MinWidth="320"             
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d"
+             MinWidth="320"
              x:Class="FootprintViewer.Avalonia.Views.Settings.RandomSourceView">
 
-  <Design.DataContext>
-	  <vmd:DesignTimeRandomSourceViewModel/>
-  </Design.DataContext>
-  
-  <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,8,0"></Setter>
-    </Style>
-  </UserControl.Styles>
+	<Design.DataContext>
+		<vmd:DesignTimeRandomSourceViewModel/>
+	</Design.DataContext>
 
-  <styles:Card>
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Margin" Value="0,0,8,0"></Setter>
+		</Style>
+	</UserControl.Styles>
 
-    <StackPanel>
+	<styles:Card>
 
-      <Grid ColumnDefinitions="Auto,*">
-        <TextBlock Text="GenerateCount"/>
-        <TextBox Text="{Binding GenerateCount}" Grid.Column="1"/>
-      </Grid>
+		<StackPanel>
 
-      <Grid ColumnDefinitions="1*,1*">
-        <Button Content="Add"></Button>
-        <Button Grid.Column="1"
-                Content="Cancel"
-                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
-      </Grid>
-    </StackPanel>
+			<Grid ColumnDefinitions="Auto,*">
+				<TextBlock Text="GenerateCount"/>
+				<TextBox Text="{Binding GenerateCount}" Grid.Column="1"/>
+			</Grid>
 
-  </styles:Card>
-  
+			<Grid ColumnDefinitions="1*,1*" HorizontalAlignment="Right">
+				<Button Content="{x:Static prop:Resources.Add}"/>
+				<Button Grid.Column="1"
+						Margin="8,0,0,0"
+						Content="{x:Static prop:Resources.Cancel}"
+						Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
+			</Grid>
+
+		</StackPanel>
+
+	</styles:Card>
+
 </UserControl>

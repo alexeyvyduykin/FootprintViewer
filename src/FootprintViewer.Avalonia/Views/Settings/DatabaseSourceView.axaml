@@ -8,81 +8,81 @@
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             mc:Ignorable="d"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 mc:Ignorable="d"
              Width="320"
              x:Class="FootprintViewer.Avalonia.Views.Settings.DatabaseSourceView">
 
-  <Design.DataContext>
-	  <vmd:DesignTimeDatabaseSourceViewModel/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeDatabaseSourceViewModel/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
-    <Style Selector="TextBlock.t1">
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Margin" Value="0,0,8,0"></Setter>
-    </Style>
+	<UserControl.Styles>
+		<Style Selector="TextBlock.t1">
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Margin" Value="0,0,8,0"></Setter>
+		</Style>
 
-    <Style Selector="ComboBox.cmbBoxFake">
-      <Setter Property="IsEnabled" Value="True"></Setter>
-    </Style>
+		<Style Selector="ComboBox.cmbBoxFake">
+			<Setter Property="IsEnabled" Value="True"></Setter>
+		</Style>
 
-    <Style Selector="ComboBox.cmbBoxFake[SelectedIndex=-1]">
-      <Setter Property="IsEnabled" Value="False"></Setter>
-    </Style>
-  </UserControl.Styles>
+		<Style Selector="ComboBox.cmbBoxFake[SelectedIndex=-1]">
+			<Setter Property="IsEnabled" Value="False"></Setter>
+		</Style>
+	</UserControl.Styles>
 
-  <styles:Card>
-    <StackPanel>
+	<styles:Card>
+		<StackPanel>
 
-      <Grid ColumnDefinitions="Auto,*"
-            RowDefinitions="54,54,54,54,54,54,54">
+			<Grid ColumnDefinitions="Auto,*"
+				  RowDefinitions="54,54,54,54,54,54,54">
 
-        <TextBlock Text="Version" Grid.Row="0" Classes="t1"/>
-        <TextBlock Text="Host" Grid.Row="1" Classes="t1"/>
-        <TextBlock Text="Port" Grid.Row="2" Classes="t1"/>
-        <TextBlock Text="Database" Grid.Row="3" Classes="t1"/>
-        <TextBlock Text="Username" Grid.Row="4" Classes="t1"/>
-        <TextBlock Text="Password" Grid.Row="5" Classes="t1"/>
-        <StackPanel Grid.Row="6" Orientation="Horizontal">
-          <TextBlock Text="Table" Classes="t1"/>
-          <Button x:Name="ShowInfoToggleButton"
-                  Margin="-16,0,0,0"
-                  Click="TableInfo_Clicked"
-                  Classes="Icon NoFeedback">
-            <materialIcons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>
-          </Button>
-        </StackPanel>
-        <TextBox Text="{Binding Version}" Grid.Column="1" Grid.Row="0"/>
-        <TextBox Text="{Binding Host}" Grid.Column="1" Grid.Row="1"/>
-        <TextBox Text="{Binding Port}" Grid.Column="1" Grid.Row="2"/>
-        <TextBox Text="{Binding Database}" Grid.Column="1" Grid.Row="3"/>
-        <TextBox Text="{Binding Username}" Grid.Column="1" Grid.Row="4"/>
-        <TextBox Text="{Binding Password}" Grid.Column="1" Grid.Row="5"/>
-        <ComboBox Items="{Binding AvailableTables}"
-                  SelectedItem="{Binding Table}"
-                  Margin="0,0,0,8"
-                  Grid.Column="1" Grid.Row="6"/>
-        <ComboBox x:Name="cmbBox"
-                  Classes="cmbBoxFake"
-                  IsVisible="False"
-                  Items="{Binding AvailableTables}"
-                  SelectedItem="{Binding Table}"
-                  Grid.Column="1" Grid.Row="6"/>
-      </Grid>
+				<TextBlock Text="Version" Grid.Row="0" Classes="t1"/>
+				<TextBlock Text="Host" Grid.Row="1" Classes="t1"/>
+				<TextBlock Text="Port" Grid.Row="2" Classes="t1"/>
+				<TextBlock Text="Database" Grid.Row="3" Classes="t1"/>
+				<TextBlock Text="Username" Grid.Row="4" Classes="t1"/>
+				<TextBlock Text="Password" Grid.Row="5" Classes="t1"/>
+				<StackPanel Grid.Row="6" Orientation="Horizontal">
+					<TextBlock Text="Table" Classes="t1"/>
+					<Button x:Name="ShowInfoToggleButton"
+							Margin="-16,0,0,0"
+							Click="TableInfo_Clicked"
+							Classes="Icon NoFeedback">
+						<materialIcons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>
+					</Button>
+				</StackPanel>
+				<TextBox Text="{Binding Version}" Grid.Column="1" Grid.Row="0"/>
+				<TextBox Text="{Binding Host}" Grid.Column="1" Grid.Row="1"/>
+				<TextBox Text="{Binding Port}" Grid.Column="1" Grid.Row="2"/>
+				<TextBox Text="{Binding Database}" Grid.Column="1" Grid.Row="3"/>
+				<TextBox Text="{Binding Username}" Grid.Column="1" Grid.Row="4"/>
+				<TextBox Text="{Binding Password}" Grid.Column="1" Grid.Row="5"/>
+				<ComboBox Items="{Binding AvailableTables}"
+						  SelectedItem="{Binding Table}"
+						  Margin="0,0,0,8"
+						  Grid.Column="1" Grid.Row="6"/>
+				<ComboBox x:Name="cmbBox"
+						  Classes="cmbBoxFake"
+						  IsVisible="False"
+						  Items="{Binding AvailableTables}"
+						  SelectedItem="{Binding Table}"
+						  Grid.Column="1" Grid.Row="6"/>
+			</Grid>
 
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button Content="Add"
-                IsEnabled="{Binding #cmbBox.IsEnabled}"
-                Width="80"
-                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
-                CommandParameter="{Binding}"/>
-        <Button Width="80"
-                Margin="8,0,0,0"
-                Content="Cancel"
-                Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
-      </StackPanel>
+			<Grid ColumnDefinitions="1*,1*" HorizontalAlignment="Right">
+				<Button Content="{x:Static prop:Resources.Add}"
+						IsEnabled="{Binding #cmbBox.IsEnabled}"
+						Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"
+						CommandParameter="{Binding}"/>
+				<Button Grid.Column="1"
+						Margin="8,0,0,0"
+						Content="{x:Static prop:Resources.Cancel}"
+						Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=dialogHost:DialogHost}, Path=CloseDialogCommand}"/>
+			</Grid>
 
-    </StackPanel>
-  </styles:Card>
+		</StackPanel>
+	</styles:Card>
 
 </UserControl>
