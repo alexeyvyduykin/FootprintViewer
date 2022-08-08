@@ -7,9 +7,11 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -61,13 +63,20 @@ namespace FootprintViewer
 
             mapBackgroundList.WorldMapChanged.Subscribe(s => map.SetWorldMapLayer(s));
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
+
             loader.AddTaskAsync(() => LoadingAsync());
 
             return mapBackgroundList;
 
             async Task LoadingAsync()
             {
-                await Task.Delay(TimeSpan.FromSeconds(10));
+                await Task.Delay(TimeSpan.FromSeconds(3));
 
                 var maps = await provider.GetNativeValuesAsync(null);
 
@@ -78,6 +87,7 @@ namespace FootprintViewer
                 if (item != null)
                 {
                     map.SetWorldMapLayer(item);
+                    int hjhj = 0;
                 }
             }
         }

@@ -81,8 +81,10 @@ namespace FootprintViewer
                 IsMapInfoLayer = true,
             };
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
             provider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
@@ -114,8 +116,10 @@ namespace FootprintViewer
                 IsMapInfoLayer = false,
             };
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
             provider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
@@ -143,8 +147,10 @@ namespace FootprintViewer
                 IsMapInfoLayer = false,
             };
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
             provider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
@@ -177,8 +183,10 @@ namespace FootprintViewer
                 IsMapInfoLayer = true,
             };
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
             provider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
@@ -214,8 +222,10 @@ namespace FootprintViewer
                 IsMapInfoLayer = false,
             };
 
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
             provider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
@@ -243,8 +253,10 @@ namespace FootprintViewer
                 Style = styleManager.UserStyle,
             };
 
+            var skip = editableProvider.Sources.Count > 0 ? 1 : 0;
+
             editableProvider.Observable
-                .Skip(1)
+                .Skip(skip)
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 

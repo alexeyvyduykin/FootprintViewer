@@ -70,18 +70,30 @@ namespace FootprintViewer.Avalonia
         {
             var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
 
+            Locator.CurrentMutable.RegisterConstant(mainState, typeof(MainState));
+
             var settings = GetExistingService<SettingsTabViewModel>();
 
             settings.LanguageSettings?.LoadState(mainState.LocalizationState);
+
+            settings.Find(Data.ProviderType.MapBackgrounds)?.LoadState(mainState.MapBackgroundProvider);
+            settings.Find(Data.ProviderType.FootprintPreviews)?.LoadState(mainState.FootprintPreviewProvider);
+            settings.Find(Data.ProviderType.Satellites)?.LoadState(mainState.SatelliteProvider);
+            settings.Find(Data.ProviderType.GroundStations)?.LoadState(mainState.GroundStationProvider);
+            settings.Find(Data.ProviderType.GroundTargets)?.LoadState(mainState.GroundTargetProvider);
+            settings.Find(Data.ProviderType.Footprints)?.LoadState(mainState.FootprintProvider);
+            settings.Find(Data.ProviderType.UserGeometries)?.LoadState(mainState.UserGeometryProvider);
         }
 
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
         {
-            var mainState = Locator.Current.GetExistingService<MainState>();
+            var mainState = Locator.Current.GetService<MainState>();
+
+            string? lastOpenDirectory = (mainState != null) ? mainState.LastOpenDirectory : string.Empty;
 
             var dialog = new OpenFileDialog
             {
-                Directory = directory ?? mainState.LastOpenDirectory,
+                Directory = directory ?? lastOpenDirectory,
             };
 
             var ext = filterExtension ?? "*";
@@ -95,19 +107,31 @@ namespace FootprintViewer.Avalonia
                 return string.Empty;
             }
 
+            if (mainState != null)
+            {
+                mainState.LastOpenDirectory = System.IO.Path.GetDirectoryName(result.First());
+            }
+
             return result.First();
         }
 
         public static async Task<string> OpenFolderDialog(string? directory)
         {
-            var mainState = Locator.Current.GetExistingService<MainState>();
+            var mainState = Locator.Current.GetService<MainState>();
+
+            string? lastOpenDirectory = (mainState != null) ? mainState.LastOpenDirectory : string.Empty;
 
             var dialog = new OpenFolderDialog()
             {
-                Directory = directory ?? mainState.LastOpenDirectory
+                Directory = directory ?? lastOpenDirectory
             };
 
             var result = await dialog.ShowAsync(GetWindow()!);
+
+            if (mainState != null)
+            {
+                mainState.LastOpenDirectory = result;
+            }
 
             return result ?? string.Empty;
         }

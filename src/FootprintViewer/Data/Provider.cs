@@ -25,7 +25,7 @@ namespace FootprintViewer.Data
 
         public SourceList<IDataSource> Sources { get; } = new();
 
-        public IEnumerable<IDataSource> GetSources() => Sources.Items;
+        protected IEnumerable<IDataSource> GetSources() => Sources.Items;
 
         public async Task<List<TNative>> GetNativeValuesAsync(IFilter<TNative>? filter)
         {
@@ -86,6 +86,14 @@ namespace FootprintViewer.Data
         public void AddSources(IEnumerable<IDataSource> sources)
         {
             Sources.AddRange(sources);
+        }
+
+        public void RemoveSources(IEnumerable<IDataSource> sources)
+        {
+            foreach (var item in sources)
+            {
+                Sources.Remove(item);
+            }
         }
 
         public void AddManagers(IEnumerable<IDataManager<TNative>> managers)

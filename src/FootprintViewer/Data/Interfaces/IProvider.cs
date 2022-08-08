@@ -9,6 +9,10 @@ namespace FootprintViewer.Data
     {
         SourceList<IDataSource> Sources { get; }
 
+        void AddSources(IEnumerable<IDataSource> sources);
+
+        void RemoveSources(IEnumerable<IDataSource> sources);
+
         IObservable<IChangeSet<IDataSource>> Observable { get; }
     }
 

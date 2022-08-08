@@ -6,6 +6,9 @@ namespace FootprintViewer.AppStates
     public class DatabaseSourceState : ISourceState
     {
         [DataMember]
+        public string? Name { get; set; }
+
+        [DataMember]
         public string? Version { get; set; }
 
         [DataMember]

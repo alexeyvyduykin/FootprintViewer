@@ -4,6 +4,8 @@
     {
         public string Name { get; init; } = string.Empty;
 
+        public int GenerateCount { get; init; }
+
         public bool Equals(IDataSource? other)
         {
             if (other is IRandomSource source)

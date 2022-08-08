@@ -37,48 +37,93 @@ namespace FootprintViewer
             {
                 Type = ProviderType.GroundStations,
                 AvailableBuilders = configuration.GroundStationSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Database => new DatabaseSourceViewModel(),
+                    SourceType.Random => new RandomSourceViewModel("RandomGroundStations"),
+                    _ => throw new Exception(),
+                },
             };
 
             var satelliteProviderViewModel = new ProviderViewModel(satelliteProvider, _dependencyResolver)
             {
                 Type = ProviderType.Satellites,
                 AvailableBuilders = configuration.SatelliteSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Database => new DatabaseSourceViewModel(),
+                    SourceType.Random => new RandomSourceViewModel("RandomSatellites"),
+                    _ => throw new Exception(),
+                },
             };
 
             var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
             {
                 Type = ProviderType.Footprints,
                 AvailableBuilders = configuration.FootprintSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Database => new DatabaseSourceViewModel(),
+                    SourceType.Random => new RandomSourceViewModel("RandomFootprints"),
+                    _ => throw new Exception(),
+                },
             };
 
             var groundTargetProviderViewModel = new ProviderViewModel(groundTargetProvider, _dependencyResolver)
             {
                 Type = ProviderType.GroundTargets,
                 AvailableBuilders = configuration.GroundTargetSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Database => new DatabaseSourceViewModel(),
+                    SourceType.Random => new RandomSourceViewModel("RandomGroundTargets"),
+                    _ => throw new Exception(),
+                },
             };
 
             var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
             {
                 Type = ProviderType.UserGeometries,
                 AvailableBuilders = configuration.UserGeometrySourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Database => new DatabaseSourceViewModel(),
+                    SourceType.Random => new RandomSourceViewModel("RandomUserGeometries"),
+                    _ => throw new Exception(),
+                },
             };
 
             var mapBackgroundProviderViewModel = new ProviderViewModel(mapBackgroundProvider, _dependencyResolver)
             {
                 Type = ProviderType.MapBackgrounds,
                 AvailableBuilders = configuration.MapBackgroundSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
+                    _ => throw new Exception(),
+                },
             };
 
             var footprintPreviewProviderViewModel = new ProviderViewModel(footprintPreviewProvider, _dependencyResolver)
             {
                 Type = ProviderType.FootprintPreviews,
                 AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
+                    _ => throw new Exception(),
+                },
             };
 
             var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(footprintPreviewGeometryProvider, _dependencyResolver)
             {
                 Type = ProviderType.FootprintPreviewGeometries,
                 AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
+                Builder = type => type switch
+                {
+                    SourceType.File => new FileSourceViewModel() { FilterExtension = "*.mbtiles" },
+                    _ => throw new Exception(),
+                },
             };
 
             var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
@@ -112,7 +157,7 @@ namespace FootprintViewer
             };
         }
 
-        public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders)
+        public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders, Func<SourceType, ISourceViewModel>? factory)
         {
             var list = new List<ISourceBuilderItem>();
 
@@ -120,7 +165,7 @@ namespace FootprintViewer
             {
                 if (Enum.TryParse(item.ToTitleCase(), out SourceType type) == true)
                 {
-                    list.Add(new SourceBuilderItem(type, () => CreateSource(type)));
+                    list.Add(new SourceBuilderItem(type, () => factory != null ? factory(type) : CreateSource(type)));
                 }
             }
 

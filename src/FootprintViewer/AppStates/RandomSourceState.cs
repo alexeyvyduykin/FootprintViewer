@@ -7,5 +7,8 @@ namespace FootprintViewer.AppStates
     {
         [DataMember]
         public int GenerateCount { get; set; }
+
+        [DataMember]
+        public string? Name { get; set; }
     }
 }
