@@ -414,6 +414,7 @@ namespace FootprintViewer
                 return new RandomSource()
                 {
                     Name = randomSource.Name ?? "RandomSourceDefault",
+                    GenerateCount = randomSource.GenerateCount,
                 };
             }
             else

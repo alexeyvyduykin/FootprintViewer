@@ -85,7 +85,15 @@ namespace FootprintViewer.Data
 
         public void AddSources(IEnumerable<IDataSource> sources)
         {
-            Sources.AddRange(sources);
+            foreach (var item in sources)
+            {
+                var count = Sources.Items.Where(s => Equals(s, item)).Count();
+
+                if (count == 0)
+                {
+                    Sources.Add(item);
+                }
+            }
         }
 
         public void RemoveSources(IEnumerable<IDataSource> sources)

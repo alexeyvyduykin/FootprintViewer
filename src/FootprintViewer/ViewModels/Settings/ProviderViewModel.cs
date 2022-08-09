@@ -63,7 +63,7 @@ namespace FootprintViewer.ViewModels
         {
             _state = state;
 
-            var res = state.Sources.Select(s => ToDataSource(s)).ToList();
+            var res = state.Sources.Values.Select(s => ToDataSource(s)).ToList();
 
             _provider.AddSources(res);
         }
@@ -74,7 +74,7 @@ namespace FootprintViewer.ViewModels
 
             if (_state != null)
             {
-                _state.Sources.Add(ToSourceState(source));
+                _state.Add(ToSourceState(source));
             }
         }
 
@@ -84,9 +84,7 @@ namespace FootprintViewer.ViewModels
 
             if (_state != null)
             {
-                var state = ToSourceState(source);
-                var index = _state.Sources.FindIndex(s => string.Equals(s.Name, state.Name));
-                _state.Sources.RemoveAt(index);
+                _state.Remove(ToSourceState(source));
             }
         }
 

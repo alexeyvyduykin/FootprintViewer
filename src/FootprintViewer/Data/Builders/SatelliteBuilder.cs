@@ -8,10 +8,14 @@ namespace FootprintViewer.Data
     {
         public static IEnumerable<Satellite> Create(int num)
         {
+            var list = new List<Satellite>();
+
             for (int i = 0; i < num; i++)
             {
-                yield return CreateSatellite(i);
+                list.Add(CreateSatellite(i));
             }
+
+            return list;
         }
 
         private static Satellite CreateSatellite(int index)
