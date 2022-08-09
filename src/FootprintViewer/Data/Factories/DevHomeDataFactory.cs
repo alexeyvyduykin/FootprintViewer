@@ -66,35 +66,31 @@ namespace FootprintViewer.Data
                 new RandomSource()
                 {
                     Name = "RandomSatellites",
+                    GenerateCount = 5,
                 },
             };
         }
 
         protected override IDataSource[] GetFootprintSources()
         {
-            // TODO: temporary solution, all random sources not chaining
-            //       var satelliteDataSource = new RandomSatelliteDataSource();
-
             return new[]
             {
-                new RandomSource(/*satelliteDataSource*/)
+                new RandomSource()
                 {
                     Name = "RandomFootprints",
+                    GenerateCount = 2000,
                 },
             };
         }
 
         protected override IDataSource[] GetGroundTargetSources()
         {
-            // TODO: temporary solution, all random sources not chaining
-            //      var satelliteDataSource = new RandomSatelliteDataSource();
-            //      var footprintDataSource = new RandomFootprintDataSource(satelliteDataSource);
-
             return new[]
             {
-                new RandomSource(/*footprintDataSource*/)
+                new RandomSource()
                 {
                     Name = "RandomGroundTargets",
+                    GenerateCount = 5000,
                 },
             };
         }
@@ -106,6 +102,7 @@ namespace FootprintViewer.Data
                new RandomSource()
                {
                    Name = "RandomGroundStations",
+                   GenerateCount = 6,
                },
             };
         }

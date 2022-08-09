@@ -69,7 +69,7 @@ namespace FootprintViewer.ViewModels
 
         public ReactiveCommand<FootprintViewModel, FootprintViewModel> ClickOnItem { get; }
 
-        private ReactiveCommand<Unit, Unit> Loading { get; }
+        public ReactiveCommand<Unit, Unit> Loading { get; }
 
         private ReactiveCommand<Unit, Unit> Delay { get; }
 

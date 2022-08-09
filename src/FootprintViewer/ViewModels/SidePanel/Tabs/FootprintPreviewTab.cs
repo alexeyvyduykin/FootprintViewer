@@ -81,11 +81,9 @@ namespace FootprintViewer.ViewModels
                 .Where(active => active == true)
                 .Select(_ => Unit.Default)
                 .InvokeCommand(Delay);
-
-            _provider.Observable.Skip(1).Select(s => Unit.Default).InvokeCommand(Loading);
         }
 
-        private ReactiveCommand<Unit, Unit> Loading { get; }
+        public ReactiveCommand<Unit, Unit> Loading { get; }
 
         private ReactiveCommand<Unit, Unit> Delay { get; }
 

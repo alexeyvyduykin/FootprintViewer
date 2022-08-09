@@ -4,8 +4,9 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeRandomSourceViewModel : RandomSourceViewModel
     {
-        public DesignTimeRandomSourceViewModel() : base("RandomFootprints")
+        public DesignTimeRandomSourceViewModel()
         {
+            Name = "RandomFootprints";
             GenerateCount = 440;
         }
     }

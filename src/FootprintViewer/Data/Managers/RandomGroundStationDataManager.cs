@@ -8,11 +8,12 @@ namespace FootprintViewer.Data.Managers
 {
     public class RandomGroundStationDataManager : BaseDataManager<GroundStation, IRandomSource>
     {
-        private readonly List<GroundStation> _groundStations;
+        private List<GroundStation>? _groundStations;
+        private readonly List<GroundStation> _allGroundStations;
 
         public RandomGroundStationDataManager()
         {
-            _groundStations = new List<GroundStation>()
+            _allGroundStations = new List<GroundStation>()
             {
                 new GroundStation() { Name = "Москва",      Center = new Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Новосибирск", Center = new Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
@@ -25,12 +26,19 @@ namespace FootprintViewer.Data.Managers
 
         protected override async Task<List<GroundStation>> GetNativeValuesAsync(IRandomSource dataSource, IFilter<GroundStation>? filter)
         {
-            return await Task.Run(() => _groundStations);
+            return await Task.Run(() => _groundStations ??= BuildGroundStations(dataSource));
         }
 
         protected override async Task<List<T>> GetValuesAsync<T>(IRandomSource dataSource, IFilter<T>? filter, Func<GroundStation, T> converter)
         {
+            _groundStations ??= BuildGroundStations(dataSource);
+
             return await Task.Run(() => _groundStations.Select(s => converter(s)).ToList());
+        }
+
+        private List<GroundStation> BuildGroundStations(IRandomSource source)
+        {
+            return _allGroundStations.Take(source.GenerateCount).ToList();
         }
     }
 }

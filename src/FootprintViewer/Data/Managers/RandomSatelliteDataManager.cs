@@ -13,7 +13,7 @@ namespace FootprintViewer.Data.Managers
         {
             return await Task.Run(() =>
             {
-                return _satellites ??= new List<Satellite>(SatelliteBuilder.Create());
+                return _satellites ??= BuildSatellites(dataSource);
             });
         }
 
@@ -21,10 +21,15 @@ namespace FootprintViewer.Data.Managers
         {
             return await Task.Run(() =>
             {
-                _satellites ??= new List<Satellite>(SatelliteBuilder.Create());
+                _satellites ??= BuildSatellites(dataSource);
 
                 return _satellites.Select(s => converter(s)).ToList();
             });
+        }
+
+        private List<Satellite> BuildSatellites(IRandomSource dataSource)
+        {
+            return new List<Satellite>(SatelliteBuilder.Create(dataSource.GenerateCount));
         }
     }
 }

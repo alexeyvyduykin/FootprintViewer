@@ -8,6 +8,7 @@ using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -23,11 +24,11 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintTabFilter : BaseFilterViewModel<FootprintViewModel>
     {
-        private readonly IProvider<Satellite> _satelliteProvider;
+        private readonly IProvider<Footprint> _provider;
 
         public FootprintTabFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            _satelliteProvider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
+            _provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
 
             Satellites = new ObservableCollection<SatelliteItemViewModel>();
 
@@ -37,7 +38,9 @@ namespace FootprintViewer.ViewModels
             FromNode = 1;
             ToNode = 15;
 
-            Observable.StartAsync(CreateSatelliteList).Subscribe();
+            _provider.Observable
+                .Select(s => Unit.Default)
+                .InvokeCommand(ReactiveCommand.CreateFromTask(CreateSatelliteList));
         }
 
         public override IObservable<Func<FootprintViewModel, bool>> FilterObservable =>
@@ -72,8 +75,8 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSatelliteList()
         {
-            var satellites = await _satelliteProvider.GetNativeValuesAsync(null);
-            var satelliteNames = satellites?.Select(s => s.Name).ToList();
+            var footprints = await _provider.GetNativeValuesAsync(null);
+            var satelliteNames = footprints.Select(s => s.SatelliteName).Distinct();
 
             if (satelliteNames != null)
             {

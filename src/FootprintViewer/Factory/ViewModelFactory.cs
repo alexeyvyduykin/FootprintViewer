@@ -1,11 +1,19 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
+using FootprintViewer.Layers;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
+using Mapsui;
+using Mapsui.Layers;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer
 {
@@ -40,7 +48,7 @@ namespace FootprintViewer
                 Builder = type => type switch
                 {
                     SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel("RandomGroundStations"),
+                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundStations", GenerateCount = 10 },
                     _ => throw new Exception(),
                 },
             };
@@ -52,7 +60,7 @@ namespace FootprintViewer
                 Builder = type => type switch
                 {
                     SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel("RandomSatellites"),
+                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomSatellites", GenerateCount = 4 },
                     _ => throw new Exception(),
                 },
             };
@@ -64,7 +72,7 @@ namespace FootprintViewer
                 Builder = type => type switch
                 {
                     SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel("RandomFootprints"),
+                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomFootprints", GenerateCount = 1000 },
                     _ => throw new Exception(),
                 },
             };
@@ -76,7 +84,7 @@ namespace FootprintViewer
                 Builder = type => type switch
                 {
                     SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel("RandomGroundTargets"),
+                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundTargets", GenerateCount = 5000 },
                     _ => throw new Exception(),
                 },
             };
@@ -88,7 +96,7 @@ namespace FootprintViewer
                 Builder = type => type switch
                 {
                     SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel("RandomUserGeometries"),
+                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomUserGeometries" },
                     _ => throw new Exception(),
                 },
             };
@@ -152,7 +160,7 @@ namespace FootprintViewer
                 SourceType.File => new FileSourceViewModel(),
                 SourceType.Folder => new FolderSourceViewModel(),
                 SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel("random"),
+                SourceType.Random => new RandomSourceViewModel() { Name = "DefaultRandom" },
                 _ => throw new Exception(),
             };
         }
@@ -174,7 +182,172 @@ namespace FootprintViewer
 
         public GroundStationTab CreateGroundStationTab()
         {
+            var provider = _dependencyResolver.GetExistingService<IProvider<GroundStation>>();
+
             var tab = new GroundStationTab(_dependencyResolver);
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
+
+            return tab;
+        }
+
+        public FootprintPreviewTab CreateFootprintPreviewTab()
+        {
+            var map = (Map)_dependencyResolver.GetExistingService<IMap>();
+            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+            var provider = _dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+
+            var tab = new FootprintPreviewTab(_dependencyResolver);
+
+            tab.SelectedItemObservable.Subscribe(footprint =>
+            {
+                if (footprint != null && footprint.Path != null)
+                {
+                    var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
+
+                    map.ReplaceLayer(layer, LayerType.FootprintImage);
+
+                    if (tab.Geometries.ContainsKey(footprint.Name!) == true)
+                    {
+                        mapNavigator.SetFocusToPoint(tab.Geometries[footprint.Name!].Centroid.ToMPoint());
+                    }
+                }
+            });
+
+            tab.Enter.Subscribe(footprint =>
+            {
+                if (tab.Geometries.ContainsKey(footprint.Name!) == true)
+                {
+                    var layer = map.GetLayer(LayerType.FootprintImageBorder);
+
+                    if (layer != null && layer is WritableLayer writableLayer)
+                    {
+                        writableLayer.Clear();
+                        writableLayer.Add(new GeometryFeature() { Geometry = tab.Geometries[footprint.Name!] });
+                        writableLayer.DataHasChanged();
+                    }
+                }
+            });
+
+            tab.Leave.Subscribe(_ =>
+            {
+                var layer = map.GetLayer(LayerType.FootprintImageBorder);
+
+                if (layer != null && layer is WritableLayer writableLayer)
+                {
+                    writableLayer.Clear();
+                    writableLayer.DataHasChanged();
+                }
+            });
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
+
+            return tab;
+        }
+
+        public FootprintTab CreateFootprintTab()
+        {
+            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+            var provider = _dependencyResolver.GetExistingService<IProvider<Footprint>>();
+
+            var tab = new FootprintTab(_dependencyResolver);
+
+            tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
+
+            return tab;
+        }
+
+        public GroundTargetTab CreateGroundTargetTab()
+        {
+            var map = _dependencyResolver.GetExistingService<IMap>();
+            var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
+            var provider = _dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+            var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
+            var tab = new GroundTargetTab(_dependencyResolver);
+
+            tab.SelectedItemObservable.Subscribe(groundTarget =>
+            {
+                if (groundTarget != null)
+                {
+                    var name = groundTarget.Name;
+
+                    if (string.IsNullOrEmpty(name) == false)
+                    {
+                        targetManager?.SelectFeature(name);
+                    }
+                }
+            });
+
+            tab.Enter.Subscribe(groundTarget =>
+            {
+                var name = groundTarget.Name;
+
+                if (name != null)
+                {
+                    targetManager?.ShowHighlight(name);
+                }
+            });
+
+            tab.Leave.Subscribe(_ =>
+            {
+                targetManager?.HideHighlight();
+            });
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
+
+            return tab;
+        }
+
+        public SatelliteTab CreateSatelliteTab()
+        {
+            var provider = _dependencyResolver.GetExistingService<IProvider<Satellite>>();
+
+            var tab = new SatelliteTab(_dependencyResolver);
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
+
+            return tab;
+        }
+
+        public UserGeometryTab CreateUserGeometryTab()
+        {
+            var provider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+
+            var tab = new UserGeometryTab(_dependencyResolver);
+
+            var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+            provider.Observable
+                .Skip(skip)
+                .Select(s => Unit.Default)
+                .InvokeCommand(tab.Loading);
 
             return tab;
         }

@@ -99,11 +99,11 @@ namespace FootprintViewer.Avalonia
             services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
             services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-            services.RegisterLazySingleton<FootprintPreviewTab>(() => factory.CreateFootprintPreviewTab());
-            services.RegisterLazySingleton<SatelliteTab>(() => factory.CreateSatelliteTab());
-            services.RegisterLazySingleton<GroundTargetTab>(() => factory.CreateGroundTargetTab());
-            services.RegisterLazySingleton<FootprintTab>(() => factory.CreateFootprintTab());
-            services.RegisterLazySingleton<UserGeometryTab>(() => factory.CreateUserGeometryTab());
+            services.RegisterLazySingleton<FootprintPreviewTab>(() => viewModelFactory.CreateFootprintPreviewTab());
+            services.RegisterLazySingleton<SatelliteTab>(() => viewModelFactory.CreateSatelliteTab());
+            services.RegisterLazySingleton<GroundTargetTab>(() => viewModelFactory.CreateGroundTargetTab());
+            services.RegisterLazySingleton<FootprintTab>(() => viewModelFactory.CreateFootprintTab());
+            services.RegisterLazySingleton<UserGeometryTab>(() => viewModelFactory.CreateUserGeometryTab());
             services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
             services.RegisterLazySingleton<SettingsTabViewModel>(() => viewModelFactory.CreateSettingsTabViewModel());
 

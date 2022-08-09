@@ -6,19 +6,6 @@ namespace FootprintViewer.Data
 {
     public abstract class BaseDataFactory : IDataFactory
     {
-        private readonly RandomGroundStationDataManager _randomGroundStationDataManager;
-        private readonly RandomSatelliteDataManager _randomSatelliteDataManager;
-        private readonly RandomFootprintDataManager _randomFootprintDataManager;
-        private readonly RandomGroundTargetDataManager _randomGroundTargetDataManager;
-
-        protected BaseDataFactory()
-        {
-            _randomGroundStationDataManager = new RandomGroundStationDataManager();
-            _randomSatelliteDataManager = new RandomSatelliteDataManager();
-            _randomFootprintDataManager = new RandomFootprintDataManager(_randomSatelliteDataManager);
-            _randomGroundTargetDataManager = new RandomGroundTargetDataManager(_randomFootprintDataManager);
-        }
-
         public IProvider<GroundStation> CreateGroundStationProvider()
         {
             var provider = new Provider<GroundStation>();
@@ -28,13 +15,8 @@ namespace FootprintViewer.Data
             provider.AddManagers(new IDataManager<GroundStation>[]
             {
                 new GroundStationDataManager(),
-                _randomGroundStationDataManager,
+                new RandomGroundStationDataManager(),
             });
-
-            //settings.WhenAnyValue(s => s.GroundStationProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
 
             return provider;
         }
@@ -48,13 +30,8 @@ namespace FootprintViewer.Data
             provider.AddManagers(new IDataManager<GroundTarget>[]
             {
                 new GroundTargetDataManager(),
-                _randomGroundTargetDataManager,
+                new RandomGroundTargetDataManager(),
             });
-
-            //settings.WhenAnyValue(s => s.GroundTargetProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
 
             return provider;
         }
@@ -68,13 +45,8 @@ namespace FootprintViewer.Data
             provider.AddManagers(new IDataManager<Footprint>[]
             {
                 new FootprintDataManager(),
-                _randomFootprintDataManager,
+                new RandomFootprintDataManager(),
             });
-
-            //settings.WhenAnyValue(s => s.FootprintProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
 
             return provider;
         }
@@ -88,13 +60,8 @@ namespace FootprintViewer.Data
             provider.AddManagers(new IDataManager<Satellite>[]
             {
                 new SatelliteDataManager(),
-                _randomSatelliteDataManager,
+                new RandomSatelliteDataManager(),
             });
-
-            //settings.WhenAnyValue(s => s.SatelliteProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
 
             return provider;
         }
@@ -110,11 +77,6 @@ namespace FootprintViewer.Data
                 new UserGeometryDataManager(),
             });
 
-            //settings.WhenAnyValue(s => s.UserGeometryProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
-
             return provider;
         }
 
@@ -128,11 +90,6 @@ namespace FootprintViewer.Data
             {
                 new FootprintPreviewGeometryDataManager(),
             });
-
-            //settings.WhenAnyValue(s => s.FootprintPreviewGeometryProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
 
             return provider;
         }
@@ -148,11 +105,6 @@ namespace FootprintViewer.Data
                 new MapDataManager(),
             });
 
-            //settings.WhenAnyValue(s => s.MapBackgroundProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
-
             return provider;
         }
 
@@ -167,152 +119,8 @@ namespace FootprintViewer.Data
                 new FootprintPreviewDataManager(),
             });
 
-            //settings.WhenAnyValue(s => s.FootprintPreviewProvider.Sources)
-            //        .Skip(1)
-            //        .Select(s => s.Select(s => ToDataSource(s)).ToArray())
-            //        .Subscribe(provider.ChangeSources);
-
             return provider;
         }
-
-        //public ISourceBuilder[] CreateFootprintProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        new RandomSourceBuilder("RandomFootprints"),
-        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Footprint }),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateGroundTargetProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        new RandomSourceBuilder("RandomGroundTargets"),
-        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundTarget }),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateGroundStationProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        new RandomSourceBuilder("RandomGroundStations"),
-        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.GroundStation }),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateSatelliteProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        new RandomSourceBuilder("RandomSatellites"),
-        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.Satellite }),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateUserGeometryProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        CreateDatabaseSourceBuilder(new TableInfo(){ Type = TableInfoType.UserGeometry }),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateFootprintPreviewGeometryProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        CreateFileSourceBuilder("Shapefile", "shp"),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateMapBackgroundProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //       CreateFolderSourceBuilder("*.mbtiles"),
-        //    };
-
-        //    return builders;
-        //}
-
-        //public ISourceBuilder[] CreateFootprintPreviewProviderBuilders(ProviderSettings settings)
-        //{
-        //    var builders = new ISourceBuilder[]
-        //    {
-        //        CreateFolderSourceBuilder("*.mbtiles"),
-        //    };
-
-        //    return builders;
-        //}
-
-        //private enum TableType { Footprint, GroundTarget, Satellite, GroundStation, UserGeometry };
-
-        //private ISourceBuilder CreateDatabaseSourceBuilder(TableInfo tableInfo)
-        //{
-        //    var builder = new DatabaseSourceBuilder(_dependencyResolver);
-
-        //    builder.TableInfo = tableInfo;
-
-        //    builder.Build.Subscribe(s =>
-        //    {
-        //        if (s is IDatabaseSourceInfo info)
-        //        {
-        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
-
-        //            settings.LastDatabaseSource = info;
-        //        }
-        //    });
-
-        //    return builder;
-        //}
-
-        //private ISourceBuilder CreateFolderSourceBuilder(string searchPattern)
-        //{
-        //    var builder = new FolderSourceBuilder(searchPattern);
-
-        //    builder.Build.Subscribe(s =>
-        //    {
-        //        if (s is IFolderSourceInfo info)
-        //        {
-        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
-
-        //            settings.LastOpenDirectory = info.Directory;
-        //        }
-        //    });
-
-        //    return builder;
-        //}
-
-        //private ISourceBuilder CreateFileSourceBuilder(string fileName, string fileExtension)
-        //{
-        //    var builder = new FileSourceBuilder(fileName, fileExtension);
-
-        //    builder.Build.Subscribe(s =>
-        //    {
-        //        if (s is IFileSourceInfo info)
-        //        {
-        //            var settings = _dependencyResolver.GetExistingService<AppSettingsState>();
-
-        //            settings.LastOpenDirectory = System.IO.Path.GetDirectoryName(info.Path);
-        //        }
-        //    });
-
-        //    return builder;
-        //}
 
         protected virtual IDataSource[] GetFootprintPreviewSources()
         {

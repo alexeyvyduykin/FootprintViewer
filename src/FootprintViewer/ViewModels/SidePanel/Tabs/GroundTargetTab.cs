@@ -51,8 +51,6 @@ namespace FootprintViewer.ViewModels
                               .ObserveOn(RxApp.MainThreadScheduler)
                               .ToProperty(this, x => x.IsLoading);
 
-            _provider.Observable.Skip(1).Select(_ => Unit.Default).InvokeCommand(Loading);
-
             _names = _source.Refresh
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .ToProperty(this, x => x.Names);
@@ -93,7 +91,7 @@ namespace FootprintViewer.ViewModels
 
         public IObservable<GroundTargetViewModel?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
 
-        private ReactiveCommand<Unit, Unit> Loading { get; }
+        public ReactiveCommand<Unit, Unit> Loading { get; }
 
         private ReactiveCommand<Unit, Unit> Delay { get; }
 

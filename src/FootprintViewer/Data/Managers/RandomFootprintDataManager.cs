@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FootprintViewer.Data.Sources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,23 +9,12 @@ namespace FootprintViewer.Data.Managers
     public class RandomFootprintDataManager : BaseDataManager<Footprint, IRandomSource>
     {
         private List<Footprint>? _footprints;
-        private readonly IDataManager<Satellite> _manager;
-
-        public RandomFootprintDataManager(IDataManager<Satellite> manager)
-        {
-            _manager = manager;
-        }
 
         protected override async Task<List<Footprint>> GetNativeValuesAsync(IRandomSource dataSource, IFilter<Footprint>? filter)
         {
             return await Task.Run(async () =>
             {
-                if (_footprints == null)
-                {
-                    var satellites = await _manager.GetNativeValuesAsync(null!, null);
-
-                    _footprints = FootprintBuilder.Create(satellites).ToList();
-                }
+                _footprints ??= await Build(dataSource);
 
                 return _footprints;
             });
@@ -34,15 +24,19 @@ namespace FootprintViewer.Data.Managers
         {
             return await Task.Run(async () =>
             {
-                if (_footprints == null)
-                {
-                    var satellites = await _manager.GetNativeValuesAsync(null!, null);
-
-                    _footprints = FootprintBuilder.Create(satellites).ToList();
-                }
+                _footprints ??= await Build(dataSource);
 
                 return _footprints.Select(s => converter(s)).ToList();
             });
+        }
+
+        private static async Task<List<Footprint>> Build(IRandomSource dataSource)
+        {
+            var manager = (IDataManager<Satellite>)new RandomSatelliteDataManager();
+
+            var satellites = await manager.GetNativeValuesAsync(new RandomSource() { GenerateCount = 5 }, null);
+
+            return FootprintBuilder.Create(satellites).Take(dataSource.GenerateCount).ToList();
         }
     }
 }
