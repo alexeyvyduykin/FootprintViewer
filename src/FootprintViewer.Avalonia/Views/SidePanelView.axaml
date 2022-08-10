@@ -12,7 +12,7 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d"
-             d:DesignHeight="550" d:DesignWidth="420">
+             d:DesignHeight="550">
 
 	<Design.DataContext>
 		<vmd:DesignTimeSidePanel/>

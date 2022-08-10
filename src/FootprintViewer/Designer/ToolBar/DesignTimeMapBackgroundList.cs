@@ -1,13 +1,20 @@
-﻿using FootprintViewer.ViewModels;
-using System;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
     public class DesignTimeMapBackgroundList : MapBackgroundList
     {
-        public DesignTimeMapBackgroundList() //: base(new DesignTimeData())
+        private static readonly DesignTimeData _designTimeData = new();
+
+        public DesignTimeMapBackgroundList() : base()
         {
-            //Loading.Execute().Subscribe();
+            var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
+
+            var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
+
+            Update(maps);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace FootprintViewer.Designer
     {
         private static readonly Random _random = new();
 
-        public DesignTimeFootprintPreviewViewModel() : base(Build())
+        public DesignTimeFootprintPreviewViewModel() : base(BuildModel())
         {
 
         }
 
-        public static FootprintPreview Build()
+        public static FootprintPreview BuildModel()
         {
             var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
             var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };

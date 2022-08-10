@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.ViewModels;
+using System;
 
 namespace FootprintViewer.Designer
 {
@@ -6,7 +7,7 @@ namespace FootprintViewer.Designer
     {
         public DesignTimeFootprintPreviewTab() : base(new DesignTimeData())
         {
-
+            IsActive = true;
         }
     }
 }

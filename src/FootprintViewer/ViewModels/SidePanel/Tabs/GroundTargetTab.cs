@@ -87,7 +87,7 @@ namespace FootprintViewer.ViewModels
                 .ToProperty(this, x => x.IsEnable);
         }
 
-        private NameFilter<GroundTargetViewModel> NameFilter { get; }
+        protected NameFilter<GroundTargetViewModel> NameFilter { get; }
 
         public IObservable<GroundTargetViewModel?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
 

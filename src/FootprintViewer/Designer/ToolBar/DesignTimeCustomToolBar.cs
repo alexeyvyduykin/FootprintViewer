@@ -1,5 +1,6 @@
-﻿using FootprintViewer.ViewModels;
-using System;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
@@ -9,7 +10,11 @@ namespace FootprintViewer.Designer
 
         public DesignTimeCustomToolBar() : base(_designTimeData)
         {
-            //_designTimeData.GetExistingService<MapBackgroundList>().Loading.Execute().Subscribe();
+            var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
+
+            var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
+
+            MapBackgroundList.Update(maps);
         }
     }
 }

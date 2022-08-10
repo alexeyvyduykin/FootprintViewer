@@ -7,7 +7,7 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeFootprintViewModel : FootprintViewModel
     {
-        private readonly static Random _random = new Random();
+        private readonly static Random _random = new();
 
         public DesignTimeFootprintViewModel() : base(BuildModel())
         {

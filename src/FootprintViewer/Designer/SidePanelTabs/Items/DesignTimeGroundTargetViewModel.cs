@@ -6,7 +6,7 @@ namespace FootprintViewer.Designer
 {
     public class DesignTimeGroundTargetViewModel : GroundTargetViewModel
     {
-        private readonly static Random _random = new Random();
+        private readonly static Random _random = new();
 
         public DesignTimeGroundTargetViewModel() : base(BuildModel())
         {

@@ -14,55 +14,55 @@
 		<vmd:DesignTimeProviderSettings/>
 	</Design.DataContext>
 
-  <UserControl.Styles>
+	<UserControl.Styles>
 
-    <Style Selector="Button.rmvBtn">
-      <Setter Property="Width" Value="20"></Setter>
-      <Setter Property="Height" Value="20"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>     
-    </Style>
+		<Style Selector="Button.rmvBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
 
-    <Style Selector="Button.addBtn">
-      <Setter Property="Width" Value="20"></Setter>
-      <Setter Property="Height" Value="20"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>     
-      <Setter Property="HorizontalAlignment" Value="Left"></Setter>
-    </Style>
+		<Style Selector="Button.addBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+		</Style>
 
-    <Style Selector="TextBlock.tbItem">
-      <Setter Property="Margin" Value="8,0,0,0"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-      <Setter Property="Padding" Value="0"></Setter>
-    </Style>
+		<Style Selector="TextBlock.tbItem">
+			<Setter Property="Margin" Value="8,0,0,0"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
 
-    <Style Selector="ItemsControl > ContentPresenter">
-      <Setter Property="Margin" Value="0,2,0,0"></Setter>
-    </Style>
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="0,2,0,0"></Setter>
+		</Style>
 
-    <Style Selector="FlyoutPresenter">
-      <Setter Property="Margin" Value="8,0,0,0"/>
-      <Setter Property="Padding" Value="0"/>
-      <Setter Property="Background" Value="Transparent"/>
-    </Style>
-    
-  </UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Margin" Value="8,0,0,0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
 
-  <UserControl.Resources>
+	</UserControl.Styles>
 
-    <DataTemplate x:Key="t1" DataType="vm:ISourceViewModel">
-      <StackPanel Orientation="Horizontal">
-        <Button Command="{Binding #ItemsControl.DataContext.RemoveSource}"
-                CommandParameter="{Binding}"
-                Classes="rmvBtn">
-          <Viewbox Margin="2">
-            <materialIcons:MaterialIcon Kind="Minus"/>
-          </Viewbox>
-        </Button>
-        <TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
-      </StackPanel>
-    </DataTemplate>
+	<UserControl.Resources>
 
-  </UserControl.Resources>
+		<DataTemplate x:Key="t1" DataType="vm:ISourceViewModel">
+			<StackPanel Orientation="Horizontal">
+				<Button Command="{Binding #ItemsControl.DataContext.RemoveSource}"
+						CommandParameter="{Binding}"
+						Classes="rmvBtn">
+					<Viewbox Margin="2">
+						<materialIcons:MaterialIcon Kind="Minus"/>
+					</Viewbox>
+				</Button>
+				<TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+			</StackPanel>
+		</DataTemplate>
+
+	</UserControl.Resources>
 
 	<styles:Card>
 		<StackPanel>
@@ -84,7 +84,7 @@
 					<materialIcons:MaterialIcon Kind="Plus"/>
 				</Viewbox>
 			</Button>
-			
+
 		</StackPanel>
 	</styles:Card>
 
