@@ -260,14 +260,29 @@ namespace FootprintViewer
                 .Select(s => Unit.Default)
                 .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
+            editableProvider.Update.InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync2));
+
             loader.AddTaskAsync(() => LoadingAsync());
 
             return layer;
 
             async Task LoadingAsync()
             {
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                await Task.Delay(TimeSpan.FromSeconds(3));
 
+                var userGeometries = await editableProvider.GetNativeValuesAsync(null);
+
+                var arr = userGeometries
+                    .Where(s => s.Geometry != null)
+                    .Select(s => s.Geometry!.ToFeature(s.Name!));
+
+                layer.Clear();
+                layer.AddRange(arr);
+                layer.DataHasChanged();
+            }
+
+            async Task LoadingAsync2()
+            {
                 var userGeometries = await editableProvider.GetNativeValuesAsync(null);
 
                 var arr = userGeometries

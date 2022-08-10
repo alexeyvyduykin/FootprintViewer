@@ -579,9 +579,6 @@ namespace FootprintViewer.ViewModels
 
                 gf["Name"] = name;
 
-                // TODO: remove this?
-                //            ((BaseLayerSource<UserGeometry>)_userLayerSource).Add(gf);
-
                 Task.Run(async () =>
                 {
                     var model = new UserGeometry()
