@@ -4,14 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
 			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
-             xmlns:lists="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ListTemplates"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 xmlns:reactiveUi="http://reactiveui.net"
+			 x:Name="GroundTargetTabName"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
@@ -48,17 +46,11 @@
 					 SelectedItem="{Binding SelectedItem}"
 					 IsVisible="{Binding !IsLoading}">
 				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<items:GroundTargetItemView x:Name="groundTargetItem"
-													DataContext="{Binding}">
+					<DataTemplate DataType="vm:GroundTargetViewModel">
+						<items:GroundTargetItemView DataContext="{Binding}">
 							<i:Interaction.Behaviors>
-								<ia:EventTriggerBehavior EventName="PointerEnter" SourceObject="{Binding #groundTargetItem}">
-									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.Enter}"
-															CommandParameter="{Binding}" />
-								</ia:EventTriggerBehavior>
-								<ia:EventTriggerBehavior EventName="PointerLeave" SourceObject="{Binding #groundTargetItem}">
-									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.Leave}"/>
-								</ia:EventTriggerBehavior>
+								<behaviors:PointerEnterEventBehavior Command="{Binding #GroundTargetTabName.DataContext.Enter}"/>
+								<behaviors:PointerLeaveEventBehavior Command="{Binding #GroundTargetTabName.DataContext.Leave}"/>
 							</i:Interaction.Behaviors>
 						</items:GroundTargetItemView>
 					</DataTemplate>

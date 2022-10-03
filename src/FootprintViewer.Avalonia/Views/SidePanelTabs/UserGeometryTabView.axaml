@@ -8,20 +8,20 @@
 			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
-             xmlns:reactiveUi="http://reactiveui.net"
+             x:Name="UserGeometryName"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
 	<Design.DataContext>
 		<vmd:DesignTimeUserGeometryTab/>
 	</Design.DataContext>
-	
+
 	<UserControl.Styles>
 		<Style Selector="ListBoxItem">
 			<Setter Property="Padding" Value="12,4"/>
 		</Style>
 	</UserControl.Styles>
-	
+
 	<Panel>
 		<ProgressBar IsVisible="{Binding IsLoading}"
 					 Classes="Circle"
@@ -33,18 +33,18 @@
 				 IsVisible="{Binding !IsLoading}">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="vm:UserGeometryViewModel">
-					<items:UserGeometryItemView x:Name="userGeometryItem" 
+					<items:UserGeometryItemView x:Name="userGeometryItem"
 												DataContext="{Binding}">
 						<i:Interaction.Behaviors>
 							<ia:EventTriggerBehavior EventName="RemoveClick" SourceObject="{Binding #userGeometryItem}">
-								<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.Remove}"
-														CommandParameter="{Binding}" />
+								<ia:InvokeCommandAction Command="{Binding #UserGeometryName.DataContext.Remove}"
+														CommandParameter="{Binding #userGeometryItem.DataContext}" />
 							</ia:EventTriggerBehavior>
 						</i:Interaction.Behaviors>
 					</items:UserGeometryItemView>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-		</ListBox>	
+		</ListBox>
 	</Panel>
 
 </UserControl>

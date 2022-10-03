@@ -1,127 +1,132 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="resources\**" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.13" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.13" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="0.10.13" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.13" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.13" />
-    <PackageReference Include="Avalonia.ReactiveUI.Events" Version="0.10.13" />
-    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.12.2" />
-    <PackageReference Include="Mapsui.Interactivity.UI.Avalonia" Version="0.10.0" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
-  </ItemGroup>
+	<PropertyGroup>
+		<AvaloniaVersion>0.10.18</AvaloniaVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
-    <PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.5" />
-    <PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.83-nightly" />
-    <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-    <PackageReference Include="SkiaSharp" Version="2.88.1-preview.63" />
-    <PackageReference Include="ReactiveUI" Version="18.0.10" />
-    <PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
-    <PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
-    <PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
-    <PackageReference Include="sqlite-net" Version="1.6.292" />
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Include="resources\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>   
-    <PackageReference Include="NetTopologySuite" Version="2.4.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.4" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Settings\DatabaseSourceView.axaml.cs">
-      <DependentUpon>DatabaseSourceView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Settings\FileSourceView.axaml.cs">
-      <DependentUpon>FileSourceView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Settings\FolderSourceView.axaml.cs">
-      <DependentUpon>FolderSourceView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Settings\RandomSourceView.axaml.cs">
-      <DependentUpon>RandomSourceView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\FootprintTabView.axaml.cs">
-      <DependentUpon>FootprintTabView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\GroundStationTabView.axaml.cs">
-      <DependentUpon>GroundStationTabView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\GroundTargetTabView.axaml.cs">
-      <DependentUpon>GroundTargetTabView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintItemView.axaml.cs">
-      <DependentUpon>FootprintItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintPreviewItemView.axaml.cs">
-      <DependentUpon>FootprintPreviewItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\GroundStationItemView.axaml.cs">
-      <DependentUpon>GroundStationItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\GroundTargetItemView.axaml.cs">
-      <DependentUpon>GroundTargetItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\SatelliteItemView.axaml.cs">
-      <DependentUpon>SatelliteItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\ItemTemplates\UserGeometryItemView.axaml.cs">
-      <DependentUpon>UserGeometryItemView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
-      <DependentUpon>SatelliteTabView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\FootprintPreviewTabView.axaml.cs">
-      <DependentUpon>FootprintPreviewTabView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SidePanelTabs\UserGeometryTabView.axaml.cs">
-      <DependentUpon>UserGeometryTabView.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Properties\Resources.ru.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.ReactiveUI.Events" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
+		<PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.5" />
+		<PackageReference Include="Mapsui.Interactivity.UI.Avalonia" Version="0.10.0" />
+		<PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.83-nightly" />
+		<PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
+		<PackageReference Include="SkiaSharp" Version="2.88.1-preview.108" />
+		<PackageReference Include="ReactiveUI" Version="18.0.10" />
+		<PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
+		<PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
+		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
+		<PackageReference Include="sqlite-net" Version="1.6.292" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="NetTopologySuite" Version="2.4.0" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Settings\DatabaseSourceView.axaml.cs">
+			<DependentUpon>DatabaseSourceView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Settings\FileSourceView.axaml.cs">
+			<DependentUpon>FileSourceView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Settings\FolderSourceView.axaml.cs">
+			<DependentUpon>FolderSourceView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Settings\RandomSourceView.axaml.cs">
+			<DependentUpon>RandomSourceView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\FootprintTabView.axaml.cs">
+			<DependentUpon>FootprintTabView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\GroundStationTabView.axaml.cs">
+			<DependentUpon>GroundStationTabView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\GroundTargetTabView.axaml.cs">
+			<DependentUpon>GroundTargetTabView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintItemView.axaml.cs">
+			<DependentUpon>FootprintItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintPreviewItemView.axaml.cs">
+			<DependentUpon>FootprintPreviewItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\GroundStationItemView.axaml.cs">
+			<DependentUpon>GroundStationItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\GroundTargetItemView.axaml.cs">
+			<DependentUpon>GroundTargetItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\SatelliteItemView.axaml.cs">
+			<DependentUpon>SatelliteItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\ItemTemplates\UserGeometryItemView.axaml.cs">
+			<DependentUpon>UserGeometryItemView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
+			<DependentUpon>SatelliteTabView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\FootprintPreviewTabView.axaml.cs">
+			<DependentUpon>FootprintPreviewTabView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SidePanelTabs\UserGeometryTabView.axaml.cs">
+			<DependentUpon>UserGeometryTabView.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Properties\Resources.ru.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

@@ -4,17 +4,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
-			 xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
 			 xmlns:filters="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 xmlns:reactiveUi="http://reactiveui.net"
-             x:Name="userControl"
+             x:Name="FootprintTabName"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
@@ -59,12 +56,12 @@
 				<!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">-->
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="vm:FootprintViewModel">
-						<items:FootprintItemView x:Name="footprintItem"													
+						<items:FootprintItemView x:Name="footprintItem"
 												 DataContext="{Binding}">
 							<i:Interaction.Behaviors>
 								<ia:EventTriggerBehavior EventName="PointerPressed" SourceObject="{Binding #footprintItem}">
-									<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.ClickOnItem}"
-															CommandParameter="{Binding}" />
+									<ia:InvokeCommandAction Command="{Binding #FootprintTabName.DataContext.ClickOnItem}"
+															CommandParameter="{Binding #footprintItem.DataContext}" />
 								</ia:EventTriggerBehavior>
 							</i:Interaction.Behaviors>
 						</items:FootprintItemView>
