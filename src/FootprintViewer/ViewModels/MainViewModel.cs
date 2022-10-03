@@ -1,9 +1,10 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Layers;
-using InteractiveGeometry;
-using InteractiveGeometry.UI;
 using Mapsui;
 using Mapsui.Extensions;
+using Mapsui.Interactivity;
+using Mapsui.Interactivity.Extensions;
+using Mapsui.Interactivity.UI;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
@@ -33,14 +34,7 @@ namespace FootprintViewer.ViewModels
         private readonly UserGeometryTab _userGeometryTab;
         private readonly FootprintPreviewTab _footprintPreviewTab;
         private readonly ScaleMapBar _scaleMapBar;
-
-        private ISelectDecorator? _footprintSelectDecorator;
-        private ISelectDecorator? _groundTargetSelectDecorator;
-        private ISelectDecorator? _userGeometrySelectDecorator;
-        private ISelectScaleDecorator? _selectScaleDecorator;
-        private ISelectTranslateDecorator? _selectTranslateDecorator;
-        private ISelectRotateDecorator? _selectRotateDecorator;
-        private ISelectEditDecorator? _selectEditDecorator;
+        private ISelector? _selector;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -79,137 +73,64 @@ namespace FootprintViewer.ViewModels
                 }
             };
 
-            ActualController = new DefaultController();
-
             _customToolBar.ZoomIn.Click.Subscribe(_ => MapNavigator.ZoomIn());
             _customToolBar.ZoomOut.Click.Subscribe(_ => MapNavigator.ZoomOut());
+            _customToolBar.AddRectangle.Subscribe(RectangleCommand, Reset);
+            _customToolBar.AddPolygon.Subscribe(PolygonCommand, Reset);
+            _customToolBar.AddCircle.Subscribe(CircleCommand, Reset);
+            _customToolBar.RouteDistance.Subscribe(RouteCommand, Reset);
+            _customToolBar.SelectGeometry.Subscribe(SelectCommand, Reset);
+            _customToolBar.TranslateGeometry.Subscribe(TranslateCommand, Reset);
+            _customToolBar.RotateGeometry.Subscribe(RotateCommand, Reset);
+            _customToolBar.ScaleGeometry.Subscribe(ScaleCommand, Reset);
+            _customToolBar.EditGeometry.Subscribe(EditCommand, Reset);
+            _customToolBar.Point.Subscribe(DrawingPointCommand, Reset);
+            _customToolBar.Rectangle.Subscribe(DrawingRectangleCommand, Reset);
+            _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
+            _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
-            _customToolBar.AddRectangle.Activate.Subscribe(_ => RectangleCommand());
-            _customToolBar.AddRectangle.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.AddPolygon.Activate.Subscribe(_ => PolygonCommand());
-            _customToolBar.AddPolygon.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.AddCircle.Activate.Subscribe(_ => CircleCommand());
-            _customToolBar.AddCircle.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.RouteDistance.Activate.Subscribe(_ => RouteCommand());
-            _customToolBar.RouteDistance.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.SelectGeometry.Activate.Subscribe(_ => SelectCommand());
-            _customToolBar.SelectGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.TranslateGeometry.Activate.Subscribe(_ => TranslateCommand());
-            _customToolBar.TranslateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.RotateGeometry.Activate.Subscribe(_ => RotateCommand());
-            _customToolBar.RotateGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.ScaleGeometry.Activate.Subscribe(_ => ScaleCommand());
-            _customToolBar.ScaleGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.EditGeometry.Activate.Subscribe(_ => EditCommand());
-            _customToolBar.EditGeometry.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.Point.Activate.Subscribe(_ => DrawingPointCommand());
-            _customToolBar.Point.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.Rectangle.Activate.Subscribe(_ => DrawingRectangleCommand());
-            _customToolBar.Rectangle.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.Circle.Activate.Subscribe(_ => DrawingCircleCommand());
-            _customToolBar.Circle.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _customToolBar.Polygon.Activate.Subscribe(_ => DrawingPolygonCommand());
-            _customToolBar.Polygon.Deactivate.Subscribe(_ => ResetInteractivity());
-
-            _footprintTab.ClickOnItem.Subscribe(s =>
-            {
-                var name = s?.Name;
-                var layer = _map.GetLayer<WritableLayer>(LayerType.Footprint);
-                var layerManager = layer?.BuildManager(() => layer.GetFeatures());
-
-                if (string.IsNullOrEmpty(name) == false)
-                {
-                    var feature = layerManager?.GetFeature(name);
-
-                    if (feature != null)
-                    {
-                        _footprintSelectDecorator ??= CreateFootprintSelector();
-
-                        _footprintSelectDecorator.SelectFeature((BaseFeature)feature);
-                    }
-
-                    return;
-                }
-            });
+            _footprintTab.ClickOnItem.Subscribe(SelectFeatureImpl);
         }
 
-        private void ResetInteractivity()
+        private void SelectFeatureImpl(FootprintViewModel vm)
         {
-            if (_selectTranslateDecorator != null)
-            {
-                _selectTranslateDecorator.Dispose();
-                _selectTranslateDecorator = null;
-            }
+            var layer = _map.GetLayer<WritableLayer>(LayerType.Footprint);
+            var feature = layer?.FindFeature(vm.Name);
 
-            if (_selectScaleDecorator != null)
+            if (feature != null && layer != null)
             {
-                _selectScaleDecorator.Dispose();
-                _selectScaleDecorator = null;
-            }
+                _selector ??= new InteractiveBuilder().SelectSelector<Selector>().Build();
 
-            if (_selectRotateDecorator != null)
-            {
-                _selectRotateDecorator.Dispose();
-                _selectRotateDecorator = null;
+                _selector.Selected(feature, layer);
             }
+        }
 
-            if (_selectEditDecorator != null)
-            {
-                _selectEditDecorator.Dispose();
-                _selectEditDecorator = null;
-            }
+        private void Reset()
+        {
+            Interactive?.Cancel();
+            Interactive = null;
 
-            if (_footprintSelectDecorator != null)
-            {
-                _footprintSelectDecorator.Dispose();
-                _footprintSelectDecorator = null;
-            }
+            _selector = null;
 
-            if (_groundTargetSelectDecorator != null)
-            {
-                _groundTargetSelectDecorator.Dispose();
-                _groundTargetSelectDecorator = null;
-            }
-
-            if (_userGeometrySelectDecorator != null)
-            {
-                _userGeometrySelectDecorator.Dispose();
-                _userGeometrySelectDecorator = null;
-            }
+            State = States.Default;
 
             Tip = null;
-
-            ActualController = new DefaultController();
         }
 
         public event EventHandler? AOIChanged;
 
         private void RectangleCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<RectangleDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.HoverCreating += (s, e) =>
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+
+            designer.EndCreating.Subscribe(s =>
             {
-                var area = designer.Area();
-
-                Tip?.HoverCreating(FormatHelper.ToArea(area));
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                var feature = designer.Feature.Copy();
+                var feature = s.Feature.Copy();
 
                 var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -217,42 +138,42 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(designer));
+                InfoPanel.Show(CreateAOIPanel(s));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreateRectangleTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void PolygonCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<PolygonDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.BeginCreating += (s, e) =>
-            {
-                Tip?.BeginCreating();
-            };
+            designer.BeginCreating.Subscribe(s => Tip?.BeginCreating());
 
-            designer.Creating += (s, e) =>
+            designer.Creating.Subscribe(s =>
             {
-                var area = designer.Area();
+                var area = s.Area();
 
                 if (area != 0.0)
                 {
                     Tip?.Creating(FormatHelper.ToArea(area));
                 }
-            };
+            });
 
-            designer.EndCreating += (s, e) =>
+            designer.EndCreating.Subscribe(s =>
             {
-                var feature = designer.Feature.Copy();
+                var feature = s.Feature.Copy();
 
                 var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -260,34 +181,32 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(designer));
+                InfoPanel.Show(CreateAOIPanel(s));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreatePolygonTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void CircleCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<CircleDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.HoverCreating += (s, e) =>
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+
+            designer.EndCreating.Subscribe(s =>
             {
-                var area = designer.Area();
-
-                Tip?.HoverCreating(FormatHelper.ToArea(area));
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                var feature = designer.Feature.Copy();
+                var feature = s.Feature.Copy();
 
                 var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
@@ -295,54 +214,45 @@ namespace FootprintViewer.ViewModels
 
                 Tip = null;
 
-                InfoPanel.Show(CreateAOIPanel(designer));
+                InfoPanel.Show(CreateAOIPanel(s));
 
                 AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreateCircleTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void RouteCommand()
         {
-            var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<RouteDesigner>()
+                .AttachTo(Map)
+                .Build();
+
             var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-            designer.BeginCreating += (s, e) =>
+            designer.BeginCreating.Subscribe(s => Tip?.BeginCreating(FormatHelper.ToDistance(s.Distance())));
+
+            designer.Creating.Subscribe(s => InfoPanel.Show(CreateRoutePanel(s)));
+
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToDistance(s.Distance())));
+
+            designer.EndCreating.Subscribe(s =>
             {
-                var distance = designer.Distance();
-
-                Tip?.BeginCreating(FormatHelper.ToDistance(distance));
-            };
-
-            designer.Creating += (s, e) =>
-            {
-                InfoPanel.Show(CreateRoutePanel(designer));
-            };
-
-            designer.HoverCreating += (s, e) =>
-            {
-                var distance = designer.Distance();
-
-                Tip?.HoverCreating(FormatHelper.ToDistance(distance));
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                var feature = designer.Feature.Copy();
+                var feature = s.Feature.Copy();
 
                 layer?.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             layer?.ClearRoute();
 
@@ -350,143 +260,114 @@ namespace FootprintViewer.ViewModels
 
             Tip = DrawingTips.CreateRouteTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
-        }
-
-        private ISelectDecorator CreateFootprintSelector()
-        {
-            var footprintLayer = Map.GetLayer<ILayer>(LayerType.Footprint)!;
-
-            var footprintSelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, footprintLayer);
-
-            footprintSelectDecorator.Select += (s, e) =>
-            {
-                var decorator = (ISelectDecorator)s!;
-
-                var feature = decorator.SelectedFeature!;
-
-                if (feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
-                    var vm = _footprintTab.GetFootprintViewModel(name);
-
-                    if (vm != null)
-                    {
-                        ClickInfoPanel.Show(new FootprintClickInfoPanel(vm));
-                    }
-
-                    if (_footprintTab.IsActive == true)
-                    {
-                        _footprintTab.SelectFootprintInfo(name);
-                    }
-                }
-            };
-
-            footprintSelectDecorator.Unselect += (s, e) =>
-            {
-                ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
-            };
-
-            return footprintSelectDecorator;
-        }
-
-        private ISelectDecorator? CreateGroundTargetSelector()
-        {
-            var groundTargetLayer = Map.GetLayer<ILayer>(LayerType.GroundTarget);
-
-            if (groundTargetLayer == null)
-            {
-                return null;
-            }
-
-            var groundTargetSelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, groundTargetLayer);
-
-            groundTargetSelectDecorator.Select += (s, e) =>
-            {
-                var decorator = (ISelectDecorator)s!;
-
-                var feature = decorator.SelectedFeature!;
-
-                if (feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
-
-                    Task.Run(async () =>
-                    {
-                        var viewModels = await _groundTargetTab.GetGroundTargetViewModelsAsync(name);
-
-                        var vm = viewModels.FirstOrDefault();
-
-                        if (vm != null)
-                        {
-                            ClickInfoPanel.Show(new GroundTargetClickInfoPanel(vm));
-                        }
-                    });
-                }
-            };
-
-            groundTargetSelectDecorator.Unselect += (s, e) =>
-            {
-                ClickInfoPanel.CloseAll(typeof(GroundTargetClickInfoPanel));
-            };
-
-            return groundTargetSelectDecorator;
-        }
-
-        private ISelectDecorator? CreateUserGeometrySelector()
-        {
-            var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
-
-            if (userGeometryLayer == null)
-            {
-                return null;
-            }
-
-            var userGeometrySelectDecorator = new InteractiveFactory().CreateSelectDecorator(Map, userGeometryLayer);
-
-            userGeometrySelectDecorator.Select += (s, e) =>
-            {
-                var decorator = (ISelectDecorator)s!;
-
-                var feature = decorator.SelectedFeature!;
-
-                if (feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
-
-                    Task.Run(async () =>
-                    {
-                        var viewModels = await _userGeometryTab.GetUserGeometryViewModelsAsync(name);
-
-                        var vm = viewModels.FirstOrDefault();
-
-                        if (vm != null)
-                        {
-                            ClickInfoPanel.Show(new UserGeometryClickInfoPanel(vm));
-                        }
-                    });
-                }
-            };
-
-            userGeometrySelectDecorator.Unselect += (_s, e) =>
-            {
-                ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
-            };
-
-            return userGeometrySelectDecorator;
+            State = States.Drawing;
         }
 
         private void SelectCommand()
         {
-            ActualController = new DefaultController();
+            var footprintLayer = Map.GetLayer<ILayer>(LayerType.Footprint);
+            var groundTargetLayer = Map.GetLayer<ILayer>(LayerType.GroundTarget);
+            var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
 
-            _footprintSelectDecorator ??= CreateFootprintSelector();
+            if (footprintLayer == null || groundTargetLayer == null || userGeometryLayer == null)
+            {
+                return;
+            }
 
-            _groundTargetSelectDecorator ??= CreateGroundTargetSelector();
+            _selector?.Cancel();
 
-            _userGeometrySelectDecorator ??= CreateUserGeometrySelector();
+            _selector = new InteractiveBuilder()
+                .SelectSelector<Selector>()
+                .AttachTo(Map)
+                .AvailableFor(new[] { footprintLayer, groundTargetLayer, userGeometryLayer })
+                .Build();
+
+            _selector.Select.Subscribe(async s =>
+            {
+                var feature = s.SelectedFeature;
+                var layer = s.SelectedLayer;
+
+                if (string.Equals(layer?.Name, footprintLayer.Name) == true)
+                {
+                    if (feature != null && feature.Fields.Contains("Name"))
+                    {
+                        var name = (string)feature["Name"]!;
+                        var viewModels = await _footprintTab.GetFootprintViewModelsAsync(name);
+
+                        var vm = viewModels.FirstOrDefault();
+
+                        if (vm != null)
+                        {
+                            ClickInfoPanel.Show(new FootprintClickInfoPanel(vm));
+                        }
+
+                        if (_footprintTab.IsActive == true)
+                        {
+                            _footprintTab.SelectFootprintInfo(name);
+                        }
+                    }
+                }
+                else if (string.Equals(layer?.Name, groundTargetLayer.Name) == true)
+                {
+                    if (feature != null && feature.Fields.Contains("Name"))
+                    {
+                        var name = (string)feature["Name"]!;
+
+                        Task.Run(async () =>
+                        {
+                            var viewModels = await _groundTargetTab.GetGroundTargetViewModelsAsync(name);
+
+                            var vm = viewModels.FirstOrDefault();
+
+                            if (vm != null)
+                            {
+                                ClickInfoPanel.Show(new GroundTargetClickInfoPanel(vm));
+                            }
+                        });
+                    }
+                }
+                else if (string.Equals(layer?.Name, userGeometryLayer.Name) == true)
+                {
+                    if (feature != null && feature.Fields.Contains("Name"))
+                    {
+                        var name = (string)feature["Name"]!;
+
+                        Task.Run(async () =>
+                        {
+                            var viewModels = await _userGeometryTab.GetUserGeometryViewModelsAsync(name);
+
+                            var vm = viewModels.FirstOrDefault();
+
+                            if (vm != null)
+                            {
+                                ClickInfoPanel.Show(new UserGeometryClickInfoPanel(vm));
+                            }
+                        });
+                    }
+                }
+            });
+
+            _selector.Unselect.Subscribe(s =>
+            {
+                if (string.Equals(s.SelectedLayer?.Name, footprintLayer.Name) == true)
+                {
+                    ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
+                }
+                else if (string.Equals(s.SelectedLayer?.Name, groundTargetLayer.Name) == true)
+                {
+                    ClickInfoPanel.CloseAll(typeof(GroundTargetClickInfoPanel));
+                }
+                else if (string.Equals(s.SelectedLayer?.Name, userGeometryLayer.Name) == true)
+                {
+                    ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
+                }
+            });
+
+            Interactive = _selector;
+
+            State = States.Selecting;
         }
 
         private void ScaleCommand()
@@ -498,23 +379,33 @@ namespace FootprintViewer.ViewModels
                 return;
             }
 
-            IFeature? selectFeature = null;
+            _selector?.Cancel();
 
-            _selectScaleDecorator = new InteractiveFactory().CreateSelectScaleDecorator(Map, userLayer);
+            _selector = new InteractiveBuilder()
+                .SelectDecorator<ScaleDecorator>()
+                .AttachTo(Map)
+                .WithSelector<Selector>()
+                .AvailableFor(userLayer)
+                .Build();
 
-            _selectScaleDecorator.Select += (s, e) =>
+            ((IDecoratorSelector)_selector).DecoratorSelecting.Subscribe(s =>
             {
-                selectFeature = (IFeature?)((ISelectScaleDecorator)s!).SelectedFeature;
+                Interactive = s;
+                State = States.Editing;
+            });
 
-                Behavior = new InteractiveBehavior(((ISelectScaleDecorator)s!).Scale!);
-            };
-
-            _selectScaleDecorator.Unselect += (s, e) =>
+            _selector.Unselect.Subscribe(s =>
             {
-                EditFeature(selectFeature!);
-            };
+                Interactive = s;
 
-            ActualController = new EditController();
+                State = States.Selecting;
+
+                EditFeature(s.SelectedFeature);
+            });
+
+            Interactive = _selector;
+
+            State = States.Selecting;
         }
 
         private void TranslateCommand()
@@ -526,26 +417,36 @@ namespace FootprintViewer.ViewModels
                 return;
             }
 
-            IFeature? selectFeature = null;
+            _selector?.Cancel();
 
-            _selectTranslateDecorator = new InteractiveFactory().CreateSelectTranslateDecorator(Map, userLayer);
+            _selector = new InteractiveBuilder()
+                .SelectDecorator<TranslateDecorator>()
+                .AttachTo(Map)
+                .WithSelector<Selector>()
+                .AvailableFor(userLayer)
+                .Build();
 
-            _selectTranslateDecorator.Select += (s, e) =>
+            ((IDecoratorSelector)_selector).DecoratorSelecting.Subscribe(s =>
             {
-                selectFeature = (IFeature?)((ISelectTranslateDecorator)s!).SelectedFeature;
+                Interactive = s;
+                State = States.Editing;
+            });
 
-                Behavior = new InteractiveBehavior(((ISelectTranslateDecorator)s!).Translate!);
-            };
-
-            _selectTranslateDecorator.Unselect += (s, e) =>
+            _selector.Unselect.Subscribe(s =>
             {
-                EditFeature(selectFeature!);
-            };
+                Interactive = s;
 
-            ActualController = new EditController();
+                State = States.Selecting;
+
+                EditFeature(s.SelectedFeature);
+            });
+
+            Interactive = _selector;
+
+            State = States.Selecting;
         }
 
-        private void EditFeature(IFeature feature)
+        private void EditFeature(IFeature? feature)
         {
             var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
@@ -607,23 +508,30 @@ namespace FootprintViewer.ViewModels
                 return;
             }
 
-            IFeature? selectFeature = null;
+            _selector?.Cancel();
 
-            _selectRotateDecorator = new InteractiveFactory().CreateSelectRotateDecorator(Map, userLayer);
+            _selector = new InteractiveBuilder()
+                .SelectDecorator<RotateDecorator>()
+                .AttachTo(Map)
+                .WithSelector<Selector>()
+                .AvailableFor(userLayer)
+                .Build();
 
-            _selectRotateDecorator.Select += (s, e) =>
+            ((IDecoratorSelector)_selector).DecoratorSelecting.Subscribe(s =>
             {
-                selectFeature = (IFeature?)((ISelectRotateDecorator)s!).SelectedFeature;
+                Interactive = s;
+                State = States.Editing;
+            });
 
-                Behavior = new InteractiveBehavior(((ISelectRotateDecorator)s!).Rotate!);
-            };
-
-            _selectRotateDecorator.Unselect += (s, e) =>
+            _selector.Unselect.Subscribe(s =>
             {
-                EditFeature(selectFeature!);
-            };
+                Interactive = s;
+                State = States.Selecting;
+                EditFeature(s.SelectedFeature);
+            });
 
-            ActualController = new EditController();
+            Interactive = _selector;
+            State = States.Selecting;
         }
 
         private void EditCommand()
@@ -635,26 +543,33 @@ namespace FootprintViewer.ViewModels
                 return;
             }
 
-            IFeature? selectFeature = null;
+            _selector?.Cancel();
 
-            _selectEditDecorator = new InteractiveFactory().CreateSelectEditDecorator(Map, userLayer);
+            _selector = new InteractiveBuilder()
+                .SelectDecorator<EditDecorator>()
+                .AttachTo(Map)
+                .WithSelector<Selector>()
+                .AvailableFor(userLayer)
+                .Build();
 
-            _selectEditDecorator.Select += (s, e) =>
+            ((IDecoratorSelector)_selector).DecoratorSelecting.Subscribe(s =>
             {
-                selectFeature = (IFeature?)((ISelectEditDecorator)s!).SelectedFeature;
+                Interactive = s;
+                State = States.Editing;
+            });
 
-                Behavior = new InteractiveBehavior(((ISelectEditDecorator)s!).Edit!);
-            };
-
-            _selectEditDecorator.Unselect += (s, e) =>
+            _selector.Unselect.Subscribe(s =>
             {
-                EditFeature(selectFeature!);
-            };
+                Interactive = s;
+                State = States.Selecting;
+                EditFeature(s.SelectedFeature);
+            });
 
-            ActualController = new EditController();
+            Interactive = _selector;
+            State = States.Selecting;
         }
 
-        private InfoPanelItem CreateAOIPanel(IAreaDesigner designer)
+        private InfoPanelItem CreateAOIPanel(IDesigner designer)
         {
             var center = SphericalMercator.ToLonLat(designer.Feature.Geometry!.Centroid.ToMPoint());
             var area = designer.Area();
@@ -682,7 +597,7 @@ namespace FootprintViewer.ViewModels
             return panel;
         }
 
-        private InfoPanelItem CreateRoutePanel(IRouteDesigner designer)
+        private InfoPanelItem CreateRoutePanel(IDesigner designer)
         {
             var distance = designer.Distance();
 
@@ -707,139 +622,142 @@ namespace FootprintViewer.ViewModels
 
         private void DrawingPointCommand()
         {
-            var designer = new InteractiveFactory().CreatePointDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<PointDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.EndCreating += (s, e) =>
+            designer.EndCreating.Subscribe(s =>
             {
-                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Point);
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Point);
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreatePointTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void DrawingRectangleCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreateRectangleDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<RectangleDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.HoverCreating += (s, e) =>
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+
+            designer.EndCreating.Subscribe(s =>
             {
-                var area = designer.Area();
-
-                Tip?.HoverCreating(FormatHelper.ToArea(area));
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Rectangle);
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreateRectangleTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void DrawingCircleCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreateCircleDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<CircleDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.HoverCreating += (s, e) =>
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+
+            designer.EndCreating.Subscribe(s =>
             {
-                var area = designer.Area();
-
-                Tip?.HoverCreating(FormatHelper.ToArea(area));
-            };
-
-            designer.EndCreating += (s, e) =>
-            {
-                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Circle);
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Circle);
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreateCircleTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void DrawingRouteCommand()
         {
-            var designer = (IRouteDesigner)new InteractiveFactory().CreateRouteDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<RouteDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.HoverCreating += (s, e) =>
-            {
-                var distance = designer.Distance();
+            designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToDistance(s.Distance())));
 
-                Tip?.HoverCreating(FormatHelper.ToDistance(distance));
-            };
-
-            designer.EndCreating += (s, e) =>
+            designer.EndCreating.Subscribe(s =>
             {
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreateRouteTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         private void DrawingPolygonCommand()
         {
-            var designer = (IAreaDesigner)new InteractiveFactory().CreatePolygonDesigner(Map);
+            var designer = new InteractiveBuilder()
+                .SelectDesigner<PolygonDesigner>()
+                .AttachTo(Map)
+                .Build();
 
-            designer.BeginCreating += (s, e) =>
-            {
-                Tip?.BeginCreating();
-            };
+            designer.BeginCreating.Subscribe(s => Tip?.BeginCreating());
 
-            designer.Creating += (s, e) =>
+            designer.Creating.Subscribe(s =>
             {
-                var area = designer.Area();
+                var area = s.Area();
 
                 if (area != 0.0)
                 {
                     Tip?.Creating(FormatHelper.ToArea(area));
                 }
-            };
+            });
 
-            designer.EndCreating += (s, e) =>
+            designer.EndCreating.Subscribe(s =>
             {
-                AddUserGeometry(designer.Feature.Copy(), Data.UserGeometryType.Polygon);
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Polygon);
 
                 Tip = null;
 
                 _customToolBar.Uncheck();
-            };
+            });
 
             Tip = DrawingTips.CreatePolygonTip();
 
-            Behavior = new InteractiveBehavior(designer);
+            Interactive = designer;
 
-            ActualController = new DrawingController();
+            State = States.Drawing;
         }
 
         public Map Map => _map;
+
+        [Reactive]
+        public IInteractive? Interactive { get; set; }
+
+        [Reactive]
+        public string State { get; set; } = States.Default;
 
         public SidePanel SidePanel => _sidePanel;
 
@@ -857,12 +775,6 @@ namespace FootprintViewer.ViewModels
         public IMapNavigator MapNavigator { get; set; }
 
         [Reactive]
-        public IController ActualController { get; set; }
-
-        [Reactive]
         public DrawingTip? Tip { get; set; }
-
-        [Reactive]
-        public IInteractiveBehavior? Behavior { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -129,6 +130,11 @@ namespace FootprintViewer.ViewModels
             IObservableList<FootprintViewModel> readonlyFootprints = _footprints.AsObservableList();
 
             return readonlyFootprints.Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
+        }
+
+        public async Task<List<FootprintViewModel>> GetFootprintViewModelsAsync(string name)
+        {
+            return await _provider.GetValuesAsync(new NameFilter<FootprintViewModel>(new[] { name }), s => new FootprintViewModel(s));
         }
 
         public IFilter<FootprintViewModel> Filter { get; }

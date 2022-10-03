@@ -3,17 +3,17 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using FootprintViewer.ViewModels;
-using InteractiveGeometry.UI;
-using InteractiveGeometry.UI.Avalonia;
 using Mapsui;
 using Mapsui.Extensions;
+using Mapsui.Interactivity.UI;
+using Mapsui.UI.Avalonia;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia
 {
-    public class UserMapControl : InteractiveMapControl
+    public class UserMapControl : MapControl
     {
         private bool _isGrabbing = false;
         private Cursor? _grabHandCursor;
@@ -23,7 +23,7 @@ namespace FootprintViewer.Avalonia
         public UserMapControl() : base()
         {
             TipSourceProperty.Changed.Subscribe(OnTipSourceChanged);
-            MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
+            //MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
             MapNavigatorProperty.Changed.Subscribe(OnMapNavigatorChanged);
 
             var itemsControl = CreateTip();
@@ -144,26 +144,26 @@ namespace FootprintViewer.Avalonia
             }
         }
 
-        public Map MapSource
-        {
-            get { return (Map)GetValue(MapSourceProperty); }
-            set { SetValue(MapSourceProperty, value); }
-        }
+        //public Map MapSource
+        //{
+        //    get { return (Map)GetValue(MapSourceProperty); }
+        //    set { SetValue(MapSourceProperty, value); }
+        //}
 
-        // Using a DependencyProperty as the backing store for MapSource.  This enables animation, styling, binding, etc...
-        public static readonly StyledProperty<Map> MapSourceProperty =
-            AvaloniaProperty.Register<UserMapControl, Map>(nameof(MapSource));
+        //// Using a DependencyProperty as the backing store for MapSource.  This enables animation, styling, binding, etc...
+        //public static readonly StyledProperty<Map> MapSourceProperty =
+        //    AvaloniaProperty.Register<UserMapControl, Map>(nameof(MapSource));
 
-        private static void OnMapSourceChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.Sender is UserMapControl mapControl)
-            {
-                if (e.NewValue != null && e.NewValue is Map map)
-                {
-                    mapControl.Map = map;
-                }
-            }
-        }
+        //private static void OnMapSourceChanged(AvaloniaPropertyChangedEventArgs e)
+        //{
+        //    if (e.Sender is UserMapControl mapControl)
+        //    {
+        //        if (e.NewValue != null && e.NewValue is Map map)
+        //        {
+        //            mapControl.Map = map;
+        //        }
+        //    }
+        //}
 
         protected override void OnPointerReleased(PointerReleasedEventArgs e)
         {
@@ -246,10 +246,10 @@ namespace FootprintViewer.Avalonia
 
         public void NavigateToAOI(MRect boundingBox)
         {
-            Navigator.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
+            Navigator?.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
         }
 
-        public override void SetCursor(CursorType cursorType)
+        public void SetCursor(CursorType cursorType)
         {
             if (_currentCursorType == cursorType)
             {

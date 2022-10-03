@@ -1,4 +1,5 @@
-﻿using Mapsui.Nts;
+﻿using Mapsui.Interactivity;
+using Mapsui.Nts;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
@@ -95,13 +96,25 @@ namespace FootprintViewer.Styles
                     MaxVisible = _maxVisibleFootprintStyle,
                 };
 
-                if (gf.Fields.Contains("Interactive.Select"))
+                if (gf.Fields.Contains(InteractiveFields.Select))
                 {
-                    if ((bool)gf["Interactive.Select"]! == true)
+                    if ((bool)gf[InteractiveFields.Select]! == true)
                     {
                         style.Fill = new Brush(Color.Opacity(Color.Green, 0.55f));
                         style.Outline = new Pen(Color.Black, 4.0);
                         style.Line = new Pen(Color.Black, 4.0);
+
+                        return style;
+                    }
+                }
+
+                if (gf.Fields.Contains(InteractiveFields.Hover))
+                {
+                    if ((bool)gf[InteractiveFields.Hover]! == true)
+                    {
+                        style.Fill = new Brush(Color.Opacity(Color.Yellow, 0.55f));
+                        style.Outline = new Pen(Color.Yellow, 3.0);
+                        style.Line = new Pen(Color.Yellow, 3.0);
 
                         return style;
                     }
@@ -162,7 +175,8 @@ namespace FootprintViewer.Styles
             return new ThemeStyle(f =>
             {
                 var highlight = (bool)f["Highlight"]!;
-                var state = f["State"]!.ToString();
+                // TODO: fix this
+                var isSelected = (bool?)f[InteractiveFields.Select] ?? false;
 
                 if (highlight == true)
                 {
@@ -173,77 +187,35 @@ namespace FootprintViewer.Styles
 
                     if (gf.Geometry is Point)
                     {
-                        switch (state)
+                        return new SymbolStyle
                         {
-                            case "Unselected":
-                                return new SymbolStyle
-                                {
-                                    Fill = new Brush(Color.Opacity(Color.Green, 0.4f)),
-                                    Outline = null,
-                                    SymbolType = SymbolType.Ellipse,
-                                    SymbolScale = 0.6,
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            case "Selected":
-                                return new SymbolStyle
-                                {
-                                    Fill = new Brush(Color.Opacity(Color.Green, 0.4f)),
-                                    Outline = null,
-                                    SymbolType = SymbolType.Ellipse,
-                                    SymbolScale = 0.8,
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            default:
-                                break;
-                        }
+                            Fill = new Brush(Color.Opacity(Color.Green, 0.4f)),
+                            Outline = null,
+                            SymbolType = SymbolType.Ellipse,
+                            SymbolScale = (isSelected == true) ? 0.8 : 0.6,
+                            MaxVisible = _maxVisibleTargetStyle,
+                        };
                     }
 
                     if (gf.Geometry is LineString || gf.Geometry is MultiLineString)
                     {
-                        switch (state)
+                        return new VectorStyle
                         {
-                            case "Unselected":
-                                return new VectorStyle
-                                {
-                                    Fill = null,
-                                    Line = new Pen(Color.Opacity(Color.Green, 0.3f), 8),
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            case "Selected":
-                                return new VectorStyle
-                                {
-                                    Fill = null,
-                                    Line = new Pen(Color.Opacity(Color.Green, 0.3f), 12),
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            default:
-                                break;
-                        }
+                            Fill = null,
+                            Line = new Pen(Color.Opacity(Color.Green, 0.3f), (isSelected == true) ? 12 : 8),
+                            MaxVisible = _maxVisibleTargetStyle,
+                        };
                     }
 
                     if (gf.Geometry is Polygon || gf.Geometry is MultiPolygon)
                     {
-                        switch (state)
+                        return new VectorStyle
                         {
-                            case "Unselected":
-                                return new VectorStyle
-                                {
-                                    Fill = null,
-                                    Outline = new Pen(Color.Opacity(Color.Green, 0.3f), 8),
-                                    Line = null,
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            case "Selected":
-                                return new VectorStyle
-                                {
-                                    Fill = null,
-                                    Outline = new Pen(Color.Opacity(Color.Green, 0.3f), 12),
-                                    Line = null,
-                                    MaxVisible = _maxVisibleTargetStyle,
-                                };
-                            default:
-                                break;
-                        }
+                            Fill = null,
+                            Outline = new Pen(Color.Opacity(Color.Green, 0.3f), (isSelected == true) ? 12 : 8),
+                            Line = null,
+                            MaxVisible = _maxVisibleTargetStyle,
+                        };
                     }
 
                     throw new Exception();
@@ -257,7 +229,8 @@ namespace FootprintViewer.Styles
         {
             return new ThemeStyle(f =>
             {
-                var state = f["State"]!.ToString();
+                // TODO: fix this
+                var isSelected = (bool?)f[InteractiveFields.Select] ?? false;
 
                 if (f is not GeometryFeature gf)
                 {
@@ -274,6 +247,7 @@ namespace FootprintViewer.Styles
                 {
                     foreach (var item in gf.Fields)
                     {
+                        // TODO: what's it?
                         if (item.Equals("Interactive.Select") == true)
                         {
                             var isSelect = (bool)gf["Interactive.Select"]!;
@@ -303,65 +277,27 @@ namespace FootprintViewer.Styles
 
                 if (gf.Geometry is Point)
                 {
-                    switch (state)
+                    return new SymbolStyle
                     {
-                        case "Unselected":
-                            return new SymbolStyle
-                            {
-                                Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
-                                Outline = new Pen(Color.Black, 1.0),
-                                SymbolType = SymbolType.Ellipse,
-                                SymbolScale = 0.4,
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
-                        case "Selected":
-                            return new SymbolStyle
-                            {
-                                Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
-                                Outline = new Pen(Color.Black, 4.0),
-                                SymbolType = SymbolType.Ellipse,
-                                SymbolScale = 0.6,
-                                MaxVisible = _maxVisibleTargetStyle,
-                            };
-                        default:
-                            break;
-                    }
+                        Fill = new Brush(Color.Opacity(Color.Black, 0.25f)),
+                        Outline = new Pen(Color.Black, (isSelected == true) ? 4.0 : 1.0),
+                        SymbolType = SymbolType.Ellipse,
+                        SymbolScale = (isSelected == true) ? 0.6 : 0.4,
+                        MaxVisible = _maxVisibleTargetStyle,
+                    };
                 }
 
                 if (gf.Geometry is LineString || gf.Geometry is MultiLineString)
                 {
-                    switch (state)
-                    {
-                        case "Unselected":
-                            style.Fill = null;
-                            style.Line = new Pen(Color.Black, 2);
-                            break;
-                        case "Selected":
-                            style.Fill = null;
-                            style.Line = new Pen(Color.Black, 4);
-                            break;
-                        default:
-                            break;
-                    }
+                    style.Fill = null;
+                    style.Line = new Pen(Color.Black, (isSelected == true) ? 4 : 2);
                 }
 
                 if (gf.Geometry is Polygon || gf.Geometry is MultiPolygon)
                 {
-                    switch (state)
-                    {
-                        case "Unselected":
-                            style.Fill = new Brush(Color.Opacity(Color.Black, 0.25f));
-                            style.Outline = new Pen(Color.Black, 1);
-                            style.Line = null;
-                            break;
-                        case "Selected":
-                            style.Fill = new Brush(Color.Opacity(Color.Black, 0.25f));
-                            style.Outline = new Pen(Color.Black, 4);
-                            style.Line = null;
-                            break;
-                        default:
-                            break;
-                    }
+                    style.Fill = new Brush(Color.Opacity(Color.Black, 0.25f));
+                    style.Outline = new Pen(Color.Black, (isSelected == true) ? 4 : 1);
+                    style.Line = null;
                 }
 
                 return style;
@@ -525,9 +461,9 @@ namespace FootprintViewer.Styles
                 {
                     foreach (var item in gf.Fields)
                     {
-                        if (item.Equals("Interactive.Select") == true)
+                        if (item.Equals(InteractiveFields.Select) == true)
                         {
-                            var isSelect = (bool)gf["Interactive.Select"]!;
+                            var isSelect = (bool)gf[InteractiveFields.Select]!;
 
                             if (isSelect == true)
                             {
@@ -622,7 +558,7 @@ namespace FootprintViewer.Styles
                     {
                         if (item.Equals("Name") == true)
                         {
-                            if ((string)gf["Name"]! == "ExtraPolygonHoverLine")
+                            if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraPolygonHoverLine) == true)
                             {
                                 return new VectorStyle
                                 {
@@ -630,7 +566,7 @@ namespace FootprintViewer.Styles
                                     Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
                                 };
                             }
-                            else if ((string)gf["Name"]! == "ExtraPolygonArea")
+                            else if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraPolygonArea) == true)
                             {
                                 return new VectorStyle
                                 {
@@ -639,7 +575,7 @@ namespace FootprintViewer.Styles
                                     Outline = null,
                                 };
                             }
-                            else if ((string)gf["Name"]! == "ExtraRouteHoverLine")
+                            else if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraRouteHoverLine) == true)
                             {
                                 return new VectorStyle
                                 {

@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -34,6 +35,12 @@ namespace FootprintViewer.ViewModels
             this.WhenAnyValue(s => s.IsCheck).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(combined);
 
             this.WhenAnyValue(s => s.IsCheck).Where(s => s == false).Select(_ => Unit.Default).InvokeCommand(Deactivate);
+        }
+
+        public void Subscribe(Action activate, Action deactivate)
+        {
+            Activate.Subscribe(_ => activate.Invoke());
+            Deactivate.Subscribe(_ => deactivate.Invoke());
         }
 
         public string GetKey() => (string?)Tag ?? string.Empty;

@@ -1,4 +1,5 @@
 ﻿using Mapsui;
+using Mapsui.Interactivity;
 using Mapsui.Layers;
 using System;
 using System.Collections.Generic;
@@ -32,10 +33,10 @@ namespace FootprintViewer.Layers
             {
                 if (_lastSelected != null)
                 {
-                    _lastSelected["State"] = "Unselected";
+                    _lastSelected[InteractiveFields.Select] = false;
                 }
 
-                feature["State"] = "Selected";
+                feature[InteractiveFields.Select] = true;
 
                 _lastSelected = feature;
 

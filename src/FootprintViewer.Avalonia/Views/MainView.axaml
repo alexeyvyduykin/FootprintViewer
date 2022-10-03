@@ -8,7 +8,8 @@
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"            
-             xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
+             xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
+			 xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -50,15 +51,18 @@
 
         <Panel>
           <local:UserMapControl x:Name="UserMapControl"
-                                MapSource="{Binding Map}"
-                                Controller="{Binding ActualController}"
-                                Behavior="{Binding Behavior}"
                                 TipSource="{Binding Tip}"
                                 ScaleMapBar="{Binding ScaleMapBar}"
                                 MapNavigator="{Binding MapNavigator}"
                                 HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"/>
-
+                                VerticalAlignment="Stretch">
+			<inter:Interaction.Behavior>
+				<inter:InteractivityBehavior Map="{Binding Map}"
+											 Interactive="{Binding Interactive}"
+											 State="{Binding State}"/>
+			</inter:Interaction.Behavior>			
+		  </local:UserMapControl>
+			
           <toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
                                      VerticalAlignment="Center"
                                      HorizontalAlignment="Left"

@@ -1,6 +1,7 @@
 ﻿using BruTile.MbTiles;
 using FootprintViewer.Data;
 using Mapsui;
+using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
@@ -105,6 +106,11 @@ namespace FootprintViewer
             //          var limiter = new BoundingBox(area.Left - delta, area.Bottom, area.Right + delta, area.Top);
 
             return new TileLayer(mbTilesTileSource);
+        }
+
+        public static IFeature? FindFeature(this WritableLayer layer, string name)
+        {
+            return layer?.GetFeatures().Where(f => string.Equals(name, (string?)f["Name"])).FirstOrDefault();
         }
     }
 
