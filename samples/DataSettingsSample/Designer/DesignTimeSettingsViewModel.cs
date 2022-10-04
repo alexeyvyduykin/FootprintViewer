@@ -1,12 +1,11 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+﻿using DataSettingsSample.ViewModels;
 using System.Collections.Generic;
 
-namespace DataSettingsSample.ViewModels
+namespace DataSettingsSample.Designer
 {
-    public class SettingsViewModel : ReactiveObject
+    public class DesignTimeSettingsViewModel : SettingsViewModel
     {
-        public SettingsViewModel()
+        public DesignTimeSettingsViewModel()
         {
             Providers = new List<ProviderViewModel>()
             {
@@ -92,8 +91,5 @@ namespace DataSettingsSample.ViewModels
                 },
             };
         }
-
-        [Reactive]
-        public IList<ProviderViewModel> Providers { get; set; }
     }
 }

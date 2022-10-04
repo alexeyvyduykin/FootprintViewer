@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DataSettingsSample.ViewModels"
+			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
 			 x:DataType="vm:MainWindowViewModel"
@@ -10,7 +11,7 @@
              x:Class="DataSettingsSample.Views.MainView">
 
 	<Design.DataContext>
-		<vm:MainWindowViewModel/>
+		<vmd:DesignTimeMainViewModel/>
 	</Design.DataContext>
 
 	<dialogHost:DialogHost Identifier="PrimaryDialogHost">

@@ -1,0 +1,106 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DataSettingsSample.ViewModels"
+			 xmlns:vmd="using:DataSettingsSample.Designer"
+             xmlns:views="using:DataSettingsSample.Views"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             x:DataType="vm:ProviderViewModel"
+			 x:Name="userControl"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DataSettingsSample.Views.ProviderView">
+	
+	<Design.DataContext>
+		<vmd:DesignTimeProviderViewModel/>
+	</Design.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Button.rmvBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="Button.addBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+		</Style>
+
+		<Style Selector="TextBlock.tbItem">
+			<Setter Property="Margin" Value="8,0,0,0"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="0,2,0,0"></Setter>
+		</Style>
+
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Margin" Value="8,0,0,0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+	</UserControl.Styles>
+
+	<UserControl.Resources>
+
+		<DataTemplate x:Key="t1" DataType="vm:SourceViewModel">
+			<StackPanel Orientation="Horizontal">
+				<Button Classes="rmvBtn"
+						Command="{Binding #userControl.DataContext.Remove}"
+						CommandParameter="{Binding}">
+					<Viewbox Margin="2">
+						<materialIcons:MaterialIcon Kind="Minus"/>
+					</Viewbox>
+				</Button>
+				<TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+			</StackPanel>
+		</DataTemplate>
+
+	</UserControl.Resources>
+
+	<Grid RowDefinitions="Auto,*">
+		<StackPanel>
+			<ItemsControl x:Name="ItemsControl"
+						  Items="{Binding Sources}"
+						  ItemTemplate="{StaticResource t1}">
+			</ItemsControl>
+
+			<Button x:Name="AddSourceButton"
+					Margin="0,2,0,0"
+					Classes="addBtn">
+				<Button.Flyout>
+					<Flyout Placement="RightEdgeAlignedTop"
+							ShowMode="TransientWithDismissOnPointerMoveAway">
+						<ListBox x:Name="ListBoxSources" 
+								 Items="{Binding SourceBuilderItems}"
+								 SelectedItem="{Binding SourceBuilderItemSelected}">
+							<ListBox.DataTemplates>
+								<DataTemplate x:DataType="vm:SourceBuilderItemViewModel">
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ListBox.DataTemplates>
+						</ListBox>
+					</Flyout>
+				</Button.Flyout>
+				<Viewbox Margin="2">
+					<materialIcons:MaterialIcon Kind="Plus"/>
+				</Viewbox>
+			</Button>
+		</StackPanel>
+
+		<Border Grid.Row="1"
+			    Margin="8"				
+				IsVisible="{Binding SourceBuilderVisible}">
+			<views:SourceBuilderView DataContext="{Binding SourceBuilder}"/>
+		</Border>
+
+	</Grid>
+	
+</UserControl>

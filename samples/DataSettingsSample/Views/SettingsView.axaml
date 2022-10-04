@@ -3,20 +3,58 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DataSettingsSample.ViewModels"
+			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             x:DataType="vm:SettingsViewModel"
+			 Background="Black"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DataSettingsSample.Views.SettingsView">
 
 	<Design.DataContext>
-		<vm:SettingsViewModel/>
+		<vmd:DesignTimeSettingsViewModel/>
 	</Design.DataContext>
-
+	
 	<Grid ColumnDefinitions="800"
-		  RowDefinitions="600">
+		  RowDefinitions="400,Auto">
 
-		<TextBlock Text="Welcome to Avalonia!"/>
+		<TabControl TabStripPlacement="Left">
+			
+			<TabItem Header="Data providers" 
+					 FontSize="14"
+					 Foreground="White">
+				<TabControl TabStripPlacement="Left"						
+							Items="{Binding Providers}">
+					<TabControl.ItemTemplate>
+						<DataTemplate x:DataType="vm:ProviderViewModel">
+							<TextBlock Text="{Binding Header}" FontSize="14"/>
+						</DataTemplate>
+					</TabControl.ItemTemplate>
 
-		<Button Content="OK"
+					<TabControl.ContentTemplate>
+						<DataTemplate x:DataType="vm:ProviderViewModel">						
+							<views:ProviderView DataContext="{Binding}"/>						
+						</DataTemplate>
+					</TabControl.ContentTemplate>				
+				</TabControl>
+			</TabItem>
+			
+			<TabItem Header="Languages"	
+					 FontSize="14">
+				<StackPanel Margin="8" Spacing="10">
+					<RadioButton IsChecked="True" Content="English"/>
+					<RadioButton Content="Russian"/>
+				</StackPanel>
+			</TabItem>
+			
+			<TabItem Header="Others"	
+					 FontSize="14"/>
+						
+		</TabControl>
+		
+		<Button Grid.Row="1" 
+				Content="OK"
 				Margin="0,0,8,8"
 				Width="80"
 				VerticalAlignment="Bottom"
@@ -26,3 +64,7 @@
 	</Grid>
 
 </UserControl>
+
+
+
+
