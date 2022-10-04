@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DataSettingsSample.ViewModels
+﻿namespace DataSettingsSample.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting => "Welcome to Avalonia!";
+        public MainWindowViewModel()
+        {
+            SettingsViewModel = new SettingsViewModel();
+        }
+
+        public SettingsViewModel SettingsViewModel { get; set; }
     }
 }
