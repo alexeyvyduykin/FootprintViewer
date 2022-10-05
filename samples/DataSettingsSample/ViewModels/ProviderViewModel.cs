@@ -11,12 +11,12 @@ namespace DataSettingsSample.ViewModels
 {
     public class ProviderViewModel : ReactiveObject
     {
-        private static readonly IDictionary<string, Func<ISourceBuilderViewModel>> _cache = new Dictionary<string, Func<ISourceBuilderViewModel>>();
+        private static readonly IDictionary<string, Func<ProviderViewModel, ISourceBuilderViewModel>> _cache = new Dictionary<string, Func<ProviderViewModel, ISourceBuilderViewModel>>();
 
         static ProviderViewModel()
         {
-            _cache.Add(".database", () => new DatabaseBuilderViewModel());
-            _cache.Add(".json", () => new JsonBuilderViewModel());
+            _cache.Add(".database", s => new DatabaseBuilderViewModel());
+            _cache.Add(".json", s => new JsonBuilderViewModel(s.Header ?? string.Empty));
         }
 
         public ProviderViewModel()
@@ -54,7 +54,7 @@ namespace DataSettingsSample.ViewModels
 
         private ISourceBuilderViewModel CreateSourceBuilder(string key)
         {
-            var sourceBuilder = _cache[key].Invoke();
+            var sourceBuilder = _cache[key].Invoke(this);
 
             sourceBuilder.Add.Subscribe(source =>
             {

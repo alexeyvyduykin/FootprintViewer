@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace DataSettingsSample.Designer
 {
     public class DesignTimeJsonBuilderViewModel : JsonBuilderViewModel
     {
-        public DesignTimeJsonBuilderViewModel()
+        public DesignTimeJsonBuilderViewModel() : base("Footprints")
         {
             var list1 = new List<FileViewModel>();
             var list2 = new List<FileViewModel>();
@@ -22,22 +23,30 @@ namespace DataSettingsSample.Designer
             {
                 if (Equals(Path.GetExtension(uri.LocalPath), ".json") == true)
                 {
+                    var filename = Path.GetFileName(uri.LocalPath);
+                    var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+
                     if (new Random().Next(0, 2) == 1)
                     {
                         list1.Add(new FileViewModel()
                         {
-                            Name = Path.GetFileName(uri.LocalPath),
+                            Name = filename,
+                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
                             IsSelected = new Random().Next(0, 2) == 1,
                         });
                     }
                     else
                     {
-                        list2.Add(new FileViewModel()
+                        var file = new FileViewModel()
                         {
-                            Name = Path.GetFileName(uri.LocalPath),
+                            Name = filename,
+                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
                             IsSelected = new Random().Next(0, 2) == 1,
-                            IsVerified = new Random().Next(0, 2) == 1,
-                        });
+                        };
+
+                        file.Verified("Footprints");
+
+                        list2.Add(file);
                     }
                 }
             }

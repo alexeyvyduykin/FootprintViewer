@@ -65,13 +65,15 @@
 			<StackPanel VerticalAlignment="Center"
 						Grid.Column="1">
 				<Button Padding="0"
-						Height="32">
+						Height="32"
+						Command="{Binding ToTarget}">
 					<Viewbox Margin="4">
 						<materialIcons:MaterialIcon Kind="ArrowRightBold"/>
 					</Viewbox>
 				</Button>
 				<Button Padding="0"
-						Height="32">
+						Height="32"
+						Command="{Binding FromTarget}">
 					<Viewbox Margin="4">
 						<materialIcons:MaterialIcon Kind="ArrowLeftBold"/>
 					</Viewbox>
@@ -98,9 +100,19 @@
 										</Viewbox>
 									</Button>
 
-									<Viewbox Height="20" Margin="8,0,0,0">
-										<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}" Classes="verified"/>
-									</Viewbox>
+									<Grid>
+										<ProgressBar IsVisible="{Binding IsLoading}"
+													 VerticalAlignment="Center"
+													 HorizontalAlignment="Center"
+													 IsIndeterminate="True"/>
+
+										<Viewbox Height="20"
+												 Margin="8,0,0,0"
+												 IsVisible="{Binding !IsLoading}">
+											<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}" Classes="verified"/>
+										</Viewbox>
+
+									</Grid>
 
 								</DockPanel>
 							</DataTemplate>
