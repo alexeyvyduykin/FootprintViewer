@@ -1,17 +1,18 @@
-﻿using ReactiveUI;
+﻿using DataSettingsSample.ViewModels.Interfaces;
+using ReactiveUI;
 using System.Reactive;
 
 namespace DataSettingsSample.ViewModels
 {
-    public class SourceBuilderViewModel : ReactiveObject
+    public abstract class BaseSourceBuilderViewModel : ReactiveObject, ISourceBuilderViewModel
     {
-        public SourceBuilderViewModel()
+        public BaseSourceBuilderViewModel()
         {
             Add = ReactiveCommand.Create(AddImpl, outputScheduler: RxApp.MainThreadScheduler);
             Cancel = ReactiveCommand.Create(CancelImpl, outputScheduler: RxApp.MainThreadScheduler);
         }
 
-        protected SourceViewModel AddImpl()
+        protected ISourceViewModel AddImpl()
         {
             return new SourceViewModel();
         }
@@ -21,8 +22,8 @@ namespace DataSettingsSample.ViewModels
 
         }
 
-        public ReactiveCommand<Unit, SourceViewModel> Add { get; set; }
+        public ReactiveCommand<Unit, ISourceViewModel> Add { get; }
 
-        public ReactiveCommand<Unit, Unit> Cancel { get; set; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
     }
 }

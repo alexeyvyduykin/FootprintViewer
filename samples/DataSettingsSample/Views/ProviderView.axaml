@@ -5,13 +5,14 @@
              xmlns:vm="using:DataSettingsSample.ViewModels"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
+             xmlns:sourceBuilders="using:DataSettingsSample.Views.SourceBuilders"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              x:DataType="vm:ProviderViewModel"
 			 x:Name="userControl"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
              x:Class="DataSettingsSample.Views.ProviderView">
-	
+
 	<Design.DataContext>
 		<vmd:DesignTimeProviderViewModel/>
 	</Design.DataContext>
@@ -78,7 +79,7 @@
 				<Button.Flyout>
 					<Flyout Placement="RightEdgeAlignedTop"
 							ShowMode="TransientWithDismissOnPointerMoveAway">
-						<ListBox x:Name="ListBoxSources" 
+						<ListBox x:Name="ListBoxSources"
 								 Items="{Binding SourceBuilderItems}"
 								 SelectedItem="{Binding SourceBuilderItemSelected}">
 							<ListBox.DataTemplates>
@@ -96,11 +97,21 @@
 		</StackPanel>
 
 		<Border Grid.Row="1"
-			    Margin="8"				
+			    Margin="8"
 				IsVisible="{Binding SourceBuilderVisible}">
-			<views:SourceBuilderView DataContext="{Binding SourceBuilder}"/>
+			<ContentControl Content="{Binding SourceBuilder}">
+				<ContentControl.DataTemplates>
+					<DataTemplate DataType="vm:DatabaseBuilderViewModel">
+						<sourceBuilders:DatabaseBuilderView DataContext="{Binding}"/>
+					</DataTemplate>
+					<DataTemplate DataType="vm:JsonBuilderViewModel">
+						<sourceBuilders:JsonBuilderView DataContext="{Binding}"/>
+					</DataTemplate>
+				</ContentControl.DataTemplates>
+			</ContentControl>
+
 		</Border>
 
 	</Grid>
-	
+
 </UserControl>

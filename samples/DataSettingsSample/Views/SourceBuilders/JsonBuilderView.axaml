@@ -7,29 +7,29 @@
              xmlns:views="using:DataSettingsSample.Views"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             x:DataType="vm:SourceBuilderViewModel"
-			 mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="250"
-             x:Class="DataSettingsSample.Views.SourceBuilderView">
-	
+             x:DataType="vm:JsonBuilderViewModel"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+             x:Class="DataSettingsSample.Views.SourceBuilders.JsonBuilderView">
+
 	<Design.DataContext>
-		<vmd:DesignTimeSourceBuilderViewModel/>
+		<vmd:DesignTimeJsonBuilderViewModel/>
 	</Design.DataContext>
 
 	<Grid RowDefinitions="*,Auto">
-		<TextBlock>gfdfgfdgdfgdfgdf</TextBlock>
-		<DockPanel Grid.Row="1" 
-				   LastChildFill="True" 
+		<TextBlock>Json</TextBlock>
+		<DockPanel Grid.Row="1"
+				   LastChildFill="True"
 				   HorizontalAlignment="Right"
 				   Margin="8">
-			<Button Content="Add" 
+			<Button Content="Add"
 					Command="{Binding Add}"
 					HorizontalAlignment="Right"/>
-			<Button Content="Cancel" 
+			<Button Content="Cancel"
 					Command="{Binding Cancel}"
-					Margin="4,0,0,0" 
+					Margin="4,0,0,0"
 					HorizontalAlignment="Right"/>
 		</DockPanel>
-		
+
 	</Grid>
-	
+
 </UserControl>

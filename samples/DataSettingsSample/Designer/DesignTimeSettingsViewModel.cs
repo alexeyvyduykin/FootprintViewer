@@ -1,4 +1,5 @@
 ﻿using DataSettingsSample.ViewModels;
+using DataSettingsSample.ViewModels.Interfaces;
 using System.Collections.Generic;
 
 namespace DataSettingsSample.Designer
@@ -12,7 +13,7 @@ namespace DataSettingsSample.Designer
                 new ProviderViewModel()
                 {
                     Header = "Footprints",
-                    Sources = new List<SourceViewModel>()
+                    Sources = new List<ISourceViewModel>()
                     {
                         new SourceViewModel() { Name = "Source1" },
                         new SourceViewModel() { Name = "Source2" },
@@ -22,13 +23,12 @@ namespace DataSettingsSample.Designer
                     {
                         new SourceBuilderItemViewModel(){ Name = ".database" },
                         new SourceBuilderItemViewModel(){ Name = ".json" },
-                        new SourceBuilderItemViewModel(){ Name = ".random" },
                     }
                 },
                 new ProviderViewModel()
                 {
                     Header = "GroundTargets",
-                    Sources = new List<SourceViewModel>()
+                    Sources = new List<ISourceViewModel>()
                     {
                         new SourceViewModel() { Name = "Source4" },
                         new SourceViewModel() { Name = "Source5" },
@@ -38,13 +38,12 @@ namespace DataSettingsSample.Designer
                     {
                         new SourceBuilderItemViewModel(){ Name = ".database" },
                         new SourceBuilderItemViewModel(){ Name = ".json" },
-                        new SourceBuilderItemViewModel(){ Name = ".random" },
                     }
                 },
                 new ProviderViewModel()
                 {
                     Header = "Satellites",
-                    Sources = new List<SourceViewModel>()
+                    Sources = new List<ISourceViewModel>()
                     {
                         new SourceViewModel() { Name = "Source7" },
                         new SourceViewModel() { Name = "Source8" },
@@ -54,13 +53,12 @@ namespace DataSettingsSample.Designer
                     {
                         new SourceBuilderItemViewModel(){ Name = ".database" },
                         new SourceBuilderItemViewModel(){ Name = ".json" },
-                        new SourceBuilderItemViewModel(){ Name = ".random" },
                     }
                 },
                 new ProviderViewModel()
                 {
                     Header = "GroundStations",
-                    Sources = new List<SourceViewModel>()
+                    Sources = new List<ISourceViewModel>()
                     {
                         new SourceViewModel() { Name = "Source10" },
                         new SourceViewModel() { Name = "Source11" },
@@ -70,13 +68,12 @@ namespace DataSettingsSample.Designer
                     {
                         new SourceBuilderItemViewModel(){ Name = ".database" },
                         new SourceBuilderItemViewModel(){ Name = ".json" },
-                        new SourceBuilderItemViewModel(){ Name = ".random" },
                     }
                 },
                 new ProviderViewModel()
                 {
                     Header = "UserGeometries",
-                    Sources = new List<SourceViewModel>()
+                    Sources = new List<ISourceViewModel>()
                     {
                         new SourceViewModel() { Name = "Source13" },
                         new SourceViewModel() { Name = "Source14" },
@@ -86,7 +83,6 @@ namespace DataSettingsSample.Designer
                     {
                         new SourceBuilderItemViewModel(){ Name = ".database" },
                         new SourceBuilderItemViewModel(){ Name = ".json" },
-                        new SourceBuilderItemViewModel(){ Name = ".random" },
                     }
                 },
             };

@@ -2,11 +2,11 @@ using Avalonia.ReactiveUI;
 using DataSettingsSample.ViewModels;
 using ReactiveUI;
 
-namespace DataSettingsSample.Views
+namespace DataSettingsSample.Views.SourceBuilders
 {
-    public partial class SourceBuilderView : ReactiveUserControl<SourceBuilderViewModel>
+    public partial class DatabaseBuilderView : ReactiveUserControl<DatabaseBuilderViewModel>
     {
-        public SourceBuilderView()
+        public DatabaseBuilderView()
         {
             InitializeComponent();
 

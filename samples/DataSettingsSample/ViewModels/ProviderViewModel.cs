@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DataSettingsSample.ViewModels.Interfaces;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,29 +11,37 @@ namespace DataSettingsSample.ViewModels
 {
     public class ProviderViewModel : ReactiveObject
     {
+        private static readonly IDictionary<string, Func<ISourceBuilderViewModel>> _cache = new Dictionary<string, Func<ISourceBuilderViewModel>>();
+
+        static ProviderViewModel()
+        {
+            _cache.Add(".database", () => new DatabaseBuilderViewModel());
+            _cache.Add(".json", () => new JsonBuilderViewModel());
+        }
+
         public ProviderViewModel()
         {
-            Sources = new List<SourceViewModel>();
+            Sources = new List<ISourceViewModel>();
             SourceBuilderItems = new List<SourceBuilderItemViewModel>();
 
-            Add = ReactiveCommand.Create(AddImpl, outputScheduler: RxApp.MainThreadScheduler);
+            Add = ReactiveCommand.Create<SourceBuilderItemViewModel>(AddImpl, outputScheduler: RxApp.MainThreadScheduler);
 
-            Remove = ReactiveCommand.Create<SourceViewModel>(RemoveImpl, outputScheduler: RxApp.MainThreadScheduler);
+            Remove = ReactiveCommand.Create<ISourceViewModel>(RemoveImpl, outputScheduler: RxApp.MainThreadScheduler);
 
             this.WhenAnyValue(s => s.SourceBuilderItemSelected)
                 .Where(s => s != null && SourceBuilderVisible == false)
-                .Select(s => Unit.Default)
+                .Select(s => s!)
                 .InvokeCommand(Add);
         }
 
-        protected void AddImpl()
+        protected void AddImpl(SourceBuilderItemViewModel item)
         {
-            SourceBuilder = CreateSourceBuilder();
+            SourceBuilder = CreateSourceBuilder(item.Name!);
 
             SourceBuilderVisible = true;
         }
 
-        protected void RemoveImpl(SourceViewModel source)
+        protected void RemoveImpl(ISourceViewModel source)
         {
             var list = Sources.ToList();
 
@@ -40,12 +49,12 @@ namespace DataSettingsSample.ViewModels
 
             list.RemoveAt(index);
 
-            Sources = new List<SourceViewModel>(list);
+            Sources = new List<ISourceViewModel>(list);
         }
 
-        private SourceBuilderViewModel CreateSourceBuilder()
+        private ISourceBuilderViewModel CreateSourceBuilder(string key)
         {
-            var sourceBuilder = new SourceBuilderViewModel();
+            var sourceBuilder = _cache[key].Invoke();
 
             sourceBuilder.Add.Subscribe(source =>
             {
@@ -57,7 +66,7 @@ namespace DataSettingsSample.ViewModels
 
                 list.Add(source);
 
-                Sources = new List<SourceViewModel>(list);
+                Sources = new List<ISourceViewModel>(list);
 
                 SourceBuilderVisible = false;
             });
@@ -70,7 +79,7 @@ namespace DataSettingsSample.ViewModels
             return sourceBuilder;
         }
 
-        public int Min(List<SourceViewModel> list)
+        private int Min(List<ISourceViewModel> list)
         {
             var list1 = list.Where(s => s.Name?.Contains("Source") ?? false).Select(s => s.Name!).ToList();
             var list2 = list1.Select(s => s.Replace("Source", "")).ToList();
@@ -95,12 +104,12 @@ namespace DataSettingsSample.ViewModels
             return min;
         }
 
-        public ReactiveCommand<Unit, Unit> Add { get; set; }
+        public ReactiveCommand<SourceBuilderItemViewModel, Unit> Add { get; set; }
 
-        public ReactiveCommand<SourceViewModel, Unit> Remove { get; set; }
+        public ReactiveCommand<ISourceViewModel, Unit> Remove { get; set; }
 
         [Reactive]
-        public SourceBuilderViewModel? SourceBuilder { get; set; }
+        public ISourceBuilderViewModel? SourceBuilder { get; set; }
 
         [Reactive]
         public SourceBuilderItemViewModel? SourceBuilderItemSelected { get; set; }
@@ -115,6 +124,6 @@ namespace DataSettingsSample.ViewModels
         public string? Header { get; set; }
 
         [Reactive]
-        public IList<SourceViewModel> Sources { get; set; }
+        public IList<ISourceViewModel> Sources { get; set; }
     }
 }

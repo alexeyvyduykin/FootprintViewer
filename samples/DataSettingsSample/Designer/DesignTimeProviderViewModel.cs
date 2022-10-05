@@ -1,4 +1,5 @@
 ﻿using DataSettingsSample.ViewModels;
+using DataSettingsSample.ViewModels.Interfaces;
 using System.Collections.Generic;
 
 namespace DataSettingsSample.Designer
@@ -9,7 +10,7 @@ namespace DataSettingsSample.Designer
         {
             Header = "Footprints";
 
-            Sources = new List<SourceViewModel>()
+            Sources = new List<ISourceViewModel>()
             {
                 new SourceViewModel() { Name = "Source1" },
                 new SourceViewModel() { Name = "Source2" },
@@ -20,7 +21,6 @@ namespace DataSettingsSample.Designer
             {
                 new SourceBuilderItemViewModel(){ Name = ".database" },
                 new SourceBuilderItemViewModel(){ Name = ".json" },
-                new SourceBuilderItemViewModel(){ Name = ".random" },
             };
         }
     }
