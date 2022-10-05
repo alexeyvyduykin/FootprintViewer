@@ -69,11 +69,15 @@ namespace DataSettingsSample.ViewModels
                 Sources = new List<ISourceViewModel>(list);
 
                 SourceBuilderVisible = false;
+
+                SourceBuilderItemSelected = null;
             });
 
             sourceBuilder.Cancel.Subscribe(s =>
             {
                 SourceBuilderVisible = false;
+
+                SourceBuilderItemSelected = null;
             });
 
             return sourceBuilder;

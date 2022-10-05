@@ -8,16 +8,111 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              x:DataType="vm:JsonBuilderViewModel"
-			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+			 mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="350"
              x:Class="DataSettingsSample.Views.SourceBuilders.JsonBuilderView">
 
 	<Design.DataContext>
 		<vmd:DesignTimeJsonBuilderViewModel/>
 	</Design.DataContext>
 
-	<Grid RowDefinitions="*,Auto">
-		<TextBlock>Json</TextBlock>
-		<DockPanel Grid.Row="1"
+	<UserControl.Styles>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Green"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=false]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Red"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid RowDefinitions="Auto,*,Auto">
+
+		<Grid ColumnDefinitions="*,8,32">
+			<TextBox x:Name="txtBox1"
+					 IsReadOnly="True"/>
+			<Button Grid.Column="2"
+					Padding="0"
+					Height="32">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="Search"/>
+				</Viewbox>
+			</Button>
+		</Grid>
+
+
+		<Grid Grid.Row="1"
+			  ColumnDefinitions="1*,Auto,1*"
+			  RowDefinitions="*">
+
+			<Border BorderBrush="Green"
+					VerticalAlignment="Stretch"
+					BorderThickness="1">
+				<ScrollViewer HorizontalScrollBarVisibility="Visible">
+					<ItemsControl Items="{Binding AvailableFiles}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="vm:FileViewModel">
+								<DockPanel LastChildFill="True">
+									<CheckBox IsChecked="{Binding IsSelected}"/>
+									<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+								</DockPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Border>
+
+			<StackPanel VerticalAlignment="Center"
+						Grid.Column="1">
+				<Button Padding="0"
+						Height="32">
+					<Viewbox Margin="4">
+						<materialIcons:MaterialIcon Kind="ArrowRightBold"/>
+					</Viewbox>
+				</Button>
+				<Button Padding="0"
+						Height="32">
+					<Viewbox Margin="4">
+						<materialIcons:MaterialIcon Kind="ArrowLeftBold"/>
+					</Viewbox>
+				</Button>
+			</StackPanel>
+
+			<Border Grid.Column="2"
+					BorderBrush="Green"
+					VerticalAlignment="Stretch"
+					BorderThickness="1">
+				<ScrollViewer HorizontalScrollBarVisibility="Visible">
+					<ItemsControl Items="{Binding TargetFiles}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="vm:FileViewModel">
+								<DockPanel LastChildFill="False">
+									<CheckBox IsChecked="{Binding IsSelected}"/>
+									<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+
+									<Button Height="20"
+											Padding="0"
+											Margin="8,0,0,0">
+										<Viewbox>
+											<materialIcons:MaterialIcon Foreground="Aqua" Kind="InfoCircle"/>
+										</Viewbox>
+									</Button>
+
+									<Viewbox Height="20" Margin="8,0,0,0">
+										<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}" Classes="verified"/>
+									</Viewbox>
+
+								</DockPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Border>
+
+		</Grid>
+
+
+		<DockPanel Grid.Row="2"
 				   LastChildFill="True"
 				   HorizontalAlignment="Right"
 				   Margin="8">

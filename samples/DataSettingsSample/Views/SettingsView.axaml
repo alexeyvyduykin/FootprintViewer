@@ -9,7 +9,7 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              x:DataType="vm:SettingsViewModel"
 			 Background="Black"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              x:Class="DataSettingsSample.Views.SettingsView">
 
 	<Design.DataContext>
@@ -17,7 +17,7 @@
 	</Design.DataContext>
 	
 	<Grid ColumnDefinitions="800"
-		  RowDefinitions="400,Auto">
+		  RowDefinitions="500,Auto">
 
 		<TabControl TabStripPlacement="Left">
 			
