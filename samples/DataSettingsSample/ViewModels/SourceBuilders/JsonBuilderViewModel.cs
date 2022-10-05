@@ -15,13 +15,10 @@ namespace DataSettingsSample.ViewModels
     {
         private readonly string _key = string.Empty;
 
-        public JsonBuilderViewModel(string providerName) : this()
+        public JsonBuilderViewModel(string providerName)
         {
             _key = providerName;
-        }
 
-        private JsonBuilderViewModel()
-        {
             var list1 = new List<FileViewModel>();
             var list2 = new List<FileViewModel>();
 
@@ -39,7 +36,7 @@ namespace DataSettingsSample.ViewModels
                         list1.Add(new FileViewModel()
                         {
                             Name = filename,
-                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
+                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         });
                     }
@@ -50,7 +47,7 @@ namespace DataSettingsSample.ViewModels
                         var file = new FileViewModel()
                         {
                             Name = filename,
-                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
+                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         };
 
@@ -65,8 +62,30 @@ namespace DataSettingsSample.ViewModels
 
             TargetFiles = new List<FileViewModel>(list2);
 
+            Update = ReactiveCommand.Create<string?>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
             ToTarget = ReactiveCommand.Create(ToTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
             FromTarget = ReactiveCommand.Create(FromTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
+
+            this.WhenAnyValue(s => s.Directory).InvokeCommand(Update);
+        }
+
+        private void UpdateImpl(string? directory)
+        {
+            if (directory != null)
+            {
+                var paths = System.IO.Directory.GetFiles(directory, "*.json").Select(Path.GetFullPath);
+
+                var list = paths.Select(path => new FileViewModel()
+                {
+                    Name = Path.GetFileName(path),
+                    Path = path,
+                    IsSelected = false,
+                }).ToList();
+
+                AvailableFiles = new List<FileViewModel>(list);
+
+                TargetFiles = new List<FileViewModel>();
+            }
         }
 
         private void ToTargetImpl()
@@ -104,6 +123,8 @@ namespace DataSettingsSample.ViewModels
             TargetFiles = new List<FileViewModel>(listFalse);
         }
 
+        private ReactiveCommand<string?, Unit> Update { get; }
+
         public ReactiveCommand<Unit, Unit> ToTarget { get; }
 
         public ReactiveCommand<Unit, Unit> FromTarget { get; }
@@ -113,5 +134,8 @@ namespace DataSettingsSample.ViewModels
 
         [Reactive]
         public IList<FileViewModel> TargetFiles { get; set; }
+
+        [Reactive]
+        public string? Directory { get; set; }
     }
 }

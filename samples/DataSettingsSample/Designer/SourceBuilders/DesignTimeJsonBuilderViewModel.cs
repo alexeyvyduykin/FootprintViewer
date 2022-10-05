@@ -31,7 +31,7 @@ namespace DataSettingsSample.Designer
                         list1.Add(new FileViewModel()
                         {
                             Name = filename,
-                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
+                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         });
                     }
@@ -40,7 +40,7 @@ namespace DataSettingsSample.Designer
                         var file = new FileViewModel()
                         {
                             Name = filename,
-                            Path = Path.Combine(path, $@"..\..\..\Assets\{filename}"),
+                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         };
 

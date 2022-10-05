@@ -30,10 +30,12 @@
 
 		<Grid ColumnDefinitions="*,8,32">
 			<TextBox x:Name="txtBox1"
+					 Text="{Binding Directory}"
 					 IsReadOnly="True"/>
 			<Button Grid.Column="2"
 					Padding="0"
-					Height="32">
+					Height="32"
+					Click="AddPath_Clicked">
 				<Viewbox Margin="4">
 					<materialIcons:MaterialIcon Kind="Search"/>
 				</Viewbox>
@@ -48,7 +50,7 @@
 			<Border BorderBrush="Green"
 					VerticalAlignment="Stretch"
 					BorderThickness="1">
-				<ScrollViewer HorizontalScrollBarVisibility="Visible">
+				<ScrollViewer HorizontalScrollBarVisibility="Auto">
 					<ItemsControl Items="{Binding AvailableFiles}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="vm:FileViewModel">
@@ -84,7 +86,7 @@
 					BorderBrush="Green"
 					VerticalAlignment="Stretch"
 					BorderThickness="1">
-				<ScrollViewer HorizontalScrollBarVisibility="Visible">
+				<ScrollViewer HorizontalScrollBarVisibility="Auto">
 					<ItemsControl Items="{Binding TargetFiles}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="vm:FileViewModel">
