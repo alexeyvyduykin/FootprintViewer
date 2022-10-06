@@ -1,4 +1,5 @@
-﻿using DynamicData;
+﻿using DataSettingsSample.Data;
+using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,20 @@ namespace DataSettingsSample.ViewModels
         private readonly SourceList<ItemViewModel> _sourceList = new();
         private readonly ReadOnlyObservableCollection<ItemViewModel> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
+        private readonly IList<double>? _values;
+        private readonly Repository? _repository;
+        private readonly string? _key;
+
+        public ListViewModel(string key, Repository repository) : this()
+        {
+            _key = key;
+            _repository = repository;
+        }
 
         public ListViewModel(IList<double> values) : this()
         {
-            _sourceList.Edit(innerList =>
-            {
-                innerList.Clear();
-                innerList.AddRange(values.Select(s => new ItemViewModel() { Name = $"{s}" }));
-            });
+            _values = values;
+
         }
 
         public ListViewModel()
@@ -32,11 +39,35 @@ namespace DataSettingsSample.ViewModels
                 .Bind(out _items)
                 .Subscribe();
 
-            Load = ReactiveCommand.CreateFromTask(async () => await Task.Delay(TimeSpan.FromSeconds(2)), outputScheduler: RxApp.MainThreadScheduler);
+            Load = ReactiveCommand.CreateFromTask(LoadAsyncImpl, outputScheduler: RxApp.MainThreadScheduler);
 
             _isLoading = Load.IsExecuting
                   .ObserveOn(RxApp.MainThreadScheduler)
                   .ToProperty(this, x => x.IsLoading);
+        }
+
+        private async Task LoadAsyncImpl()
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            if (_values != null)
+            {
+                _sourceList.Edit(innerList =>
+                {
+                    innerList.Clear();
+                    innerList.AddRange(_values.Select(s => new ItemViewModel() { Name = $"{s}" }));
+                });
+            }
+            else if (_repository != null && _key != null)
+            {
+                var list = await _repository.GetDataAsync<CustomJsonObject>(_key);
+
+                _sourceList.Edit(innerList =>
+                {
+                    innerList.Clear();
+                    innerList.AddRange(list.Select(s => new ItemViewModel() { Name = $"{s.Name}" }));
+                });
+            }
         }
 
         public ReactiveCommand<Unit, Unit> Load { get; }

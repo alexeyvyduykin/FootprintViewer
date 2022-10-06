@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace DataSettingsSample.ViewModels
 {
+    [JsonObject]
+    public class CustomJsonObject
+    {
+        [JsonProperty("Name")]
+        public string? Name { get; set; }
+    }
+
     public class FileViewModel : ReactiveObject
     {
         private readonly ObservableAsPropertyHelper<bool> _isVerified;
@@ -50,13 +57,7 @@ namespace DataSettingsSample.ViewModels
                 return false;
             }
 
-            return Equals(JsonConvert.DeserializeObject<JsonObject>(jsonString)?.Name, key);
-        }
-
-        private class JsonObject
-        {
-            [JsonProperty("Name")]
-            public string? Name { get; set; }
+            return Equals(JsonConvert.DeserializeObject<CustomJsonObject>(jsonString)?.Name, key);
         }
 
         public void Verified(string key)
