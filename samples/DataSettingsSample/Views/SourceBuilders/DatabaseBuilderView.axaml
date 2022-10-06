@@ -8,15 +8,58 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              x:DataType="vm:DatabaseBuilderViewModel"
-			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+			 mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="280"
              x:Class="DataSettingsSample.Views.SourceBuilders.DatabaseBuilderView">
 
 	<Design.DataContext>
 		<vmd:DesignTimeDatabaseBuilderViewModel/>
 	</Design.DataContext>
 
+	<UserControl.Styles>
+		<Style Selector="TextBlock.t1">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Green"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=false]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Red"/>
+		</Style>
+	</UserControl.Styles>
+
 	<Grid RowDefinitions="*,Auto">
-		<TextBlock>Database</TextBlock>
+
+		<StackPanel>
+
+			<Grid ColumnDefinitions="Auto,*"
+				  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+
+				<TextBlock Text="Host" Grid.Row="0" Classes="t1"/>
+				<TextBlock Text="Port" Grid.Row="1" Classes="t1"/>
+				<TextBlock Text="Database" Grid.Row="2" Classes="t1"/>
+				<TextBlock Text="Username" Grid.Row="3" Classes="t1"/>
+				<TextBlock Text="Password" Grid.Row="4" Classes="t1"/>
+				<StackPanel Grid.Row="5" Orientation="Horizontal">
+					<TextBlock Text="Table" Classes="t1"/>
+					<Viewbox Height="20" Margin="8,0,0,0">
+						<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}" Classes="verified"/>
+					</Viewbox>
+				</StackPanel>
+
+				<TextBox Text="{Binding Host}" Grid.Column="1" Grid.Row="0"/>
+				<TextBox Text="{Binding Port}" Grid.Column="1" Grid.Row="1"/>
+				<TextBox Text="{Binding Database}" Grid.Column="1" Grid.Row="2"/>
+				<TextBox Text="{Binding Username}" Grid.Column="1" Grid.Row="3"/>
+				<TextBox Text="{Binding Password}" Grid.Column="1" Grid.Row="4"/>
+				<ComboBox Items="{Binding AvailableTables}"
+						  SelectedItem="{Binding SelectedTable}"
+						  Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch"/>
+			</Grid>
+
+		</StackPanel>
+
 		<DockPanel Grid.Row="1"
 				   LastChildFill="True"
 				   HorizontalAlignment="Right"

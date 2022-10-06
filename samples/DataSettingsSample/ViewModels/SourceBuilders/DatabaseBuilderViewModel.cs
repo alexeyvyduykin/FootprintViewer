@@ -1,11 +1,129 @@
 ﻿using DataSettingsSample.ViewModels.Interfaces;
+using DynamicData;
+using DynamicData.Binding;
+using Npgsql;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 
 namespace DataSettingsSample.ViewModels
 {
     public class DatabaseBuilderViewModel : BaseSourceBuilderViewModel, IDatabaseBuilderViewModel
     {
-        public override ReactiveCommand<Unit, ISourceViewModel> Add => throw new System.NotImplementedException();
+        private readonly ObservableAsPropertyHelper<bool> _isVerified;
+        private readonly ReadOnlyObservableCollection<string> _availableTables;
+        private readonly SourceList<string> _availableList = new();
+
+        public DatabaseBuilderViewModel()
+        {
+            Host = "localhost";
+            Port = 5432;
+            Database = "DataSettingsSampleDatabase1";
+            Username = "postgres";
+            Password = "user";
+
+            Update = ReactiveCommand.Create<List<string>>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
+
+            var canExecute = this.WhenAnyValue(s => s.SelectedTable, (t) => !string.IsNullOrEmpty(t));
+            Add = ReactiveCommand.Create(AddImpl, canExecute, outputScheduler: RxApp.MainThreadScheduler);
+
+            _availableList.Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _availableTables)
+                .Subscribe();
+
+            this.WhenAnyValue(s => s.Host, s => s.Port, s => s.Database, s => s.Username, s => s.Password)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => SelectedTable = null);
+
+            this.WhenAnyValue(s => s.Host, s => s.Port, s => s.Database, s => s.Username, s => s.Password)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Throttle(TimeSpan.FromSeconds(1.2))
+                .Select(s => BuildConnectionString(s))
+                .Select(s => IsConnectionValid(s) ? new List<string>(GetTablesNames(s)) : new List<string>())
+                .InvokeCommand(Update);
+
+            _isVerified = AvailableTables
+                .ToObservableChangeSet()
+                .ToCollection()
+                .Select(s => s.Count != 0)
+                .ToProperty(this, x => x.IsVerified);
+        }
+
+        private void UpdateImpl(List<string> list)
+        {
+            _availableList.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
+        }
+
+        private static IEnumerable<string> GetTablesNames(string connectionString)
+        {
+            using var connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+            using var command = new NpgsqlCommand("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';", connection);
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                yield return reader.GetString(0);
+            }
+        }
+
+        private static bool IsConnectionValid(string connectionString)
+        {
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    connection.Close();
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static string BuildConnectionString((string? host, int port, string? database, string? username, string? password) info)
+        {
+            return $"Host={info.host};Port={info.port};Database={info.database};Username={info.username};Password={info.password}";
+        }
+
+        private ReactiveCommand<List<string>, Unit> Update { get; }
+
+        public override ReactiveCommand<Unit, ISourceViewModel> Add { get; }
+
+        [Reactive]
+        public string? Host { get; set; }
+
+        [Reactive]
+        public int Port { get; set; }
+
+        [Reactive]
+        public string? Database { get; set; }
+
+        [Reactive]
+        public string? Username { get; set; }
+
+        [Reactive]
+        public string? Password { get; set; }
+
+        public ReadOnlyObservableCollection<string> AvailableTables => _availableTables;
+
+        [Reactive]
+        public string? SelectedTable { get; set; }
+
+        public bool IsVerified => _isVerified.Value;
     }
 }
