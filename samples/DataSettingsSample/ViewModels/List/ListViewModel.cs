@@ -65,7 +65,7 @@ namespace DataSettingsSample.ViewModels
                 _sourceList.Edit(innerList =>
                 {
                     innerList.Clear();
-                    innerList.AddRange(list.Select(s => new ItemViewModel() { Name = $"{s.Name}" }));
+                    innerList.AddRange(list.Select(s => s.Values).SelectMany(s => s.Select(s => new ItemViewModel() { Name = $"{s}" })));
                 });
             }
         }

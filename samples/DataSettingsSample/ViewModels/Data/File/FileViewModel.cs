@@ -2,6 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -11,8 +12,11 @@ namespace DataSettingsSample.ViewModels
     [JsonObject]
     public class CustomJsonObject
     {
-        [JsonProperty("Name")]
-        public string? Name { get; set; }
+        [JsonProperty("Key")]
+        public string? Key { get; set; }
+
+        [JsonProperty("Values")]
+        public List<double> Values { get; set; } = new();
     }
 
     public class FileViewModel : ReactiveObject
@@ -57,7 +61,7 @@ namespace DataSettingsSample.ViewModels
                 return false;
             }
 
-            return Equals(JsonConvert.DeserializeObject<CustomJsonObject>(jsonString)?.Name, key);
+            return Equals(JsonConvert.DeserializeObject<CustomJsonObject>(jsonString)?.Key, key);
         }
 
         public void Verified(string key)
