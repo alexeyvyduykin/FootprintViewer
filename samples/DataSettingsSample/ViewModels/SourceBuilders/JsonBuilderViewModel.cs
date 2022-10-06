@@ -1,12 +1,17 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
+using DataSettingsSample.ViewModels.Interfaces;
+using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reflection;
 
 namespace DataSettingsSample.ViewModels
@@ -14,6 +19,10 @@ namespace DataSettingsSample.ViewModels
     public class JsonBuilderViewModel : BaseSourceBuilderViewModel, IJsonBuilderViewModel
     {
         private readonly string _key = string.Empty;
+        private readonly SourceList<FileViewModel> _targetList = new();
+        private readonly SourceList<FileViewModel> _availableList = new();
+        private readonly ReadOnlyObservableCollection<FileViewModel> _targetFiles;
+        private readonly ReadOnlyObservableCollection<FileViewModel> _availableFiles;
 
         public JsonBuilderViewModel(string providerName)
         {
@@ -58,15 +67,49 @@ namespace DataSettingsSample.ViewModels
                 }
             }
 
-            AvailableFiles = new List<FileViewModel>(list1);
+            _availableList.Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _availableFiles)
+                .Subscribe();
 
-            TargetFiles = new List<FileViewModel>(list2);
+            _targetList.Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _targetFiles)
+                .Subscribe();
 
+            AddToAvailableList(list1);
+            AddToTargetList(list2);
+
+            var canAdd = TargetFiles
+                .ToObservableChangeSet()
+                .AutoRefresh(s => s.IsVerified)
+                .ToCollection()
+                .Select(s => (s.Count != 0) && s.All(d => d.IsVerified));
+
+            Add = ReactiveCommand.Create(AddImpl, canAdd, outputScheduler: RxApp.MainThreadScheduler);
             Update = ReactiveCommand.Create<string?>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
             ToTarget = ReactiveCommand.Create(ToTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
             FromTarget = ReactiveCommand.Create(FromTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
 
             this.WhenAnyValue(s => s.Directory).InvokeCommand(Update);
+        }
+
+        protected void AddToAvailableList(IList<FileViewModel> list)
+        {
+            _availableList.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
+        }
+
+        protected void AddToTargetList(IList<FileViewModel> list)
+        {
+            _targetList.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
         }
 
         private void UpdateImpl(string? directory)
@@ -75,16 +118,23 @@ namespace DataSettingsSample.ViewModels
             {
                 var paths = System.IO.Directory.GetFiles(directory, "*.json").Select(Path.GetFullPath);
 
-                var list = paths.Select(path => new FileViewModel()
+                var list = new List<FileViewModel>();
+
+                foreach (var path in paths)
                 {
-                    Name = Path.GetFileName(path),
-                    Path = path,
-                    IsSelected = false,
-                }).ToList();
+                    var file = new FileViewModel()
+                    {
+                        Name = Path.GetFileName(path),
+                        Path = path,
+                        IsSelected = false,
+                    };
 
-                AvailableFiles = new List<FileViewModel>(list);
+                    list.Add(file);
+                }
 
-                TargetFiles = new List<FileViewModel>();
+                AddToAvailableList(list);
+
+                AddToTargetList(new List<FileViewModel>());
             }
         }
 
@@ -101,9 +151,9 @@ namespace DataSettingsSample.ViewModels
 
             list2.AddRange(listTrue);
 
-            AvailableFiles = new List<FileViewModel>(listFalse);
+            AddToAvailableList(listFalse);
 
-            TargetFiles = new List<FileViewModel>(list2);
+            AddToTargetList(list2);
         }
 
         private void FromTargetImpl()
@@ -118,10 +168,12 @@ namespace DataSettingsSample.ViewModels
 
             list1.AddRange(listTrue);
 
-            AvailableFiles = new List<FileViewModel>(list1);
+            AddToAvailableList(list1);
 
-            TargetFiles = new List<FileViewModel>(listFalse);
+            AddToTargetList(listFalse);
         }
+
+        public override ReactiveCommand<Unit, ISourceViewModel> Add { get; }
 
         private ReactiveCommand<string?, Unit> Update { get; }
 
@@ -129,11 +181,9 @@ namespace DataSettingsSample.ViewModels
 
         public ReactiveCommand<Unit, Unit> FromTarget { get; }
 
-        [Reactive]
-        public IList<FileViewModel> AvailableFiles { get; set; }
+        public ReadOnlyObservableCollection<FileViewModel> AvailableFiles => _availableFiles;
 
-        [Reactive]
-        public IList<FileViewModel> TargetFiles { get; set; }
+        public ReadOnlyObservableCollection<FileViewModel> TargetFiles => _targetFiles;
 
         [Reactive]
         public string? Directory { get; set; }

@@ -51,9 +51,9 @@ namespace DataSettingsSample.Designer
                 }
             }
 
-            AvailableFiles = new List<FileViewModel>(list1);
+            AddToAvailableList(list1);
 
-            TargetFiles = new List<FileViewModel>(list2);
+            AddToTargetList(list2);
         }
     }
 }

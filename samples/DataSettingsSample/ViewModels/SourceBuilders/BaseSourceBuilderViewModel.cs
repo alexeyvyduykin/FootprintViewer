@@ -8,7 +8,6 @@ namespace DataSettingsSample.ViewModels
     {
         public BaseSourceBuilderViewModel()
         {
-            Add = ReactiveCommand.Create(AddImpl, outputScheduler: RxApp.MainThreadScheduler);
             Cancel = ReactiveCommand.Create(CancelImpl, outputScheduler: RxApp.MainThreadScheduler);
         }
 
@@ -22,7 +21,7 @@ namespace DataSettingsSample.ViewModels
 
         }
 
-        public ReactiveCommand<Unit, ISourceViewModel> Add { get; }
+        public abstract ReactiveCommand<Unit, ISourceViewModel> Add { get; }
 
         public ReactiveCommand<Unit, Unit> Cancel { get; }
     }
