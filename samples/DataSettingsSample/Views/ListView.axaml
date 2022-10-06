@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DataSettingsSample.ViewModels"
+			 xmlns:vmd="using:DataSettingsSample.Designer"
+             xmlns:views="using:DataSettingsSample.Views"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
+			 x:DataType="vm:ListViewModel"
+             x:Class="DataSettingsSample.Views.ListView">
+
+	<Design.DataContext>
+		<vmd:DesignTimeListViewModel/>
+	</Design.DataContext>
+
+	<Grid>
+		<ProgressBar x:Name="ProgressBar"
+					 IsVisible="{Binding IsLoading}"
+					 VerticalAlignment="Center"
+					 HorizontalAlignment="Center"
+					 IsIndeterminate="True"/>
+
+		<ItemsControl IsVisible="{Binding !IsLoading}"
+					  Items="{Binding Items}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate DataType="vm:ItemViewModel">
+					<TextBlock Text="{Binding Name}"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Grid>
+
+</UserControl>

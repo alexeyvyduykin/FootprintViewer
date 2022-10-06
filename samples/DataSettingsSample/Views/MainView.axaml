@@ -14,6 +14,13 @@
 		<vmd:DesignTimeMainViewModel/>
 	</Design.DataContext>
 
+	<UserControl.Styles>
+		<Style Selector="Border.t1">
+			<Setter Property="BorderBrush" Value="White"/>
+			<Setter Property="BorderThickness" Value="1"/>
+		</Style>
+	</UserControl.Styles>
+
 	<dialogHost:DialogHost Identifier="PrimaryDialogHost">
 
 		<dialogHost:DialogHost.DataTemplates>
@@ -22,17 +29,49 @@
 			</DataTemplate>
 		</dialogHost:DialogHost.DataTemplates>
 
-		<StackPanel Spacing="20"
-					VerticalAlignment="Center"
-					HorizontalAlignment="Center">
+		<Grid ColumnDefinitions="1*,1*,1*,1*,1*"
+			  RowDefinitions="*,Auto">
+			<Grid Grid.Column="0" RowDefinitions="Auto,*">
+				<TextBlock Text="Footprints" HorizontalAlignment="Center" Margin="8"/>
+				<Border Grid.Row="1" Classes="t1">
+					<views:ListView DataContext="{Binding FootprintList}"/>
+				</Border>
+			</Grid>
+			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+				<TextBlock Text="GroundTargets" HorizontalAlignment="Center" Margin="8"/>
+				<Border Grid.Row="1" Classes="t1">
+					<views:ListView DataContext="{Binding GroundTargetList}"/>
+				</Border>
+			</Grid>
+			<Grid Grid.Column="2" RowDefinitions="Auto,*">
+				<TextBlock Text="Satellites" HorizontalAlignment="Center" Margin="8"/>
+				<Border Grid.Row="1" Classes="t1">
+					<views:ListView DataContext="{Binding SatelliteList}"/>
+				</Border>
+			</Grid>
+			<Grid Grid.Column="3" RowDefinitions="Auto,*">
+				<TextBlock Text="GroundStations" HorizontalAlignment="Center" Margin="8"/>
+				<Border Grid.Row="1" Classes="t1">
+					<views:ListView DataContext="{Binding GroundStationList}"/>
+				</Border>
+			</Grid>
+			<Grid Grid.Column="4" RowDefinitions="Auto,*">
+				<TextBlock Text="UserGeometries" HorizontalAlignment="Center" Margin="8"/>
+				<Border Grid.Row="1" Classes="t1">
+					<views:ListView DataContext="{Binding UserGeometryList}"/>
+				</Border>
+			</Grid>
 
-			<Button x:Name="ButtonSettings"
-					Content="Settings"/>
+			<StackPanel Grid.ColumnSpan="5"
+						Grid.Row="1"
+						Margin="8" Spacing="8"
+						Orientation="Horizontal"
+						HorizontalAlignment="Center">
+				<Button x:Name="ButtonSettings" Content="Settings"/>
+				<Button Content="OpenDialog" Click="OpenedDialog"/>
+			</StackPanel>
 
-			<Button Content="OpenDialog"
-					Click="OpenedDialog"/>
-
-		</StackPanel>
+		</Grid>
 
 	</dialogHost:DialogHost>
 
