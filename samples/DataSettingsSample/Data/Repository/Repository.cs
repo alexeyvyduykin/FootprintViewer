@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DynamicData;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,23 +10,36 @@ namespace DataSettingsSample.Data
     public class Repository
     {
         private readonly IDictionary<string, IList<object>> _cache = new Dictionary<string, IList<object>>();
-        private readonly IDictionary<string, ISource> _sources = new Dictionary<string, ISource>();
+        private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
 
         public void RegisterSource(string key, ISource source)
         {
+            if (_sources.ContainsKey(key) == true)
+            {
+                _sources[key].Add(source);
+            }
+
             if (_sources.ContainsKey(key) == false)
             {
-                _sources.Add(key, source);
+                _sources.Add(key, new List<ISource>() { source });
             }
         }
 
+        // TODO: dirty _caches after new source register
         public async Task<IList<T>> GetDataAsync<T>(string key)
         {
             if (_sources.ContainsKey(key) == true)
             {
                 if (_cache.ContainsKey(key) == false)
                 {
-                    var list = await _sources[key].GetValuesAsync();
+                    var list = new List<object>();
+
+                    foreach (var source in _sources[key])
+                    {
+                        var res = await source.GetValuesAsync();
+
+                        list.AddRange(res);
+                    }
 
                     _cache.Add(key, list);
                 }
@@ -42,7 +56,14 @@ namespace DataSettingsSample.Data
             {
                 if (_cache.ContainsKey(key) == false)
                 {
-                    var list = _sources[key].GetValues();
+                    var list = new List<object>();
+
+                    foreach (var source in _sources[key])
+                    {
+                        var res = source.GetValues();
+
+                        list.AddRange(res);
+                    }
 
                     _cache.Add(key, list);
                 }

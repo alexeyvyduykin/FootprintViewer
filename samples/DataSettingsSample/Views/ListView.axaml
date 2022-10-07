@@ -24,7 +24,7 @@
 					  Items="{Binding Items}">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate DataType="vm:ItemViewModel">
-					<TextBlock Text="{Binding Name}"/>
+					<TextBlock Text="{Binding Name}" FontFamily="Roboto"/>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>

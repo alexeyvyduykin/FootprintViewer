@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DataSettingsSample.ViewModels;
 using DataSettingsSample.Views;
+using Splat;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -23,14 +24,18 @@ namespace DataSettingsSample
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var mainViewModel = GetExistingService<MainWindowViewModel>();
+
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = mainViewModel,
                 };
             }
 
             base.OnFrameworkInitializationCompleted();
         }
+
+        private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
 
         public static async Task<string> OpenFolderDialog(string? directory)
         {
