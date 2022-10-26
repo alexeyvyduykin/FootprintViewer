@@ -64,8 +64,6 @@ namespace DataSettingsSample.ViewModels
             else if (_repository != null && _key != null && _converter != null)
             {
                 var list = await _repository.GetDataAsync<object>(_key);
-
-                //var res = await Task.Run(() => list.SelectMany(s => _converter.Invoke(s)));
                 var res = list.SelectMany(s => _converter.Invoke(s));
 
                 Debug.WriteLine($"For Key={_key}: data is loading.");
@@ -73,8 +71,6 @@ namespace DataSettingsSample.ViewModels
                 _sourceList.Edit(innerList =>
                 {
                     innerList.Clear();
-                    //innerList.AddRange(list.Select(s => s.Values).SelectMany(s => s.Select(s => new ItemViewModel() { Name = $"{s}" })));
-                    //innerList.AddRange(list.SelectMany(s => _converter.Invoke(s)));
                     innerList.AddRange(res);
                 });
             }

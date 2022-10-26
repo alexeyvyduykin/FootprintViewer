@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using DynamicData;
+﻿using DynamicData;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +9,7 @@ namespace DataSettingsSample.Data
 {
     public class Repository
     {
-        private readonly IDictionary<string, IList<object>> _cache = new Dictionary<string, IList<object>>();
+        private readonly Dictionary<string, IDictionary<ISource, IList<object>>> _cache = new();
         private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
 
         public void RegisterSource(string key, ISource source)
@@ -24,60 +23,53 @@ namespace DataSettingsSample.Data
             {
                 _sources.Add(key, new List<ISource>() { source });
             }
+
+            if (_cache.ContainsKey(key) == false)
+            {
+                _cache.Add(key, new Dictionary<ISource, IList<object>>());
+            }
         }
 
-        // TODO: dirty _caches after new source register
+        public void UnregisterSource(string key, ISource source)
+        {
+            if (_sources.ContainsKey(key) == true)
+            {
+                _sources[key].Remove(source);
+
+                // clear cache
+                _cache[key].Remove(source);
+
+                if (_sources[key].Count == 0)
+                {
+                    _sources.Remove(key);
+
+                    _cache[key].Clear();
+
+                    _cache.Remove(key);
+                }
+            }
+        }
+
         public async Task<IList<T>> GetDataAsync<T>(string key)
         {
             return await Task.Run(async () =>
             {
                 if (_sources.ContainsKey(key) == true)
                 {
-                    if (_cache.ContainsKey(key) == false)
+                    foreach (var source in _sources[key])
                     {
-                        _cache.Add(key, new List<object>());
-
-                        var list = new List<object>();
-
-                        foreach (var source in _sources[key])
+                        if (_cache[key].ContainsKey(source) == false)
                         {
-                            var res = await source.GetValuesAsync();
-
-                            list.AddRange(res);
+                            var list = await source.GetValuesAsync();
+                            _cache[key].Add(source, list);
                         }
-                   
-                        _cache[key].AddRange(list);
                     }
 
-                    return _cache[key].Cast<T>().ToList();
+                    return _cache[key].Values.SelectMany(s => s).Cast<T>().ToList();
                 }
 
                 return new List<T>();
             });
-        }
-
-        public async Task<IList<T>> GetDataAsync_WhyNotWork<T>(string key)
-        {
-            if (_sources.ContainsKey(key) == true)
-            {
-                if (_cache.ContainsKey(key) == false)
-                {
-                    var list = new List<object>();
-
-                    foreach (var source in _sources[key])
-                    {
-                        var res = await source.GetValuesAsync();
-
-                        list.AddRange(res);
-                    }
-
-                    _cache.Add(key, list);
-                }
-
-                return _cache[key].Cast<T>().ToList();
-            }
-
-            return new List<T>();
         }
 
         public static List<T> DeserializeFromStream<T>(string path)
