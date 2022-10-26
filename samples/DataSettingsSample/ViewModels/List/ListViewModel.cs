@@ -4,6 +4,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -19,11 +20,13 @@ namespace DataSettingsSample.ViewModels
         private readonly IList<double>? _values;
         private readonly Repository? _repository;
         private readonly string? _key;
+        private readonly Func<object, IEnumerable<ItemViewModel>>? _converter;
 
-        public ListViewModel(string key, Repository repository) : this()
+        public ListViewModel(string key, Repository repository, Func<object, IEnumerable<ItemViewModel>> converter) : this()
         {
             _key = key;
             _repository = repository;
+            _converter = converter;
         }
 
         public ListViewModel(IList<double> values) : this()
@@ -58,14 +61,21 @@ namespace DataSettingsSample.ViewModels
                     innerList.AddRange(_values.Select(s => new ItemViewModel() { Name = $"{s}" }));
                 });
             }
-            else if (_repository != null && _key != null)
+            else if (_repository != null && _key != null && _converter != null)
             {
-                var list = await _repository.GetDataAsync<CustomJsonObject>(_key);
+                var list = await _repository.GetDataAsync<object>(_key);
+
+                //var res = await Task.Run(() => list.SelectMany(s => _converter.Invoke(s)));
+                var res = list.SelectMany(s => _converter.Invoke(s));
+
+                Debug.WriteLine($"For Key={_key}: data is loading.");
 
                 _sourceList.Edit(innerList =>
                 {
                     innerList.Clear();
-                    innerList.AddRange(list.Select(s => s.Values).SelectMany(s => s.Select(s => new ItemViewModel() { Name = $"{s}" })));
+                    //innerList.AddRange(list.Select(s => s.Values).SelectMany(s => s.Select(s => new ItemViewModel() { Name = $"{s}" })));
+                    //innerList.AddRange(list.SelectMany(s => _converter.Invoke(s)));
+                    innerList.AddRange(res);
                 });
             }
         }

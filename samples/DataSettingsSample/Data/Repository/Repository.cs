@@ -1,4 +1,5 @@
-﻿using DynamicData;
+﻿using Avalonia.Controls;
+using DynamicData;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -28,29 +29,34 @@ namespace DataSettingsSample.Data
         // TODO: dirty _caches after new source register
         public async Task<IList<T>> GetDataAsync<T>(string key)
         {
-            if (_sources.ContainsKey(key) == true)
+            return await Task.Run(async () =>
             {
-                if (_cache.ContainsKey(key) == false)
+                if (_sources.ContainsKey(key) == true)
                 {
-                    var list = new List<object>();
-
-                    foreach (var source in _sources[key])
+                    if (_cache.ContainsKey(key) == false)
                     {
-                        var res = await source.GetValuesAsync();
+                        _cache.Add(key, new List<object>());
 
-                        list.AddRange(res);
+                        var list = new List<object>();
+
+                        foreach (var source in _sources[key])
+                        {
+                            var res = await source.GetValuesAsync();
+
+                            list.AddRange(res);
+                        }
+                   
+                        _cache[key].AddRange(list);
                     }
 
-                    _cache.Add(key, list);
+                    return _cache[key].Cast<T>().ToList();
                 }
 
-                return _cache[key].Cast<T>().ToList();
-            }
-
-            return new List<T>();
+                return new List<T>();
+            });
         }
 
-        public IList<T> GetData<T>(string key)
+        public async Task<IList<T>> GetDataAsync_WhyNotWork<T>(string key)
         {
             if (_sources.ContainsKey(key) == true)
             {
@@ -60,7 +66,7 @@ namespace DataSettingsSample.Data
 
                     foreach (var source in _sources[key])
                     {
-                        var res = source.GetValues();
+                        var res = await source.GetValuesAsync();
 
                         list.AddRange(res);
                     }

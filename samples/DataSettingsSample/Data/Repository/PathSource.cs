@@ -11,10 +11,6 @@ namespace DataSettingsSample.Data
         {
             _path = path;
         }
-        public override IList<object> GetValues()
-        {
-            return Repository.DeserializeFromStream<T>(_path).Cast<object>().ToList();
-        }
 
         public override async Task<IList<object>> GetValuesAsync()
         {

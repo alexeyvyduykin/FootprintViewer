@@ -18,17 +18,6 @@ namespace DataSettingsSample.Data
             _uri = uri;
         }
 
-        public override IList<object> GetValues()
-        {
-            if (_stream == null)
-            {
-                var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                _stream = assets?.Open(_uri)!;
-            }
-
-            return Repository.DeserializeFromStream<T>(_stream).Cast<object>().ToList();
-        }
-
         public override async Task<IList<object>> GetValuesAsync()
         {
             if (_stream == null)

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 #nullable disable
 
 namespace DataSettingsSample.Data
@@ -26,14 +28,21 @@ namespace DataSettingsSample.Data
         public override bool Equals(object obj) => obj is CustomModelCacheKey other && key.Equals(other.key);
     }
 
-    public class DbCustomContext : DbContext
+    public interface IDbCustomContext : IDisposable
+    {
+        Task<IList<object>> ToListAsync();
+    }
+
+    public abstract class DbCustomContext : DbContext, IDbCustomContext
     {
         private readonly string _tableName;
 
-        public DbCustomContext(string tableName, DbContextOptions options) : base(options)
+        public DbCustomContext(string tableName/*, DbContextOptions options*/) : base()// base(options)
         {
             _tableName = tableName;
         }
+
+        public abstract Task<IList<object>> ToListAsync();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

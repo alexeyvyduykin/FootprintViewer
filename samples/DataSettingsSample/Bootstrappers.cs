@@ -1,5 +1,6 @@
 ﻿using DataSettingsSample.Data;
 using DataSettingsSample.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
 using System.IO;
@@ -51,6 +52,27 @@ namespace DataSettingsSample
             var source14 = new PathSource<CustomJsonObject>(path9);
             var source15 = new PathSource<CustomJsonObject>(path10);
 
+            var connectionString = extns2.ToConnectionString("localhost", 5432, "DataSettingsSampleDatabase1", "postgres", "user");
+
+            //var source16 = new DatabaseSource(
+            //    connectionString,
+            //    connectionString => new DbContextOptionsBuilder<FootprintDbContext>().UseNpgsql(connectionString).Options,
+            //    options => new FootprintDbContext("Footprints", options));
+
+            //var source17 = new DatabaseSource<GroundTargetDbContext>(
+            //    connectionString,
+            //    options => new GroundTargetDbContext("GroundTargets", options));
+
+            //var source18 = new DatabaseSource<SatelliteDbContext>(
+            //    connectionString,
+            //    options => new SatelliteDbContext("Satellites", options));
+
+            var source16 = new DatabaseSourceFootprint(connectionString);
+            var source17 = new DatabaseSourceGroundTarget(connectionString);
+            var source18 = new DatabaseSourceSatellite(connectionString);            
+            var source19 = new DatabaseSourceGroundStation(connectionString);
+            var source20 = new DatabaseSourceUserGeometry(connectionString);
+
             var repository = new Repository();
 
             repository.RegisterSource("footprints", source1);
@@ -70,6 +92,12 @@ namespace DataSettingsSample
             repository.RegisterSource("satellites", source13);
             repository.RegisterSource("groundStations", source14);
             repository.RegisterSource("userGeometries", source15);
+
+            repository.RegisterSource("footprints", source16);
+            repository.RegisterSource("groundTargets", source17);
+            repository.RegisterSource("satellites", source18);
+            repository.RegisterSource("groundStations", source19);
+            repository.RegisterSource("userGeometries", source20);
 
             services.RegisterConstant(repository, typeof(Repository));
 
