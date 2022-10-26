@@ -1,11 +1,15 @@
 ﻿using DataSettingsSample.ViewModels.Interfaces;
+using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Reactive;
+using System.Threading.Tasks;
 
 namespace DataSettingsSample.ViewModels
 {
-    public class SettingsViewModel : ReactiveObject
+    public class SettingsViewModel : DialogViewModelBase<Unit>
     {
         public SettingsViewModel()
         {
@@ -87,6 +91,13 @@ namespace DataSettingsSample.ViewModels
                     }
                 },
             };
+
+            NextCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(0.1));
+
+                Close(DialogResultKind.Normal, Unit.Default);
+            });
         }
 
         [Reactive]

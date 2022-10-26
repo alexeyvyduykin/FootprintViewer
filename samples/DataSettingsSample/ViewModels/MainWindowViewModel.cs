@@ -1,13 +1,18 @@
 ﻿using DataSettingsSample.Data;
 using DataSettingsSample.Models;
 using FDataSettingsSample.Models;
+using FootprintViewer.ViewModels.Dialogs;
+using FootprintViewer.ViewModels.Navigation;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Windows.Input;
 
 namespace DataSettingsSample.ViewModels
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : RoutableViewModel
     {
         public MainWindowViewModel(IReadonlyDependencyResolver resolver)
         {
@@ -67,7 +72,30 @@ namespace DataSettingsSample.ViewModels
             SatelliteList.Load.Execute().Subscribe();
             GroundStationList.Load.Execute().Subscribe();
             UserGeometryList.Load.Execute().Subscribe();
+
+            OptionCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var settingsDialog = new SettingsViewModel();
+
+                DialogStack().To(settingsDialog);
+
+                var dialogResult = await settingsDialog.GetDialogResultAsync();
+
+                DialogStack().Clear();
+            });
+
+            IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
+
+            this.WhenAnyValue(s => s.DialogNavigationStack.CurrentPage)
+                .WhereNotNull()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Do(s => s.SetActive())
+                .Subscribe();
         }
+
+        public DialogNavigationStack DialogNavigationStack => DialogStack();
+
+        public ICommand OptionCommand { get; }
 
         public SettingsViewModel SettingsViewModel { get; set; }
 
@@ -80,5 +108,7 @@ namespace DataSettingsSample.ViewModels
         public ListViewModel GroundStationList { get; set; }
 
         public ListViewModel UserGeometryList { get; set; }
+
+        public IObservable<bool> IsMainContentEnabled { get; }
     }
 }

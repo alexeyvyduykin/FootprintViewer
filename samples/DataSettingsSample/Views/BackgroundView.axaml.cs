@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace DataSettingsSample.Views
 {
-    public partial class MainView : UserControl
+    public partial class BackgroundView : UserControl
     {
-        public MainView()
+        public BackgroundView()
         {
             InitializeComponent();
         }

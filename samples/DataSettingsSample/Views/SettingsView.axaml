@@ -5,26 +5,29 @@
              xmlns:vm="using:DataSettingsSample.ViewModels"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
+             xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls;assembly=FootprintViewer.Avalonia"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             x:DataType="vm:SettingsViewModel"
-			 Background="Black"
+             x:DataType="vm:SettingsViewModel"		
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              x:Class="DataSettingsSample.Views.SettingsView">
 
 	<Design.DataContext>
 		<vmd:DesignTimeSettingsViewModel/>
 	</Design.DataContext>
-	
-	<Grid ColumnDefinitions="800"
-		  RowDefinitions="500,Auto">
+
+	<controls:ContentArea EnableCancel="False"
+						  EnableNext="True"
+						  NextContent="OK"
+						  Width="800"
+						  Height="500">
 
 		<TabControl TabStripPlacement="Left">
-			
-			<TabItem Header="Data providers" 
+
+			<TabItem Header="Data providers"
 					 FontSize="14"
 					 Foreground="White">
-				<TabControl TabStripPlacement="Left"						
+				<TabControl TabStripPlacement="Left"
 							Items="{Binding Providers}">
 					<TabControl.ItemTemplate>
 						<DataTemplate x:DataType="vm:ProviderViewModel">
@@ -33,35 +36,27 @@
 					</TabControl.ItemTemplate>
 
 					<TabControl.ContentTemplate>
-						<DataTemplate x:DataType="vm:ProviderViewModel">						
-							<views:ProviderView DataContext="{Binding}"/>						
+						<DataTemplate x:DataType="vm:ProviderViewModel">
+							<views:ProviderView DataContext="{Binding}"/>
 						</DataTemplate>
-					</TabControl.ContentTemplate>				
+					</TabControl.ContentTemplate>
 				</TabControl>
 			</TabItem>
-			
-			<TabItem Header="Languages"	
+
+			<TabItem Header="Languages"
 					 FontSize="14">
 				<StackPanel Margin="8" Spacing="10">
 					<RadioButton IsChecked="True" Content="English"/>
 					<RadioButton Content="Russian"/>
 				</StackPanel>
 			</TabItem>
-			
-			<TabItem Header="Others"	
-					 FontSize="14"/>
-						
-		</TabControl>
-		
-		<Button Grid.Row="1" 
-				Content="OK"
-				Margin="0,0,8,8"
-				Width="80"
-				VerticalAlignment="Bottom"
-				HorizontalAlignment="Right"
-				Click="ClosedDialog"/>
 
-	</Grid>
+			<TabItem Header="Others"
+					 FontSize="14"/>
+
+		</TabControl>
+
+	</controls:ContentArea>
 
 </UserControl>
 

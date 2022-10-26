@@ -44,4 +44,9 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\FootprintViewer.Avalonia\FootprintViewer.Avalonia.csproj" />
+	  <ProjectReference Include="..\..\src\FootprintViewer\FootprintViewer.csproj" />
+	</ItemGroup>
+
 </Project>

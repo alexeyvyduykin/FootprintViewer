@@ -5,8 +5,7 @@
              xmlns:vm="using:DataSettingsSample.ViewModels"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
-             xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
-			 x:DataType="vm:MainWindowViewModel"
+             x:DataType="vm:MainWindowViewModel"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DataSettingsSample.Views.MainView">
 
@@ -21,58 +20,46 @@
 		</Style>
 	</UserControl.Styles>
 
-	<dialogHost:DialogHost Identifier="PrimaryDialogHost">
-
-		<dialogHost:DialogHost.DataTemplates>
-			<DataTemplate DataType="vm:SettingsViewModel">
-				<views:SettingsView DataContext="{Binding}"/>
-			</DataTemplate>
-		</dialogHost:DialogHost.DataTemplates>
-
-		<Grid ColumnDefinitions="1*,1*,1*,1*,1*"
-			  RowDefinitions="*,Auto">
-			<Grid Grid.Column="0" RowDefinitions="Auto,*">
-				<TextBlock Text="Footprints" HorizontalAlignment="Center" Margin="8"/>
-				<Border Grid.Row="1" Classes="t1">
-					<views:ListView DataContext="{Binding FootprintList}"/>
-				</Border>
-			</Grid>
-			<Grid Grid.Column="1" RowDefinitions="Auto,*">
-				<TextBlock Text="GroundTargets" HorizontalAlignment="Center" Margin="8"/>
-				<Border Grid.Row="1" Classes="t1">
-					<views:ListView DataContext="{Binding GroundTargetList}"/>
-				</Border>
-			</Grid>
-			<Grid Grid.Column="2" RowDefinitions="Auto,*">
-				<TextBlock Text="Satellites" HorizontalAlignment="Center" Margin="8"/>
-				<Border Grid.Row="1" Classes="t1">
-					<views:ListView DataContext="{Binding SatelliteList}"/>
-				</Border>
-			</Grid>
-			<Grid Grid.Column="3" RowDefinitions="Auto,*">
-				<TextBlock Text="GroundStations" HorizontalAlignment="Center" Margin="8"/>
-				<Border Grid.Row="1" Classes="t1">
-					<views:ListView DataContext="{Binding GroundStationList}"/>
-				</Border>
-			</Grid>
-			<Grid Grid.Column="4" RowDefinitions="Auto,*">
-				<TextBlock Text="UserGeometries" HorizontalAlignment="Center" Margin="8"/>
-				<Border Grid.Row="1" Classes="t1">
-					<views:ListView DataContext="{Binding UserGeometryList}"/>
-				</Border>
-			</Grid>
-
-			<StackPanel Grid.ColumnSpan="5"
-						Grid.Row="1"
-						Margin="8" Spacing="8"
-						Orientation="Horizontal"
-						HorizontalAlignment="Center">
-				<Button x:Name="ButtonSettings" Content="Settings"/>
-				<Button Content="OpenDialog" Click="OpenedDialog"/>
-			</StackPanel>
-
+	<Grid ColumnDefinitions="1*,1*,1*,1*,1*"			  
+		  RowDefinitions="*,Auto">
+		<Grid Grid.Column="0" RowDefinitions="Auto,*">
+			<TextBlock Text="Footprints" HorizontalAlignment="Center" Margin="8"/>
+			<Border Grid.Row="1" Classes="t1">
+				<views:ListView DataContext="{Binding FootprintList}"/>
+			</Border>
+		</Grid>
+		<Grid Grid.Column="1" RowDefinitions="Auto,*">
+			<TextBlock Text="GroundTargets" HorizontalAlignment="Center" Margin="8"/>
+			<Border Grid.Row="1" Classes="t1">
+				<views:ListView DataContext="{Binding GroundTargetList}"/>
+			</Border>
+		</Grid>
+		<Grid Grid.Column="2" RowDefinitions="Auto,*">
+			<TextBlock Text="Satellites" HorizontalAlignment="Center" Margin="8"/>
+			<Border Grid.Row="1" Classes="t1">
+				<views:ListView DataContext="{Binding SatelliteList}"/>
+			</Border>
+		</Grid>
+		<Grid Grid.Column="3" RowDefinitions="Auto,*">
+			<TextBlock Text="GroundStations" HorizontalAlignment="Center" Margin="8"/>
+			<Border Grid.Row="1" Classes="t1">
+				<views:ListView DataContext="{Binding GroundStationList}"/>
+			</Border>
+		</Grid>
+		<Grid Grid.Column="4" RowDefinitions="Auto,*">
+			<TextBlock Text="UserGeometries" HorizontalAlignment="Center" Margin="8"/>
+			<Border Grid.Row="1" Classes="t1">
+				<views:ListView DataContext="{Binding UserGeometryList}"/>
+			</Border>
 		</Grid>
 
-	</dialogHost:DialogHost>
+		<Button Grid.ColumnSpan="5"
+				Grid.Row="1"
+				Margin="8"
+				HorizontalAlignment="Center"
+				Content="WasabiDialog"
+				Command="{Binding OptionCommand}"/>
+
+	</Grid>
 
 </UserControl>

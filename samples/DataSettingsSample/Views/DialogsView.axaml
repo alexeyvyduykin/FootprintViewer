@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DataSettingsSample.Views.DialogsView"
+			 xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls;assembly=FootprintViewer.Avalonia"
+			 xmlns:vm="using:DataSettingsSample.ViewModels"
+			 x:DataType="vm:MainWindowViewModel"
+             x:CompileBindings="False">
+
+	<UserControl.Resources>
+		<Color x:Key="RegionColor">#191D24</Color>
+		<Color x:Key="SystemAltHighColor">#FF000000</Color>
+	</UserControl.Resources>
+
+	<Panel>
+		<ExperimentalAcrylicBorder x:Name="OobeBackground"
+								   IsHitTestVisible="False"
+								   IsVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial BackgroundSource="Digger"
+											 TintColor="{DynamicResource SystemAltHighColor}"
+											 TintOpacity="0.8"
+											 FallbackColor="{DynamicResource AcrylicFallbackColor}"
+											 MaterialOpacity="0.2" />
+			</ExperimentalAcrylicBorder.Material>
+
+		</ExperimentalAcrylicBorder>
+
+		<ContentControl DataContext="{Binding DialogNavigationStack}">
+			<controls:Dialog IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
+							 IsActive="{Binding CurrentPage.IsActive}"
+							 IsBackEnabled="{Binding CurrentPage.EnableBack}"
+							 IsCancelEnabled="{Binding CurrentPage.EnableCancel}"
+							 HorizontalAlignment="Stretch"
+							 VerticalAlignment="Stretch">
+				<ContentControl Content="{Binding CurrentPage}" />
+			</controls:Dialog>
+		</ContentControl>
+
+	</Panel>
+</UserControl>
