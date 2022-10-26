@@ -129,4 +129,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Controls\ContentArea.axaml" />
+	</ItemGroup>
+
 </Project>
