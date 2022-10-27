@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
 using DataSettingsSample.Data;
-using DataSettingsSample.ViewModels.Interfaces;
 using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.ViewModels.Dialogs;

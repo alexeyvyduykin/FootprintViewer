@@ -12,7 +12,7 @@ namespace DataSettingsSample.Data
     {
         public DbSet<Satellite> Satellites { get; set; }
 
-        public SatelliteDbContext(string connectionString, string tableName/*, DbContextOptions<SatelliteDbContext> options*/) : base(connectionString, tableName/*, options*/)
+        public SatelliteDbContext(string connectionString, string tableName) : base(connectionString, tableName)
         {
 
         }
@@ -32,9 +32,6 @@ namespace DataSettingsSample.Data
             builder.Property(b => b.Value).IsRequired();
             builder.HasKey(b => b.Value);
         }
-
-   //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-   // => optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
 
         public override async Task<IList<object>> ToListAsync() => await Satellites.Cast<object>().ToListAsync().ConfigureAwait(false);
     }

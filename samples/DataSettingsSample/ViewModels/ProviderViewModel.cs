@@ -40,7 +40,7 @@ namespace DataSettingsSample.ViewModels
 
                 if (dialogResult.Result is DatabaseSource source)
                 {
-                    AddSource(new CustomSourceViewModel(source));
+                    AddSource(new SourceViewModel(source));
                 }
             });
 
@@ -56,7 +56,7 @@ namespace DataSettingsSample.ViewModels
 
                 if (dialogResult.Result is JsonSource source)
                 {
-                    AddSource(new CustomSourceViewModel(source));
+                    AddSource(new SourceViewModel(source));
                 }
             });
 

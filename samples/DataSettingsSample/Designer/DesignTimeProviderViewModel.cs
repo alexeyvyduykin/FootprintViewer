@@ -12,9 +12,9 @@ namespace DataSettingsSample.Designer
 
             Sources = new List<ISourceViewModel>()
             {
-                new CustomSourceViewModel(null) { Name = "Source1" },
-                new CustomSourceViewModel(null) { Name = "Source2" },
-                new CustomSourceViewModel(null) { Name = "Source3" },
+                new SourceViewModel(null) { Name = "Source1" },
+                new SourceViewModel(null) { Name = "Source2" },
+                new SourceViewModel(null) { Name = "Source3" },
             };
         }
     }

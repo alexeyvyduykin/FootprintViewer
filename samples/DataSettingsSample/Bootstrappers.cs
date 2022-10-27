@@ -51,53 +51,38 @@ namespace DataSettingsSample
             var source14 = new JsonSource(DbKeys.GroundStations, path9);
             var source15 = new JsonSource(DbKeys.UserGeometries, path10);
 
-            var connectionString = extns2.ToConnectionString("localhost", 5432, "DataSettingsSampleDatabase1", "postgres", "user");
-
-            //var source16 = new DatabaseSource(
-            //    connectionString,
-            //    connectionString => new DbContextOptionsBuilder<FootprintDbContext>().UseNpgsql(connectionString).Options,
-            //    options => new FootprintDbContext("Footprints", options));
-
-            //var source17 = new DatabaseSource<GroundTargetDbContext>(
-            //    connectionString,
-            //    options => new GroundTargetDbContext("GroundTargets", options));
-
-            //var source18 = new DatabaseSource<SatelliteDbContext>(
-            //    connectionString,
-            //    options => new SatelliteDbContext("Satellites", options));
-
-            var str = @"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2";
-            var source16 = new DatabaseSource(DbKeys.Footprints, str, "Footprints");
-            var source17 = new DatabaseSource(DbKeys.GroundTargets, str, "GroundTargets");
-            var source18 = new DatabaseSource(DbKeys.Satellites, str, "Satellites");
-            var source19 = new DatabaseSource(DbKeys.GroundStations, str, "GroundStations");
-            var source20 = new DatabaseSource(DbKeys.UserGeometries, str, "UserGeometries");
+            var connectionString = @"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2";
+            var source16 = new DatabaseSource(DbKeys.Footprints, connectionString, "Footprints");
+            var source17 = new DatabaseSource(DbKeys.GroundTargets, connectionString, "GroundTargets");
+            var source18 = new DatabaseSource(DbKeys.Satellites, connectionString, "Satellites");
+            var source19 = new DatabaseSource(DbKeys.GroundStations, connectionString, "GroundStations");
+            var source20 = new DatabaseSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
 
             var repository = new Repository();
 
-            repository.RegisterSource("footprints", source1);
-            repository.RegisterSource("groundTargets", source2);
-            repository.RegisterSource("satellites", source3);
-            repository.RegisterSource("groundStations", source4);
-            repository.RegisterSource("userGeometries", source5);
+            repository.RegisterSource(DbKeys.Footprints.ToString(), source1);
+            repository.RegisterSource(DbKeys.GroundTargets.ToString(), source2);
+            repository.RegisterSource(DbKeys.Satellites.ToString(), source3);
+            repository.RegisterSource(DbKeys.GroundStations.ToString(), source4);
+            repository.RegisterSource(DbKeys.UserGeometries.ToString(), source5);
 
-            repository.RegisterSource("footprints", source6);
-            repository.RegisterSource("groundTargets", source7);
-            repository.RegisterSource("satellites", source8);
-            repository.RegisterSource("groundStations", source9);
-            repository.RegisterSource("userGeometries", source10);
+            repository.RegisterSource(DbKeys.Footprints.ToString(), source6);
+            repository.RegisterSource(DbKeys.GroundTargets.ToString(), source7);
+            repository.RegisterSource(DbKeys.Satellites.ToString(), source8);
+            repository.RegisterSource(DbKeys.GroundStations.ToString(), source9);
+            repository.RegisterSource(DbKeys.UserGeometries.ToString(), source10);
 
-            repository.RegisterSource("footprints", source11);
-            repository.RegisterSource("groundTargets", source12);
-            repository.RegisterSource("satellites", source13);
-            repository.RegisterSource("groundStations", source14);
-            repository.RegisterSource("userGeometries", source15);
+            repository.RegisterSource(DbKeys.Footprints.ToString(), source11);
+            repository.RegisterSource(DbKeys.GroundTargets.ToString(), source12);
+            repository.RegisterSource(DbKeys.Satellites.ToString(), source13);
+            repository.RegisterSource(DbKeys.GroundStations.ToString(), source14);
+            repository.RegisterSource(DbKeys.UserGeometries.ToString(), source15);
 
-            repository.RegisterSource("footprints", source16);
-            repository.RegisterSource("groundTargets", source17);
-            repository.RegisterSource("satellites", source18);
-            repository.RegisterSource("groundStations", source19);
-            repository.RegisterSource("userGeometries", source20);
+            repository.RegisterSource(DbKeys.Footprints.ToString(), source16);
+            repository.RegisterSource(DbKeys.GroundTargets.ToString(), source17);
+            repository.RegisterSource(DbKeys.Satellites.ToString(), source18);
+            repository.RegisterSource(DbKeys.GroundStations.ToString(), source19);
+            repository.RegisterSource(DbKeys.UserGeometries.ToString(), source20);
 
             services.RegisterConstant(repository, typeof(Repository));
 

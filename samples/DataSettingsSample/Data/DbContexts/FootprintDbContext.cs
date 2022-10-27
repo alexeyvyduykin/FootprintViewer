@@ -10,13 +10,10 @@ namespace DataSettingsSample.Data
 {
     public class FootprintDbContext : DbCustomContext
     {
-      //  private readonly string _connectionString;
-
         public DbSet<Footprint> Footprints { get; set; }
 
-        public FootprintDbContext(string connectionString, string tableName/*, DbContextOptions<FootprintDbContext> options*/) : base(connectionString, tableName/*, options*/)
+        public FootprintDbContext(string connectionString, string tableName) : base(connectionString, tableName)
         {
-         //   _connectionString = connectionString;
         }
 
         public override IQueryable<object> GetTable() => Footprints.Cast<object>();
@@ -34,10 +31,6 @@ namespace DataSettingsSample.Data
             builder.Property(b => b.Value).IsRequired();
             builder.HasKey(b => b.Value);
         }
-               
-     //   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            //=> optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
-    //        => optionsBuilder.UseNpgsql(_connectionString);
 
         public override async Task<IList<object>> ToListAsync() => await Footprints.Cast<object>().ToListAsync().ConfigureAwait(false);
     }

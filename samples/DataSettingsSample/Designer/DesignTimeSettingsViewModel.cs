@@ -15,9 +15,9 @@ namespace DataSettingsSample.Designer
                     Header = "Footprints",
                     Sources = new List<ISourceViewModel>()
                     {
-                        new CustomSourceViewModel(null) { Name = "Source1" },
-                        new CustomSourceViewModel(null) { Name = "Source2" },
-                        new CustomSourceViewModel(null) { Name = "Source3" },
+                        new SourceViewModel(null) { Name = "Source1" },
+                        new SourceViewModel(null) { Name = "Source2" },
+                        new SourceViewModel(null) { Name = "Source3" },
                     },
                 },
                 new ProviderViewModel(Data.DbKeys.GroundTargets)
@@ -25,9 +25,9 @@ namespace DataSettingsSample.Designer
                     Header = "GroundTargets",
                     Sources = new List<ISourceViewModel>()
                     {
-                        new CustomSourceViewModel(null) { Name = "Source4" },
-                        new CustomSourceViewModel(null) { Name = "Source5" },
-                        new CustomSourceViewModel(null) { Name = "Source6" },
+                        new SourceViewModel(null) { Name = "Source4" },
+                        new SourceViewModel(null) { Name = "Source5" },
+                        new SourceViewModel(null) { Name = "Source6" },
                     },
                 },
                 new ProviderViewModel(Data.DbKeys.Satellites)
@@ -35,9 +35,9 @@ namespace DataSettingsSample.Designer
                     Header = "Satellites",
                     Sources = new List<ISourceViewModel>()
                     {
-                        new CustomSourceViewModel(null) { Name = "Source7" },
-                        new CustomSourceViewModel(null) { Name = "Source8" },
-                        new CustomSourceViewModel(null) { Name = "Source9" },
+                        new SourceViewModel(null) { Name = "Source7" },
+                        new SourceViewModel(null) { Name = "Source8" },
+                        new SourceViewModel(null) { Name = "Source9" },
                     },
                 },
                 new ProviderViewModel(Data.DbKeys.GroundStations)
@@ -45,9 +45,9 @@ namespace DataSettingsSample.Designer
                     Header = "GroundStations",
                     Sources = new List<ISourceViewModel>()
                     {
-                        new CustomSourceViewModel(null) { Name = "Source10" },
-                        new CustomSourceViewModel(null) { Name = "Source11" },
-                        new CustomSourceViewModel(null) { Name = "Source12" },
+                        new SourceViewModel(null) { Name = "Source10" },
+                        new SourceViewModel(null) { Name = "Source11" },
+                        new SourceViewModel(null) { Name = "Source12" },
                     },
                 },
                 new ProviderViewModel(Data.DbKeys.UserGeometries)
@@ -55,9 +55,9 @@ namespace DataSettingsSample.Designer
                     Header = "UserGeometries",
                     Sources = new List<ISourceViewModel>()
                     {
-                        new CustomSourceViewModel(null) { Name = "Source13" },
-                        new CustomSourceViewModel(null) { Name = "Source14" },
-                        new CustomSourceViewModel(null) { Name = "Source15" },
+                        new SourceViewModel(null) { Name = "Source13" },
+                        new SourceViewModel(null) { Name = "Source14" },
+                        new SourceViewModel(null) { Name = "Source15" },
                     },
                 },
             };

@@ -59,11 +59,11 @@ namespace DataSettingsSample.Data
         {
             return key switch
             {
-                DbKeys.Footprints => s => new FootprintDbContext(s, tableName/*"Footprints"*/),
-                DbKeys.GroundTargets => s => new GroundTargetDbContext(s, tableName/*"GroundTargets"*/),
-                DbKeys.Satellites => s => new SatelliteDbContext(s, tableName/*"Satellites"*/),
-                DbKeys.GroundStations => s => new GroundStationDbContext(s, tableName/*"GroundStations"*/),
-                DbKeys.UserGeometries => s => new UserGeometryDbContext(s, tableName/*"UserGeometries"*/),
+                DbKeys.Footprints => s => new FootprintDbContext(s, tableName),
+                DbKeys.GroundTargets => s => new GroundTargetDbContext(s, tableName),
+                DbKeys.Satellites => s => new SatelliteDbContext(s, tableName),
+                DbKeys.GroundStations => s => new GroundStationDbContext(s, tableName),
+                DbKeys.UserGeometries => s => new UserGeometryDbContext(s, tableName),
                 _ => throw new Exception(),
             };
         }

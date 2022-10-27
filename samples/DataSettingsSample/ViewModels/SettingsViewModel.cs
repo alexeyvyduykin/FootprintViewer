@@ -19,11 +19,11 @@ namespace DataSettingsSample.ViewModels
         {
             _repository = repository;
 
-            var footprintsSources = repository.GetSources("footprints");
-            var groundTargetsSources = repository.GetSources("groundTargets");
-            var satellitesSources = repository.GetSources("satellites");
-            var groundStationsSources = repository.GetSources("groundStations");
-            var userGeometriesSources = repository.GetSources("userGeometries");
+            var footprintsSources = repository.GetSources(DbKeys.Footprints.ToString());
+            var groundTargetsSources = repository.GetSources(DbKeys.GroundTargets.ToString());
+            var satellitesSources = repository.GetSources(DbKeys.Satellites.ToString());
+            var groundStationsSources = repository.GetSources(DbKeys.GroundStations.ToString());
+            var userGeometriesSources = repository.GetSources(DbKeys.UserGeometries.ToString());
 
             int counter = 0;
 
@@ -32,27 +32,27 @@ namespace DataSettingsSample.ViewModels
                 new ProviderViewModel(DbKeys.Footprints)
                 {
                     Header = "Footprints",
-                    Sources = footprintsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
+                    Sources = footprintsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
                 new ProviderViewModel(DbKeys.GroundTargets)
                 {
                     Header = "GroundTargets",
-                    Sources = groundTargetsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
+                    Sources = groundTargetsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
                 new ProviderViewModel(DbKeys.Satellites)
                 {
                     Header = "Satellites",
-                    Sources = satellitesSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
+                    Sources = satellitesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
                 new ProviderViewModel(DbKeys.GroundStations)
                 {
                     Header = "GroundStations",
-                    Sources = groundStationsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
+                    Sources = groundStationsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
                 new ProviderViewModel(DbKeys.UserGeometries)
                 {
                     Header = "UserGeometries",
-                    Sources = userGeometriesSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
+                    Sources = userGeometriesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
             };
 

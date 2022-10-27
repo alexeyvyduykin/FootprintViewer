@@ -61,11 +61,11 @@ namespace DataSettingsSample.ViewModels
             Func<object, IEnumerable<ItemViewModel>> Converter4 = converter;
             Func<object, IEnumerable<ItemViewModel>> Converter5 = converter;
 
-            FootprintList = new ListViewModel("footprints", _repository, Converter1);
-            GroundTargetList = new ListViewModel("groundTargets", _repository, Converter2);
-            SatelliteList = new ListViewModel("satellites", _repository, Converter3);
-            GroundStationList = new ListViewModel("groundStations", _repository, Converter4);
-            UserGeometryList = new ListViewModel("userGeometries", _repository, Converter5);
+            FootprintList = new ListViewModel(DbKeys.Footprints, _repository, Converter1);
+            GroundTargetList = new ListViewModel(DbKeys.GroundTargets, _repository, Converter2);
+            SatelliteList = new ListViewModel(DbKeys.Satellites, _repository, Converter3);
+            GroundStationList = new ListViewModel(DbKeys.GroundStations, _repository, Converter4);
+            UserGeometryList = new ListViewModel(DbKeys.UserGeometries, _repository, Converter5);
 
             FootprintList.Load.Execute().Subscribe();
             GroundTargetList.Load.Execute().Subscribe();

@@ -51,11 +51,6 @@ namespace DataSettingsSample.Data
 
         public abstract Task<IList<object>> ToListAsync();
 
-
-        //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //=> optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
-        //         => optionsBuilder.UseNpgsql(_connectionString);
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
