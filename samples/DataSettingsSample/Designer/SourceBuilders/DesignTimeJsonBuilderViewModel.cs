@@ -12,7 +12,7 @@ namespace DataSettingsSample.Designer
 {
     public class DesignTimeJsonBuilderViewModel : JsonBuilderViewModel
     {
-        public DesignTimeJsonBuilderViewModel() : base("Footprints")
+        public DesignTimeJsonBuilderViewModel() : base(Data.DbKeys.Footprints)
         {
             var list1 = new List<FileViewModel>();
             var list2 = new List<FileViewModel>();

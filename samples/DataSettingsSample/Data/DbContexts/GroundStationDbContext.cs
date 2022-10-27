@@ -12,10 +12,11 @@ namespace DataSettingsSample.Data
     {
         public DbSet<GroundStation> GroundStations { get; set; }
 
-        public GroundStationDbContext(string tableName/*, DbContextOptions<GroundStationDbContext> options*/) : base(tableName/*, options*/)
+        public GroundStationDbContext(string connectionString, string tableName/*, DbContextOptions<GroundStationDbContext> options*/) : base(connectionString, tableName/*, options*/)
         {
 
         }
+        public override IQueryable<object> GetTable() => GroundStations.Cast<object>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,8 +32,8 @@ namespace DataSettingsSample.Data
             builder.HasKey(b => b.Value);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
+    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //        => optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
 
         public override async Task<IList<object>> ToListAsync() => await GroundStations.Cast<object>().ToListAsync().ConfigureAwait(false);
     }

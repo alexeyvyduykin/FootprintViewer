@@ -6,15 +6,15 @@ namespace DataSettingsSample.Designer
 {
     public class DesignTimeProviderViewModel : ProviderViewModel
     {
-        public DesignTimeProviderViewModel() : base()
+        public DesignTimeProviderViewModel() : base(Data.DbKeys.Footprints)
         {
             Header = "Footprints";
 
             Sources = new List<ISourceViewModel>()
             {
-                new SourceViewModel() { Name = "Source1" },
-                new SourceViewModel() { Name = "Source2" },
-                new SourceViewModel() { Name = "Source3" },
+                new CustomSourceViewModel(null) { Name = "Source1" },
+                new CustomSourceViewModel(null) { Name = "Source2" },
+                new CustomSourceViewModel(null) { Name = "Source3" },
             };
         }
     }

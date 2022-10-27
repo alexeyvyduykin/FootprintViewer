@@ -12,10 +12,11 @@ namespace DataSettingsSample.Data
     {
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
-        public UserGeometryDbContext(string tableName/*, DbContextOptions<UserGeometryDbContext> options*/) : base(tableName/*, options*/)
+        public UserGeometryDbContext(string connectionString, string tableName/*, DbContextOptions<UserGeometryDbContext> options*/) : base(connectionString, tableName/*, options*/)
         {
 
         }
+        public override IQueryable<object> GetTable() => UserGeometries.Cast<object>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,8 +32,8 @@ namespace DataSettingsSample.Data
             builder.HasKey(b => b.Value);
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
+   //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+   // => optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
 
         public override async Task<IList<object>> ToListAsync() => await UserGeometries.Cast<object>().ToListAsync().ConfigureAwait(false);
     }

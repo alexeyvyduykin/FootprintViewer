@@ -1,6 +1,5 @@
 ﻿using DataSettingsSample.Data;
 using DataSettingsSample.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
 using System.IO;
@@ -36,21 +35,21 @@ namespace DataSettingsSample
             var path9 = Path.GetFullPath(Path.Combine(root, @"..\..\..\Assets", "File_test_14.json"));
             var path10 = Path.GetFullPath(Path.Combine(root, @"..\..\..\Assets", "File_test_15.json"));
 
-            var source1 = new StreamSource<CustomJsonObject>(uri1);
-            var source2 = new StreamSource<CustomJsonObject>(uri2);
-            var source3 = new StreamSource<CustomJsonObject>(uri3);
-            var source4 = new StreamSource<CustomJsonObject>(uri4);
-            var source5 = new StreamSource<CustomJsonObject>(uri5);
-            var source6 = new PathSource<CustomJsonObject>(path1);
-            var source7 = new PathSource<CustomJsonObject>(path2);
-            var source8 = new PathSource<CustomJsonObject>(path3);
-            var source9 = new PathSource<CustomJsonObject>(path4);
-            var source10 = new PathSource<CustomJsonObject>(path5);
-            var source11 = new PathSource<CustomJsonObject>(path6);
-            var source12 = new PathSource<CustomJsonObject>(path7);
-            var source13 = new PathSource<CustomJsonObject>(path8);
-            var source14 = new PathSource<CustomJsonObject>(path9);
-            var source15 = new PathSource<CustomJsonObject>(path10);
+            var source1 = new JsonSource(DbKeys.Footprints, uri1);
+            var source2 = new JsonSource(DbKeys.GroundTargets, uri2);
+            var source3 = new JsonSource(DbKeys.Satellites, uri3);
+            var source4 = new JsonSource(DbKeys.GroundStations, uri4);
+            var source5 = new JsonSource(DbKeys.UserGeometries, uri5);
+            var source6 = new JsonSource(DbKeys.Footprints, path1);
+            var source7 = new JsonSource(DbKeys.GroundTargets, path2);
+            var source8 = new JsonSource(DbKeys.Satellites, path3);
+            var source9 = new JsonSource(DbKeys.GroundStations, path4);
+            var source10 = new JsonSource(DbKeys.UserGeometries, path5);
+            var source11 = new JsonSource(DbKeys.Footprints, path6);
+            var source12 = new JsonSource(DbKeys.GroundTargets, path7);
+            var source13 = new JsonSource(DbKeys.Satellites, path8);
+            var source14 = new JsonSource(DbKeys.GroundStations, path9);
+            var source15 = new JsonSource(DbKeys.UserGeometries, path10);
 
             var connectionString = extns2.ToConnectionString("localhost", 5432, "DataSettingsSampleDatabase1", "postgres", "user");
 
@@ -67,11 +66,12 @@ namespace DataSettingsSample
             //    connectionString,
             //    options => new SatelliteDbContext("Satellites", options));
 
-            var source16 = new DatabaseSourceFootprint(connectionString);
-            var source17 = new DatabaseSourceGroundTarget(connectionString);
-            var source18 = new DatabaseSourceSatellite(connectionString);            
-            var source19 = new DatabaseSourceGroundStation(connectionString);
-            var source20 = new DatabaseSourceUserGeometry(connectionString);
+            var str = @"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2";
+            var source16 = new DatabaseSource(DbKeys.Footprints, str, "Footprints");
+            var source17 = new DatabaseSource(DbKeys.GroundTargets, str, "GroundTargets");
+            var source18 = new DatabaseSource(DbKeys.Satellites, str, "Satellites");
+            var source19 = new DatabaseSource(DbKeys.GroundStations, str, "GroundStations");
+            var source20 = new DatabaseSource(DbKeys.UserGeometries, str, "UserGeometries");
 
             var repository = new Repository();
 

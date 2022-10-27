@@ -1,7 +1,6 @@
 ﻿using DynamicData;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,6 +49,16 @@ namespace DataSettingsSample.Data
             }
         }
 
+        public IReadOnlyList<ISource> GetSources(string key)
+        {
+            if (_sources.TryGetValue(key, out var sources) == true)
+            {
+                return sources.ToImmutableList();
+            }
+
+            return new List<ISource>().ToImmutableList();
+        }
+
         public async Task<IList<T>> GetDataAsync<T>(string key)
         {
             return await Task.Run(async () =>
@@ -70,50 +79,6 @@ namespace DataSettingsSample.Data
 
                 return new List<T>();
             });
-        }
-
-        public static List<T> DeserializeFromStream<T>(string path)
-        {
-            var jsonString = File.ReadAllText(path);
-
-            try
-            {
-                return JsonConvert.DeserializeObject<List<T>>(jsonString) ?? new List<T>();
-            }
-            catch (System.Exception)
-            {
-                var res = JsonConvert.DeserializeObject<T>(jsonString);
-
-                if (res == null)
-                {
-                    return new List<T>();
-                }
-
-                return new List<T>() { res };
-            }
-        }
-
-        public static List<T> DeserializeFromStream<T>(Stream stream)
-        {
-            using var file = new StreamReader(stream);
-
-            string jsonString = file.ReadToEnd();
-
-            try
-            {
-                return JsonConvert.DeserializeObject<List<T>>(jsonString) ?? new List<T>();
-            }
-            catch (System.Exception)
-            {
-                var res = JsonConvert.DeserializeObject<T>(jsonString);
-
-                if (res == null)
-                {
-                    return new List<T>();
-                }
-
-                return new List<T>() { res };
-            }
         }
     }
 }

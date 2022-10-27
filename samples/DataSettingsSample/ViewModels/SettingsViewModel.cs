@@ -1,9 +1,11 @@
-﻿using DataSettingsSample.ViewModels.Interfaces;
+﻿using DataSettingsSample.Data;
+using DataSettingsSample.ViewModels.Interfaces;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -11,59 +13,46 @@ namespace DataSettingsSample.ViewModels
 {
     public class SettingsViewModel : DialogViewModelBase<Unit>
     {
-        public SettingsViewModel()
+        private readonly Repository _repository;
+
+        public SettingsViewModel(Repository repository)
         {
+            _repository = repository;
+
+            var footprintsSources = repository.GetSources("footprints");
+            var groundTargetsSources = repository.GetSources("groundTargets");
+            var satellitesSources = repository.GetSources("satellites");
+            var groundStationsSources = repository.GetSources("groundStations");
+            var userGeometriesSources = repository.GetSources("userGeometries");
+
+            int counter = 0;
+
             Providers = new List<ProviderViewModel>()
             {
-                new ProviderViewModel()
+                new ProviderViewModel(DbKeys.Footprints)
                 {
                     Header = "Footprints",
-                    Sources = new List<ISourceViewModel>()
-                    {
-                        new SourceViewModel() { Name = "Source1" },
-                        new SourceViewModel() { Name = "Source2" },
-                        new SourceViewModel() { Name = "Source3" },
-                    },
+                    Sources = footprintsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
-                new ProviderViewModel()
+                new ProviderViewModel(DbKeys.GroundTargets)
                 {
                     Header = "GroundTargets",
-                    Sources = new List<ISourceViewModel>()
-                    {
-                        new SourceViewModel() { Name = "Source4" },
-                        new SourceViewModel() { Name = "Source5" },
-                        new SourceViewModel() { Name = "Source6" },
-                    },
+                    Sources = groundTargetsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
-                new ProviderViewModel()
+                new ProviderViewModel(DbKeys.Satellites)
                 {
                     Header = "Satellites",
-                    Sources = new List<ISourceViewModel>()
-                    {
-                        new SourceViewModel() { Name = "Source7" },
-                        new SourceViewModel() { Name = "Source8" },
-                        new SourceViewModel() { Name = "Source9" },
-                    },
+                    Sources = satellitesSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
-                new ProviderViewModel()
+                new ProviderViewModel(DbKeys.GroundStations)
                 {
                     Header = "GroundStations",
-                    Sources = new List<ISourceViewModel>()
-                    {
-                        new SourceViewModel() { Name = "Source10" },
-                        new SourceViewModel() { Name = "Source11" },
-                        new SourceViewModel() { Name = "Source12" },
-                    },
+                    Sources = groundStationsSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
-                new ProviderViewModel()
+                new ProviderViewModel(DbKeys.UserGeometries)
                 {
                     Header = "UserGeometries",
-                    Sources = new List<ISourceViewModel>()
-                    {
-                        new SourceViewModel() { Name = "Source13" },
-                        new SourceViewModel() { Name = "Source14" },
-                        new SourceViewModel() { Name = "Source15" },
-                    },
+                    Sources = userGeometriesSources.Select(s => new CustomSourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
                 },
             };
 

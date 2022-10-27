@@ -1,4 +1,4 @@
-﻿using DataSettingsSample.ViewModels.Interfaces;
+﻿using DataSettingsSample.Data;
 using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.ViewModels.Dialogs;
@@ -14,14 +14,17 @@ using System.Reactive.Linq;
 
 namespace DataSettingsSample.ViewModels.SourceBuilders
 {
-    public class DatabaseBuilderViewModel : DialogViewModelBase<ISourceViewModel>
+    public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
     {
         private readonly ObservableAsPropertyHelper<bool> _isVerified;
         private readonly ReadOnlyObservableCollection<string> _availableTables;
         private readonly SourceList<string> _availableList = new();
+        private readonly DbKeys _key;
 
-        public DatabaseBuilderViewModel()
+        public DatabaseBuilderViewModel(DbKeys key)
         {
+            _key = key;
+
             Host = "localhost";
             Port = 5432;
             Database = "DataSettingsSampleDatabase1";
@@ -56,8 +59,14 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
 
             // dialog
             EnableCancel = true;
-            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, new SourceViewModel()), nextCommandCanExecute);
+            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, CreateSource()), nextCommandCanExecute);
             CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
+        }
+
+        private ISource CreateSource()
+        {
+            var str = extns2.ToConnectionString(Host!, Port, Database!, Username!, Password!);
+            return new DatabaseSource(_key, str, SelectedTable!);
         }
 
         private void UpdateImpl(List<string> list)

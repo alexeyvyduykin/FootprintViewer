@@ -1,4 +1,5 @@
-﻿using DataSettingsSample.ViewModels.Interfaces;
+﻿using DataSettingsSample.Data;
+using DataSettingsSample.ViewModels.Interfaces;
 using DataSettingsSample.ViewModels.SourceBuilders;
 using FootprintViewer.ViewModels.Navigation;
 using ReactiveUI;
@@ -21,7 +22,7 @@ namespace DataSettingsSample.ViewModels
 
     public class ProviderViewModel : RoutableViewModel
     {
-        public ProviderViewModel()
+        public ProviderViewModel(DbKeys key)
         {
             Sources = new List<ISourceViewModel>();
 
@@ -29,7 +30,7 @@ namespace DataSettingsSample.ViewModels
 
             DatabaseBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var databaseBuilderDialog = new DatabaseBuilderViewModel();
+                var databaseBuilderDialog = new DatabaseBuilderViewModel(key);
 
                 DialogStack().To(databaseBuilderDialog);
 
@@ -37,15 +38,15 @@ namespace DataSettingsSample.ViewModels
 
                 DialogStack().Back();
 
-                if (dialogResult.Result is ISourceViewModel source)
+                if (dialogResult.Result is DatabaseSource source)
                 {
-                    AddSource(source);
+                    AddSource(new CustomSourceViewModel(source));
                 }
             });
 
             JsonBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var jsonBuilderDialog = new JsonBuilderViewModel(Header ?? string.Empty);
+                var jsonBuilderDialog = new JsonBuilderViewModel(key);
 
                 DialogStack().To(jsonBuilderDialog);
 
@@ -53,9 +54,9 @@ namespace DataSettingsSample.ViewModels
 
                 DialogStack().Back();
 
-                if (dialogResult.Result is ISourceViewModel source)
+                if (dialogResult.Result is JsonSource source)
                 {
-                    AddSource(source);
+                    AddSource(new CustomSourceViewModel(source));
                 }
             });
 

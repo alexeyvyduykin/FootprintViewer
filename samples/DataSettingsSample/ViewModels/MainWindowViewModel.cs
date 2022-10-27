@@ -14,11 +14,11 @@ namespace DataSettingsSample.ViewModels
 {
     public class MainWindowViewModel : RoutableViewModel
     {
+        private readonly Repository _repository;
+
         public MainWindowViewModel(IReadonlyDependencyResolver resolver)
         {
-            var repository = resolver.GetExistingService<Repository>();
-
-            SettingsViewModel = new SettingsViewModel();
+            _repository = resolver.GetExistingService<Repository>();
 
             static IEnumerable<ItemViewModel> converter(object obj)
             {
@@ -61,11 +61,11 @@ namespace DataSettingsSample.ViewModels
             Func<object, IEnumerable<ItemViewModel>> Converter4 = converter;
             Func<object, IEnumerable<ItemViewModel>> Converter5 = converter;
 
-            FootprintList = new ListViewModel("footprints", repository, Converter1);
-            GroundTargetList = new ListViewModel("groundTargets", repository, Converter2);
-            SatelliteList = new ListViewModel("satellites", repository, Converter3);
-            GroundStationList = new ListViewModel("groundStations", repository, Converter4);
-            UserGeometryList = new ListViewModel("userGeometries", repository, Converter5);
+            FootprintList = new ListViewModel("footprints", _repository, Converter1);
+            GroundTargetList = new ListViewModel("groundTargets", _repository, Converter2);
+            SatelliteList = new ListViewModel("satellites", _repository, Converter3);
+            GroundStationList = new ListViewModel("groundStations", _repository, Converter4);
+            UserGeometryList = new ListViewModel("userGeometries", _repository, Converter5);
 
             FootprintList.Load.Execute().Subscribe();
             GroundTargetList.Load.Execute().Subscribe();
@@ -75,7 +75,7 @@ namespace DataSettingsSample.ViewModels
 
             OptionCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var settingsDialog = new SettingsViewModel();
+                var settingsDialog = new SettingsViewModel(_repository);
 
                 DialogStack().To(settingsDialog);
 
@@ -96,8 +96,6 @@ namespace DataSettingsSample.ViewModels
         public DialogNavigationStack DialogNavigationStack => DialogStack();
 
         public ICommand OptionCommand { get; }
-
-        public SettingsViewModel SettingsViewModel { get; set; }
 
         public ListViewModel FootprintList { get; set; }
 

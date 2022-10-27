@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 #nullable disable
 
@@ -31,24 +32,37 @@ namespace DataSettingsSample.Data
     public interface IDbCustomContext : IDisposable
     {
         Task<IList<object>> ToListAsync();
+
+        IQueryable<object> GetTable();
     }
 
     public abstract class DbCustomContext : DbContext, IDbCustomContext
     {
         private readonly string _tableName;
+        private readonly string _connectionString;
 
-        public DbCustomContext(string tableName/*, DbContextOptions options*/) : base()// base(options)
+        public DbCustomContext(string connectionString, string tableName) : base()
         {
             _tableName = tableName;
+            _connectionString = connectionString;
         }
 
+        public abstract IQueryable<object> GetTable();
+
         public abstract Task<IList<object>> ToListAsync();
+
+
+        //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //=> optionsBuilder.UseNpgsql(@"Host=localhost;Username=postgres;Password=user;Database=DataSettingsSampleDatabase2");
+        //         => optionsBuilder.UseNpgsql(_connectionString);
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
 
             optionsBuilder.ReplaceService<IModelCacheKeyFactory, CustomModelCacheKeyFactory>();
+
+            optionsBuilder.UseNpgsql(_connectionString);
         }
 
         public string TableName => _tableName;

@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
+using DataSettingsSample.Data;
 using DataSettingsSample.ViewModels.Interfaces;
 using DynamicData;
 using DynamicData.Binding;
@@ -17,17 +18,17 @@ using System.Reflection;
 
 namespace DataSettingsSample.ViewModels.SourceBuilders
 {
-    public class JsonBuilderViewModel : DialogViewModelBase<ISourceViewModel>
+    public class JsonBuilderViewModel : DialogViewModelBase<ISource>
     {
-        private readonly string _key = string.Empty;
+        private readonly DbKeys _key;
         private readonly SourceList<FileViewModel> _targetList = new();
         private readonly SourceList<FileViewModel> _availableList = new();
         private readonly ReadOnlyObservableCollection<FileViewModel> _targetFiles;
         private readonly ReadOnlyObservableCollection<FileViewModel> _availableFiles;
 
-        public JsonBuilderViewModel(string providerName)
+        public JsonBuilderViewModel(DbKeys key)
         {
-            _key = providerName;
+            _key = key;
 
             var list1 = new List<FileViewModel>();
             var list2 = new List<FileViewModel>();
@@ -61,7 +62,7 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
                             IsSelected = new Random().Next(0, 2) == 1,
                         };
 
-                        file.Verified(_key);
+                        file.Verified(_key.ToString());
 
                         list2.Add(file);
                     }
@@ -95,8 +96,13 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
 
             // dialog
             EnableCancel = true;
-            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, new SourceViewModel()), nextCommandCanExecute);
+            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, CreateSource()), nextCommandCanExecute);
             CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
+        }
+
+        private ISource CreateSource()
+        {
+            return new JsonSource(_key, TargetFiles.Where(s => !string.IsNullOrEmpty(s.Path)).Select(s => s.Path!).ToList());
         }
 
         protected void AddToAvailableList(IList<FileViewModel> list)
@@ -152,7 +158,7 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
             var listTrue = list1.Where(s => s.IsSelected == true).ToList();
 
             listTrue.ForEach(s => s.IsSelected = false);
-            listTrue.ForEach(s => s.Verified(_key));
+            listTrue.ForEach(s => s.Verified(_key.ToString()));
 
             list2.AddRange(listTrue);
 

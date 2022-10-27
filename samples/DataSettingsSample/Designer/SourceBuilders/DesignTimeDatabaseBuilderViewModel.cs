@@ -4,7 +4,7 @@ namespace DataSettingsSample.Designer
 {
     public class DesignTimeDatabaseBuilderViewModel : DatabaseBuilderViewModel
     {
-        public DesignTimeDatabaseBuilderViewModel() : base()
+        public DesignTimeDatabaseBuilderViewModel() : base(Data.DbKeys.Footprints)
         {
             Host = "localhost";
             Port = 5432;

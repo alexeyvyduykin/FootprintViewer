@@ -51,7 +51,7 @@ namespace DataSettingsSample.ViewModels
 
         private async Task LoadAsyncImpl()
         {
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             if (_values != null)
             {

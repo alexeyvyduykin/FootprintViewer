@@ -89,7 +89,7 @@
 							ShowMode="TransientWithDismissOnPointerMoveAway">
 						<ItemsControl Items="{Binding MenuItems}">
 							<ItemsControl.ItemTemplate>
-								<DataTemplate x:DataType="vm:SourceBuilderItemViewModel">
+								<DataTemplate x:DataType="vm:MenuItemViewModel">
 									<MenuItem DataContext="{Binding}"/>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
