@@ -1,4 +1,4 @@
-﻿using DataSettingsSample.ViewModels;
+﻿using DataSettingsSample.ViewModels.SourceBuilders;
 
 namespace DataSettingsSample.Designer
 {

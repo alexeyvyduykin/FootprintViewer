@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DataSettingsSample.ViewModels"
+             xmlns:builders="using:DataSettingsSample.ViewModels.SourceBuilders"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
              xmlns:sourceBuilders="using:DataSettingsSample.Views.SourceBuilders"
@@ -18,6 +19,14 @@
 	</Design.DataContext>
 
 	<UserControl.Styles>
+
+		<Style Selector="MenuItem">
+			<Setter Property="Header" Value="{Binding Header}"/>
+			<Setter Property="Items" Value="{Binding Items}"/>
+			<Setter Property="Command" Value="{Binding Command}"/>
+			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+		</Style>
+
 		<Style Selector="Button.rmvBtn">
 			<Setter Property="Width" Value="20"></Setter>
 			<Setter Property="Height" Value="20"></Setter>
@@ -66,28 +75,25 @@
 
 	</UserControl.Resources>
 
-	<Grid RowDefinitions="Auto,*">
+	<Panel>
 		<StackPanel>
 			<ItemsControl x:Name="ItemsControl"
 						  Items="{Binding Sources}"
 						  ItemTemplate="{StaticResource t1}">
 			</ItemsControl>
 
-			<Button x:Name="AddSourceButton"
-					Margin="0,2,0,0"
+			<Button Margin="0,2,0,0"
 					Classes="addBtn">
 				<Button.Flyout>
 					<Flyout Placement="RightEdgeAlignedTop"
 							ShowMode="TransientWithDismissOnPointerMoveAway">
-						<ListBox x:Name="ListBoxSources"
-								 Items="{Binding SourceBuilderItems}"
-								 SelectedItem="{Binding SourceBuilderItemSelected}">
-							<ListBox.DataTemplates>
+						<ItemsControl Items="{Binding MenuItems}">
+							<ItemsControl.ItemTemplate>
 								<DataTemplate x:DataType="vm:SourceBuilderItemViewModel">
-									<TextBlock Text="{Binding Name}"/>
+									<MenuItem DataContext="{Binding}"/>
 								</DataTemplate>
-							</ListBox.DataTemplates>
-						</ListBox>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
 					</Flyout>
 				</Button.Flyout>
 				<Viewbox Margin="2">
@@ -95,23 +101,6 @@
 				</Viewbox>
 			</Button>
 		</StackPanel>
-
-		<Border Grid.Row="1"
-			    Margin="8"
-				IsVisible="{Binding SourceBuilderVisible}">
-			<ContentControl Content="{Binding SourceBuilder}">
-				<ContentControl.DataTemplates>
-					<DataTemplate DataType="vm:DatabaseBuilderViewModel">
-						<sourceBuilders:DatabaseBuilderView DataContext="{Binding}"/>
-					</DataTemplate>
-					<DataTemplate DataType="vm:JsonBuilderViewModel">
-						<sourceBuilders:JsonBuilderView DataContext="{Binding}"/>
-					</DataTemplate>
-				</ContentControl.DataTemplates>
-			</ContentControl>
-
-		</Border>
-
-	</Grid>
+	</Panel>
 
 </UserControl>

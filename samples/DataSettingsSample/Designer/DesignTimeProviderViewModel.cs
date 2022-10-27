@@ -16,12 +16,6 @@ namespace DataSettingsSample.Designer
                 new SourceViewModel() { Name = "Source2" },
                 new SourceViewModel() { Name = "Source3" },
             };
-
-            SourceBuilderItems = new List<SourceBuilderItemViewModel>
-            {
-                new SourceBuilderItemViewModel(){ Name = ".database" },
-                new SourceBuilderItemViewModel(){ Name = ".json" },
-            };
         }
     }
 }

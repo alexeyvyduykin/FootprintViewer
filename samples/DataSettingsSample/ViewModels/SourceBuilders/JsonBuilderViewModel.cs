@@ -3,6 +3,7 @@ using Avalonia.Platform;
 using DataSettingsSample.ViewModels.Interfaces;
 using DynamicData;
 using DynamicData.Binding;
+using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -14,9 +15,9 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reflection;
 
-namespace DataSettingsSample.ViewModels
+namespace DataSettingsSample.ViewModels.SourceBuilders
 {
-    public class JsonBuilderViewModel : BaseSourceBuilderViewModel, IJsonBuilderViewModel
+    public class JsonBuilderViewModel : DialogViewModelBase<ISourceViewModel>
     {
         private readonly string _key = string.Empty;
         private readonly SourceList<FileViewModel> _targetList = new();
@@ -80,18 +81,22 @@ namespace DataSettingsSample.ViewModels
             AddToAvailableList(list1);
             AddToTargetList(list2);
 
-            var canAdd = TargetFiles
+            var nextCommandCanExecute = TargetFiles
                 .ToObservableChangeSet()
                 .AutoRefresh(s => s.IsVerified)
                 .ToCollection()
                 .Select(s => (s.Count != 0) && s.All(d => d.IsVerified));
 
-            Add = ReactiveCommand.Create(AddImpl, canAdd, outputScheduler: RxApp.MainThreadScheduler);
             Update = ReactiveCommand.Create<string?>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
             ToTarget = ReactiveCommand.Create(ToTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
             FromTarget = ReactiveCommand.Create(FromTargetImpl, outputScheduler: RxApp.MainThreadScheduler);
 
             this.WhenAnyValue(s => s.Directory).InvokeCommand(Update);
+
+            // dialog
+            EnableCancel = true;
+            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, new SourceViewModel()), nextCommandCanExecute);
+            CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
         }
 
         protected void AddToAvailableList(IList<FileViewModel> list)
@@ -172,8 +177,6 @@ namespace DataSettingsSample.ViewModels
 
             AddToTargetList(listFalse);
         }
-
-        public override ReactiveCommand<Unit, ISourceViewModel> Add { get; }
 
         private ReactiveCommand<string?, Unit> Update { get; }
 

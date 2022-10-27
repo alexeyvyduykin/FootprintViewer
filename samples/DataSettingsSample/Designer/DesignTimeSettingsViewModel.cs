@@ -19,11 +19,6 @@ namespace DataSettingsSample.Designer
                         new SourceViewModel() { Name = "Source2" },
                         new SourceViewModel() { Name = "Source3" },
                     },
-                    SourceBuilderItems = new List<SourceBuilderItemViewModel>
-                    {
-                        new SourceBuilderItemViewModel(){ Name = ".database" },
-                        new SourceBuilderItemViewModel(){ Name = ".json" },
-                    }
                 },
                 new ProviderViewModel()
                 {
@@ -34,11 +29,6 @@ namespace DataSettingsSample.Designer
                         new SourceViewModel() { Name = "Source5" },
                         new SourceViewModel() { Name = "Source6" },
                     },
-                    SourceBuilderItems = new List<SourceBuilderItemViewModel>
-                    {
-                        new SourceBuilderItemViewModel(){ Name = ".database" },
-                        new SourceBuilderItemViewModel(){ Name = ".json" },
-                    }
                 },
                 new ProviderViewModel()
                 {
@@ -49,11 +39,6 @@ namespace DataSettingsSample.Designer
                         new SourceViewModel() { Name = "Source8" },
                         new SourceViewModel() { Name = "Source9" },
                     },
-                    SourceBuilderItems = new List<SourceBuilderItemViewModel>
-                    {
-                        new SourceBuilderItemViewModel(){ Name = ".database" },
-                        new SourceBuilderItemViewModel(){ Name = ".json" },
-                    }
                 },
                 new ProviderViewModel()
                 {
@@ -64,11 +49,6 @@ namespace DataSettingsSample.Designer
                         new SourceViewModel() { Name = "Source11" },
                         new SourceViewModel() { Name = "Source12" },
                     },
-                    SourceBuilderItems = new List<SourceBuilderItemViewModel>
-                    {
-                        new SourceBuilderItemViewModel(){ Name = ".database" },
-                        new SourceBuilderItemViewModel(){ Name = ".json" },
-                    }
                 },
                 new ProviderViewModel()
                 {
@@ -79,11 +59,6 @@ namespace DataSettingsSample.Designer
                         new SourceViewModel() { Name = "Source14" },
                         new SourceViewModel() { Name = "Source15" },
                     },
-                    SourceBuilderItems = new List<SourceBuilderItemViewModel>
-                    {
-                        new SourceBuilderItemViewModel(){ Name = ".database" },
-                        new SourceBuilderItemViewModel(){ Name = ".json" },
-                    }
                 },
             };
         }

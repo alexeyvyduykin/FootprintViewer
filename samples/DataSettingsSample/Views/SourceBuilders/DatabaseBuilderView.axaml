@@ -3,12 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DataSettingsSample.ViewModels"
+             xmlns:builders="using:DataSettingsSample.ViewModels.SourceBuilders"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
+			 xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls;assembly=FootprintViewer.Avalonia"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             x:DataType="vm:DatabaseBuilderViewModel"
-			 mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="280"
+             x:DataType="builders:DatabaseBuilderViewModel"
+			 mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="300"
              x:Class="DataSettingsSample.Views.SourceBuilders.DatabaseBuilderView">
 
 	<Design.DataContext>
@@ -29,10 +31,11 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="*,Auto">
-
+	<controls:ContentArea EnableCancel="True"
+						  CancelContent="Cancel"
+						  EnableNext="True"
+						  NextContent="Add">
 		<StackPanel>
-
 			<Grid ColumnDefinitions="Auto,*"
 				  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 
@@ -57,22 +60,7 @@
 						  SelectedItem="{Binding SelectedTable}"
 						  Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch"/>
 			</Grid>
-
 		</StackPanel>
-
-		<DockPanel Grid.Row="1"
-				   LastChildFill="True"
-				   HorizontalAlignment="Right"
-				   Margin="8">
-			<Button Content="Add"
-					Command="{Binding Add}"
-					HorizontalAlignment="Right"/>
-			<Button Content="Cancel"
-					Command="{Binding Cancel}"
-					Margin="4,0,0,0"
-					HorizontalAlignment="Right"/>
-		</DockPanel>
-
-	</Grid>
+	</controls:ContentArea>
 
 </UserControl>

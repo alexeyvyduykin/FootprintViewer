@@ -1,6 +1,7 @@
 ﻿using DataSettingsSample.ViewModels.Interfaces;
 using DynamicData;
 using DynamicData.Binding;
+using FootprintViewer.ViewModels.Dialogs;
 using Npgsql;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -11,9 +12,9 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace DataSettingsSample.ViewModels
+namespace DataSettingsSample.ViewModels.SourceBuilders
 {
-    public class DatabaseBuilderViewModel : BaseSourceBuilderViewModel, IDatabaseBuilderViewModel
+    public class DatabaseBuilderViewModel : DialogViewModelBase<ISourceViewModel>
     {
         private readonly ObservableAsPropertyHelper<bool> _isVerified;
         private readonly ReadOnlyObservableCollection<string> _availableTables;
@@ -28,9 +29,6 @@ namespace DataSettingsSample.ViewModels
             Password = "user";
 
             Update = ReactiveCommand.Create<List<string>>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
-
-            var canExecute = this.WhenAnyValue(s => s.SelectedTable, (t) => !string.IsNullOrEmpty(t));
-            Add = ReactiveCommand.Create(AddImpl, canExecute, outputScheduler: RxApp.MainThreadScheduler);
 
             _availableList.Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -53,6 +51,13 @@ namespace DataSettingsSample.ViewModels
                 .ToCollection()
                 .Select(s => s.Count != 0)
                 .ToProperty(this, x => x.IsVerified);
+
+            var nextCommandCanExecute = this.WhenAnyValue(s => s.SelectedTable, (t) => !string.IsNullOrEmpty(t));
+
+            // dialog
+            EnableCancel = true;
+            NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, new SourceViewModel()), nextCommandCanExecute);
+            CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
         }
 
         private void UpdateImpl(List<string> list)
@@ -101,8 +106,6 @@ namespace DataSettingsSample.ViewModels
         }
 
         private ReactiveCommand<List<string>, Unit> Update { get; }
-
-        public override ReactiveCommand<Unit, ISourceViewModel> Add { get; }
 
         [Reactive]
         public string? Host { get; set; }
