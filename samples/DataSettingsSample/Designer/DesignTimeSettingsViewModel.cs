@@ -1,63 +1,69 @@
-﻿using DataSettingsSample.ViewModels;
+﻿using DataSettingsSample.Data;
+using DataSettingsSample.ViewModels;
 using DataSettingsSample.ViewModels.Interfaces;
+using Splat;
 using System.Collections.Generic;
 
 namespace DataSettingsSample.Designer
 {
     public class DesignTimeSettingsViewModel : SettingsViewModel
     {
-        public DesignTimeSettingsViewModel() : base(null)
+        private static readonly Repository _repository = new DesignTimeData().GetService<Repository>()!;
+
+        public DesignTimeSettingsViewModel() : base(_repository)
         {
+            var source = _repository.GetSources(DbKeys.Footprints.ToString())[0];
+
             Providers = new List<ProviderViewModel>()
             {
-                new ProviderViewModel(Data.DbKeys.Footprints)
+                new ProviderViewModel(DbKeys.Footprints)
                 {
-                    Header = "Footprints",
+                    Header = DbKeys.Footprints.ToString(),
                     Sources = new List<ISourceViewModel>()
                     {
-                        new SourceViewModel(null) { Name = "Source1" },
-                        new SourceViewModel(null) { Name = "Source2" },
-                        new SourceViewModel(null) { Name = "Source3" },
+                        new SourceViewModel(source) { Name = "Source1" },
+                        new SourceViewModel(source) { Name = "Source2" },
+                        new SourceViewModel(source) { Name = "Source3" },
                     },
                 },
-                new ProviderViewModel(Data.DbKeys.GroundTargets)
+                new ProviderViewModel(DbKeys.GroundTargets)
                 {
-                    Header = "GroundTargets",
+                    Header = DbKeys.GroundTargets.ToString(),
                     Sources = new List<ISourceViewModel>()
                     {
-                        new SourceViewModel(null) { Name = "Source4" },
-                        new SourceViewModel(null) { Name = "Source5" },
-                        new SourceViewModel(null) { Name = "Source6" },
+                        new SourceViewModel(source) { Name = "Source4" },
+                        new SourceViewModel(source) { Name = "Source5" },
+                        new SourceViewModel(source) { Name = "Source6" },
                     },
                 },
-                new ProviderViewModel(Data.DbKeys.Satellites)
+                new ProviderViewModel(DbKeys.Satellites)
                 {
-                    Header = "Satellites",
+                    Header = DbKeys.Satellites.ToString(),
                     Sources = new List<ISourceViewModel>()
                     {
-                        new SourceViewModel(null) { Name = "Source7" },
-                        new SourceViewModel(null) { Name = "Source8" },
-                        new SourceViewModel(null) { Name = "Source9" },
+                        new SourceViewModel(source) { Name = "Source7" },
+                        new SourceViewModel(source) { Name = "Source8" },
+                        new SourceViewModel(source) { Name = "Source9" },
                     },
                 },
-                new ProviderViewModel(Data.DbKeys.GroundStations)
+                new ProviderViewModel(DbKeys.GroundStations)
                 {
-                    Header = "GroundStations",
+                    Header = DbKeys.GroundStations.ToString(),
                     Sources = new List<ISourceViewModel>()
                     {
-                        new SourceViewModel(null) { Name = "Source10" },
-                        new SourceViewModel(null) { Name = "Source11" },
-                        new SourceViewModel(null) { Name = "Source12" },
+                        new SourceViewModel(source) { Name = "Source10" },
+                        new SourceViewModel(source) { Name = "Source11" },
+                        new SourceViewModel(source) { Name = "Source12" },
                     },
                 },
-                new ProviderViewModel(Data.DbKeys.UserGeometries)
+                new ProviderViewModel(DbKeys.UserGeometries)
                 {
-                    Header = "UserGeometries",
+                    Header = DbKeys.UserGeometries.ToString(),
                     Sources = new List<ISourceViewModel>()
                     {
-                        new SourceViewModel(null) { Name = "Source13" },
-                        new SourceViewModel(null) { Name = "Source14" },
-                        new SourceViewModel(null) { Name = "Source15" },
+                        new SourceViewModel(source) { Name = "Source13" },
+                        new SourceViewModel(source) { Name = "Source14" },
+                        new SourceViewModel(source) { Name = "Source15" },
                     },
                 },
             };

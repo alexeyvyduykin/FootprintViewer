@@ -46,23 +46,23 @@ namespace DataSettingsSample.Designer
             }
         }
 
-        private class LocalSource<T> : ISource
-        {
-            private readonly List<T> _list;
-
-            public LocalSource(List<T> list)
-            {
-                _list = list;
-            }
-
-            public IList<object> GetValues() => _list.Cast<object>().ToList();
-
-            public async Task<IList<object>> GetValuesAsync() => await Task.Run(() => _list.Cast<object>().ToList());
-        }
-
         public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
         {
             throw new Exception();
         }
+    }
+
+    internal class LocalSource<T> : ISource
+    {
+        private readonly List<T> _list;
+
+        public LocalSource(List<T> list)
+        {
+            _list = list;
+        }
+
+        public IList<object> GetValues() => _list.Cast<object>().ToList();
+
+        public async Task<IList<object>> GetValuesAsync() => await Task.Run(() => _list.Cast<object>().ToList());
     }
 }

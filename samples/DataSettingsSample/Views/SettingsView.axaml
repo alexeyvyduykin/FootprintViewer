@@ -28,7 +28,8 @@
 					 FontSize="14"
 					 Foreground="White">
 				<TabControl TabStripPlacement="Left"
-							Items="{Binding Providers}">
+							Items="{Binding Providers}"
+						    SelectedItem="{Binding SelectedProvider}">
 					<TabControl.ItemTemplate>
 						<DataTemplate x:DataType="vm:ProviderViewModel">
 							<TextBlock Text="{Binding Header}" FontSize="14"/>

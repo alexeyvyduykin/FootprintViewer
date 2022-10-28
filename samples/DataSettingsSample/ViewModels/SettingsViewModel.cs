@@ -91,5 +91,8 @@ namespace DataSettingsSample.ViewModels
 
         [Reactive]
         public IList<ProviderViewModel> Providers { get; set; }
+
+        [Reactive]
+        public ProviderViewModel? SelectedProvider { get; set; }
     }
 }
