@@ -6,7 +6,9 @@ using FootprintViewer.ViewModels.Navigation;
 using ReactiveUI;
 using Splat;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 
@@ -15,6 +17,7 @@ namespace DataSettingsSample.ViewModels
     public class MainWindowViewModel : RoutableViewModel
     {
         private readonly Repository _repository;
+        private readonly Dictionary<DbKeys, ListViewModel> _dict = new();
 
         public MainWindowViewModel(IReadonlyDependencyResolver resolver)
         {
@@ -60,11 +63,13 @@ namespace DataSettingsSample.ViewModels
             GroundStationList = new ListViewModel(DbKeys.GroundStations, _repository, Converter4);
             UserGeometryList = new ListViewModel(DbKeys.UserGeometries, _repository, Converter5);
 
-            FootprintList.Load.Execute().Subscribe();
-            GroundTargetList.Load.Execute().Subscribe();
-            SatelliteList.Load.Execute().Subscribe();
-            GroundStationList.Load.Execute().Subscribe();
-            UserGeometryList.Load.Execute().Subscribe();
+            _dict.Add(DbKeys.Footprints, FootprintList);
+            _dict.Add(DbKeys.GroundTargets, GroundTargetList);
+            _dict.Add(DbKeys.Satellites, SatelliteList);
+            _dict.Add(DbKeys.GroundStations, GroundStationList);
+            _dict.Add(DbKeys.UserGeometries, UserGeometryList);
+
+            UpdateLists(_dict.Keys.ToList());
 
             OptionCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -75,6 +80,11 @@ namespace DataSettingsSample.ViewModels
                 var dialogResult = await settingsDialog.GetDialogResultAsync();
 
                 DialogStack().Clear();
+
+                if (dialogResult.Result is IList<DbKeys> dirtyKeys)
+                {
+                    UpdateLists(dirtyKeys);
+                }
             });
 
             IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
@@ -84,6 +94,14 @@ namespace DataSettingsSample.ViewModels
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Do(s => s.SetActive())
                 .Subscribe();
+        }
+
+        private void UpdateLists(IList<DbKeys> dirtyKeys)
+        {
+            foreach (var key in dirtyKeys)
+            {
+                _dict[key].Load.Execute().Subscribe();
+            }
         }
 
         public DialogNavigationStack DialogNavigationStack => DialogStack();

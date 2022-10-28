@@ -83,6 +83,8 @@ namespace DataSettingsSample.ViewModels
 
             list.RemoveAt(index);
 
+            SourceOperationsStack.Push((source.Source, false));
+
             Sources = new List<ISourceViewModel>(list);
         }
 
@@ -95,8 +97,12 @@ namespace DataSettingsSample.ViewModels
 
             list.Add(source);
 
+            SourceOperationsStack.Push((source.Source, true));
+
             Sources = new List<ISourceViewModel>(list);
         }
+
+        public Stack<(ISource, bool)> SourceOperationsStack { get; } = new();
 
         private static int Min(List<ISourceViewModel> list)
         {
