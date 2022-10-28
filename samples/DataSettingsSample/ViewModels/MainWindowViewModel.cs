@@ -28,30 +28,23 @@ namespace DataSettingsSample.ViewModels
                 }
                 else if (obj is Footprint footprint)
                 {
-                    yield return new ItemViewModel() { Name = $"{footprint.Value}" };
+                    yield return new ItemViewModel() { Name = $"{footprint.Name}: {footprint.Value}" };
                 }
                 else if (obj is GroundTarget groundTarget)
                 {
-                    yield return new ItemViewModel() { Name = $"{groundTarget.Value}" };
+                    yield return new ItemViewModel() { Name = $"{groundTarget.Name}: {groundTarget.Value}" };
                 }
                 else if (obj is Satellite satellite)
                 {
-                    yield return new ItemViewModel() { Name = $"{satellite.Value}" };
+                    yield return new ItemViewModel() { Name = $"{satellite.Name}: {satellite.Value}" };
                 }
                 else if (obj is GroundStation groundStation)
                 {
-                    yield return new ItemViewModel() { Name = $"{groundStation.Value}" };
+                    yield return new ItemViewModel() { Name = $"{groundStation.Name}: {groundStation.Value}" };
                 }
                 else if (obj is UserGeometry userGeometry)
                 {
-                    yield return new ItemViewModel() { Name = $"{userGeometry.Value}" };
-                }
-                else if (obj is CustomJsonObject jsonObject)
-                {
-                    foreach (var item in jsonObject.Values)
-                    {
-                        yield return new ItemViewModel() { Name = $"{item}" };
-                    }
+                    yield return new ItemViewModel() { Name = $"{userGeometry.Name}: {userGeometry.Value}" };
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using DataSettingsSample.Data;
-using DataSettingsSample.ViewModels;
+using DataSettingsSample.Models;
+using FDataSettingsSample.Models;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -31,32 +32,32 @@ namespace DataSettingsSample.Designer
         {
             public DesignTimeRepository()
             {
-                var source1 = new LocalSource(new CustomJsonObject() { Key = "Footprints", Values = new List<double>(values1) });
-                var source2 = new LocalSource(new CustomJsonObject() { Key = "GroundTargets", Values = new List<double>(values2) });
-                var source3 = new LocalSource(new CustomJsonObject() { Key = "Satellites", Values = new List<double>(values3) });
-                var source4 = new LocalSource(new CustomJsonObject() { Key = "GroundStations", Values = new List<double>(values4) });
-                var source5 = new LocalSource(new CustomJsonObject() { Key = "UserGeometries", Values = new List<double>(values5) });
+                var source1 = new LocalSource<Footprint>(values1.Select(s => new Footprint() { Name = $"Fp_{new Random().Next(1, 100)}", Value = s }).ToList());
+                var source2 = new LocalSource<GroundTarget>(values2.Select(s => new GroundTarget() { Name = $"Gt_{new Random().Next(1, 100)}", Value = s }).ToList());
+                var source3 = new LocalSource<Satellite>(values3.Select(s => new Satellite() { Name = $"St_{new Random().Next(1, 100)}", Value = s }).ToList());
+                var source4 = new LocalSource<GroundStation>(values4.Select(s => new GroundStation() { Name = $"Gs_{new Random().Next(1, 100)}", Value = s }).ToList());
+                var source5 = new LocalSource<UserGeometry>(values5.Select(s => new UserGeometry() { Name = $"Ug_{new Random().Next(1, 100)}", Value = s }).ToList());
 
-                RegisterSource("footprints", source1);
-                RegisterSource("groundTargets", source2);
-                RegisterSource("satellites", source3);
-                RegisterSource("groundStations", source4);
-                RegisterSource("userGeometries", source5);
+                RegisterSource(DbKeys.Footprints.ToString(), source1);
+                RegisterSource(DbKeys.GroundTargets.ToString(), source2);
+                RegisterSource(DbKeys.Satellites.ToString(), source3);
+                RegisterSource(DbKeys.GroundStations.ToString(), source4);
+                RegisterSource(DbKeys.UserGeometries.ToString(), source5);
             }
         }
 
-        private class LocalSource : ISource
+        private class LocalSource<T> : ISource
         {
-            private readonly CustomJsonObject _cache;
+            private readonly List<T> _list;
 
-            public LocalSource(CustomJsonObject obj)
+            public LocalSource(List<T> list)
             {
-                _cache = obj;
+                _list = list;
             }
 
-            public IList<object> GetValues() => new List<CustomJsonObject>() { _cache }.Cast<object>().ToList();
+            public IList<object> GetValues() => _list.Cast<object>().ToList();
 
-            public async Task<IList<object>> GetValuesAsync() => await Task.Run(() => new List<CustomJsonObject>() { _cache }.Cast<object>().ToList());
+            public async Task<IList<object>> GetValuesAsync() => await Task.Run(() => _list.Cast<object>().ToList());
         }
 
         public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)

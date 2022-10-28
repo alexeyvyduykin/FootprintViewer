@@ -1,7 +1,13 @@
-﻿namespace DataSettingsSample.Models
+﻿using Newtonsoft.Json;
+
+namespace DataSettingsSample.Models;
+
+[JsonObject]
+public class GroundStation
 {
-    public class GroundStation
-    {
-        public double Value { get; set; }
-    }
+    [JsonProperty("Name")]
+    public string Name { get; set; } = "Default";
+
+    [JsonProperty("Value")]
+    public double Value { get; set; }
 }

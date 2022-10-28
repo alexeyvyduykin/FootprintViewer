@@ -26,26 +26,24 @@ namespace DataSettingsSample.Designer
                 {
                     var filename = Path.GetFileName(uri.LocalPath);
                     var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-
+                    var fullPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename));
                     if (new Random().Next(0, 2) == 1)
                     {
-                        list1.Add(new FileViewModel()
+                        list1.Add(new FileViewModel(fullPath)
                         {
                             Name = filename,
-                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         });
                     }
                     else
                     {
-                        var file = new FileViewModel()
+                        var file = new FileViewModel(Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)))
                         {
                             Name = filename,
-                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         };
 
-                        file.Verified("Footprints");
+                        file.Verified(Data.DbKeys.Footprints);
 
                         list2.Add(file);
                     }

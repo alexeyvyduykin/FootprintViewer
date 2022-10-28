@@ -1,11 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Platform;
-using DataSettingsSample.ViewModels;
+using DataSettingsSample.Models;
+using FDataSettingsSample.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace DataSettingsSample.Data
 {
@@ -72,11 +75,11 @@ namespace DataSettingsSample.Data
         {
             return key switch
             {
-                DbKeys.Footprints => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundTargets => s => GetValues<CustomJsonObject>(s),
-                DbKeys.Satellites => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundStations => s => GetValues<CustomJsonObject>(s),
-                DbKeys.UserGeometries => s => GetValues<CustomJsonObject>(s),
+                DbKeys.Footprints => s => GetValues<Footprint>(s),
+                DbKeys.GroundTargets => s => GetValues<GroundTarget>(s),
+                DbKeys.Satellites => s => GetValues<Satellite>(s),
+                DbKeys.GroundStations => s => GetValues<GroundStation>(s),
+                DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
                 _ => throw new Exception(),
             };
         }
@@ -85,11 +88,11 @@ namespace DataSettingsSample.Data
         {
             return key switch
             {
-                DbKeys.Footprints => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundTargets => s => GetValues<CustomJsonObject>(s),
-                DbKeys.Satellites => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundStations => s => GetValues<CustomJsonObject>(s),
-                DbKeys.UserGeometries => s => GetValues<CustomJsonObject>(s),
+                DbKeys.Footprints => s => GetValues<Footprint>(s),
+                DbKeys.GroundTargets => s => GetValues<GroundTarget>(s),
+                DbKeys.Satellites => s => GetValues<Satellite>(s),
+                DbKeys.GroundStations => s => GetValues<GroundStation>(s),
+                DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
                 _ => throw new Exception(),
             };
         }
@@ -98,18 +101,75 @@ namespace DataSettingsSample.Data
         {
             return key switch
             {
-                DbKeys.Footprints => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundTargets => s => GetValues<CustomJsonObject>(s),
-                DbKeys.Satellites => s => GetValues<CustomJsonObject>(s),
-                DbKeys.GroundStations => s => GetValues<CustomJsonObject>(s),
-                DbKeys.UserGeometries => s => GetValues<CustomJsonObject>(s),
+                DbKeys.Footprints => s => GetValues<Footprint>(s),
+                DbKeys.GroundTargets => s => GetValues<GroundTarget>(s),
+                DbKeys.Satellites => s => GetValues<Satellite>(s),
+                DbKeys.GroundStations => s => GetValues<GroundStation>(s),
+                DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
                 _ => throw new Exception(),
+            };
+        }
+
+        public static Regex JsonNamePattern(DbKeys key)
+        {
+            return key switch
+            {
+                DbKeys.Footprints => new Regex("^(Fp_)"),
+                DbKeys.GroundTargets => new Regex("^(Gt_)"),
+                DbKeys.Satellites => new Regex("^(St_)"),
+                DbKeys.GroundStations => new Regex("^(Gs_)"),
+                DbKeys.UserGeometries => new Regex("^(Ug_)"),
+                _ => throw new Exception(),
+            };
+        }
+
+        public static bool JsonValidation(DbKeys key, string jsonString)
+        {
+            switch (key)
+            {
+                case DbKeys.Footprints:
+                    {
+                        var list = JsonConvert.DeserializeObject<List<Footprint>>(jsonString);
+                        var name = list?.FirstOrDefault()?.Name;
+                        var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
+                        return res;
+                    }
+                case DbKeys.GroundTargets:
+                    {
+                        var list = JsonConvert.DeserializeObject<List<GroundTarget>>(jsonString);
+                        var name = list?.FirstOrDefault()?.Name;
+                        var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
+                        return res;
+                    }
+                case DbKeys.Satellites:
+                    {
+                        var list = JsonConvert.DeserializeObject<List<Satellite>>(jsonString);
+                        var name = list?.FirstOrDefault()?.Name;
+                        var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
+                        return res;
+                    }
+                case DbKeys.GroundStations:
+                    {
+                        var list = JsonConvert.DeserializeObject<List<GroundStation>>(jsonString);
+                        var name = list?.FirstOrDefault()?.Name;
+                        var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
+                        return res;
+                    }
+                case DbKeys.UserGeometries:
+                    {
+                        var list = JsonConvert.DeserializeObject<List<UserGeometry>>(jsonString);
+                        var name = list?.FirstOrDefault()?.Name;
+                        var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
+                        return res;
+                    }
+                default: 
+                    throw new Exception();
             };
         }
 
         private static IList<object> GetValues<T>(IList<string> paths)
         {
-            return paths.SelectMany(s => DeserializeFromStream<CustomJsonObject>(s).Cast<object>()).ToList();
+            return paths.SelectMany(s => DeserializeFromStream<T>(s).Cast<object>()).ToList();
         }
 
         private static IList<object> GetValues<T>(string path)

@@ -43,10 +43,10 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
                     {
                         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
                         var filename = Path.GetFileName(uri.LocalPath);
-                        list1.Add(new FileViewModel()
+                        var fullPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename));
+                        list1.Add(new FileViewModel(fullPath)
                         {
                             Name = filename,
-                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         });
                     }
@@ -54,14 +54,14 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
                     {
                         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
                         var filename = Path.GetFileName(uri.LocalPath);
-                        var file = new FileViewModel()
+                        var fullPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename));
+                        var file = new FileViewModel(fullPath)
                         {
                             Name = filename,
-                            Path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename)),
                             IsSelected = new Random().Next(0, 2) == 1,
                         };
 
-                        file.Verified(_key.ToString());
+                        file.Verified(_key);
 
                         list2.Add(file);
                     }
@@ -132,10 +132,9 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
 
                 foreach (var path in paths)
                 {
-                    var file = new FileViewModel()
+                    var file = new FileViewModel(path)
                     {
                         Name = Path.GetFileName(path),
-                        Path = path,
                         IsSelected = false,
                     };
 
@@ -157,7 +156,7 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
             var listTrue = list1.Where(s => s.IsSelected == true).ToList();
 
             listTrue.ForEach(s => s.IsSelected = false);
-            listTrue.ForEach(s => s.Verified(_key.ToString()));
+            listTrue.ForEach(s => s.Verified(_key));
 
             list2.AddRange(listTrue);
 
