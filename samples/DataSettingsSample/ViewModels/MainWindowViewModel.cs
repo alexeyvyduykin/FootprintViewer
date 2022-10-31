@@ -39,7 +39,7 @@ namespace DataSettingsSample.ViewModels
                 }
                 else if (obj is Satellite satellite)
                 {
-                    yield return new ItemViewModel() { Name = $"{satellite.Name}: {satellite.Value}" };
+                    yield return new ItemViewModel() { Name = $"{satellite.Name}: {satellite.ValueInt}" };
                 }
                 else if (obj is GroundStation groundStation)
                 {

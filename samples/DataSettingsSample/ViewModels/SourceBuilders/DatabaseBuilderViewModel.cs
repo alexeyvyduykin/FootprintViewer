@@ -46,7 +46,7 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Throttle(TimeSpan.FromSeconds(1.2))
                 .Select(s => BuildConnectionString(s))
-                .Select(s => IsConnectionValid(s) ? new List<string>(GetTablesNames(s)) : new List<string>())
+                .Select(s => IsConnectionValid(s) ? new List<string>(GetTablesNames(_key, s)) : new List<string>())
                 .InvokeCommand(Update);
 
             _isVerified = AvailableTables
@@ -78,7 +78,7 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
             });
         }
 
-        private static IEnumerable<string> GetTablesNames(string connectionString)
+        private static IEnumerable<string> GetTablesNames(DbKeys key, string connectionString)
         {
             using var connection = new NpgsqlConnection(connectionString);
             connection.Open();
@@ -86,7 +86,12 @@ namespace DataSettingsSample.ViewModels.SourceBuilders
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                yield return reader.GetString(0);
+                var tableName = reader.GetString(0);
+
+                if (DbHelper.TryValidateContext(key, connectionString, tableName) == true)
+                {
+                    yield return tableName;
+                }
             }
         }
 

@@ -1,22 +1,22 @@
 [
   {
     "Name": "St_11",
-    "Value": 1233649012.3282
+    "ValueInt": 124901
   },
   {
     "Name": "St_12",
-    "Value": 472855571.8089
+    "ValueInt": 472557
   },
   {
     "Name": "St_13",
-    "Value": 986641558.1289
+    "ValueInt": 986155
   },
   {
     "Name": "St_14",
-    "Value": 2003881650.6771
+    "ValueInt": 208165
   },
   {
     "Name": "St_15",
-    "Value": 1395723289.5066
+    "ValueInt": 137228
   }
 ]

@@ -47,6 +47,34 @@ namespace DataSettingsSample.Data
             _connectionString = connectionString;
         }
 
+        public bool Valid(Type entityType)
+        {
+            try
+            {
+                var obj = GetTable().FirstOrDefault();
+
+                return Equals(entityType.Name, obj?.GetType().Name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool Valid<TEntity>() where TEntity : class
+        {
+            try
+            {
+                var obj = GetTable().FirstOrDefault();
+
+                return Equals(typeof(TEntity).Name, obj?.GetType().Name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public abstract IQueryable<object> GetTable();
 
         public abstract Task<IList<object>> ToListAsync();

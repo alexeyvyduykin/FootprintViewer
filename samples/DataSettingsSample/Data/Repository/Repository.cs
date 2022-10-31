@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataSettingsSample.Data
 {
+    // TODO: try to ConcurentDictionary
     public class Repository
     {
         private readonly Dictionary<string, IDictionary<ISource, IList<object>>> _cache = new();

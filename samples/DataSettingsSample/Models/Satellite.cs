@@ -8,6 +8,6 @@ public class Satellite
     [JsonProperty("Name")]
     public string Name { get; set; } = "Default";
 
-    [JsonProperty("Value")]
-    public double Value { get; set; }
+    [JsonProperty("ValueInt")]
+    public int ValueInt { get; set; }
 }

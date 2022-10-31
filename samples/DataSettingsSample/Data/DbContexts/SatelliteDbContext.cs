@@ -29,8 +29,8 @@ namespace DataSettingsSample.Data
 
         protected static void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
         {
-            builder.Property(b => b.Value).IsRequired();
-            builder.HasKey(b => b.Value);
+            builder.Property(b => b.ValueInt).IsRequired();
+            builder.HasKey(b => b.ValueInt);
         }
 
         public override async Task<IList<object>> ToListAsync() => await Satellites.Cast<object>().ToListAsync().ConfigureAwait(false);

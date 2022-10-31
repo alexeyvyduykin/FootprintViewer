@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace DataSettingsSample.Data
 {
@@ -67,6 +66,25 @@ namespace DataSettingsSample.Data
                 DbKeys.Satellites => s => new SatelliteDbContext(s, tableName),
                 DbKeys.GroundStations => s => new GroundStationDbContext(s, tableName),
                 DbKeys.UserGeometries => s => new UserGeometryDbContext(s, tableName),
+                _ => throw new Exception(),
+            };
+        }
+
+        public static bool TryValidateContext(DbKeys key, string connectionString, string tableName)
+        {
+            using var context = CreateDatabaseSource(key, tableName).Invoke(connectionString);
+            return context.Valid(GetType(key));
+        }
+
+        public static Type GetType(DbKeys key)
+        {
+            return key switch
+            {
+                DbKeys.Footprints => typeof(Footprint),
+                DbKeys.GroundTargets => typeof(GroundTarget),
+                DbKeys.Satellites => typeof(Satellite),
+                DbKeys.GroundStations => typeof(GroundStation),
+                DbKeys.UserGeometries => typeof(UserGeometry),
                 _ => throw new Exception(),
             };
         }
@@ -162,7 +180,7 @@ namespace DataSettingsSample.Data
                         var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
                         return res;
                     }
-                default: 
+                default:
                     throw new Exception();
             };
         }

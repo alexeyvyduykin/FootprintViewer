@@ -13,7 +13,7 @@ namespace DataSettingsSample.Designer
     {
         private static readonly double[] values1 = new[] { 542346565.3454, 56534343.6442, 9304038592.4331, 89023437112.9033, 7882343023.6033 };
         private static readonly double[] values2 = new[] { 945877230.0542, 99723677.1293, 5093576821.9304, 39984376722.0343, 1928398435.3022 };
-        private static readonly double[] values3 = new[] { 323943222.2932, 34493945.2233, 1237773343.8773, 32343478333.9823, 3223384332.0932 };
+        private static readonly int[] values3 = new[] { 323322, 344645, 127343, 478333, 324332 };
         private static readonly double[] values4 = new[] { 214343894.3439, 32299843.9843, 2938473833.0234, 34990234322.1092, 2987433544.0923 };
         private static readonly double[] values5 = new[] { 398653243.2233, 12096320.3764, 3475235478.3676, 23887122344.5744, 2345984487.2974 };
         private Repository? _repository;
@@ -34,7 +34,7 @@ namespace DataSettingsSample.Designer
             {
                 var source1 = new LocalSource<Footprint>(values1.Select(s => new Footprint() { Name = $"Fp_{new Random().Next(1, 100)}", Value = s }).ToList());
                 var source2 = new LocalSource<GroundTarget>(values2.Select(s => new GroundTarget() { Name = $"Gt_{new Random().Next(1, 100)}", Value = s }).ToList());
-                var source3 = new LocalSource<Satellite>(values3.Select(s => new Satellite() { Name = $"St_{new Random().Next(1, 100)}", Value = s }).ToList());
+                var source3 = new LocalSource<Satellite>(values3.Select(s => new Satellite() { Name = $"St_{new Random().Next(1, 100)}", ValueInt = s }).ToList());
                 var source4 = new LocalSource<GroundStation>(values4.Select(s => new GroundStation() { Name = $"Gs_{new Random().Next(1, 100)}", Value = s }).ToList());
                 var source5 = new LocalSource<UserGeometry>(values5.Select(s => new UserGeometry() { Name = $"Ug_{new Random().Next(1, 100)}", Value = s }).ToList());
 
