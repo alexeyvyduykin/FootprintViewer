@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 
 namespace FootprintViewer.ViewModels
 {
@@ -20,8 +21,10 @@ namespace FootprintViewer.ViewModels
             GenerateCount = randomSource.GenerateCount;
         }
 
-        public string? Name { get; init; }
+        public string? Name { get; set; }
 
         public int GenerateCount { get; set; }
+
+        public ISource Source => throw new System.NotImplementedException();
     }
 }

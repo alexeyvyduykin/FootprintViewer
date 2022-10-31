@@ -120,9 +120,10 @@ internal static class DbHelper
         };
     }
 
-    public static Regex JsonNamePattern(DbKeys key)
+    public static Regex JsonNamePattern(string key)
     {
-        return key switch
+        Enum.TryParse<DbKeys>(key, true, out var result);
+        return result switch
         {
             DbKeys.Footprints => new Regex("^(Fp_)"),
             DbKeys.GroundTargets => new Regex("^(Gt_)"),
@@ -133,9 +134,10 @@ internal static class DbHelper
         };
     }
 
-    public static bool JsonValidation(DbKeys key, string jsonString)
+    public static bool JsonValidation(string key, string jsonString)
     {
-        switch (key)
+        Enum.TryParse<DbKeys>(key, true, out var result);
+        switch (result)
         {
             case DbKeys.Footprints:
                 {

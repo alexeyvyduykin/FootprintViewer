@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:FootprintViewer.ViewModels.Settings"
+             xmlns:builders="using:FootprintViewer.ViewModels.Settings.SourceBuilders"
+			 xmlns:vmd="using:FootprintViewer.Designer"
+             xmlns:views="using:FootprintViewer.Avalonia.Views"
+             xmlns:sourceBuilders="using:FootprintViewer.Avalonia.Views.SourceBuilders"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             x:DataType="vm:SourceContainerViewModel"
+			 mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.SourceContainerView">
+
+	<Design.DataContext>
+		<vmd:DesignTimeSourceContainerViewModel/>
+	</Design.DataContext>
+
+	<UserControl.Styles>
+
+		<Style Selector="MenuItem">
+			<Setter Property="Header" Value="{Binding Header}"/>
+			<Setter Property="Items" Value="{Binding Items}"/>
+			<Setter Property="Command" Value="{Binding Command}"/>
+			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+		</Style>
+
+		<Style Selector="Button.rmvBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="Button.addBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+		</Style>
+
+		<Style Selector="TextBlock.tbItem">
+			<Setter Property="Margin" Value="8,0,0,0"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="0,2,0,0"></Setter>
+		</Style>
+
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Margin" Value="8,0,0,0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+	</UserControl.Styles>
+
+	<Panel>
+		<StackPanel>
+			<ItemsControl Items="{Binding Sources}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="vm:SourceViewModel">
+						<StackPanel Orientation="Horizontal">
+							<Button Classes="rmvBtn"
+									Command="{Binding $parent[UserControl].DataContext.Remove}"
+									CommandParameter="{Binding}">
+								<Viewbox Margin="2">
+									<materialIcons:MaterialIcon Kind="Minus"/>
+								</Viewbox>
+							</Button>
+							<TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<Button Margin="0,2,0,0"
+					Classes="addBtn">
+				<Button.Flyout>
+					<MenuFlyout Placement="RightEdgeAlignedTop"
+								ShowMode="TransientWithDismissOnPointerMoveAway"
+								Items="{Binding MenuItems}"/>
+				</Button.Flyout>
+				<Viewbox Margin="2">
+					<materialIcons:MaterialIcon Kind="Plus"/>
+				</Viewbox>
+			</Button>
+
+		</StackPanel>
+	</Panel>
+
+</UserControl>

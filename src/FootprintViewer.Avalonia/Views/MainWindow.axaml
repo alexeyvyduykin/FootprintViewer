@@ -15,8 +15,12 @@
 		<vmd:DesignTimeMainViewModel/>
 	</Design.DataContext>
 
-	<Grid>
-		<views:MainView DataContext="{Binding}"/>
-	</Grid>
-
+	<Panel>
+		<views:BackgroundView />
+		<views:MainView x:CompileBindings="False"
+						DataContext="{Binding}"
+						IsHitTestVisible="{Binding $parent[Window].DataContext.IsMainContentEnabled^, FallbackValue=True}" />
+		<views:DialogsView />
+	</Panel>
+	
 </Window>

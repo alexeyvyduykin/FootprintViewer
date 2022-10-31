@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vmd="using:FootprintViewer.Designer"
+			 xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+	         xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:controls="using:FootprintViewer.Avalonia.Controls"
+	         xmlns:views="using:FootprintViewer.Avalonia.Views.Settings"
+	         xmlns:vm="using:FootprintViewer.ViewModels.Settings"
+	         x:DataType="vm:SettingsViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.SettingsView">
+
+	<Design.DataContext>
+		<vmd:DesignTimeSettingsViewModel/>
+	</Design.DataContext>
+
+	<controls:ContentArea EnableCancel="False"
+						  EnableNext="True"
+						  NextContent="OK"
+						  Width="800"
+						  Height="500">
+
+		<TabControl TabStripPlacement="Left">
+
+			<TabItem Header="Source containers"
+					 FontSize="14"
+					 Foreground="White">
+				<TabControl TabStripPlacement="Left"
+							Items="{Binding SourceContainers}"
+						    SelectedItem="{Binding SelectedSourceContainer}">
+					<TabControl.ItemTemplate>
+						<DataTemplate x:DataType="vm:SourceContainerViewModel">
+							<TextBlock Text="{Binding Header}" FontSize="14"/>
+						</DataTemplate>
+					</TabControl.ItemTemplate>
+
+					<TabControl.ContentTemplate>
+						<DataTemplate x:DataType="vm:SourceContainerViewModel">
+							<views:SourceContainerView DataContext="{Binding}"/>
+						</DataTemplate>
+					</TabControl.ContentTemplate>
+				</TabControl>
+			</TabItem>
+
+			<TabItem Header="Languages"
+					 FontSize="14">
+				<StackPanel Margin="8" Spacing="10">
+					<RadioButton IsChecked="True" Content="English"/>
+					<RadioButton Content="Russian"/>
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="Others"
+					 FontSize="14"/>
+
+		</TabControl>
+
+	</controls:ContentArea>
+
+</UserControl>

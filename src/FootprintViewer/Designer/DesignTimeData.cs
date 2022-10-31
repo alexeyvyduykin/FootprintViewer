@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
@@ -37,6 +38,7 @@ namespace FootprintViewer.Designer
         private SidePanel? _sidePanel;
         private CustomToolBar? _customToolBar;
         private MapBackgroundList? _mapBackgroundList;
+        private IDataManager? _dataManager;
 
         public object? GetService(Type? serviceType, string? contract = null)
         {
@@ -131,6 +133,10 @@ namespace FootprintViewer.Designer
             else if (serviceType == typeof(MainViewModel))
             {
                 return _mainViewModel ??= new MainViewModel(this);
+            }
+            else if (serviceType == typeof(IDataManager))
+            {
+                return _dataManager ??= new DesignTimeRepository();
             }
 
             throw new Exception();
@@ -503,6 +509,40 @@ namespace FootprintViewer.Designer
         private class DesignTimeDataSource : IDesignTimeSource
         {
             public bool Equals(IDataSource? other) => true;
+        }
+
+        private class DesignTimeRepository : DataManager
+        {
+            private static readonly int[] values = new[] { 1, 2, 3, 4, 5 };
+
+            public DesignTimeRepository()
+            {
+                var source1 = new LocalSource<Footprint>(values.Select(s => new Footprint() { Name = $"Fp_{new Random().Next(1, 100)}" }).ToList());
+                var source2 = new LocalSource<GroundTarget>(values.Select(s => new GroundTarget() { Name = $"Gt_{new Random().Next(1, 100)}" }).ToList());
+                var source3 = new LocalSource<Satellite>(values.Select(s => new Satellite() { Name = $"St_{new Random().Next(1, 100)}" }).ToList());
+                var source4 = new LocalSource<GroundStation>(values.Select(s => new GroundStation() { Name = $"Gs_{new Random().Next(1, 100)}" }).ToList());
+                var source5 = new LocalSource<UserGeometry>(values.Select(s => new UserGeometry() { Name = $"Ug_{new Random().Next(1, 100)}" }).ToList());
+
+                RegisterSource(DbKeys.Footprints.ToString(), source1);
+                RegisterSource(DbKeys.GroundTargets.ToString(), source2);
+                RegisterSource(DbKeys.Satellites.ToString(), source3);
+                RegisterSource(DbKeys.GroundStations.ToString(), source4);
+                RegisterSource(DbKeys.UserGeometries.ToString(), source5);
+            }
+        }
+
+        internal class LocalSource<T> : ISource
+        {
+            private readonly List<T> _list;
+
+            public LocalSource(List<T> list)
+            {
+                _list = list;
+            }
+
+            public IList<object> GetValues() => _list.Cast<object>().ToList();
+
+            public async Task<IList<object>> GetValuesAsync() => await Task.Run(() => _list.Cast<object>().ToList());
         }
     }
 }

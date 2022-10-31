@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -33,5 +34,9 @@ namespace FootprintViewer.ViewModels
         public string? FilterName { get; set; }
 
         public string? FilterExtension { get; set; }
+
+        public ISource Source => throw new System.NotImplementedException();
+
+        string? ISourceViewModel.Name { get; set; }
     }
 }

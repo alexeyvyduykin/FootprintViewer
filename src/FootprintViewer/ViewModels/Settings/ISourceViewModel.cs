@@ -1,7 +1,10 @@
-﻿namespace FootprintViewer.ViewModels
+﻿using FootprintViewer.Data.DataManager;
+
+namespace FootprintViewer.ViewModels;
+
+public interface ISourceViewModel
 {
-    public interface ISourceViewModel
-    {
-        string? Name { get; }
-    }
+    string? Name { get; set; }
+
+    ISource Source { get; }
 }

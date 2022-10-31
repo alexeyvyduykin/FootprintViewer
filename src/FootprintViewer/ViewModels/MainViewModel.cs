@@ -1,5 +1,9 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.ViewModels.Dialogs;
+using FootprintViewer.ViewModels.Navigation;
+using FootprintViewer.ViewModels.Settings;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -14,13 +18,15 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels
 {
-    public class MainViewModel : ReactiveObject
+    public class MainViewModel : RoutableViewModel
     {
         private readonly IReadonlyDependencyResolver _dependencyResolver;
         private readonly Map _map;
@@ -35,6 +41,7 @@ namespace FootprintViewer.ViewModels
         private readonly FootprintPreviewTab _footprintPreviewTab;
         private readonly ScaleMapBar _scaleMapBar;
         private ISelector? _selector;
+        private readonly IDataManager _dataManager;
 
         public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
         {
@@ -49,6 +56,7 @@ namespace FootprintViewer.ViewModels
             _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
             _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTab>();
             _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTab>();
+            _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
             _infoPanel = factory.CreateInfoPanel();
 
@@ -90,7 +98,33 @@ namespace FootprintViewer.ViewModels
             _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
             _footprintTab.ClickOnItem.Subscribe(SelectFeatureImpl);
+
+            Options = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var settingsDialog = new SettingsViewModel(_dataManager);
+
+                DialogStack().To(settingsDialog);
+
+                var dialogResult = await settingsDialog.GetDialogResultAsync();
+
+                DialogStack().Clear();
+
+                if (dialogResult.Result is IList<DbKeys> dirtyKeys)
+                {
+                    //UpdateLists(dirtyKeys);
+                }
+            });
+
+            IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
+
+            this.WhenAnyValue(s => s.DialogNavigationStack.CurrentPage)
+                .WhereNotNull()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Do(s => s.SetActive())
+                .Subscribe();
         }
+
+        public DialogNavigationStack DialogNavigationStack => DialogStack();
 
         private void SelectFeatureImpl(FootprintViewModel vm)
         {
@@ -751,6 +785,8 @@ namespace FootprintViewer.ViewModels
             State = States.Drawing;
         }
 
+        public ICommand Options { get; }
+
         public Map Map => _map;
 
         [Reactive]
@@ -776,5 +812,7 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public DrawingTip? Tip { get; set; }
+
+        public IObservable<bool> IsMainContentEnabled { get; }
     }
 }

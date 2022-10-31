@@ -7,7 +7,7 @@
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
-             xmlns:local="clr-namespace:FootprintViewer.Avalonia"            
+             xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
 			 xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
@@ -15,84 +15,89 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Avalonia.Views.MainView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeMainViewModel/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeMainViewModel/>
+	</Design.DataContext>
 
-  <UserControl.Resources>
-    <!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
-    <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-  </UserControl.Resources>
+	<UserControl.Resources>
+		<!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+	</UserControl.Resources>
 
-  <dialogHost:DialogHost Identifier="SecondaryDialogHost">
-    <dialogHost:DialogHost.DataTemplates>
-      <DataTemplate DataType="vm:TableInfo">
-        <settings:TableInfoView DataContext="{Binding}"/>
-      </DataTemplate>
-    </dialogHost:DialogHost.DataTemplates>
+	<dialogHost:DialogHost Identifier="SecondaryDialogHost">
+		<dialogHost:DialogHost.DataTemplates>
+			<DataTemplate DataType="vm:TableInfo">
+				<settings:TableInfoView DataContext="{Binding}"/>
+			</DataTemplate>
+		</dialogHost:DialogHost.DataTemplates>
 
-    <dialogHost:DialogHost Identifier="MainDialogHost">
-      <dialogHost:DialogHost.DataTemplates>
-        <DataTemplate DataType="vm:FileSourceViewModel">
-          <settings:FileSourceView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate DataType="vm:FolderSourceViewModel">
-          <settings:FolderSourceView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate DataType="vm:DatabaseSourceViewModel">
-          <settings:DatabaseSourceView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate DataType="vm:RandomSourceViewModel">
-          <settings:RandomSourceView DataContext="{Binding}"/>
-        </DataTemplate>
-      </dialogHost:DialogHost.DataTemplates>
+		<dialogHost:DialogHost Identifier="MainDialogHost">
+			<dialogHost:DialogHost.DataTemplates>
+				<DataTemplate DataType="vm:FileSourceViewModel">
+					<settings:FileSourceView DataContext="{Binding}"/>
+				</DataTemplate>
+				<DataTemplate DataType="vm:FolderSourceViewModel">
+					<settings:FolderSourceView DataContext="{Binding}"/>
+				</DataTemplate>
+				<DataTemplate DataType="vm:DatabaseSourceViewModel">
+					<settings:DatabaseSourceView DataContext="{Binding}"/>
+				</DataTemplate>
+				<DataTemplate DataType="vm:RandomSourceViewModel">
+					<settings:RandomSourceView DataContext="{Binding}"/>
+				</DataTemplate>
+			</dialogHost:DialogHost.DataTemplates>
 
-      <Grid ColumnDefinitions="*,Auto">
+			<Grid ColumnDefinitions="*,Auto">
 
-        <Panel>
-          <local:UserMapControl x:Name="UserMapControl"
-                                TipSource="{Binding Tip}"
-                                ScaleMapBar="{Binding ScaleMapBar}"
-                                MapNavigator="{Binding MapNavigator}"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch">
-			<inter:Interaction.Behavior>
-				<inter:InteractivityBehavior Map="{Binding Map}"
-											 Interactive="{Binding Interactive}"
-											 State="{Binding State}"/>
-			</inter:Interaction.Behavior>			
-		  </local:UserMapControl>
-			
-          <toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Left"
-                                     Margin="8"/>
+				<Panel>
+					<local:UserMapControl x:Name="UserMapControl"
+										  TipSource="{Binding Tip}"
+										  ScaleMapBar="{Binding ScaleMapBar}"
+										  MapNavigator="{Binding MapNavigator}"
+										  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Stretch">
+						<inter:Interaction.Behavior>
+							<inter:InteractivityBehavior Map="{Binding Map}"
+														 Interactive="{Binding Interactive}"
+														 State="{Binding State}"/>
+						</inter:Interaction.Behavior>
+					</local:UserMapControl>
 
-          <panels:InfoPanelView DataContext="{Binding InfoPanel}"
-                                VerticalAlignment="Bottom"
-                                HorizontalAlignment="Center"
-                                Margin="0,0,0,60"/>
+					<toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
+											   VerticalAlignment="Center"
+											   HorizontalAlignment="Left"
+											   Margin="8"/>
 
-          <panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"
-                                VerticalAlignment="Bottom"
-                                HorizontalAlignment="Right"
-                                Margin="0,0,15,30"/>
+					<panels:InfoPanelView DataContext="{Binding InfoPanel}"
+										  VerticalAlignment="Bottom"
+										  HorizontalAlignment="Center"
+										  Margin="0,0,0,60"/>
 
-          <Grid VerticalAlignment="Bottom"
-                HorizontalAlignment="Stretch"
-                RowDefinitions="Auto,Auto">
-            <bottomPanel:BottomPanelView Grid.Row="0"
-                                         DataContext="{Binding BottomPanel}"/>
-            <views:ScaleMapBarView Grid.Row="1"
-                                   DataContext="{Binding ScaleMapBar}"/>
-          </Grid>
-        </Panel>
+					<panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"
+										  VerticalAlignment="Bottom"
+										  HorizontalAlignment="Right"
+										  Margin="0,0,15,30"/>
 
-        <views:SidePanelView Grid.Column="1"
-                             DataContext="{Binding SidePanel}"/>
+					<Grid VerticalAlignment="Bottom"
+						  HorizontalAlignment="Stretch"
+						  RowDefinitions="Auto,Auto">
+						<bottomPanel:BottomPanelView Grid.Row="0"
+													 DataContext="{Binding BottomPanel}"/>
+						<views:ScaleMapBarView Grid.Row="1"
+											   DataContext="{Binding ScaleMapBar}"/>
+					</Grid>
+				</Panel>
 
-      </Grid>
+				<views:SidePanelView Grid.Column="1"
+									 DataContext="{Binding SidePanel}"/>
 
-    </dialogHost:DialogHost>
-  </dialogHost:DialogHost>
+				<Button Grid.Column="1"
+						VerticalAlignment="Bottom"
+						Command="{Binding Options}"
+						Content="Settings"/>
+
+			</Grid>
+
+		</dialogHost:DialogHost>
+	</dialogHost:DialogHost>
 </UserControl>

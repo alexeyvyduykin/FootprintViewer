@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using Npgsql;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -117,5 +118,9 @@ namespace FootprintViewer.ViewModels
 
         [Reactive]
         public string? Table { get; set; }
+
+        string? ISourceViewModel.Name { get; set; }
+
+        public ISource Source => throw new NotImplementedException();
     }
 }
