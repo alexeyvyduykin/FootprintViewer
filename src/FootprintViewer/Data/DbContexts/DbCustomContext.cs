@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using System.Linq;
 #nullable disable
 
 namespace FootprintViewer.Data
@@ -26,20 +27,62 @@ namespace FootprintViewer.Data
         public override bool Equals(object obj) => obj is CustomModelCacheKey other && key.Equals(other.key);
     }
 
-    public class DbCustomContext : DbContext
+    public abstract class DbCustomContext : DbContext
     {
         private readonly string _tableName;
+        private readonly string _connectionString;
 
         public DbCustomContext(string tableName, DbContextOptions options) : base(options)
         {
             _tableName = tableName;
         }
 
+        public DbCustomContext(string tableName, string connectionString) : base()
+        {
+            _tableName = tableName;
+            _connectionString = connectionString;
+        }
+
+        public bool Valid(Type entityType)
+        {
+            try
+            {
+                var obj = GetTable().FirstOrDefault();
+
+                return Equals(entityType.Name, obj?.GetType().Name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool Valid<TEntity>() where TEntity : class
+        {
+            try
+            {
+                var obj = GetTable().FirstOrDefault();
+
+                return Equals(typeof(TEntity).Name, obj?.GetType().Name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public abstract IQueryable<object> GetTable();
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
 
             optionsBuilder.ReplaceService<IModelCacheKeyFactory, CustomModelCacheKeyFactory>();
+
+            if (string.IsNullOrEmpty(_connectionString) == false)
+            {
+                optionsBuilder.UseNpgsql(_connectionString);
+            }
         }
 
         public string TableName => _tableName;

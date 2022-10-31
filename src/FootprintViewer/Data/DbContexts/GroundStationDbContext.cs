@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Linq;
 #nullable disable
 
 namespace FootprintViewer.Data
@@ -9,6 +10,11 @@ namespace FootprintViewer.Data
         public DbSet<GroundStation> GroundStations { get; set; }
 
         public GroundStationDbContext(string tableName, DbContextOptions<DbCustomContext> options) : base(tableName, options)
+        {
+
+        }
+
+        public GroundStationDbContext(string tableName, string connectionString) : base(tableName, connectionString)
         {
 
         }
@@ -28,5 +34,7 @@ namespace FootprintViewer.Data
             builder.Property(b => b.Name).IsRequired();
             builder.HasKey(b => b.Name);
         }
+
+        public override IQueryable<object> GetTable() => GroundStations.Cast<object>();
     }
 }

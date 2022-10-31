@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.Linq;
 #nullable disable
 
 namespace FootprintViewer.Data
@@ -10,6 +11,11 @@ namespace FootprintViewer.Data
         public DbSet<UserGeometry> UserGeometries { get; set; }
 
         public UserGeometryDbContext(string tableName, DbContextOptions<UserGeometryDbContext> options) : base(tableName, options)
+        {
+
+        }
+
+        public UserGeometryDbContext(string tableName, string connectionString) : base(tableName, connectionString)
         {
 
         }
@@ -32,5 +38,7 @@ namespace FootprintViewer.Data
                 v => v.ToString(),
                 v => (UserGeometryType)Enum.Parse(typeof(UserGeometryType), v));
         }
+
+        public override IQueryable<object> GetTable() => UserGeometries.Cast<object>();
     }
 }
