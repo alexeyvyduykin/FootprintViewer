@@ -1,14 +1,18 @@
 ﻿using NetTopologySuite.Geometries;
+using Newtonsoft.Json;
 using System;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+[JsonObject]
+public class GroundStation
 {
-    public class GroundStation
-    {
-        public string? Name { get; set; }
+    [JsonProperty("Name")]
+    public string? Name { get; set; }
 
-        public Point Center { get; set; } = new Point(0, 0);
+    [JsonProperty("Center")]
+    public Point Center { get; set; } = new Point(0, 0);
 
-        public double[] Angles { get; set; } = Array.Empty<double>();
-    }
+    [JsonProperty("Angles")]
+    public double[] Angles { get; set; } = Array.Empty<double>();
 }

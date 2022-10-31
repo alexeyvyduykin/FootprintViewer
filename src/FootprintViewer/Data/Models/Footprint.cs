@@ -1,32 +1,42 @@
 ﻿using NetTopologySuite.Geometries;
+using Newtonsoft.Json;
 using System;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public enum SatelliteStripDirection
 {
-    public enum SatelliteStripDirection
-    {
-        Left,
-        Right
-    }
+    Left,
+    Right
+}
 
-    public class Footprint
-    {
-        public string? Name { get; set; }
+[JsonObject]
+public class Footprint
+{
+    [JsonProperty("Name")]
+    public string? Name { get; set; }
 
-        public string? SatelliteName { get; set; }
+    [JsonProperty("SatelliteName")]
+    public string? SatelliteName { get; set; }
 
-        public string? TargetName { get; set; }
+    [JsonProperty("TargetName")]
+    public string? TargetName { get; set; }
 
-        public Point? Center { get; set; }
+    [JsonProperty("Center")]
+    public Point? Center { get; set; }
 
-        public LineString? Points { get; set; }
+    [JsonProperty("Points")]
+    public LineString? Points { get; set; }
 
-        public DateTime Begin { get; set; }
+    [JsonProperty("Begin")]
+    public DateTime Begin { get; set; }
 
-        public double Duration { get; set; }
+    [JsonProperty("Duration")]
+    public double Duration { get; set; }
 
-        public int Node { get; set; }
+    [JsonProperty("Node")]
+    public int Node { get; set; }
 
-        public SatelliteStripDirection Direction { get; set; }
-    }
+    [JsonProperty("Direction")]
+    public SatelliteStripDirection Direction { get; set; }
 }

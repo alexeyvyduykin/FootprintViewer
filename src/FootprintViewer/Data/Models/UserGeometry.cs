@@ -1,15 +1,19 @@
 ﻿using NetTopologySuite.Geometries;
+using Newtonsoft.Json;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public enum UserGeometryType { Point, Rectangle, Polygon, Circle }
+
+[JsonObject]
+public class UserGeometry
 {
-    public enum UserGeometryType { Point, Rectangle, Polygon, Circle }
+    [JsonProperty("Name")]
+    public string? Name { get; set; }
 
-    public class UserGeometry
-    {
-        public string? Name { get; set; }
+    [JsonProperty("Type")]
+    public UserGeometryType Type { get; set; }
 
-        public UserGeometryType Type { get; set; }
-
-        public Geometry? Geometry { get; set; }
-    }
+    [JsonProperty("Geometry")]
+    public Geometry? Geometry { get; set; }
 }

@@ -1,20 +1,24 @@
 ﻿using NetTopologySuite.Geometries;
+using Newtonsoft.Json;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public enum GroundTargetType
 {
-    public enum GroundTargetType
-    {
-        Point,
-        Route,
-        Area
-    }
+    Point,
+    Route,
+    Area
+}
 
-    public class GroundTarget
-    {
-        public string? Name { get; set; }
+[JsonObject]
+public class GroundTarget
+{
+    [JsonProperty("Name")]
+    public string? Name { get; set; }
 
-        public GroundTargetType Type { get; set; }
+    [JsonProperty("Type")]
+    public GroundTargetType Type { get; set; }
 
-        public Geometry? Points { get; set; }
-    }
+    [JsonProperty("Points")]
+    public Geometry? Points { get; set; }
 }

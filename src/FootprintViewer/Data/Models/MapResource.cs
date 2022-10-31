@@ -1,15 +1,14 @@
-﻿namespace FootprintViewer.Data
+﻿namespace FootprintViewer.Data;
+
+public class MapResource
 {
-    public class MapResource
+    public MapResource(string name, string path)
     {
-        public MapResource(string name, string path)
-        {
-            Name = name;
-            Path = path;
-        }
-
-        public string Name { get; private set; }
-
-        public string Path { get; private set; }
+        Name = name;
+        Path = path;
     }
+
+    public string Name { get; private set; }
+
+    public string Path { get; private set; }
 }
