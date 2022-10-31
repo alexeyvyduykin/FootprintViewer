@@ -60,12 +60,25 @@ namespace DataSettingsSample.Data
             return new List<ISource>().ToImmutableList();
         }
 
-        public async Task<IList<T>> GetDataAsync<T>(string key)
+        public async Task<IList<T>> GetDataAsync<T>(string key, bool caching = true)
         {
             return await Task.Run(async () =>
             {
                 if (_sources.ContainsKey(key) == true)
                 {
+                    if (caching == false)
+                    {
+                        var list = new List<object>();
+
+                        foreach (var source in _sources[key])
+                        {
+                            var values = await source.GetValuesAsync();
+                            list.Add(values);
+                        }
+
+                        return list.Cast<T>().ToList();
+                    }
+
                     foreach (var source in _sources[key])
                     {
                         if (_cache[key].ContainsKey(source) == false)
