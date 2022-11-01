@@ -2,57 +2,63 @@
 using FootprintViewer.FileSystem;
 using System;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public class ReleaseDataFactory : BaseDataFactory, IDataFactory
 {
-    public class ReleaseDataFactory : BaseDataFactory, IDataFactory
+    public override FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
     {
-        protected override IDataSource[] GetFootprintPreviewSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+        var dataManager = new DataManager.DataManager();
 
-        protected override IDataSource[] GetMapBackgroundSources()
-        {
-            var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+        return dataManager;
+    }
 
-            return new[]
+    protected override IDataSource[] GetFootprintPreviewSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
+
+    protected override IDataSource[] GetMapBackgroundSources()
+    {
+        var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+
+        return new[]
+        {
+            new FolderSource()
             {
-                new FolderSource()
-                {
-                    Directory = directory1,
-                    SearchPattern = "*.mbtiles",
-                },
-            };
-        }
+                Directory = directory1,
+                SearchPattern = "*.mbtiles",
+            },
+        };
+    }
 
-        protected override IDataSource[] GetFootprintPreviewGeometrySources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetFootprintPreviewGeometrySources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected override IDataSource[] GetUserGeometrySources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetUserGeometrySources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected override IDataSource[] GetSatelliteSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetSatelliteSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected override IDataSource[] GetFootprintSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetFootprintSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected override IDataSource[] GetGroundTargetSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetGroundTargetSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected override IDataSource[] GetGroundStationSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected override IDataSource[] GetGroundStationSources()
+    {
+        return Array.Empty<IDataSource>();
     }
 }

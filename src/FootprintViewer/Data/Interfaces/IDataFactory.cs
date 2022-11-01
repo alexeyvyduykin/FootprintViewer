@@ -1,23 +1,24 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public interface IDataFactory
 {
-    public interface IDataFactory
-    {
-        IProvider<GroundStation> CreateGroundStationProvider();
+    FootprintViewer.Data.DataManager.IDataManager CreateDataManager();
 
-        IProvider<GroundTarget> CreateGroundTargetProvider();
+    IProvider<GroundStation> CreateGroundStationProvider();
 
-        IProvider<Footprint> CreateFootprintProvider();
+    IProvider<GroundTarget> CreateGroundTargetProvider();
 
-        IProvider<Satellite> CreateSatelliteProvider();
+    IProvider<Footprint> CreateFootprintProvider();
 
-        IEditableProvider<UserGeometry> CreateUserGeometryProvider();
+    IProvider<Satellite> CreateSatelliteProvider();
 
-        IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();
+    IEditableProvider<UserGeometry> CreateUserGeometryProvider();
 
-        IProvider<MapResource> CreateMapBackgroundProvider();
+    IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();
 
-        IProvider<FootprintPreview> CreateFootprintPreviewProvider();
-    }
+    IProvider<MapResource> CreateMapBackgroundProvider();
+
+    IProvider<FootprintPreview> CreateFootprintPreviewProvider();
 }

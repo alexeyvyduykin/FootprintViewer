@@ -1,165 +1,167 @@
-﻿using FootprintViewer.Data.Managers;
+﻿using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.Managers;
 using NetTopologySuite.Geometries;
 using System;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+public abstract class BaseDataFactory : IDataFactory
 {
-    public abstract class BaseDataFactory : IDataFactory
+    public abstract IDataManager CreateDataManager();
+
+    public IProvider<GroundStation> CreateGroundStationProvider()
     {
-        public IProvider<GroundStation> CreateGroundStationProvider()
+        var provider = new Provider<GroundStation>();
+
+        provider.AddSources(GetGroundStationSources());
+
+        provider.AddManagers(new IDataManager<GroundStation>[]
         {
-            var provider = new Provider<GroundStation>();
+            new GroundStationDataManager(),
+            new RandomGroundStationDataManager(),
+        });
 
-            provider.AddSources(GetGroundStationSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<GroundStation>[]
-            {
-                new GroundStationDataManager(),
-                new RandomGroundStationDataManager(),
-            });
+    public IProvider<GroundTarget> CreateGroundTargetProvider()
+    {
+        var provider = new Provider<GroundTarget>();
 
-            return provider;
-        }
+        provider.AddSources(GetGroundTargetSources());
 
-        public IProvider<GroundTarget> CreateGroundTargetProvider()
+        provider.AddManagers(new IDataManager<GroundTarget>[]
         {
-            var provider = new Provider<GroundTarget>();
+            new GroundTargetDataManager(),
+            new RandomGroundTargetDataManager(),
+        });
 
-            provider.AddSources(GetGroundTargetSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<GroundTarget>[]
-            {
-                new GroundTargetDataManager(),
-                new RandomGroundTargetDataManager(),
-            });
+    public IProvider<Footprint> CreateFootprintProvider()
+    {
+        var provider = new Provider<Footprint>();
 
-            return provider;
-        }
+        provider.AddSources(GetFootprintSources());
 
-        public IProvider<Footprint> CreateFootprintProvider()
+        provider.AddManagers(new IDataManager<Footprint>[]
         {
-            var provider = new Provider<Footprint>();
+            new FootprintDataManager(),
+            new RandomFootprintDataManager(),
+        });
 
-            provider.AddSources(GetFootprintSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<Footprint>[]
-            {
-                new FootprintDataManager(),
-                new RandomFootprintDataManager(),
-            });
+    public IProvider<Satellite> CreateSatelliteProvider()
+    {
+        var provider = new Provider<Satellite>();
 
-            return provider;
-        }
+        provider.AddSources(GetSatelliteSources());
 
-        public IProvider<Satellite> CreateSatelliteProvider()
+        provider.AddManagers(new IDataManager<Satellite>[]
         {
-            var provider = new Provider<Satellite>();
+            new SatelliteDataManager(),
+            new RandomSatelliteDataManager(),
+        });
 
-            provider.AddSources(GetSatelliteSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<Satellite>[]
-            {
-                new SatelliteDataManager(),
-                new RandomSatelliteDataManager(),
-            });
+    public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
+    {
+        var provider = new EditableProvider<UserGeometry>();
 
-            return provider;
-        }
+        provider.AddSources(GetUserGeometrySources());
 
-        public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
+        provider.AddManagers(new IEditableDataManager<UserGeometry>[]
         {
-            var provider = new EditableProvider<UserGeometry>();
+            new UserGeometryDataManager(),
+        });
 
-            provider.AddSources(GetUserGeometrySources());
+        return provider;
+    }
 
-            provider.AddManagers(new IEditableDataManager<UserGeometry>[]
-            {
-                new UserGeometryDataManager(),
-            });
+    public IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider()
+    {
+        var provider = new Provider<(string, Geometry)>();
 
-            return provider;
-        }
+        provider.AddSources(GetFootprintPreviewGeometrySources());
 
-        public IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider()
+        provider.AddManagers(new IDataManager<(string, Geometry)>[]
         {
-            var provider = new Provider<(string, Geometry)>();
+            new FootprintPreviewGeometryDataManager(),
+        });
 
-            provider.AddSources(GetFootprintPreviewGeometrySources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<(string, Geometry)>[]
-            {
-                new FootprintPreviewGeometryDataManager(),
-            });
+    public IProvider<MapResource> CreateMapBackgroundProvider()
+    {
+        var provider = new Provider<MapResource>();
 
-            return provider;
-        }
+        provider.AddSources(GetMapBackgroundSources());
 
-        public IProvider<MapResource> CreateMapBackgroundProvider()
+        provider.AddManagers(new IDataManager<MapResource>[]
         {
-            var provider = new Provider<MapResource>();
+            new MapDataManager(),
+        });
 
-            provider.AddSources(GetMapBackgroundSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<MapResource>[]
-            {
-                new MapDataManager(),
-            });
+    public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
+    {
+        var provider = new Provider<FootprintPreview>();
 
-            return provider;
-        }
+        provider.AddSources(GetFootprintPreviewSources());
 
-        public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
+        provider.AddManagers(new IDataManager<FootprintPreview>[]
         {
-            var provider = new Provider<FootprintPreview>();
+            new FootprintPreviewDataManager(),
+        });
 
-            provider.AddSources(GetFootprintPreviewSources());
+        return provider;
+    }
 
-            provider.AddManagers(new IDataManager<FootprintPreview>[]
-            {
-                new FootprintPreviewDataManager(),
-            });
+    protected virtual IDataSource[] GetFootprintPreviewSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-            return provider;
-        }
+    protected virtual IDataSource[] GetMapBackgroundSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetFootprintPreviewSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetFootprintPreviewGeometrySources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetMapBackgroundSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetUserGeometrySources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetFootprintPreviewGeometrySources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetSatelliteSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetUserGeometrySources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetFootprintSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetSatelliteSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetGroundTargetSources()
+    {
+        return Array.Empty<IDataSource>();
+    }
 
-        protected virtual IDataSource[] GetFootprintSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
-
-        protected virtual IDataSource[] GetGroundTargetSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
-
-        protected virtual IDataSource[] GetGroundStationSources()
-        {
-            return Array.Empty<IDataSource>();
-        }
+    protected virtual IDataSource[] GetGroundStationSources()
+    {
+        return Array.Empty<IDataSource>();
     }
 }
