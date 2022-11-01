@@ -110,16 +110,4 @@ public class DevHomeDataFactory : BaseDataFactory, IDataFactory
             },
         };
     }
-
-    protected override IDataSource[] GetGroundTargetSources()
-    {
-        return new[]
-        {
-            new RandomSource()
-            {
-                Name = "RandomGroundTargets",
-                GenerateCount = 5000,
-            },
-        };
-    }
 }

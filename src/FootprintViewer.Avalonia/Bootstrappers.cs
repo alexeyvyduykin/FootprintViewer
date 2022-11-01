@@ -87,7 +87,6 @@ public static class Bootstrapper
         services.RegisterConstant(dataFactory.CreateDataManager(), typeof(IDataManager));
 
         // Providers
-        services.RegisterConstant(dataFactory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
         services.RegisterConstant(dataFactory.CreateFootprintProvider(), typeof(IProvider<Footprint>));
         services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
         services.RegisterConstant(dataFactory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));

@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -7,6 +8,7 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -15,8 +17,8 @@ namespace FootprintViewer.ViewModels
 {
     public class GroundTargetTab : SidePanelTab
     {
+        private readonly Data.DataManager.IDataManager _dataManager;
         private readonly ITargetLayerSource _source;
-        private readonly IProvider<GroundTarget> _provider;
         private readonly SourceList<GroundTargetViewModel> _groundTargets = new();
         private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -25,7 +27,7 @@ namespace FootprintViewer.ViewModels
 
         public GroundTargetTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
             _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
 
             Title = "Просмотр наземных целей";
@@ -103,7 +105,9 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingImpl()
         {
-            var list = await _provider.GetValuesAsync(null, s => new GroundTargetViewModel(s));
+            var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
+
+            var list = res.Select(s => new GroundTargetViewModel(s)).ToList();
 
             _groundTargets.Edit(innerList =>
             {
@@ -114,7 +118,14 @@ namespace FootprintViewer.ViewModels
 
         public async Task<List<GroundTargetViewModel>> GetGroundTargetViewModelsAsync(string name)
         {
-            return await _provider.GetValuesAsync(new NameFilter<GroundTargetViewModel>(new[] { name }), s => new GroundTargetViewModel(s));
+            var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
+
+            var list = res
+                .Where(s => string.Equals(s.Name, name))
+                .Select(s => new GroundTargetViewModel(s))
+                .ToList();
+
+            return list;
         }
 
         public bool IsLoading => _isLoading.Value;

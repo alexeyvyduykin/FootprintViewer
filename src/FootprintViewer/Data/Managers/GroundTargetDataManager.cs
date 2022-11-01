@@ -1,58 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.Managers
 {
-    public class GroundTargetDataManager : BaseDataManager<GroundTarget, IDatabaseSource>
-    {
-        protected override async Task<List<GroundTarget>> GetNativeValuesAsync(IDatabaseSource dataSource, IFilter<GroundTarget>? filter)
-        {
-            var options = extns2.BuildDbContextOptions<DbCustomContext>(dataSource);
-            using var context = new GroundTargetDbContext(dataSource.Table, options);
-
-            if (filter == null || filter.Names == null)
-            {
-                return await context.GroundTargets.ToListAsync();
-            }
-
-            var list = filter.Names.ToList();
-
-            Expression<Func<GroundTarget, bool>> predicate = s => false;
-
-            foreach (var name in list)
-                predicate = predicate.Or(s => string.Equals(s.Name, name));
-
-            return await context.GroundTargets
-                  .Where(predicate).ToListAsync();
-        }
-
-        protected override async Task<List<T>> GetValuesAsync<T>(IDatabaseSource dataSource, IFilter<T>? filter, Func<GroundTarget, T> converter)
-        {
-            var options = extns2.BuildDbContextOptions<DbCustomContext>(dataSource);
-            using var context = new GroundTargetDbContext(dataSource.Table, options);
-
-            if (filter == null || filter.Names == null)
-            {
-                return await context.GroundTargets.Select(s => converter(s)).ToListAsync();
-            }
-
-            var list = filter.Names.ToList();
-
-            Expression<Func<GroundTarget, bool>> predicate = s => false;
-
-            foreach (var name in list)
-                predicate = predicate.Or(s => string.Equals(s.Name, name));
-
-            return await context.GroundTargets
-                  .Where(predicate)
-                  .Select(s => converter(s)).ToListAsync();
-        }
-    }
-
     public static class LINQKitExtensions
     {
         private class RebindParameterVisitor : ExpressionVisitor

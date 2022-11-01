@@ -166,7 +166,7 @@ public class MapFactory
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var source = dependencyResolver.GetExistingService<ITargetLayerSource>();
-        var provider = dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         source.MaxVisible = styleManager.MaxVisibleTargetStyle;
 
@@ -178,12 +178,9 @@ public class MapFactory
             IsMapInfoLayer = true,
         };
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
+        dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
 
         loader.AddTaskAsync(() => LoadingAsync());
 
@@ -193,7 +190,7 @@ public class MapFactory
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
 
-            var groundTargets = await provider.GetNativeValuesAsync(null);
+            var groundTargets = await dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
 
             source.SetProvider(new MemoryProvider(FeatureBuilder.Build(groundTargets)));
 
@@ -202,6 +199,8 @@ public class MapFactory
             layer.DataSource = null;
 
             layer.DataSource = source;
+
+            layer.DataHasChanged();
         }
     }
 
@@ -228,7 +227,7 @@ public class MapFactory
 
         async Task LoadingAsync()
         {
-            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());// provider.GetNativeValuesAsync(null);
+            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
 
             layer.UpdateData(satellites);
         }

@@ -33,7 +33,6 @@ public class ViewModelFactory
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
         var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
-        var groundTargetProvider = (Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
         var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
         var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
         var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
@@ -47,18 +46,6 @@ public class ViewModelFactory
             {
                 SourceType.Database => new DatabaseSourceViewModel(),
                 SourceType.Random => new RandomSourceViewModel() { Name = "RandomFootprints", GenerateCount = 1000 },
-                _ => throw new Exception(),
-            },
-        };
-
-        var groundTargetProviderViewModel = new ProviderViewModel(groundTargetProvider, _dependencyResolver)
-        {
-            Type = ProviderType.GroundTargets,
-            AvailableBuilders = configuration.GroundTargetSourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundTargets", GenerateCount = 5000 },
                 _ => throw new Exception(),
             },
         };
@@ -113,7 +100,6 @@ public class ViewModelFactory
             Providers = new List<ProviderViewModel>()
             {
                 footprintProviderViewModel,
-                groundTargetProviderViewModel,
                 userGeometryProviderViewModel,
                 footprintPreviewGeometryProviderViewModel,
                 mapBackgroundProviderViewModel,
@@ -247,7 +233,7 @@ public class ViewModelFactory
     {
         var map = _dependencyResolver.GetExistingService<IMap>();
         var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
-        var provider = _dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+        var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
         var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
         var tab = new GroundTargetTab(_dependencyResolver);
 
@@ -279,11 +265,8 @@ public class ViewModelFactory
             targetManager?.HideHighlight();
         });
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
+        dataManager.DataChanged
+            .ToSignal()
             .InvokeCommand(tab.Loading);
 
         return tab;

@@ -9,21 +9,6 @@ public abstract class BaseDataFactory : IDataFactory
 {
     public abstract IDataManager CreateDataManager();
 
-    public IProvider<GroundTarget> CreateGroundTargetProvider()
-    {
-        var provider = new Provider<GroundTarget>();
-
-        provider.AddSources(GetGroundTargetSources());
-
-        provider.AddManagers(new IDataManager<GroundTarget>[]
-        {
-            new GroundTargetDataManager(),
-            new RandomGroundTargetDataManager(),
-        });
-
-        return provider;
-    }
-
     public IProvider<Footprint> CreateFootprintProvider()
     {
         var provider = new Provider<Footprint>();
@@ -116,11 +101,6 @@ public abstract class BaseDataFactory : IDataFactory
     }
 
     protected virtual IDataSource[] GetFootprintSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
-    protected virtual IDataSource[] GetGroundTargetSources()
     {
         return Array.Empty<IDataSource>();
     }
