@@ -15,412 +15,394 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer
+namespace FootprintViewer;
+
+public class ViewModelFactory
 {
-    public class ViewModelFactory
+    private readonly IReadonlyDependencyResolver _dependencyResolver;
+
+    public ViewModelFactory(IReadonlyDependencyResolver dependencyResolver)
     {
-        private readonly IReadonlyDependencyResolver _dependencyResolver;
+        _dependencyResolver = dependencyResolver;
+    }
 
-        public ViewModelFactory(IReadonlyDependencyResolver dependencyResolver)
+    public SettingsTabViewModel CreateSettingsTabViewModel()
+    {
+        var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
+
+        var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
+
+        var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
+        var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
+        var groundTargetProvider = (Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+        var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+        var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
+        var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+        var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
+
+        var satelliteProviderViewModel = new ProviderViewModel(satelliteProvider, _dependencyResolver)
         {
-            _dependencyResolver = dependencyResolver;
-        }
-
-        public SettingsTabViewModel CreateSettingsTabViewModel()
-        {
-            var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
-
-            var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
-
-            var groundStationProvider = (Provider<GroundStation>)_dependencyResolver.GetExistingService<IProvider<GroundStation>>();
-            var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
-            var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
-            var groundTargetProvider = (Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
-            var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-            var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
-            var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
-            var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
-
-            var groundStationProviderViewModel = new ProviderViewModel(groundStationProvider, _dependencyResolver)
+            Type = ProviderType.Satellites,
+            AvailableBuilders = configuration.SatelliteSourceBuilders,
+            Builder = type => type switch
             {
-                Type = ProviderType.GroundStations,
-                AvailableBuilders = configuration.GroundStationSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundStations", GenerateCount = 10 },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var satelliteProviderViewModel = new ProviderViewModel(satelliteProvider, _dependencyResolver)
-            {
-                Type = ProviderType.Satellites,
-                AvailableBuilders = configuration.SatelliteSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomSatellites", GenerateCount = 4 },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
-            {
-                Type = ProviderType.Footprints,
-                AvailableBuilders = configuration.FootprintSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomFootprints", GenerateCount = 1000 },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var groundTargetProviderViewModel = new ProviderViewModel(groundTargetProvider, _dependencyResolver)
-            {
-                Type = ProviderType.GroundTargets,
-                AvailableBuilders = configuration.GroundTargetSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundTargets", GenerateCount = 5000 },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
-            {
-                Type = ProviderType.UserGeometries,
-                AvailableBuilders = configuration.UserGeometrySourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Database => new DatabaseSourceViewModel(),
-                    SourceType.Random => new RandomSourceViewModel() { Name = "RandomUserGeometries" },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var mapBackgroundProviderViewModel = new ProviderViewModel(mapBackgroundProvider, _dependencyResolver)
-            {
-                Type = ProviderType.MapBackgrounds,
-                AvailableBuilders = configuration.MapBackgroundSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var footprintPreviewProviderViewModel = new ProviderViewModel(footprintPreviewProvider, _dependencyResolver)
-            {
-                Type = ProviderType.FootprintPreviews,
-                AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(footprintPreviewGeometryProvider, _dependencyResolver)
-            {
-                Type = ProviderType.FootprintPreviewGeometries,
-                AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
-                Builder = type => type switch
-                {
-                    SourceType.File => new FileSourceViewModel() { FilterExtension = "*.mbtiles" },
-                    _ => throw new Exception(),
-                },
-            };
-
-            var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
-            {
-                Providers = new List<ProviderViewModel>()
-                {
-                    footprintProviderViewModel,
-                    groundTargetProviderViewModel,
-                    groundStationProviderViewModel,
-                    satelliteProviderViewModel,
-                    userGeometryProviderViewModel,
-                    footprintPreviewGeometryProviderViewModel,
-                    mapBackgroundProviderViewModel,
-                    footprintPreviewProviderViewModel,
-                },
-                LanguageSettings = new LanguageSettingsViewModel(languageManager),
-            };
-
-            return settingsViewer;
-        }
-
-        private ISourceViewModel CreateSource(SourceType type)
-        {
-            return type switch
-            {
-                SourceType.File => new FileSourceViewModel(),
-                SourceType.Folder => new FolderSourceViewModel(),
                 SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel() { Name = "DefaultRandom" },
+                SourceType.Random => new RandomSourceViewModel() { Name = "RandomSatellites", GenerateCount = 4 },
                 _ => throw new Exception(),
-            };
-        }
+            },
+        };
 
-        public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders, Func<SourceType, ISourceViewModel>? factory)
+        var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
         {
-            var list = new List<ISourceBuilderItem>();
-
-            foreach (var item in builders)
+            Type = ProviderType.Footprints,
+            AvailableBuilders = configuration.FootprintSourceBuilders,
+            Builder = type => type switch
             {
-                if (Enum.TryParse(item.ToTitleCase(), out SourceType type) == true)
-                {
-                    list.Add(new SourceBuilderItem(type, () => factory != null ? factory(type) : CreateSource(type)));
-                }
+                SourceType.Database => new DatabaseSourceViewModel(),
+                SourceType.Random => new RandomSourceViewModel() { Name = "RandomFootprints", GenerateCount = 1000 },
+                _ => throw new Exception(),
+            },
+        };
+
+        var groundTargetProviderViewModel = new ProviderViewModel(groundTargetProvider, _dependencyResolver)
+        {
+            Type = ProviderType.GroundTargets,
+            AvailableBuilders = configuration.GroundTargetSourceBuilders,
+            Builder = type => type switch
+            {
+                SourceType.Database => new DatabaseSourceViewModel(),
+                SourceType.Random => new RandomSourceViewModel() { Name = "RandomGroundTargets", GenerateCount = 5000 },
+                _ => throw new Exception(),
+            },
+        };
+
+        var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
+        {
+            Type = ProviderType.UserGeometries,
+            AvailableBuilders = configuration.UserGeometrySourceBuilders,
+            Builder = type => type switch
+            {
+                SourceType.Database => new DatabaseSourceViewModel(),
+                SourceType.Random => new RandomSourceViewModel() { Name = "RandomUserGeometries" },
+                _ => throw new Exception(),
+            },
+        };
+
+        var mapBackgroundProviderViewModel = new ProviderViewModel(mapBackgroundProvider, _dependencyResolver)
+        {
+            Type = ProviderType.MapBackgrounds,
+            AvailableBuilders = configuration.MapBackgroundSourceBuilders,
+            Builder = type => type switch
+            {
+                SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
+                _ => throw new Exception(),
+            },
+        };
+
+        var footprintPreviewProviderViewModel = new ProviderViewModel(footprintPreviewProvider, _dependencyResolver)
+        {
+            Type = ProviderType.FootprintPreviews,
+            AvailableBuilders = configuration.FootprintPreviewSourceBuilders,
+            Builder = type => type switch
+            {
+                SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
+                _ => throw new Exception(),
+            },
+        };
+
+        var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(footprintPreviewGeometryProvider, _dependencyResolver)
+        {
+            Type = ProviderType.FootprintPreviewGeometries,
+            AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
+            Builder = type => type switch
+            {
+                SourceType.File => new FileSourceViewModel() { FilterExtension = "*.mbtiles" },
+                _ => throw new Exception(),
+            },
+        };
+
+        var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
+        {
+            Providers = new List<ProviderViewModel>()
+            {
+                footprintProviderViewModel,
+                groundTargetProviderViewModel,
+                satelliteProviderViewModel,
+                userGeometryProviderViewModel,
+                footprintPreviewGeometryProviderViewModel,
+                mapBackgroundProviderViewModel,
+                footprintPreviewProviderViewModel,
+            },
+            LanguageSettings = new LanguageSettingsViewModel(languageManager),
+        };
+
+        return settingsViewer;
+    }
+
+    private ISourceViewModel CreateSource(SourceType type)
+    {
+        return type switch
+        {
+            SourceType.File => new FileSourceViewModel(),
+            SourceType.Folder => new FolderSourceViewModel(),
+            SourceType.Database => new DatabaseSourceViewModel(),
+            SourceType.Random => new RandomSourceViewModel() { Name = "DefaultRandom" },
+            _ => throw new Exception(),
+        };
+    }
+
+    public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders, Func<SourceType, ISourceViewModel>? factory)
+    {
+        var list = new List<ISourceBuilderItem>();
+
+        foreach (var item in builders)
+        {
+            if (Enum.TryParse(item.ToTitleCase(), out SourceType type) == true)
+            {
+                list.Add(new SourceBuilderItem(type, () => factory != null ? factory(type) : CreateSource(type)));
             }
-
-            return list;
         }
 
-        public GroundStationTab CreateGroundStationTab()
+        return list;
+    }
+
+    public GroundStationTab CreateGroundStationTab()
+    {
+        var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+
+        var tab = new GroundStationTab(_dependencyResolver);
+
+        dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(tab.Loading);
+
+        return tab;
+    }
+
+    public FootprintPreviewTab CreateFootprintPreviewTab()
+    {
+        var map = (Map)_dependencyResolver.GetExistingService<IMap>();
+        var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+        var provider = _dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+
+        var tab = new FootprintPreviewTab(_dependencyResolver);
+
+        tab.SelectedItemObservable.Subscribe(footprint =>
         {
-            var provider = _dependencyResolver.GetExistingService<IProvider<GroundStation>>();
-
-            var tab = new GroundStationTab(_dependencyResolver);
-
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
-
-            return tab;
-        }
-
-        public FootprintPreviewTab CreateFootprintPreviewTab()
-        {
-            var map = (Map)_dependencyResolver.GetExistingService<IMap>();
-            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
-            var provider = _dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
-
-            var tab = new FootprintPreviewTab(_dependencyResolver);
-
-            tab.SelectedItemObservable.Subscribe(footprint =>
+            if (footprint != null && footprint.Path != null)
             {
-                if (footprint != null && footprint.Path != null)
-                {
-                    var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
+                var layer = MapsuiHelper.CreateMbTilesLayer(footprint.Path);
 
-                    map.ReplaceLayer(layer, LayerType.FootprintImage);
+                map.ReplaceLayer(layer, LayerType.FootprintImage);
 
-                    if (tab.Geometries.ContainsKey(footprint.Name!) == true)
-                    {
-                        mapNavigator.SetFocusToPoint(tab.Geometries[footprint.Name!].Centroid.ToMPoint());
-                    }
-                }
-            });
-
-            tab.Enter.Subscribe(footprint =>
-            {
                 if (tab.Geometries.ContainsKey(footprint.Name!) == true)
                 {
-                    var layer = map.GetLayer(LayerType.FootprintImageBorder);
-
-                    if (layer != null && layer is WritableLayer writableLayer)
-                    {
-                        writableLayer.Clear();
-                        writableLayer.Add(new GeometryFeature() { Geometry = tab.Geometries[footprint.Name!] });
-                        writableLayer.DataHasChanged();
-                    }
+                    mapNavigator.SetFocusToPoint(tab.Geometries[footprint.Name!].Centroid.ToMPoint());
                 }
-            });
+            }
+        });
 
-            tab.Leave.Subscribe(_ =>
+        tab.Enter.Subscribe(footprint =>
+        {
+            if (tab.Geometries.ContainsKey(footprint.Name!) == true)
             {
                 var layer = map.GetLayer(LayerType.FootprintImageBorder);
 
                 if (layer != null && layer is WritableLayer writableLayer)
                 {
                     writableLayer.Clear();
+                    writableLayer.Add(new GeometryFeature() { Geometry = tab.Geometries[footprint.Name!] });
                     writableLayer.DataHasChanged();
                 }
-            });
+            }
+        });
 
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
-
-            return tab;
-        }
-
-        public FootprintTab CreateFootprintTab()
+        tab.Leave.Subscribe(_ =>
         {
-            var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
-            var provider = _dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            var layer = map.GetLayer(LayerType.FootprintImageBorder);
 
-            var tab = new FootprintTab(_dependencyResolver);
-
-            tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
-
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
-
-            return tab;
-        }
-
-        public GroundTargetTab CreateGroundTargetTab()
-        {
-            var map = _dependencyResolver.GetExistingService<IMap>();
-            var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
-            var provider = _dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
-            var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
-            var tab = new GroundTargetTab(_dependencyResolver);
-
-            tab.SelectedItemObservable.Subscribe(groundTarget =>
+            if (layer != null && layer is WritableLayer writableLayer)
             {
-                if (groundTarget != null)
-                {
-                    var name = groundTarget.Name;
+                writableLayer.Clear();
+                writableLayer.DataHasChanged();
+            }
+        });
 
-                    if (string.IsNullOrEmpty(name) == false)
-                    {
-                        targetManager?.SelectFeature(name);
-                    }
-                }
-            });
+        var skip = provider.Sources.Count > 0 ? 1 : 0;
 
-            tab.Enter.Subscribe(groundTarget =>
+        provider.Observable
+            .Skip(skip)
+            .Select(s => Unit.Default)
+            .InvokeCommand(tab.Loading);
+
+        return tab;
+    }
+
+    public FootprintTab CreateFootprintTab()
+    {
+        var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
+        var provider = _dependencyResolver.GetExistingService<IProvider<Footprint>>();
+
+        var tab = new FootprintTab(_dependencyResolver);
+
+        tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
+
+        var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+        provider.Observable
+            .Skip(skip)
+            .Select(s => Unit.Default)
+            .InvokeCommand(tab.Loading);
+
+        return tab;
+    }
+
+    public GroundTargetTab CreateGroundTargetTab()
+    {
+        var map = _dependencyResolver.GetExistingService<IMap>();
+        var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
+        var provider = _dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
+        var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
+        var tab = new GroundTargetTab(_dependencyResolver);
+
+        tab.SelectedItemObservable.Subscribe(groundTarget =>
+        {
+            if (groundTarget != null)
             {
                 var name = groundTarget.Name;
 
-                if (name != null)
+                if (string.IsNullOrEmpty(name) == false)
                 {
-                    targetManager?.ShowHighlight(name);
+                    targetManager?.SelectFeature(name);
                 }
-            });
+            }
+        });
 
-            tab.Leave.Subscribe(_ =>
+        tab.Enter.Subscribe(groundTarget =>
+        {
+            var name = groundTarget.Name;
+
+            if (name != null)
             {
-                targetManager?.HideHighlight();
-            });
+                targetManager?.ShowHighlight(name);
+            }
+        });
 
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
-
-            return tab;
-        }
-
-        public SatelliteTab CreateSatelliteTab()
+        tab.Leave.Subscribe(_ =>
         {
-            var provider = _dependencyResolver.GetExistingService<IProvider<Satellite>>();
+            targetManager?.HideHighlight();
+        });
 
-            var tab = new SatelliteTab(_dependencyResolver);
+        var skip = provider.Sources.Count > 0 ? 1 : 0;
 
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
+        provider.Observable
+            .Skip(skip)
+            .Select(s => Unit.Default)
+            .InvokeCommand(tab.Loading);
 
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
+        return tab;
+    }
 
-            return tab;
-        }
+    public SatelliteTab CreateSatelliteTab()
+    {
+        var provider = _dependencyResolver.GetExistingService<IProvider<Satellite>>();
 
-        public UserGeometryTab CreateUserGeometryTab()
+        var tab = new SatelliteTab(_dependencyResolver);
+
+        var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+        provider.Observable
+            .Skip(skip)
+            .Select(s => Unit.Default)
+            .InvokeCommand(tab.Loading);
+
+        return tab;
+    }
+
+    public UserGeometryTab CreateUserGeometryTab()
+    {
+        var provider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+
+        var tab = new UserGeometryTab(_dependencyResolver);
+
+        var skip = provider.Sources.Count > 0 ? 1 : 0;
+
+        provider.Observable
+            .Skip(skip)
+            .Select(s => Unit.Default)
+            .InvokeCommand(tab.Loading);
+
+        return tab;
+    }
+}
+
+public static class extns
+{
+    public static ISourceViewModel ToViewModel(this IDataSource dataSource)
+    {
+        if (dataSource is IDatabaseSource databaseSource)
         {
-            var provider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
-            var tab = new UserGeometryTab(_dependencyResolver);
-
-            var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-            provider.Observable
-                .Skip(skip)
-                .Select(s => Unit.Default)
-                .InvokeCommand(tab.Loading);
-
-            return tab;
+            return new DatabaseSourceViewModel(databaseSource);
+        }
+        else if (dataSource is IFileSource fileSource)
+        {
+            return new FileSourceViewModel(fileSource);
+        }
+        else if (dataSource is IFolderSource folderSource)
+        {
+            return new FolderSourceViewModel(folderSource);
+        }
+        else if (dataSource is IRandomSource randomSource)
+        {
+            return new RandomSourceViewModel(randomSource);
+        }
+        else
+        {
+            throw new Exception();
         }
     }
 
-    public static class extns
+    public static IDataSource ToModel(this ISourceViewModel source)
     {
-        public static ISourceViewModel ToViewModel(this IDataSource dataSource)
+        if (source is IDatabaseSourceViewModel databaseSource)
         {
-            if (dataSource is IDatabaseSource databaseSource)
+            return new DatabaseSource()
             {
-                return new DatabaseSourceViewModel(databaseSource);
-            }
-            else if (dataSource is IFileSource fileSource)
-            {
-                return new FileSourceViewModel(fileSource);
-            }
-            else if (dataSource is IFolderSource folderSource)
-            {
-                return new FolderSourceViewModel(folderSource);
-            }
-            else if (dataSource is IRandomSource randomSource)
-            {
-                return new RandomSourceViewModel(randomSource);
-            }
-            else
-            {
-                throw new Exception();
-            }
+                Version = databaseSource.Version ?? string.Empty,
+                Host = databaseSource.Host ?? string.Empty,
+                Port = databaseSource.Port,
+                Database = databaseSource.Database ?? string.Empty,
+                Username = databaseSource.Username ?? string.Empty,
+                Password = databaseSource.Password ?? string.Empty,
+                Table = databaseSource.Table ?? string.Empty,
+            };
         }
-
-        public static IDataSource ToModel(this ISourceViewModel source)
+        else if (source is IFileSourceViewModel fileSource)
         {
-            if (source is IDatabaseSourceViewModel databaseSource)
+            return new FileSource()
             {
-                return new DatabaseSource()
-                {
-                    Version = databaseSource.Version ?? string.Empty,
-                    Host = databaseSource.Host ?? string.Empty,
-                    Port = databaseSource.Port,
-                    Database = databaseSource.Database ?? string.Empty,
-                    Username = databaseSource.Username ?? string.Empty,
-                    Password = databaseSource.Password ?? string.Empty,
-                    Table = databaseSource.Table ?? string.Empty,
-                };
-            }
-            else if (source is IFileSourceViewModel fileSource)
+                Path = fileSource.Path ?? string.Empty,
+            };
+        }
+        else if (source is IFolderSourceViewModel folderSource)
+        {
+            return new FolderSource()
             {
-                return new FileSource()
-                {
-                    Path = fileSource.Path ?? string.Empty,
-                };
-            }
-            else if (source is IFolderSourceViewModel folderSource)
+                Directory = folderSource.Directory ?? string.Empty,
+                SearchPattern = folderSource.SearchPattern ?? string.Empty,
+            };
+        }
+        else if (source is IRandomSourceViewModel randomSource)
+        {
+            return new RandomSource()
             {
-                return new FolderSource()
-                {
-                    Directory = folderSource.Directory ?? string.Empty,
-                    SearchPattern = folderSource.SearchPattern ?? string.Empty,
-                };
-            }
-            else if (source is IRandomSourceViewModel randomSource)
-            {
-                return new RandomSource()
-                {
-                    Name = randomSource.Name ?? "RandomSourceDefault",
-                    GenerateCount = randomSource.GenerateCount,
-                };
-            }
-            else
-            {
-                throw new Exception();
-            }
+                Name = randomSource.Name ?? "RandomSourceDefault",
+                GenerateCount = randomSource.GenerateCount,
+            };
+        }
+        else
+        {
+            throw new Exception();
         }
     }
 }

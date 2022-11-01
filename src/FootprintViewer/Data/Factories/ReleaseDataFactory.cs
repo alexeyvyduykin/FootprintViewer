@@ -56,9 +56,4 @@ public class ReleaseDataFactory : BaseDataFactory, IDataFactory
     {
         return Array.Empty<IDataSource>();
     }
-
-    protected override IDataSource[] GetGroundStationSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
 }

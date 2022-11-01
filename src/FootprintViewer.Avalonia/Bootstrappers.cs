@@ -87,7 +87,6 @@ public static class Bootstrapper
         services.RegisterConstant(dataFactory.CreateDataManager(), typeof(IDataManager));
 
         // Providers
-        services.RegisterConstant(dataFactory.CreateGroundStationProvider(), typeof(IProvider<GroundStation>));
         services.RegisterConstant(dataFactory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
         services.RegisterConstant(dataFactory.CreateFootprintProvider(), typeof(IProvider<Footprint>));
         services.RegisterConstant(dataFactory.CreateSatelliteProvider(), typeof(IProvider<Satellite>));

@@ -6,52 +6,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Layers
+namespace FootprintViewer.Layers;
+
+public class GroundStationLayer : WritableLayer
 {
-    public class GroundStationLayer : WritableLayer
+    private readonly Dictionary<string, List<IFeature>> _cache = new();
+
+    public void UpdateData(List<GroundStation> groundStations)
     {
-        private readonly Dictionary<string, List<IFeature>> _cache = new();
+        _cache.Clear();
 
-        public void UpdateData(List<GroundStation> groundStations)
+        foreach (var item in groundStations)
         {
-            _cache.Clear();
-
-            foreach (var item in groundStations)
+            if (string.IsNullOrEmpty(item.Name) == false)
             {
-                if (string.IsNullOrEmpty(item.Name) == false)
-                {
-                    _cache.Add(item.Name, new List<IFeature>());
-                }
+                _cache.Add(item.Name, new List<IFeature>());
             }
         }
 
-        public void Update(GroundStationViewModel groundStation)
+        // TODO: temp solution
+        Clear();
+        DataHasChanged();
+    }
+
+    public void Update(GroundStationViewModel groundStation)
+    {
+        var name = groundStation.Name;
+        var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
+        var angles = groundStation.GetAngles();
+        var isShow = groundStation.IsShow;
+
+        if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
         {
-            var name = groundStation.Name;
-            var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
-            var angles = groundStation.GetAngles();
-            var isShow = groundStation.IsShow;
+            _cache[name].Clear();
 
-            if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
+            if (isShow == true)
             {
-                _cache[name].Clear();
-
-                if (isShow == true)
+                var gs = new GroundStation()
                 {
-                    var gs = new GroundStation()
-                    {
-                        Name = name,
-                        Center = center,
-                        Angles = angles,
-                    };
+                    Name = name,
+                    Center = center,
+                    Angles = angles,
+                };
 
-                    _cache[name] = FeatureBuilder.Build(gs);
-                }
-
-                Clear();
-                AddRange(_cache.SelectMany(s => s.Value));
-                DataHasChanged();
+                _cache[name] = FeatureBuilder.Build(gs);
             }
+
+            Clear();
+            AddRange(_cache.SelectMany(s => s.Value));
+            DataHasChanged();
         }
     }
 }

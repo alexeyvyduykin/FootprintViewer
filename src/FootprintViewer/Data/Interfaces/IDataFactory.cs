@@ -6,8 +6,6 @@ public interface IDataFactory
 {
     FootprintViewer.Data.DataManager.IDataManager CreateDataManager();
 
-    IProvider<GroundStation> CreateGroundStationProvider();
-
     IProvider<GroundTarget> CreateGroundTargetProvider();
 
     IProvider<Footprint> CreateFootprintProvider();

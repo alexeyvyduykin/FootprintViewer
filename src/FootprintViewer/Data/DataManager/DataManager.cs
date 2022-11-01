@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Nito.AsyncEx;
+using ReactiveUI;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -8,8 +12,16 @@ namespace FootprintViewer.Data.DataManager;
 // TODO: try to ConcurentDictionary
 public class DataManager : IDataManager
 {
+    private readonly AsyncLock _mutex = new();
     private readonly Dictionary<string, IDictionary<ISource, IList<object>>> _cache = new();
     private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
+
+    public DataManager()
+    {
+        DataChanged = ReactiveCommand.Create(() => Unit.Default, outputScheduler: RxApp.MainThreadScheduler);
+    }
+
+    public IObservable<Unit> DataChanged { get; }
 
     public void RegisterSource(string key, ISource source)
     {
@@ -36,7 +48,12 @@ public class DataManager : IDataManager
             _sources[key].Remove(source);
 
             // clear cache
-            _cache[key].Remove(source);
+            var isRemove = _cache[key].Remove(source);
+
+            if (isRemove == false)
+            {
+                throw new Exception();
+            }
 
             if (_sources[key].Count == 0)
             {
@@ -47,6 +64,11 @@ public class DataManager : IDataManager
                 _cache.Remove(key);
             }
         }
+    }
+
+    public void UpdateData()
+    {
+        ((ReactiveCommand<Unit, Unit>)DataChanged).Execute(Unit.Default).Subscribe();
     }
 
     public IReadOnlyList<ISource> GetSources(string key)
@@ -82,8 +104,14 @@ public class DataManager : IDataManager
                 {
                     if (_cache[key].ContainsKey(source) == false)
                     {
-                        var list = await source.GetValuesAsync();
-                        _cache[key].Add(source, list);
+                        using (await _mutex.LockAsync())
+                        {
+                            if (_cache[key].ContainsKey(source) == false)
+                            {
+                                var list = await source.GetValuesAsync();
+                                _cache[key].Add(source, list);
+                            }
+                        }
                     }
                 }
 

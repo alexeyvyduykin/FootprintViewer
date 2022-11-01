@@ -134,16 +134,4 @@ public class DemoDataFactory : BaseDataFactory, IDataFactory
             },
         };
     }
-
-    protected override IDataSource[] GetGroundStationSources()
-    {
-        return new[]
-        {
-           new RandomSource()
-           {
-               Name = "RandomGroundStations",
-               GenerateCount = 6,
-           },
-        };
-    }
 }

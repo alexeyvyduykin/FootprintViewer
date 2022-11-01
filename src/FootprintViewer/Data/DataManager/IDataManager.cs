@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -12,4 +14,8 @@ public interface IDataManager
     IReadOnlyList<ISource> GetSources(string key);
 
     Task<IList<T>> GetDataAsync<T>(string key, bool caching = true);
+
+    IObservable<Unit> DataChanged { get; }
+
+    void UpdateData();
 }
