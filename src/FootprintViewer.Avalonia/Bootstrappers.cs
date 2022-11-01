@@ -89,7 +89,6 @@ public static class Bootstrapper
         // Providers
         services.RegisterConstant(dataFactory.CreateGroundTargetProvider(), typeof(IProvider<GroundTarget>));
         services.RegisterConstant(dataFactory.CreateFootprintProvider(), typeof(IProvider<Footprint>));
-        services.RegisterConstant(dataFactory.CreateSatelliteProvider(), typeof(IProvider<Satellite>));
         services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
         services.RegisterConstant(dataFactory.CreateFootprintPreviewGeometryProvider(), typeof(IProvider<(string, NetTopologySuite.Geometries.Geometry)>));
         services.RegisterConstant(dataFactory.CreateMapBackgroundProvider(), typeof(IProvider<MapResource>));

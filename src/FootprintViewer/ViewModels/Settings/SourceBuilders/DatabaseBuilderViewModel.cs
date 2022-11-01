@@ -29,7 +29,7 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
 
         Host = "localhost";
         Port = 5432;
-        Database = "DataSettingsSampleDatabase1";
+        Database = "FootprintViewerDatabase";
         Username = "postgres";
         Password = "user";
 

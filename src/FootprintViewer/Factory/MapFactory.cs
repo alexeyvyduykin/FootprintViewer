@@ -129,7 +129,7 @@ public class MapFactory
         {
             var groundStations = await dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
 
-            layer.UpdateData(groundStations.ToList());
+            layer.UpdateData(groundStations);
         }
     }
 
@@ -137,7 +137,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
+        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var layer = new TrackLayer()
         {
@@ -145,12 +145,9 @@ public class MapFactory
             IsMapInfoLayer = false,
         };
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
+        dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
 
         loader.AddTaskAsync(() => LoadingAsync());
 
@@ -158,7 +155,7 @@ public class MapFactory
 
         async Task LoadingAsync()
         {
-            var satellites = await provider.GetNativeValuesAsync(null);
+            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
 
             layer.UpdateData(satellites);
         }
@@ -212,7 +209,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var provider = dependencyResolver.GetExistingService<IProvider<Satellite>>();
+        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var layer = new SensorLayer()
         {
@@ -220,12 +217,10 @@ public class MapFactory
             IsMapInfoLayer = false,
         };
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
+        dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
 
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
         loader.AddTaskAsync(() => LoadingAsync());
 
@@ -233,7 +228,7 @@ public class MapFactory
 
         async Task LoadingAsync()
         {
-            var satellites = await provider.GetNativeValuesAsync(null);
+            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());// provider.GetNativeValuesAsync(null);
 
             layer.UpdateData(satellites);
         }

@@ -1,42 +1,46 @@
-﻿using FootprintViewer.Data.Sources;
+﻿using FootprintViewer.Data.DataManager.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Data.Managers
+namespace FootprintViewer.Data.Managers;
+
+public class RandomFootprintDataManager : BaseDataManager<Footprint, IRandomSource>
 {
-    public class RandomFootprintDataManager : BaseDataManager<Footprint, IRandomSource>
+    private List<Footprint>? _footprints;
+
+    protected override async Task<List<Footprint>> GetNativeValuesAsync(IRandomSource dataSource, IFilter<Footprint>? filter)
     {
-        private List<Footprint>? _footprints;
-
-        protected override async Task<List<Footprint>> GetNativeValuesAsync(IRandomSource dataSource, IFilter<Footprint>? filter)
+        return await Task.Run(async () =>
         {
-            return await Task.Run(async () =>
-            {
-                _footprints ??= await Build(dataSource);
+            _footprints ??= await Build(dataSource);
 
-                return _footprints;
-            });
-        }
+            return _footprints;
+        });
+    }
 
-        protected override async Task<List<T>> GetValuesAsync<T>(IRandomSource dataSource, IFilter<T>? filter, Func<Footprint, T> converter)
+    protected override async Task<List<T>> GetValuesAsync<T>(IRandomSource dataSource, IFilter<T>? filter, Func<Footprint, T> converter)
+    {
+        return await Task.Run(async () =>
         {
-            return await Task.Run(async () =>
-            {
-                _footprints ??= await Build(dataSource);
+            _footprints ??= await Build(dataSource);
 
-                return _footprints.Select(s => converter(s)).ToList();
-            });
-        }
+            return _footprints.Select(s => converter(s)).ToList();
+        });
+    }
 
-        private static async Task<List<Footprint>> Build(IRandomSource dataSource)
+    private static async Task<List<Footprint>> Build(IRandomSource dataSource)
+    {
+        var source = new SatelliteRandomSource()
         {
-            var manager = (IDataManager<Satellite>)new RandomSatelliteDataManager();
+            GenerateCount = 5
+        };
 
-            var satellites = await manager.GetNativeValuesAsync(new RandomSource() { GenerateCount = 5 }, null);
+        var res = await source.GetValuesAsync();
 
-            return FootprintBuilder.Create(satellites).Take(dataSource.GenerateCount).ToList();
-        }
+        var satellites = res.Cast<Satellite>().ToList();
+
+        return FootprintBuilder.Create(satellites).Take(dataSource.GenerateCount).ToList();
     }
 }

@@ -99,18 +99,6 @@ public class DemoDataFactory : BaseDataFactory, IDataFactory
         };
     }
 
-    protected override IDataSource[] GetSatelliteSources()
-    {
-        return new[]
-        {
-            new RandomSource()
-            {
-                Name = "RandomSatellites",
-                GenerateCount = 5,
-            },
-        };
-    }
-
     protected override IDataSource[] GetFootprintSources()
     {
         return new[]

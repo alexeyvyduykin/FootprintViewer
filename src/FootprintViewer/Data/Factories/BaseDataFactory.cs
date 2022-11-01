@@ -39,21 +39,6 @@ public abstract class BaseDataFactory : IDataFactory
         return provider;
     }
 
-    public IProvider<Satellite> CreateSatelliteProvider()
-    {
-        var provider = new Provider<Satellite>();
-
-        provider.AddSources(GetSatelliteSources());
-
-        provider.AddManagers(new IDataManager<Satellite>[]
-        {
-            new SatelliteDataManager(),
-            new RandomSatelliteDataManager(),
-        });
-
-        return provider;
-    }
-
     public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
     {
         var provider = new EditableProvider<UserGeometry>();
@@ -130,11 +115,6 @@ public abstract class BaseDataFactory : IDataFactory
         return Array.Empty<IDataSource>();
     }
 
-    protected virtual IDataSource[] GetSatelliteSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
     protected virtual IDataSource[] GetFootprintSources()
     {
         return Array.Empty<IDataSource>();
@@ -144,9 +124,4 @@ public abstract class BaseDataFactory : IDataFactory
     {
         return Array.Empty<IDataSource>();
     }
-
-    //protected virtual IDataSource[] GetGroundStationSources()
-    //{
-    //    return Array.Empty<IDataSource>();
-    //}
 }

@@ -10,8 +10,6 @@ public interface IDataFactory
 
     IProvider<Footprint> CreateFootprintProvider();
 
-    IProvider<Satellite> CreateSatelliteProvider();
-
     IEditableProvider<UserGeometry> CreateUserGeometryProvider();
 
     IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();

@@ -42,11 +42,6 @@ public class ReleaseDataFactory : BaseDataFactory, IDataFactory
         return Array.Empty<IDataSource>();
     }
 
-    protected override IDataSource[] GetSatelliteSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
     protected override IDataSource[] GetFootprintSources()
     {
         return Array.Empty<IDataSource>();

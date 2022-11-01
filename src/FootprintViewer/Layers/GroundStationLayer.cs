@@ -12,7 +12,7 @@ public class GroundStationLayer : WritableLayer
 {
     private readonly Dictionary<string, List<IFeature>> _cache = new();
 
-    public void UpdateData(List<GroundStation> groundStations)
+    public void UpdateData(IList<GroundStation> groundStations)
     {
         _cache.Clear();
 

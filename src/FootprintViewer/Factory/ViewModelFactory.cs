@@ -32,25 +32,12 @@ public class ViewModelFactory
 
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
-        var satelliteProvider = (Provider<Satellite>)_dependencyResolver.GetExistingService<IProvider<Satellite>>();
         var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
         var groundTargetProvider = (Provider<GroundTarget>)_dependencyResolver.GetExistingService<IProvider<GroundTarget>>();
         var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
         var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
         var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
         var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
-
-        var satelliteProviderViewModel = new ProviderViewModel(satelliteProvider, _dependencyResolver)
-        {
-            Type = ProviderType.Satellites,
-            AvailableBuilders = configuration.SatelliteSourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel() { Name = "RandomSatellites", GenerateCount = 4 },
-                _ => throw new Exception(),
-            },
-        };
 
         var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
         {
@@ -127,7 +114,6 @@ public class ViewModelFactory
             {
                 footprintProviderViewModel,
                 groundTargetProviderViewModel,
-                satelliteProviderViewModel,
                 userGeometryProviderViewModel,
                 footprintPreviewGeometryProviderViewModel,
                 mapBackgroundProviderViewModel,
@@ -305,15 +291,12 @@ public class ViewModelFactory
 
     public SatelliteTab CreateSatelliteTab()
     {
-        var provider = _dependencyResolver.GetExistingService<IProvider<Satellite>>();
+        var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var tab = new SatelliteTab(_dependencyResolver);
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
+        dataManager.DataChanged
+            .ToSignal()
             .InvokeCommand(tab.Loading);
 
         return tab;
