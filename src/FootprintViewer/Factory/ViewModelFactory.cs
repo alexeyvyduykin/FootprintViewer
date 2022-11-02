@@ -9,7 +9,6 @@ using Mapsui.Nts.Extensions;
 using ReactiveUI;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 
 namespace FootprintViewer;
@@ -35,33 +34,6 @@ public class ViewModelFactory
         };
 
         return settingsViewer;
-    }
-
-    private ISourceViewModel CreateSource(SourceType type)
-    {
-        return type switch
-        {
-            SourceType.File => new FileSourceViewModel(),
-            SourceType.Folder => new FolderSourceViewModel(),
-            SourceType.Database => new DatabaseSourceViewModel(),
-            SourceType.Random => new RandomSourceViewModel() { Name = "DefaultRandom" },
-            _ => throw new Exception(),
-        };
-    }
-
-    public IEnumerable<ISourceBuilderItem> CreateSourceBuilderItems(IEnumerable<string> builders, Func<SourceType, ISourceViewModel>? factory)
-    {
-        var list = new List<ISourceBuilderItem>();
-
-        foreach (var item in builders)
-        {
-            if (Enum.TryParse(item.ToTitleCase(), out SourceType type) == true)
-            {
-                list.Add(new SourceBuilderItem(type, () => factory != null ? factory(type) : CreateSource(type)));
-            }
-        }
-
-        return list;
     }
 
     public GroundStationTab CreateGroundStationTab()

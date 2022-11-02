@@ -1,6 +1,5 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Data.DataManager.Sources;
 using FootprintViewer.ViewModels.Dialogs;
@@ -67,7 +66,7 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
 
     private ISource CreateSource()
     {
-        var str = extns2.ToConnectionString(Host!, Port, Database!, Username!, Password!);
+        var str = DbHelper.ToConnectionString(Host!, Port, Database!, Username!, Password!);
         return new DatabaseSource(_key, str, SelectedTable!);
     }
 

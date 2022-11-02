@@ -56,23 +56,6 @@
 
 	<controls:AccordionStackPanel>
 
-		<ContentControl Padding="8">
-			<Expander Header="{x:Static prop:Resources.SettingsProviders}"
-					  IsExpanded="{Binding $parent[ContentControl].(controls:AccordionStackPanel.IsExpanded), Mode=TwoWay}">
-
-				<ScrollViewer HorizontalScrollBarVisibility="Hidden"
-							  VerticalScrollBarVisibility="Auto">
-					<!--<ItemsControl Items="{Binding Providers}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>-->
-				</ScrollViewer>
-			</Expander>
-		</ContentControl>
-
 		<ContentControl Padding="8,0,8,8">
 			<Expander x:Name="LanguageExpander"
 					  Header="{x:Static prop:Resources.SettingsLanguages}"

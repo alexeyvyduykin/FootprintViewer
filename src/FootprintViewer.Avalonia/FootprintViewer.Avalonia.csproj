@@ -63,18 +63,6 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
-		<Compile Update="Views\Settings\DatabaseSourceView.axaml.cs">
-			<DependentUpon>DatabaseSourceView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\Settings\FileSourceView.axaml.cs">
-			<DependentUpon>FileSourceView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\Settings\FolderSourceView.axaml.cs">
-			<DependentUpon>FolderSourceView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\Settings\RandomSourceView.axaml.cs">
-			<DependentUpon>RandomSourceView.axaml</DependentUpon>
-		</Compile>
 		<Compile Update="Views\SidePanelTabs\FootprintTabView.axaml.cs">
 			<DependentUpon>FootprintTabView.axaml</DependentUpon>
 		</Compile>
