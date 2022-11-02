@@ -32,23 +32,10 @@ public class ViewModelFactory
 
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
-        var footprintProvider = (Provider<Footprint>)_dependencyResolver.GetExistingService<IProvider<Footprint>>();
         var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
         var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
         var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
         var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
-
-        var footprintProviderViewModel = new ProviderViewModel(footprintProvider, _dependencyResolver)
-        {
-            Type = ProviderType.Footprints,
-            AvailableBuilders = configuration.FootprintSourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel() { Name = "RandomFootprints", GenerateCount = 1000 },
-                _ => throw new Exception(),
-            },
-        };
 
         var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
         {
@@ -99,7 +86,6 @@ public class ViewModelFactory
         {
             Providers = new List<ProviderViewModel>()
             {
-                footprintProviderViewModel,
                 userGeometryProviderViewModel,
                 footprintPreviewGeometryProviderViewModel,
                 mapBackgroundProviderViewModel,
@@ -213,17 +199,14 @@ public class ViewModelFactory
     public FootprintTab CreateFootprintTab()
     {
         var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
-        var provider = _dependencyResolver.GetExistingService<IProvider<Footprint>>();
+        var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var tab = new FootprintTab(_dependencyResolver);
 
         tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
+        dataManager.DataChanged
+            .ToSignal()
             .InvokeCommand(tab.Loading);
 
         return tab;

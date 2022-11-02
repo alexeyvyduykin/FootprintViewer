@@ -73,7 +73,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
+        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var layer = new WritableLayer()
         {
@@ -82,12 +82,9 @@ public class MapFactory
             IsMapInfoLayer = true,
         };
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
+        dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
 
         loader.AddTaskAsync(() => LoadingAsync());
 
@@ -97,7 +94,7 @@ public class MapFactory
         {
             await Task.Delay(TimeSpan.FromSeconds(5));
 
-            var footprints = await provider.GetNativeValuesAsync(null);
+            var footprints = await dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
 
             layer.Clear();
             layer.AddRange(FeatureBuilder.Build(footprints));

@@ -6,8 +6,6 @@ public interface IDataFactory
 {
     FootprintViewer.Data.DataManager.IDataManager CreateDataManager();
 
-    IProvider<Footprint> CreateFootprintProvider();
-
     IEditableProvider<UserGeometry> CreateUserGeometryProvider();
 
     IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();

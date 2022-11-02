@@ -110,21 +110,4 @@ public class DevWorkDataFactory : BaseDataFactory, IDataFactory
             },
         };
     }
-
-    protected override IDataSource[] GetFootprintSources()
-    {
-        return new[]
-        {
-            new DatabaseSource()
-            {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
-                Table = "Footprints"
-            },
-        };
-    }
 }

@@ -1,6 +1,4 @@
-﻿using FootprintViewer.Data.Managers;
-using FootprintViewer.Data.Sources;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,9 +20,14 @@ public class GroundTargetRandomSource : BaseRandomSource
 
     private static async Task<IList<GroundTarget>> Build(int generateCount)
     {
-        var manager = (IDataManager<Footprint>)new RandomFootprintDataManager();
+        var source = new FootprintRandomSource()
+        {
+            GenerateCount = generateCount
+        };
 
-        var footprints = await manager.GetNativeValuesAsync(new RandomSource() { GenerateCount = generateCount }, null);
+        var res = await source.GetValuesAsync();
+
+        var footprints = res.Cast<Footprint>().ToList();
 
         return GroundTargetBuilder.Create(footprints).ToList();
     }

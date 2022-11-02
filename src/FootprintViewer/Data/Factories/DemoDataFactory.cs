@@ -98,16 +98,4 @@ public class DemoDataFactory : BaseDataFactory, IDataFactory
             },
         };
     }
-
-    protected override IDataSource[] GetFootprintSources()
-    {
-        return new[]
-        {
-            new RandomSource()
-            {
-                Name = "RandomFootprints",
-                GenerateCount = 2000,
-            },
-        };
-    }
 }

@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -15,15 +16,15 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintTab : SidePanelTab
     {
+        private readonly Data.DataManager.IDataManager _dataManager;
         private readonly SourceList<FootprintViewModel> _footprints = new();
         private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
-        private readonly IProvider<Footprint> _provider;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         private FootprintViewModel? _prevSelectedItem;
 
         public FootprintTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
             Filter = new FootprintTabFilter(dependencyResolver);
 
@@ -78,7 +79,9 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingImpl()
         {
-            var list = await _provider.GetValuesAsync(null, s => new FootprintViewModel(s));
+            var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+
+            var list = res.Select(s => new FootprintViewModel(s)).ToList();
 
             _footprints.Edit(innerList =>
             {
@@ -134,7 +137,14 @@ namespace FootprintViewer.ViewModels
 
         public async Task<List<FootprintViewModel>> GetFootprintViewModelsAsync(string name)
         {
-            return await _provider.GetValuesAsync(new NameFilter<FootprintViewModel>(new[] { name }), s => new FootprintViewModel(s));
+            var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+
+            var list = res
+                .Where(s => string.Equals(s.Name, name))
+                .Select(s => new FootprintViewModel(s))
+                .ToList();
+
+            return list;
         }
 
         public IFilter<FootprintViewModel> Filter { get; }

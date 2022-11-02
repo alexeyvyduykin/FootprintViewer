@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -8,7 +9,6 @@ using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -24,11 +24,11 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintTabFilter : BaseFilterViewModel<FootprintViewModel>
     {
-        private readonly IProvider<Footprint> _provider;
+        private readonly Data.DataManager.IDataManager _dataManager;
 
         public FootprintTabFilter(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<Footprint>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
             Satellites = new ObservableCollection<SatelliteItemViewModel>();
 
@@ -38,8 +38,8 @@ namespace FootprintViewer.ViewModels
             FromNode = 1;
             ToNode = 15;
 
-            _provider.Observable
-                .Select(s => Unit.Default)
+            _dataManager.DataChanged
+                .ToSignal()
                 .InvokeCommand(ReactiveCommand.CreateFromTask(CreateSatelliteList));
         }
 
@@ -75,7 +75,8 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSatelliteList()
         {
-            var footprints = await _provider.GetNativeValuesAsync(null);
+            var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+
             var satelliteNames = footprints.Select(s => s.SatelliteName).Distinct();
 
             if (satelliteNames != null)

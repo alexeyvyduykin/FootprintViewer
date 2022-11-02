@@ -9,21 +9,6 @@ public abstract class BaseDataFactory : IDataFactory
 {
     public abstract IDataManager CreateDataManager();
 
-    public IProvider<Footprint> CreateFootprintProvider()
-    {
-        var provider = new Provider<Footprint>();
-
-        provider.AddSources(GetFootprintSources());
-
-        provider.AddManagers(new IDataManager<Footprint>[]
-        {
-            new FootprintDataManager(),
-            new RandomFootprintDataManager(),
-        });
-
-        return provider;
-    }
-
     public IEditableProvider<UserGeometry> CreateUserGeometryProvider()
     {
         var provider = new EditableProvider<UserGeometry>();
@@ -96,11 +81,6 @@ public abstract class BaseDataFactory : IDataFactory
     }
 
     protected virtual IDataSource[] GetUserGeometrySources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
-    protected virtual IDataSource[] GetFootprintSources()
     {
         return Array.Empty<IDataSource>();
     }
