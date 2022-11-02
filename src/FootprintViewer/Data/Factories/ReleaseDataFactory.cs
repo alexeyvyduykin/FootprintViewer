@@ -25,11 +25,6 @@ public class ReleaseDataFactory : BaseDataFactory, IDataFactory
         return dataManager;
     }
 
-    protected override IDataSource[] GetFootprintPreviewSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
     protected override IDataSource[] GetFootprintPreviewGeometrySources()
     {
         return Array.Empty<IDataSource>();

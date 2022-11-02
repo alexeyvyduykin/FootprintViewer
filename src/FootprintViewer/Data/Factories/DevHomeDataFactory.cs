@@ -61,27 +61,25 @@ public class DevHomeDataFactory : BaseDataFactory, IDataFactory
         dataManager.RegisterSource(mapsKey, mapSource1);
         dataManager.RegisterSource(mapsKey, mapSource2);
 
-        return dataManager;
-    }
+        // footprintPreviews
+        var footprintPreviewsKey = DbKeys.FootprintPreviews.ToString();
+        var directory3 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
+        var directory4 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
 
-    protected override IDataSource[] GetFootprintPreviewSources()
-    {
-        var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
-        var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
-
-        return new[]
+        var paths3 = System.IO.Directory.GetFiles(directory3, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var paths4 = System.IO.Directory.GetFiles(directory4, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var mapSource3 = new FootprintViewer.Data.DataManager.Sources.FileSource(paths3)
         {
-            new FolderSource()
-            {
-                Directory = directory1,
-                SearchPattern = "*.mbtiles",
-            },
-            new FolderSource()
-            {
-                Directory = directory2,
-                SearchPattern = "*.mbtiles",
-            },
+            Loader = FootprintPreview.Builder
         };
+        var mapSource4 = new FootprintViewer.Data.DataManager.Sources.FileSource(paths4)
+        {
+            Loader = FootprintPreview.Builder
+        };
+        dataManager.RegisterSource(footprintPreviewsKey, mapSource3);
+        dataManager.RegisterSource(footprintPreviewsKey, mapSource4);
+
+        return dataManager;
     }
 
     protected override IDataSource[] GetFootprintPreviewGeometrySources()

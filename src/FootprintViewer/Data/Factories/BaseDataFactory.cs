@@ -37,25 +37,6 @@ public abstract class BaseDataFactory : IDataFactory
         return provider;
     }
 
-    public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
-    {
-        var provider = new Provider<FootprintPreview>();
-
-        provider.AddSources(GetFootprintPreviewSources());
-
-        provider.AddManagers(new IDataManager<FootprintPreview>[]
-        {
-            new FootprintPreviewDataManager(),
-        });
-
-        return provider;
-    }
-
-    protected virtual IDataSource[] GetFootprintPreviewSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
     protected virtual IDataSource[] GetFootprintPreviewGeometrySources()
     {
         return Array.Empty<IDataSource>();

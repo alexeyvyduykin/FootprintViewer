@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -16,16 +17,16 @@ namespace FootprintViewer.ViewModels
 {
     public class FootprintPreviewTab : SidePanelTab
     {
+        private readonly Data.DataManager.IDataManager _dataManager;
         private readonly SourceList<FootprintPreviewViewModel> _footprintPreviews = new();
         private readonly ReadOnlyObservableCollection<FootprintPreviewViewModel> _items;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
         private readonly ObservableAsPropertyHelper<IDictionary<string, Geometry>> _geometries;
-        private readonly IProvider<FootprintPreview> _provider;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public FootprintPreviewTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
 
@@ -97,7 +98,8 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingImpl()
         {
-            var list = await _provider.GetValuesAsync(null, s => new FootprintPreviewViewModel(s));
+            var res = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
+            var list = res.Select(s => new FootprintPreviewViewModel(s)).ToList();
 
             _footprintPreviews.Edit(innerList =>
             {

@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -25,14 +26,14 @@ namespace FootprintViewer.ViewModels
 
     public class FootprintPreviewTabFilter : BaseFilterViewModel<FootprintPreviewViewModel>
     {
+        private readonly Data.DataManager.IDataManager _dataManager;
         private IDictionary<string, Geometry>? _geometries;
         private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
-        private readonly IProvider<FootprintPreview> _footprintPreviewProvider;
 
         public FootprintPreviewTabFilter(IReadonlyDependencyResolver dependencyResolver)
         {
             _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
-            _footprintPreviewProvider = dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
             Sensors = new ObservableCollection<SensorItemViewModel>();
 
@@ -94,7 +95,8 @@ namespace FootprintViewer.ViewModels
 
         private async Task CreateSensorList()
         {
-            var footprints = await _footprintPreviewProvider.GetNativeValuesAsync(null);
+            var footprints = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
+
             var dicts = await _footprintPreviewGeometryProvider.GetNativeValuesAsync(null);
 
             var sortNames = footprints.Select(s => s.SatelliteName).Distinct().ToList();

@@ -9,6 +9,4 @@ public interface IDataFactory
     IEditableProvider<UserGeometry> CreateUserGeometryProvider();
 
     IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();
-
-    IProvider<FootprintPreview> CreateFootprintPreviewProvider();
 }

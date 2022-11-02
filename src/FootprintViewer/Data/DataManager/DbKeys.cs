@@ -16,4 +16,6 @@ public enum DbKeys
     UserGeometries,
     [EnumMember(Value = "maps")]
     Maps,
+    [EnumMember(Value = "footprintPreview")]
+    FootprintPreviews,
 }
