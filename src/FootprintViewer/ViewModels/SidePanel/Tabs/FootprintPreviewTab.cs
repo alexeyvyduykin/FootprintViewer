@@ -20,15 +20,12 @@ namespace FootprintViewer.ViewModels
         private readonly Data.DataManager.IDataManager _dataManager;
         private readonly SourceList<FootprintPreviewViewModel> _footprintPreviews = new();
         private readonly ReadOnlyObservableCollection<FootprintPreviewViewModel> _items;
-        private readonly IProvider<(string, Geometry)> _footprintPreviewGeometryProvider;
         private readonly ObservableAsPropertyHelper<IDictionary<string, Geometry>> _geometries;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public FootprintPreviewTab(IReadonlyDependencyResolver dependencyResolver)
         {
             _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
-
-            _footprintPreviewGeometryProvider = dependencyResolver.GetExistingService<IProvider<(string, Geometry)>>();
 
             Filter = new FootprintPreviewTabFilter(dependencyResolver);
 
@@ -57,7 +54,7 @@ namespace FootprintViewer.ViewModels
 
             // TODO: duplicates           
             _geometries = LoadingGeometries
-                .Select(s => s.ToDictionary(s => s.Item1, s => s.Item2))
+                .Select(s => s.ToDictionary(s => s.Name!, s => s.Geometry!))
                 .ToProperty(this, x => x.Geometries);
 
             // TODO: remove this
@@ -88,7 +85,7 @@ namespace FootprintViewer.ViewModels
 
         private ReactiveCommand<Unit, Unit> Delay { get; }
 
-        private ReactiveCommand<Unit, List<(string, Geometry)>> LoadingGeometries { get; }
+        private ReactiveCommand<Unit, IList<FootprintPreviewGeometry>> LoadingGeometries { get; }
 
         public ReactiveCommand<FootprintPreviewViewModel, FootprintPreviewViewModel> Enter { get; }
 
@@ -108,9 +105,9 @@ namespace FootprintViewer.ViewModels
             });
         }
 
-        private async Task<List<(string, Geometry)>> LoadingGeometriesImpl()
+        private async Task<IList<FootprintPreviewGeometry>> LoadingGeometriesImpl()
         {
-            return await _footprintPreviewGeometryProvider.GetNativeValuesAsync(null);
+            return await _dataManager.GetDataAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
         }
 
         public void SetAOI(Geometry aoi) => ((FootprintPreviewTabFilter)Filter).AOI = aoi;

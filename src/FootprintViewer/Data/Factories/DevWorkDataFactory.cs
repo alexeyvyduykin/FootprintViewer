@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data.DataManager;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.FileSystem;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FootprintViewer.Data;
@@ -74,21 +75,16 @@ public class DevWorkDataFactory : BaseDataFactory, IDataFactory
         dataManager.RegisterSource(footprintPreviewsKey, mapSource3);
         dataManager.RegisterSource(footprintPreviewsKey, mapSource4);
 
-        return dataManager;
-    }
-
-    protected override IDataSource[] GetFootprintPreviewGeometrySources()
-    {
-        var folder = new SolutionFolder("data");
-        var path = folder.GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff") ?? string.Empty;
-
-        return new[]
+        // footprintPreviewGeometries
+        var footprintPreviewGeometriesKey = DbKeys.FootprintPreviewGeometries.ToString();
+        var path5 = new SolutionFolder("data").GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff") ?? string.Empty;
+        var mapSource5 = new FootprintViewer.Data.DataManager.Sources.FileSource(new List<string>() { path5 })
         {
-            new FileSource()
-            {
-                Path = path,
-            },
+            Loader = FootprintPreviewGeometry.Builder
         };
+        dataManager.RegisterSource(footprintPreviewGeometriesKey, mapSource5);
+
+        return dataManager;
     }
 
     protected override IDataSource[] GetUserGeometrySources()

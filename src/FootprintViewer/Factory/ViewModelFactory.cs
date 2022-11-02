@@ -33,7 +33,6 @@ public class ViewModelFactory
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
         var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-        var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
         var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
         {
@@ -47,23 +46,11 @@ public class ViewModelFactory
             },
         };
 
-        var footprintPreviewGeometryProviderViewModel = new ProviderViewModel(footprintPreviewGeometryProvider, _dependencyResolver)
-        {
-            Type = ProviderType.FootprintPreviewGeometries,
-            AvailableBuilders = configuration.FootprintPreviewGeometrySourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.File => new FileSourceViewModel() { FilterExtension = "*.mbtiles" },
-                _ => throw new Exception(),
-            },
-        };
-
         var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
         {
             Providers = new List<ProviderViewModel>()
             {
                 userGeometryProviderViewModel,
-                footprintPreviewGeometryProviderViewModel,
             },
             LanguageSettings = new LanguageSettingsViewModel(languageManager),
         };
