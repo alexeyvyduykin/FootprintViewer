@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data
 {
-    public interface IDataManager<TNative>
-    {
-        Task<List<TNative>> GetNativeValuesAsync(IDataSource dataSource, IFilter<TNative>? filter);
+    //public interface IDataManager<TNative>
+    //{
+    //    Task<List<TNative>> GetNativeValuesAsync(IDataSource dataSource, IFilter<TNative>? filter);
 
-        Task<List<T>> GetValuesAsync<T>(IDataSource dataSource, IFilter<T>? filter, Func<TNative, T> converter);
-    }
+    //    Task<List<T>> GetValuesAsync<T>(IDataSource dataSource, IFilter<T>? filter, Func<TNative, T> converter);
+    //}
 
     public static class extns2
     {

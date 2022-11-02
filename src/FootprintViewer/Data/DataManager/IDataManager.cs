@@ -15,6 +15,12 @@ public interface IDataManager
 
     Task<IList<T>> GetDataAsync<T>(string key, bool caching = true);
 
+    Task<bool> TryAddAsync(string key, object value);
+
+    Task<bool> TryRemoveAsync(string key, object value);
+
+    Task<bool> TryEditAsync(string key, string id, object newValue);
+
     IObservable<Unit> DataChanged { get; }
 
     void UpdateData();

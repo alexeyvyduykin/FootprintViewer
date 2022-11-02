@@ -19,14 +19,14 @@ namespace FootprintViewer.Designer
         private IMapNavigator? _mapNavigator;
         private ProjectFactory? _projectFactory;
         private ViewModelFactory? _viewModelFactory;
-        private IProvider<Satellite>? _satelliteProvider;
-        private IProvider<MapResource>? _mapProvider;
-        private IProvider<FootprintPreview>? _footprintPreviewProvider;
-        private IProvider<(string, Geometry)>? _footprintPreviewGeometryProvider;
-        private IProvider<GroundTarget>? _groundTargetProvider;
-        private IProvider<Footprint>? _footprintProvider;
-        private IEditableProvider<UserGeometry>? _userGeometryProvider;
-        private IProvider<GroundStation>? _groundStationProvider;
+     //   private IProvider<Satellite>? _satelliteProvider;
+    //    private IProvider<MapResource>? _mapProvider;
+    //    private IProvider<FootprintPreview>? _footprintPreviewProvider;
+    //    private IProvider<(string, Geometry)>? _footprintPreviewGeometryProvider;
+    //    private IProvider<GroundTarget>? _groundTargetProvider;
+    //    private IProvider<Footprint>? _footprintProvider;
+    //    private IEditableProvider<UserGeometry>? _userGeometryProvider;
+    //    private IProvider<GroundStation>? _groundStationProvider;
         private ITargetLayerSource? _targetLayerSource;
         private SatelliteTab? _satelliteTab;
         private FootprintTab? _footprintTab;
@@ -58,46 +58,46 @@ namespace FootprintViewer.Designer
             {
                 return _mapNavigator ??= new MapNavigator();
             }
-            else if (serviceType == typeof(IProvider<Satellite>))
-            {
-                return _satelliteProvider ??= new DesignTimeSatelliteProvider();
-            }
+            //else if (serviceType == typeof(IProvider<Satellite>))
+            //{
+            //    return _satelliteProvider ??= new DesignTimeSatelliteProvider();
+            //}
             else if (serviceType == typeof(MapBackgroundList))
             {
                 return _mapBackgroundList ??= new MapBackgroundList();
             }
-            else if (serviceType == typeof(IProvider<MapResource>))
-            {
-                return _mapProvider ??= new DesignTimeMapProvider();
-            }
-            else if (serviceType == typeof(IProvider<FootprintPreview>))
-            {
-                return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
-            }
-            else if (serviceType == typeof(IProvider<(string, Geometry)>))
-            {
-                return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
-            }
-            else if (serviceType == typeof(IProvider<GroundTarget>))
-            {
-                return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
-            }
+            //else if (serviceType == typeof(IProvider<MapResource>))
+            //{
+            //    return _mapProvider ??= new DesignTimeMapProvider();
+            //}
+            //else if (serviceType == typeof(IProvider<FootprintPreview>))
+            //{
+            //    return _footprintPreviewProvider ??= new DesignTimeFootprintPreviewProvider();
+            //}
+            //else if (serviceType == typeof(IProvider<(string, Geometry)>))
+            //{
+            //    return _footprintPreviewGeometryProvider ??= new DesignTimeFootprintPreviewGeometryProvider();
+            //}
+            //else if (serviceType == typeof(IProvider<GroundTarget>))
+            //{
+            //    return _groundTargetProvider ??= new DesignDataGroundTargetProvider();
+            //}
             else if (serviceType == typeof(ITargetLayerSource))
             {
                 return _targetLayerSource ??= new TargetLayerSource();
             }
-            else if (serviceType == typeof(IProvider<Footprint>))
-            {
-                return _footprintProvider ??= new DesignDataFootprintProvider();
-            }
-            else if (serviceType == typeof(IEditableProvider<UserGeometry>))
-            {
-                return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
-            }
-            else if (serviceType == typeof(IProvider<GroundStation>))
-            {
-                return _groundStationProvider ??= new DesignTimeGroundStationProvider();
-            }
+            //else if (serviceType == typeof(IProvider<Footprint>))
+            //{
+            //    return _footprintProvider ??= new DesignDataFootprintProvider();
+            //}
+            //else if (serviceType == typeof(IEditableProvider<UserGeometry>))
+            //{
+            //    return _userGeometryProvider ??= new DesignTimeUserGeometryProvider();
+            //}
+            //else if (serviceType == typeof(IProvider<GroundStation>))
+            //{
+            //    return _groundStationProvider ??= new DesignTimeGroundStationProvider();
+            //}
             else if (serviceType == typeof(SatelliteTab))
             {
                 return _satelliteTab ??= new SatelliteTab(this);
@@ -160,346 +160,346 @@ namespace FootprintViewer.Designer
             throw new Exception();
         }
 
-        private class DesignTimeSatelliteProvider : Provider<Satellite>
-        {
-            public DesignTimeSatelliteProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeSatelliteDataManager() });
-            }
+        //private class DesignTimeSatelliteProvider : Provider<Satellite>
+        //{
+        //    public DesignTimeSatelliteProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeSatelliteDataManager() });
+        //    }
 
-            private class DesignTimeSatelliteDataManager : BaseDataManager<Satellite, IDesignTimeSource>
-            {
-                private List<Satellite>? _satellites;
+        //    private class DesignTimeSatelliteDataManager : BaseDataManager<Satellite, IDesignTimeSource>
+        //    {
+        //        private List<Satellite>? _satellites;
 
-                protected override async Task<List<Satellite>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<Satellite>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _satellites ??= await Build();
+        //        protected override async Task<List<Satellite>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<Satellite>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _satellites ??= await Build();
 
-                        return _satellites;
-                    });
-                }
+        //                return _satellites;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<Satellite, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _satellites ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<Satellite, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _satellites ??= await Build();
 
-                        return _satellites.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _satellites.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<Satellite>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        return new List<Satellite>()
-                        {
-                            DesignTimeSatelliteViewModel.BuildModel(),
-                            DesignTimeSatelliteViewModel.BuildModel(),
-                            DesignTimeSatelliteViewModel.BuildModel(),
-                            DesignTimeSatelliteViewModel.BuildModel(),
-                            DesignTimeSatelliteViewModel.BuildModel(),
-                        };
-                    });
-                }
-            }
-        }
+        //        public static Task<List<Satellite>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                return new List<Satellite>()
+        //                {
+        //                    DesignTimeSatelliteViewModel.BuildModel(),
+        //                    DesignTimeSatelliteViewModel.BuildModel(),
+        //                    DesignTimeSatelliteViewModel.BuildModel(),
+        //                    DesignTimeSatelliteViewModel.BuildModel(),
+        //                    DesignTimeSatelliteViewModel.BuildModel(),
+        //                };
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignTimeGroundStationProvider : Provider<GroundStation>
-        {
-            public DesignTimeGroundStationProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeGroundStationDataManager() });
-            }
+        //private class DesignTimeGroundStationProvider : Provider<GroundStation>
+        //{
+        //    public DesignTimeGroundStationProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeGroundStationDataManager() });
+        //    }
 
-            private class DesignTimeGroundStationDataManager : BaseDataManager<GroundStation, IDesignTimeSource>
-            {
-                private List<GroundStation>? _groundStations;
+        //    private class DesignTimeGroundStationDataManager : BaseDataManager<GroundStation, IDesignTimeSource>
+        //    {
+        //        private List<GroundStation>? _groundStations;
 
-                protected override async Task<List<GroundStation>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<GroundStation>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _groundStations ??= await Build();
+        //        protected override async Task<List<GroundStation>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<GroundStation>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _groundStations ??= await Build();
 
-                        return _groundStations;
-                    });
-                }
+        //                return _groundStations;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<GroundStation, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _groundStations ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<GroundStation, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _groundStations ??= await Build();
 
-                        return _groundStations.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _groundStations.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<GroundStation>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        return new List<GroundStation>()
-                        {
-                            new GroundStation() { Name = "Москва",      Center = new Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
-                            new GroundStation() { Name = "Новосибирск", Center = new Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
-                            new GroundStation() { Name = "Хабаровск",   Center = new Point(135.04, 48.29), Angles = new [] { 0.0, 6, 10, 11 } },
-                            new GroundStation() { Name = "Шпицберген",  Center = new Point(    21, 78.38), Angles = new [] { 0.0, 6, 10, 11 } },
-                            new GroundStation() { Name = "Анадырь",     Center = new Point(177.31, 64.44), Angles = new [] { 0.0, 6, 10, 11 } },
-                            new GroundStation() { Name = "Тикси",       Center = new Point(128.52, 71.38), Angles = new [] { 0.0, 6, 10, 11 } },
-                        };
-                    });
-                }
-            }
-        }
+        //        public static Task<List<GroundStation>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                return new List<GroundStation>()
+        //                {
+        //                    new GroundStation() { Name = "Москва",      Center = new Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                    new GroundStation() { Name = "Новосибирск", Center = new Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                    new GroundStation() { Name = "Хабаровск",   Center = new Point(135.04, 48.29), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                    new GroundStation() { Name = "Шпицберген",  Center = new Point(    21, 78.38), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                    new GroundStation() { Name = "Анадырь",     Center = new Point(177.31, 64.44), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                    new GroundStation() { Name = "Тикси",       Center = new Point(128.52, 71.38), Angles = new [] { 0.0, 6, 10, 11 } },
+        //                };
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignTimeFootprintPreviewProvider : Provider<FootprintPreview>
-        {
-            public DesignTimeFootprintPreviewProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeFootprintPreviewDataManager() });
-            }
+        //private class DesignTimeFootprintPreviewProvider : Provider<FootprintPreview>
+        //{
+        //    public DesignTimeFootprintPreviewProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeFootprintPreviewDataManager() });
+        //    }
 
-            private class DesignTimeFootprintPreviewDataManager : BaseDataManager<FootprintPreview, IDesignTimeSource>
-            {
-                private List<FootprintPreview>? _footprints;
+        //    private class DesignTimeFootprintPreviewDataManager : BaseDataManager<FootprintPreview, IDesignTimeSource>
+        //    {
+        //        private List<FootprintPreview>? _footprints;
 
-                protected override async Task<List<FootprintPreview>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<FootprintPreview>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _footprints ??= await Build();
+        //        protected override async Task<List<FootprintPreview>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<FootprintPreview>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _footprints ??= await Build();
 
-                        return _footprints;
-                    });
-                }
+        //                return _footprints;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<FootprintPreview, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _footprints ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<FootprintPreview, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _footprints ??= await Build();
 
-                        return _footprints.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _footprints.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<FootprintPreview>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        var list = new List<FootprintPreview>();
+        //        public static Task<List<FootprintPreview>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                var list = new List<FootprintPreview>();
 
-                        for (int i = 0; i < 8; i++)
-                        {
-                            list.Add(DesignTimeFootprintPreviewViewModel.BuildModel());
-                        }
+        //                for (int i = 0; i < 8; i++)
+        //                {
+        //                    list.Add(DesignTimeFootprintPreviewViewModel.BuildModel());
+        //                }
 
-                        return list;
-                    });
-                }
-            }
-        }
+        //                return list;
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignTimeFootprintPreviewGeometryProvider : Provider<(string, Geometry)>
-        {
-            public DesignTimeFootprintPreviewGeometryProvider() : base() { }
-        }
+        //private class DesignTimeFootprintPreviewGeometryProvider : Provider<(string, Geometry)>
+        //{
+        //    public DesignTimeFootprintPreviewGeometryProvider() : base() { }
+        //}
 
-        private class DesignTimeMapProvider : Provider<MapResource>
-        {
-            public DesignTimeMapProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeMapResourceDataManager() });
-            }
+        //private class DesignTimeMapProvider : Provider<MapResource>
+        //{
+        //    public DesignTimeMapProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeMapResourceDataManager() });
+        //    }
 
-            private class DesignTimeMapResourceDataManager : BaseDataManager<MapResource, IDesignTimeSource>
-            {
-                private List<MapResource>? _maps;
+        //    private class DesignTimeMapResourceDataManager : BaseDataManager<MapResource, IDesignTimeSource>
+        //    {
+        //        private List<MapResource>? _maps;
 
-                protected override async Task<List<MapResource>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<MapResource>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _maps ??= await Build();
+        //        protected override async Task<List<MapResource>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<MapResource>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _maps ??= await Build();
 
-                        return _maps;
-                    });
-                }
+        //                return _maps;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<MapResource, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _maps ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<MapResource, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _maps ??= await Build();
 
-                        return _maps.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _maps.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<MapResource>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        return new List<MapResource>()
-                        {
-                            new MapResource("WorldMapDefault", ""),
-                            new MapResource("OAM-World-1-8-min-J70", ""),
-                            new MapResource("OAM-World-1-10-J70", "")
-                        };
-                    });
-                }
-            }
-        }
+        //        public static Task<List<MapResource>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                return new List<MapResource>()
+        //                {
+        //                    new MapResource("WorldMapDefault", ""),
+        //                    new MapResource("OAM-World-1-8-min-J70", ""),
+        //                    new MapResource("OAM-World-1-10-J70", "")
+        //                };
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignTimeUserGeometryProvider : EditableProvider<UserGeometry>
-        {
-            public DesignTimeUserGeometryProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeUserGeometryDataManger() });
-            }
+        //private class DesignTimeUserGeometryProvider : EditableProvider<UserGeometry>
+        //{
+        //    public DesignTimeUserGeometryProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeUserGeometryDataManger() });
+        //    }
 
-            private class DesignTimeUserGeometryDataManger : BaseDataManager<UserGeometry, IDesignTimeSource>
-            {
-                private List<UserGeometry>? _userGeometries;
+        //    private class DesignTimeUserGeometryDataManger : BaseDataManager<UserGeometry, IDesignTimeSource>
+        //    {
+        //        private List<UserGeometry>? _userGeometries;
 
-                protected override async Task<List<UserGeometry>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<UserGeometry>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _userGeometries ??= await Build();
+        //        protected override async Task<List<UserGeometry>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<UserGeometry>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _userGeometries ??= await Build();
 
-                        return _userGeometries;
-                    });
-                }
+        //                return _userGeometries;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<UserGeometry, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _userGeometries ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<UserGeometry, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _userGeometries ??= await Build();
 
-                        return _userGeometries.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _userGeometries.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<UserGeometry>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        var list = new List<UserGeometry>();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            list.Add(DesignTimeUserGeometryViewModel.BuildModel());
-                        }
-                        return list;
-                    });
-                }
-            }
-        }
+        //        public static Task<List<UserGeometry>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                var list = new List<UserGeometry>();
+        //                for (int i = 0; i < 10; i++)
+        //                {
+        //                    list.Add(DesignTimeUserGeometryViewModel.BuildModel());
+        //                }
+        //                return list;
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignDataGroundTargetProvider : Provider<GroundTarget>
-        {
-            public DesignDataGroundTargetProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeGroundTargetDataManager() });
-            }
+        //private class DesignDataGroundTargetProvider : Provider<GroundTarget>
+        //{
+        //    public DesignDataGroundTargetProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeGroundTargetDataManager() });
+        //    }
 
-            private class DesignTimeGroundTargetDataManager : BaseDataManager<GroundTarget, IDesignTimeSource>
-            {
-                private List<GroundTarget>? _groundTargets;
+        //    private class DesignTimeGroundTargetDataManager : BaseDataManager<GroundTarget, IDesignTimeSource>
+        //    {
+        //        private List<GroundTarget>? _groundTargets;
 
-                protected override async Task<List<GroundTarget>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<GroundTarget>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _groundTargets ??= await Build();
+        //        protected override async Task<List<GroundTarget>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<GroundTarget>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _groundTargets ??= await Build();
 
-                        return _groundTargets;
-                    });
-                }
+        //                return _groundTargets;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<GroundTarget, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _groundTargets ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<GroundTarget, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _groundTargets ??= await Build();
 
-                        return _groundTargets.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _groundTargets.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<GroundTarget>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        var list = new List<GroundTarget>();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            list.Add(DesignTimeGroundTargetViewModel.BuildModel());
-                        }
-                        return list;
-                    });
-                }
-            }
-        }
+        //        public static Task<List<GroundTarget>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                var list = new List<GroundTarget>();
+        //                for (int i = 0; i < 10; i++)
+        //                {
+        //                    list.Add(DesignTimeGroundTargetViewModel.BuildModel());
+        //                }
+        //                return list;
+        //            });
+        //        }
+        //    }
+        //}
 
-        private class DesignDataFootprintProvider : Provider<Footprint>
-        {
-            public DesignDataFootprintProvider() : base()
-            {
-                AddSources(new[] { new DesignTimeDataSource() });
-                AddManagers(new[] { new DesignTimeFootprintDataManager() });
-            }
+        //private class DesignDataFootprintProvider : Provider<Footprint>
+        //{
+        //    public DesignDataFootprintProvider() : base()
+        //    {
+        //        AddSources(new[] { new DesignTimeDataSource() });
+        //        AddManagers(new[] { new DesignTimeFootprintDataManager() });
+        //    }
 
-            private class DesignTimeFootprintDataManager : BaseDataManager<Footprint, IDesignTimeSource>
-            {
-                private List<Footprint>? _footprints;
+        //    private class DesignTimeFootprintDataManager : BaseDataManager<Footprint, IDesignTimeSource>
+        //    {
+        //        private List<Footprint>? _footprints;
 
-                protected override async Task<List<Footprint>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<Footprint>? filter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _footprints ??= await Build();
+        //        protected override async Task<List<Footprint>> GetNativeValuesAsync(IDesignTimeSource dataSource, IFilter<Footprint>? filter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _footprints ??= await Build();
 
-                        return _footprints;
-                    });
-                }
+        //                return _footprints;
+        //            });
+        //        }
 
-                protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<Footprint, T> converter)
-                {
-                    return await Task.Run(async () =>
-                    {
-                        _footprints ??= await Build();
+        //        protected override async Task<List<T>> GetValuesAsync<T>(IDesignTimeSource dataSource, IFilter<T>? filter, Func<Footprint, T> converter)
+        //        {
+        //            return await Task.Run(async () =>
+        //            {
+        //                _footprints ??= await Build();
 
-                        return _footprints.Select(s => converter(s)).ToList();
-                    });
-                }
+        //                return _footprints.Select(s => converter(s)).ToList();
+        //            });
+        //        }
 
-                public static Task<List<Footprint>> Build()
-                {
-                    return Task.Run(() =>
-                    {
-                        var list = new List<Footprint>();
-                        for (int i = 0; i < 10; i++)
-                        {
-                            list.Add(DesignTimeFootprintViewModel.BuildModel());
-                        }
-                        return list;
-                    });
-                }
-            }
-        }
+        //        public static Task<List<Footprint>> Build()
+        //        {
+        //            return Task.Run(() =>
+        //            {
+        //                var list = new List<Footprint>();
+        //                for (int i = 0; i < 10; i++)
+        //                {
+        //                    list.Add(DesignTimeFootprintViewModel.BuildModel());
+        //                }
+        //                return list;
+        //            });
+        //        }
+        //    }
+        //}
 
         private interface IDesignTimeSource : IDataSource
         {

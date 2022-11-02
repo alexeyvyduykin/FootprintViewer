@@ -1,6 +1,4 @@
 ﻿using FootprintViewer.Configurations;
-using FootprintViewer.Data;
-using FootprintViewer.Data.Sources;
 using FootprintViewer.Layers;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
@@ -12,7 +10,6 @@ using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer;
@@ -32,26 +29,8 @@ public class ViewModelFactory
 
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
-        var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
-        var userGeometryProviderViewModel = new ProviderViewModel(userGeometryProvider, _dependencyResolver)
-        {
-            Type = ProviderType.UserGeometries,
-            AvailableBuilders = configuration.UserGeometrySourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.Database => new DatabaseSourceViewModel(),
-                SourceType.Random => new RandomSourceViewModel() { Name = "RandomUserGeometries" },
-                _ => throw new Exception(),
-            },
-        };
-
         var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
         {
-            Providers = new List<ProviderViewModel>()
-            {
-                userGeometryProviderViewModel,
-            },
             LanguageSettings = new LanguageSettingsViewModel(languageManager),
         };
 
@@ -228,88 +207,13 @@ public class ViewModelFactory
 
     public UserGeometryTab CreateUserGeometryTab()
     {
-        var provider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
+        var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
         var tab = new UserGeometryTab(_dependencyResolver);
 
-        var skip = provider.Sources.Count > 0 ? 1 : 0;
-
-        provider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
+        dataManager.DataChanged
+            .ToSignal()
             .InvokeCommand(tab.Loading);
 
         return tab;
-    }
-}
-
-public static class extns
-{
-    public static ISourceViewModel ToViewModel(this IDataSource dataSource)
-    {
-        if (dataSource is IDatabaseSource databaseSource)
-        {
-            return new DatabaseSourceViewModel(databaseSource);
-        }
-        else if (dataSource is IFileSource fileSource)
-        {
-            return new FileSourceViewModel(fileSource);
-        }
-        else if (dataSource is IFolderSource folderSource)
-        {
-            return new FolderSourceViewModel(folderSource);
-        }
-        else if (dataSource is IRandomSource randomSource)
-        {
-            return new RandomSourceViewModel(randomSource);
-        }
-        else
-        {
-            throw new Exception();
-        }
-    }
-
-    public static IDataSource ToModel(this ISourceViewModel source)
-    {
-        if (source is IDatabaseSourceViewModel databaseSource)
-        {
-            return new DatabaseSource()
-            {
-                Version = databaseSource.Version ?? string.Empty,
-                Host = databaseSource.Host ?? string.Empty,
-                Port = databaseSource.Port,
-                Database = databaseSource.Database ?? string.Empty,
-                Username = databaseSource.Username ?? string.Empty,
-                Password = databaseSource.Password ?? string.Empty,
-                Table = databaseSource.Table ?? string.Empty,
-            };
-        }
-        else if (source is IFileSourceViewModel fileSource)
-        {
-            return new FileSource()
-            {
-                Path = fileSource.Path ?? string.Empty,
-            };
-        }
-        else if (source is IFolderSourceViewModel folderSource)
-        {
-            return new FolderSource()
-            {
-                Directory = folderSource.Directory ?? string.Empty,
-                SearchPattern = folderSource.SearchPattern ?? string.Empty,
-            };
-        }
-        else if (source is IRandomSourceViewModel randomSource)
-        {
-            return new RandomSource()
-            {
-                Name = randomSource.Name ?? "RandomSourceDefault",
-                GenerateCount = randomSource.GenerateCount,
-            };
-        }
-        else
-        {
-            throw new Exception();
-        }
     }
 }

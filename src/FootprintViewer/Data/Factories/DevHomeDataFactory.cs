@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace FootprintViewer.Data;
 
-public class DevHomeDataFactory : BaseDataFactory, IDataFactory
+public class DevHomeDataFactory : IDataFactory
 {
-    public override FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
+    public FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
     {
         var dataManager = new DataManager.DataManager();
 

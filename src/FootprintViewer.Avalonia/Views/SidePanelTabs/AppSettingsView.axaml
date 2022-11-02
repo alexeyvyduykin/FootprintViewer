@@ -62,13 +62,13 @@
 
 				<ScrollViewer HorizontalScrollBarVisibility="Hidden"
 							  VerticalScrollBarVisibility="Auto">
-					<ItemsControl Items="{Binding Providers}">
+					<!--<ItemsControl Items="{Binding Providers}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<settings:ProviderSettingsView Margin="8" DataContext="{Binding}"/>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+					</ItemsControl>-->
 				</ScrollViewer>
 			</Expander>
 		</ContentControl>

@@ -10,11 +10,11 @@ namespace FootprintViewer.Designer
 
         public DesignTimeMapBackgroundList() : base()
         {
-            var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
+        //    var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
 
-            var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
+         //   var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
 
-            Update(maps);
+         //   Update(maps);
         }
     }
 }

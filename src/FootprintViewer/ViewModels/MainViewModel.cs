@@ -483,7 +483,7 @@ public class MainViewModel : RoutableViewModel
 
     private void EditFeature(IFeature? feature)
     {
-        var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+      //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
         if (feature is GeometryFeature gf)
         {
@@ -495,11 +495,14 @@ public class MainViewModel : RoutableViewModel
 
                     var geometry = gf.Geometry!;
 
-                    await editableProvider.EditAsync(name,
-                        new UserGeometry()
-                        {
-                            Geometry = geometry
-                        });
+                    var model = new UserGeometry()
+                    {
+                        Geometry = geometry
+                    };
+
+                    //await editableProvider.EditAsync(name, model);
+
+                    await _dataManager.TryEditAsync(DbKeys.UserGeometries.ToString(), name, model);
                 }
             });
         }
@@ -507,7 +510,7 @@ public class MainViewModel : RoutableViewModel
 
     private void AddUserGeometry(IFeature feature, UserGeometryType type)
     {
-        var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+      //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
         if (feature is GeometryFeature gf)
         {
@@ -524,7 +527,9 @@ public class MainViewModel : RoutableViewModel
                     Geometry = gf.Geometry
                 };
 
-                await editableProvider.AddAsync(model);
+                //await editableProvider.AddAsync(model);
+
+                await _dataManager.TryAddAsync(DbKeys.UserGeometries.ToString(), model);
             });
         }
 

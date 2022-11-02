@@ -9,7 +9,6 @@ using ReactiveUI;
 using Splat;
 using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -234,7 +233,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var editableProvider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var layer = new WritableLayer()
         {
@@ -242,37 +241,19 @@ public class MapFactory
             Style = styleManager.UserStyle,
         };
 
-        var skip = editableProvider.Sources.Count > 0 ? 1 : 0;
-
-        editableProvider.Observable
-            .Skip(skip)
-            .Select(s => Unit.Default)
+        dataManager.DataChanged
+            .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 
-        editableProvider.Update.InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync2));
-
-        loader.AddTaskAsync(() => LoadingAsync());
+        loader.AddTaskAsync(LoadingAsync);
 
         return layer;
 
         async Task LoadingAsync()
         {
-            await Task.Delay(TimeSpan.FromSeconds(3));
+            await Task.Delay(TimeSpan.FromSeconds(1.5));
 
-            var userGeometries = await editableProvider.GetNativeValuesAsync(null);
-
-            var arr = userGeometries
-                .Where(s => s.Geometry != null)
-                .Select(s => s.Geometry!.ToFeature(s.Name!));
-
-            layer.Clear();
-            layer.AddRange(arr);
-            layer.DataHasChanged();
-        }
-
-        async Task LoadingAsync2()
-        {
-            var userGeometries = await editableProvider.GetNativeValuesAsync(null);
+            var userGeometries = await dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
 
             var arr = userGeometries
                 .Where(s => s.Geometry != null)

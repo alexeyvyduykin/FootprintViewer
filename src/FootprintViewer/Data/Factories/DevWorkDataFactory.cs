@@ -1,14 +1,13 @@
 ﻿using FootprintViewer.Data.DataManager;
-using FootprintViewer.Data.Sources;
 using FootprintViewer.FileSystem;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FootprintViewer.Data;
 
-public class DevWorkDataFactory : BaseDataFactory, IDataFactory
+public class DevWorkDataFactory : IDataFactory
 {
-    public override FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
+    public FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
     {
         var dataManager = new DataManager.DataManager();
 
@@ -36,7 +35,7 @@ public class DevWorkDataFactory : BaseDataFactory, IDataFactory
 
         // userGeometries
         var userGeometriesKey = DbKeys.UserGeometries.ToString();
-        var userGeometriesSource = new FootprintViewer.Data.DataManager.Sources.DatabaseSource(userGeometriesKey, connectionString, "UserGeometries");
+        var userGeometriesSource = new FootprintViewer.Data.DataManager.Sources.EditableDatabaseSource(userGeometriesKey, connectionString, "UserGeometries");
         dataManager.RegisterSource(userGeometriesKey, userGeometriesSource);
 
         // maps
@@ -85,22 +84,5 @@ public class DevWorkDataFactory : BaseDataFactory, IDataFactory
         dataManager.RegisterSource(footprintPreviewGeometriesKey, mapSource5);
 
         return dataManager;
-    }
-
-    protected override IDataSource[] GetUserGeometrySources()
-    {
-        return new[]
-        {
-            new DatabaseSource()
-            {
-                Version = "14.1",
-                Host = "localhost",
-                Port = 5432,
-                Database = "FootprintViewerDatabase",
-                Username = "postgres",
-                Password = "user",
-                Table = "UserGeometries"
-            },
-        };
     }
 }

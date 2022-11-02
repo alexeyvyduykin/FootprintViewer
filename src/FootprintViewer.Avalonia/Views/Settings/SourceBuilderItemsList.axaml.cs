@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
@@ -6,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class SourceBuilderItemsList : ReactiveUserControl<ProviderViewModel>
+    public partial class SourceBuilderItemsList : UserControl// ReactiveUserControl<ProviderViewModel>
     {
         public SourceBuilderItemsList()
         {
             InitializeComponent();
 
-            this.WhenActivated(disposables =>
-            {
-                ViewModel?.Activate();
+            //this.WhenActivated(disposables =>
+            //{
+            //    ViewModel?.Activate();
 
-                ViewModel?.SourceBuilderItems.ForEach(s => s.BuildDialog.RegisterHandler(DoShowDialogAsync).DisposeWith(disposables));
-            });
+            //    ViewModel?.SourceBuilderItems.ForEach(s => s.BuildDialog.RegisterHandler(DoShowDialogAsync).DisposeWith(disposables));
+            //});
         }
         private async Task DoShowDialogAsync(InteractionContext<ISourceViewModel, ISourceViewModel?> interaction)
         {

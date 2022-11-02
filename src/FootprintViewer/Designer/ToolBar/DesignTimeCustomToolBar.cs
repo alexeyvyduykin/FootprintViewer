@@ -10,11 +10,11 @@ namespace FootprintViewer.Designer
 
         public DesignTimeCustomToolBar() : base(_designTimeData)
         {
-            var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
+          //  var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
 
-            var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
+          //  var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
 
-            MapBackgroundList.Update(maps);
+          //  MapBackgroundList.Update(maps);
         }
     }
 }

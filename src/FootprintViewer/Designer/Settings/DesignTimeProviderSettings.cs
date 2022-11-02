@@ -4,7 +4,7 @@ using FootprintViewer.ViewModels;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeProviderSettings : ProviderViewModel
+    public class DesignTimeProviderSettings //: ProviderViewModel
     {
         //private static readonly IDataSource _dataSource1 = new DatabaseSource() { Database = "FootprintViewerDatabase", Table = "Satellites" };
         //private static readonly IDataSource _dataSource2 = new FolderSource() { Directory = "C:/data" };
@@ -19,15 +19,15 @@ namespace FootprintViewer.Designer
         //    _dataSource4,
         //});
 
-        public DesignTimeProviderSettings() : base(null/*_provider*/, new DesignTimeData())
+        public DesignTimeProviderSettings() //: base(null/*_provider*/, new DesignTimeData())
         {
-            Type = ProviderType.Satellites;
+            //Type = ProviderType.Satellites;
 
-            AvailableBuilders = new[]
-            {
-                "random",
-                "database",
-            };
+            //AvailableBuilders = new[]
+            //{
+            //    "random",
+            //    "database",
+            //};
         }
     }
 }

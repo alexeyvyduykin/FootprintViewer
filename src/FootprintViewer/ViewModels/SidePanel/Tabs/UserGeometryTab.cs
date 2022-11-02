@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
 using ReactiveUI;
 using Splat;
 using System;
@@ -14,14 +15,14 @@ namespace FootprintViewer.ViewModels
 {
     public class UserGeometryTab : SidePanelTab
     {
-        private readonly IEditableProvider<UserGeometry> _provider;
+        private readonly Data.DataManager.IDataManager _dataManager;
         private readonly SourceList<UserGeometryViewModel> _userGeometries = new();
         private readonly ReadOnlyObservableCollection<UserGeometryViewModel> _items;
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
         public UserGeometryTab(IReadonlyDependencyResolver dependencyResolver)
         {
-            _provider = dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+            _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
             Title = "Пользовательская геометрия";
 
@@ -41,7 +42,7 @@ namespace FootprintViewer.ViewModels
                   .ObserveOn(RxApp.MainThreadScheduler)
                   .ToProperty(this, x => x.IsLoading);
 
-            _provider.Update.Select(_ => Unit.Default).InvokeCommand(Loading);
+            //   _provider.Update.Select(_ => Unit.Default).InvokeCommand(Loading);
 
             this.WhenAnyValue(s => s.IsActive)
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -67,7 +68,9 @@ namespace FootprintViewer.ViewModels
 
         private async Task LoadingImpl()
         {
-            var list = await _provider.GetValuesAsync(null, s => new UserGeometryViewModel(s));
+            var res = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
+
+            var list = res.Select(s => new UserGeometryViewModel(s)).ToList();
 
             _userGeometries.Edit(innerList =>
             {
@@ -78,16 +81,20 @@ namespace FootprintViewer.ViewModels
 
         private async Task RemoveAsync(UserGeometryViewModel? value)
         {
-            if (value != null && _provider is IEditableProvider<UserGeometry> editableProvider)
+            if (value != null)
             {
-                await editableProvider.RemoveAsync(value.Model);
+                await _dataManager.TryRemoveAsync(DbKeys.UserGeometries.ToString(), value.Model);
             }
         }
 
         public async Task<List<UserGeometryViewModel>> GetUserGeometryViewModelsAsync(string name)
         {
-            return await _provider.GetValuesAsync<UserGeometryViewModel>(
-                new NameFilter<UserGeometryViewModel>(new[] { name }), s => new UserGeometryViewModel(s));
+            var res = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
+
+            return res
+                .Where(s => Equals(s.Name, name))
+                .Select(s => new UserGeometryViewModel(s))
+                .ToList();
         }
 
         public ReadOnlyObservableCollection<UserGeometryViewModel> Items => _items;

@@ -1,4 +1,5 @@
-﻿using Nito.AsyncEx;
+﻿using DynamicData;
+using Nito.AsyncEx;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -119,6 +120,107 @@ public class DataManager : IDataManager
             }
 
             return new List<T>();
+        });
+    }
+
+    // TODO: not safety
+    public async Task<bool> TryAddAsync(string key, object value)
+    {
+        return await Task.Run(async () =>
+        {
+            if (_sources.ContainsKey(key) == true)
+            {
+                if (_sources.TryGetValue(key, out var list) == true)
+                {
+                    foreach (var item in list)
+                    {
+                        if (item is IEditableSource editableSource)
+                        {
+                            await editableSource.AddAsync(key, value);
+
+                            if (_cache.ContainsKey(key) == true)
+                            {
+                                if (_cache[key].ContainsKey(item) == true)
+                                {
+                                    _cache[key][item].Add(value);
+                                }
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        });
+    }
+
+    // TODO: not safety
+    public async Task<bool> TryRemoveAsync(string key, object value)
+    {
+        return await Task.Run(async () =>
+        {
+            if (_sources.ContainsKey(key) == true)
+            {
+                if (_sources.TryGetValue(key, out var list) == true)
+                {
+                    foreach (var item in list)
+                    {
+                        if (item is IEditableSource editableSource)
+                        {
+                            await editableSource.RemoveAsync(key, value);
+
+                            if (_cache.ContainsKey(key) == true)
+                            {
+                                if (_cache[key].ContainsKey(item) == true)
+                                {
+                                    _cache[key][item].Remove(value);
+                                }
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        });
+    }
+
+    // TODO: not safety
+    public async Task<bool> TryEditAsync(string key, string id, object newValue)
+    {
+        return await Task.Run(async () =>
+        {
+            if (_sources.ContainsKey(key) == true)
+            {
+                if (_sources.TryGetValue(key, out var list) == true)
+                {
+                    foreach (var item in list)
+                    {
+                        if (item is IEditableSource editableSource)
+                        {
+                            await editableSource.EditAsync(key, id, newValue);
+
+                            if (_cache.ContainsKey(key) == true)
+                            {
+                                if (_cache[key].ContainsKey(item) == true)
+                                {
+                                    //  _cache[key][item].Replace(oldValue, newValue);
+                                    // clear cache
+                                    _cache[key].Remove(item);//.Replace(oldValue, newValue);
+                                }
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         });
     }
 }

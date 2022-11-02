@@ -87,7 +87,7 @@ public static class Bootstrapper
         services.RegisterConstant(dataFactory.CreateDataManager(), typeof(IDataManager));
 
         // Providers
-        services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
+   //     services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
 
         services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 

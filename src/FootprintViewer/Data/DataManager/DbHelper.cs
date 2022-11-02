@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
 
@@ -70,6 +72,35 @@ internal static class DbHelper
             DbKeys.UserGeometries => s => new UserGeometryDbContext(tableName, s),
             _ => throw new Exception(),
         };
+    }
+
+    public static async Task EditAsync(string key, string connectionString, string tableName, string id, object newValue)
+    {
+        Enum.TryParse<DbKeys>(key, true, out var result);
+
+        switch (result)
+        {
+            case DbKeys.UserGeometries:
+                if (newValue is UserGeometry newUserGeometry)
+                {
+                    using (var context = new UserGeometryDbContext(tableName, connectionString))
+                    {
+                        var userGeometry = await context.UserGeometries
+                            .Where(b => b.Name == id)
+                            .FirstOrDefaultAsync();
+
+                        if (userGeometry != null)
+                        {
+                            userGeometry.Geometry = newUserGeometry.Geometry;
+
+                            await context.SaveChangesAsync();
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public static bool TryValidateContext(string key, string connectionString, string tableName)

@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia.Views.Settings
 {
-    public partial class ProviderSettingsView : ReactiveUserControl<ProviderViewModel>
+    public partial class ProviderSettingsView : UserControl// ReactiveUserControl<ProviderViewModel>
     {
         public ProviderSettingsView()
         {
             InitializeComponent();
 
-            this.WhenActivated(disposables =>
-            {
+            //this.WhenActivated(disposables =>
+            //{
 
-            });
+            //});
         }
     }
 }

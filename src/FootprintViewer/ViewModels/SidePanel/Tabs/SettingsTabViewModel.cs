@@ -12,16 +12,16 @@ namespace FootprintViewer.ViewModels
         {
             Title = "Пользовательские настройки";
 
-            Providers = new List<ProviderViewModel>();
+           // Providers = new List<ProviderViewModel>();
         }
 
-        public ProviderViewModel? Find(ProviderType type)
-        {
-            return Providers.Where(s => s.Type.Equals(type)).FirstOrDefault();
-        }
+        //public ProviderViewModel? Find(ProviderType type)
+        //{
+        //    return Providers.Where(s => s.Type.Equals(type)).FirstOrDefault();
+        //}
 
-        [Reactive]
-        public List<ProviderViewModel> Providers { get; set; }
+      //  [Reactive]
+      //  public List<ProviderViewModel> Providers { get; set; }
 
         [Reactive]
         public LanguageSettingsViewModel? LanguageSettings { get; set; }

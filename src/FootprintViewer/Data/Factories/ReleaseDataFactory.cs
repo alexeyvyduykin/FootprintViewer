@@ -1,13 +1,12 @@
 ﻿using FootprintViewer.Data.DataManager;
 using FootprintViewer.FileSystem;
-using System;
 using System.Linq;
 
 namespace FootprintViewer.Data;
 
-public class ReleaseDataFactory : BaseDataFactory, IDataFactory
+public class ReleaseDataFactory : IDataFactory
 {
-    public override FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
+    public FootprintViewer.Data.DataManager.IDataManager CreateDataManager()
     {
         var dataManager = new DataManager.DataManager();
 
@@ -23,10 +22,5 @@ public class ReleaseDataFactory : BaseDataFactory, IDataFactory
         dataManager.RegisterSource(mapsKey, mapSource);
 
         return dataManager;
-    }
-
-    protected override IDataSource[] GetUserGeometrySources()
-    {
-        return Array.Empty<IDataSource>();
     }
 }
