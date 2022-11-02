@@ -14,4 +14,6 @@ public enum DbKeys
     GroundStations,
     [EnumMember(Value = "userGeometries")]
     UserGeometries,
+    [EnumMember(Value = "maps")]
+    Maps,
 }

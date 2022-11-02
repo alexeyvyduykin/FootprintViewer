@@ -10,7 +10,5 @@ public interface IDataFactory
 
     IProvider<(string, Geometry)> CreateFootprintPreviewGeometryProvider();
 
-    IProvider<MapResource> CreateMapBackgroundProvider();
-
     IProvider<FootprintPreview> CreateFootprintPreviewProvider();
 }

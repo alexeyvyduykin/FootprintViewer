@@ -37,20 +37,6 @@ public abstract class BaseDataFactory : IDataFactory
         return provider;
     }
 
-    public IProvider<MapResource> CreateMapBackgroundProvider()
-    {
-        var provider = new Provider<MapResource>();
-
-        provider.AddSources(GetMapBackgroundSources());
-
-        provider.AddManagers(new IDataManager<MapResource>[]
-        {
-            new MapDataManager(),
-        });
-
-        return provider;
-    }
-
     public IProvider<FootprintPreview> CreateFootprintPreviewProvider()
     {
         var provider = new Provider<FootprintPreview>();
@@ -66,11 +52,6 @@ public abstract class BaseDataFactory : IDataFactory
     }
 
     protected virtual IDataSource[] GetFootprintPreviewSources()
-    {
-        return Array.Empty<IDataSource>();
-    }
-
-    protected virtual IDataSource[] GetMapBackgroundSources()
     {
         return Array.Empty<IDataSource>();
     }

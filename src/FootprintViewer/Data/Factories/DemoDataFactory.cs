@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data.DataManager;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.FileSystem;
+using System.Linq;
 
 namespace FootprintViewer.Data;
 
@@ -42,6 +43,24 @@ public class DemoDataFactory : BaseDataFactory, IDataFactory
         };
         dataManager.RegisterSource(groundStationsKey, groundStationsSource);
 
+        // maps
+        var mapsKey = DbKeys.Maps.ToString();
+        var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+        var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
+
+        var paths1 = System.IO.Directory.GetFiles(directory1, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var paths2 = System.IO.Directory.GetFiles(directory2, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var mapSource1 = new FootprintViewer.Data.DataManager.Sources.FileSource(paths1)
+        {
+            Loader = MapResource.Builder
+        };
+        var mapSource2 = new FootprintViewer.Data.DataManager.Sources.FileSource(paths2)
+        {
+            Loader = MapResource.Builder
+        };
+        dataManager.RegisterSource(mapsKey, mapSource1);
+        dataManager.RegisterSource(mapsKey, mapSource2);
+
         return dataManager;
     }
 
@@ -49,26 +68,6 @@ public class DemoDataFactory : BaseDataFactory, IDataFactory
     {
         var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
         var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
-
-        return new[]
-        {
-            new FolderSource()
-            {
-                Directory = directory1,
-                SearchPattern = "*.mbtiles",
-            },
-            new FolderSource()
-            {
-                Directory = directory2,
-                SearchPattern = "*.mbtiles",
-            },
-        };
-    }
-
-    protected override IDataSource[] GetMapBackgroundSources()
-    {
-        var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
-        var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
 
         return new[]
         {

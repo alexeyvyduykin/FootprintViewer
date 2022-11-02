@@ -33,7 +33,6 @@ public class ViewModelFactory
         var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
 
         var userGeometryProvider = (EditableProvider<UserGeometry>)_dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-        var mapBackgroundProvider = (Provider<MapResource>)_dependencyResolver.GetExistingService<IProvider<MapResource>>();
         var footprintPreviewProvider = (Provider<FootprintPreview>)_dependencyResolver.GetExistingService<IProvider<FootprintPreview>>();
         var footprintPreviewGeometryProvider = (Provider<(string, NetTopologySuite.Geometries.Geometry)>)_dependencyResolver.GetExistingService<IProvider<(string, NetTopologySuite.Geometries.Geometry)>>();
 
@@ -45,17 +44,6 @@ public class ViewModelFactory
             {
                 SourceType.Database => new DatabaseSourceViewModel(),
                 SourceType.Random => new RandomSourceViewModel() { Name = "RandomUserGeometries" },
-                _ => throw new Exception(),
-            },
-        };
-
-        var mapBackgroundProviderViewModel = new ProviderViewModel(mapBackgroundProvider, _dependencyResolver)
-        {
-            Type = ProviderType.MapBackgrounds,
-            AvailableBuilders = configuration.MapBackgroundSourceBuilders,
-            Builder = type => type switch
-            {
-                SourceType.Folder => new FolderSourceViewModel() { SearchPattern = "*.mbtiles" },
                 _ => throw new Exception(),
             },
         };
@@ -88,7 +76,6 @@ public class ViewModelFactory
             {
                 userGeometryProviderViewModel,
                 footprintPreviewGeometryProviderViewModel,
-                mapBackgroundProviderViewModel,
                 footprintPreviewProviderViewModel,
             },
             LanguageSettings = new LanguageSettingsViewModel(languageManager),
