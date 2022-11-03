@@ -1,6 +1,8 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Configurations;
+using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
@@ -31,6 +33,7 @@ namespace FootprintViewer.Designer
         private CustomToolBar? _customToolBar;
         private MapBackgroundList? _mapBackgroundList;
         private IDataManager? _dataManager;
+        private ILanguageManager? _languageManager;
 
         public object? GetService(Type? serviceType, string? contract = null)
         {
@@ -98,7 +101,10 @@ namespace FootprintViewer.Designer
             {
                 return _dataManager ??= new DesignTimeRepository();
             }
-
+            else if (serviceType == typeof(ILanguageManager))
+            {
+                return _languageManager ??= new LanguageManager(new LanguagesConfiguration() { AvailableLocales = new[] { "en", "ru" } });
+            }
             throw new Exception();
         }
 

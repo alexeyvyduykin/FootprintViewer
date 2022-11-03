@@ -8,10 +8,12 @@ namespace FootprintViewer.Designer;
 
 public class DesignTimeSettingsViewModel : SettingsViewModel
 {
-    private static readonly IDataManager _dataManager = new DesignTimeData().GetService<IDataManager>()!;
+    private static readonly IReadonlyDependencyResolver _dependencyResolver = new DesignTimeData();
 
-    public DesignTimeSettingsViewModel() : base(_dataManager)
+    public DesignTimeSettingsViewModel() : base(_dependencyResolver)
     {
+        var _dataManager = _dependencyResolver.GetService<IDataManager>()!;
+
         var source = _dataManager.GetSources(DbKeys.Footprints.ToString())[0];
 
         SourceContainers = new List<SourceContainerViewModel>()

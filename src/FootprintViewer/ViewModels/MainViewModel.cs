@@ -101,7 +101,7 @@ public class MainViewModel : RoutableViewModel
 
         Options = ReactiveCommand.CreateFromTask(async () =>
         {
-            var settingsDialog = new SettingsViewModel(_dataManager);
+            var settingsDialog = new SettingsViewModel(_dependencyResolver);
 
             DialogStack().To(settingsDialog);
 
@@ -483,7 +483,7 @@ public class MainViewModel : RoutableViewModel
 
     private void EditFeature(IFeature? feature)
     {
-      //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+        //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
         if (feature is GeometryFeature gf)
         {
@@ -510,7 +510,7 @@ public class MainViewModel : RoutableViewModel
 
     private void AddUserGeometry(IFeature feature, UserGeometryType type)
     {
-      //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
+        //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
 
         if (feature is GeometryFeature gf)
         {

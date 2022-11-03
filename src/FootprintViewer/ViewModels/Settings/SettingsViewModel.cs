@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Data.DataManager;
+using FootprintViewer.Localization;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,18 @@ public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
 {
     private readonly IDataManager _dataManager;
 
-    public SettingsViewModel(IDataManager dataManager)
+    public SettingsViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        _dataManager = dataManager;
+        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var languageManager = dependencyResolver.GetExistingService<ILanguageManager>();
 
         int counter = 0;
 
-        var footprintsSources = dataManager.GetSources(DbKeys.Footprints.ToString());
-        var groundTargetsSources = dataManager.GetSources(DbKeys.GroundTargets.ToString());
-        var satellitesSources = dataManager.GetSources(DbKeys.Satellites.ToString());
-        var groundStationsSources = dataManager.GetSources(DbKeys.GroundStations.ToString());
-        var userGeometriesSources = dataManager.GetSources(DbKeys.UserGeometries.ToString());
+        var footprintsSources = _dataManager.GetSources(DbKeys.Footprints.ToString());
+        var groundTargetsSources = _dataManager.GetSources(DbKeys.GroundTargets.ToString());
+        var satellitesSources = _dataManager.GetSources(DbKeys.Satellites.ToString());
+        var groundStationsSources = _dataManager.GetSources(DbKeys.GroundStations.ToString());
+        var userGeometriesSources = _dataManager.GetSources(DbKeys.UserGeometries.ToString());
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
@@ -86,6 +89,10 @@ public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
 
             Close(DialogResultKind.Normal, dirtyList);
         });
+
+        LanguageSettings = new LanguageSettingsViewModel(languageManager);
+
+        LanguageSettings.Activate();
     }
 
     [Reactive]
@@ -93,4 +100,7 @@ public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
 
     [Reactive]
     public SourceContainerViewModel? SelectedSourceContainer { get; set; }
+
+    [Reactive]
+    public LanguageSettingsViewModel LanguageSettings { get; set; }
 }

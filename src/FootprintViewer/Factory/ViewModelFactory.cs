@@ -1,6 +1,4 @@
-﻿using FootprintViewer.Configurations;
-using FootprintViewer.Layers;
-using FootprintViewer.Localization;
+﻿using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
 using Mapsui;
 using Mapsui.Layers;
@@ -20,20 +18,6 @@ public class ViewModelFactory
     public ViewModelFactory(IReadonlyDependencyResolver dependencyResolver)
     {
         _dependencyResolver = dependencyResolver;
-    }
-
-    public SettingsTabViewModel CreateSettingsTabViewModel()
-    {
-        var configuration = _dependencyResolver.GetExistingService<SourceBuilderConfiguration>();
-
-        var languageManager = _dependencyResolver.GetExistingService<ILanguageManager>();
-
-        var settingsViewer = new SettingsTabViewModel(_dependencyResolver)
-        {
-            LanguageSettings = new LanguageSettingsViewModel(languageManager),
-        };
-
-        return settingsViewer;
     }
 
     public GroundStationTab CreateGroundStationTab()

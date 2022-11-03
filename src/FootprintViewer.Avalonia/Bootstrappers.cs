@@ -86,9 +86,6 @@ public static class Bootstrapper
         // DataManager
         services.RegisterConstant(dataFactory.CreateDataManager(), typeof(IDataManager));
 
-        // Providers
-   //     services.RegisterConstant(dataFactory.CreateUserGeometryProvider(), typeof(IEditableProvider<UserGeometry>));
-
         services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
         services.RegisterConstant(new TargetLayerSource(), typeof(ITargetLayerSource));
@@ -102,7 +99,6 @@ public static class Bootstrapper
         services.RegisterLazySingleton<FootprintTab>(() => viewModelFactory.CreateFootprintTab());
         services.RegisterLazySingleton<UserGeometryTab>(() => viewModelFactory.CreateUserGeometryTab());
         services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
-        services.RegisterLazySingleton<SettingsTabViewModel>(() => viewModelFactory.CreateSettingsTabViewModel());
 
         services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
 
@@ -118,7 +114,6 @@ public static class Bootstrapper
                 resolver.GetExistingService<GroundTargetTab>(),
                 resolver.GetExistingService<FootprintTab>(),
                 resolver.GetExistingService<UserGeometryTab>(),
-                resolver.GetExistingService<SettingsTabViewModel>(),
             })
         });
 

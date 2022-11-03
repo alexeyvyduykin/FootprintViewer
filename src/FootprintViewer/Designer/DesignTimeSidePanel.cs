@@ -17,7 +17,6 @@ namespace FootprintViewer.Designer
                 new GroundTargetTab(data),
                 new FootprintTab(data),
                 new UserGeometryTab(data),
-                new SettingsTabViewModel(data),
             };
 
             Tabs.AddRange(new List<SidePanelTab>(tabs));

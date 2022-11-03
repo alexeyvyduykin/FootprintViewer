@@ -44,10 +44,6 @@
 			<views:GroundStationTabView/>
 		</DataTemplate>
 
-		<DataTemplate DataType="vm:SettingsTabViewModel">
-			<views:AppSettingsView/>
-		</DataTemplate>
-
 	</UserControl.DataTemplates>
 
 	<UserControl.Resources>
@@ -92,11 +88,6 @@
 					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
 				</Viewbox>
 			</DataTemplate>
-			<DataTemplate x:Key="SettingsTabViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="AccountCog" />
-				</Viewbox>
-			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
@@ -108,10 +99,10 @@
 		<Style Selector="controls|SidePanelItem">
 			<Setter Property="DockPanel.Dock" Value="Top"/>
 		</Style>
-		<Style Selector="controls|SidePanelItem:nth-last-child(1)">
+		<!--<Style Selector="controls|SidePanelItem:nth-last-child(1)">
 			<Setter Property="DockPanel.Dock" Value="Bottom"/>
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
-		</Style>
+		</Style>-->
 
 
 		<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">

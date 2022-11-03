@@ -66,23 +66,23 @@ namespace FootprintViewer.Avalonia
             suspension.OnFrameworkInitializationCompleted();
         }
 
-        private void LoadSettings()
+        private static void LoadSettings()
         {
             var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
 
             Locator.CurrentMutable.RegisterConstant(mainState, typeof(MainState));
 
-            var settings = GetExistingService<SettingsTabViewModel>();
+            //   var settings = GetExistingService<SettingsTabViewModel>();
 
-            settings.LanguageSettings?.LoadState(mainState.LocalizationState);
+            //   settings.LanguageSettings?.LoadState(mainState.LocalizationState);
 
-         //   settings.Find(Data.ProviderType.MapBackgrounds)?.LoadState(mainState.MapBackgroundProvider);
-         //   settings.Find(Data.ProviderType.FootprintPreviews)?.LoadState(mainState.FootprintPreviewProvider);
-         //   settings.Find(Data.ProviderType.Satellites)?.LoadState(mainState.SatelliteProvider);
-         //   settings.Find(Data.ProviderType.GroundStations)?.LoadState(mainState.GroundStationProvider);
-         //   settings.Find(Data.ProviderType.GroundTargets)?.LoadState(mainState.GroundTargetProvider);
-        //    settings.Find(Data.ProviderType.Footprints)?.LoadState(mainState.FootprintProvider);
-        //    settings.Find(Data.ProviderType.UserGeometries)?.LoadState(mainState.UserGeometryProvider);
+            //   settings.Find(Data.ProviderType.MapBackgrounds)?.LoadState(mainState.MapBackgroundProvider);
+            //   settings.Find(Data.ProviderType.FootprintPreviews)?.LoadState(mainState.FootprintPreviewProvider);
+            //   settings.Find(Data.ProviderType.Satellites)?.LoadState(mainState.SatelliteProvider);
+            //   settings.Find(Data.ProviderType.GroundStations)?.LoadState(mainState.GroundStationProvider);
+            //   settings.Find(Data.ProviderType.GroundTargets)?.LoadState(mainState.GroundTargetProvider);
+            //   settings.Find(Data.ProviderType.Footprints)?.LoadState(mainState.FootprintProvider);
+            //   settings.Find(Data.ProviderType.UserGeometries)?.LoadState(mainState.UserGeometryProvider);
         }
 
         public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
@@ -98,7 +98,7 @@ namespace FootprintViewer.Avalonia
 
             var ext = filterExtension ?? "*";
 
-            dialog.Filters.Add(new FileDialogFilter() { Name = filterName, Extensions = { ext } });
+            dialog.Filters?.Add(new FileDialogFilter() { Name = filterName, Extensions = { ext } });
 
             var result = await dialog.ShowAsync(GetWindow()!);
 
