@@ -4,15 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"			 
 			 mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="250"
+			 x:DataType="vm:FootprintClickInfoPanel"
              x:Class="FootprintViewer.Avalonia.Views.InfoPanel.FootprintClickInfoPanelView">
 
 	<Design.DataContext>
 		<vmd:DesignTimeFootprintClickInfoPanelItem/>
 	</Design.DataContext>
 
+	<UserControl.Resources>
+		<conv:CoordinateConverter x:Key="CoordinateConv"/>
+		<conv:FootprintInfoNameConverter x:Key="NameConv"/>
+		<conv:FootprintInfoTimeConverter x:Key="TimeConv"/>
+	</UserControl.Resources>
+	
 	<Panel VerticalAlignment="Center"
 		   HorizontalAlignment="Center">
 		<styles:Card Opacity="0.85">
@@ -22,17 +31,20 @@
 
 				<StackPanel>
 					<TextBlock Text="{x:Static prop:Resources.InfoPanelCenter}" Classes="Overline"/>
-					<TextBlock x:Name="CenterTextBlock" Classes="Subtitle1"/>
+					<TextBlock Text="{Binding FootprintViewModel.Center, Converter={StaticResource CoordinateConv}}"
+							   Classes="Subtitle1"/>
 				</StackPanel>
 
 				<StackPanel>
 					<TextBlock Text="{x:Static prop:Resources.InfoPanelSatellite}" Classes="Overline"/>
-					<TextBlock x:Name="SatelliteNodeDirectionTextBlock" Classes="Subtitle1"/>
+					<TextBlock Text="{Binding FootprintViewModel, Converter={StaticResource NameConv}}"
+							   Classes="Subtitle1"/>
 				</StackPanel>
 
 				<StackPanel>
 					<TextBlock Text="{x:Static prop:Resources.InfoPanelBegin}" Classes="Overline"/>
-					<TextBlock x:Name="BeginDurationTextBlock" Classes="Subtitle1"/>
+					<TextBlock Text="{Binding FootprintViewModel, Converter={StaticResource TimeConv}}"
+							   Classes="Subtitle1"/>
 				</StackPanel>
 
 			</StackPanel>

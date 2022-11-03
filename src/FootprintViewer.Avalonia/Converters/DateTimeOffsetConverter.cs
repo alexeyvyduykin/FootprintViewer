@@ -1,23 +1,17 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
-using FootprintViewer.ViewModels;
 using System;
 using System.Globalization;
 
 namespace FootprintViewer.Avalonia.Converters;
 
-public class LanguageConverter : IValueConverter
+public class DateTimeOffsetConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is LanguageViewModel language)
+        if (value is DateTime dateTime)
         {
-            return language.Code switch
-            {
-                "en" => Properties.Resources.LanguageEnglish,
-                "ru" => Properties.Resources.LanguageRussian,
-                _ => throw new Exception(),
-            };
+            return new DateTimeOffset(dateTime);
         }
 
         // converter used for the wrong type
@@ -26,6 +20,12 @@ public class LanguageConverter : IValueConverter
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotSupportedException();
+        if (value is DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.DateTime;
+        }
+
+        // converter used for the wrong type
+        return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
     }
 }

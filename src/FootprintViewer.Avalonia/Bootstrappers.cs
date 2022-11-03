@@ -100,9 +100,7 @@ public static class Bootstrapper
         services.RegisterLazySingleton<UserGeometryTab>(() => viewModelFactory.CreateUserGeometryTab());
         services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
 
-        services.RegisterConstant(factory.CreateMapBackgroundList(), typeof(MapBackgroundList));
-
-        services.RegisterConstant(new CustomToolBar(resolver), typeof(CustomToolBar));
+        services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
 
         services.RegisterLazySingleton<SidePanel>(() => new SidePanel()
         {

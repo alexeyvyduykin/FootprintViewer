@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeMapBackgroundList : MapBackgroundList
+    public class DesignTimeMapBackgroundList //: MapBackgroundList
     {
         private static readonly DesignTimeData _designTimeData = new();
 
-        public DesignTimeMapBackgroundList() : base()
+        public DesignTimeMapBackgroundList() //: base()
         {
         //    var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
 

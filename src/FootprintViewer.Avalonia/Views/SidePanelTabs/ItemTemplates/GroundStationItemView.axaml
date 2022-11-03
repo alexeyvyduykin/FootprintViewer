@@ -8,7 +8,8 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
+			 x:DataType="vm:GroundStationViewModel"
              mc:Ignorable="d" d:DesignWidth="380"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.GroundStationItemView">
 
@@ -17,7 +18,9 @@
 	</Design.DataContext>
 
 	<UserControl.Resources>
-		<converters:GroundStationModeConverter x:Key="groundStationModeConv"/>
+		<conv:GroundStationModeConverter x:Key="GroundStationModeConv"/>
+		<conv:SolidColorBrushConverter x:Key="BrushConv"/>
+		<conv:FullCoordinateConverter x:Key="CoordinateConv"/>
 	</UserControl.Resources>
 
 	<styles:ColorZone Padding="8">
@@ -31,7 +34,7 @@
 							   VerticalAlignment="Center"
 							   Classes="Headline6"/>
 
-					<TextBlock x:Name="CoordinateTextBlock"
+					<TextBlock Text="{Binding Center, Converter={StaticResource CoordinateConv}}"
 							   Classes="Caption"/>
 
 				</StackPanel>
@@ -55,7 +58,8 @@
 				<StackPanel>
 
 					<Grid ColumnDefinitions="*,24" Margin="0,8,0,8">
-						<Slider x:Name="Slider1"
+						<Slider Minimum="0"
+								Maximum="50"
 								Margin="8,0,16,0"
 								Value="{Binding InnerAngle}"
 								Classes="Modern Discrete Ticks"
@@ -69,7 +73,8 @@
 					</Grid>
 
 					<Grid ColumnDefinitions="*,24" Margin="0,8,0,8">
-						<Slider x:Name="Slider2"
+						<Slider Minimum="0"
+								Maximum="50"
 								Margin="8,0,16,0"
 								Value="{Binding OuterAngle}"
 								Classes="Modern Discrete Ticks"
@@ -92,17 +97,18 @@
 								  SelectedItem="{Binding CountMode}">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
-									<TextBlock Text="{Binding Converter={StaticResource groundStationModeConv}}"/>
+									<TextBlock Text="{Binding Converter={StaticResource GroundStationModeConv}}"/>
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>
 					</Grid>
 
-					<ItemsControl x:Name="ItemsControl" Margin="0,16,0,0">
+					<ItemsControl Items="{Binding AreaItems}"
+								  Margin="0,16,0,0">
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="items:AvaloniaAreaItem">
+							<DataTemplate DataType="vm:GroundStationAreaItem">
 								<Grid ColumnDefinitions="40, 30, *">
-									<Border Background="{Binding Brush}"/>
+									<Border Background="{Binding Color, Converter={StaticResource BrushConv}}"/>
 									<TextBlock Text="-"
 											   Grid.Column="1"
 											   HorizontalAlignment="Center"

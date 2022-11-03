@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
@@ -10,6 +11,7 @@
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
+			 x:DataType="vm:CustomToolBar"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
 
 	<Design.DataContext>
@@ -25,6 +27,13 @@
 
 	<UserControl.Styles>
 
+		<Style Selector="MenuItem">
+			<Setter Property="Header" Value="{Binding Header}"/>
+			<Setter Property="Items" Value="{Binding Items}"/>
+			<Setter Property="Command" Value="{Binding Command}"/>
+			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+		</Style>
+		
 		<Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
 			<Setter Property="HorizontalAlignment" Value="Left"/>
 			<Setter Property="Width" Value="36"/>
@@ -80,11 +89,18 @@
 				<ToolTip.Tip>
 					<ToolTip Content="{Binding MapBackgrounds.Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
 				</ToolTip.Tip>
-				<ToggleButton.Flyout>
+				<ToggleButton.Flyout>											
+					<MenuFlyout Placement="RightEdgeAlignedTop"									
+								ShowMode="TransientWithDismissOnPointerMoveAway"									
+								Items="{Binding MapItems}"/>				
+				</ToggleButton.Flyout>
+				
+				
+				<!--<ToggleButton.Flyout>
 					<Flyout Placement="RightEdgeAlignedTop">
 						<toolBar:MapBackgroundListView DataContext="{Binding MapBackgroundList}"/>
 					</Flyout>
-				</ToggleButton.Flyout>
+				</ToggleButton.Flyout>-->
 
 				<ContentControl Content="{Binding MapBackgrounds}"
 								ContentTemplate="{DynamicResource ToolIconDataSelector}"/>

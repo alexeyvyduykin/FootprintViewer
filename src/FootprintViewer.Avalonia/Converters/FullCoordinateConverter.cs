@@ -1,23 +1,18 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
-using FootprintViewer.ViewModels;
+using NetTopologySuite.Geometries;
 using System;
 using System.Globalization;
 
 namespace FootprintViewer.Avalonia.Converters;
 
-public class LanguageConverter : IValueConverter
+public class FullCoordinateConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is LanguageViewModel language)
+        if (value is Coordinate coordinate)
         {
-            return language.Code switch
-            {
-                "en" => Properties.Resources.LanguageEnglish,
-                "ru" => Properties.Resources.LanguageRussian,
-                _ => throw new Exception(),
-            };
+            return $"Lon:{coordinate.X,7: 0.00;-0.00; 0.00}° Lat:{coordinate.Y,6: 0.00;-0.00; 0.00}°";
         }
 
         // converter used for the wrong type

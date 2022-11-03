@@ -1,31 +1,26 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia.Views.ToolBar
 {
-    public partial class CustomToolBarView : ReactiveUserControl<CustomToolBar>
+    public partial class CustomToolBarView : UserControl
     {
         public CustomToolBarView()
         {
             InitializeComponent();
 
-            this.WhenActivated(disposables =>
-            {
-                // MapBackgroundSelectorButton
-                MapBackgroundSelectorButton.Flyout?.Events().Closing.Subscribe(_ => MapBackgroundSelectorButton.IsChecked = false).DisposeWith(disposables);
+            MapBackgroundSelectorButton.Flyout.Closing += Flyout_Closing;
 
-                ViewModel?.MapBackgroundList.WhenAnyValue(s => s.SelectedMapBackground).Subscribe(_ => MapBackgroundSelectorButton.Flyout?.Hide()).DisposeWith(disposables);
+            MapLayerSelectorButton.Flyout.Closing += Flyout_Closing1;
+        }
 
-                // MapLayerSelectorButton
-                MapLayerSelectorButton.Flyout?.Events().Closing.Subscribe(_ => MapLayerSelectorButton.IsChecked = false).DisposeWith(disposables);
-            });
+        private void Flyout_Closing1(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MapLayerSelectorButton.IsChecked = false;
+        }
+
+        private void Flyout_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MapBackgroundSelectorButton.IsChecked = false;
         }
     }
 }

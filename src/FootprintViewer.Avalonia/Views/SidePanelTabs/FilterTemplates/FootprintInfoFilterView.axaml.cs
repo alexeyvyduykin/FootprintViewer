@@ -1,19 +1,12 @@
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates
 {
-    public partial class FootprintInfoFilterView : ReactiveUserControl<FootprintTabFilter>
+    public partial class FootprintInfoFilterView : UserControl
     {
         public FootprintInfoFilterView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables =>
-            {
-
-            });
         }
     }
 }

@@ -31,7 +31,7 @@ namespace FootprintViewer.Designer
         private MainViewModel? _mainViewModel;
         private SidePanel? _sidePanel;
         private CustomToolBar? _customToolBar;
-        private MapBackgroundList? _mapBackgroundList;
+     //   private MapBackgroundList? _mapBackgroundList;
         private IDataManager? _dataManager;
         private ILanguageManager? _languageManager;
 
@@ -53,10 +53,10 @@ namespace FootprintViewer.Designer
             {
                 return _mapNavigator ??= new MapNavigator();
             }
-            else if (serviceType == typeof(MapBackgroundList))
-            {
-                return _mapBackgroundList ??= new MapBackgroundList();
-            }
+            //else if (serviceType == typeof(MapBackgroundList))
+            //{
+            //    return _mapBackgroundList ??= new MapBackgroundList();
+            //}
             else if (serviceType == typeof(ITargetLayerSource))
             {
                 return _targetLayerSource ??= new TargetLayerSource();

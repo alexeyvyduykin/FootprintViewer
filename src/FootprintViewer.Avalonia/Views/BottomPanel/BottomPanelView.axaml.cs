@@ -1,18 +1,12 @@
-using Avalonia.ReactiveUI;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.BottomPanel
 {
-    public partial class BottomPanelView : ReactiveUserControl<ViewModels.BottomPanel>
+    public partial class BottomPanelView : UserControl
     {
         public BottomPanelView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables =>
-            {
-
-            });
         }
     }
 }

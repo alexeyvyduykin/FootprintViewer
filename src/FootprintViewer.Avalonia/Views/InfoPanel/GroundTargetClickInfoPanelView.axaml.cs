@@ -1,19 +1,12 @@
-using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.InfoPanel
 {
-    public partial class GroundTargetClickInfoPanelView : ReactiveUserControl<GroundTargetClickInfoPanel>
+    public partial class GroundTargetClickInfoPanelView : UserControl
     {
         public GroundTargetClickInfoPanelView()
         {
             InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

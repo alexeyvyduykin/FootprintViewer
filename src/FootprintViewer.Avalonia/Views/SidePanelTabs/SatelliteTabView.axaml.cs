@@ -1,19 +1,12 @@
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs
 {
-    public partial class SatelliteTabView : ReactiveUserControl<SatelliteTab>
+    public partial class SatelliteTabView : UserControl
     {
         public SatelliteTabView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables =>
-            {
-
-            });
         }
     }
 }

@@ -123,6 +123,18 @@ public class MainViewModel : RoutableViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .Do(s => s.SetActive())
             .Subscribe();
+
+        Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler).Subscribe();
+    }
+
+    private async Task InitAsync()
+    {
+        var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        var item = maps.FirstOrDefault();
+        if (item != null)
+        {
+            _map.SetWorldMapLayer(item);
+        }
     }
 
     public DialogNavigationStack DialogNavigationStack => DialogStack();

@@ -3,10 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"             
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="380"
+			 x:DataType="vm:UserGeometryViewModel"
              x:Class="FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates.UserGeometryItemView">
 
 	<Design.DataContext>
@@ -47,10 +49,10 @@
 			</Grid>
 
 			<StackPanel Grid.Column="1" Margin="4,0,0,0">
-				<TextBlock x:Name="TypeTextBlock" Classes="Headline6"/>
+				<TextBlock Text="{Binding Type}" Classes="Headline6"/>
 				<TextBlock Text="{Binding Name}" Classes="Body2"/>
 			</StackPanel>
-			<Button x:Name="RemoveButton"					
+			<Button x:Name="RemoveButton"
 					Classes="Flat"
 					Grid.Column="2">
 				<Viewbox Width="20" Height="20">

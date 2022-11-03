@@ -4,6 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions"
 			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
 			 xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:items="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates"
@@ -11,6 +13,7 @@
              xmlns:filters="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs.FilterTemplates"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
              x:Name="SceneSearchTabName"
+			 x:DataType="vm:FootprintPreviewTab"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
 
@@ -35,7 +38,7 @@
 					  Classes="FilterToggleButton"
 					  Content="{x:Static prop:Resources.FilterOptions}">
 			<ToggleButton.Flyout>
-				<Flyout Placement="LeftEdgeAlignedTop">
+				<Flyout Placement="LeftEdgeAlignedTop" >
 					<filters:FootprintPreviewFilterView DataContext="{Binding Filter}"/>
 				</Flyout>
 			</ToggleButton.Flyout>

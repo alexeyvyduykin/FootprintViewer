@@ -1,18 +1,32 @@
-﻿using FootprintViewer.Models;
+﻿using DynamicData;
+using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
+using FootprintViewer.Models;
+using Mapsui;
+using ReactiveUI;
 using Splat;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels
 {
     public class CustomToolBar : ToolBar
     {
-        private readonly MapBackgroundList _mapBackgroundList;
         private readonly MapLayerList _mapLayerList;
+        private readonly IDataManager _dataManager;
+        private readonly SourceList<MapResource> _mapResources = new();
+        private readonly ReadOnlyObservableCollection<MenuItemViewModel> _mapItems;
 
         public CustomToolBar(IReadonlyDependencyResolver dependencyResolver) : base()
         {
-            _mapBackgroundList = dependencyResolver.GetExistingService<MapBackgroundList>();
-
             _mapLayerList = dependencyResolver.GetExistingService<ProjectFactory>().CreateMapLayerList();
+            _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+
+            var map = (Map)dependencyResolver.GetExistingService<IMap>();
 
             ZoomIn = new ToolClick()
             {
@@ -133,7 +147,36 @@ namespace FootprintViewer.ViewModels
             AddTool(RotateGeometry);
             AddTool(ScaleGeometry);
             AddTool(EditGeometry);
+
+            SetMapCommand = ReactiveCommand.Create<MapResource>(s => map.SetWorldMapLayer(s));
+
+            _mapResources
+                .Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Transform(s => new MenuItemViewModel()
+                {
+                    Header = s.Name,
+                    Command = SetMapCommand,
+                    CommandParameter = s,
+                })
+                .Bind(out _mapItems)
+                .Subscribe();
+
+            Observable.StartAsync(UpdateMapsAsync, RxApp.MainThreadScheduler).Subscribe();
         }
+
+        private async Task UpdateMapsAsync()
+        {
+            var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+
+            _mapResources.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(maps);
+            });
+        }
+
+        private ICommand SetMapCommand { get; }
 
         public void Uncheck()
         {
@@ -194,8 +237,10 @@ namespace FootprintViewer.ViewModels
 
         public ToolCheck Polygon { get; }
 
-        public MapBackgroundList MapBackgroundList => _mapBackgroundList;
-
         public MapLayerList MapLayerList => _mapLayerList;
+
+        //public IReadOnlyList<MenuItemViewModel> LayerItems { get; set; }
+
+        public IReadOnlyList<MenuItemViewModel> MapItems => _mapItems;
     }
 }

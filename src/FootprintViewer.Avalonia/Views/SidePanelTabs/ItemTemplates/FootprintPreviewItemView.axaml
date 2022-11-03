@@ -2,81 +2,86 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"     
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"             
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:icons="using:Material.Icons.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="320">
+             xmlns:conv="using:FootprintViewer.Avalonia.Converters"
+			 x:DataType="vm:FootprintPreviewViewModel"
+			 mc:Ignorable="d" d:DesignWidth="320">
 
-  <Design.DataContext>
-    <vmd:DesignTimeFootprintPreviewViewModel/>
-  </Design.DataContext>
-  
-  <styles:Card Padding="10">
-    <Grid ColumnDefinitions="Auto,*">
+	<Design.DataContext>
+		<vmd:DesignTimeFootprintPreviewViewModel/>
+	</Design.DataContext>
 
-      <Border x:Name="FootprintImageBorder">
-        <Viewbox Width="155" Height="155">
-          <Image x:Name="FootprintImageImage"/>
-        </Viewbox>
-      </Border>
+	<UserControl.Resources>
+		<conv:ImageConverter x:Key="ImageConv"/>
+	</UserControl.Resources>
 
-      <Border Grid.Column="1">
-        <Panel>
-          <TextBlock Text="{Binding Date}"
-                     Classes="Subtitle1"
-                     VerticalAlignment="Top" 
-                     HorizontalAlignment="Right"/>
+	<styles:Card Padding="10">
+		<Grid ColumnDefinitions="Auto,*">
 
-          <StackPanel VerticalAlignment="Bottom" 
-                      HorizontalAlignment="Right" >
-            <StackPanel Orientation="Horizontal" 
-                        HorizontalAlignment="Right">
-              <TextBlock Text="{Binding SatelliteName}"
-                         Margin="0,4,8,4"
-                         Classes="Subtitle2"/>
-              <Viewbox Width="16" Height="16">
-                <PathIcon Foreground="{StaticResource IconAccentBrush}"
-                          Data="{DynamicResource IconSatellite}"/>
-              </Viewbox>
-            </StackPanel>
+			<Border x:Name="FootprintImageBorder">
+				<Viewbox Width="155" Height="155">
+					<Image Source="{Binding Image, Converter={StaticResource ImageConv}}"/>
+				</Viewbox>
+			</Border>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
-                         Margin="0,4,8,4"
-                         Classes="Subtitle2"/>
-              <Viewbox Width="16" Height="16">
-                <PathIcon Foreground="{StaticResource IconAccentBrush}"
-                          Data="{DynamicResource IconSunElevation}"/>
-              </Viewbox>
-            </StackPanel>
+			<Border Grid.Column="1">
+				<Panel>
+					<TextBlock Text="{Binding Date}"
+							   Classes="Subtitle1"
+							   VerticalAlignment="Top"
+							   HorizontalAlignment="Right"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
-                         Margin="0,4,8,4"
-                         Classes="Subtitle2"/>
-              <Viewbox Width="16" Height="16">
-                <PathIcon Foreground="{StaticResource IconAccentBrush}"
-                          Data="{DynamicResource IconCloudy}"/>
-              </Viewbox>
-            </StackPanel>
+					<StackPanel VerticalAlignment="Bottom"
+								HorizontalAlignment="Right" >
+						<StackPanel Orientation="Horizontal"
+									HorizontalAlignment="Right">
+							<TextBlock Text="{Binding SatelliteName}"
+									   Margin="0,4,8,4"
+									   Classes="Subtitle2"/>
+							<Viewbox Width="16" Height="16">
+								<PathIcon Foreground="{StaticResource IconAccentBrush}"
+										  Data="{DynamicResource IconSatellite}"/>
+							</Viewbox>
+						</StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-              <TextBlock Text="{Binding TileNumber}"
-                         Margin="0,4,8,4"
-                         Classes="Subtitle2"/>
-              <Viewbox Width="16" Height="16">
-                <PathIcon Foreground="{StaticResource IconAccentBrush}" 
-                          Data="{DynamicResource IconGrid}"/>
-              </Viewbox>
-            </StackPanel>
-          </StackPanel>
-        </Panel>
-      </Border>
-      
-    </Grid>
-  </styles:Card>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding SunElevation, StringFormat=\{0\}°}"
+									   Margin="0,4,8,4"
+									   Classes="Subtitle2"/>
+							<Viewbox Width="16" Height="16">
+								<PathIcon Foreground="{StaticResource IconAccentBrush}"
+										  Data="{DynamicResource IconSunElevation}"/>
+							</Viewbox>
+						</StackPanel>
 
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding CloudCoverFull, StringFormat=\{0\}%}"
+									   Margin="0,4,8,4"
+									   Classes="Subtitle2"/>
+							<Viewbox Width="16" Height="16">
+								<PathIcon Foreground="{StaticResource IconAccentBrush}"
+										  Data="{DynamicResource IconCloudy}"/>
+							</Viewbox>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding TileNumber}"
+									   Margin="0,4,8,4"
+									   Classes="Subtitle2"/>
+							<Viewbox Width="16" Height="16">
+								<PathIcon Foreground="{StaticResource IconAccentBrush}"
+										  Data="{DynamicResource IconGrid}"/>
+							</Viewbox>
+						</StackPanel>
+					</StackPanel>
+				</Panel>
+			</Border>
+
+		</Grid>
+	</styles:Card>
 
 </UserControl>

@@ -1,19 +1,12 @@
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.SidePanelTabs.ItemTemplates
 {
-    public partial class GroundTargetItemView : ReactiveUserControl<GroundTargetViewModel>
+    public partial class GroundTargetItemView : UserControl
     {
         public GroundTargetItemView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables =>
-            {
-
-            });
         }
     }
 }

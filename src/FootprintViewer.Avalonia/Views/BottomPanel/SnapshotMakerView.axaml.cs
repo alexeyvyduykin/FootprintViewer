@@ -1,19 +1,12 @@
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.BottomPanel
 {
-    public partial class SnapshotMakerView : ReactiveUserControl<SnapshotMaker>
+    public partial class SnapshotMakerView : UserControl
     {
         public SnapshotMakerView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables =>
-            {
-
-            });
         }
     }
 }

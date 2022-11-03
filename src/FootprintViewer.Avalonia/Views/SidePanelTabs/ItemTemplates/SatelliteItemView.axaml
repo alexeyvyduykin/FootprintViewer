@@ -8,20 +8,26 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
+			 x:DataType="vm:SatelliteViewModel"
 			 mc:Ignorable="d" d:DesignWidth="380">
 
   <Design.DataContext>
     <vmd:DesignTimeSatelliteViewModel/>
   </Design.DataContext>
 
+	<UserControl.Resources>
+		<conv:SolidColorBrushConverter x:Key="BrushConv"/>
+	</UserControl.Resources>
+	
   <styles:ColorZone Padding="8">
     
     <Grid RowDefinitions="Auto,Auto,Auto">
       
       <DockPanel>
       
-          <Border x:Name="RectangleBorder" 
-                  VerticalAlignment="Stretch"
+          <Border Background="{Binding Name, Converter={StaticResource BrushConv}}"
+				  VerticalAlignment="Stretch"
                   Margin="0,4,8,4"
                   Width="10"/>
 
