@@ -1,4 +1,10 @@
-﻿using FootprintViewer.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels.Dialogs;
@@ -17,12 +23,6 @@ using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels;
 
@@ -81,8 +81,8 @@ public class MainViewModel : RoutableViewModel
             }
         };
 
-        _customToolBar.ZoomIn.Click.Subscribe(_ => MapNavigator.ZoomIn());
-        _customToolBar.ZoomOut.Click.Subscribe(_ => MapNavigator.ZoomOut());
+        _customToolBar.ZoomIn.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomIn()));
+        _customToolBar.ZoomOut.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomOut()));
         _customToolBar.AddRectangle.Subscribe(RectangleCommand, Reset);
         _customToolBar.AddPolygon.Subscribe(PolygonCommand, Reset);
         _customToolBar.AddCircle.Subscribe(CircleCommand, Reset);

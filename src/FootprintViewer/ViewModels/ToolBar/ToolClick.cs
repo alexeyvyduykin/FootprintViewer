@@ -1,20 +1,28 @@
-﻿using FootprintViewer.Models;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using FootprintViewer.Models;
 using ReactiveUI;
-using System.Reactive;
 
-namespace FootprintViewer.ViewModels
+namespace FootprintViewer.ViewModels;
+
+public class ToolClick : ReactiveObject, IToolClick
 {
-    public class ToolClick : ReactiveObject, IToolClick
+    private Func<Task> _click = () => Task.Run(() => { });
+
+    public ToolClick()
     {
-        public ToolClick()
-        {
-            Click = ReactiveCommand.Create<Unit, IToolClick>(_ => this);
-        }
-
-        public string GetKey() => (string?)Tag ?? string.Empty;
-
-        public object? Tag { get; set; }
-
-        public ReactiveCommand<Unit, IToolClick> Click { get; }
+        Click = ReactiveCommand.CreateFromTask(() => _click(), outputScheduler: RxApp.MainThreadScheduler);
     }
+
+    public void SubscribeAsync(Func<Task> click)
+    {
+        _click = click;
+    }
+
+    public string GetKey() => (string?)Tag ?? string.Empty;
+
+    public object? Tag { get; set; }
+
+    public ICommand Click { get; }
 }

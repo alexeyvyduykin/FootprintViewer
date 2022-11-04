@@ -3,7 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+			 x:DataType="vm:ToolClick"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolClickView">
 
@@ -15,8 +17,8 @@
 		<converters:ToolBarToolTipConverter x:Key="toolBarToolTipConv"/>
 	</UserControl.Resources>
 
-	<Button x:Name="Button"
-			Content="{Binding}"
+	<Button Content="{Binding}"
+			Command="{Binding Click}"
 			ContentTemplate="{DynamicResource ToolIconDataSelector}"
 			Background="{DynamicResource MaterialDesignPaper}"
 			Padding="0"

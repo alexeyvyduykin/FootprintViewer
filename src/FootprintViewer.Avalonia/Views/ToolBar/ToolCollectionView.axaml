@@ -2,43 +2,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"  
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:v="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+			 x:DataType="vm:ToolCollection"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.ToolCollectionView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeToolCollection/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeToolCollection/>
+	</Design.DataContext>
 
-  <UserControl.Styles>
+	<UserControl.Styles>
 
-    <Style Selector="ItemsControl > ContentPresenter">
-      <Setter Property="Margin" Value="4,0,0,0"/>
-    </Style>
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="4,0,0,0"/>
+		</Style>
 
-    <Style Selector="ItemsControl > ContentPresenter:nth-child(1)">
-      <Setter Property="Margin" Value="0,0,0,0"/>
-    </Style>
+		<Style Selector="ItemsControl > ContentPresenter:nth-child(1)">
+			<Setter Property="Margin" Value="0,0,0,0"/>
+		</Style>
 
-  </UserControl.Styles>
+	</UserControl.Styles>
 
-  <StackPanel x:Name="CollectionStackPanel"
-              Background="Transparent">
-    <ItemsControl Items="{Binding Items}">
+	<StackPanel Background="Transparent">
 
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <StackPanel Orientation="Horizontal"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
+		<i:Interaction.Behaviors>
+			<behaviors:PointerEnterEventBehavior Command="{Binding Open}"/>
+			<behaviors:PointerLeaveEventBehavior Command="{Binding Close}"/>
+		</i:Interaction.Behaviors>
 
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <v:ToolCheckView DataContext="{Binding}"/>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-  </StackPanel>
-  
+		<ItemsControl Items="{Binding Items}">
+
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<v:ToolCheckView DataContext="{Binding}"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</StackPanel>
+
 </UserControl>

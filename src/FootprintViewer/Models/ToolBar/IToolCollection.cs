@@ -1,7 +1,6 @@
-﻿using ReactiveUI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reactive;
+using System.Windows.Input;
 
 namespace FootprintViewer.Models
 {
@@ -9,9 +8,9 @@ namespace FootprintViewer.Models
     {
         void AddItem(IToolCheck item);
 
-        ReactiveCommand<Unit, Unit> Open { get; }
+        ICommand Open { get; }
 
-        ReactiveCommand<Unit, Unit> Close { get; }
+        ICommand Close { get; }
 
         IEnumerable<IToolCheck> GetItems();
 

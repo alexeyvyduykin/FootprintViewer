@@ -1,10 +1,8 @@
-﻿using ReactiveUI;
-using System.Reactive;
+﻿using System.Windows.Input;
 
-namespace FootprintViewer.Models
+namespace FootprintViewer.Models;
+
+public interface IToolClick : ITool
 {
-    public interface IToolClick : ITool
-    {
-        ReactiveCommand<Unit, IToolClick> Click { get; }
-    }
+    ICommand Click { get; }
 }
