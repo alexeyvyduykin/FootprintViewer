@@ -1,7 +1,7 @@
-﻿using FootprintViewer.Data.DataManager;
-using FootprintViewer.FileSystem;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FootprintViewer.Data.DataManager;
+using FootprintViewer.FileSystem;
 
 namespace FootprintViewer.Data;
 
