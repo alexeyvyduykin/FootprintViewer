@@ -3,41 +3,50 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-             mc:Ignorable="d" d:DesignWidth="580" d:DesignHeight="250"          
+			 x:DataType="vm:ScaleMapBar"
+             mc:Ignorable="d" d:DesignWidth="580" d:DesignHeight="250"
              x:Class="FootprintViewer.Avalonia.Views.ScaleMapBarView">
 
-  <Design.DataContext>
-    <vmd:DesignTimeScaleMapBar/>
-  </Design.DataContext>
+	<Design.DataContext>
+		<vmd:DesignTimeScaleMapBar/>
+	</Design.DataContext>
 
-  <UserControl.Resources>  
-    <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-  </UserControl.Resources>
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+		<conv:MPointConverter x:Key="MPointConv"/>
+	</UserControl.Resources>
 
-  <UserControl.Styles>
-    <Style Selector="TextBlock">
-      <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
-      <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-      <Setter Property="VerticalAlignment" Value="Center"></Setter>
-    </Style>
-  </UserControl.Styles>
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Center"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+		</Style>
+	</UserControl.Styles>
 
-  <Border Opacity="0.65"        
-          Height="20"
-          Background="{StaticResource MainBrush}"        
-          VerticalAlignment="Bottom"        
-          HorizontalAlignment="Stretch">
+	<Border Opacity="0.65"
+			Height="20"
+			Background="{StaticResource MainBrush}"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Stretch">
 
-    <Grid ColumnDefinitions="180,150,60,Auto">
-      <TextBlock x:Name="TextBlockCoordinates" Classes="Caption"/>
-      <TextBlock x:Name="TextBlockResolution" Grid.Column="1" Classes="Caption"/>        
-      <TextBlock x:Name="TextBlockScale" Grid.Column="2" Classes="Caption"/>        
-      <Rectangle x:Name="RectangleBeba"                    
-                 Margin="0,5,0,5"                   
-                 Grid.Column="3"                    
-                 Fill="WhiteSmoke"/>           
-    </Grid>
-  </Border>
-  
+		<Grid ColumnDefinitions="180,150,60,Auto">
+			<TextBlock Text="{Binding Position, Converter={StaticResource MPointConv}}"
+					   Classes="Caption"/>
+			<TextBlock Text="{Binding Resolution, StringFormat={}1:{0:N0}}"
+					   Grid.Column="1"
+					   Classes="Caption"/>
+			<TextBlock Text="{Binding Scale}"
+					   Grid.Column="2"
+					   Classes="Caption"/>
+			<Rectangle Width="{Binding ScaleLength}"
+					   Margin="0,5,0,5"
+					   Grid.Column="3"
+					   Fill="WhiteSmoke"/>
+		</Grid>
+	</Border>
+
 </UserControl>

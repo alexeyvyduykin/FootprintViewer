@@ -3,6 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
+			 x:DataType="vm:DrawingTip"
+			 x:Name="userControl"
              mc:Ignorable="d"
              x:Class="FootprintViewer.Avalonia.Views.TipView">
 
@@ -12,6 +16,8 @@
 
 	<UserControl.Resources>
 		<SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>
+		<conv:TipTitleConverter x:Key="TipTitleConv"/>
+		<conv:TipTextConverter x:Key="TipTextConv"/>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -27,8 +33,28 @@
 
 	<Border>
 		<StackPanel>
-			<TextBlock x:Name="Title" Classes="Subtitle1"/>
-			<TextBlock x:Name="Text" Classes="Caption"/>
+			<TextBlock Classes="Subtitle1">
+				<TextBlock.Text>
+					<MultiBinding Converter="{StaticResource TipTitleConv}">
+						<Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+								 Path="DataContext.TextDirty"/>
+						<Binding RelativeSource="{RelativeSource Self}"
+								 Path="DataContext"/>
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+
+			<TextBlock Classes="Caption">
+				<TextBlock.Text>
+					<MultiBinding Converter="{StaticResource TipTextConv}">
+						<Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+								 Path="DataContext.TitleDirty"/>
+						<Binding RelativeSource="{RelativeSource Self}"
+								 Path="DataContext"/>
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+
 		</StackPanel>
 	</Border>
 

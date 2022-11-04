@@ -1,22 +1,12 @@
-using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
-using FootprintViewer.ViewModels;
-using ReactiveUI;
+using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views
 {
-    public partial class SidePanelView : ReactiveUserControl<SidePanel>
+    public partial class SidePanelView : UserControl
     {
         public SidePanelView()
         {
             InitializeComponent();
-
-            this.WhenActivated(disposables => { });
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

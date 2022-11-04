@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
-             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views.SidePanelTabs"
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
@@ -47,7 +47,7 @@
 	</UserControl.DataTemplates>
 
 	<UserControl.Resources>
-		<converters:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
+		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
 
 		<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
 			<DataTemplate x:Key="FootprintPreviewTab">
