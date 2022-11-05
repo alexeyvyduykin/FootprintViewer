@@ -12,6 +12,8 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:MainViewModel"
+			 x:CompileBindings="True"
              x:Class="FootprintViewer.Avalonia.Views.MainView">
 
 	<Design.DataContext>
@@ -26,8 +28,7 @@
 	<Grid ColumnDefinitions="*,Auto">
 
 		<Panel>
-			<local:UserMapControl x:Name="UserMapControl"
-								  TipSource="{Binding Tip}"
+			<local:UserMapControl TipSource="{Binding Tip}"
 								  ScaleMapBar="{Binding ScaleMapBar}"
 								  MapNavigator="{Binding MapNavigator}"
 								  HorizontalAlignment="Stretch"

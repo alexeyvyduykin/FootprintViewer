@@ -2,102 +2,48 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialIcons="using:Material.Icons.Avalonia"
         xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors">
-    <Design.PreviewWith>
-        <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
-        </Border>
-    </Design.PreviewWith>
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
 
-    <!-- Add Styles Here -->
+	<!-- Add Styles Here -->
 
-  <Styles.Resources>
-    <selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
+	<Styles.Resources>
+		<selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
 
-      <DataTemplate x:Key="AddRectangle">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
+			<DataTemplate x:Key="AddRectangle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="AddPolygon">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
+			<DataTemplate x:Key="AddPolygon">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="AddCircle">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
+			<DataTemplate x:Key="AddCircle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="Route">
-        <materialIcons:MaterialIcon Width="28" Height="28" Kind="SetSquare" Foreground="#d6d9dd"/>
-      </DataTemplate>
+			<DataTemplate x:Key="Point">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-poi}"/>
+				</Viewbox>
+			</DataTemplate>
 
-      <DataTemplate x:Key="ZoomIn">             
-        <materialIcons:MaterialIcon Width="35" Height="35" Kind="Plus" Foreground="#d6d9dd"/>       
-      </DataTemplate>
+			<DataTemplate x:Key="Rectangle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="ZoomOut">                
-        <materialIcons:MaterialIcon Width="35" Height="35" Kind="Minus" Foreground="#d6d9dd"/>      
-      </DataTemplate>
+			<DataTemplate x:Key="Circle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="MapBackgrounds">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-map}"/>
-        </Viewbox>
-      </DataTemplate>
+			<DataTemplate x:Key="Polygon">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
 
-      <DataTemplate x:Key="MapLayers">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-layers-o}"/>
-        </Viewbox>
-      </DataTemplate>
-      
-      <DataTemplate x:Key="Select">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-arrow}"/>
-        </Viewbox>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Point">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-poi}"/>
-        </Viewbox>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Rectangle">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Circle">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Polygon">
-        <materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Translate">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-move}"/>
-        </Viewbox>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Rotate">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-rotate}"/>
-        </Viewbox>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Scale">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-scale-poly}"/>
-        </Viewbox>
-      </DataTemplate>
-
-      <DataTemplate x:Key="Edit">
-        <Viewbox Width="36" Height="36">
-          <PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-modify-poly-o}"/>
-        </Viewbox>
-      </DataTemplate>
-
-    </selectors:DataTemplateSelector>
-  </Styles.Resources>
+		</selectors:DataTemplateSelector>
+	</Styles.Resources>
 
 </Styles>

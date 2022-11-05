@@ -8,19 +8,19 @@ namespace FootprintViewer.Avalonia.Views.ToolBar
         {
             InitializeComponent();
 
-            MapBackgroundSelectorButton.Flyout.Closing += Flyout_Closing;
+            MapBackgroundSelectorButton.Flyout.Closed += Flyout_Closed;
 
-            MapLayerSelectorButton.Flyout.Closing += Flyout_Closing1;
+            MapLayerSelectorButton.Flyout.Closed += Flyout_Closed1;
         }
 
-        private void Flyout_Closing1(object? sender, System.ComponentModel.CancelEventArgs e)
-        {
-            MapLayerSelectorButton.IsChecked = false;
-        }
-
-        private void Flyout_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private void Flyout_Closed(object? sender, System.EventArgs e)
         {
             MapBackgroundSelectorButton.IsChecked = false;
+        }
+
+        private void Flyout_Closed1(object? sender, System.EventArgs e)
+        {
+            MapLayerSelectorButton.IsChecked = false;
         }
     }
 }

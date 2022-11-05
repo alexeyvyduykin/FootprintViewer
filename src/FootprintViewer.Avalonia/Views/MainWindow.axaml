@@ -4,10 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+	    xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
         xmlns:reactiveUi="http://reactiveui.net"
         xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
         mc:Ignorable="d"
         Title="FootprintViewer"
+		WindowStartupLocation="CenterScreen"
+		x:DataType="vm:MainViewModel"
+		x:CompileBindings="True"
         d:DesignWidth="800" d:DesignHeight="450"
         Icon="/Assets/avalonia-logo.ico">
 
@@ -18,8 +22,7 @@
 	<Panel>
 		<views:BackgroundView />
 		<views:MainView x:CompileBindings="False"
-						DataContext="{Binding}"
-						IsHitTestVisible="{Binding $parent[Window].DataContext.IsMainContentEnabled^, FallbackValue=True}" />
+						IsHitTestVisible="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}" />
 		<views:DialogsView />
 	</Panel>
 	

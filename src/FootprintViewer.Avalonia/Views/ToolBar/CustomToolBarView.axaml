@@ -5,46 +5,33 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             xmlns:converters="clr-namespace:FootprintViewer.Avalonia.Converters"
+             xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
 			 x:DataType="vm:CustomToolBar"
-             x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView">
+             x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView"
+			 x:CompileBindings="True">
 
 	<Design.DataContext>
 		<vmd:DesignTimeCustomToolBar/>
 	</Design.DataContext>
 
 	<UserControl.Resources>
-		<DataTemplate x:Key="zoomInIcon">
-			<materialIcons:MaterialIcon Background="Red" Kind="Plus" Foreground="#d6d9dd"/>
-		</DataTemplate>
-		<converters:ToolBarToolTipConverter x:Key="toolBarToolTipConv"/>
+		<conv:ToolBarToolTipConverter x:Key="ToolTipConv"/>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
 
-		<Style Selector="MenuItem">
+		<Style Selector="MenuItem" x:DataType="vm:MenuItemViewModel">
 			<Setter Property="Header" Value="{Binding Header}"/>
 			<Setter Property="Items" Value="{Binding Items}"/>
 			<Setter Property="Command" Value="{Binding Command}"/>
 			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
-		</Style>
-		
-		<Style Selector="toolBar|ToolCheckView, toolBar|ToolClickView">
-			<Setter Property="HorizontalAlignment" Value="Left"/>
-			<Setter Property="Width" Value="36"/>
-			<Setter Property="Height" Value="36"/>
-		</Style>
-
-		<Style Selector="ToggleButton.toolCheck">
-			<Setter Property="Padding" Value="0"/>
-			<Setter Property="Opacity" Value="0.75"/>
-			<Setter Property="HorizontalAlignment" Value="Left"/>
-			<Setter Property="ToolTip.ShowDelay" Value="0"/>
 		</Style>
 
 		<Style Selector="FlyoutPresenter">
@@ -52,95 +39,198 @@
 			<Setter Property="Background" Value="Transparent"/>
 		</Style>
 
+		<Style Selector="ToolTip">
+			<Setter Property="Placement" Value="Top"></Setter>
+			<Setter Property="VerticalOffset" Value="-4"></Setter>
+			<Setter Property="Background" Value="Black"/>
+			<Setter Property="Foreground" Value="WhiteSmoke"/>
+			<Setter Property="Padding" Value="8,4,8,4"/>
+		</Style>
 
-		<Style Selector="Button.clickView">
-			<Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"></Setter>
-			<Setter Property="Padding" Value="0"></Setter>
+		<Style Selector="Button.toolClick" x:DataType="vm:ToolClick">
 			<Setter Property="Width" Value="36"></Setter>
 			<Setter Property="Height" Value="36"></Setter>
+			<Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}"></Setter>
+			<Setter Property="Command" Value="{Binding Click}"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
 			<Setter Property="Opacity" Value="0.75"></Setter>
-			<Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>
-			<Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+			<Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+			<Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
 			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
 			<Setter Property="ToolTip.ShowDelay" Value="0"></Setter>
+			<Setter Property="ToolTip.Tip" Value="{Binding Tag, Converter={StaticResource ToolTipConv}}"></Setter>
+		</Style>
+
+		<Style Selector="ToggleButton.toolCheck" x:DataType="vm:ToolCheck">
+			<Setter Property="Width" Value="36"></Setter>
+			<Setter Property="Height" Value="36"></Setter>
+			<Setter Property="IsChecked" Value="{Binding IsCheck, Mode=TwoWay}"></Setter>
+			<Setter Property="Content" Value="{Binding}"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="Opacity" Value="0.75"></Setter>
+			<Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+			<Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+			<Setter Property="ToolTip.ShowDelay" Value="0"></Setter>
+			<Setter Property="ToolTip.Tip" Value="{Binding Tag, Converter={StaticResource ToolTipConv}}"></Setter>
+		</Style>
+
+		<Style Selector="materialIcons|MaterialIcon">
+			<Setter Property="Width" Value="35"></Setter>
+			<Setter Property="Height" Value="35"></Setter>
+			<Setter Property="Foreground" Value="#d6d9dd"></Setter>
+		</Style>
+
+		<Style Selector="PathIcon">
+			<Setter Property="Margin" Value="6.5"></Setter>
+			<Setter Property="Width" Value="23"></Setter>
+			<Setter Property="Height" Value="23"></Setter>
+		</Style>
+
+		<Style Selector="ItemsControl.toolCollection" x:DataType="vm:ToolCollection">
+			<Setter Property="Items" Value="{Binding Items}"></Setter>
+			<Setter Property="ItemsPanel">
+				<Setter.Value>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal" Background="Transparent">
+							<i:Interaction.Behaviors>
+								<behaviors:PointerEnterEventBehavior Command="{Binding Open}"/>
+								<behaviors:PointerLeaveEventBehavior Command="{Binding Close}"/>
+							</i:Interaction.Behaviors>
+						</StackPanel>
+					</ItemsPanelTemplate>
+				</Setter.Value>
+			</Setter>
+			<Setter Property="ItemTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<ToggleButton DataContext="{TemplateBinding}"
+									  ContentTemplate="{DynamicResource ToolIconDataSelector}"
+									  Classes="toolCheck"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style Selector="ItemsControl.toolCollection > ContentPresenter">
+			<Setter Property="Margin" Value="4,0,0,0"/>
+		</Style>
+
+		<Style Selector="ItemsControl.toolCollection > ContentPresenter:nth-child(1)">
+			<Setter Property="Margin" Value="0,0,0,0"/>
 		</Style>
 
 	</UserControl.Styles>
 
 	<Panel>
 		<StackPanel>
-			
-			<toolBar:ToolClickView DataContext="{Binding ZoomIn}"/>
 
-			<toolBar:ToolClickView DataContext="{Binding ZoomOut}"
-								   Margin="0,1,0,0"/>
+			<!-- ZoomIn -->
+			<Button Classes="toolClick"
+					DataContext="{Binding ZoomIn}">
+				<materialIcons:MaterialIcon Kind="Plus"/>
+			</Button>
 
-			<toolBar:ToolCollectionView DataContext="{Binding AOICollection}"
-										Margin="0,10,0,0"/>
+			<!-- ZoomOut -->
+			<Button Classes="toolClick"
+					DataContext="{Binding ZoomOut}"
+					Margin="0,1,0,0">
+				<materialIcons:MaterialIcon Kind="Minus"/>
+			</Button>
 
-			<toolBar:ToolCheckView DataContext="{Binding RouteDistance}"
-								   Margin="0,1,0,0"/>
+			<!-- AOICollection -->
+			<ItemsControl Classes="toolCollection"
+						  DataContext="{Binding AOICollection}"
+						  Margin="0,10,0,0"/>
+
+			<!-- RouteDistance -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding RouteDistance}"
+						  Margin="0,1,0,0">
+				<materialIcons:MaterialIcon Width="28" Height="28" Kind="SetSquare" Foreground="#d6d9dd"/>
+			</ToggleButton>
 
 			<!-- MapBackgrounds -->
 			<ToggleButton x:Name="MapBackgroundSelectorButton"
+						  DataContext="{Binding MapBackgrounds}"
 						  Margin="0,10,0,0"
-						  Classes="toolCheck"
-						  IsChecked="{Binding MapBackgrounds.IsCheck}">
-				<ToolTip.Tip>
-					<ToolTip Content="{Binding MapBackgrounds.Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
-				</ToolTip.Tip>
-				<ToggleButton.Flyout>											
-					<MenuFlyout Placement="RightEdgeAlignedTop"									
-								ShowMode="TransientWithDismissOnPointerMoveAway"									
-								Items="{Binding MapItems}"/>				
+						  Classes="toolCheck">
+				<ToggleButton.Flyout>
+					<MenuFlyout x:CompileBindings="False"
+								Placement="RightEdgeAlignedTop"
+								ShowMode="TransientWithDismissOnPointerMoveAway"
+								Items="{Binding $parent[UserControl].DataContext.MapItems}"/>
 				</ToggleButton.Flyout>
-				
-				
-				<!--<ToggleButton.Flyout>
-					<Flyout Placement="RightEdgeAlignedTop">
-						<toolBar:MapBackgroundListView DataContext="{Binding MapBackgroundList}"/>
-					</Flyout>
-				</ToggleButton.Flyout>-->
-
-				<ContentControl Content="{Binding MapBackgrounds}"
-								ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-map}"/>
+				</Viewbox>
 			</ToggleButton>
 
 			<!-- MapLayers -->
 			<ToggleButton x:Name="MapLayerSelectorButton"
+						  DataContext="{Binding MapLayers}"
 						  Margin="0,1,0,0"
-						  Classes="toolCheck"
-						  IsChecked="{Binding MapLayers.IsCheck}">
-				<ToolTip.Tip>
-					<ToolTip Content="{Binding MapLayers.Tag, Converter={StaticResource toolBarToolTipConv}}" Classes="FastTooltip"/>
-				</ToolTip.Tip>
+						  Classes="toolCheck">
 				<ToggleButton.Flyout>
 					<Flyout Placement="RightEdgeAlignedTop">
-						<toolBar:MapLayerListView DataContext="{Binding MapLayerList}"/>
+						<toolBar:MapLayerListView x:CompileBindings="False"
+												  DataContext="{Binding $parent[UserControl].DataContext.MapLayerList}"/>
 					</Flyout>
 				</ToggleButton.Flyout>
-
-				<ContentControl Content="{Binding MapLayers}"
-								ContentTemplate="{DynamicResource ToolIconDataSelector}"/>
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-layers-o}"/>
+				</Viewbox>
 			</ToggleButton>
 
-			<toolBar:ToolCheckView DataContext="{Binding SelectGeometry}"
-							 Margin="0,10,0,0"/>
+			<!-- SelectGeometry -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding SelectGeometry}"
+						  Margin="0,10,0,0">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-arrow}"/>
+				</Viewbox>
+			</ToggleButton>
 
-			<toolBar:ToolCollectionView DataContext="{Binding GeometryCollection}"
-								  Margin="0,1,0,0"/>
+			<!-- GeometryCollection -->
+			<ItemsControl Classes="toolCollection"
+						  DataContext="{Binding GeometryCollection}"
+						  Margin="0,1,0,0"/>
 
-			<toolBar:ToolCheckView DataContext="{Binding TranslateGeometry}"
-							 Margin="0,1,0,0"/>
+			<!-- TranslateGeometry -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding TranslateGeometry}"
+						  Margin="0,1,0,0">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-move}"/>
+				</Viewbox>
+			</ToggleButton>
 
-			<toolBar:ToolCheckView DataContext="{Binding RotateGeometry}"
-							 Margin="0,1,0,0"/>
+			<!-- RotateGeometry -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding RotateGeometry}"
+						  Margin="0,1,0,0">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-rotate}"/>
+				</Viewbox>
+			</ToggleButton>
 
-			<toolBar:ToolCheckView DataContext="{Binding ScaleGeometry}"
-							 Margin="0,1,0,0"/>
+			<!-- ScaleGeometry -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding ScaleGeometry}"
+						  Margin="0,1,0,0">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-scale-poly}"/>
+				</Viewbox>
+			</ToggleButton>
 
-			<toolBar:ToolCheckView DataContext="{Binding EditGeometry}"
-							 Margin="0,1,0,0"/>
+			<!-- EditGeometry -->
+			<ToggleButton Classes="toolCheck"
+						  DataContext="{Binding EditGeometry}"
+						  Margin="0,1,0,0">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Data="{DynamicResource fg-modify-poly-o}"/>
+				</Viewbox>
+			</ToggleButton>
 
 		</StackPanel>
 	</Panel>
