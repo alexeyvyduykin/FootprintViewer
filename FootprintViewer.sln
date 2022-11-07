@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.WPF", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSettingsSample", "samples\DataSettingsSample\DataSettingsSample.csproj", "{736AA808-3EAB-427B-83D9-0A156EC40CD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonDataBuilderSample", "samples\JsonDataBuilderSample\JsonDataBuilderSample.csproj", "{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{736AA808-3EAB-427B-83D9-0A156EC40CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736AA808-3EAB-427B-83D9-0A156EC40CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736AA808-3EAB-427B-83D9-0A156EC40CD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{E453D14F-E6BF-4F21-87C0-178D2EF5C1C5} = {473DAAE7-5EF7-44C2-B217-F7E056BBA820}
 		{B71E2D88-E050-47E4-95B4-5E2E9806D447} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{736AA808-3EAB-427B-83D9-0A156EC40CD5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
+		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
