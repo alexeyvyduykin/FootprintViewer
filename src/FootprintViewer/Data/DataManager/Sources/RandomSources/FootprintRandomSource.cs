@@ -8,27 +8,32 @@ public class FootprintRandomSource : BaseRandomSource
 {
     private IList<Footprint>? _footprints;
 
+    public IList<Satellite>? Satellites { get; set; }
+
     public override async Task<IList<object>> GetValuesAsync()
     {
         return await Task.Run(async () =>
         {
-            _footprints ??= await Build(GenerateCount);
+            if (Satellites == null)
+            {
+                var source = new SatelliteRandomSource()
+                {
+                    GenerateCount = 5
+                };
+
+                var res = await source.GetValuesAsync();
+
+                Satellites = res.Cast<Satellite>().ToList();
+            }
+
+            _footprints ??= await Build(Satellites, GenerateCount);
 
             return _footprints.Cast<object>().ToList();
         });
     }
 
-    private static async Task<IList<Footprint>> Build(int generateCount)
+    private static async Task<IList<Footprint>> Build(IList<Satellite> satellites, int generateCount)
     {
-        var source = new SatelliteRandomSource()
-        {
-            GenerateCount = 5
-        };
-
-        var res = await source.GetValuesAsync();
-
-        var satellites = res.Cast<Satellite>().ToList();
-
-        return FootprintBuilder.Create(satellites).Take(generateCount).ToList();
+        return await Task.Run(() => FootprintBuilder.Create(satellites).Take(generateCount).ToList());
     }
 }
