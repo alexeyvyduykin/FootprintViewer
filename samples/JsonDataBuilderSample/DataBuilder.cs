@@ -1,63 +1,57 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager.Sources;
 
-namespace JsonDataBuilderSample
+namespace JsonDataBuilderSample;
+
+public static class DataBuilder
 {
-    public class DataBuilder
+    public static async Task<IList<Footprint>> CreateRandomFootprints(IList<Satellite> satellites, int count)
     {
-        public DataBuilder()
+        var footprintSource = new FootprintRandomSource()
         {
+            GenerateCount = count,
+            Satellites = satellites
+        };
 
-        }
+        var res = await footprintSource.GetValuesAsync();
 
-        public static async Task<IList<Footprint>> CreateRandomFootprints(IList<Satellite> satellites, int count)
+        return res.Cast<Footprint>().ToList();
+    }
+
+    public static async Task<IList<GroundTarget>> CreateRandomGroundTargets(IList<Footprint> footprints, int count)
+    {
+        var groundTargetsSource = new GroundTargetRandomSource()
         {
-            var footprintSource = new FootprintRandomSource()
-            {
-                GenerateCount = count,
-                Satellites = satellites
-            };
+            GenerateCount = count,
+            Footprints = footprints
+        };
 
-            var res = await footprintSource.GetValuesAsync();
+        var res = await groundTargetsSource.GetValuesAsync();
 
-            return res.Cast<Footprint>().ToList();
-        }
+        return res.Cast<GroundTarget>().ToList();
+    }
 
-        public static async Task<IList<GroundTarget>> CreateRandomGroundTargets(IList<Footprint> footprints, int count)
+    public static async Task<IList<Satellite>> CreateRandomSatellites(int count)
+    {
+        var satellitesSource = new SatelliteRandomSource()
         {
-            var groundTargetsSource = new GroundTargetRandomSource()
-            {
-                GenerateCount = count,
-                Footprints = footprints
-            };
+            GenerateCount = count
+        };
 
-            var res = await groundTargetsSource.GetValuesAsync();
+        var res = await satellitesSource.GetValuesAsync();
 
-            return res.Cast<GroundTarget>().ToList();
-        }
+        return res.Cast<Satellite>().ToList();
+    }
 
-        public static async Task<IList<Satellite>> CreateRandomSatellites(int count)
+    public static async Task<IList<GroundStation>> CreateRandomGroundStations(int count)
+    {
+        var groundStationsSource = new GroundStationRandomSource()
         {
-            var satellitesSource = new SatelliteRandomSource()
-            {
-                GenerateCount = count
-            };
+            GenerateCount = (count > 6) ? 6 : count
+        };
 
-            var res = await satellitesSource.GetValuesAsync();
+        var res = await groundStationsSource.GetValuesAsync();
 
-            return res.Cast<Satellite>().ToList();
-        }
-
-        public static async Task<IList<GroundStation>> CreateRandomGroundStations(int count)
-        {
-            var groundStationsSource = new GroundStationRandomSource()
-            {
-                GenerateCount = (count > 6) ? 6 : count
-            };
-
-            var res = await groundStationsSource.GetValuesAsync();
-
-            return res.Cast<GroundStation>().ToList();
-        }
+        return res.Cast<GroundStation>().ToList();
     }
 }
