@@ -10,24 +10,30 @@ namespace JsonDataBuilderSample
 
         }
 
-        public static async Task<IList<Footprint>> CreateRandomFootprints(int count)
+        public static async Task<IList<Footprint>> CreateRandomFootprints(IList<Satellite> satellites, int count)
         {
             var footprintSource = new FootprintRandomSource()
             {
-                GenerateCount = count
+                GenerateCount = count,
+                Satellites = satellites
             };
 
-            return (IList<Footprint>)await footprintSource.GetValuesAsync();
+            var res = await footprintSource.GetValuesAsync();
+
+            return res.Cast<Footprint>().ToList();
         }
 
-        public static async Task<IList<GroundTarget>> CreateRandomGroundTargets(int count)
+        public static async Task<IList<GroundTarget>> CreateRandomGroundTargets(IList<Footprint> footprints, int count)
         {
             var groundTargetsSource = new GroundTargetRandomSource()
             {
-                GenerateCount = count
+                GenerateCount = count,
+                Footprints = footprints
             };
 
-            return (IList<GroundTarget>)await groundTargetsSource.GetValuesAsync();
+            var res = await groundTargetsSource.GetValuesAsync();
+
+            return res.Cast<GroundTarget>().ToList();
         }
 
         public static async Task<IList<Satellite>> CreateRandomSatellites(int count)
@@ -37,17 +43,21 @@ namespace JsonDataBuilderSample
                 GenerateCount = count
             };
 
-            return (IList<Satellite>)await satellitesSource.GetValuesAsync();
+            var res = await satellitesSource.GetValuesAsync();
+
+            return res.Cast<Satellite>().ToList();
         }
 
-        public static async Task<IList<Satellite>> CreateRandomGroundStations(int count)
+        public static async Task<IList<GroundStation>> CreateRandomGroundStations(int count)
         {
             var groundStationsSource = new GroundStationRandomSource()
             {
                 GenerateCount = (count > 6) ? 6 : count
             };
 
-            return (IList<Satellite>)await groundStationsSource.GetValuesAsync();
+            var res = await groundStationsSource.GetValuesAsync();
+
+            return res.Cast<GroundStation>().ToList();
         }
     }
 }
