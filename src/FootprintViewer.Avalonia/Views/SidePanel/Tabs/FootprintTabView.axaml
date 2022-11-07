@@ -1,0 +1,76 @@
+<UserControl x:Class="FootprintViewer.Avalonia.Views.SidePanel.Tabs.FootprintTabView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
+             xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
+			 xmlns:filtersView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Filters"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+             x:Name="FootprintTabName"
+             mc:Ignorable="d"
+             d:DesignWidth="380" d:DesignHeight="450">
+
+	<Design.DataContext>
+		<vmd:DesignTimeFootprintTab/>
+	</Design.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Padding" Value="0,0,0,0"/>
+		</Style>
+
+		<Style Selector="ListBoxItem">
+			<Setter Property="Padding" Value="12,4"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid RowDefinitions="Auto,*,50">
+
+		<ToggleButton x:Name="SearchToggleButton"
+					  Classes="FilterToggleButton"
+					  Content="{x:Static prop:Resources.FilterOptions}">
+			<ToggleButton.Flyout>
+				<Flyout Placement="LeftEdgeAlignedTop">
+					<filtersView:FootprintFilterView DataContext="{Binding Filter}"/>
+				</Flyout>
+			</ToggleButton.Flyout>
+		</ToggleButton>
+
+		<Grid Grid.Row="1">
+			<ProgressBar x:Name="ProgressBar"
+						 IsVisible="{Binding IsLoading}"
+						 Classes="Circle"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Center"
+						 IsIndeterminate="True"/>
+
+			<ListBox x:Name="ListBox"
+					 IsVisible="{Binding !IsLoading}"
+					 Items="{Binding Items}"
+					 VirtualizationMode="Simple">
+				<!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">-->
+				<ListBox.ItemTemplate>
+					<DataTemplate DataType="items:FootprintViewModel">
+						<itemsView:FootprintView x:Name="footprintItem"
+													 DataContext="{Binding}">
+							<i:Interaction.Behaviors>
+								<ia:EventTriggerBehavior EventName="PointerPressed" SourceObject="{Binding #footprintItem}">
+									<ia:InvokeCommandAction Command="{Binding #FootprintTabName.DataContext.ClickOnItem}"
+															CommandParameter="{Binding #footprintItem.DataContext}" />
+								</ia:EventTriggerBehavior>
+							</i:Interaction.Behaviors>
+						</itemsView:FootprintView>
+
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+
+	</Grid>
+
+</UserControl>

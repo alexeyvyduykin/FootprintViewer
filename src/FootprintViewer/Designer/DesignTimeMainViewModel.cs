@@ -1,4 +1,6 @@
 ﻿using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Designer
@@ -9,17 +11,17 @@ namespace FootprintViewer.Designer
 
         public DesignTimeMainViewModel() : base(_designTimeData)
         {
-            var tabs = new SidePanelTab[]
+            var tabs = new SidePanelTabViewModel[]
             {
-                new FootprintPreviewTab(_designTimeData),
-                new SatelliteTab(_designTimeData),
-                new GroundStationTab(_designTimeData),
-                new GroundTargetTab(_designTimeData),
-                new FootprintTab(_designTimeData),
-                new UserGeometryTab(_designTimeData),
+                new FootprintPreviewTabViewModel(_designTimeData),
+                new SatelliteTabViewModel(_designTimeData),
+                new GroundStationTabViewModel(_designTimeData),
+                new GroundTargetTabViewModel(_designTimeData),
+                new FootprintTabViewModel(_designTimeData),
+                new UserGeometryTabViewModel(_designTimeData),
             };
 
-            SidePanel.Tabs.AddRange(new List<SidePanelTab>(tabs));
+            SidePanel.Tabs.AddRange(new List<SidePanelTabViewModel>(tabs));
         }
     }
 }

@@ -1,25 +1,26 @@
 ﻿using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeSidePanel : SidePanelViewModel
 {
-    public class DesignTimeSidePanel : SidePanel
+    public DesignTimeSidePanel() : base()
     {
-        public DesignTimeSidePanel() : base()
+        var data = new DesignTimeData();
+
+        var tabs = new SidePanelTabViewModel[]
         {
-            var data = new DesignTimeData();
+            new FootprintPreviewTabViewModel(data),
+            new SatelliteTabViewModel(data),
+            new GroundStationTabViewModel(data),
+            new GroundTargetTabViewModel(data),
+            new FootprintTabViewModel(data),
+            new UserGeometryTabViewModel(data),
+        };
 
-            var tabs = new SidePanelTab[]
-            {
-                new FootprintPreviewTab(data),
-                new SatelliteTab(data),
-                new GroundStationTab(data),
-                new GroundTargetTab(data),
-                new FootprintTab(data),
-                new UserGeometryTab(data),
-            };
-
-            Tabs.AddRange(new List<SidePanelTab>(tabs));
-        }
+        Tabs.AddRange(new List<SidePanelTabViewModel>(tabs));
     }
 }

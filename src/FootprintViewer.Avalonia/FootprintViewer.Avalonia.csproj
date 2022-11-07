@@ -63,41 +63,23 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\FootprintTabView.axaml.cs">
-			<DependentUpon>FootprintTabView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\FootprintPreviewView.axaml.cs">
+		  <DependentUpon>FootprintPreviewView.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\GroundStationTabView.axaml.cs">
-			<DependentUpon>GroundStationTabView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\FootprintView.axaml.cs">
+		  <DependentUpon>FootprintView.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\GroundTargetTabView.axaml.cs">
-			<DependentUpon>GroundTargetTabView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\GroundStationView.axaml.cs">
+		  <DependentUpon>GroundStationView.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintItemView.axaml.cs">
-			<DependentUpon>FootprintItemView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\GroundTargetView.axaml.cs">
+		  <DependentUpon>GroundTargetView.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\FootprintPreviewItemView.axaml.cs">
-			<DependentUpon>FootprintPreviewItemView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\SatelliteView.axaml.cs">
+		  <DependentUpon>SatelliteView.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\GroundStationItemView.axaml.cs">
-			<DependentUpon>GroundStationItemView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\GroundTargetItemView.axaml.cs">
-			<DependentUpon>GroundTargetItemView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\SatelliteItemView.axaml.cs">
-			<DependentUpon>SatelliteItemView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\ItemTemplates\UserGeometryItemView.axaml.cs">
-			<DependentUpon>UserGeometryItemView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\SatelliteTabView.axaml.cs">
-			<DependentUpon>SatelliteTabView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\FootprintPreviewTabView.axaml.cs">
-			<DependentUpon>FootprintPreviewTabView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanelTabs\UserGeometryTabView.axaml.cs">
-			<DependentUpon>UserGeometryTabView.axaml</DependentUpon>
+		<Compile Update="Views\SidePanel\Items\UserGeometryView.axaml.cs">
+		  <DependentUpon>UserGeometryView.axaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

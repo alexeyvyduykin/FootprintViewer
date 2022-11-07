@@ -1,25 +1,23 @@
 ﻿using FootprintViewer.Data;
-using ReactiveUI;
 
-namespace FootprintViewer.ViewModels
+namespace FootprintViewer.ViewModels.SidePanel.Items;
+
+public class UserGeometryViewModel : ViewModelBase, IViewerItem, ISelectorItem
 {
-    public class UserGeometryViewModel : ReactiveObject, IViewerItem, ISelectorItem
+    private readonly UserGeometry _model;
+
+    public UserGeometryViewModel(UserGeometry model)
     {
-        private readonly UserGeometry _model;
-
-        public UserGeometryViewModel(UserGeometry model)
-        {
-            _model = model;
-        }
-
-        public string GetKey() => _model.Type.ToString();
-
-        public UserGeometry Model => _model;
-
-        public string Name => _model.Name!;
-
-        public UserGeometryType Type => _model.Type;
-
-        public bool IsShowInfo { get; set; }
+        _model = model;
     }
+
+    public string GetKey() => _model.Type.ToString();
+
+    public UserGeometry Model => _model;
+
+    public string Name => _model.Name!;
+
+    public UserGeometryType Type => _model.Type;
+
+    public bool IsShowInfo { get; set; }
 }

@@ -1,8 +1,8 @@
-﻿using FootprintViewer.ViewModels;
+﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeSatelliteTab : SatelliteTab
+    public class DesignTimeSatelliteTab : SatelliteTabViewModel
     {
         public DesignTimeSatelliteTab() : base(new DesignTimeData())
         {

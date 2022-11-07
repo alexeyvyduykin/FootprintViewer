@@ -51,5 +51,7 @@ public class DesignTimeJsonBuilderViewModel : JsonBuilderViewModel
         AddToAvailableList(list1);
 
         AddToTargetList(list2);
+
+        IsActive = true;
     }
 }

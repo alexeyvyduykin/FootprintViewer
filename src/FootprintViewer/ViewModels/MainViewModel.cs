@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.Settings;
+using FootprintViewer.ViewModels.SidePanel;
+using FootprintViewer.ViewModels.SidePanel.Items;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -23,6 +20,12 @@ using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels;
 
@@ -32,13 +35,13 @@ public class MainViewModel : RoutableViewModel
     private readonly Map _map;
     private readonly InfoPanel _infoPanel;
     private readonly InfoPanel _clickInfoPanel;
-    private readonly SidePanel _sidePanel;
+    private readonly SidePanelViewModel _sidePanel;
     private readonly BottomPanel _bottomPanel;
     private readonly CustomToolBar _customToolBar;
-    private readonly FootprintTab _footprintTab;
-    private readonly GroundTargetTab _groundTargetTab;
-    private readonly UserGeometryTab _userGeometryTab;
-    private readonly FootprintPreviewTab _footprintPreviewTab;
+    private readonly FootprintTabViewModel _footprintTab;
+    private readonly GroundTargetTabViewModel _groundTargetTab;
+    private readonly UserGeometryTabViewModel _userGeometryTab;
+    private readonly FootprintPreviewTabViewModel _footprintPreviewTab;
     private readonly ScaleMapBar _scaleMapBar;
     private ISelector? _selector;
     private readonly IDataManager _dataManager;
@@ -50,12 +53,12 @@ public class MainViewModel : RoutableViewModel
         // TODO: make _map as IMap
         _map = (Map)dependencyResolver.GetExistingService<IMap>();
         MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
-        _sidePanel = dependencyResolver.GetExistingService<SidePanel>();
+        _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
         _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
-        _footprintTab = dependencyResolver.GetExistingService<FootprintTab>();
-        _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTab>();
-        _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTab>();
-        _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTab>();
+        _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
+        _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
+        _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
+        _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         _infoPanel = factory.CreateInfoPanel();
@@ -813,7 +816,7 @@ public class MainViewModel : RoutableViewModel
     [Reactive]
     public string State { get; set; } = States.Default;
 
-    public SidePanel SidePanel => _sidePanel;
+    public SidePanelViewModel SidePanel => _sidePanel;
 
     public InfoPanel InfoPanel => _infoPanel;
 

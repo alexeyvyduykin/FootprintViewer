@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Layers;
 using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
@@ -20,11 +21,11 @@ public class ViewModelFactory
         _dependencyResolver = dependencyResolver;
     }
 
-    public GroundStationTab CreateGroundStationTab()
+    public GroundStationTabViewModel CreateGroundStationTab()
     {
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
-        var tab = new GroundStationTab(_dependencyResolver);
+        var tab = new GroundStationTabViewModel(_dependencyResolver);
 
         dataManager.DataChanged
             .ToSignal()
@@ -33,13 +34,13 @@ public class ViewModelFactory
         return tab;
     }
 
-    public FootprintPreviewTab CreateFootprintPreviewTab()
+    public FootprintPreviewTabViewModel CreateFootprintPreviewTab()
     {
         var map = (Map)_dependencyResolver.GetExistingService<IMap>();
         var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
-        var tab = new FootprintPreviewTab(_dependencyResolver);
+        var tab = new FootprintPreviewTabViewModel(_dependencyResolver);
 
         tab.SelectedItemObservable.Subscribe(footprint =>
         {
@@ -89,12 +90,12 @@ public class ViewModelFactory
         return tab;
     }
 
-    public FootprintTab CreateFootprintTab()
+    public FootprintTabViewModel CreateFootprintTab()
     {
         var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
-        var tab = new FootprintTab(_dependencyResolver);
+        var tab = new FootprintTabViewModel(_dependencyResolver);
 
         tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
 
@@ -105,13 +106,13 @@ public class ViewModelFactory
         return tab;
     }
 
-    public GroundTargetTab CreateGroundTargetTab()
+    public GroundTargetTabViewModel CreateGroundTargetTab()
     {
         var map = _dependencyResolver.GetExistingService<IMap>();
         var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
         var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
-        var tab = new GroundTargetTab(_dependencyResolver);
+        var tab = new GroundTargetTabViewModel(_dependencyResolver);
 
         tab.SelectedItemObservable.Subscribe(groundTarget =>
         {
@@ -148,11 +149,11 @@ public class ViewModelFactory
         return tab;
     }
 
-    public SatelliteTab CreateSatelliteTab()
+    public SatelliteTabViewModel CreateSatelliteTab()
     {
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
-        var tab = new SatelliteTab(_dependencyResolver);
+        var tab = new SatelliteTabViewModel(_dependencyResolver);
 
         dataManager.DataChanged
             .ToSignal()
@@ -161,10 +162,10 @@ public class ViewModelFactory
         return tab;
     }
 
-    public UserGeometryTab CreateUserGeometryTab()
+    public UserGeometryTabViewModel CreateUserGeometryTab()
     {
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
-        var tab = new UserGeometryTab(_dependencyResolver);
+        var tab = new UserGeometryTabViewModel(_dependencyResolver);
 
         dataManager.DataChanged
             .ToSignal()

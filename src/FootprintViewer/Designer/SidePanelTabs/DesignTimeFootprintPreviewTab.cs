@@ -1,9 +1,8 @@
-﻿using FootprintViewer.ViewModels;
-using System;
+﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
 namespace FootprintViewer.Designer
 {
-    public class DesignTimeFootprintPreviewTab : FootprintPreviewTab
+    public class DesignTimeFootprintPreviewTab : FootprintPreviewTabViewModel
     {
         public DesignTimeFootprintPreviewTab() : base(new DesignTimeData())
         {

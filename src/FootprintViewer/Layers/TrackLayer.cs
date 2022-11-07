@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Projections;

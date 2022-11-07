@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.ViewModels;
+namespace FootprintViewer.ViewModels.SidePanel.Items;
 
 public class GroundStationAreaItem
 {
@@ -17,7 +17,7 @@ public class GroundStationAreaItem
     public double Angle { get; set; }
 }
 
-public class GroundStationViewModel : ReactiveObject, IViewerItem
+public class GroundStationViewModel : ViewModelBase, IViewerItem
 {
     private readonly Coordinate _center;
     private readonly string _name;

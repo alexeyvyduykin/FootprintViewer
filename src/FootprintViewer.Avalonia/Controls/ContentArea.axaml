@@ -47,12 +47,14 @@
 
 						<Panel DockPanel.Dock="Bottom" x:Name="PART_ButtonArea">
 							<Button Name="PART_CancelButton"
+									MinWidth="80"
 									IsVisible="{TemplateBinding EnableCancel}"
 									Content="{TemplateBinding CancelContent}"
 									HorizontalAlignment="Left" Command="{Binding CancelCommand}">
 							</Button>
 							<StackPanel HorizontalAlignment="Right">
 								<Button Name="PART_NextButton"
+										MinWidth="80"
 										IsVisible="{TemplateBinding EnableNext}"
 										Content="{TemplateBinding NextContent}"
 										Command="{Binding NextCommand}"

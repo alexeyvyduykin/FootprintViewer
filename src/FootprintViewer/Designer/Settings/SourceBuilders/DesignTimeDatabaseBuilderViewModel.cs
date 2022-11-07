@@ -12,5 +12,7 @@ public class DesignTimeDatabaseBuilderViewModel : DatabaseBuilderViewModel
         Database = "DataSettingsSampleDatabase1";
         Username = "postgres";
         Password = "user";
+
+        IsActive = true;
     }
 }

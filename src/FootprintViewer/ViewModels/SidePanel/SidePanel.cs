@@ -6,55 +6,54 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.ViewModels
+namespace FootprintViewer.ViewModels.SidePanel;
+
+public class SidePanelViewModel : ViewModelBase
 {
-    public class SidePanel : ReactiveObject
+    public SidePanelViewModel()
     {
-        public SidePanel()
+        Tabs = new List<SidePanelTabViewModel>();
+
+        this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
         {
-            Tabs = new List<SidePanelTab>();
-
-            this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
+            if (tab != null)
             {
-                if (tab != null)
+                foreach (var item in Tabs)
                 {
-                    foreach (var item in Tabs)
-                    {
-                        item.IsActive = false;
+                    item.IsActive = false;
 
-                        if (item == tab)
-                        {
-                            item.IsActive = true;
-                        }
+                    if (item == tab)
+                    {
+                        item.IsActive = true;
                     }
                 }
-            });
-
-            SelectedTab = Tabs.FirstOrDefault();
-
-            IsExpandedChanged = ReactiveCommand.Create<bool>(IsExpandedImpl);
-
-            this.WhenAnyValue(s => s.IsExpanded).InvokeCommand(IsExpandedChanged);
-
-            IsExpanded = true;
-        }
-
-        private void IsExpandedImpl(bool value)
-        {
-            foreach (var item in Tabs)
-            {
-                item.IsExpanded = value;
             }
-        }
+        });
 
-        private ReactiveCommand<bool, Unit> IsExpandedChanged { get; }
+        SelectedTab = Tabs.FirstOrDefault();
 
-        [Reactive]
-        public bool IsExpanded { get; set; }
+        IsExpandedChanged = ReactiveCommand.Create<bool>(IsExpandedImpl);
 
-        public List<SidePanelTab> Tabs { get; set; }
+        this.WhenAnyValue(s => s.IsExpanded).InvokeCommand(IsExpandedChanged);
 
-        [Reactive]
-        public SidePanelTab? SelectedTab { get; set; }
+        IsExpanded = true;
     }
+
+    private void IsExpandedImpl(bool value)
+    {
+        foreach (var item in Tabs)
+        {
+            item.IsExpanded = value;
+        }
+    }
+
+    private ReactiveCommand<bool, Unit> IsExpandedChanged { get; }
+
+    [Reactive]
+    public bool IsExpanded { get; set; }
+
+    public List<SidePanelTabViewModel> Tabs { get; set; }
+
+    [Reactive]
+    public SidePanelTabViewModel? SelectedTab { get; set; }
 }

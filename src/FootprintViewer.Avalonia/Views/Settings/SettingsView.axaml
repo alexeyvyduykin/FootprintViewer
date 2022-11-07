@@ -14,7 +14,9 @@
 			 xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
 	         x:DataType="vm:SettingsViewModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+			 x:CompileBindings="True"
+             mc:Ignorable="d"
+			 d:DesignWidth="800" d:DesignHeight="550"
              x:Class="FootprintViewer.Avalonia.Views.Settings.SettingsView">
 
 	<Design.DataContext>
@@ -40,6 +42,13 @@
 			<Setter Property="Padding" Value="8"></Setter>
 			<Setter Property="Margin" Value="8,4"></Setter>
 		</Style>
+		<Style Selector="TabControl[TabStripPlacement=Left] > TabItem /template/ LayoutTransformControl#LayoutTransform">
+			<Setter Property="LayoutTransform">
+				<Setter.Value>
+					<RotateTransform Angle="0" />
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Styles>
 
 	<controls:ContentArea x:Name="ContentArea"
@@ -51,10 +60,9 @@
 
 		<TabControl TabStripPlacement="Left">
 
-			<TabItem Header="Source containers"
-					 FontSize="14"
-					 Foreground="White">
+			<TabItem Header="Source containers">
 				<TabControl TabStripPlacement="Left"
+							Margin="8,0"
 							Items="{Binding SourceContainers}"
 						    SelectedItem="{Binding SelectedSourceContainer}">
 					<TabControl.ItemTemplate>
@@ -65,14 +73,14 @@
 
 					<TabControl.ContentTemplate>
 						<DataTemplate x:DataType="vm:SourceContainerViewModel">
-							<views:SourceContainerView DataContext="{Binding}"/>
+							<views:SourceContainerView Margin="24, 16"
+													   DataContext="{Binding}"/>
 						</DataTemplate>
 					</TabControl.ContentTemplate>
 				</TabControl>
 			</TabItem>
 
-			<TabItem Header="Languages"
-					 FontSize="14">
+			<TabItem Header="Languages">
 
 				<ItemsControl Items="{Binding LanguageSettings.Languages}">
 					<ItemsControl.ItemTemplate>
@@ -93,8 +101,7 @@
 
 			</TabItem>
 
-			<TabItem Header="Others"
-					 FontSize="14"/>
+			<TabItem Header="Others"/>
 
 		</TabControl>
 

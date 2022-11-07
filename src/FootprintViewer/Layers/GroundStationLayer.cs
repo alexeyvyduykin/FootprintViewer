@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Layers;
 using System.Collections.Generic;
@@ -53,7 +53,15 @@ public class GroundStationLayer : WritableLayer
             }
 
             Clear();
-            AddRange(_cache.SelectMany(s => s.Value));
+            try
+            {
+                AddRange(_cache.SelectMany(s => s.Value));
+            }
+            catch (System.Exception)
+            {
+                return;
+            }
+
             DataHasChanged();
         }
     }

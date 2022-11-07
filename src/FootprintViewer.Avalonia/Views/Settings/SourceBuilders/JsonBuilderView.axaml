@@ -36,14 +36,15 @@
 		<Grid RowDefinitions="Auto,*">
 
 			<Grid ColumnDefinitions="*,8,32">
-				<TextBox x:Name="txtBox1"
+				<TextBox x:Name="txtBox1"						 
 						 Text="{Binding Directory}"
 						 IsReadOnly="True"/>
-				<Button Grid.Column="2"
+				<Button Grid.Column="2"					
 						Padding="0"
 						Height="32">
 					<Viewbox Margin="4">
-						<materialIcons:MaterialIcon Kind="Search"/>
+						<materialIcons:MaterialIcon Kind="Search"
+													Foreground="White"/>
 					</Viewbox>
 				</Button>
 			</Grid>
@@ -53,9 +54,7 @@
 				  ColumnDefinitions="1*,Auto,1*"
 				  RowDefinitions="*">
 
-				<Border BorderBrush="Green"
-						VerticalAlignment="Stretch"
-						BorderThickness="1">
+				<Border VerticalAlignment="Stretch">
 					<ScrollViewer HorizontalScrollBarVisibility="Auto">
 						<ItemsControl Items="{Binding AvailableFiles}">
 							<ItemsControl.ItemTemplate>
@@ -70,28 +69,30 @@
 					</ScrollViewer>
 				</Border>
 
-				<StackPanel VerticalAlignment="Center"
+				<StackPanel VerticalAlignment="Center"							
 							Grid.Column="1">
-					<Button Padding="0"
+					<Button Padding="0"		
+							Margin="4"
 							Height="32"
 							Command="{Binding ToTarget}">
 						<Viewbox Margin="4">
-							<materialIcons:MaterialIcon Kind="ArrowRightBold"/>
+							<materialIcons:MaterialIcon Kind="ArrowRightBold"
+														Foreground="White"/>
 						</Viewbox>
 					</Button>
 					<Button Padding="0"
+							Margin="4"
 							Height="32"
 							Command="{Binding FromTarget}">
 						<Viewbox Margin="4">
-							<materialIcons:MaterialIcon Kind="ArrowLeftBold"/>
+							<materialIcons:MaterialIcon Kind="ArrowLeftBold"
+														Foreground="White"/>
 						</Viewbox>
 					</Button>
 				</StackPanel>
 
 				<Border Grid.Column="2"
-						BorderBrush="Green"
-						VerticalAlignment="Stretch"
-						BorderThickness="1">
+						VerticalAlignment="Stretch">
 					<ScrollViewer HorizontalScrollBarVisibility="Auto">
 						<ItemsControl Items="{Binding TargetFiles}">
 							<ItemsControl.ItemTemplate>
@@ -101,6 +102,7 @@
 										<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
 
 										<Button Height="20"
+												Background="Transparent"
 												Padding="0"
 												Margin="8,0,0,0">
 											<Viewbox>

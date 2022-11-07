@@ -5,6 +5,8 @@ using FootprintViewer.Layers;
 using FootprintViewer.Localization;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
+using FootprintViewer.ViewModels.SidePanel;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
@@ -93,25 +95,25 @@ public static class Bootstrapper
         services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
         services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-        services.RegisterLazySingleton<FootprintPreviewTab>(() => viewModelFactory.CreateFootprintPreviewTab());
-        services.RegisterLazySingleton<SatelliteTab>(() => viewModelFactory.CreateSatelliteTab());
-        services.RegisterLazySingleton<GroundTargetTab>(() => viewModelFactory.CreateGroundTargetTab());
-        services.RegisterLazySingleton<FootprintTab>(() => viewModelFactory.CreateFootprintTab());
-        services.RegisterLazySingleton<UserGeometryTab>(() => viewModelFactory.CreateUserGeometryTab());
-        services.RegisterLazySingleton<GroundStationTab>(() => viewModelFactory.CreateGroundStationTab());
+        services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => viewModelFactory.CreateFootprintPreviewTab());
+        services.RegisterLazySingleton<SatelliteTabViewModel>(() => viewModelFactory.CreateSatelliteTab());
+        services.RegisterLazySingleton<GroundTargetTabViewModel>(() => viewModelFactory.CreateGroundTargetTab());
+        services.RegisterLazySingleton<FootprintTabViewModel>(() => viewModelFactory.CreateFootprintTab());
+        services.RegisterLazySingleton<UserGeometryTabViewModel>(() => viewModelFactory.CreateUserGeometryTab());
+        services.RegisterLazySingleton<GroundStationTabViewModel>(() => viewModelFactory.CreateGroundStationTab());
 
         services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
 
-        services.RegisterLazySingleton<SidePanel>(() => new SidePanel()
+        services.RegisterLazySingleton<SidePanelViewModel>(() => new SidePanelViewModel()
         {
-            Tabs = new List<SidePanelTab>(new SidePanelTab[]
+            Tabs = new List<SidePanelTabViewModel>(new SidePanelTabViewModel[]
             {
-                resolver.GetExistingService<FootprintPreviewTab>(),
-                resolver.GetExistingService<SatelliteTab>(),
-                resolver.GetExistingService<GroundStationTab>(),
-                resolver.GetExistingService<GroundTargetTab>(),
-                resolver.GetExistingService<FootprintTab>(),
-                resolver.GetExistingService<UserGeometryTab>(),
+                resolver.GetExistingService<FootprintPreviewTabViewModel>(),
+                resolver.GetExistingService<SatelliteTabViewModel>(),
+                resolver.GetExistingService<GroundStationTabViewModel>(),
+                resolver.GetExistingService<GroundTargetTabViewModel>(),
+                resolver.GetExistingService<FootprintTabViewModel>(),
+                resolver.GetExistingService<UserGeometryTabViewModel>(),
             })
         });
 

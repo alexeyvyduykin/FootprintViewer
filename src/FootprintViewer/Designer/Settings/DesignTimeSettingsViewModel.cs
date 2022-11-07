@@ -69,5 +69,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
                 },
             },
         };
+
+        IsActive = true;
     }
 }

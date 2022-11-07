@@ -1,12 +1,11 @@
-﻿using FootprintViewer.ViewModels;
+﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeGroundStationTab : GroundStationTabViewModel
 {
-    public class DesignTimeGroundStationTab : GroundStationTab
+    public DesignTimeGroundStationTab() : base(new DesignTimeData())
     {
-        public DesignTimeGroundStationTab() : base(new DesignTimeData())
-        {
-            IsActive = true;
-        }
+        IsActive = true;
     }
 }

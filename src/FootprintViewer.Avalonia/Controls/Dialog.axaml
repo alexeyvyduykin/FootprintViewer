@@ -3,11 +3,9 @@
 		xmlns:controls="using:FootprintViewer.Avalonia.Controls">
 
 	<Styles.Resources>
-		<Color x:Key="TileBorderColor">#66757575</Color>
+		<Color x:Key="TileBorderColor">#66757575</Color>	
 		<SolidColorBrush x:Key="DialogOverlayColor">#7F2E2E2E</SolidColorBrush>
 		<BoxShadows x:Key="DialogBoxShadow">4 11 30 1 #3F000000</BoxShadows>
-		<BoxShadows x:Key="EmptyBoxShadow">0 0 0 0 #000000</BoxShadows>
-
 	</Styles.Resources>
 
 	<Style Selector="controls|Dialog">
