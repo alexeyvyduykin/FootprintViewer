@@ -11,4 +11,9 @@ public static class ObservableExtensions
     {
         return observable.Select(_ => Unit.Default);
     }
+
+    public static IObservable<bool> WhereTrue(this IObservable<bool> observable)
+    {
+        return observable.Where(s => s == true);
+    }
 }

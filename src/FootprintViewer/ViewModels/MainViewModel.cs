@@ -3,7 +3,6 @@ using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
-using FootprintViewer.ViewModels.Settings;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
@@ -21,11 +20,9 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels;
 
@@ -101,23 +98,6 @@ public class MainViewModel : RoutableViewModel
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
         _footprintTab.ClickOnItem.Subscribe(SelectFeatureImpl);
-
-        Options = ReactiveCommand.CreateFromTask(async () =>
-        {
-            var settingsDialog = new SettingsViewModel(_dependencyResolver);
-
-            DialogStack().To(settingsDialog);
-
-            var dialogResult = await settingsDialog.GetDialogResultAsync();
-
-            DialogStack().Clear();
-
-            if (dialogResult.Result is IList<DbKeys> dirtyKeys)
-            {
-                // TODO: update data for dirty keys
-                _dataManager.UpdateData();
-            }
-        });
 
         IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
 
@@ -805,8 +785,6 @@ public class MainViewModel : RoutableViewModel
 
         State = States.Drawing;
     }
-
-    public ICommand Options { get; }
 
     public Map Map => _map;
 

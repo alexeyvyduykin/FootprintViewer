@@ -101,6 +101,7 @@ public static class Bootstrapper
         services.RegisterLazySingleton<FootprintTabViewModel>(() => viewModelFactory.CreateFootprintTab());
         services.RegisterLazySingleton<UserGeometryTabViewModel>(() => viewModelFactory.CreateUserGeometryTab());
         services.RegisterLazySingleton<GroundStationTabViewModel>(() => viewModelFactory.CreateGroundStationTab());
+        services.RegisterLazySingleton<SettingsTabViewModel>(() => new SettingsTabViewModel(resolver));
 
         services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
 
@@ -114,6 +115,7 @@ public static class Bootstrapper
                 resolver.GetExistingService<GroundTargetTabViewModel>(),
                 resolver.GetExistingService<FootprintTabViewModel>(),
                 resolver.GetExistingService<UserGeometryTabViewModel>(),
+                resolver.GetExistingService<SettingsTabViewModel>(),
             })
         });
 

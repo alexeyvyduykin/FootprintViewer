@@ -1,5 +1,4 @@
-﻿using FootprintViewer.ViewModels;
-using FootprintViewer.ViewModels.SidePanel;
+﻿using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using System.Collections.Generic;
 
@@ -19,6 +18,7 @@ public class DesignTimeSidePanel : SidePanelViewModel
             new GroundTargetTabViewModel(data),
             new FootprintTabViewModel(data),
             new UserGeometryTabViewModel(data),
+            new SettingsTabViewModel(data),
         };
 
         Tabs.AddRange(new List<SidePanelTabViewModel>(tabs));

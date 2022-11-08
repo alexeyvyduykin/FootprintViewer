@@ -69,11 +69,6 @@
 		<sidePanel:SidePanelView Grid.Column="1"							 
 								 DataContext="{Binding SidePanel}"/>
 
-		<Button Grid.Column="1"
-				VerticalAlignment="Bottom"
-				Command="{Binding Options}"
-				Content="Settings"/>
-
 	</Grid>
 
 </UserControl>

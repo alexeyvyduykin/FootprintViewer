@@ -18,34 +18,6 @@
 		<vmd:DesignTimeSidePanel/>
 	</Design.DataContext>
 
-	<!--<UserControl.DataTemplates>
-
-		<DataTemplate DataType="vm:FootprintPreviewTab">
-			<views:FootprintPreviewTabView/>
-		</DataTemplate>
-
-		<DataTemplate DataType="vm:SatelliteTab">
-			<views:SatelliteTabView/>
-		</DataTemplate>
-
-		<DataTemplate DataType="vm:GroundTargetTab">
-			<views:GroundTargetTabView/>
-		</DataTemplate>
-
-		<DataTemplate DataType="vm:FootprintTab">
-			<views:FootprintTabView/>
-		</DataTemplate>
-
-		<DataTemplate DataType="vm:UserGeometryTab">
-			<views:UserGeometryTabView/>
-		</DataTemplate>
-
-		<DataTemplate DataType="vm:GroundStationTab">
-			<views:GroundStationTabView/>
-		</DataTemplate>
-
-	</UserControl.DataTemplates>-->
-
 	<UserControl.Resources>
 		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
 
@@ -88,6 +60,11 @@
 					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
 				</Viewbox>
 			</DataTemplate>
+			<DataTemplate x:Key="SettingsTabViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="AccountCog" />
+				</Viewbox>
+			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
@@ -99,16 +76,13 @@
 		<Style Selector="controls|SidePanelItem">
 			<Setter Property="DockPanel.Dock" Value="Top"/>
 		</Style>
-		<!--<Style Selector="controls|SidePanelItem:nth-last-child(1)">
+		<Style Selector="controls|SidePanelItem:nth-last-child(1)">
 			<Setter Property="DockPanel.Dock" Value="Bottom"/>
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
-		</Style>-->
-
-
+		</Style>
 		<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">
 			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue='', Converter={StaticResource sidePanelTitleConv}}"/>
 		</Style>
-
 	</UserControl.Styles>
 
 	<Panel>
@@ -122,6 +96,7 @@
 					<DockPanel/>
 				</ItemsPanelTemplate>
 			</controls:SidePanel.ItemsPanel>
+			
 		</controls:SidePanel>
 	</Panel>
 
