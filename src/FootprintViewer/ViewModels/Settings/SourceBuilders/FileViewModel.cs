@@ -2,7 +2,6 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -41,19 +40,7 @@ public class FileViewModel : ReactiveObject
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
-        string jsonString;
-
-        try
-        {
-            jsonString = await File.ReadAllTextAsync(_path);
-        }
-        catch (Exception)
-        {
-
-            return false;
-        }
-
-        return DbHelper.JsonValidation(key, jsonString);
+        return await DbHelper.JsonValidationAsync(key, _path);
     }
 
     public void Verified(string key)

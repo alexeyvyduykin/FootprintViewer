@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -60,6 +59,16 @@ internal static class DbHelper
         }
     }
 
+    public static object? DeserializeFromFile<T>(string path, JsonSerializerSettings? settings = null)
+    {
+        using StreamReader file = File.OpenText(path);
+
+        // file with GeoJSON
+        var serializer = NetTopologySuite.IO.GeoJsonSerializer.CreateDefault(settings);
+
+        return serializer.Deserialize(file, typeof(T));
+    }
+
     public static Func<string, DbCustomContext> CreateDatabaseSource(string key, string tableName)
     {
         Enum.TryParse<DbKeys>(key, true, out var result);
@@ -109,6 +118,18 @@ internal static class DbHelper
         return context.Valid(GetType(key));
     }
 
+    public static bool IsKeyEquals(string? key, DbKeys? dbKeys)
+    {
+        var res = Enum.TryParse<DbKeys>(key, true, out var result);
+
+        if (res == true)
+        {
+            return Equals(result, dbKeys);
+        }
+
+        return res;
+    }
+
     public static Type GetType(string key)
     {
         Enum.TryParse<DbKeys>(key, true, out var result);
@@ -151,63 +172,41 @@ internal static class DbHelper
         };
     }
 
-    public static Regex JsonNamePattern(string key)
+    public static bool JsonValidation<T>(string path)
     {
-        Enum.TryParse<DbKeys>(key, true, out var result);
-        return result switch
+        object? res;
+
+        try
         {
-            DbKeys.Footprints => new Regex("^(Fp_)"),
-            DbKeys.GroundTargets => new Regex("^(Gt_)"),
-            DbKeys.Satellites => new Regex("^(St_)"),
-            DbKeys.GroundStations => new Regex("^(Gs_)"),
-            DbKeys.UserGeometries => new Regex("^(Ug_)"),
-            _ => throw new Exception(),
-        };
+            res = DeserializeFromFile<T>(path, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return res is T;
     }
 
-    public static bool JsonValidation(string key, string jsonString)
+    public static async Task<bool> JsonValidationAsync(string key, string path)
     {
-        Enum.TryParse<DbKeys>(key, true, out var result);
-        switch (result)
+        return await Task.Run(() =>
         {
-            case DbKeys.Footprints:
-                {
-                    var list = JsonConvert.DeserializeObject<List<Footprint>>(jsonString);
-                    var name = list?.FirstOrDefault()?.Name;
-                    var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
-                    return res;
-                }
-            case DbKeys.GroundTargets:
-                {
-                    var list = JsonConvert.DeserializeObject<List<GroundTarget>>(jsonString);
-                    var name = list?.FirstOrDefault()?.Name;
-                    var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
-                    return res;
-                }
-            case DbKeys.Satellites:
-                {
-                    var list = JsonConvert.DeserializeObject<List<Satellite>>(jsonString);
-                    var name = list?.FirstOrDefault()?.Name;
-                    var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
-                    return res;
-                }
-            case DbKeys.GroundStations:
-                {
-                    var list = JsonConvert.DeserializeObject<List<GroundStation>>(jsonString);
-                    var name = list?.FirstOrDefault()?.Name;
-                    var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
-                    return res;
-                }
-            case DbKeys.UserGeometries:
-                {
-                    var list = JsonConvert.DeserializeObject<List<UserGeometry>>(jsonString);
-                    var name = list?.FirstOrDefault()?.Name;
-                    var res = JsonNamePattern(key).IsMatch(name ?? string.Empty);
-                    return res;
-                }
-            default:
-                throw new Exception();
-        };
+            Enum.TryParse<DbKeys>(key, true, out var result);
+
+            return result switch
+            {
+                DbKeys.Footprints => JsonValidation<List<Footprint>>(path),
+                DbKeys.GroundTargets => JsonValidation<List<GroundTarget>>(path),
+                DbKeys.Satellites => JsonValidation<List<Satellite>>(path),
+                DbKeys.GroundStations => JsonValidation<List<GroundStation>>(path),
+                DbKeys.UserGeometries => JsonValidation<List<UserGeometry>>(path),
+                _ => throw new Exception()
+            };
+        });
     }
 
     private static IList<object> GetValues<T>(IList<string> paths)

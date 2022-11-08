@@ -58,19 +58,33 @@ namespace FootprintViewer.ViewModels.Settings
                 }
             });
 
-            MenuItems = new[]
+            if (DbHelper.IsKeyEquals(key, DbKeys.UserGeometries) == true)
             {
-                new MenuItemViewModel
+                MenuItems = new[]
                 {
-                    Header = ".database",
-                    Command = DatabaseBuilderCommand,
-                },
-                new MenuItemViewModel
+                    new MenuItemViewModel
+                    {
+                        Header = ".database",
+                        Command = DatabaseBuilderCommand,
+                    }
+                };
+            }
+            else
+            {
+                MenuItems = new[]
                 {
-                    Header = ".json",
-                    Command = JsonBuilderCommand,
-                }
-            };
+                    new MenuItemViewModel
+                    {
+                        Header = ".database",
+                        Command = DatabaseBuilderCommand,
+                    },
+                    new MenuItemViewModel
+                    {
+                        Header = ".json",
+                        Command = JsonBuilderCommand,
+                    }
+                };
+            }
         }
 
         private void RemoveImpl(ISourceViewModel source)
