@@ -6,6 +6,7 @@ using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -34,7 +35,7 @@ public class MainViewModel : RoutableViewModel
     private readonly InfoPanel _clickInfoPanel;
     private readonly SidePanelViewModel _sidePanel;
     private readonly BottomPanel _bottomPanel;
-    private readonly CustomToolBar _customToolBar;
+    private readonly CustomToolBarViewModel _customToolBar;
     private readonly FootprintTabViewModel _footprintTab;
     private readonly GroundTargetTabViewModel _groundTargetTab;
     private readonly UserGeometryTabViewModel _userGeometryTab;
@@ -51,7 +52,7 @@ public class MainViewModel : RoutableViewModel
         _map = (Map)dependencyResolver.GetExistingService<IMap>();
         MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
         _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
-        _customToolBar = dependencyResolver.GetExistingService<CustomToolBar>();
+        _customToolBar = dependencyResolver.GetExistingService<CustomToolBarViewModel>();
         _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
         _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
@@ -802,7 +803,7 @@ public class MainViewModel : RoutableViewModel
 
     public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
-    public CustomToolBar ToolBar => _customToolBar;
+    public CustomToolBarViewModel ToolBar => _customToolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
 

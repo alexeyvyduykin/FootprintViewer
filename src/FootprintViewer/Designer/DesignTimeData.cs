@@ -6,6 +6,7 @@ using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Layers;
 using NetTopologySuite.Geometries;
@@ -32,7 +33,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private FootprintPreviewTabViewModel? _footprintPreviewTab;
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
-    private CustomToolBar? _customToolBar;
+    private CustomToolBarViewModel? _customToolBar;
     private IDataManager? _dataManager;
     private ILanguageManager? _languageManager;
 
@@ -54,10 +55,6 @@ public class DesignTimeData : IReadonlyDependencyResolver
         {
             return _mapNavigator ??= new MapNavigator();
         }
-        //else if (serviceType == typeof(MapBackgroundList))
-        //{
-        //    return _mapBackgroundList ??= new MapBackgroundList();
-        //}
         else if (serviceType == typeof(ITargetLayerSource))
         {
             return _targetLayerSource ??= new TargetLayerSource();
@@ -86,9 +83,9 @@ public class DesignTimeData : IReadonlyDependencyResolver
         {
             return _userGeometryTab ??= new UserGeometryTabViewModel(this);
         }
-        else if (serviceType == typeof(CustomToolBar))
+        else if (serviceType == typeof(CustomToolBarViewModel))
         {
-            return _customToolBar ??= new CustomToolBar(this);
+            return _customToolBar ??= new CustomToolBarViewModel(this);
         }
         else if (serviceType == typeof(SidePanelViewModel))
         {

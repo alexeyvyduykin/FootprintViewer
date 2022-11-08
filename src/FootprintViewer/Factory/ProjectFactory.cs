@@ -40,9 +40,4 @@ public class ProjectFactory
     {
         return new ScaleMapBar();
     }
-
-    public MapLayerList CreateMapLayerList()
-    {
-        return new MapLayerList(_dependencyResolver);
-    }
 }

@@ -7,6 +7,7 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.ToolBar;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
@@ -103,7 +104,7 @@ public static class Bootstrapper
         services.RegisterLazySingleton<GroundStationTabViewModel>(() => viewModelFactory.CreateGroundStationTab());
         services.RegisterLazySingleton<SettingsTabViewModel>(() => new SettingsTabViewModel(resolver));
 
-        services.RegisterLazySingleton<CustomToolBar>(() => new CustomToolBar(resolver));
+        services.RegisterLazySingleton<CustomToolBarViewModel>(() => new CustomToolBarViewModel(resolver));
 
         services.RegisterLazySingleton<SidePanelViewModel>(() => new SidePanelViewModel()
         {

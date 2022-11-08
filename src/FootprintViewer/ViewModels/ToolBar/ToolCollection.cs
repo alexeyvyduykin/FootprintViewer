@@ -1,15 +1,15 @@
-﻿using System;
+﻿using FootprintViewer.Models;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using FootprintViewer.Models;
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 
-namespace FootprintViewer.ViewModels;
+namespace FootprintViewer.ViewModels.ToolBar;
 
-public class ToolCollection : ReactiveObject, IToolCollection
+public class ToolCollection : ViewModelBase, IToolCollection
 {
     private readonly IList<IToolCheck> _items;
     private IToolCheck? _first;

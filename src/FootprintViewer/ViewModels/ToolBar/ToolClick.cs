@@ -1,12 +1,12 @@
-﻿using System;
+﻿using FootprintViewer.Models;
+using ReactiveUI;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FootprintViewer.Models;
-using ReactiveUI;
 
-namespace FootprintViewer.ViewModels;
+namespace FootprintViewer.ViewModels.ToolBar;
 
-public class ToolClick : ReactiveObject, IToolClick
+public class ToolClick : ViewModelBase, IToolClick
 {
     private Func<Task> _click = () => Task.Run(() => { });
 

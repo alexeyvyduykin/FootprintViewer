@@ -1,20 +1,11 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
-using System.Threading.Tasks;
+﻿using FootprintViewer.ViewModels.ToolBar;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeCustomToolBar : CustomToolBarViewModel
 {
-    public class DesignTimeCustomToolBar : CustomToolBar
+    public DesignTimeCustomToolBar() : base(new DesignTimeData())
     {
-        private static readonly DesignTimeData _designTimeData = new();
 
-        public DesignTimeCustomToolBar() : base(_designTimeData)
-        {
-          //  var provider = _designTimeData.GetExistingService<IProvider<MapResource>>();
-
-          //  var maps = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
-
-          //  MapBackgroundList.Update(maps);
-        }
     }
 }
