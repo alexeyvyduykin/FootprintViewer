@@ -18,7 +18,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(DbKeys.Footprints.ToString())
+            new SourceContainerViewModel(DbKeys.Footprints.ToString(), _dependencyResolver)
             {
                 Header = DbKeys.Footprints.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -28,7 +28,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
                     new SourceViewModel(source) { Name = "Source3" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.GroundTargets.ToString())
+            new SourceContainerViewModel(DbKeys.GroundTargets.ToString(), _dependencyResolver)
             {
                 Header = DbKeys.GroundTargets.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -38,7 +38,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
                     new SourceViewModel(source) { Name = "Source6" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.Satellites.ToString())
+            new SourceContainerViewModel(DbKeys.Satellites.ToString(), _dependencyResolver)
             {
                 Header = DbKeys.Satellites.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -48,7 +48,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
                     new SourceViewModel(source) { Name = "Source9" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.GroundStations.ToString())
+            new SourceContainerViewModel(DbKeys.GroundStations.ToString(), _dependencyResolver)
             {
                 Header = DbKeys.GroundStations.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -58,7 +58,7 @@ public class DesignTimeSettingsViewModel : SettingsViewModel
                     new SourceViewModel(source) { Name = "Source12" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.UserGeometries.ToString())
+            new SourceContainerViewModel(DbKeys.UserGeometries.ToString(), _dependencyResolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = new List<ISourceViewModel>()

@@ -31,45 +31,6 @@ public class JsonBuilderViewModel : DialogViewModelBase<ISource>
     {
         _key = key;
 
-        var list1 = new List<FileViewModel>();
-        var list2 = new List<FileViewModel>();
-
-        //var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-        //var res = assets?.GetAssets(new Uri("avares://DataSettingsSample/Assets/"), null).ToList() ?? new List<Uri>();
-
-        //foreach (var uri in res)
-        //{
-        //    if (Equals(Path.GetExtension(uri.LocalPath), ".json") == true)
-        //    {
-        //        if (new Random().Next(0, 2) == 1)
-        //        {
-        //            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-        //            var filename = Path.GetFileName(uri.LocalPath);
-        //            var fullPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename));
-        //            list1.Add(new FileViewModel(fullPath)
-        //            {
-        //                Name = filename,
-        //                IsSelected = new Random().Next(0, 2) == 1,
-        //            });
-        //        }
-        //        else
-        //        {
-        //            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-        //            var filename = Path.GetFileName(uri.LocalPath);
-        //            var fullPath = Path.GetFullPath(Path.Combine(path, @"..\..\..\Assets", filename));
-        //            var file = new FileViewModel(fullPath)
-        //            {
-        //                Name = filename,
-        //                IsSelected = new Random().Next(0, 2) == 1,
-        //            };
-
-        //            file.Verified(_key);
-
-        //            list2.Add(file);
-        //        }
-        //    }
-        //}
-
         _availableList.Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _availableFiles)
@@ -79,9 +40,6 @@ public class JsonBuilderViewModel : DialogViewModelBase<ISource>
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _targetFiles)
             .Subscribe();
-
-        AddToAvailableList(list1);
-        AddToTargetList(list2);
 
         var nextCommandCanExecute = TargetFiles
             .ToObservableChangeSet()

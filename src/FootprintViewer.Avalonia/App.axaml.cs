@@ -8,9 +8,7 @@ using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
 using System;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.Avalonia
 {
@@ -83,67 +81,6 @@ namespace FootprintViewer.Avalonia
             //   settings.Find(Data.ProviderType.GroundTargets)?.LoadState(mainState.GroundTargetProvider);
             //   settings.Find(Data.ProviderType.Footprints)?.LoadState(mainState.FootprintProvider);
             //   settings.Find(Data.ProviderType.UserGeometries)?.LoadState(mainState.UserGeometryProvider);
-        }
-
-        public static async Task<string> OpenFileDialog(string? directory, string? filterName, string? filterExtension)
-        {
-            var mainState = Locator.Current.GetService<MainState>();
-
-            string? lastOpenDirectory = (mainState != null) ? mainState.LastOpenDirectory : string.Empty;
-
-            var dialog = new OpenFileDialog
-            {
-                Directory = directory ?? lastOpenDirectory,
-            };
-
-            var ext = filterExtension ?? "*";
-
-            dialog.Filters?.Add(new FileDialogFilter() { Name = filterName, Extensions = { ext } });
-
-            var result = await dialog.ShowAsync(GetWindow()!);
-
-            if (result == null)
-            {
-                return string.Empty;
-            }
-
-            if (mainState != null)
-            {
-                mainState.LastOpenDirectory = System.IO.Path.GetDirectoryName(result.First());
-            }
-
-            return result.First();
-        }
-
-        public static async Task<string> OpenFolderDialog(string? directory)
-        {
-            var mainState = Locator.Current.GetService<MainState>();
-
-            string? lastOpenDirectory = (mainState != null) ? mainState.LastOpenDirectory : string.Empty;
-
-            var dialog = new OpenFolderDialog()
-            {
-                Directory = directory ?? lastOpenDirectory
-            };
-
-            var result = await dialog.ShowAsync(GetWindow()!);
-
-            if (mainState != null)
-            {
-                mainState.LastOpenDirectory = result;
-            }
-
-            return result ?? string.Empty;
-        }
-
-        private static Window? GetWindow()
-        {
-            if (Application.Current != null && Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                return desktopLifetime.MainWindow;
-            }
-
-            return null;
         }
 
         public static Views.MainWindow GetMainWindow() => _mainWindow ?? throw new Exception();

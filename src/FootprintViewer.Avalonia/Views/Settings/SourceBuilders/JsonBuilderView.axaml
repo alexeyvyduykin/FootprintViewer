@@ -36,10 +36,11 @@
 		<Grid RowDefinitions="Auto,*">
 
 			<Grid ColumnDefinitions="*,8,32">
-				<TextBox x:Name="txtBox1"						 
-						 Text="{Binding Directory}"
+				<TextBox x:Name="DirectoryTextBox"						 
+						 Text="{Binding Directory, Mode=TwoWay}"
 						 IsReadOnly="True"/>
-				<Button Grid.Column="2"					
+				<Button x:Name="SearchButton" 
+						Grid.Column="2"					
 						Padding="0"
 						Height="32">
 					<Viewbox Margin="4">

@@ -30,27 +30,27 @@ public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(DbKeys.Footprints.ToString())
+            new SourceContainerViewModel(DbKeys.Footprints.ToString(), dependencyResolver)
             {
                 Header = DbKeys.Footprints.ToString(),
                 Sources = footprintsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" }).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.GroundTargets.ToString())
+            new SourceContainerViewModel(DbKeys.GroundTargets.ToString(), dependencyResolver)
             {
                 Header = DbKeys.GroundTargets.ToString(),
                 Sources = groundTargetsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.Satellites.ToString())
+            new SourceContainerViewModel(DbKeys.Satellites.ToString(), dependencyResolver)
             {
                 Header = DbKeys.Satellites.ToString(),
                 Sources = satellitesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.GroundStations.ToString())
+            new SourceContainerViewModel(DbKeys.GroundStations.ToString(), dependencyResolver)
             {
                 Header = DbKeys.GroundStations.ToString(),
                 Sources = groundStationsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.UserGeometries.ToString())
+            new SourceContainerViewModel(DbKeys.UserGeometries.ToString(), dependencyResolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = userGeometriesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),

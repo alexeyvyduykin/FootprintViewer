@@ -1,9 +1,11 @@
-﻿using FootprintViewer.Data.DataManager;
+﻿using FootprintViewer.AppStates;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.Data.DataManager.Sources;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.Settings.SourceBuilders;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -13,7 +15,7 @@ namespace FootprintViewer.ViewModels.Settings
 {
     public class SourceContainerViewModel : RoutableViewModel
     {
-        public SourceContainerViewModel(string key)
+        public SourceContainerViewModel(string key, IReadonlyDependencyResolver dependencyResolver)
         {
             Sources = new List<ISourceViewModel>();
 
@@ -37,7 +39,12 @@ namespace FootprintViewer.ViewModels.Settings
 
             JsonBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var jsonBuilderDialog = new JsonBuilderViewModel(key);
+                var mainState = dependencyResolver.GetExistingService<MainState>();
+
+                var jsonBuilderDialog = new JsonBuilderViewModel(key)
+                {
+                    Directory = mainState?.LastOpenDirectory
+                };
 
                 DialogStack().To(jsonBuilderDialog);
 
