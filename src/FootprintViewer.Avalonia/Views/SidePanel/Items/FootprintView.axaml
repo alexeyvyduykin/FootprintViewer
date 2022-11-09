@@ -5,10 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:conv="using:FootprintViewer.Avalonia.Converters"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"
 			 x:DataType="items:FootprintViewModel"
-			 mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="280">
+			 mc:Ignorable="d" d:DesignWidth="280">
 
 	<Design.DataContext>
 		<vmd:DesignTimeFootprintViewModel/>
@@ -16,54 +18,57 @@
 
 	<UserControl.Resources>
 		<conv:CoordinateConverter x:Key="CoordinateConv"/>
+		<conv:FootprintInfoNameConverter x:Key="NameConv"/>
+		<conv:FootprintInfoTimeConverter x:Key="TimeConv"/>
 	</UserControl.Resources>
 
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
+
 	<styles:Card>
-		<StackPanel>
-			<TextBlock Text="{Binding Name}" Classes="Headline6"/>
-			<StackPanel IsVisible="{Binding IsShowInfo}">
+		<StackPanel Spacing="4">
+			<Grid ColumnDefinitions="*,8,Auto">
+				<TextBlock Text="{Binding Name}"
+						   HorizontalAlignment="Left"
+						   Classes="Headline6"/>
+				<Button x:Name="TargetToMapButton"
+						Classes="Flat"
+						Padding="4"
+						Grid.Column="2">
+					<Viewbox Width="24" Height="24">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="MapSearch" />
+					</Viewbox>
+				</Button>
+			</Grid>
 
-				<StackPanel.Styles>
-					<Style Selector="TextBlock">
-						<Setter Property="HorizontalAlignment" Value="Right"/>
-					</Style>
-				</StackPanel.Styles>
-
-				<StackPanel>
-					<TextBlock Text="Satellite" Classes="Caption"/>
-					<TextBlock Text="{Binding SatelliteName}" Classes="Subtitle1"/>
-				</StackPanel>
-
-				<StackPanel>
-					<TextBlock Text="Center" Classes="Caption"/>
-					<TextBlock Text="{Binding Center, Converter={StaticResource CoordinateConv}}"
-							   Classes="Subtitle1"/>
-				</StackPanel>
-
-				<StackPanel>
-					<TextBlock Text="Begin" Classes="Caption"/>
-					<TextBlock Text="{Binding Begin}"
-							   Classes="Subtitle1"/>
-				</StackPanel>
-
-				<StackPanel>
-					<TextBlock Text="Duration" Classes="Caption"/>
-					<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}"
-							   Classes="Subtitle1"/>
-				</StackPanel>
-
-				<StackPanel>
-					<TextBlock Text="Node" Classes="Caption"/>
-					<TextBlock Text="{Binding Node}" Classes="Subtitle1"/>
-				</StackPanel>
-
-				<StackPanel>
-					<TextBlock Text="Direction" Classes="Caption"/>
-					<TextBlock Text="{Binding Direction}"
-							   Classes="Subtitle1"/>
-				</StackPanel>
-
+			<StackPanel HorizontalAlignment="Right">
+				<TextBlock Text="{x:Static prop:Resources.InfoPanelCenter}"
+						   HorizontalAlignment="Right"
+						   Classes="Overline"/>
+				<TextBlock Text="{Binding Center, Converter={StaticResource CoordinateConv}}"
+						   Classes="Subtitle1"/>
 			</StackPanel>
+
+			<StackPanel HorizontalAlignment="Right">
+				<TextBlock Text="{x:Static prop:Resources.InfoPanelSatellite}"
+						   HorizontalAlignment="Right"
+						   Classes="Overline"/>
+				<TextBlock Text="{Binding, Converter={StaticResource NameConv}}"
+						   Classes="Subtitle1"/>
+			</StackPanel>
+
+			<StackPanel HorizontalAlignment="Right">
+				<TextBlock Text="{x:Static prop:Resources.InfoPanelBegin}"
+						   HorizontalAlignment="Right"
+						   Classes="Overline"/>
+				<TextBlock Text="{Binding, Converter={StaticResource TimeConv}}"
+						   Classes="Subtitle1"/>
+			</StackPanel>
+
 		</StackPanel>
 	</styles:Card>
 

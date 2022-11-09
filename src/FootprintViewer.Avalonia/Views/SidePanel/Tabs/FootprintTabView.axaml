@@ -6,18 +6,32 @@
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
+             xmlns:tabs="clr-namespace:FootprintViewer.ViewModels.SidePanel.Tabs;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
 			 xmlns:filtersView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Filters"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-             x:Name="FootprintTabName"
+             x:DataType="tabs:FootprintTabViewModel"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
 	<Design.DataContext>
 		<vmd:DesignTimeFootprintTab/>
 	</Design.DataContext>
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:FootprintViewModel">
+			<itemsView:FootprintView Name="FootprintItem" DataContext="{Binding}">
+				<i:Interaction.Behaviors>
+					<ia:EventTriggerBehavior EventName="TargetToMapClick" SourceObject="{Binding #FootprintItem}">
+						<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.TargetToMap}"
+												CommandParameter="{Binding}" />
+					</ia:EventTriggerBehavior>
+				</i:Interaction.Behaviors>
+			</itemsView:FootprintView>
+		</DataTemplate>
+	</UserControl.Resources>
 
 	<UserControl.Styles>
 		<Style Selector="FlyoutPresenter">
@@ -42,33 +56,17 @@
 		</ToggleButton>
 
 		<Grid Grid.Row="1">
-			<ProgressBar x:Name="ProgressBar"
-						 IsVisible="{Binding IsLoading}"
+
+			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"
 						 VerticalAlignment="Center"
 						 HorizontalAlignment="Center"
 						 IsIndeterminate="True"/>
 
-			<ListBox x:Name="ListBox"
-					 IsVisible="{Binding !IsLoading}"
+			<ListBox IsVisible="{Binding !IsLoading}"
 					 Items="{Binding Items}"
-					 VirtualizationMode="Simple">
-				<!--behaviors:ListBoxBehavior.ScrollSelectedIntoView="{Binding ScrollToCenter}">-->
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="items:FootprintViewModel">
-						<itemsView:FootprintView x:Name="footprintItem"
-													 DataContext="{Binding}">
-							<i:Interaction.Behaviors>
-								<ia:EventTriggerBehavior EventName="PointerPressed" SourceObject="{Binding #footprintItem}">
-									<ia:InvokeCommandAction Command="{Binding #FootprintTabName.DataContext.ClickOnItem}"
-															CommandParameter="{Binding #footprintItem.DataContext}" />
-								</ia:EventTriggerBehavior>
-							</i:Interaction.Behaviors>
-						</itemsView:FootprintView>
-
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+					 ItemTemplate="{StaticResource FootprintItemTemplate}"
+					 VirtualizationMode="Simple"/>
 		</Grid>
 
 	</Grid>

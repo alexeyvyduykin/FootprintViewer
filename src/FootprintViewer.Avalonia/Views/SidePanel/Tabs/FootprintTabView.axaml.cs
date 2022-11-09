@@ -8,10 +8,10 @@ namespace FootprintViewer.Avalonia.Views.SidePanel.Tabs
         {
             InitializeComponent();
 
-            SearchToggleButton.Flyout.Closing += Flyout_Closing;
+            SearchToggleButton.Flyout.Closed += Flyout_Closed; ;
         }
 
-        private void Flyout_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private void Flyout_Closed(object? sender, System.EventArgs e)
         {
             SearchToggleButton.IsChecked = false;
         }

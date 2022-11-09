@@ -1,10 +1,10 @@
 ﻿using DynamicData;
+using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -18,15 +18,16 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
 public class FootprintTabViewModel : SidePanelTabViewModel
 {
-    private readonly Data.DataManager.IDataManager _dataManager;
-    private readonly SourceList<FootprintViewModel> _footprints = new();
+    private readonly IDataManager _dataManager;
+    private readonly IMapNavigator _mapNavigator;
+    private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private FootprintViewModel? _prevSelectedItem;
 
     public FootprintTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
 
         Filter = new FootprintTabFilterViewModel(dependencyResolver);
 
@@ -35,106 +36,54 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         _footprints
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new FootprintViewModel(s))
             .Filter(Filter.FilterObservable)
+            .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
             .Subscribe();
 
-        Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Delay = ReactiveCommand.CreateFromTask(() => Task.Delay(TimeSpan.FromSeconds(1.5)));
-
-        _isLoading = Delay.IsExecuting
+        _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
                           .ToProperty(this, x => x.IsLoading);
 
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            //.Take(1)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Loading);
+            .WhereTrue()
+            .ToSignal()
+            .InvokeCommand(Update);
 
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Delay);
-
-        Select = ReactiveCommand.Create<FootprintViewModel, FootprintViewModel>(s => s);
-
-        Unselect = ReactiveCommand.Create<FootprintViewModel, FootprintViewModel>(s => s);
-
-        ClickOnItem = ReactiveCommand.Create<FootprintViewModel, FootprintViewModel>(ClickOnItemImpl);
+        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel, FootprintViewModel>(
+            s => Task.Run(() =>
+            {
+                _mapNavigator.SetFocusToCoordinate(s.Center.X, s.Center.Y);
+                return s;
+            }));
     }
 
-    public ReactiveCommand<FootprintViewModel, FootprintViewModel> Select { get; }
+    public ReactiveCommand<FootprintViewModel, FootprintViewModel> TargetToMap { get; }
 
-    public ReactiveCommand<FootprintViewModel, FootprintViewModel> Unselect { get; }
-
-    public ReactiveCommand<FootprintViewModel, FootprintViewModel> ClickOnItem { get; }
-
-    public ReactiveCommand<Unit, Unit> Loading { get; }
-
-    private ReactiveCommand<Unit, Unit> Delay { get; }
+    public ReactiveCommand<Unit, Unit> Update { get; }
 
     public bool IsLoading => _isLoading.Value;
 
-    private async Task LoadingImpl()
+    private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        await Task.Delay(TimeSpan.FromSeconds(1));
 
-        var list = res.Select(s => new FootprintViewModel(s)).ToList();
+        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
 
         _footprints.Edit(innerList =>
         {
             innerList.Clear();
-            innerList.AddRange(list);
+            innerList.AddRange(res);
         });
-    }
-
-    private FootprintViewModel ClickOnItemImpl(FootprintViewModel item)
-    {
-        if (_prevSelectedItem != null && _prevSelectedItem.Name.Equals(item.Name) == false)
-        {
-            if (_prevSelectedItem.IsShowInfo == true)
-            {
-                _prevSelectedItem.IsShowInfo = false;
-            }
-        }
-
-        item.IsShowInfo = !item.IsShowInfo;
-
-        if (item.IsShowInfo == true)
-        {
-            Select.Execute(item).Subscribe();
-        }
-        else
-        {
-            Unselect.Execute(item).Subscribe();
-        }
-
-        _prevSelectedItem = item;
-
-        return item;
-    }
-
-    public void SelectFootprintInfo(string name)
-    {
-        IObservableList<FootprintViewModel> readonlyFootprints = _footprints.AsObservableList();
-
-        var item = readonlyFootprints.Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
-
-        if (item != null)
-        {
-            ClickOnItemImpl(item);
-        }
     }
 
     public FootprintViewModel? GetFootprintViewModel(string name)
     {
-        IObservableList<FootprintViewModel> readonlyFootprints = _footprints.AsObservableList();
-
-        return readonlyFootprints.Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
+        return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
     }
 
     public async Task<List<FootprintViewModel>> GetFootprintViewModelsAsync(string name)
@@ -152,7 +101,4 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     public IFilter<FootprintViewModel> Filter { get; }
 
     public ReadOnlyObservableCollection<FootprintViewModel> Items => _items;
-
-    [Reactive]
-    public bool ScrollToCenter { get; set; } = false;
 }

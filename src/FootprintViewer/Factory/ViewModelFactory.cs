@@ -92,16 +92,13 @@ public class ViewModelFactory
 
     public FootprintTabViewModel CreateFootprintTab()
     {
-        var mapNavigator = _dependencyResolver.GetExistingService<IMapNavigator>();
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
 
         var tab = new FootprintTabViewModel(_dependencyResolver);
 
-        tab.Select.Select(s => s.Center).Subscribe(coord => mapNavigator.SetFocusToCoordinate(coord.X, coord.Y));
-
         dataManager.DataChanged
             .ToSignal()
-            .InvokeCommand(tab.Loading);
+            .InvokeCommand(tab.Update);
 
         return tab;
     }

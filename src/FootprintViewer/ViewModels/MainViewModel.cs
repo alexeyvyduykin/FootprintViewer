@@ -98,7 +98,7 @@ public class MainViewModel : RoutableViewModel
         _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
-        _footprintTab.ClickOnItem.Subscribe(SelectFeatureImpl);
+        _footprintTab.TargetToMap.Subscribe(SelectFeatureImpl);
 
         IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
 
@@ -332,11 +332,6 @@ public class MainViewModel : RoutableViewModel
                     if (vm != null)
                     {
                         ClickInfoPanel.Show(new FootprintClickInfoPanel(vm));
-                    }
-
-                    if (_footprintTab.IsActive == true)
-                    {
-                        _footprintTab.SelectFootprintInfo(name);
                     }
                 }
             }

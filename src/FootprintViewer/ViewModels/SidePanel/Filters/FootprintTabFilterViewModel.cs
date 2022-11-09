@@ -15,40 +15,50 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class SatelliteItemViewModel : ReactiveObject
-{
-    public string? Name { get; set; }
-
-    [Reactive]
-    public bool IsActive { get; set; } = true;
-}
-
 public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewModel>
 {
-    private readonly Data.DataManager.IDataManager _dataManager;
+    private readonly IDataManager _dataManager;
+    private readonly SourceList<SatelliteItemViewModel> _satellites = new();
+    private readonly ReadOnlyObservableCollection<SatelliteItemViewModel> _items;
+    private readonly IObservable<Func<FootprintViewModel, bool>> _filterObservable;
 
     public FootprintTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
-        Satellites = new ObservableCollection<SatelliteItemViewModel>();
+        _satellites
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
 
         IsLeftStrip = true;
         IsRightStrip = true;
-        IsAllSatelliteActive = true;
         FromNode = 1;
         ToNode = 15;
 
         _dataManager.DataChanged
             .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(CreateSatelliteList));
+            .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
+
+        var _activeChanged = _satellites.Connect().WhenValueChanged(p => p.IsActive);
+
+        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(_ => this);
+
+        var observable2 = _activeChanged
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(_ => this);
+
+        var merged = Observable.Merge(observable1, observable2);
+
+        _filterObservable = merged.Select(CreatePredicate);
+
+        Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
 
-    public override IObservable<Func<FootprintViewModel, bool>> FilterObservable =>
-        this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip, s => s.Switcher)
-            .Throttle(TimeSpan.FromSeconds(1))
-            .Select(_ => this)
-            .Select(CreatePredicate);
+    public override IObservable<Func<FootprintViewModel, bool>> FilterObservable => _filterObservable;
 
     private static Func<FootprintViewModel, bool> CreatePredicate(FootprintTabFilterViewModel filter)
     {
@@ -74,27 +84,23 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         };
     }
 
-    private async Task CreateSatelliteList()
+    private async Task UpdateImpl()
     {
-        var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
 
-        var satelliteNames = footprints.Select(s => s.SatelliteName).Distinct();
+        var satellites = res
+            .Where(s => string.IsNullOrEmpty(s.SatelliteName) == false)
+            .Select(s => s.SatelliteName!)
+            .Distinct()
+            .OrderBy(s => s)
+            .Select(s => new SatelliteItemViewModel() { Name = s })
+            .ToList();
 
-        if (satelliteNames != null)
+        _satellites.Edit(innerList =>
         {
-            var list = satelliteNames.OrderBy(s => s).Select(s => new SatelliteItemViewModel() { Name = s });
-
-            Satellites = new ObservableCollection<SatelliteItemViewModel>(list);
-
-            Satellites.ToObservableChangeSet()
-                      .AutoRefresh(model => model.IsActive)
-                      .Subscribe(s =>
-                      {
-                          Switcher = !Switcher;
-                      });
-
-            Switcher = !Switcher;
-        }
+            innerList.Clear();
+            innerList.AddRange(satellites);
+        });
     }
 
     public override bool Filtering(FootprintViewModel footprint)
@@ -119,9 +125,6 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     }
 
     [Reactive]
-    private bool Switcher { get; set; }
-
-    [Reactive]
     public int FromNode { get; set; }
 
     [Reactive]
@@ -133,12 +136,9 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     [Reactive]
     public bool IsRightStrip { get; set; }
 
-    [Reactive]
-    public bool IsAllSatelliteActive { get; set; }
+    public ReadOnlyObservableCollection<SatelliteItemViewModel> Satellites => _items;
 
-    [Reactive]
-    public ObservableCollection<SatelliteItemViewModel> Satellites { get; private set; }
-
+    // TODO: after remove FootprintPreview, replace SetAoi() to this
     [Reactive]
     public Geometry? AOI { get; set; }
 
