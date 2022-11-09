@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
+using FootprintViewer.ViewModels;
 using System;
 using System.Collections.Generic;
 

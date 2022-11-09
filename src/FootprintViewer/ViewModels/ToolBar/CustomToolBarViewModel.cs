@@ -1,7 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;

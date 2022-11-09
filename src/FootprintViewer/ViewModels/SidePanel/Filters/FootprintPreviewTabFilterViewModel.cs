@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintPreviewViewModel>
+public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<FootprintPreviewViewModel>
 {
     private readonly SourceList<SensorItemViewModel> _sensors = new();
     private readonly ReadOnlyObservableCollection<SensorItemViewModel> _items;
@@ -68,7 +68,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
 
-    public override IObservable<Func<FootprintPreviewViewModel, bool>> FilterObservable => _filterObservable;
+    public IObservable<Func<FootprintPreviewViewModel, bool>> FilterObservable => _filterObservable;
 
     private async Task UpdateImpl()
     {
@@ -98,54 +98,10 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     private static Func<FootprintPreviewViewModel, bool> CreatePredicate(FootprintPreviewTabFilterViewModel filter)
     {
-        return footprintPreview =>
-        {
-            bool isAoiCondition = false;
-
-            if (filter.AOI == null)
-            {
-                isAoiCondition = true;
-            }
-            else
-            {
-                var geometry = filter.Geometries
-                    .Where(s => Equals(s.Name, footprintPreview.Name))
-                    .Select(s => s.Geometry)
-                    .FirstOrDefault();
-
-                if (geometry != null)
-                {
-                    var footprintPolygon = (Polygon)geometry;
-                    var aoiPolygon = (Polygon)filter.AOI;
-
-                    isAoiCondition = aoiPolygon.Intersection(footprintPolygon, filter.IsFullCoverAOI);
-                }
-            }
-
-            if (isAoiCondition == true)
-            {
-                var isFound = filter.Sensors.Where(s => s.IsActive == true)
-                    .Select(s => s.Name)
-                    .Contains(footprintPreview.SatelliteName);
-
-                if (isFound == true)
-                {
-                    if (footprintPreview.CloudCoverFull >= filter.Cloudiness)
-                    {
-                        if (footprintPreview.SunElevation >= filter.MinSunElevation
-                            && footprintPreview.SunElevation <= filter.MaxSunElevation)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        };
+        return s => filter.Filtering(s);
     }
 
-    public override bool Filtering(FootprintPreviewViewModel footprintPreview)
+    private bool Filtering(FootprintPreviewViewModel footprintPreview)
     {
         bool isAoiCondition = false;
 
@@ -156,7 +112,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         else
         {
             var geometry = Geometries
-                .Where(s => Equals(s.Name, footprintPreview.SatelliteName))
+                .Where(s => Equals(s.Name, footprintPreview.Name))
                 .Select(s => s.Geometry)
                 .FirstOrDefault();
 
@@ -216,6 +172,4 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     [Reactive]
     public Geometry? AOI { get; set; }
-
-    public override string[]? Names => throw new NotImplementedException();
 }

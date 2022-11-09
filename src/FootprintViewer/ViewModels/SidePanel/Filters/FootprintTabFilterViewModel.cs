@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewModel>
+public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewModel>
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();
@@ -58,30 +58,11 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
 
-    public override IObservable<Func<FootprintViewModel, bool>> FilterObservable => _filterObservable;
+    public IObservable<Func<FootprintViewModel, bool>> FilterObservable => _filterObservable;
 
     private static Func<FootprintViewModel, bool> CreatePredicate(FootprintTabFilterViewModel filter)
     {
-        return footprint =>
-        {
-            if (filter.Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
-            {
-                if (footprint.Node >= filter.FromNode && footprint.Node <= filter.ToNode)
-                {
-                    if (footprint.Direction == SatelliteStripDirection.Left && filter.IsLeftStrip == true)
-                    {
-                        return true;
-                    }
-
-                    if (footprint.Direction == SatelliteStripDirection.Right && filter.IsRightStrip == true)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        };
+        return s => filter.Filtering(s);
     }
 
     private async Task UpdateImpl()
@@ -103,7 +84,7 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         });
     }
 
-    public override bool Filtering(FootprintViewModel footprint)
+    private bool Filtering(FootprintViewModel footprint)
     {
         if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
         {
@@ -141,6 +122,4 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     // TODO: after remove FootprintPreview, replace SetAoi() to this
     [Reactive]
     public Geometry? AOI { get; set; }
-
-    public override string[]? Names => throw new NotImplementedException();
 }

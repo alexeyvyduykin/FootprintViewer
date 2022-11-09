@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 

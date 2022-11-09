@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Models;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;

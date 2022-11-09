@@ -33,7 +33,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр наземных целей";
 
-        NameFilter = new NameFilter<GroundTargetViewModel>(Array.Empty<string>());
+        NameFilter = new NameFilter<GroundTargetViewModel>();
 
         _groundTargets
             .Connect()
