@@ -40,7 +40,8 @@
 
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 				<materialIcons:MaterialIcon Kind="DateRange"/>
-				<TextBlock Text="{x:Static prop:Resources.FilterDate}" Classes="Body2" Margin="8,0,0,0"
+				<TextBlock Text="{x:Static prop:Resources.FilterDate}"
+						   Classes="Body2" Margin="8,0,0,0"
 						   VerticalAlignment="Center"/>
 			</StackPanel>
 
@@ -103,10 +104,9 @@
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{DynamicResource IconSatellite}"/>
 				</Viewbox>
-				<TextBlock Text="{x:Static prop:Resources.FilterSensors}" Classes="Body2" Margin="8,0,0,0"/>
-				<CheckBox Content="{x:Static prop:Resources.FilterAllSensors}"
-						  IsChecked="{Binding IsAllSensorActive}"
-						  HorizontalAlignment="Right"/>
+				<TextBlock Text="{x:Static prop:Resources.FilterSensors}"
+						   Classes="Body2"
+						   Margin="8,0,0,0"/>
 			</DockPanel>
 
 			<ItemsControl Items="{Binding Sensors}">

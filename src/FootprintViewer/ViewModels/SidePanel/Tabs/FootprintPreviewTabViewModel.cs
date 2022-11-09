@@ -3,12 +3,15 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
+using Mapsui;
+using Mapsui.Layers;
+using Mapsui.Nts;
+using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -19,15 +22,20 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
 public class FootprintPreviewTabViewModel : SidePanelTabViewModel
 {
-    private readonly Data.DataManager.IDataManager _dataManager;
-    private readonly SourceList<FootprintPreviewViewModel> _footprintPreviews = new();
+    private readonly IDataManager _dataManager;
+    private readonly Map _map;
+    private readonly IMapNavigator _mapNavigator;
+    private readonly SourceList<FootprintPreview> _footprintPreviews = new();
+    private readonly SourceList<FootprintPreviewGeometry> _geometries = new();
     private readonly ReadOnlyObservableCollection<FootprintPreviewViewModel> _items;
-    private readonly ObservableAsPropertyHelper<IDictionary<string, Geometry>> _geometries;
+    private readonly ReadOnlyObservableCollection<FootprintPreviewGeometry> _geometryItems;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
     public FootprintPreviewTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        _map = (Map)dependencyResolver.GetExistingService<IMap>();
+        _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         Filter = new FootprintPreviewTabFilterViewModel(dependencyResolver);
 
@@ -36,80 +44,113 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         _footprintPreviews
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new FootprintPreviewViewModel(s))
             .Filter(Filter.FilterObservable)
             .Bind(out _items)
             .Subscribe();
 
-        Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
+        _geometries
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _geometryItems)
+            .Subscribe();
 
-        LoadingGeometries = ReactiveCommand.CreateFromTask(LoadingGeometriesImpl);
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Delay = ReactiveCommand.CreateFromTask(() => Task.Delay(TimeSpan.FromSeconds(1.5)));
+        _isLoading = Update.IsExecuting
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .ToProperty(this, x => x.IsLoading);
 
-        Enter = ReactiveCommand.Create<FootprintPreviewViewModel, FootprintPreviewViewModel>(s => s);
+        Enter = ReactiveCommand.Create<FootprintPreviewViewModel>(EnterImpl);
 
-        Leave = ReactiveCommand.Create(() => { });
+        Leave = ReactiveCommand.Create(LeaveImpl);
 
-        _isLoading = Delay.IsExecuting
-                          .ObserveOn(RxApp.MainThreadScheduler)
-                          .ToProperty(this, x => x.IsLoading);
-
-        // TODO: duplicates           
-        _geometries = LoadingGeometries
-            .Select(s => s.ToDictionary(s => s.Name!, s => s.Geometry!))
-            .ToProperty(this, x => x.Geometries);
-
-        // TODO: remove this
-        LoadingGeometries.Execute().Subscribe();
-
-        // First loading
-        //this.WhenAnyValue(s => s.IsActive)
-        //    .Take(1)
-        //    .Where(active => active == true)
-        //    .Select(_ => Unit.Default)
-        //    .InvokeCommand(LoadFootprintPreviewGeometry);
+        this.WhenAnyValue(s => s.SelectedItem)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .InvokeCommand(ReactiveCommand.Create<FootprintPreviewViewModel?>(SelectImpl));
 
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            //.Take(1)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Loading);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Delay);
+            .WhereTrue()
+            .ToSignal()
+            .InvokeCommand(Update);
     }
 
-    public ReactiveCommand<Unit, Unit> Loading { get; }
+    public ReactiveCommand<Unit, Unit> Update { get; }
 
-    private ReactiveCommand<Unit, Unit> Delay { get; }
-
-    private ReactiveCommand<Unit, IList<FootprintPreviewGeometry>> LoadingGeometries { get; }
-
-    public ReactiveCommand<FootprintPreviewViewModel, FootprintPreviewViewModel> Enter { get; }
+    public ReactiveCommand<FootprintPreviewViewModel, Unit> Enter { get; }
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
 
     public bool IsLoading => _isLoading.Value;
 
-    private async Task LoadingImpl()
+    private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
-        var list = res.Select(s => new FootprintPreviewViewModel(s)).ToList();
+        var footprintPreviews = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
+        var geometries = await _dataManager.GetDataAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
 
         _footprintPreviews.Edit(innerList =>
         {
             innerList.Clear();
-            innerList.AddRange(list);
+            innerList.AddRange(footprintPreviews);
+        });
+
+        _geometries.Edit(innerList =>
+        {
+            innerList.Clear();
+            innerList.AddRange(geometries);
         });
     }
 
-    private async Task<IList<FootprintPreviewGeometry>> LoadingGeometriesImpl()
+    private void EnterImpl(FootprintPreviewViewModel footprintPreview)
     {
-        return await _dataManager.GetDataAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
+        var geometry = Geometries
+            .Where(s => Equals(s.Name, footprintPreview.Name))
+            .Select(s => s.Geometry)
+            .FirstOrDefault();
+
+        if (geometry != null)
+        {
+            var layer = _map.GetLayer(LayerType.FootprintImageBorder);
+
+            if (layer != null && layer is WritableLayer writableLayer)
+            {
+                writableLayer.Clear();
+                writableLayer.Add(new GeometryFeature() { Geometry = geometry });
+                writableLayer.DataHasChanged();
+            }
+        }
+    }
+
+    private void LeaveImpl()
+    {
+        var layer = _map.GetLayer(LayerType.FootprintImageBorder);
+
+        if (layer != null && layer is WritableLayer writableLayer)
+        {
+            writableLayer.Clear();
+            writableLayer.DataHasChanged();
+        }
+    }
+
+    private void SelectImpl(FootprintPreviewViewModel? footprintPreview)
+    {
+        if (footprintPreview != null && footprintPreview.Path != null)
+        {
+            var layer = MapsuiHelper.CreateMbTilesLayer(footprintPreview.Path);
+
+            _map.ReplaceLayer(layer, LayerType.FootprintImage);
+
+            var geometry = Geometries
+                .Where(s => Equals(s.Name, footprintPreview.Name))
+                .Select(s => s.Geometry)
+                .FirstOrDefault();
+
+            if (geometry != null)
+            {
+                _mapNavigator.SetFocusToPoint(geometry.Centroid.ToMPoint());
+            }
+        }
     }
 
     public void SetAOI(Geometry aoi) => ((FootprintPreviewTabFilterViewModel)Filter).AOI = aoi;
@@ -118,9 +159,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     public IFilter<FootprintPreviewViewModel> Filter { get; }
 
-    public IDictionary<string, Geometry> Geometries => _geometries.Value;
-
-    public IObservable<FootprintPreviewViewModel?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
+    private ReadOnlyObservableCollection<FootprintPreviewGeometry> Geometries => _geometryItems;
 
     public ReadOnlyObservableCollection<FootprintPreviewViewModel> Items => _items;
 
