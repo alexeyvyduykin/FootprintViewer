@@ -2,7 +2,6 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Reactive;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
@@ -13,6 +12,8 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
     private readonly Satellite _satellite;
     private readonly int _minNode = 1;
     private readonly int _maxNode;
+    private readonly IObservable<SatelliteViewModel> _trackObservable;
+    private readonly IObservable<SatelliteViewModel> _stripsObservable;
 
     public SatelliteViewModel(Satellite satellite)
     {
@@ -26,22 +27,18 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
 
         CurrentNode = 1;
 
-        ShowInfoClick = ReactiveCommand.Create(ShowInfoClickImpl);
+        _trackObservable = this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsTrack)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(_ => this);
+
+        _stripsObservable = this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsLeftStrip, s => s.IsRightStrip)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(_ => this);
     }
 
-    public IObservable<SatelliteViewModel> TrackObservable =>
-        this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsTrack)
-        .ObserveOn(RxApp.MainThreadScheduler)
-        .Select(_ => this);
+    public IObservable<SatelliteViewModel> TrackObservable => _trackObservable;
 
-    public IObservable<SatelliteViewModel> StripsObservable =>
-        this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsLeftStrip, s => s.IsRightStrip)
-        .ObserveOn(RxApp.MainThreadScheduler)
-        .Select(_ => this);
-
-    private void ShowInfoClickImpl() => IsShowInfo = !IsShowInfo;
-
-    public ReactiveCommand<Unit, Unit> ShowInfoClick { get; }
+    public IObservable<SatelliteViewModel> StripsObservable => _stripsObservable;
 
     public string Name => _name;
 

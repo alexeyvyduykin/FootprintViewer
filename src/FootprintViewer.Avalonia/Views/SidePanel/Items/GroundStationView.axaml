@@ -23,7 +23,7 @@
 		<conv:FullCoordinateConverter x:Key="CoordinateConv"/>
 	</UserControl.Resources>
 
-	<styles:ColorZone Padding="8">
+	<styles:ColorZone Padding="8,8,16,8">
 
 		<Grid RowDefinitions="Auto,Auto">
 

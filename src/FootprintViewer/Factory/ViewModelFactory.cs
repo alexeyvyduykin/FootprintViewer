@@ -108,7 +108,7 @@ public class ViewModelFactory
 
         dataManager.DataChanged
             .ToSignal()
-            .InvokeCommand(tab.Loading);
+            .InvokeCommand(tab.Update);
 
         return tab;
     }

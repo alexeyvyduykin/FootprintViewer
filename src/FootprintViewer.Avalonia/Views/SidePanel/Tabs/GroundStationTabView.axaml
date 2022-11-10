@@ -14,22 +14,26 @@
 	</Design.DataContext>
 
 	<Panel>
+		
 		<ProgressBar IsVisible="{Binding IsLoading}"
 					 Classes="Circle"
 					 VerticalAlignment="Center"
 					 HorizontalAlignment="Center"
 					 IsIndeterminate="True"/>
 
-		<ItemsControl Items="{Binding Items}"
-					  IsVisible="{Binding !IsLoading}"
-					  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-					  ScrollViewer.VerticalScrollBarVisibility="Auto">
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<itemsView:GroundStationView DataContext="{Binding}"/>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<ItemsControl Items="{Binding Items}"
+						  IsVisible="{Binding !IsLoading}"
+						  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<itemsView:GroundStationView DataContext="{Binding}"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
 	</Panel>
 
 </UserControl>
