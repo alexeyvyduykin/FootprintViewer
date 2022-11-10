@@ -106,7 +106,7 @@
 					<ItemsControl Items="{Binding AreaItems}"
 								  Margin="0,16,0,0">
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="items:GroundStationAreaItem">
+							<DataTemplate DataType="items:GroundStationAreaViewModel">
 								<Grid ColumnDefinitions="40, 30, *">
 									<Border Background="{Binding Color, Converter={StaticResource BrushConv}}"/>
 									<TextBlock Text="-"

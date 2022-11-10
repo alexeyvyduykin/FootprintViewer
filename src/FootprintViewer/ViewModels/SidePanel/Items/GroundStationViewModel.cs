@@ -1,27 +1,27 @@
-﻿using FootprintViewer.Data;
+﻿using DynamicData;
+using FootprintViewer.Data;
 using FootprintViewer.Styles;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class GroundStationAreaItem
-{
-    public Mapsui.Styles.Color Color { get; set; } = new Mapsui.Styles.Color();
-
-    public double Angle { get; set; }
-}
-
 public class GroundStationViewModel : ViewModelBase, IViewerItem
 {
+    private readonly SourceList<GroundStationAreaViewModel> _gsAreas = new();
+    private readonly ReadOnlyObservableCollection<GroundStationAreaViewModel> _items;
     private readonly Coordinate _center;
     private readonly string _name;
     private readonly double[] _defaultAngles;
+    private readonly IObservable<GroundStationViewModel> _updateObservable;
+    private readonly IList<string> _availableCountModes = new[] { "None", "Equal", "Geometric" };
+    private readonly IList<int> _availableAreaCounts = new int[] { 1, 2, 3, 4, 5 };
 
     public GroundStationViewModel(GroundStation groundStation)
     {
@@ -37,67 +37,101 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
 
         AreaCount = groundStation.Angles.Length - 1;
 
-        AreaItems = CreateAreaItems(_defaultAngles);
+        _gsAreas
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
 
-        ChangeAreaItems = ReactiveCommand.Create<List<GroundStationAreaItem>, List<GroundStationAreaItem>>(s => s);
-
-        ChangeAreaItems.ToPropertyEx(this, x => x.AreaItems);
-
-        this.WhenAnyValue(s => s.InnerAngle).Subscribe(value =>
-        {
-            if (value >= OuterAngle)
+        this.WhenAnyValue(s => s.InnerAngle)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(value =>
             {
-                InnerAngle -= 1;
-            }
-        });
+                if (value >= OuterAngle)
+                {
+                    InnerAngle -= 1;
+                }
+            });
 
-        this.WhenAnyValue(s => s.OuterAngle).Subscribe(value =>
-        {
-            if (value == 0)
+        this.WhenAnyValue(s => s.OuterAngle)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(value =>
             {
-                OuterAngle = 1;
-            }
+                if (value == 0)
+                {
+                    OuterAngle = 1;
+                }
 
-            if (value <= InnerAngle)
-            {
-                InnerAngle = value - 1;
-            }
-        });
+                if (value <= InnerAngle)
+                {
+                    InnerAngle = value - 1;
+                }
+            });
 
         this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
-            .Where(s => s.Item4 == "Equal")
-            .Select(s => CreateAreaItemsEqualMode(s.Item1, s.Item2, s.Item3))
-            .InvokeCommand(ChangeAreaItems);
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(s => CreateAngles(s.Item1, s.Item2, s.Item3, s.Item4))
+            .InvokeCommand(ReactiveCommand.Create<double[]>(UpdateAreas));
 
-        this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
-            .Where(s => s.Item4 == "Geometric")
-            .Select(s => CreateAreaItemsGeometricMode(s.Item1, s.Item2, s.Item3))
-            .InvokeCommand(ChangeAreaItems);
-
-        this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
-            .Where(s => s.Item4 == "None")
-            .Select(s =>
-            {
-                InnerAngle = _defaultAngles.First();
-                OuterAngle = _defaultAngles.Last();
-                AreaCount = _defaultAngles.Length - 1;
-                return CreateAreaItems(_defaultAngles);
-            })
-            .InvokeCommand(ChangeAreaItems);
-    }
-
-    public IObservable<GroundStationViewModel> UpdateObservable =>
-        this.WhenAnyValue(s => s.IsShow)
+        var observable1 = this.WhenAnyValue(s => s.IsShow)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Select(_ => this);
 
-    public IObservable<GroundStationViewModel> ChangeObservable =>
-        this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+        var observable2 = this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1.5))
             .Select(_ => this);
 
-    private ReactiveCommand<List<GroundStationAreaItem>, List<GroundStationAreaItem>> ChangeAreaItems { get; }
+        _updateObservable = Observable.Merge(observable1, observable2);
+
+        Observable.Start(() => UpdateAreas(_defaultAngles.Skip(1).ToArray()), RxApp.MainThreadScheduler).Subscribe();
+    }
+
+    public IObservable<GroundStationViewModel> UpdateObservable => _updateObservable;
+
+    private void UpdateAreas(double[] angles)
+    {
+        var list = angles.Select((angle, index) => BuildGroundStationArea(angle, index, angles.Length));
+
+        _gsAreas.Edit(innerList =>
+        {
+            innerList.Clear();
+            innerList.AddRange(list);
+        });
+
+        static GroundStationAreaViewModel BuildGroundStationArea(double angle, int index, int count)
+        {
+            var color = LayerStyleManager.GroundStationPalette.GetColor(index, count);
+
+            return new GroundStationAreaViewModel()
+            {
+                Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
+                Angle = angle
+            };
+        }
+    }
+
+    private double[] CreateAngles(double innerAngle, double outerAngle, int areaCount, string countMode)
+    {
+        if (string.Equals(countMode, "Equal") == true)
+        {
+            return CreateAreaItemsEqualMode(innerAngle, outerAngle, areaCount);
+        }
+        else if (string.Equals(countMode, "Geometric") == true)
+        {
+            return CreateAreaItemsGeometricMode(innerAngle, outerAngle, areaCount);
+        }
+        else if (string.Equals(countMode, "None") == true)
+        {
+            InnerAngle = _defaultAngles.First();
+            OuterAngle = _defaultAngles.Last();
+            AreaCount = _defaultAngles.Length - 1;
+
+            return _defaultAngles.Skip(1).ToArray();
+        }
+
+        throw new Exception();
+    }
 
     public double[] GetAngles()
     {
@@ -113,53 +147,25 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
         return list.ToArray();
     }
 
-    private static List<GroundStationAreaItem> CreateAreaItems(double[] angles)
-    {
-        var areaCount = angles.Length - 1;
-
-        var list = new List<GroundStationAreaItem>();
-
-        for (int i = 0; i < areaCount; i++)
-        {
-            var angle = angles[i + 1];
-
-            var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
-
-            list.Add(new GroundStationAreaItem()
-            {
-                Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
-                Angle = angle,
-            });
-        }
-
-        return list;
-    }
-
-    private static List<GroundStationAreaItem> CreateAreaItemsEqualMode(double inner, double outer, int areaCount)
+    private static double[] CreateAreaItemsEqualMode(double inner, double outer, int areaCount)
     {
         var areaStep = (outer - inner) / areaCount;
 
-        var list = new List<GroundStationAreaItem>();
+        var list = new List<double>();
 
         for (int i = 0; i < areaCount; i++)
         {
             var angle = inner + areaStep * (i + 1);
 
-            var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
-
-            list.Add(new GroundStationAreaItem()
-            {
-                Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
-                Angle = angle,
-            });
+            list.Add(angle);
         }
 
-        return list;
+        return list.ToArray();
     }
 
-    private static List<GroundStationAreaItem> CreateAreaItemsGeometricMode(double inner, double outer, int areaCount)
+    private static double[] CreateAreaItemsGeometricMode(double inner, double outer, int areaCount)
     {
-        var list = new List<GroundStationAreaItem>();
+        var list = new List<double>();
 
         for (int i = 0; i < areaCount; i++)
         {
@@ -167,16 +173,10 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
 
             var angle = inner + step;
 
-            var color = LayerStyleManager.GroundStationPalette.GetColor(i, areaCount);
-
-            list.Add(new GroundStationAreaItem()
-            {
-                Color = new Mapsui.Styles.Color(color.R, color.G, color.B),
-                Angle = angle,
-            });
+            list.Add(angle);
         }
 
-        return list;
+        return list.ToArray();
     }
 
     private static double GetGeometricStep(int n, int count)
@@ -196,8 +196,7 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
         return value;
     }
 
-    [ObservableAsProperty]
-    public List<GroundStationAreaItem> AreaItems { get; }
+    public ReadOnlyObservableCollection<GroundStationAreaViewModel> AreaItems => _items;
 
     public string Name => _name;
 
@@ -212,12 +211,12 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
     [Reactive]
     public string CountMode { get; set; }
 
-    public IList<string> AvailableCountModes => new[] { "None", "Equal", "Geometric" };
+    public IList<string> AvailableCountModes => _availableCountModes;
 
     [Reactive]
     public int AreaCount { get; set; }
 
-    public IList<int> AvailableAreaCounts => new int[] { 1, 2, 3, 4, 5 };
+    public IList<int> AvailableAreaCounts => _availableAreaCounts;
 
     [Reactive]
     public bool IsShow { get; set; } = false;
