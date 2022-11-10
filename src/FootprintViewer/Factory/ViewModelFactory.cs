@@ -1,11 +1,6 @@
-﻿using FootprintViewer.Layers;
-using FootprintViewer.ViewModels.SidePanel.Tabs;
-using Mapsui;
-using Mapsui.Layers;
+﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Reactive.Linq;
 
 namespace FootprintViewer;
 
@@ -59,43 +54,13 @@ public class ViewModelFactory
 
     public GroundTargetTabViewModel CreateGroundTargetTab()
     {
-        var map = _dependencyResolver.GetExistingService<IMap>();
-        var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
-        var targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
+
         var tab = new GroundTargetTabViewModel(_dependencyResolver);
-
-        tab.SelectedItemObservable.Subscribe(groundTarget =>
-        {
-            if (groundTarget != null)
-            {
-                var name = groundTarget.Name;
-
-                if (string.IsNullOrEmpty(name) == false)
-                {
-                    targetManager?.SelectFeature(name);
-                }
-            }
-        });
-
-        tab.Enter.Subscribe(groundTarget =>
-        {
-            var name = groundTarget.Name;
-
-            if (name != null)
-            {
-                targetManager?.ShowHighlight(name);
-            }
-        });
-
-        tab.Leave.Subscribe(_ =>
-        {
-            targetManager?.HideHighlight();
-        });
 
         dataManager.DataChanged
             .ToSignal()
-            .InvokeCommand(tab.Loading);
+            .InvokeCommand(tab.Update);
 
         return tab;
     }

@@ -2,7 +2,10 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
+using Mapsui;
+using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -18,103 +21,106 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
 public class GroundTargetTabViewModel : SidePanelTabViewModel
 {
-    private readonly Data.DataManager.IDataManager _dataManager;
-    private readonly ITargetLayerSource _source;
-    private readonly SourceList<GroundTargetViewModel> _groundTargets = new();
+    private readonly IDataManager _dataManager;
+    private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly ObservableAsPropertyHelper<bool> _isEnable;
-    private readonly ObservableAsPropertyHelper<string[]?> _names;
+    private readonly LayerManager? _targetManager;
 
     public GroundTargetTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        _dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
-        _source = dependencyResolver.GetExistingService<ITargetLayerSource>();
+        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var map = dependencyResolver.GetExistingService<IMap>();
+        var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
+        _targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
 
         Title = "Просмотр наземных целей";
 
-        NameFilter = new NameFilter<GroundTargetViewModel>();
+        Filter = new GroundTargetNameFilterViewModel(dependencyResolver);
 
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Filter(NameFilter.FilterObservable)
+            .Transform(s => new GroundTargetViewModel(s))
+            .Filter(Filter.FilterObservable)
             .Bind(out _items)
             .Subscribe();
 
-        Loading = ReactiveCommand.CreateFromTask(LoadingImpl);
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Delay = ReactiveCommand.CreateFromTask(() => Task.Delay(TimeSpan.FromSeconds(1.0)));
+        this.WhenAnyValue(s => s.SelectedItem)
+            .InvokeCommand(ReactiveCommand.Create<GroundTargetViewModel?>(SelectImpl));
 
-        Enter = ReactiveCommand.Create<GroundTargetViewModel, GroundTargetViewModel>(s => s);
+        Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
 
-        Leave = ReactiveCommand.Create(() => { });
+        Leave = ReactiveCommand.Create(LeaveImpl);
 
-        _isLoading = Delay.IsExecuting
+        _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
                           .ToProperty(this, x => x.IsLoading);
 
-        _names = _source.Refresh
+        this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .ToProperty(this, x => x.Names);
-
-        _source.Refresh
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Delay);
+            .Subscribe(s => Filter.IsActive = s);
 
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            .Take(1)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Loading);
+            .WhereTrue()
+            .ToSignal()
+            .InvokeCommand(Update);
 
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(Delay);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(active => active == true)
-            .Subscribe(_ => NameFilter.FilterNames = Names);
-
-        this.WhenAnyValue(s => s.Names)
-            .Where(_ => IsActive == true)
-            .Subscribe(names => NameFilter.FilterNames = names);
-
-        _isEnable = this.WhenAnyValue(s => s.NameFilter.FilterNames)
-            .Select(s => s != null)
+        _isEnable = Filter.EnableFilterObservable
             .ToProperty(this, x => x.IsEnable);
     }
 
-    protected NameFilter<GroundTargetViewModel> NameFilter { get; }
+    protected GroundTargetNameFilterViewModel Filter { get; }
 
-    public IObservable<GroundTargetViewModel?> SelectedItemObservable => this.WhenAnyValue(s => s.SelectedItem);
+    public ReactiveCommand<Unit, Unit> Update { get; }
 
-    public ReactiveCommand<Unit, Unit> Loading { get; }
-
-    private ReactiveCommand<Unit, Unit> Delay { get; }
-
-    public ReactiveCommand<GroundTargetViewModel, GroundTargetViewModel> Enter { get; }
+    public ReactiveCommand<GroundTargetViewModel, Unit> Enter { get; }
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
 
-    private string[]? Names => _names.Value;
-
-    private async Task LoadingImpl()
+    private async Task UpdateImpl()
     {
         var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
 
-        var list = res.Select(s => new GroundTargetViewModel(s)).ToList();
+        Console.WriteLine("GroundTargetTab -> UpdateImpl()");
 
         _groundTargets.Edit(innerList =>
         {
             innerList.Clear();
-            innerList.AddRange(list);
+            innerList.AddRange(res);
         });
+    }
+
+    private void EnterImpl(GroundTargetViewModel groundTarget)
+    {
+        var name = groundTarget.Name;
+
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            _targetManager?.ShowHighlight(name);
+        }
+    }
+
+    private void LeaveImpl()
+    {
+        _targetManager?.HideHighlight();
+    }
+
+    private void SelectImpl(GroundTargetViewModel? groundTarget)
+    {
+        if (groundTarget != null)
+        {
+            var name = groundTarget.Name;
+
+            if (string.IsNullOrEmpty(name) == false)
+            {
+                _targetManager?.SelectFeature(name);
+            }
+        }
     }
 
     public async Task<List<GroundTargetViewModel>> GetGroundTargetViewModelsAsync(string name)

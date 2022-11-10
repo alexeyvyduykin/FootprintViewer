@@ -12,8 +12,7 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:filtersView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Filters"
-             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-             x:Name="SceneSearchTabName"
+             xmlns:prop="using:FootprintViewer.Avalonia.Properties"           
 			 x:DataType="tabs:FootprintPreviewTabViewModel"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850">
@@ -21,6 +20,17 @@
 	<Design.DataContext>
 		<vmd:DesignTimeFootprintPreviewTab/>
 	</Design.DataContext>
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">
+			<itemsView:FootprintPreviewView DataContext="{Binding}">
+				<i:Interaction.Behaviors>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+				</i:Interaction.Behaviors>
+			</itemsView:FootprintPreviewView>
+		</DataTemplate>
+	</UserControl.Resources>
 
 	<UserControl.Styles>
 		<Style Selector="FlyoutPresenter">
@@ -52,21 +62,11 @@
 						 HorizontalAlignment="Center"
 						 IsIndeterminate="True"/>
 
-			<ListBox Items="{Binding Items}"
+			<ListBox IsVisible="{Binding !IsLoading}"
+					 Items="{Binding Items}"
 					 SelectedItem="{Binding SelectedItem}"
-					 IsVisible="{Binding !IsLoading}"
-					 ScrollViewer.VerticalScrollBarVisibility="Visible">
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="items:FootprintPreviewViewModel">
-						<itemsView:FootprintPreviewView DataContext="{Binding}">
-							<i:Interaction.Behaviors>
-								<behaviors:PointerEnterEventBehavior Command="{Binding #SceneSearchTabName.DataContext.Enter}"/>
-								<behaviors:PointerLeaveEventBehavior Command="{Binding #SceneSearchTabName.DataContext.Leave}"/>
-							</i:Interaction.Behaviors>
-						</itemsView:FootprintPreviewView>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+					 ItemTemplate="{StaticResource FootprintPreviewItemTemplate}"
+					 ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 		</Grid>
 
 	</Grid>
