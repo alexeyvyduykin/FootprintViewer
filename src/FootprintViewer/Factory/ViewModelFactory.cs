@@ -81,11 +81,12 @@ public class ViewModelFactory
     public UserGeometryTabViewModel CreateUserGeometryTab()
     {
         var dataManager = _dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+
         var tab = new UserGeometryTabViewModel(_dependencyResolver);
 
         dataManager.DataChanged
             .ToSignal()
-            .InvokeCommand(tab.Loading);
+            .InvokeCommand(tab.Update);
 
         return tab;
     }

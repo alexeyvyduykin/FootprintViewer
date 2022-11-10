@@ -86,8 +86,6 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
     {
         var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
 
-        Console.WriteLine("GroundTargetTab -> UpdateImpl()");
-
         _groundTargets.Edit(innerList =>
         {
             innerList.Clear();
