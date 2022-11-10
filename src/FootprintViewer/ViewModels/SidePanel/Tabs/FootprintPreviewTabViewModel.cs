@@ -61,6 +61,10 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
+        _dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(Update);
+
         Enter = ReactiveCommand.Create<FootprintPreviewViewModel>(EnterImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);

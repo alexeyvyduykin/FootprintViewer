@@ -75,13 +75,11 @@ public static class Bootstrapper
     {
         services.RegisterConstant<TaskLoader>(new TaskLoader());
         services.Register(() => new ProjectFactory(resolver));
-        services.Register(() => new ViewModelFactory(resolver));
         services.Register(() => new MapFactory(resolver));
 
         var factory = resolver.GetExistingService<ProjectFactory>();
         var dataFactory = resolver.GetExistingService<IDataFactory>();
         var mapFactory = resolver.GetExistingService<MapFactory>();
-        var viewModelFactory = resolver.GetExistingService<ViewModelFactory>();
 
         // LanguageManager
         services.RegisterConstant(factory.CreateLanguageManager(), typeof(ILanguageManager));
@@ -96,12 +94,12 @@ public static class Bootstrapper
         services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
         services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
 
-        services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => viewModelFactory.CreateFootprintPreviewTab());
-        services.RegisterLazySingleton<SatelliteTabViewModel>(() => viewModelFactory.CreateSatelliteTab());
-        services.RegisterLazySingleton<GroundTargetTabViewModel>(() => viewModelFactory.CreateGroundTargetTab());
-        services.RegisterLazySingleton<FootprintTabViewModel>(() => viewModelFactory.CreateFootprintTab());
-        services.RegisterLazySingleton<UserGeometryTabViewModel>(() => viewModelFactory.CreateUserGeometryTab());
-        services.RegisterLazySingleton<GroundStationTabViewModel>(() => viewModelFactory.CreateGroundStationTab());
+        services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => new FootprintPreviewTabViewModel(resolver));
+        services.RegisterLazySingleton<SatelliteTabViewModel>(() => new SatelliteTabViewModel(resolver));
+        services.RegisterLazySingleton<GroundTargetTabViewModel>(() => new GroundTargetTabViewModel(resolver));
+        services.RegisterLazySingleton<FootprintTabViewModel>(() => new FootprintTabViewModel(resolver));
+        services.RegisterLazySingleton<UserGeometryTabViewModel>(() => new UserGeometryTabViewModel(resolver));
+        services.RegisterLazySingleton<GroundStationTabViewModel>(() => new GroundStationTabViewModel(resolver));
         services.RegisterLazySingleton<SettingsTabViewModel>(() => new SettingsTabViewModel(resolver));
 
         services.RegisterLazySingleton<CustomToolBarViewModel>(() => new CustomToolBarViewModel(resolver));

@@ -49,6 +49,10 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
+        _dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(Update);
+
         this.WhenAnyValue(s => s.SelectedItem)
             .InvokeCommand(ReactiveCommand.Create<GroundTargetViewModel?>(SelectImpl));
 

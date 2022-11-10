@@ -23,7 +23,6 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private Map? _map;
     private IMapNavigator? _mapNavigator;
     private ProjectFactory? _projectFactory;
-    private ViewModelFactory? _viewModelFactory;
     private ITargetLayerSource? _targetLayerSource;
     private SatelliteTabViewModel? _satelliteTab;
     private FootprintTabViewModel? _footprintTab;
@@ -42,10 +41,6 @@ public class DesignTimeData : IReadonlyDependencyResolver
         if (serviceType == typeof(ProjectFactory))
         {
             return _projectFactory ??= new ProjectFactory(this);
-        }
-        else if (serviceType == typeof(ViewModelFactory))
-        {
-            return _viewModelFactory ??= new ViewModelFactory(this);
         }
         else if (serviceType == typeof(IMap))
         {

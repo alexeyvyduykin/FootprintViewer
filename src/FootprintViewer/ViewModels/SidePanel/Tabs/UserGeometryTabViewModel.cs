@@ -36,6 +36,10 @@ public class UserGeometryTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
+        _dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(Update);
+
         Remove = ReactiveCommand.CreateFromTask<UserGeometryViewModel?>(RemoveAsync);
 
         _isLoading = Update.IsExecuting

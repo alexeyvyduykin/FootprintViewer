@@ -48,6 +48,10 @@ public class FootprintTabViewModel : SidePanelTabViewModel
                           .ObserveOn(RxApp.MainThreadScheduler)
                           .ToProperty(this, x => x.IsLoading);
 
+        _dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(Update);
+
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
             .WhereTrue()

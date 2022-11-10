@@ -39,6 +39,10 @@ public class GroundStationTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
+        _dataManager.DataChanged
+            .ToSignal()
+            .InvokeCommand(Update);
+
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
