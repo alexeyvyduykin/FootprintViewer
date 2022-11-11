@@ -17,14 +17,15 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
-public class TrackProvider : IProvider, IDynamic
+public class SensorProvider : IProvider, IDynamic
 {
-    private Dictionary<string, Dictionary<int, List<IFeature>>> _dict = new();
+    private Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft = new();
+    private Dictionary<string, Dictionary<int, List<IFeature>>> _dictRight = new();
     private Dictionary<string, List<IFeature>> _cache = new();
     private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public TrackProvider(IReadonlyDependencyResolver dependencyResolver)
+    public SensorProvider(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
@@ -49,7 +50,8 @@ public class TrackProvider : IProvider, IDynamic
     {
         var satellites = await _dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
 
-        _dict = await CreateDataAsync(satellites);
+        _dictLeft = await CreateLeftDataAsync(satellites);
+        _dictRight = await CreateRightDataAsync(satellites);
 
         _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
 
@@ -60,17 +62,27 @@ public class TrackProvider : IProvider, IDynamic
     {
         var name = satellite.Name;
         var node = satellite.CurrentNode;
-        var isShow = satellite.IsShow && satellite.IsTrack;
+        var isShowLeft = satellite.IsShow && satellite.IsLeftStrip;
+        var isShowRight = satellite.IsShow && satellite.IsRightStrip;
 
         if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
         {
             _cache[name].Clear();
 
-            if (isShow == true)
+            if (isShowLeft == true)
             {
-                if (_dict.ContainsKey(name) == true && _dict[name].ContainsKey(node) == true)
+                if (_dictLeft.ContainsKey(name) == true && _dictLeft[name].ContainsKey(node) == true)
                 {
-                    var features = _dict[name][node];
+                    var features = _dictLeft[name][node];
+                    _cache[name].AddRange(features);
+                }
+            }
+
+            if (isShowRight == true)
+            {
+                if (_dictRight.ContainsKey(name) == true && _dictRight[name].ContainsKey(node) == true)
+                {
+                    var features = _dictRight[name][node];
                     _cache[name].AddRange(features);
                 }
             }
@@ -86,23 +98,41 @@ public class TrackProvider : IProvider, IDynamic
         }
     }
 
-    private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateDataAsync(IList<Satellite> satellites)
+    private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateLeftDataAsync(IList<Satellite> satellites)
     {
         return await Task.Run(() =>
         {
-            var tracks = TrackBuilder.Create(satellites);
-
-            var _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            var leftStrips = StripBuilder.CreateLeft(satellites);
+            var _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             foreach (var sat in satellites)
             {
                 var name = sat.Name!;
-                var dict = FeatureBuilder.BuildTrack(name, tracks[name]);
+                var dictLeft = FeatureBuilder.Build(name, leftStrips[name]);
 
-                _dict.Add(name, dict);
+                _dictLeft.Add(name, dictLeft);
             }
 
-            return _dict;
+            return _dictLeft;
+        });
+    }
+
+    private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateRightDataAsync(IList<Satellite> satellites)
+    {
+        return await Task.Run(() =>
+        {
+            var rightStrips = StripBuilder.CreateRight(satellites);
+            var _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+
+            foreach (var sat in satellites)
+            {
+                var name = sat.Name!;
+                var dictRight = FeatureBuilder.Build(name, rightStrips[name]);
+
+                _dictright.Add(name, dictRight);
+            }
+
+            return _dictright;
         });
     }
 

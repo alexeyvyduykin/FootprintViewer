@@ -136,7 +136,6 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider)
         {
-            // DataSource = provider,
             Style = styleManager.TrackStyle,
             IsMapInfoLayer = false,
         };
@@ -164,31 +163,16 @@ public class MapFactory
 
     private static ILayer CreateSensorLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var provider = dependencyResolver.GetExistingService<SensorProvider>();
 
-        var layer = new SensorLayer()
+        var layer = new DynamicLayer(provider)
         {
             Style = styleManager.SensorStyle,
             IsMapInfoLayer = false,
         };
 
-        dataManager.DataChanged
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
-
-
-        loader.AddTaskAsync(() => LoadingAsync());
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
-
-            layer.UpdateData(satellites);
-        }
     }
 
     private static ILayer CreateUserLayer(IReadonlyDependencyResolver dependencyResolver)

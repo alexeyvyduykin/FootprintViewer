@@ -1,10 +1,8 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.ViewModels.SidePanel.Items;
-using Mapsui;
 using ReactiveUI;
 using Splat;
 using System;
@@ -18,8 +16,8 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
 public class SatelliteTabViewModel : SidePanelTabViewModel
 {
-    private readonly SensorLayer? _sensorLayer;
     private readonly TrackProvider? _trackProvider;
+    private readonly SensorProvider? _sensorProvider;
     private readonly SourceList<SatelliteViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -28,9 +26,8 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
     public SatelliteTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var map = (Map)dependencyResolver.GetExistingService<IMap>();
-        _sensorLayer = map.GetLayer<SensorLayer>(LayerType.Sensor);
         _trackProvider = dependencyResolver.GetExistingService<TrackProvider>();
+        _sensorProvider = dependencyResolver.GetExistingService<SensorProvider>();
 
         Title = "Просмотр спутников";
 
@@ -70,7 +67,7 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
         foreach (var item in list)
         {
             item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s));
-            item.StripsObservable.Subscribe(s => _sensorLayer?.Update(s));
+            item.StripsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
         }
 
         _satellites.Edit(innerList =>
