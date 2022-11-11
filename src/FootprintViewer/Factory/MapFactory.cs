@@ -103,30 +103,16 @@ public class MapFactory
 
     private static ILayer CreateGroundStationLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var provider = dependencyResolver.GetExistingService<GroundStationProvider>();
 
-        var layer = new GroundStationLayer()
+        var layer = new DynamicLayer(provider)
         {
             Style = styleManager.GroundStationStyle,
             IsMapInfoLayer = false,
         };
 
-        dataManager.DataChanged
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
-
-        loader.AddTaskAsync(() => LoadingAsync());
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            var groundStations = await dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
-
-            layer.UpdateData(groundStations);
-        }
     }
 
     private static ILayer CreateTrackLayer(IReadonlyDependencyResolver dependencyResolver)

@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
@@ -108,7 +107,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
         map.AddLayer(new Layer(), LayerType.WorldMap);
         map.AddLayer(new Layer(), LayerType.Footprint);
         map.AddLayer(new Layer(), LayerType.GroundTarget);
-        map.AddLayer(new GroundStationLayer(), LayerType.GroundStation);
+        map.AddLayer(new Layer(), LayerType.GroundStation);
         map.AddLayer(new Layer(), LayerType.Track);
         map.AddLayer(new Layer(), LayerType.Sensor);
         map.AddLayer(new Layer(), LayerType.User);

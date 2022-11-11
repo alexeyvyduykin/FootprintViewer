@@ -1,9 +1,8 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.ViewModels.SidePanel.Items;
-using Mapsui;
 using ReactiveUI;
 using Splat;
 using System;
@@ -21,13 +20,12 @@ public class GroundStationTabViewModel : SidePanelTabViewModel
     private readonly SourceList<GroundStationViewModel> _groundStation = new();
     private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly GroundStationLayer? _layer;
+    private readonly GroundStationProvider? _provider;
 
     public GroundStationTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var map = (Map)dependencyResolver.GetExistingService<IMap>();
-        _layer = map.GetLayer<GroundStationLayer>(LayerType.GroundStation);
+        _provider = dependencyResolver.GetExistingService<GroundStationProvider>();
 
         Title = "Просмотр наземных станций";
 
@@ -66,7 +64,7 @@ public class GroundStationTabViewModel : SidePanelTabViewModel
 
         foreach (var item in list)
         {
-            item.UpdateObservable.Subscribe(s => _layer?.Update(s));
+            item.UpdateObservable.Subscribe(s => _provider?.ChangedData(s));
         }
 
         _groundStation.Edit(innerList =>
