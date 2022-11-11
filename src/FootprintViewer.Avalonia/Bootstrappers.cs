@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.Styles;
@@ -90,7 +89,9 @@ public static class Bootstrapper
 
         services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
+        // Layer providers
         services.RegisterConstant(new GroundTargetProvider(resolver), typeof(GroundTargetProvider));
+        services.RegisterConstant(new TrackProvider(resolver), typeof(TrackProvider));
 
         services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
         services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));

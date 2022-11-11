@@ -109,7 +109,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
         map.AddLayer(new Layer(), LayerType.Footprint);
         map.AddLayer(new Layer(), LayerType.GroundTarget);
         map.AddLayer(new GroundStationLayer(), LayerType.GroundStation);
-        map.AddLayer(new TrackLayer(), LayerType.Track);
+        map.AddLayer(new Layer(), LayerType.Track);
         map.AddLayer(new SensorLayer(), LayerType.Sensor);
         map.AddLayer(new Layer(), LayerType.User);
         return map;

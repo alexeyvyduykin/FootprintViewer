@@ -131,30 +131,17 @@ public class MapFactory
 
     private static ILayer CreateTrackLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var provider = dependencyResolver.GetExistingService<TrackProvider>();
 
-        var layer = new TrackLayer()
+        var layer = new DynamicLayer(provider)
         {
+            // DataSource = provider,
             Style = styleManager.TrackStyle,
             IsMapInfoLayer = false,
         };
 
-        dataManager.DataChanged
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
-
-        loader.AddTaskAsync(() => LoadingAsync());
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            var satellites = await dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
-
-            layer.UpdateData(satellites);
-        }
     }
 
     private static ILayer CreateTargetLayer(IReadonlyDependencyResolver dependencyResolver)
