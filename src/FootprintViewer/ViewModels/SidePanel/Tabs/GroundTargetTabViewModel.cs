@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
@@ -33,7 +34,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         var map = dependencyResolver.GetExistingService<IMap>();
         var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
-        _targetManager = layer?.BuildManager(() => ((TargetLayerSource)layer.DataSource!).GetFeatures());
+        _targetManager = layer?.BuildManager(() => ((GroundTargetProvider)layer.DataSource!).ActiveFeatures);
 
         Title = "Просмотр наземных целей";
 

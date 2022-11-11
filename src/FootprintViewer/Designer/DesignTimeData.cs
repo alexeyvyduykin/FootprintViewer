@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
@@ -23,7 +24,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private Map? _map;
     private IMapNavigator? _mapNavigator;
     private ProjectFactory? _projectFactory;
-    private ITargetLayerSource? _targetLayerSource;
+    private GroundTargetProvider? _groundTargetProvider;
     private SatelliteTabViewModel? _satelliteTab;
     private FootprintTabViewModel? _footprintTab;
     private GroundTargetTabViewModel? _groundTargetTab;
@@ -50,9 +51,9 @@ public class DesignTimeData : IReadonlyDependencyResolver
         {
             return _mapNavigator ??= new MapNavigator();
         }
-        else if (serviceType == typeof(ITargetLayerSource))
+        else if (serviceType == typeof(GroundTargetProvider))
         {
-            return _targetLayerSource ??= new TargetLayerSource();
+            return _groundTargetProvider ??= new GroundTargetProvider(this);
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {

@@ -1,10 +1,10 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
-using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
 using System;
@@ -72,7 +72,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         var layer = new WritableLayer()
         {
@@ -105,7 +105,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         var layer = new GroundStationLayer()
         {
@@ -133,7 +133,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         var layer = new TrackLayer()
         {
@@ -159,52 +159,27 @@ public class MapFactory
 
     private static ILayer CreateTargetLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var source = dependencyResolver.GetExistingService<ITargetLayerSource>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var provider = dependencyResolver.GetExistingService<GroundTargetProvider>();
 
-        source.MaxVisible = styleManager.MaxVisibleTargetStyle;
+        provider.MaxVisible = styleManager.MaxVisibleTargetStyle;
 
         var layer = new Layer()
         {
             Style = styleManager.TargetStyle,
             //MaxVisible = styleManager.MaxVisibleTargetStyle,
-            DataSource = source,
+            DataSource = provider,
             IsMapInfoLayer = true,
         };
 
-        dataManager.DataChanged
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
-
-        loader.AddTaskAsync(() => LoadingAsync());
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            await Task.Delay(TimeSpan.FromSeconds(5));
-
-            var groundTargets = await dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
-
-            source.SetProvider(new MemoryProvider(FeatureBuilder.Build(groundTargets)));
-
-            layer.ClearCache();
-
-            layer.DataSource = null;
-
-            layer.DataSource = source;
-
-            layer.DataHasChanged();
-        }
     }
 
     private static ILayer CreateSensorLayer(IReadonlyDependencyResolver dependencyResolver)
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         var layer = new SensorLayer()
         {
@@ -233,7 +208,7 @@ public class MapFactory
     {
         var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<Data.DataManager.IDataManager>();
+        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
         var layer = new WritableLayer()
         {
