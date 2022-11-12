@@ -1,4 +1,11 @@
-﻿using DynamicData;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
@@ -6,13 +13,6 @@ using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
@@ -63,7 +63,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             {
                 _mapNavigator.SetFocusToCoordinate(s.Center.X, s.Center.Y);
                 return s;
-            }));
+            }), outputScheduler: RxApp.MainThreadScheduler);
     }
 
     public ReactiveCommand<FootprintViewModel, FootprintViewModel> TargetToMap { get; }

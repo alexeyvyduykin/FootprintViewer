@@ -1,12 +1,12 @@
-﻿using FootprintViewer.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FootprintViewer.Data;
 using FootprintViewer.Data.Science;
 using Mapsui;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace FootprintViewer;
 
@@ -169,18 +169,16 @@ public static class FeatureBuilder
 
     public static List<IFeature> Build(IEnumerable<Footprint> footprints)
     {
-        var list = new List<IFeature>();
+        return footprints.Select(s => Build(s)).ToList();
+    }
 
-        foreach (var item in footprints)
-        {
-            var poly = AreaCutting(item.Points!.Coordinates);
+    public static IFeature Build(Footprint footprint)
+    {
+        var poly = AreaCutting(footprint.Points!.Coordinates);
 
-            var feature = poly.ToFeature(item.Name!);
+        var feature = poly.ToFeature(footprint.Name!);
 
-            list.Add(feature);
-        }
-
-        return list;
+        return feature;
     }
 
     private static Geometry AreaCutting(Coordinate[] points)

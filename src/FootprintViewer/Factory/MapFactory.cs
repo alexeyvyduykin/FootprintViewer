@@ -1,4 +1,8 @@
-﻿using FootprintViewer.Data;
+﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
@@ -7,10 +11,6 @@ using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer;
 
@@ -70,35 +70,20 @@ public class MapFactory
 
     private static ILayer CreateFootprintLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var provider = dependencyResolver.GetExistingService<FootprintProvider>();
 
-        var layer = new WritableLayer()
+        provider.MaxVisible = styleManager.MaxVisibleFootprintStyle;
+
+        var layer = new Layer()
         {
+            DataSource = provider,
             Style = styleManager.FootprintStyle,
             //   MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
             IsMapInfoLayer = true,
         };
 
-        dataManager.DataChanged
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync, outputScheduler: RxApp.MainThreadScheduler));
-
-        loader.AddTaskAsync(() => LoadingAsync());
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            await Task.Delay(TimeSpan.FromSeconds(5));
-
-            var footprints = await dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
-
-            layer.Clear();
-            layer.AddRange(FeatureBuilder.Build(footprints));
-            layer.DataHasChanged();
-        }
     }
 
     private static ILayer CreateGroundStationLayer(IReadonlyDependencyResolver dependencyResolver)

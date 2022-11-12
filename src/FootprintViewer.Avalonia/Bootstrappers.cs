@@ -94,6 +94,7 @@ public static class Bootstrapper
         services.RegisterConstant(new TrackProvider(resolver), typeof(TrackProvider));
         services.RegisterConstant(new SensorProvider(resolver), typeof(SensorProvider));
         services.RegisterConstant(new GroundStationProvider(resolver), typeof(GroundStationProvider));
+        services.RegisterConstant(new FootprintProvider(resolver), typeof(FootprintProvider));
 
         services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
         services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));

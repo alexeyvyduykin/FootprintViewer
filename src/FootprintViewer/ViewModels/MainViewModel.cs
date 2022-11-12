@@ -1,6 +1,11 @@
-﻿using FootprintViewer.Data;
+﻿using System;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
@@ -20,10 +25,6 @@ using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels;
 
@@ -125,8 +126,9 @@ public class MainViewModel : RoutableViewModel
 
     private void SelectFeatureImpl(FootprintViewModel vm)
     {
-        var layer = _map.GetLayer<WritableLayer>(LayerType.Footprint);
-        var feature = layer?.FindFeature(vm.Name);
+        var layer = _map.GetLayer<Layer>(LayerType.Footprint);
+        var provider = _dependencyResolver.GetExistingService<FootprintProvider>();
+        var feature = provider?.Find(vm.Name, "Name");
 
         if (feature != null && layer != null)
         {
