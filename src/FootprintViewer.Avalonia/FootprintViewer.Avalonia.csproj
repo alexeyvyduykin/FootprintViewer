@@ -28,6 +28,7 @@
 	<ItemGroup>
 		<PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
 		<PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.5" />
+		<PackageReference Include="Mapsui.Interactivity.UI.Avalonia" Version="0.10.0" />
 		<PackageReference Include="Material.Avalonia" Version="3.0.0-rc0.83-nightly" />
 		<PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
 		<PackageReference Include="SkiaSharp" Version="2.88.1-preview.108" />
@@ -53,7 +54,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI.Avalonia\Mapsui.Interactivity.UI.Avalonia.csproj" />
 		<ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
 	</ItemGroup>
 
@@ -64,22 +64,22 @@
 			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\FootprintPreviewView.axaml.cs">
-		  <DependentUpon>FootprintPreviewView.axaml</DependentUpon>
+			<DependentUpon>FootprintPreviewView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\FootprintView.axaml.cs">
-		  <DependentUpon>FootprintView.axaml</DependentUpon>
+			<DependentUpon>FootprintView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\GroundStationView.axaml.cs">
-		  <DependentUpon>GroundStationView.axaml</DependentUpon>
+			<DependentUpon>GroundStationView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\GroundTargetView.axaml.cs">
-		  <DependentUpon>GroundTargetView.axaml</DependentUpon>
+			<DependentUpon>GroundTargetView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\SatelliteView.axaml.cs">
-		  <DependentUpon>SatelliteView.axaml</DependentUpon>
+			<DependentUpon>SatelliteView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\SidePanel\Items\UserGeometryView.axaml.cs">
-		  <DependentUpon>UserGeometryView.axaml</DependentUpon>
+			<DependentUpon>UserGeometryView.axaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

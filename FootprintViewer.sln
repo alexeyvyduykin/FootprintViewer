@@ -29,12 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataSettingsSample", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonDataBuilderSample", "samples\JsonDataBuilderSample\JsonDataBuilderSample.csproj", "{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapsui.Interactivity", "..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj", "{63E9C41D-B2C9-44D5-A53F-C4D217623EEC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapsui.Interactivity.UI", "..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj", "{EF42C8A9-B3E6-4434-A580-67E05757A93C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapsui.Interactivity.UI.Avalonia", "..\MapsuiInteractivity\src\Mapsui.Interactivity.UI.Avalonia\Mapsui.Interactivity.UI.Avalonia.csproj", "{2ACA2D70-B013-4464-B7A4-7F458C2D0934}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,18 +75,6 @@ Global
 		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63E9C41D-B2C9-44D5-A53F-C4D217623EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63E9C41D-B2C9-44D5-A53F-C4D217623EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63E9C41D-B2C9-44D5-A53F-C4D217623EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63E9C41D-B2C9-44D5-A53F-C4D217623EEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF42C8A9-B3E6-4434-A580-67E05757A93C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF42C8A9-B3E6-4434-A580-67E05757A93C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF42C8A9-B3E6-4434-A580-67E05757A93C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF42C8A9-B3E6-4434-A580-67E05757A93C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2ACA2D70-B013-4464-B7A4-7F458C2D0934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2ACA2D70-B013-4464-B7A4-7F458C2D0934}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2ACA2D70-B013-4464-B7A4-7F458C2D0934}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2ACA2D70-B013-4464-B7A4-7F458C2D0934}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,9 +90,6 @@ Global
 		{B71E2D88-E050-47E4-95B4-5E2E9806D447} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{736AA808-3EAB-427B-83D9-0A156EC40CD5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{56FF3075-9CE6-4DEE-9F5A-7E3A23F342F5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
-		{63E9C41D-B2C9-44D5-A53F-C4D217623EEC} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
-		{EF42C8A9-B3E6-4434-A580-67E05757A93C} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
-		{2ACA2D70-B013-4464-B7A4-7F458C2D0934} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}

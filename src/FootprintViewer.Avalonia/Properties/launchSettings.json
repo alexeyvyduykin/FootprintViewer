@@ -2,7 +2,7 @@
   "profiles": {
     "FootprintViewer.Avalonia": {
       "commandName": "Project",
-      "commandLineArgs": "devhome"
+      "commandLineArgs": "devwork"
     }
   }
 }
