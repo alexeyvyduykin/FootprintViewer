@@ -23,6 +23,7 @@ using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -44,6 +45,8 @@ public class MainViewModel : RoutableViewModel
     private readonly ScaleMapBar _scaleMapBar;
     private ISelector? _selector;
     private readonly IDataManager _dataManager;
+    private double _lastScreenPointX = 0;
+    private double _lastScreenPointY = 0;
 
     public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
@@ -59,6 +62,10 @@ public class MainViewModel : RoutableViewModel
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
         _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+
+        Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
+
+        Leave = ReactiveCommand.Create(LeaveImpl);
 
         _infoPanel = factory.CreateInfoPanel();
 
@@ -112,6 +119,54 @@ public class MainViewModel : RoutableViewModel
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler).Subscribe();
     }
 
+    public ReactiveCommand<(double, double), Unit> Moved { get; }
+
+    public ReactiveCommand<Unit, Unit> Leave { get; }
+
+    private void MovedImpl((double, double) screenPosition)
+    {
+        var (x, y) = screenPosition;
+
+        _lastScreenPointX = x;
+
+        _lastScreenPointY = y;
+
+        if (Tip != null)
+        {
+            Tip.X = x + 20;
+            Tip.Y = y;
+
+            if (Tip.IsVisible == false)
+            {
+                Tip.IsVisible = true;
+            }
+        }
+    }
+
+    private void LeaveImpl()
+    {
+        if (Tip != null)
+        {
+            Tip.IsVisible = false;
+        }
+    }
+
+    private void ShowTip(DrawingTip tip)
+    {
+        tip.X = _lastScreenPointX + 20;
+
+        tip.Y = _lastScreenPointY;
+
+        tip.IsVisible = true;
+
+        Tip = tip;
+    }
+
+    private void HideTip()
+    {
+        Tip = null;
+    }
+
     private async Task InitAsync()
     {
         var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
@@ -147,7 +202,7 @@ public class MainViewModel : RoutableViewModel
 
         State = States.Default;
 
-        Tip = null;
+        HideTip();
     }
 
     public event EventHandler? AOIChanged;
@@ -169,7 +224,7 @@ public class MainViewModel : RoutableViewModel
 
             layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
 
-            Tip = null;
+            HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
@@ -178,7 +233,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreateRectangleTip();
+        ShowTip(DrawingTips.CreateRectangleTip());
 
         Interactive = designer;
 
@@ -212,7 +267,7 @@ public class MainViewModel : RoutableViewModel
 
             layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
 
-            Tip = null;
+            HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
@@ -221,7 +276,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreatePolygonTip();
+        ShowTip(DrawingTips.CreatePolygonTip());
 
         Interactive = designer;
 
@@ -245,7 +300,7 @@ public class MainViewModel : RoutableViewModel
 
             layer?.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
 
-            Tip = null;
+            HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
@@ -254,7 +309,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreateCircleTip();
+        ShowTip(DrawingTips.CreateCircleTip());
 
         Interactive = designer;
 
@@ -282,7 +337,7 @@ public class MainViewModel : RoutableViewModel
 
             layer?.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
 
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
@@ -291,7 +346,7 @@ public class MainViewModel : RoutableViewModel
 
         InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
-        Tip = DrawingTips.CreateRouteTip();
+        ShowTip(DrawingTips.CreateRouteTip());
 
         Interactive = designer;
 
@@ -622,7 +677,7 @@ public class MainViewModel : RoutableViewModel
 
             AOIChanged?.Invoke(null, EventArgs.Empty);
 
-            Tip = null;
+            HideTip();
 
             ToolBar.Uncheck();
         });
@@ -645,7 +700,7 @@ public class MainViewModel : RoutableViewModel
 
             layer?.ClearRoute();
 
-            Tip = null;
+            HideTip();
 
             ToolBar.Uncheck();
         });
@@ -664,12 +719,12 @@ public class MainViewModel : RoutableViewModel
         {
             AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Point);
 
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreatePointTip();
+        ShowTip(DrawingTips.CreatePointTip());
 
         Interactive = designer;
 
@@ -689,12 +744,12 @@ public class MainViewModel : RoutableViewModel
         {
             AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreateRectangleTip();
+        ShowTip(DrawingTips.CreateRectangleTip());
 
         Interactive = designer;
 
@@ -714,12 +769,12 @@ public class MainViewModel : RoutableViewModel
         {
             AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Circle);
 
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreateCircleTip();
+        ShowTip(DrawingTips.CreateCircleTip());
 
         Interactive = designer;
 
@@ -737,12 +792,12 @@ public class MainViewModel : RoutableViewModel
 
         designer.EndCreating.Subscribe(s =>
         {
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreateRouteTip();
+        ShowTip(DrawingTips.CreateRouteTip());
 
         Interactive = designer;
 
@@ -772,12 +827,12 @@ public class MainViewModel : RoutableViewModel
         {
             AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Polygon);
 
-            Tip = null;
+            HideTip();
 
             _customToolBar.Uncheck();
         });
 
-        Tip = DrawingTips.CreatePolygonTip();
+        ShowTip(DrawingTips.CreatePolygonTip());
 
         Interactive = designer;
 

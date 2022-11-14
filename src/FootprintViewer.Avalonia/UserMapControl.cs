@@ -1,14 +1,10 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using FootprintViewer.ViewModels;
-using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 using System;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Avalonia;
@@ -18,21 +14,10 @@ public class UserMapControl : MapControl
     private bool _isGrabbing = false;
     private Cursor? _grabHandCursor;
     private CursorType _currentCursorType = CursorType.Default;
-    private readonly ItemsControl? _tipControl;
 
     public UserMapControl() : base()
     {
-        TipSourceProperty.Changed.Subscribe(OnTipSourceChanged);
-        //MapSourceProperty.Changed.Subscribe(OnMapSourceChanged);
         MapNavigatorProperty.Changed.Subscribe(OnMapNavigatorChanged);
-
-        var itemsControl = CreateTip();
-
-        if (itemsControl != null)
-        {
-            _tipControl = itemsControl;
-            Children.Add(itemsControl);
-        }
 
         EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
     }
@@ -43,60 +28,6 @@ public class UserMapControl : MapControl
         ScaleMapBar!.Resolution = resolution;
         ScaleMapBar!.Scale = scaleText;
         ScaleMapBar!.ScaleLength = scaleLength;
-    }
-
-    private static ItemsControl? CreateTip()
-    {
-        string xaml = @"
-          <ItemsControl xmlns='https://github.com/avaloniaui'
-                        xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:views='clr-namespace:FootprintViewer.Avalonia.Views'>
-
-          <ItemsControl.Styles>
-            <Style Selector='ItemsControl > ContentPresenter'>
-              <Setter Property='Canvas.Left' Value='{Binding X}'/>   
-              <Setter Property='Canvas.Top' Value='{Binding Y}'/>      
-              <Setter Property='IsVisible' Value='{Binding IsVisible}'/>      
-            </Style>      
-          </ItemsControl.Styles>
-      
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas Background='Transparent'/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-        
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <views:TipView DataContext='{Binding}'/>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-
-</ItemsControl>";
-
-        return AvaloniaRuntimeXamlLoader.Parse<ItemsControl>(xaml);
-    }
-
-    public ITip? TipSource
-    {
-        get { return GetValue(TipSourceProperty); }
-        set { SetValue(TipSourceProperty, value); }
-    }
-
-    public static readonly StyledProperty<ITip?> TipSourceProperty =
-        AvaloniaProperty.Register<UserMapControl, ITip?>(nameof(TipSource), null);
-
-    private static void OnTipSourceChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var mapControl = (UserMapControl)e.Sender;
-        if (e.NewValue == null)
-        {
-            mapControl.HideTip();
-        }
-        else
-        {
-            mapControl.ShowTip();
-        }
     }
 
     public ScaleMapBar? ScaleMapBar
@@ -130,22 +61,6 @@ public class UserMapControl : MapControl
 
                 mapControl.MouseWheelAnimation.Duration = 850;
             }
-        }
-    }
-
-    protected void ShowTip()
-    {
-        if (_tipControl != null && TipSource != null)
-        {
-            _tipControl.Items = new ObservableCollection<ITip>() { TipSource };
-        }
-    }
-
-    protected void HideTip()
-    {
-        if (_tipControl != null)
-        {
-            _tipControl.Items = new ObservableCollection<ITip>();
         }
     }
 
@@ -193,19 +108,6 @@ public class UserMapControl : MapControl
                 ScaleMapBar!.Position = ScaleMapBar.ChangedPosition(position.X, position.Y, Viewport).ToMPoint();
             }
         }
-
-        if (TipSource != null)
-        {
-            var screenPosition = e.GetPosition(this);
-
-            TipSource.X = screenPosition.X + 20;
-            TipSource.Y = screenPosition.Y;
-
-            if (TipSource.IsVisible == false)
-            {
-                TipSource.IsVisible = true;
-            }
-        }
     }
 
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -216,21 +118,6 @@ public class UserMapControl : MapControl
         ScaleMapBar!.Resolution = resolution;
         ScaleMapBar!.Scale = scaleText;
         ScaleMapBar!.ScaleLength = scaleLength;
-    }
-
-    protected override void OnPointerLeave(PointerEventArgs e)
-    {
-        base.OnPointerLeave(e);
-
-        if (TipSource != null)
-        {
-            TipSource.IsVisible = false;
-        }
-    }
-
-    public void NavigateToAOI(MRect boundingBox)
-    {
-        Navigator?.NavigateTo(boundingBox.Grow(boundingBox.Width * 0.2));
     }
 
     public void SetCursor(CursorType cursorType)

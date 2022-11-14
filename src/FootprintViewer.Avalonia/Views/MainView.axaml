@@ -7,6 +7,8 @@
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
              xmlns:toolBar="clr-namespace:FootprintViewer.Avalonia.Views.ToolBar"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
@@ -29,8 +31,8 @@
 	<Grid ColumnDefinitions="*,Auto">
 
 		<Panel>
-			<local:UserMapControl TipSource="{Binding Tip}"
-								  ScaleMapBar="{Binding ScaleMapBar}"
+
+			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
 								  MapNavigator="{Binding MapNavigator}"
 								  HorizontalAlignment="Stretch"
 								  VerticalAlignment="Stretch">
@@ -39,6 +41,23 @@
 												 Interactive="{Binding Interactive}"
 												 State="{Binding State}"/>
 				</inter:Interaction.Behavior>
+				<i:Interaction.Behaviors>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"
+														 x:CompileBindings="False"/>
+					<behaviors:PointerMovedEventBehavior Command="{Binding $parent[UserControl].DataContext.Moved}"
+														 x:CompileBindings="False"/>
+				</i:Interaction.Behaviors>
+
+				<Canvas IsHitTestVisible="False"
+						IsVisible="{Binding Tip, Converter={x:Static ObjectConverters.IsNotNull}}"
+						Background="Transparent">
+					<views:TipView x:DataType="vm:DrawingTip"
+								   DataContext="{Binding Tip}"
+								   IsVisible="{Binding IsVisible}"
+								   Canvas.Left="{Binding X}"
+								   Canvas.Top="{Binding Y}"/>
+				</Canvas>
+
 			</local:UserMapControl>
 
 			<toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
@@ -66,7 +85,7 @@
 			</Grid>
 		</Panel>
 
-		<sidePanel:SidePanelView Grid.Column="1"							 
+		<sidePanel:SidePanelView Grid.Column="1"
 								 DataContext="{Binding SidePanel}"/>
 
 	</Grid>

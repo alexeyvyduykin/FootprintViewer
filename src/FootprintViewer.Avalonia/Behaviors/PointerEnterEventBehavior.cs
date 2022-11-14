@@ -5,51 +5,50 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using System.Windows.Input;
 
-namespace FootprintViewer.Avalonia.Behaviors
+namespace FootprintViewer.Avalonia.Behaviors;
+
+public class PointerEnterEventBehavior : Behavior<Interactive>
 {
-    public class PointerEnterEventBehavior : Behavior<Interactive>
+    public static readonly StyledProperty<ICommand?> CommandProperty =
+        AvaloniaProperty.Register<PointerEnterEventBehavior, ICommand?>(nameof(Command), null, false, BindingMode.OneWay, coerce: (s, value) => value is { } ? value : null);
+
+    public ICommand? Command
     {
-        public static readonly StyledProperty<ICommand?> CommandProperty =
-            AvaloniaProperty.Register<PointerEnterEventBehavior, ICommand?>(nameof(Command), null, false, BindingMode.OneWay, coerce: (s, value) => value is { } ? value : null);
+        get { return GetValue(CommandProperty); }
+        set { SetValue(CommandProperty, value); }
+    }
 
-        public ICommand? Command
+    public static readonly StyledProperty<RoutingStrategies> RoutingStrategiesProperty =
+        AvaloniaProperty.Register<PointerEnterEventBehavior, RoutingStrategies>(
+            nameof(RoutingStrategies),
+            RoutingStrategies.Direct);
+
+    public RoutingStrategies RoutingStrategies
+    {
+        get => GetValue(RoutingStrategiesProperty);
+        set => SetValue(RoutingStrategiesProperty, value);
+    }
+
+    protected override void OnAttachedToVisualTree()
+    {
+        AssociatedObject?.AddHandler(InputElement.PointerEnterEvent, PointerEnter, RoutingStrategies);
+    }
+
+    protected override void OnDetachedFromVisualTree()
+    {
+        AssociatedObject?.RemoveHandler(InputElement.PointerEnterEvent, PointerEnter);
+    }
+
+    private void PointerEnter(object? sender, PointerEventArgs e)
+    {
+        OnPointerEnter(sender, e);
+    }
+
+    protected virtual void OnPointerEnter(object? sender, PointerEventArgs e)
+    {
+        if (sender is StyledElement element)
         {
-            get { return GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        public static readonly StyledProperty<RoutingStrategies> RoutingStrategiesProperty =
-            AvaloniaProperty.Register<PointerEnterEventBehavior, RoutingStrategies>(
-                nameof(RoutingStrategies),
-                RoutingStrategies.Direct);
-
-        public RoutingStrategies RoutingStrategies
-        {
-            get => GetValue(RoutingStrategiesProperty);
-            set => SetValue(RoutingStrategiesProperty, value);
-        }
-
-        protected override void OnAttachedToVisualTree()
-        {
-            AssociatedObject?.AddHandler(InputElement.PointerEnterEvent, PointerEnter, RoutingStrategies);
-        }
-
-        protected override void OnDetachedFromVisualTree()
-        {
-            AssociatedObject?.RemoveHandler(InputElement.PointerEnterEvent, PointerEnter);
-        }
-
-        private void PointerEnter(object? sender, PointerEventArgs e)
-        {
-            OnPointerEnter(sender, e);
-        }
-
-        protected virtual void OnPointerEnter(object? sender, PointerEventArgs e)
-        {
-            if (sender is StyledElement element)
-            {
-                Command?.Execute(element.DataContext);
-            }
+            Command?.Execute(element.DataContext);
         }
     }
 }
