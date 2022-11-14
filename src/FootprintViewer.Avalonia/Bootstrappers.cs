@@ -8,6 +8,7 @@ using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.ToolBar;
+using Mapsui;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
@@ -96,8 +97,8 @@ public static class Bootstrapper
         services.RegisterConstant(new GroundStationProvider(resolver), typeof(GroundStationProvider));
         services.RegisterConstant(new FootprintProvider(resolver), typeof(FootprintProvider));
 
-        services.RegisterConstant(mapFactory.CreateMap(), typeof(Mapsui.IMap));
-        services.RegisterConstant(factory.CreateMapNavigator(), typeof(IMapNavigator));
+        services.RegisterConstant(mapFactory.CreateMap(), typeof(IMap));
+        services.RegisterConstant(factory.CreateMapNavigator((Map)resolver.GetExistingService<IMap>()), typeof(IMapNavigator));
 
         services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => new FootprintPreviewTabViewModel(resolver));
         services.RegisterLazySingleton<SatelliteTabViewModel>(() => new SatelliteTabViewModel(resolver));

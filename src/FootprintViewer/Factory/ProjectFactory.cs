@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels;
+using Mapsui;
 using Splat;
 
 namespace FootprintViewer;
@@ -31,9 +32,9 @@ public class ProjectFactory
         return new BottomPanel(_dependencyResolver);
     }
 
-    public IMapNavigator CreateMapNavigator()
+    public IMapNavigator CreateMapNavigator(Map map)
     {
-        return new MapNavigator();
+        return new MapNavigator(map);
     }
 
     public ScaleMapBar CreateScaleMapBar()

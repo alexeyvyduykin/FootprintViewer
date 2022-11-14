@@ -112,6 +112,13 @@ namespace FootprintViewer
         {
             return layer?.GetFeatures().Where(f => string.Equals(name, (string?)f["Name"])).FirstOrDefault();
         }
+
+        public static void ForceUpdate(this IMap map)
+        {
+            var temp = new Layer();
+            map.Layers.Add(temp);
+            map.Layers.Remove(new[] { temp });
+        }
     }
 
     public static class GeometryIterator

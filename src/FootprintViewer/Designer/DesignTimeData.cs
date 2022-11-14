@@ -48,7 +48,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
         }
         else if (serviceType == typeof(IMapNavigator))
         {
-            return _mapNavigator ??= new MapNavigator();
+            return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
         }
         else if (serviceType == typeof(GroundTargetProvider))
         {

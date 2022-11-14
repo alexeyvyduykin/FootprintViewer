@@ -6,7 +6,6 @@ using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
-using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -150,10 +149,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
                 .Select(s => s.Geometry)
                 .FirstOrDefault();
 
-            if (geometry != null)
-            {
-                _mapNavigator.SetFocusToPoint(geometry.Centroid.ToMPoint());
-            }
+            _mapNavigator.FlyToFootprintPreview(geometry);
         }
     }
 
