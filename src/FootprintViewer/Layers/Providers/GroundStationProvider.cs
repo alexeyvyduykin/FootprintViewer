@@ -9,6 +9,7 @@ using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -19,7 +20,7 @@ namespace FootprintViewer.Layers.Providers;
 
 public class GroundStationProvider : IProvider, IDynamic
 {
-    private Dictionary<string, List<IFeature>> _cache = new();
+    private ConcurrentDictionary<string, List<IFeature>> _cache = new();
     private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
@@ -48,7 +49,12 @@ public class GroundStationProvider : IProvider, IDynamic
     {
         var groundStations = await _dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
 
-        _cache = groundStations.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+        _cache.Clear();
+
+        foreach (var item in groundStations)
+        {
+            _cache.TryAdd(item.Name!, new List<IFeature>());
+        }
 
         _featureCache.Clear();
     }
@@ -78,10 +84,9 @@ public class GroundStationProvider : IProvider, IDynamic
 
             _featureCache.Clear();
 
-            foreach (var item in _cache.SelectMany(s => s.Value))
-            {
-                _featureCache.Add(item);
-            }
+            var features = _cache.SelectMany(s => s.Value).ToList();
+
+            features.ForEach(s => _featureCache.Add(s));
 
             DataHasChanged();
         }
