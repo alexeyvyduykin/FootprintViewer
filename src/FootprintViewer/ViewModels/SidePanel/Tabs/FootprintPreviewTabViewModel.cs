@@ -75,6 +75,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
             .WhereTrue()
+            .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
     }
