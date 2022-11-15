@@ -23,4 +23,6 @@ public interface IDataManager
     IObservable<string[]> DataChanged { get; }
 
     void UpdateData();
+
+    void ForceUpdateData(string key);
 }

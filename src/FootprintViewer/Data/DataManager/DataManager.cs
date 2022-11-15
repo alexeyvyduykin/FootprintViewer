@@ -94,6 +94,13 @@ public class DataManager : IDataManager
         _dirtyKeys.Clear();
     }
 
+    public void ForceUpdateData(string key)
+    {
+        ((ReactiveCommand<string[], string[]>)DataChanged)
+            .Execute(new[] { key })
+            .Subscribe();
+    }
+
     public IReadOnlyList<ISource> GetSources(string key)
     {
         if (_sources.TryGetValue(key, out var sources) == true)

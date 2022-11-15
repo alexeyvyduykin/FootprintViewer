@@ -77,6 +77,8 @@ public class UserGeometryTabViewModel : SidePanelTabViewModel
         if (value != null)
         {
             await _dataManager.TryRemoveAsync(DbKeys.UserGeometries.ToString(), value.Model);
+
+            _dataManager.ForceUpdateData(DbKeys.UserGeometries.ToString());
         }
     }
 

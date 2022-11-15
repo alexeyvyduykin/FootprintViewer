@@ -1,15 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
-using ReactiveUI;
 using Splat;
 
 namespace FootprintViewer;
@@ -148,39 +141,16 @@ public class MapFactory
 
     private static ILayer CreateUserLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var loader = dependencyResolver.GetExistingService<TaskLoader>();
         var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-        var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var provider = dependencyResolver.GetExistingService<UserGeometryProvider>();
 
-        var layer = new WritableLayer()
+        var layer = new DynamicLayer(provider)
         {
             IsMapInfoLayer = true,
             Style = styleManager.UserStyle,
         };
 
-        dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
-
-        loader.AddTaskAsync(LoadingAsync);
-
         return layer;
-
-        async Task LoadingAsync()
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1.5));
-
-            var userGeometries = await dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
-
-            var arr = userGeometries
-                .Where(s => s.Geometry != null)
-                .Select(s => s.Geometry!.ToFeature(s.Name!));
-
-            layer.Clear();
-            layer.AddRange(arr);
-            layer.DataHasChanged();
-        }
     }
 
     private static ILayer CreateFootprintImageBorderLayer(IReadonlyDependencyResolver dependencyResolver)

@@ -178,6 +178,13 @@ public class MainViewModel : RoutableViewModel
         {
             _map.SetWorldMapLayer(item);
         }
+
+        _map.Layers
+            .ToList()
+            .Where(s => s is DynamicLayer dynamicLayer && dynamicLayer.DataSource is IDynamic)
+            .Select(s => (IDynamic)((DynamicLayer)s).DataSource!)
+            .ToList()
+            .ForEach(s => s.DataHasChanged());
     }
 
     public DialogNavigationStack DialogNavigationStack => DialogStack();
@@ -544,8 +551,6 @@ public class MainViewModel : RoutableViewModel
 
     private void EditFeature(IFeature? feature)
     {
-        //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
         if (feature is GeometryFeature gf)
         {
             Task.Run(async () =>
@@ -561,9 +566,11 @@ public class MainViewModel : RoutableViewModel
                         Geometry = geometry
                     };
 
-                    //await editableProvider.EditAsync(name, model);
+                    var key = DbKeys.UserGeometries.ToString();
 
-                    await _dataManager.TryEditAsync(DbKeys.UserGeometries.ToString(), name, model);
+                    await _dataManager.TryEditAsync(key, name, model);
+
+                    _dataManager.ForceUpdateData(key);
                 }
             });
         }
@@ -571,8 +578,6 @@ public class MainViewModel : RoutableViewModel
 
     private void AddUserGeometry(IFeature feature, UserGeometryType type)
     {
-        //  var editableProvider = _dependencyResolver.GetExistingService<IEditableProvider<UserGeometry>>();
-
         if (feature is GeometryFeature gf)
         {
             var name = GenerateName(type);
@@ -588,13 +593,15 @@ public class MainViewModel : RoutableViewModel
                     Geometry = gf.Geometry
                 };
 
-                //await editableProvider.AddAsync(model);
+                var key = DbKeys.UserGeometries.ToString();
 
-                await _dataManager.TryAddAsync(DbKeys.UserGeometries.ToString(), model);
+                await _dataManager.TryAddAsync(key, model);
+
+                _dataManager.ForceUpdateData(key);
             });
         }
 
-        string GenerateName(UserGeometryType type)
+        static string GenerateName(UserGeometryType type)
         {
             return $"{type}_{new string($"{Guid.NewGuid()}".Replace("-", "").Take(10).ToArray())}";
         }
