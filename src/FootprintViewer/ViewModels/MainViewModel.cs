@@ -7,6 +7,7 @@ using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Extensions;
@@ -151,15 +152,17 @@ public class MainViewModel : RoutableViewModel
         }
     }
 
-    private void ShowTip(DrawingTip tip)
+    private void ShowTip(object? content)
     {
-        tip.X = _lastScreenPointX + 20;
+        Tip ??= new Tip();
 
-        tip.Y = _lastScreenPointY;
+        Tip.X = _lastScreenPointX + 20;
 
-        tip.IsVisible = true;
+        Tip.Y = _lastScreenPointY;
 
-        Tip = tip;
+        Tip.IsVisible = true;
+
+        Tip.Content = content;
     }
 
     private void HideTip()
@@ -214,9 +217,12 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToArea(s.Area()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Rectangle, s)));
 
-        designer.EndCreating.Subscribe(s =>
+        designer.EndCreating
+            .Subscribe(s =>
         {
             var feature = s.Feature.Copy();
 
@@ -233,7 +239,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        ShowTip(DrawingTips.CreateRectangleTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
 
         Interactive = designer;
 
@@ -247,19 +253,17 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.BeginCreating.Subscribe(s => Tip?.BeginCreating());
+        designer.BeginCreating
+            .Subscribe(s => ShowTip(CustomTipViewModel.BeginCreating(TipTarget.Polygon)));
 
-        designer.Creating.Subscribe(s =>
-        {
-            var area = s.Area();
+        designer.Creating
+            .Select(s => s.Area())
+            .Where(s => s != 0.0)
+            .Select(s => FormatHelper.ToArea(s))
+            .Subscribe(s => ShowTip(CustomTipViewModel.Creating(TipTarget.Polygon, s)));
 
-            if (area != 0.0)
-            {
-                Tip?.Creating(FormatHelper.ToArea(area));
-            }
-        });
-
-        designer.EndCreating.Subscribe(s =>
+        designer.EndCreating
+            .Subscribe(s =>
         {
             var feature = s.Feature.Copy();
 
@@ -276,7 +280,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        ShowTip(DrawingTips.CreatePolygonTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));
 
         Interactive = designer;
 
@@ -290,9 +294,12 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToArea(s.Area()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Circle, s)));
 
-        designer.EndCreating.Subscribe(s =>
+        designer.EndCreating
+            .Subscribe(s =>
         {
             var feature = s.Feature.Copy();
 
@@ -309,7 +316,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        ShowTip(DrawingTips.CreateCircleTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
 
         Interactive = designer;
 
@@ -325,13 +332,19 @@ public class MainViewModel : RoutableViewModel
 
         var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
 
-        designer.BeginCreating.Subscribe(s => Tip?.BeginCreating(FormatHelper.ToDistance(s.Distance())));
+        designer.BeginCreating
+            .Select(s => FormatHelper.ToDistance(s.Distance()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.BeginCreating(TipTarget.Route, s)));
 
-        designer.Creating.Subscribe(s => InfoPanel.Show(CreateRoutePanel(s)));
+        designer.Creating
+            .Subscribe(s => InfoPanel.Show(CreateRoutePanel(s)));
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToDistance(s.Distance())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToDistance(s.Distance()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Route, s)));
 
-        designer.EndCreating.Subscribe(s =>
+        designer.EndCreating
+            .Subscribe(s =>
         {
             var feature = s.Feature.Copy();
 
@@ -346,7 +359,7 @@ public class MainViewModel : RoutableViewModel
 
         InfoPanel.CloseAll(typeof(RouteInfoPanel));
 
-        ShowTip(DrawingTips.CreateRouteTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Route));
 
         Interactive = designer;
 
@@ -724,7 +737,7 @@ public class MainViewModel : RoutableViewModel
             _customToolBar.Uncheck();
         });
 
-        ShowTip(DrawingTips.CreatePointTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Point));
 
         Interactive = designer;
 
@@ -738,18 +751,21 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToArea(s.Area()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Rectangle, s)));
 
-        designer.EndCreating.Subscribe(s =>
-        {
-            AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Rectangle);
+        designer.EndCreating
+            .Subscribe(s =>
+            {
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Rectangle);
 
-            HideTip();
+                HideTip();
 
-            _customToolBar.Uncheck();
-        });
+                _customToolBar.Uncheck();
+            });
 
-        ShowTip(DrawingTips.CreateRectangleTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
 
         Interactive = designer;
 
@@ -763,18 +779,21 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToArea(s.Area())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToArea(s.Area()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Circle, s)));
 
-        designer.EndCreating.Subscribe(s =>
-        {
-            AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Circle);
+        designer.EndCreating
+            .Subscribe(s =>
+            {
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Circle);
 
-            HideTip();
+                HideTip();
 
-            _customToolBar.Uncheck();
-        });
+                _customToolBar.Uncheck();
+            });
 
-        ShowTip(DrawingTips.CreateCircleTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
 
         Interactive = designer;
 
@@ -788,16 +807,19 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.HoverCreating.Subscribe(s => Tip?.HoverCreating(FormatHelper.ToDistance(s.Distance())));
+        designer.HoverCreating
+            .Select(s => FormatHelper.ToDistance(s.Distance()))
+            .Subscribe(s => ShowTip(CustomTipViewModel.HoverCreating(TipTarget.Route, s)));
 
-        designer.EndCreating.Subscribe(s =>
-        {
-            HideTip();
+        designer.EndCreating
+            .Subscribe(s =>
+            {
+                HideTip();
 
-            _customToolBar.Uncheck();
-        });
+                _customToolBar.Uncheck();
+            });
 
-        ShowTip(DrawingTips.CreateRouteTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Route));
 
         Interactive = designer;
 
@@ -811,28 +833,26 @@ public class MainViewModel : RoutableViewModel
             .AttachTo(Map)
             .Build();
 
-        designer.BeginCreating.Subscribe(s => Tip?.BeginCreating());
+        designer.BeginCreating
+            .Subscribe(s => ShowTip(CustomTipViewModel.BeginCreating(TipTarget.Polygon)));
 
-        designer.Creating.Subscribe(s =>
-        {
-            var area = s.Area();
+        designer.Creating
+            .Select(s => s.Area())
+            .Where(s => s != 0.0)
+            .Select(s => FormatHelper.ToArea(s))
+            .Subscribe(s => ShowTip(CustomTipViewModel.Creating(TipTarget.Polygon, s)));
 
-            if (area != 0.0)
+        designer.EndCreating
+            .Subscribe(s =>
             {
-                Tip?.Creating(FormatHelper.ToArea(area));
-            }
-        });
+                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Polygon);
 
-        designer.EndCreating.Subscribe(s =>
-        {
-            AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Polygon);
+                HideTip();
 
-            HideTip();
+                _customToolBar.Uncheck();
+            });
 
-            _customToolBar.Uncheck();
-        });
-
-        ShowTip(DrawingTips.CreatePolygonTip());
+        ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));
 
         Interactive = designer;
 
@@ -863,7 +883,7 @@ public class MainViewModel : RoutableViewModel
     public IMapNavigator MapNavigator { get; set; }
 
     [Reactive]
-    public DrawingTip? Tip { get; set; }
+    public ITip? Tip { get; set; }
 
     public IObservable<bool> IsMainContentEnabled { get; }
 }

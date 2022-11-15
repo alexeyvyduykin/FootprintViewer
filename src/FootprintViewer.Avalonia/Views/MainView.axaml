@@ -13,6 +13,7 @@
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:tips="clr-namespace:FootprintViewer.ViewModels.Tips;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:MainViewModel"
@@ -51,11 +52,13 @@
 				<Canvas IsHitTestVisible="False"
 						IsVisible="{Binding Tip, Converter={x:Static ObjectConverters.IsNotNull}}"
 						Background="Transparent">
-					<views:TipView x:DataType="vm:DrawingTip"
-								   DataContext="{Binding Tip}"
-								   IsVisible="{Binding IsVisible}"
-								   Canvas.Left="{Binding X}"
-								   Canvas.Top="{Binding Y}"/>
+
+					<ContentControl x:DataType="tips:Tip"
+									DataContext="{Binding Tip}"
+									Content="{Binding Content}"
+									IsVisible="{Binding IsVisible}"
+								    Canvas.Left="{Binding X}"
+								    Canvas.Top="{Binding Y}"/>
 				</Canvas>
 
 			</local:UserMapControl>
