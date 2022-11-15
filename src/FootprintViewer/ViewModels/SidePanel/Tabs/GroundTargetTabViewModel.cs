@@ -51,6 +51,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

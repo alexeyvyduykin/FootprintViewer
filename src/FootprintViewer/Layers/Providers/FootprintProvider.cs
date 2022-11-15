@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using DynamicData;
+﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using Mapsui;
@@ -13,6 +6,13 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
@@ -36,6 +36,7 @@ public class FootprintProvider : IProvider
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

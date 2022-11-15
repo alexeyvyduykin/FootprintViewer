@@ -49,6 +49,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
                           .ToProperty(this, x => x.IsLoading);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

@@ -48,6 +48,7 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
         ToDate = DateTime.Today.AddDays(1);
 
         _dataManager.DataChanged
+            .Where(s => new[] { DbKeys.FootprintPreviews.ToString(), DbKeys.FootprintPreviewGeometries.ToString() }.Any(key => s.Contains(key)))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
 

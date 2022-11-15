@@ -31,6 +31,7 @@ public class TrackProvider : IProvider, IDynamic
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.Satellites.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

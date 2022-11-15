@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reactive;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -16,16 +15,33 @@ public class DataManager : IDataManager
     private readonly AsyncLock _mutex = new();
     private readonly Dictionary<string, IDictionary<ISource, IList<object>>> _cache = new();
     private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
+    private readonly HashSet<string> _dirtyKeys = new();
 
     public DataManager()
     {
-        DataChanged = ReactiveCommand.Create(() => Unit.Default, outputScheduler: RxApp.MainThreadScheduler);
+        DataChanged = ReactiveCommand.Create<string[], string[]>(s => s, outputScheduler: RxApp.MainThreadScheduler);
     }
 
-    public IObservable<Unit> DataChanged { get; }
+    public DataManager(IDictionary<string, IList<ISource>> sources) : this()
+    {
+        var keys = sources.Keys;
+
+        foreach (var key in keys)
+        {
+            var list = sources[key].ToList();
+
+            _sources.Add(key, list);
+
+            _cache.Add(key, new Dictionary<ISource, IList<object>>());
+        }
+    }
+
+    public IObservable<string[]> DataChanged { get; }
 
     public void RegisterSource(string key, ISource source)
     {
+        _dirtyKeys.Add(key);
+
         if (_sources.ContainsKey(key) == true)
         {
             _sources[key].Add(source);
@@ -46,6 +62,8 @@ public class DataManager : IDataManager
     {
         if (_sources.ContainsKey(key) == true)
         {
+            _dirtyKeys.Add(key);
+
             _sources[key].Remove(source);
 
             // clear cache
@@ -69,7 +87,11 @@ public class DataManager : IDataManager
 
     public void UpdateData()
     {
-        ((ReactiveCommand<Unit, Unit>)DataChanged).Execute(Unit.Default).Subscribe();
+        ((ReactiveCommand<string[], string[]>)DataChanged)
+            .Execute(_dirtyKeys.ToArray())
+            .Subscribe();
+
+        _dirtyKeys.Clear();
     }
 
     public IReadOnlyList<ISource> GetSources(string key)

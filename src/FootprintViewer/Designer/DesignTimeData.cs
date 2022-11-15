@@ -121,7 +121,9 @@ public class DesignTimeData : IReadonlyDependencyResolver
 
     private class DesignTimeRepository : DataManager
     {
-        public DesignTimeRepository()
+        private static readonly Dictionary<string, IList<ISource>> _sources;
+
+        static DesignTimeRepository()
         {
             var source1 = new LocalSource<Footprint>(Task.Run(() => BuildFootprints()));
             var source2 = new LocalSource<GroundTarget>(Task.Run(() => BuildGroundTargets()));
@@ -132,14 +134,22 @@ public class DesignTimeData : IReadonlyDependencyResolver
             var source7 = new LocalSource<FootprintPreview>(Task.Run(() => BuildFootprintPreviews()));
             var source8 = new LocalSource<FootprintPreviewGeometry>(Task.Run(() => BuildFootprintPreviewGeometries()));
 
-            RegisterSource(DbKeys.Footprints.ToString(), source1);
-            RegisterSource(DbKeys.GroundTargets.ToString(), source2);
-            RegisterSource(DbKeys.Satellites.ToString(), source3);
-            RegisterSource(DbKeys.GroundStations.ToString(), source4);
-            RegisterSource(DbKeys.UserGeometries.ToString(), source5);
-            RegisterSource(DbKeys.Maps.ToString(), source6);
-            RegisterSource(DbKeys.FootprintPreviews.ToString(), source7);
-            RegisterSource(DbKeys.FootprintPreviewGeometries.ToString(), source8);
+            _sources = new Dictionary<string, IList<ISource>>()
+            {
+                { DbKeys.Footprints.ToString(), new[] { source1 } },
+                { DbKeys.GroundTargets.ToString(), new[] { source2 } },
+                { DbKeys.Satellites.ToString(), new[] { source3 } },
+                { DbKeys.GroundStations.ToString(), new[] { source4 } },
+                { DbKeys.UserGeometries.ToString(), new[] { source5 } },
+                { DbKeys.Maps.ToString(), new[] { source6 } },
+                { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
+                { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } }
+            };
+        }
+
+        public DesignTimeRepository() : base(_sources)
+        {
+
         }
 
         private static List<Satellite> BuildSatellites() =>

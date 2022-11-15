@@ -31,6 +31,7 @@ public class GroundStationProvider : IProvider, IDynamic
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.GroundStations.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

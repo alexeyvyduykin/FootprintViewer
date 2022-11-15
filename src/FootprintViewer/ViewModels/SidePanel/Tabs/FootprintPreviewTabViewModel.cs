@@ -61,6 +61,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
             .ToProperty(this, x => x.IsLoading);
 
         _dataManager.DataChanged
+            .Where(s => new[] { DbKeys.FootprintPreviews.ToString(), DbKeys.FootprintPreviewGeometries.ToString() }.Any(key => s.Contains(key)))
             .ToSignal()
             .InvokeCommand(Update);
 

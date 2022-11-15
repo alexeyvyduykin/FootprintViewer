@@ -2,43 +2,37 @@
 using FootprintViewer.ViewModels.Settings;
 using ReactiveUI;
 using Splat;
-using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.ViewModels.SidePanel.Tabs
+namespace FootprintViewer.ViewModels.SidePanel.Tabs;
+
+public class SettingsTabViewModel : SidePanelTabViewModel
 {
-    public class SettingsTabViewModel : SidePanelTabViewModel
+    public SettingsTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
-        public SettingsTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+        Options = ReactiveCommand.CreateFromTask(async () =>
         {
-            Options = ReactiveCommand.CreateFromTask(async () =>
-            {
-                var dataManager = dependencyResolver.GetExistingService<IDataManager>();
-                var mainViewModel = dependencyResolver.GetExistingService<MainViewModel>();
+            var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+            var mainViewModel = dependencyResolver.GetExistingService<MainViewModel>();
 
-                var settingsDialog = new SettingsViewModel(dependencyResolver);
+            var settingsDialog = new SettingsViewModel(dependencyResolver);
 
-                mainViewModel.DialogNavigationStack.To(settingsDialog);
+            mainViewModel.DialogNavigationStack.To(settingsDialog);
 
-                var dialogResult = await settingsDialog.GetDialogResultAsync();
+            var dialogResult = await settingsDialog.GetDialogResultAsync();
 
-                mainViewModel.DialogNavigationStack.Clear();
+            mainViewModel.DialogNavigationStack.Clear();
 
-                if (dialogResult.Result is IList<DbKeys> dirtyKeys)
-                {
-                    // TODO: update data for dirty keys
-                    dataManager.UpdateData();
-                }
-            });
+            dataManager.UpdateData();
+        });
 
-            this.WhenAnyValue(s => s.IsActive)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .WhereTrue()
-                .ToSignal()
-                .InvokeCommand(Options);
-        }
-
-        private ReactiveCommand<Unit, Unit> Options { get; }
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .ToSignal()
+            .InvokeCommand(Options);
     }
+
+    private ReactiveCommand<Unit, Unit> Options { get; }
 }

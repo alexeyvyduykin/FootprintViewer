@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -21,7 +20,7 @@ public interface IDataManager
 
     Task<bool> TryEditAsync(string key, string id, object newValue);
 
-    IObservable<Unit> DataChanged { get; }
+    IObservable<string[]> DataChanged { get; }
 
     void UpdateData();
 }

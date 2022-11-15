@@ -159,6 +159,7 @@ public class MapFactory
         };
 
         dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(LoadingAsync));
 

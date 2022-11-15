@@ -37,6 +37,7 @@ public class UserGeometryTabViewModel : SidePanelTabViewModel
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

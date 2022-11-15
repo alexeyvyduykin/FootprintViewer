@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.Settings;
 
-public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
+public class SettingsViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 
@@ -61,33 +61,26 @@ public class SettingsViewModel : DialogViewModelBase<IList<DbKeys>>
         {
             await Task.Delay(TimeSpan.FromSeconds(0.1));
 
-            var dirtyList = new List<DbKeys>();
-
             foreach (var container in SourceContainers)
             {
                 _ = Enum.TryParse<DbKeys>(container.Header, out var key);
 
-                foreach (var op in container.SourceOperationsStack.Reverse())
+                foreach (var (source, op) in container.SourceOperationsStack.Reverse())
                 {
-                    if (dirtyList.Contains(key) == false)
-                    {
-                        dirtyList.Add(key);
-                    }
-
                     // add
-                    if (op.Item2 == true)
+                    if (op == true)
                     {
-                        _dataManager.RegisterSource(key.ToString(), op.Item1);
+                        _dataManager.RegisterSource(key.ToString(), source);
                     }
                     // remove
-                    else if (op.Item2 == false)
+                    else if (op == false)
                     {
-                        _dataManager.UnregisterSource(key.ToString(), op.Item1);
+                        _dataManager.UnregisterSource(key.ToString(), source);
                     }
                 }
             }
 
-            Close(DialogResultKind.Normal, dirtyList);
+            Close(DialogResultKind.Normal);
         });
 
         LanguageSettings = new LanguageSettingsViewModel(languageManager);

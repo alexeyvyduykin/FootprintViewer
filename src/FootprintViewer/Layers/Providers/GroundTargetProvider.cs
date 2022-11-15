@@ -46,6 +46,7 @@ public class GroundTargetProvider : IProvider
         ActiveFeaturesChanged = ReactiveCommand.Create<IEnumerable<IFeature>?, string[]?>(ActiveFeaturesChangedImpl);
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

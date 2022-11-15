@@ -38,6 +38,7 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
         ToNode = 15;
 
         _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
 
