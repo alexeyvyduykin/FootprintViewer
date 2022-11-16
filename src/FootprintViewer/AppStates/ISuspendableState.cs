@@ -1,7 +1,6 @@
-﻿namespace FootprintViewer.AppStates
+﻿namespace FootprintViewer.AppStates;
+
+public interface ISuspendableState<T>
 {
-    public interface ISuspendableState<T>
-    {
-        void LoadState(T state);
-    }
+    void LoadState(T state);
 }

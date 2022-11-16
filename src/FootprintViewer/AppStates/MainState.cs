@@ -1,79 +1,19 @@
-﻿using FootprintViewer.Data;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace FootprintViewer.AppStates
+namespace FootprintViewer.AppStates;
+
+[DataContract]
+public class MainState
 {
-    [DataContract]
-    public class MainState
-    {
-        public MainState()
-        {
-            FootprintProvider = new ProviderState() { Type = ProviderType.Footprints };
+    [DataMember]
+    public string? LastOpenDirectory { get; set; }
 
-            GroundTargetProvider = new ProviderState() { Type = ProviderType.GroundTargets };
+    [DataMember]
+    public LastDatabaseState? LastOpenDatabase { get; set; }
 
-            GroundStationProvider = new ProviderState() { Type = ProviderType.GroundStations };
+    [DataMember]
+    public DataState DataState { get; private set; } = new();
 
-            SatelliteProvider = new ProviderState() { Type = ProviderType.Satellites };
-
-            UserGeometryProvider = new ProviderState() { Type = ProviderType.UserGeometries };
-
-            FootprintPreviewGeometryProvider = new ProviderState() { Type = ProviderType.FootprintPreviewGeometries };
-
-            MapBackgroundProvider = new ProviderState() { Type = ProviderType.MapBackgrounds };
-
-            FootprintPreviewProvider = new ProviderState() { Type = ProviderType.FootprintPreviews };
-
-            LocalizationState = new LocalizationState();
-        }
-
-        public List<ProviderState> GetProviderStates()
-        {
-            return new List<ProviderState>()
-            {
-            FootprintProvider,
-            GroundTargetProvider,
-            GroundStationProvider,
-            SatelliteProvider,
-            UserGeometryProvider,
-            FootprintPreviewGeometryProvider,
-            MapBackgroundProvider,
-            FootprintPreviewProvider
-            };
-        }
-
-        [DataMember]
-        public string? LastOpenDirectory { get; set; }
-
-        [DataMember]
-        public DatabaseSourceState? LastDatabaseSource { get; set; }
-
-        [DataMember]
-        public ProviderState FootprintProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState GroundTargetProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState GroundStationProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState SatelliteProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState UserGeometryProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState FootprintPreviewGeometryProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState MapBackgroundProvider { get; private set; }
-
-        [DataMember]
-        public ProviderState FootprintPreviewProvider { get; private set; }
-
-        [DataMember]
-        public LocalizationState LocalizationState { get; private set; }
-    }
+    [DataMember]
+    public LocalizationState LocalizationState { get; private set; } = new();
 }

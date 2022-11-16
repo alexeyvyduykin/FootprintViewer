@@ -15,10 +15,7 @@ public class ReleaseDataFactory : IDataFactory
         var directory = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
 
         var paths = System.IO.Directory.GetFiles(directory, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
-        var mapSource = new FileSource(paths)
-        {
-            Loader = MapResource.Builder
-        };
+        var mapSource = new FileSource(mapsKey, paths);
 
         var sources = new Dictionary<string, IList<ISource>>()
         {

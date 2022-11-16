@@ -23,6 +23,10 @@ public class JsonSource : BaseSource
         _paths = paths;
     }
 
+    public string Key => _key;
+
+    public IList<string> Paths => _paths ?? ( (_path != null) ? new List<string>() { _path } : new List<string>());
+
     public override async Task<IList<object>> GetValuesAsync()
     {
         if (_paths != null)

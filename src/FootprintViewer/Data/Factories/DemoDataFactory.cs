@@ -45,14 +45,8 @@ public class DemoDataFactory : IDataFactory
 
         var paths1 = System.IO.Directory.GetFiles(directory1, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
         var paths2 = System.IO.Directory.GetFiles(directory2, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
-        var mapSource1 = new FileSource(paths1)
-        {
-            Loader = MapResource.Builder
-        };
-        var mapSource2 = new FileSource(paths2)
-        {
-            Loader = MapResource.Builder
-        };
+        var mapSource1 = new FileSource(mapsKey, paths1);
+        var mapSource2 = new FileSource(mapsKey, paths2);
 
         // footprintPreviews
         var footprintPreviewsKey = DbKeys.FootprintPreviews.ToString();
@@ -61,22 +55,13 @@ public class DemoDataFactory : IDataFactory
 
         var paths3 = System.IO.Directory.GetFiles(directory3, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
         var paths4 = System.IO.Directory.GetFiles(directory4, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
-        var mapSource3 = new FileSource(paths3)
-        {
-            Loader = FootprintPreview.Builder
-        };
-        var mapSource4 = new FileSource(paths4)
-        {
-            Loader = FootprintPreview.Builder
-        };
+        var mapSource3 = new FileSource(footprintPreviewsKey, paths3);
+        var mapSource4 = new FileSource(footprintPreviewsKey, paths4);
 
         // footprintPreviewGeometries
         var footprintPreviewGeometriesKey = DbKeys.FootprintPreviewGeometries.ToString();
         var path5 = new SolutionFolder("data").GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff") ?? string.Empty;
-        var mapSource5 = new FileSource(new List<string>() { path5 })
-        {
-            Loader = FootprintPreviewGeometry.Builder
-        };
+        var mapSource5 = new FileSource(footprintPreviewGeometriesKey, new List<string>() { path5 });
 
         var sources = new Dictionary<string, IList<ISource>>()
         {

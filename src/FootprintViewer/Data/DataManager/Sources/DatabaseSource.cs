@@ -18,6 +18,12 @@ public class DatabaseSource : BaseSource
         _tableName = tableName;
     }
 
+    public string Key => _key;
+
+    public string ConnectionString => _connectionString;
+
+    public string TableName => _tableName;
+
     public override async Task<IList<object>> GetValuesAsync()
     {
         await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);

@@ -4,6 +4,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -109,6 +110,23 @@ public class DataManager : IDataManager
         }
 
         return new List<ISource>().ToImmutableList();
+    }
+
+    public IReadOnlyDictionary<string, IReadOnlyList<ISource>> GetSources()
+    {
+        var keys = _sources.Keys.ToList();
+
+        var dict = new Dictionary<string, IReadOnlyList<ISource>>();
+
+        foreach (var key in keys)
+        {
+            if (_sources.TryGetValue(key, out var sources) == true)
+            {
+                dict.Add(key, sources.ToImmutableList());
+            }
+        }
+
+        return new ReadOnlyDictionary<string, IReadOnlyList<ISource>>(dict);
     }
 
     public async Task<IList<T>> GetDataAsync<T>(string key, bool caching = true)

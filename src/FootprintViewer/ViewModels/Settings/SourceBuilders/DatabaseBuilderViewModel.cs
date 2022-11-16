@@ -26,12 +26,6 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
     {
         _key = key;
 
-        Host = "localhost";
-        Port = 5432;
-        Database = "FootprintViewerDatabase";
-        Username = "postgres";
-        Password = "user";
-
         Update = ReactiveCommand.Create<List<string>>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
 
         _availableList.Connect()
@@ -126,7 +120,7 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
     public string? Host { get; set; }
 
     [Reactive]
-    public int Port { get; set; }
+    public int Port { get; set; } = 5432;
 
     [Reactive]
     public string? Database { get; set; }

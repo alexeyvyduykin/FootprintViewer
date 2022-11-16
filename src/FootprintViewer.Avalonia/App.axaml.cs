@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;
@@ -70,9 +71,14 @@ namespace FootprintViewer.Avalonia
 
             Locator.CurrentMutable.RegisterConstant(mainState, typeof(MainState));
 
-            //   var settings = GetExistingService<SettingsTabViewModel>();
+            //var settings = GetExistingService<SettingsViewModel>(); 
+            var dataManager = GetExistingService<IDataManager>();
 
-            //   settings.LanguageSettings?.LoadState(mainState.LocalizationState);
+            //settings.LanguageSettings?.LoadState(mainState.LocalizationState);
+
+            var defaultSources = dataManager.GetSources();
+
+            mainState.DataState.SaveDefaultSources(defaultSources);
 
             //   settings.Find(Data.ProviderType.MapBackgrounds)?.LoadState(mainState.MapBackgroundProvider);
             //   settings.Find(Data.ProviderType.FootprintPreviews)?.LoadState(mainState.FootprintPreviewProvider);

@@ -23,7 +23,16 @@ namespace FootprintViewer.ViewModels.Settings
 
             DatabaseBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                var databaseBuilderDialog = new DatabaseBuilderViewModel(key);
+                var mainState = dependencyResolver.GetExistingService<MainState>();
+                var state = mainState.LastOpenDatabase;
+
+                var databaseBuilderDialog = new DatabaseBuilderViewModel(key)
+                {
+                    Host = state?.Host ?? "localhost",
+                    Database = state?.Database ?? "FootprintViewerDatabase",
+                    Username = state?.Username ?? "postgres",
+                    Password = state?.Password ?? "user"
+                };
 
                 DialogStack().To(databaseBuilderDialog);
 
@@ -34,6 +43,14 @@ namespace FootprintViewer.ViewModels.Settings
                 if (dialogResult.Result is DatabaseSource source)
                 {
                     AddSource(new SourceViewModel(source));
+
+                    mainState.LastOpenDatabase = new LastDatabaseState()
+                    {
+                        Host = databaseBuilderDialog.Host,
+                        Database = databaseBuilderDialog.Database,
+                        Username = databaseBuilderDialog.Username,
+                        Password = databaseBuilderDialog.Password
+                    };
                 }
             });
 
@@ -43,7 +60,7 @@ namespace FootprintViewer.ViewModels.Settings
 
                 var jsonBuilderDialog = new JsonBuilderViewModel(key)
                 {
-                    Directory = mainState?.LastOpenDirectory
+                    Directory = mainState.LastOpenDirectory
                 };
 
                 DialogStack().To(jsonBuilderDialog);
@@ -55,6 +72,8 @@ namespace FootprintViewer.ViewModels.Settings
                 if (dialogResult.Result is JsonSource source)
                 {
                     AddSource(new SourceViewModel(source));
+
+                    mainState.LastOpenDirectory = jsonBuilderDialog.Directory;
                 }
             });
 

@@ -1,7 +1,8 @@
-﻿namespace FootprintViewer.AppStates
+﻿using System;
+
+namespace FootprintViewer.AppStates;
+
+public interface ISourceState : IEquatable<object?>
 {
-    public interface ISourceState
-    {
-        string? Name { get; set; }
-    }
+    string? Key { get; set; }
 }

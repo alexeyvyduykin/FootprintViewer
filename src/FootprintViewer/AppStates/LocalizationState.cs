@@ -1,12 +1,11 @@
 ﻿using FootprintViewer.Localization;
 using System.Runtime.Serialization;
 
-namespace FootprintViewer.AppStates
+namespace FootprintViewer.AppStates;
+
+[DataContract]
+public class LocalizationState
 {
-    [DataContract]
-    public class LocalizationState
-    {
-        [DataMember]
-        public LanguageModel? Language { get; set; }
-    }
+    [DataMember]
+    public LanguageModel? Language { get; set; }
 }

@@ -12,6 +12,8 @@ public interface IDataManager
 
     IReadOnlyList<ISource> GetSources(string key);
 
+    IReadOnlyDictionary<string, IReadOnlyList<ISource>> GetSources();
+
     Task<IList<T>> GetDataAsync<T>(string key, bool caching = true);
 
     Task<bool> TryAddAsync(string key, object value);

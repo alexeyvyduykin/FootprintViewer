@@ -9,34 +9,26 @@ namespace FootprintViewer.Avalonia.Views.Settings.SourceBuilders
 {
     public partial class JsonBuilderView : UserControl
     {
+        private readonly string? _lastOpenDirectory;
+
         public JsonBuilderView()
         {
             InitializeComponent();
 
             var mainState = Locator.Current.GetService<MainState>();
 
-            if (mainState?.LastOpenDirectory != null)
-            {
-                DirectoryTextBox.Text = mainState.LastOpenDirectory;
-            }
+            _lastOpenDirectory = mainState?.LastOpenDirectory;
 
             SearchButton.Command = ReactiveCommand.CreateFromTask(GetFolderNameAsync);
         }
 
         private async Task GetFolderNameAsync()
         {
-            var mainState = Locator.Current.GetService<MainState>();
-
-            var res = await FileDialogHelper.ShowOpenFolderDialogAsync("Create folder with *.json files", mainState?.LastOpenDirectory);
+            var res = await FileDialogHelper.ShowOpenFolderDialogAsync("Create folder with *.json files", _lastOpenDirectory);
 
             if (string.IsNullOrEmpty(res) == false)
             {
                 DirectoryTextBox.Text = res;
-
-                if (mainState != null)
-                {
-                    mainState.LastOpenDirectory = res;
-                }
             }
         }
     }

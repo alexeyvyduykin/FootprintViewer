@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
@@ -13,6 +14,21 @@ internal static class DbHelper
     public static string ToConnectionString(string host, int port, string database, string username, string password)
     {
         return $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+    }
+
+    public static (string host, int port, string database, string username, string password) FromConnectionString(string connectionString)
+    {
+        var pattern = @"Host=(?<host>[^@]+);Port=(?<port>[\d]+);Database=(?<database>[^@]+);Username=(?<username>[^@]+);Password=(?<password>[^@]+)";
+
+        var matches = Regex.Matches(connectionString, pattern);
+
+        var host = matches.FirstOrDefault()?.Groups["host"].Value ?? string.Empty;
+        var port = matches.FirstOrDefault()?.Groups["port"].Value ?? string.Empty;
+        var database = matches.FirstOrDefault()?.Groups["database"].Value ?? string.Empty;
+        var username = matches.FirstOrDefault()?.Groups["username"].Value ?? string.Empty;
+        var password = matches.FirstOrDefault()?.Groups["password"].Value ?? string.Empty;
+
+        return (host, int.Parse(port ?? string.Empty), database, username, password);
     }
 
     public static List<T> DeserializeFromStream<T>(string path)
@@ -168,6 +184,19 @@ internal static class DbHelper
             DbKeys.Satellites => s => GetValues<Satellite>(s),
             DbKeys.GroundStations => s => GetValues<GroundStation>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
+            _ => throw new Exception(),
+        };
+    }
+
+    public static Func<IList<string>, IList<object>> Loader(string key)
+    {
+        Enum.TryParse<DbKeys>(key, true, out var result);
+
+        return result switch
+        {
+            DbKeys.Maps => MapResource.Builder,
+            DbKeys.FootprintPreviews => FootprintPreview.Builder,
+            DbKeys.FootprintPreviewGeometries => FootprintPreviewGeometry.Builder,
             _ => throw new Exception(),
         };
     }
