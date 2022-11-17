@@ -1,5 +1,4 @@
-﻿using FootprintViewer.AppStates.Extensions;
-using FootprintViewer.Data.DataManager;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,34 +6,110 @@ using System.Runtime.Serialization;
 namespace FootprintViewer.AppStates;
 
 [DataContract]
-public class DataState
+public class DataState<T> where T : IEquatable<T>
 {
-    public void SaveDefaultSources(IReadOnlyDictionary<string, IReadOnlyList<ISource>> defaultSources)
+    private readonly Dictionary<string, IList<T>> _excludeValues = new();
+
+    public DataState()
     {
-        foreach (var key in defaultSources.Keys)
+
+    }
+
+    public DataState(Dictionary<string, IList<T>> states)
+    {
+        States = new(states);
+    }
+
+    public void SetExcludeValues(Dictionary<string, List<T>> values)
+    {
+        _excludeValues.Clear();
+
+        foreach (var key in values.Keys)
         {
-            if (DefaultSources.ContainsKey(key) == false)
+            if (_excludeValues.ContainsKey(key) == false)
             {
-                DefaultSources.Add(key, new List<ISourceState>());
+                _excludeValues.Add(key, new List<T>());
             }
 
-            foreach (var source in defaultSources[key])
+            foreach (var value in values[key])
             {
-                var state = source.ToState();
-
-                var isExist = DefaultSources[key].Any(s => s.Equals(state));
+                var isExist = _excludeValues[key].Any(s => s.Equals(value));
 
                 if (isExist == false)
                 {
-                    DefaultSources[key].Add(state);
+                    _excludeValues[key].Add(value);
                 }
             }
         }
     }
 
-    [DataMember]
-    public Dictionary<string, IList<ISourceState>> DefaultSources { get; private set; } = new();
+    public IDictionary<string, IList<T>> GetValues()
+    {
+        var dict = new Dictionary<string, IList<T>>();
+
+        var keys = States.Keys;
+
+        foreach (var key in keys)
+        {
+            var hasKey = _excludeValues.ContainsKey(key);
+
+            foreach (var source in States[key])
+            {
+                var isExist = false;
+
+                if (hasKey == true)
+                {
+                    isExist = _excludeValues[key].Contains(source);
+                }
+
+                if (isExist == false)
+                {
+                    if (dict.ContainsKey(key) == false)
+                    {
+                        dict.Add(key, new List<T>());
+                    }
+
+                    dict[key].Add(source);
+                }
+            }
+        }
+
+        return dict;
+    }
+
+    public void UpdateValues(Dictionary<string, List<T>> values)
+    {
+        var dict = new Dictionary<string, IList<T>>();
+
+        foreach (var key in values.Keys)
+        {
+            var hasKey = _excludeValues.ContainsKey(key);
+
+            foreach (var item in values[key])
+            {
+                if (hasKey == true)
+                {
+                    if (_excludeValues[key].Contains(item) == true)
+                    {
+                        continue;
+                    }
+                }
+
+                if (dict.ContainsKey(key) == false)
+                {
+                    dict.Add(key, new List<T>());
+                }
+
+                if (dict[key].Contains(item) == false)
+                {
+                    dict[key].Add(item);
+                }
+            }
+        }
+
+        States = new Dictionary<string, IList<T>>(dict);
+    }
 
     [DataMember]
-    public Dictionary<string, IList<ISourceState>> Sources { get; private set; } = new();
+    private Dictionary<string, IList<T>> States { get; set; } = new();
 }

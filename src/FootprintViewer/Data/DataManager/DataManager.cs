@@ -39,9 +39,12 @@ public class DataManager : IDataManager
 
     public IObservable<string[]> DataChanged { get; }
 
-    public void RegisterSource(string key, ISource source)
+    public void RegisterSource(string key, ISource source, bool dirty = true)
     {
-        _dirtyKeys.Add(key);
+        if (dirty == true)
+        {
+            _dirtyKeys.Add(key);
+        }
 
         if (_sources.ContainsKey(key) == true)
         {

@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Data.DataManager;
+﻿using FootprintViewer.AppStates;
+using FootprintViewer.Data.DataManager;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
@@ -59,6 +60,8 @@ public class SettingsViewModel : DialogViewModelBase<object>
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
+            var mainState = dependencyResolver.GetExistingService<MainState>();
+
             await Task.Delay(TimeSpan.FromSeconds(0.1));
 
             foreach (var container in SourceContainers)
@@ -79,6 +82,8 @@ public class SettingsViewModel : DialogViewModelBase<object>
                     }
                 }
             }
+
+            mainState.SaveData(_dataManager);
 
             Close(DialogResultKind.Normal);
         });

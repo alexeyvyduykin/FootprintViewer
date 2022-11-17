@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace FootprintViewer.AppStates;
 
@@ -32,4 +33,9 @@ public class DatabaseSourceState : ISourceState
 
     public override int GetHashCode()
         => (Key, ConnectionString, IsEditable).GetHashCode();
+
+    bool IEquatable<ISourceState>.Equals(ISourceState? other)
+    {
+        return Equals(other as DatabaseSourceState);
+    }
 }

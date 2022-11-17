@@ -1,4 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using FootprintViewer.AppStates.Extensions;
+using FootprintViewer.Data.DataManager;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace FootprintViewer.AppStates;
 
@@ -12,8 +15,41 @@ public class MainState
     public LastDatabaseState? LastOpenDatabase { get; set; }
 
     [DataMember]
-    public DataState DataState { get; private set; } = new();
+    public LocalizationState LocalizationState { get; private set; } = new();
 
     [DataMember]
-    public LocalizationState LocalizationState { get; private set; } = new();
+    private DataState<ISourceState> DataState { get; set; } = new();
+
+    public void InitDefaultData(IDataManager dataManager)
+    {
+        var defaultSources = dataManager.GetSources();
+
+        var dict = defaultSources
+            .ToDictionary(s => s.Key, s => s.Value.Select(s => s.ToState()).ToList());
+
+        DataState.SetExcludeValues(dict);
+    }
+
+    public void LoadData(IDataManager dataManager)
+    {
+        var values = DataState.GetValues();
+
+        foreach (var (key, states) in values)
+        {
+            foreach (var state in states)
+            {
+                dataManager.RegisterSource(key, state.ToSource());
+            }
+        }
+    }
+
+    public void SaveData(IDataManager dataManager)
+    {
+        var sources = dataManager.GetSources();
+
+        var dict = sources
+            .ToDictionary(s => s.Key, s => s.Value.Select(s => s.ToState()).ToList());
+
+        DataState.UpdateValues(dict);
+    }
 }

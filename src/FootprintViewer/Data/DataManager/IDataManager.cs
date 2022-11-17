@@ -6,7 +6,7 @@ namespace FootprintViewer.Data.DataManager;
 
 public interface IDataManager
 {
-    void RegisterSource(string key, ISource source);
+    void RegisterSource(string key, ISource source, bool dirty = true);
 
     void UnregisterSource(string key, ISource source);
 

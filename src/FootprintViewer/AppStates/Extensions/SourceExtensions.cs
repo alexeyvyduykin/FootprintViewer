@@ -50,8 +50,30 @@ public static class SourceExtensions
         }
     }
 
-    //public static ISource ToSource(this ISourceState state)
-    //{
-
-    //}
+    public static ISource ToSource(this ISourceState state)
+    {
+        if (state is DatabaseSourceState databaseSourceState)
+        {
+            return new DatabaseSource(
+                databaseSourceState.Key ?? string.Empty,
+                databaseSourceState.ConnectionString ?? string.Empty,
+                databaseSourceState.TableName ?? string.Empty);
+        }
+        else if (state is FileSourceState fileSourceState)
+        {
+            return new FileSource(
+                fileSourceState.Key ?? string.Empty,
+                fileSourceState.Paths);
+        }
+        else if (state is JsonSourceState jsonSourceState)
+        {
+            return new JsonSource(
+                jsonSourceState.Key ?? string.Empty,
+                jsonSourceState.Paths);
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
 }

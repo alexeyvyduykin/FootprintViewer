@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -27,4 +28,9 @@ public class FileSourceState : ISourceState
 
     public override int GetHashCode()
         => (Key, Paths).GetHashCode();
+
+    bool IEquatable<ISourceState>.Equals(ISourceState? other)
+    {
+        return Equals(other as FileSourceState);
+    }
 }
