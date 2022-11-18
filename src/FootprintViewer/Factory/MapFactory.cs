@@ -2,6 +2,7 @@
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using Mapsui;
+using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Splat;
 
@@ -37,6 +38,15 @@ public class MapFactory
         map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
 
         return map;
+    }
+
+    public FeatureManager CreateFeatureManager()
+    {
+        return new FeatureManager()
+            .WithSelect(f => f[InteractiveFields.Select] = true)
+            .WithUnselect(f => f[InteractiveFields.Select] = false)
+            .WithEnter(f => f["Highlight"] = true)
+            .WithLeave(f => f["Highlight"] = false);
     }
 
     private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
@@ -114,11 +124,11 @@ public class MapFactory
 
         provider.MaxVisible = styleManager.MaxVisibleTargetStyle;
 
-        var layer = new Layer()
+        var layer = new DynamicLayer(provider, true)
         {
             Style = styleManager.TargetStyle,
             //MaxVisible = styleManager.MaxVisibleTargetStyle,
-            DataSource = provider,
+            //DataSource = provider,
             IsMapInfoLayer = true,
         };
 

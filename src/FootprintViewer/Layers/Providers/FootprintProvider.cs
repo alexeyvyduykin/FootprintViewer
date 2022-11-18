@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
-public class FootprintProvider : IProvider
+public class FootprintProvider : IProvider, IFeatureProvider
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<Footprint> _footprints = new();

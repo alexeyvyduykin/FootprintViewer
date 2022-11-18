@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using Mapsui;
+using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
-public class GroundTargetProvider : IProvider
+public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<GroundTarget> _groundTargets = new();
@@ -66,6 +67,8 @@ public class GroundTargetProvider : IProvider
     public ReactiveCommand<Unit, Unit> Update { get; }
 
     public ReactiveCommand<IEnumerable<IFeature>?, string[]?> ActiveFeaturesChanged { get; }
+
+    public event DataChangedEventHandler? DataChanged;
 
     private async Task UpdateImpl()
     {
@@ -156,5 +159,14 @@ public class GroundTargetProvider : IProvider
         }
 
         return mRect;
+    }
+    public void DataHasChanged()
+    {
+        OnDataChanged();
+    }
+
+    private void OnDataChanged()
+    {
+        DataChanged?.Invoke(this, new DataChangedEventArgs(null, false, null));
     }
 }

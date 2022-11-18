@@ -2,8 +2,12 @@
 using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
+using FootprintViewer.Layers.Providers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
+using Mapsui;
+using Mapsui.Layers;
 using ReactiveUI;
 using Splat;
 using System;
@@ -23,11 +27,18 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
+    private readonly FeatureManager _featureManager;
+    private readonly ILayer? _layer;
+    private readonly FootprintProvider _provider;
 
     public FootprintTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+        var map = dependencyResolver.GetExistingService<IMap>();
+        _layer = map.GetLayer(LayerType.Footprint);
+        _provider = dependencyResolver.GetExistingService<FootprintProvider>();
+        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
 
         Filter = new FootprintTabFilterViewModel(dependencyResolver);
 
@@ -64,6 +75,11 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             s => Task.Run(() =>
             {
                 _mapNavigator.FlyToFootprint(s.Center);
+
+                _featureManager
+                .OnLayer(_layer)
+                .Select(_provider.Find(s.Name, "Name"));
+
                 return s;
             }), outputScheduler: RxApp.MainThreadScheduler);
     }

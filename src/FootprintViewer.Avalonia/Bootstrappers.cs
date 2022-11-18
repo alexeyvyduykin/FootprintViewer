@@ -90,6 +90,8 @@ public static class Bootstrapper
 
         services.RegisterConstant(new LayerStyleManager(), typeof(LayerStyleManager));
 
+        services.RegisterConstant(mapFactory.CreateFeatureManager(), typeof(FeatureManager));
+
         // Layer providers
         services.RegisterConstant(new GroundTargetProvider(resolver), typeof(GroundTargetProvider));
         services.RegisterConstant(new TrackProvider(resolver), typeof(TrackProvider));

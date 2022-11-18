@@ -15,9 +15,12 @@ public class DynamicLayer : BaseLayer, IAsyncDataFetcher, ILayerDataSource<IProv
     private readonly IProvider _dataSource;
     private FetchInfo? _fetchInfo;
     private List<IFeature> _features = new();
+    private readonly bool _autoUpdatable;
 
-    public DynamicLayer(IProvider dataSource)
+    public DynamicLayer(IProvider dataSource, bool autoUpdatable = false)
     {
+        _autoUpdatable = autoUpdatable;
+
         _dataSource = dataSource ?? throw new ArgumentException(null, nameof(dataSource));
 
         if (_dataSource is IDynamic dynamic)
@@ -57,6 +60,14 @@ public class DynamicLayer : BaseLayer, IAsyncDataFetcher, ILayerDataSource<IProv
     public void RefreshData(FetchInfo fetchInfo)
     {
         _fetchInfo = fetchInfo;
+
+        if (_autoUpdatable == true)
+        {
+            if (DataSource is IDynamic dynamic)
+            {
+                dynamic.DataHasChanged();
+            }
+        }
     }
 
     public void AbortFetch()

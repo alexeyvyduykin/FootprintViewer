@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
-public class UserGeometryProvider : IProvider, IDynamic
+public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<UserGeometry> _userGeometries = new();
@@ -102,6 +102,13 @@ public class UserGeometryProvider : IProvider, IDynamic
         }
 
         return mRect;
+    }
+
+    public IFeature? Find(object? value, string fieldName)
+    {
+        object? value2 = value;
+        string fieldName2 = fieldName;
+        return Features.FirstOrDefault((IFeature f) => value2 != null && f[fieldName2] == value2);
     }
 
     public void DataHasChanged()

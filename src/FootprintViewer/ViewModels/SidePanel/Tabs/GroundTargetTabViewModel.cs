@@ -1,8 +1,8 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
-using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
@@ -27,14 +27,17 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly ObservableAsPropertyHelper<bool> _isEnable;
-    private readonly LayerManager? _targetManager;
+    private readonly FeatureManager _featureManager;
+    private readonly ILayer? _layer;
+    private readonly GroundTargetProvider _provider;
 
     public GroundTargetTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         var map = dependencyResolver.GetExistingService<IMap>();
-        var layer = map.GetLayer<Layer>(LayerType.GroundTarget);
-        _targetManager = layer?.BuildManager(() => ((GroundTargetProvider)layer.DataSource!).ActiveFeatures);
+        _layer = map.GetLayer(LayerType.GroundTarget);
+        _provider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
 
         Title = "Просмотр наземных целей";
 
@@ -106,13 +109,17 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         if (string.IsNullOrEmpty(name) == false)
         {
-            _targetManager?.ShowHighlight(name);
+            _featureManager
+                .OnLayer(_layer)
+                .Enter(_provider.Find(name, "Name"));
         }
     }
 
     private void LeaveImpl()
     {
-        _targetManager?.HideHighlight();
+        _featureManager
+            .OnLayer(_layer)
+            .Leave();
     }
 
     private void SelectImpl(GroundTargetViewModel? groundTarget)
@@ -123,7 +130,9 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
             if (string.IsNullOrEmpty(name) == false)
             {
-                _targetManager?.SelectFeature(name);
+                _featureManager
+                    .OnLayer(_layer)
+                    .Select(_provider.Find(name, "Name"));
             }
         }
     }
