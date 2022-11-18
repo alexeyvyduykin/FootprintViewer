@@ -1,11 +1,10 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
-using FootprintViewer.Layers.Providers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
-using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
@@ -46,6 +45,7 @@ public class MainViewModel : RoutableViewModel
     private readonly ScaleMapBar _scaleMapBar;
     private ISelector? _selector;
     private readonly IDataManager _dataManager;
+    private readonly FeatureManager _featureManager;
     private double _lastScreenPointX = 0;
     private double _lastScreenPointY = 0;
 
@@ -63,6 +63,7 @@ public class MainViewModel : RoutableViewModel
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
         _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -106,8 +107,6 @@ public class MainViewModel : RoutableViewModel
         _customToolBar.Rectangle.Subscribe(DrawingRectangleCommand, Reset);
         _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
-
-        _footprintTab.TargetToMap.Subscribe(SelectFeatureImpl);
 
         IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
 
@@ -188,20 +187,6 @@ public class MainViewModel : RoutableViewModel
     }
 
     public DialogNavigationStack DialogNavigationStack => DialogStack();
-
-    private void SelectFeatureImpl(FootprintViewModel vm)
-    {
-        var layer = _map.GetLayer<Layer>(LayerType.Footprint);
-        var provider = _dependencyResolver.GetExistingService<FootprintProvider>();
-        var feature = provider?.Find(vm.Name, "Name");
-
-        if (feature != null && layer != null)
-        {
-            _selector ??= new InteractiveBuilder().SelectSelector<Selector>().Build();
-
-            _selector.Selected(feature, layer);
-        }
-    }
 
     private void Reset()
     {

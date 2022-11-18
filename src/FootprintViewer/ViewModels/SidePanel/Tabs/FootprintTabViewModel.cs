@@ -71,20 +71,18 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .ToSignal()
             .InvokeCommand(Update);
 
-        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel, FootprintViewModel>(
+        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel>(
             s => Task.Run(() =>
             {
                 _mapNavigator.FlyToFootprint(s.Center);
 
                 _featureManager
-                .OnLayer(_layer)
-                .Select(_provider.Find(s.Name, "Name"));
-
-                return s;
+                    .OnLayer(_layer)
+                    .Select(_provider.Find(s.Name, "Name"));
             }), outputScheduler: RxApp.MainThreadScheduler);
     }
 
-    public ReactiveCommand<FootprintViewModel, FootprintViewModel> TargetToMap { get; }
+    public ReactiveCommand<FootprintViewModel, Unit> TargetToMap { get; }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
