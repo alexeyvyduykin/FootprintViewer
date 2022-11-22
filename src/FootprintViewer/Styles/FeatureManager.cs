@@ -7,9 +7,10 @@ namespace FootprintViewer.Styles;
 public class FeatureManager
 {
     private ILayer? _layer;
-    private ILayer? _lastLayer;
+    private ILayer? _lastSelectLayer;
+    private ILayer? _lastHoverLayer;
     private IFeature? _lastSelectFeature;
-    private IFeature? _lastEnterFeature;
+    private IFeature? _lastHoverFeature;
     private Action<IFeature>? _selectAction;
     private Action<IFeature>? _unselectAction;
     private Action<IFeature>? _enterAction;
@@ -17,12 +18,7 @@ public class FeatureManager
 
     public FeatureManager OnLayer(ILayer? layer)
     {
-        if (layer != null)
-        {
-            _lastLayer = _layer;
-
-            _layer = layer;
-        }
+        _layer = layer;
 
         return this;
     }
@@ -63,12 +59,14 @@ public class FeatureManager
             {
                 _unselectAction?.Invoke(_lastSelectFeature);
 
-                _lastLayer?.DataHasChanged();
+                _lastSelectLayer?.DataHasChanged();
             }
 
             _selectAction?.Invoke(feature);
 
             _lastSelectFeature = feature;
+
+            _lastSelectLayer = _layer;
 
             _layer?.DataHasChanged();
         }
@@ -88,7 +86,7 @@ public class FeatureManager
         {
             _unselectAction?.Invoke(_lastSelectFeature);
 
-            _lastLayer?.DataHasChanged();
+            _lastSelectLayer?.DataHasChanged();
         }
     }
 
@@ -96,14 +94,21 @@ public class FeatureManager
     {
         if (feature != null)
         {
-            if (_lastEnterFeature != null)
+            if (_lastHoverFeature != null)
             {
-                _leaveAction?.Invoke(_lastEnterFeature);
+                _leaveAction?.Invoke(_lastHoverFeature);
+
+                if (_lastHoverLayer != _layer)
+                {
+                    _lastHoverLayer?.DataHasChanged();
+                }
             }
 
             _enterAction?.Invoke(feature);
 
-            _lastEnterFeature = feature;
+            _lastHoverFeature = feature;
+
+            _lastHoverLayer = _layer;
 
             _layer?.DataHasChanged();
         }
@@ -111,11 +116,11 @@ public class FeatureManager
 
     public void Leave()
     {
-        if (_lastEnterFeature != null)
+        if (_lastHoverFeature != null)
         {
-            _leaveAction?.Invoke(_lastEnterFeature);
+            _leaveAction?.Invoke(_lastHoverFeature);
 
-            _lastLayer?.DataHasChanged();
+            _lastHoverLayer?.DataHasChanged();
         }
     }
 }

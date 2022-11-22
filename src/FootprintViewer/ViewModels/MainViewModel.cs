@@ -5,6 +5,7 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
+using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
@@ -18,6 +19,7 @@ using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
+using Nito.Disposables.Internals;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -360,102 +362,122 @@ public class MainViewModel : RoutableViewModel
 
     private void SelectCommand()
     {
-        var footprintLayer = Map.GetLayer<ILayer>(LayerType.Footprint);
-        var groundTargetLayer = Map.GetLayer<ILayer>(LayerType.GroundTarget);
-        var userGeometryLayer = Map.GetLayer<ILayer>(LayerType.User);
+        var types = new[] { LayerType.Footprint, LayerType.GroundTarget, LayerType.User };
 
-        if (footprintLayer == null || groundTargetLayer == null || userGeometryLayer == null)
-        {
-            return;
-        }
+        var availableLayers = types
+            .Select(s => Map.GetLayer(s))
+            .WhereNotNull()
+            .ToArray();
 
         _selector?.Cancel();
 
         _selector = new InteractiveBuilder()
             .SelectSelector<Selector>()
             .AttachTo(Map)
-            .AvailableFor(new[] { footprintLayer, groundTargetLayer, userGeometryLayer })
+            .AvailableFor(availableLayers)
             .Build();
 
-        _selector.Select.Subscribe(async s =>
-        {
-            var feature = s.SelectedFeature;
-            var layer = s.SelectedLayer;
-
-            if (string.Equals(layer?.Name, footprintLayer.Name) == true)
+        _selector.Select
+            .Subscribe(async s =>
             {
-                if (feature != null && feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
-                    var viewModels = await _footprintTab.GetFootprintViewModelsAsync(name);
+                SelectFeature(s);
+                await OpenInfoPanel(s);
+            });
 
-                    var vm = viewModels.FirstOrDefault();
-
-                    if (vm != null)
-                    {
-                        ClickInfoPanel.Show(new FootprintClickInfoPanel(vm));
-                    }
-                }
-            }
-            else if (string.Equals(layer?.Name, groundTargetLayer.Name) == true)
+        _selector.Unselect
+            .Subscribe(s =>
             {
-                if (feature != null && feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
+                UnselectFeature(s);
+                CloseInfoPanel(s);
+            });
 
-                    await Task.Run(async () =>
-                    {
-                        var viewModels = await _groundTargetTab.GetGroundTargetViewModelsAsync(name);
+        _selector.HoverBegin
+            .Subscribe(s => EnterFeature(s));
 
-                        var vm = viewModels.FirstOrDefault();
-
-                        if (vm != null)
-                        {
-                            ClickInfoPanel.Show(new GroundTargetClickInfoPanel(vm));
-                        }
-                    });
-                }
-            }
-            else if (string.Equals(layer?.Name, userGeometryLayer.Name) == true)
-            {
-                if (feature != null && feature.Fields.Contains("Name"))
-                {
-                    var name = (string)feature["Name"]!;
-
-                    await Task.Run(async () =>
-                    {
-                        var viewModels = await _userGeometryTab.GetUserGeometryViewModelsAsync(name);
-
-                        var vm = viewModels.FirstOrDefault();
-
-                        if (vm != null)
-                        {
-                            ClickInfoPanel.Show(new UserGeometryClickInfoPanel(vm));
-                        }
-                    });
-                }
-            }
-        });
-
-        _selector.Unselect.Subscribe(s =>
-        {
-            if (string.Equals(s.SelectedLayer?.Name, footprintLayer.Name) == true)
-            {
-                ClickInfoPanel.CloseAll(typeof(FootprintClickInfoPanel));
-            }
-            else if (string.Equals(s.SelectedLayer?.Name, groundTargetLayer.Name) == true)
-            {
-                ClickInfoPanel.CloseAll(typeof(GroundTargetClickInfoPanel));
-            }
-            else if (string.Equals(s.SelectedLayer?.Name, userGeometryLayer.Name) == true)
-            {
-                ClickInfoPanel.CloseAll(typeof(UserGeometryClickInfoPanel));
-            }
-        });
+        _selector.HoverEnd
+            .Subscribe(s => LeaveFeature(s));
 
         Interactive = _selector;
 
         State = States.Selecting;
+    }
+
+    private void EnterFeature(ISelector selector)
+    {
+        _featureManager
+            .OnLayer(selector.PointeroverLayer)
+            .Enter(selector.HoveringFeature);
+    }
+
+    private void LeaveFeature(ISelector selector)
+    {
+        _featureManager
+            .OnLayer(selector.PointeroverLayer)
+            .Leave();
+    }
+
+    private void SelectFeature(ISelector selector)
+    {
+        _featureManager
+            .OnLayer(selector.SelectedLayer)
+            .Select(selector.SelectedFeature);
+    }
+
+    private void UnselectFeature(ISelector selector)
+    {
+        _featureManager
+            .OnLayer(selector.SelectedLayer)
+            .Unselect();
+    }
+
+    private async Task OpenInfoPanel(ISelector selector)
+    {
+        var feature = selector.SelectedFeature;
+        var layer = selector.SelectedLayer;
+
+        InfoPanelItem? panel = layer?.Name switch
+        {
+            nameof(LayerType.Footprint) =>
+                (await _dataManager.GetDataAsync<Footprint>(nameof(DbKeys.Footprints)))
+                    .Where(s => Equals(s.Name, feature?["Name"]))
+                    .Select(s => new FootprintViewModel(s))
+                    .Select(s => new FootprintClickInfoPanel(s))
+                    .FirstOrDefault(),
+            nameof(LayerType.GroundTarget) =>
+                (await _dataManager.GetDataAsync<GroundTarget>(nameof(DbKeys.GroundTargets)))
+                    .Where(s => Equals(s.Name, feature?["Name"]))
+                    .Select(s => new GroundTargetViewModel(s))
+                    .Select(s => new GroundTargetClickInfoPanel(s))
+                    .FirstOrDefault(),
+            nameof(LayerType.User) =>
+                (await _dataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
+                    .Where(s => Equals(s.Name, feature?["Name"]))
+                    .Select(s => new UserGeometryViewModel(s))
+                    .Select(s => new UserGeometryClickInfoPanel(s))
+                    .FirstOrDefault(),
+            _ => null
+        };
+
+        if (panel != null)
+        {
+            ClickInfoPanel.Show(panel);
+        }
+    }
+
+    private void CloseInfoPanel(ISelector selector)
+    {
+        Type? type = selector.SelectedLayer?.Name switch
+        {
+            nameof(LayerType.Footprint) => typeof(FootprintClickInfoPanel),
+            nameof(LayerType.GroundTarget) => typeof(GroundTargetClickInfoPanel),
+            nameof(LayerType.User) => typeof(UserGeometryClickInfoPanel),
+            _ => null
+        };
+
+        if (type != null)
+        {
+            ClickInfoPanel.CloseAll(type);
+        }
     }
 
     private void ScaleCommand()

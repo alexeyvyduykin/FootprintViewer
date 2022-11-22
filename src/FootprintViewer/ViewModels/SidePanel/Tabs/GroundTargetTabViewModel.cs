@@ -11,7 +11,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -135,18 +134,6 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
                     .Select(_provider.Find(name, "Name"));
             }
         }
-    }
-
-    public async Task<List<GroundTargetViewModel>> GetGroundTargetViewModelsAsync(string name)
-    {
-        var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
-
-        var list = res
-            .Where(s => string.Equals(s.Name, name))
-            .Select(s => new GroundTargetViewModel(s))
-            .ToList();
-
-        return list;
     }
 
     public bool IsLoading => _isLoading.Value;

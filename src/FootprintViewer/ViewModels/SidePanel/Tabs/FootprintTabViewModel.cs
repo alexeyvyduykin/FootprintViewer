@@ -11,7 +11,6 @@ using Mapsui.Layers;
 using ReactiveUI;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -104,18 +103,6 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     public FootprintViewModel? GetFootprintViewModel(string name)
     {
         return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
-    }
-
-    public async Task<List<FootprintViewModel>> GetFootprintViewModelsAsync(string name)
-    {
-        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
-
-        var list = res
-            .Where(s => string.Equals(s.Name, name))
-            .Select(s => new FootprintViewModel(s))
-            .ToList();
-
-        return list;
     }
 
     public IFilter<FootprintViewModel> Filter { get; }

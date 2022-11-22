@@ -5,7 +5,6 @@ using FootprintViewer.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -80,16 +79,6 @@ public class UserGeometryTabViewModel : SidePanelTabViewModel
 
             _dataManager.ForceUpdateData(DbKeys.UserGeometries.ToString());
         }
-    }
-
-    public async Task<List<UserGeometryViewModel>> GetUserGeometryViewModelsAsync(string name)
-    {
-        var res = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
-
-        return res
-            .Where(s => Equals(s.Name, name))
-            .Select(s => new UserGeometryViewModel(s))
-            .ToList();
     }
 
     public ReadOnlyObservableCollection<UserGeometryViewModel> Items => _items;

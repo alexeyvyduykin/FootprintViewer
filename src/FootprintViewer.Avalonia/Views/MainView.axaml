@@ -29,7 +29,8 @@
 		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
 	</UserControl.Resources>
 
-	<Grid ColumnDefinitions="*,Auto">
+	<Grid ColumnDefinitions="*,Auto"
+		  RowDefinitions="*,Auto">
 
 		<Panel>
 
@@ -83,13 +84,18 @@
 				  RowDefinitions="Auto,Auto">
 				<bottomPanel:BottomPanelView Grid.Row="0"
 											 DataContext="{Binding BottomPanel}"/>
-				<views:ScaleMapBarView Grid.Row="1"
-									   DataContext="{Binding ScaleMapBar}"/>
+				<!--<views:ScaleMapBarView Grid.Row="1"
+									   DataContext="{Binding ScaleMapBar}"/>-->
 			</Grid>
 		</Panel>
 
 		<sidePanel:SidePanelView Grid.Column="1"
+								 Grid.RowSpan="2"
 								 DataContext="{Binding SidePanel}"/>
+
+
+		<views:ScaleMapBarView Grid.Row="1"
+							   DataContext="{Binding ScaleMapBar}"/>
 
 	</Grid>
 

@@ -6,7 +6,7 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"			 
+			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"
 			 mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="250"
 			 x:DataType="vm:FootprintClickInfoPanel"
@@ -21,13 +21,13 @@
 		<conv:FootprintInfoNameConverter x:Key="NameConv"/>
 		<conv:FootprintInfoTimeConverter x:Key="TimeConv"/>
 	</UserControl.Resources>
-	
+
 	<Panel VerticalAlignment="Center"
 		   HorizontalAlignment="Center">
 		<styles:Card Opacity="0.85">
 			<StackPanel Margin="4" Spacing="4">
 
-				<TextBlock Text="{Binding Info.Name}" Classes="Headline6"/>
+				<TextBlock Text="{Binding FootprintViewModel.Name}" Classes="Headline6"/>
 
 				<StackPanel>
 					<TextBlock Text="{x:Static prop:Resources.InfoPanelCenter}" Classes="Overline"/>

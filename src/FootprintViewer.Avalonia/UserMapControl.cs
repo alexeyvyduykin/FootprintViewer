@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Input;
 using FootprintViewer.ViewModels;
-using Mapsui.Extensions;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 using System;
@@ -24,10 +23,7 @@ public class UserMapControl : MapControl
 
     private void UserMapControl_EffectiveViewportChanged(object? sender, global::Avalonia.Layout.EffectiveViewportChangedEventArgs e)
     {
-        var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
-        ScaleMapBar!.Resolution = resolution;
-        ScaleMapBar!.Scale = scaleText;
-        ScaleMapBar!.ScaleLength = scaleLength;
+        ScaleMapBar?.ChangedViewport(Viewport);
     }
 
     public ScaleMapBar? ScaleMapBar
@@ -87,10 +83,7 @@ public class UserMapControl : MapControl
         {
             var isLeftMouseDown = e.GetCurrentPoint(this).Properties.IsLeftButtonPressed;
 
-            var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
-            ScaleMapBar!.Resolution = resolution;
-            ScaleMapBar!.Scale = scaleText;
-            ScaleMapBar!.ScaleLength = scaleLength;
+            ScaleMapBar?.ChangedViewport(Viewport);
 
             if (isLeftMouseDown == true)
             {
@@ -105,7 +98,9 @@ public class UserMapControl : MapControl
             {
                 var position = e.GetPosition(this);
 
-                ScaleMapBar!.Position = ScaleMapBar.ChangedPosition(position.X, position.Y, Viewport).ToMPoint();
+                var worldPosition = Viewport.ScreenToWorld(position.X, position.Y);
+
+                ScaleMapBar?.ChangedPosition(worldPosition);
             }
         }
     }
@@ -114,10 +109,7 @@ public class UserMapControl : MapControl
     {
         base.OnPointerWheelChanged(e);
 
-        var (resolution, scaleText, scaleLength) = ScaleMapBar.ChangedViewport(Viewport);
-        ScaleMapBar!.Resolution = resolution;
-        ScaleMapBar!.Scale = scaleText;
-        ScaleMapBar!.ScaleLength = scaleLength;
+        ScaleMapBar?.ChangedViewport(Viewport);
     }
 
     public void SetCursor(CursorType cursorType)

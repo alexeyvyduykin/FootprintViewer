@@ -26,8 +26,9 @@
 			<Setter Property="VerticalAlignment" Value="Center"></Setter>
 		</Style>
 	</UserControl.Styles>
-
-	<Border Opacity="0.65"
+	
+	<!--Opacity="0.65"-->
+	<Border
 			Height="20"
 			Background="{StaticResource MainBrush}"
 			VerticalAlignment="Bottom"
