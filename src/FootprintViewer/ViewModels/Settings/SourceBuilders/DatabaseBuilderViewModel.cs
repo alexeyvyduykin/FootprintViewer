@@ -56,6 +56,17 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
         EnableCancel = true;
         NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back, CreateSource()), nextCommandCanExecute);
         CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
+
+        ShowTableInfo = ReactiveCommand.CreateFromTask(async () =>
+        {
+            var tableInfoDialog = TableInfoViewModel.Build(DbHelper.GetTableType(key));
+
+            DialogStack().To(tableInfoDialog);
+
+            _ = await tableInfoDialog.GetDialogResultAsync();
+
+            DialogStack().Back();
+        });
     }
 
     private ISource CreateSource()
@@ -115,6 +126,8 @@ public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
     }
 
     private ReactiveCommand<List<string>, Unit> Update { get; }
+
+    public ReactiveCommand<Unit, Unit> ShowTableInfo { get; }
 
     [Reactive]
     public string? Host { get; set; }

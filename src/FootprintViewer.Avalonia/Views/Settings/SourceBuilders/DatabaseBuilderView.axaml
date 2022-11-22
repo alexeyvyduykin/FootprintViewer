@@ -44,6 +44,15 @@
 				<TextBlock Text="Password" Grid.Row="3" Classes="t1"/>
 				<StackPanel Grid.Row="4" Orientation="Horizontal">
 					<TextBlock Text="Table" Classes="t1"/>
+					<Button Height="20"
+							Background="Transparent"
+							Padding="0"
+							Command="{Binding ShowTableInfo}"
+							Margin="8,0,0,0">
+						<Viewbox>
+							<materialIcons:MaterialIcon Foreground="Aqua" Kind="InfoCircle"/>
+						</Viewbox>
+					</Button>
 					<Viewbox Height="20" Margin="8,0,0,0">
 						<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}"
 													Classes="verified"/>

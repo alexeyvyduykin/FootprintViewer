@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FootprintViewer.ViewModels.Settings;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -144,6 +145,20 @@ internal static class DbHelper
         }
 
         return res;
+    }
+
+    public static TableInfoType GetTableType(string? key)
+    {
+        Enum.TryParse<DbKeys>(key, true, out var result);
+        return result switch
+        {
+            DbKeys.Footprints => TableInfoType.Footprint,
+            DbKeys.GroundTargets => TableInfoType.GroundTarget,
+            DbKeys.Satellites => TableInfoType.Satellite,
+            DbKeys.GroundStations => TableInfoType.GroundStation,
+            DbKeys.UserGeometries => TableInfoType.UserGeometry,
+            _ => throw new Exception(),
+        };
     }
 
     public static Type GetType(string key)
