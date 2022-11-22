@@ -102,6 +102,7 @@ public static class Bootstrapper
 
         services.RegisterConstant(mapFactory.CreateMap(), typeof(IMap));
         services.RegisterConstant(factory.CreateMapNavigator((Map)resolver.GetExistingService<IMap>()), typeof(IMapNavigator));
+        services.RegisterConstant(new AreaOfInterest((Map)resolver.GetExistingService<IMap>()), typeof(AreaOfInterest));
 
         services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => new FootprintPreviewTabViewModel(resolver));
         services.RegisterLazySingleton<SatelliteTabViewModel>(() => new SatelliteTabViewModel(resolver));

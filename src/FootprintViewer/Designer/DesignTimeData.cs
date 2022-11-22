@@ -22,6 +22,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
 {
     private Map? _map;
     private IMapNavigator? _mapNavigator;
+    private AreaOfInterest? _areaOfInterest;
     private ProjectFactory? _projectFactory;
     private GroundTargetProvider? _groundTargetProvider;
     private SatelliteTabViewModel? _satelliteTab;
@@ -45,6 +46,10 @@ public class DesignTimeData : IReadonlyDependencyResolver
         else if (serviceType == typeof(IMap))
         {
             return _map ??= CreateMap();
+        }
+        else if (serviceType == typeof(AreaOfInterest))
+        {
+            return _areaOfInterest ??= new AreaOfInterest((Map)GetService(typeof(IMap))!);
         }
         else if (serviceType == typeof(IMapNavigator))
         {

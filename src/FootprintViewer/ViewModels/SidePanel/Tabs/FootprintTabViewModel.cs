@@ -38,6 +38,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         _layer = map.GetLayer(LayerType.Footprint);
         _provider = dependencyResolver.GetExistingService<FootprintProvider>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
+        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
 
         Filter = new FootprintTabFilterViewModel(dependencyResolver);
 
@@ -79,6 +80,10 @@ public class FootprintTabViewModel : SidePanelTabViewModel
                     .OnLayer(_layer)
                     .Select(_provider.Find(s.Name, "Name"));
             }), outputScheduler: RxApp.MainThreadScheduler);
+
+        areaOfInterest.AOIChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => ((FootprintTabFilterViewModel)Filter).AOI = s);
     }
 
     public ReactiveCommand<FootprintViewModel, Unit> TargetToMap { get; }

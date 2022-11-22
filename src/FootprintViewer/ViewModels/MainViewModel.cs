@@ -18,7 +18,6 @@ using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
-using NetTopologySuite.Geometries;
 using Nito.Disposables.Internals;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -35,6 +34,7 @@ public class MainViewModel : RoutableViewModel
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly Map _map;
+    private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanel _infoPanel;
     private readonly InfoPanel _clickInfoPanel;
     private readonly SidePanelViewModel _sidePanel;
@@ -58,6 +58,7 @@ public class MainViewModel : RoutableViewModel
         // TODO: make _map as IMap
         _map = (Map)dependencyResolver.GetExistingService<IMap>();
         MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+        _areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
         _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
         _customToolBar = dependencyResolver.GetExistingService<CustomToolBarViewModel>();
         _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
@@ -78,21 +79,6 @@ public class MainViewModel : RoutableViewModel
         _scaleMapBar = factory.CreateScaleMapBar();
 
         _bottomPanel = factory.CreateBottomPanel();
-
-        AOIChanged += (s, e) =>
-        {
-            if (s != null)
-            {
-                if (s is Geometry geometry)
-                {
-                    _footprintPreviewTab.SetAOI(geometry);
-                }
-            }
-            else
-            {
-                _footprintPreviewTab.ResetAOI();
-            }
-        };
 
         _customToolBar.ZoomIn.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomIn()));
         _customToolBar.ZoomOut.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomOut()));
@@ -202,8 +188,6 @@ public class MainViewModel : RoutableViewModel
         HideTip();
     }
 
-    public event EventHandler? AOIChanged;
-
     private void RectangleCommand()
     {
         var designer = new InteractiveBuilder()
@@ -220,15 +204,11 @@ public class MainViewModel : RoutableViewModel
         {
             var feature = s.Feature.Copy();
 
-            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-            layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIRectangle.ToString());
-
             HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
-            AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            _areaOfInterest.Update(feature, FeatureType.AOIRectangle);
 
             _customToolBar.Uncheck();
         });
@@ -261,15 +241,11 @@ public class MainViewModel : RoutableViewModel
         {
             var feature = s.Feature.Copy();
 
-            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-            layer?.AddAOI(new InteractivePolygon(feature), Styles.FeatureType.AOIPolygon.ToString());
-
             HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
-            AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            _areaOfInterest.Update(feature, FeatureType.AOIPolygon);
 
             _customToolBar.Uncheck();
         });
@@ -297,15 +273,11 @@ public class MainViewModel : RoutableViewModel
         {
             var feature = s.Feature.Copy();
 
-            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-            layer?.AddAOI(new InteractiveCircle(feature), Styles.FeatureType.AOICircle.ToString());
-
             HideTip();
 
             InfoPanel.Show(CreateAOIPanel(s));
 
-            AOIChanged?.Invoke(feature.Geometry, EventArgs.Empty);
+            _areaOfInterest.Update(feature, FeatureType.AOICircle);
 
             _customToolBar.Uncheck();
         });
@@ -698,11 +670,7 @@ public class MainViewModel : RoutableViewModel
 
         panel.Close.Subscribe(_ =>
         {
-            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-            layer?.ResetAOI();
-
-            AOIChanged?.Invoke(null, EventArgs.Empty);
+            _areaOfInterest.Update(null);
 
             HideTip();
 

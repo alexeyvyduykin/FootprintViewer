@@ -52,7 +52,10 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        var merged = Observable.Merge(observable1, observable2);
+        var observable3 = this.WhenAnyValue(s => s.AOI)
+            .Select(_ => this);
+
+        var merged = Observable.Merge(observable1, observable2, observable3);
 
         _filterObservable = merged.Select(CreatePredicate);
 
@@ -87,18 +90,37 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
     private bool Filtering(FootprintViewModel footprint)
     {
-        if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
-        {
-            if (footprint.Node >= FromNode && footprint.Node <= ToNode)
-            {
-                if (footprint.Direction == SatelliteStripDirection.Left && IsLeftStrip == true)
-                {
-                    return true;
-                }
+        bool isAoiCondition = false;
 
-                if (footprint.Direction == SatelliteStripDirection.Right && IsRightStrip == true)
+        if (AOI == null)
+        {
+            isAoiCondition = true;
+        }
+        else
+        {
+            if (footprint.Polygon is Polygon polygon)
+            {
+                var aoiPolygon = (Polygon)AOI;
+
+                isAoiCondition = aoiPolygon.Intersection(polygon, true);
+            }
+        }
+
+        if (isAoiCondition == true)
+        {
+            if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
+            {
+                if (footprint.Node >= FromNode && footprint.Node <= ToNode)
                 {
-                    return true;
+                    if (footprint.Direction == SatelliteStripDirection.Left && IsLeftStrip == true)
+                    {
+                        return true;
+                    }
+
+                    if (footprint.Direction == SatelliteStripDirection.Right && IsRightStrip == true)
+                    {
+                        return true;
+                    }
                 }
             }
         }

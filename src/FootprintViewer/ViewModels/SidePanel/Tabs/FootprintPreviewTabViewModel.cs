@@ -6,7 +6,6 @@ using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
-using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -35,6 +34,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         _map = (Map)dependencyResolver.GetExistingService<IMap>();
         _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel(dependencyResolver);
 
@@ -79,6 +79,10 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
+
+        areaOfInterest.AOIChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => ((FootprintPreviewTabFilterViewModel)Filter).AOI = s);
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
@@ -154,10 +158,6 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
             _mapNavigator.FlyToFootprintPreview(geometry);
         }
     }
-
-    public void SetAOI(Geometry aoi) => ((FootprintPreviewTabFilterViewModel)Filter).AOI = aoi;
-
-    public void ResetAOI() => ((FootprintPreviewTabFilterViewModel)Filter).AOI = null;
 
     public IFilter<FootprintPreviewViewModel> Filter { get; }
 
