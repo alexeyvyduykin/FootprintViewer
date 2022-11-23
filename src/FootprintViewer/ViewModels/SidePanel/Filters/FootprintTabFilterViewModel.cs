@@ -10,6 +10,7 @@ using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -21,21 +22,27 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteItemViewModel> _items;
     private readonly IObservable<Func<FootprintViewModel, bool>> _filterObservable;
+    private readonly ObservableAsPropertyHelper<bool> _isDirty;
+
+    private const bool IsLeftStripDefault = true;
+    private const bool IsRightStripDefault = true;
+    private const int FromNodeDefault = 1;
+    private const int ToNodeDefault = 15;
 
     public FootprintTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+
+        IsLeftStrip = true;
+        IsRightStrip = true;
+        FromNode = 1;
+        ToNode = 15;
 
         _satellites
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _items)
             .Subscribe();
-
-        IsLeftStrip = true;
-        IsRightStrip = true;
-        FromNode = 1;
-        ToNode = 15;
 
         _dataManager.DataChanged
             .Where(s => s.Contains(DbKeys.Footprints.ToString()))
@@ -56,10 +63,22 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
             .Select(_ => this);
 
         var merged = Observable.Merge(observable1, observable2, observable3);
+        var dirtyMerged = Observable.Merge(observable1, observable2);
 
         _filterObservable = merged.Select(CreatePredicate);
 
-        Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
+        var obs1 = dirtyMerged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(s => IsNotDefault(s));
+
+        Reset = ReactiveCommand.Create(ResetImpl, outputScheduler: RxApp.MainThreadScheduler);
+
+        var obs2 = Reset.Select(_ => false);
+
+        _isDirty = Observable.Merge(obs1, obs2)
+            .ToProperty(this, x => x.IsDirty);
+
+        Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler);
     }
 
     public IObservable<Func<FootprintViewModel, bool>> FilterObservable => _filterObservable;
@@ -67,6 +86,32 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
     private static Func<FootprintViewModel, bool> CreatePredicate(FootprintTabFilterViewModel filter)
     {
         return s => filter.Filtering(s);
+    }
+
+    private void ResetImpl()
+    {
+        IsLeftStrip = IsLeftStripDefault;
+        IsRightStrip = IsRightStripDefault;
+        FromNode = FromNodeDefault;
+        ToNode = ToNodeDefault;
+
+        foreach (var item in Satellites)
+        {
+            item.IsActive = true;
+        }
+    }
+
+    private static bool IsNotDefault(FootprintTabFilterViewModel filter)
+    {
+        if (IsLeftStripDefault == filter.IsLeftStrip
+            && IsRightStripDefault == filter.IsRightStrip
+            && FromNodeDefault == filter.FromNode
+            && ToNodeDefault == filter.ToNode)
+        {
+            return filter.Satellites.Any(s => s.IsActive == false);
+        }
+
+        return true;
     }
 
     private async Task UpdateImpl()
@@ -144,4 +189,8 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
     [Reactive]
     public Geometry? AOI { get; set; }
+
+    public ReactiveCommand<Unit, Unit> Reset { get; }
+
+    public bool IsDirty => _isDirty.Value;
 }

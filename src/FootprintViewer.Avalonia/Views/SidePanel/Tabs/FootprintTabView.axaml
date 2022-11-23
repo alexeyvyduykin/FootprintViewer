@@ -36,6 +36,7 @@
 	</UserControl.Resources>
 
 	<UserControl.Styles>
+
 		<Style Selector="FlyoutPresenter">
 			<Setter Property="Padding" Value="0,0,0,0"/>
 		</Style>
@@ -43,18 +44,62 @@
 		<Style Selector="ListBoxItem">
 			<Setter Property="Padding" Value="12,4"/>
 		</Style>
+
+		<Style Selector="ToggleButton.search">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Padding" Value="0" />
+		</Style>
+
+		<Style Selector="ToggleButton.search /template/ Border">
+			<Setter Property="CornerRadius" Value="0" />
+		</Style>
+
+		<Style Selector="ToggleButton.search:checked">
+			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+		</Style>
+
 	</UserControl.Styles>
 
 	<Grid RowDefinitions="Auto,Auto,*,50">
 
 		<ToggleButton x:Name="SearchToggleButton"
-					  Classes="FilterToggleButton"
-					  Content="{x:Static prop:Resources.FilterOptions}">
+					  Classes="search">
+
 			<ToggleButton.Flyout>
 				<Flyout Placement="LeftEdgeAlignedTop">
 					<filtersView:FootprintFilterView DataContext="{Binding Filter}"/>
 				</Flyout>
 			</ToggleButton.Flyout>
+
+			<Grid ColumnDefinitions="Auto,10,*,Auto" Margin="10">
+				<Panel Width="38" Height="38">
+					<Viewbox>
+						<materialIcons:MaterialIcon Foreground="{DynamicResource PrimaryHueMidBrush}"
+													Kind="Circle"/>
+					</Viewbox>
+					<Viewbox Margin="8" IsVisible="{Binding !#SearchToggleButton.IsChecked}">
+						<materialIcons:MaterialIcon Kind="Tune"/>
+					</Viewbox>
+					<Viewbox Margin="6" IsVisible="{Binding #SearchToggleButton.IsChecked}">
+						<materialIcons:MaterialIcon Kind="Close"/>
+					</Viewbox>
+				</Panel>
+
+				<TextBlock Classes="Subtitle1"
+						   Grid.Column="2"
+						   VerticalAlignment="Center"
+						   Text="{x:Static prop:Resources.FilterOptions}"/>
+
+				<Button Grid.Column="3"
+						IsVisible="{Binding Filter.IsDirty}"
+					    Command="{Binding Filter.Reset}">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeForegroundBrush}"
+												Kind="FilterRemove"/>
+				</Button>
+
+			</Grid>
+
 		</ToggleButton>
 
 		<TextBox Margin="0,8,0,4"

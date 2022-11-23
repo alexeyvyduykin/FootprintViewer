@@ -8,7 +8,7 @@ namespace FootprintViewer.Avalonia.Views.SidePanel.Tabs
         {
             InitializeComponent();
 
-            SearchToggleButton.Flyout.Closed += Flyout_Closed; ;
+            SearchToggleButton.Flyout.Closed += Flyout_Closed;
         }
 
         private void Flyout_Closed(object? sender, System.EventArgs e)
