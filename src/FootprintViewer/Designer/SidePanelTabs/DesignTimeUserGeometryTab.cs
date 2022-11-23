@@ -1,12 +1,11 @@
 ﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeUserGeometryTab : UserGeometryTabViewModel
 {
-    public class DesignTimeUserGeometryTab : UserGeometryTabViewModel
+    public DesignTimeUserGeometryTab() : base(new DesignTimeData())
     {
-        public DesignTimeUserGeometryTab() : base(new DesignTimeData())
-        {
-            IsActive = true;
-        }
+        IsActive = true;
     }
 }

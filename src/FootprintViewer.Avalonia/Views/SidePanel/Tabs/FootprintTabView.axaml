@@ -6,7 +6,8 @@
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
-             xmlns:tabs="clr-namespace:FootprintViewer.ViewModels.SidePanel.Tabs;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:tabs="clr-namespace:FootprintViewer.ViewModels.SidePanel.Tabs;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
@@ -22,7 +23,8 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:FootprintViewModel">
-			<itemsView:FootprintView Name="FootprintItem" DataContext="{Binding}">
+			<itemsView:FootprintView Name="FootprintItem"
+									 DataContext="{Binding}">
 				<i:Interaction.Behaviors>
 					<ia:EventTriggerBehavior EventName="TargetToMapClick" SourceObject="{Binding #FootprintItem}">
 						<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.TargetToMap}"
@@ -43,7 +45,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="Auto,*,50">
+	<Grid RowDefinitions="Auto,Auto,*,50">
 
 		<ToggleButton x:Name="SearchToggleButton"
 					  Classes="FilterToggleButton"
@@ -55,7 +57,28 @@
 			</ToggleButton.Flyout>
 		</ToggleButton>
 
-		<Grid Grid.Row="1">
+		<TextBox Margin="0,8,0,4"
+				 Text="{Binding SearchString}"
+				 BorderThickness="0"
+				 Width="280"
+				 Grid.Row="1">
+			<TextBox.InnerLeftContent>
+				<Viewbox Width="24" Height="24" Margin="0,0,4,0">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+												Kind="Search" />
+				</Viewbox>
+			</TextBox.InnerLeftContent>
+			<TextBox.InnerRightContent>
+				<Button Background="Transparent"
+						Command="{Binding EmptySearchString}"
+						Classes="Flat">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+												Kind="Remove" />
+				</Button>
+			</TextBox.InnerRightContent>
+		</TextBox>
+
+		<Grid Grid.Row="2">
 
 			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"

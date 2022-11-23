@@ -1,20 +1,32 @@
-﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DataManager;
+using FootprintViewer.Layers.Providers;
+using FootprintViewer.ViewModels.SidePanel.Tabs;
+using Mapsui.Nts;
+using Splat;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeGroundTargetTab : GroundTargetTabViewModel
 {
-    public class DesignTimeGroundTargetTab : GroundTargetTabViewModel
+    private static readonly IReadonlyDependencyResolver _dependencyResolver = new DesignTimeData();
+
+    public DesignTimeGroundTargetTab() : base(_dependencyResolver)
     {
-        private static readonly DesignTimeData _designTimeData = new();
+        var provider = _dependencyResolver.GetExistingService<GroundTargetProvider>();
+        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
 
-        public DesignTimeGroundTargetTab() : base(_designTimeData)
-        {
-            IsActive = true;
+        var res = Task.Run(async () => await dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString())).Result;
 
-            //    var provider = _designTimeData.GetExistingService<IProvider<GroundTarget>>();
+        var features = res.Select(s => new GeometryFeature() { ["Name"] = s.Name });
 
-            //   var arr = Task.Run(async () => await provider.GetNativeValuesAsync(null)).Result;
+        provider.ActiveFeaturesChanged.Execute(features).Subscribe();
 
-            //    NameFilter.FilterNames = arr.Select(s => s.Name!).ToArray();
-        }
+        Filter.IsActive = true;
+
+        IsActive = true;
     }
 }

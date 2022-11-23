@@ -18,7 +18,7 @@ namespace FootprintViewer.Designer
         {
             return new Footprint()
             {
-                Name = $"Footrpint{_random.Next(1, 101):000}",
+                Name = $"Footprint{_random.Next(1, 101):000}",
                 SatelliteName = $"Satellite{_random.Next(1, 10):00}",
                 Center = new Point(_random.Next(-180, 180), _random.Next(-90, 90)),
                 Begin = DateTime.Now,

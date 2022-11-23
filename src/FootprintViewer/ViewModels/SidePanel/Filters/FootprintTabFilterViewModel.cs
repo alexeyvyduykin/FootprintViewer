@@ -142,7 +142,6 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
     public ReadOnlyObservableCollection<SatelliteItemViewModel> Satellites => _items;
 
-    // TODO: after remove FootprintPreview, replace SetAoi() to this
     [Reactive]
     public Geometry? AOI { get; set; }
 }

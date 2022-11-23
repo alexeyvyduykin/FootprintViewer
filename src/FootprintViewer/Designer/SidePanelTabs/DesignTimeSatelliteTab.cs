@@ -1,12 +1,11 @@
 ﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeSatelliteTab : SatelliteTabViewModel
 {
-    public class DesignTimeSatelliteTab : SatelliteTabViewModel
+    public DesignTimeSatelliteTab() : base(new DesignTimeData())
     {
-        public DesignTimeSatelliteTab() : base(new DesignTimeData())
-        {
-            IsActive = true;
-        }
+        IsActive = true;
     }
 }

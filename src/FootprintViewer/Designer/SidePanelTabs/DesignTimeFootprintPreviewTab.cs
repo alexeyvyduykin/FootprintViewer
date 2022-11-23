@@ -1,12 +1,11 @@
 ﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeFootprintPreviewTab : FootprintPreviewTabViewModel
 {
-    public class DesignTimeFootprintPreviewTab : FootprintPreviewTabViewModel
+    public DesignTimeFootprintPreviewTab() : base(new DesignTimeData())
     {
-        public DesignTimeFootprintPreviewTab() : base(new DesignTimeData())
-        {
-            IsActive = true;
-        }
+        IsActive = true;
     }
 }

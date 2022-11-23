@@ -1,12 +1,13 @@
 ﻿using FootprintViewer.ViewModels.SidePanel.Tabs;
 
-namespace FootprintViewer.Designer
+namespace FootprintViewer.Designer;
+
+public class DesignTimeFootprintTab : FootprintTabViewModel
 {
-    public class DesignTimeFootprintTab : FootprintTabViewModel
+    public DesignTimeFootprintTab() : base(new DesignTimeData())
     {
-        public DesignTimeFootprintTab() : base(new DesignTimeData())
-        {
-            IsActive = true;
-        }
+        SearchString = "footprint";
+
+        IsActive = true;
     }
 }

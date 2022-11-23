@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
@@ -25,6 +26,11 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private AreaOfInterest? _areaOfInterest;
     private ProjectFactory? _projectFactory;
     private GroundTargetProvider? _groundTargetProvider;
+    private TrackProvider? _trackProvider;
+    private SensorProvider? _sensorProvider;
+    private GroundStationProvider? _groundStationProvider;
+    private FootprintProvider? _footprintProvider;
+    private UserGeometryProvider? _userGeometryProvider;
     private SatelliteTabViewModel? _satelliteTab;
     private FootprintTabViewModel? _footprintTab;
     private GroundTargetTabViewModel? _groundTargetTab;
@@ -36,6 +42,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private CustomToolBarViewModel? _customToolBar;
     private IDataManager? _dataManager;
     private ILanguageManager? _languageManager;
+    private FeatureManager? _featureManager;
 
     public object? GetService(Type? serviceType, string? contract = null)
     {
@@ -55,9 +62,33 @@ public class DesignTimeData : IReadonlyDependencyResolver
         {
             return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
         }
+        else if (serviceType == typeof(FeatureManager))
+        {
+            return _featureManager ??= new FeatureManager();
+        }
         else if (serviceType == typeof(GroundTargetProvider))
         {
             return _groundTargetProvider ??= new GroundTargetProvider(this);
+        }
+        else if (serviceType == typeof(TrackProvider))
+        {
+            return _trackProvider ??= new TrackProvider(this);
+        }
+        else if (serviceType == typeof(SensorProvider))
+        {
+            return _sensorProvider ??= new SensorProvider(this);
+        }
+        else if (serviceType == typeof(GroundStationProvider))
+        {
+            return _groundStationProvider ??= new GroundStationProvider(this);
+        }
+        else if (serviceType == typeof(FootprintProvider))
+        {
+            return _footprintProvider ??= new FootprintProvider(this);
+        }
+        else if (serviceType == typeof(UserGeometryProvider))
+        {
+            return _userGeometryProvider ??= new UserGeometryProvider(this);
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {

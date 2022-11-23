@@ -9,6 +9,7 @@ using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.ObjectModel;
@@ -44,16 +45,24 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр рабочей программы";
 
+        var searchStringFilter = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
+
         _footprints
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
             .Filter(Filter.FilterObservable)
+            .Filter(searchStringFilter)
             .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
             .Subscribe();
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
@@ -86,6 +95,19 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .Subscribe(s => ((FootprintTabFilterViewModel)Filter).AOI = s);
     }
 
+    private static Func<FootprintViewModel, bool> SearchStringPredicate(string? arg)
+    {
+        return (s =>
+        {
+            if (string.IsNullOrEmpty(arg) == true)
+            {
+                return true;
+            }
+
+            return s.Name.Contains(arg, StringComparison.CurrentCultureIgnoreCase);
+        });
+    }
+
     public ReactiveCommand<FootprintViewModel, Unit> TargetToMap { get; }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
@@ -113,4 +135,9 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     public IFilter<FootprintViewModel> Filter { get; }
 
     public ReadOnlyObservableCollection<FootprintViewModel> Items => _items;
+
+    [Reactive]
+    public string? SearchString { get; set; }
+
+    public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
 }
