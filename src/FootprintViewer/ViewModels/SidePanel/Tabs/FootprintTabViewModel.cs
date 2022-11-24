@@ -79,6 +79,10 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
+        Enter = ReactiveCommand.Create<FootprintViewModel>(EnterImpl);
+
+        Leave = ReactiveCommand.Create(LeaveImpl);
+
         EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
@@ -129,6 +133,10 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
+    public ReactiveCommand<FootprintViewModel, Unit> Enter { get; }
+
+    public ReactiveCommand<Unit, Unit> Leave { get; }
+
     public bool IsLoading => _isLoading.Value;
 
     private async Task UpdateImpl()
@@ -142,6 +150,25 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             innerList.Clear();
             innerList.AddRange(res);
         });
+    }
+
+    private void EnterImpl(FootprintViewModel footprint)
+    {
+        var name = footprint.Name;
+
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            _featureManager
+                .OnLayer(_layer)
+                .Enter(_provider.Find(name, "Name"));
+        }
+    }
+
+    private void LeaveImpl()
+    {
+        _featureManager
+            .OnLayer(_layer)
+            .Leave();
     }
 
     private void UpdateProvider(IReadOnlyCollection<FootprintViewModel> footprints)

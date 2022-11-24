@@ -26,6 +26,9 @@
 			<itemsView:FootprintView Name="FootprintItem"
 									 DataContext="{Binding}">
 				<i:Interaction.Behaviors>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+
 					<ia:EventTriggerBehavior EventName="TargetToMapClick" SourceObject="{Binding #FootprintItem}">
 						<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.TargetToMap}"
 												CommandParameter="{Binding}"/>
