@@ -16,4 +16,9 @@ public static class ObservableExtensions
     {
         return observable.Where(s => s == true);
     }
+
+    public static IObservable<bool> WhereFalse(this IObservable<bool> observable)
+    {
+        return observable.Where(s => s == false);
+    }
 }

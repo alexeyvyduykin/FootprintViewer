@@ -102,26 +102,42 @@
 
 		</ToggleButton>
 
-		<TextBox Margin="0,8,0,4"
-				 Text="{Binding SearchString}"
-				 BorderThickness="0"
-				 Width="280"
-				 Grid.Row="1">
-			<TextBox.InnerLeftContent>
-				<Viewbox Width="24" Height="24" Margin="0,0,4,0">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
-												Kind="Search" />
-				</Viewbox>
-			</TextBox.InnerLeftContent>
-			<TextBox.InnerRightContent>
-				<Button Background="Transparent"
-						Command="{Binding EmptySearchString}"
-						Classes="Flat">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
-												Kind="Remove" />
-				</Button>
-			</TextBox.InnerRightContent>
-		</TextBox>
+		<Grid Grid.Row="1"
+			  ColumnDefinitions="Auto,Auto,*">
+
+			<Viewbox Width="24" Height="24" Margin="8,0,8,0">
+				<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+											Kind="MapCheck"/>
+			</Viewbox>
+
+			<ToggleSwitch IsChecked="{Binding IsFilterOnMap}"
+						  VerticalAlignment="Center"
+						  Margin="0,0,8,0"
+						  Grid.Column="1"/>
+
+			<TextBox Margin="0,8,16,4"
+					 Text="{Binding SearchString}"
+					 BorderThickness="0"
+					 Grid.Column="2">
+				<TextBox.InnerLeftContent>
+					<Viewbox Width="24" Height="24" Margin="0,0,4,0">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="Search" />
+					</Viewbox>
+				</TextBox.InnerLeftContent>
+				<TextBox.InnerRightContent>
+					<Button Background="Transparent"
+							Command="{Binding EmptySearchString}"
+							Classes="Flat">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="Remove" />
+					</Button>
+				</TextBox.InnerRightContent>
+			</TextBox>
+
+
+		</Grid>
+
 
 		<Grid Grid.Row="2">
 

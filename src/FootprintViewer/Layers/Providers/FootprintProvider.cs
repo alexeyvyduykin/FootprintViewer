@@ -57,6 +57,11 @@ public class FootprintProvider : IProvider, IFeatureProvider
     {
         var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
 
+        UpdateData(footprints);
+    }
+
+    public void UpdateData(IList<Footprint> footprints)
+    {
         _footprints.Edit(innerList =>
         {
             innerList.Clear();

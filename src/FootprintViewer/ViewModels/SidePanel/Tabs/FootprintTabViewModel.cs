@@ -12,6 +12,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -45,7 +46,9 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр рабочей программы";
 
-        var searchStringFilter = this.WhenAnyValue(s => s.SearchString)
+        var Filter1 = Filter.FilterObservable;
+
+        var Filter2 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(SearchStringPredicate);
@@ -54,19 +57,33 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
-            .Filter(Filter.FilterObservable)
-            .Filter(searchStringFilter)
+            .Filter(Filter1)
+            .Filter(Filter2)
             .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
+            .DisposeMany()
             .Subscribe();
+
+        this.WhenAnyValue(s => s.IsFilterOnMap)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => IsFilterOnMapChanged());
+
+        _footprints
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new FootprintViewModel(s))
+            .Filter(Filter1)
+            .Filter(Filter2)
+            .ToCollection()
+            .Subscribe(UpdateProvider);
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
-                          .ObserveOn(RxApp.MainThreadScheduler)
-                          .ToProperty(this, x => x.IsLoading);
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .ToProperty(this, x => x.IsLoading);
 
         _dataManager.DataChanged
             .Where(s => s.Contains(DbKeys.Footprints.ToString()))
@@ -127,6 +144,35 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         });
     }
 
+    private void UpdateProvider(IReadOnlyCollection<FootprintViewModel> footprints)
+    {
+        if (IsFilterOnMap == true)
+        {
+            var res = footprints
+                .Where(s => s.Footprint != null)
+                .Select(s => s.Footprint!)
+                .ToList();
+
+            _provider.UpdateData(res);
+        }
+    }
+
+    private void IsFilterOnMapChanged()
+    {
+        if (IsFilterOnMap == true)
+        {
+            var res = Items.Where(s => s.Footprint != null)
+                .Select(s => s.Footprint!)
+                .ToList();
+
+            _provider.UpdateData(res);
+        }
+        else
+        {
+            _provider.Update.Execute().Subscribe();
+        }
+    }
+
     public FootprintViewModel? GetFootprintViewModel(string name)
     {
         return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
@@ -140,4 +186,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     public string? SearchString { get; set; }
 
     public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
+
+    [Reactive]
+    public bool IsFilterOnMap { get; set; }
 }
