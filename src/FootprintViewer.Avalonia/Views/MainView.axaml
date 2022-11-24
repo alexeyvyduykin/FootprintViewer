@@ -44,10 +44,8 @@
 												 State="{Binding State}"/>
 				</inter:Interaction.Behavior>
 				<i:Interaction.Behaviors>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"
-														 x:CompileBindings="False"/>
-					<behaviors:PointerMovedEventBehavior Command="{Binding $parent[UserControl].DataContext.Moved}"
-														 x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding Leave}" x:CompileBindings="False"/>
+					<behaviors:PointerMovedEventBehavior Command="{Binding Moved}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 
 				<Canvas IsHitTestVisible="False"

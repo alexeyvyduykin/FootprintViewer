@@ -28,7 +28,6 @@
 
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Icons.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/FastToolTip.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/SearchToggleButton.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Styles/ToolBarIconSelector.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/SidePanel.axaml"/>
