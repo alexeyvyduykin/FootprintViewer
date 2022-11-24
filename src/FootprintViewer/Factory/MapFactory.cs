@@ -78,9 +78,8 @@ public class MapFactory
 
         provider.MaxVisible = styleManager.MaxVisibleFootprintStyle;
 
-        var layer = new Layer()
+        var layer = new DynamicLayer(provider, true)
         {
-            DataSource = provider,
             Style = styleManager.FootprintStyle,
             //   MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
             IsMapInfoLayer = true,

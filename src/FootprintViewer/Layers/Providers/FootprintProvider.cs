@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using Mapsui;
+using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Layers.Providers;
 
-public class FootprintProvider : IProvider, IFeatureProvider
+public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<Footprint> _footprints = new();
@@ -31,7 +32,7 @@ public class FootprintProvider : IProvider, IFeatureProvider
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => FeatureBuilder.Build(s))
             .Bind(out _features)
-            .Subscribe();
+            .Subscribe(_ => DataHasChanged());
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
@@ -52,6 +53,8 @@ public class FootprintProvider : IProvider, IFeatureProvider
     public ReadOnlyObservableCollection<IFeature> Features => _features;
 
     public ReactiveCommand<Unit, Unit> Update { get; }
+
+    public event DataChangedEventHandler? DataChanged;
 
     private async Task UpdateImpl()
     {
@@ -114,5 +117,15 @@ public class FootprintProvider : IProvider, IFeatureProvider
         }
 
         return mRect;
+    }
+
+    public void DataHasChanged()
+    {
+        OnDataChanged();
+    }
+
+    private void OnDataChanged()
+    {
+        DataChanged?.Invoke(this, new DataChangedEventArgs(null, false, null));
     }
 }
