@@ -37,6 +37,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
 	  <ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
+	  <ProjectReference Include="..\..\..\TimeDataViewer\TimeDataViewer\src\TimeDataViewer\TimeDataViewer.csproj" />
 	</ItemGroup>
 
 </Project>

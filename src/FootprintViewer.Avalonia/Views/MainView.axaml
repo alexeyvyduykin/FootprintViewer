@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
+			 xmlns:timeline="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"        
              xmlns:sidePanel="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel"
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
@@ -30,7 +31,7 @@
 	</UserControl.Resources>
 
 	<Grid ColumnDefinitions="*,Auto"
-		  RowDefinitions="*,Auto">
+		  RowDefinitions="*,Auto,300">
 
 		<Panel>
 
@@ -88,13 +89,23 @@
 		</Panel>
 
 		<sidePanel:SidePanelView Grid.Column="1"
-								 Grid.RowSpan="2"
+								 Grid.RowSpan="3"
 								 DataContext="{Binding SidePanel}"/>
 
 
 		<views:ScaleMapBarView Grid.Row="1"
 							   DataContext="{Binding ScaleMapBar}"/>
 
+		<timeline:TimelineControl Grid.Row="3"
+								  Margin="8"
+						          DataContext="{Binding PlotModel}"
+							      SeriesBrushes="{Binding $parent[UserControl].DataContext.SeriesBrushes}"
+							      Begin="{Binding $parent[UserControl].DataContext.Begin}"
+							      Duration="{Binding $parent[UserControl].DataContext.Duration}"
+								  	  x:CompileBindings="False">
+		</timeline:TimelineControl>
+	  <!--TrackerTemplate="{StaticResource TrackerSelector}"-->
+		<!--SelectedInterval="{Binding $parent[UserControl].DataContext.SelectedInterval}"-->
 	</Grid>
 
 </UserControl>

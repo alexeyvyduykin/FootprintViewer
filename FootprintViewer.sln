@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapsui.Interactivity.UI", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapsui.Interactivity.UI.Avalonia", "..\MapsuiInteractivity\src\Mapsui.Interactivity.UI.Avalonia\Mapsui.Interactivity.UI.Avalonia.csproj", "{1DEFB36C-B754-4A6B-A0F5-E5366DC83338}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeDataViewer", "..\TimeDataViewer\TimeDataViewer\src\TimeDataViewer\TimeDataViewer.csproj", "{302D8595-800E-49AA-8E73-6474104CD58D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{1DEFB36C-B754-4A6B-A0F5-E5366DC83338}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DEFB36C-B754-4A6B-A0F5-E5366DC83338}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DEFB36C-B754-4A6B-A0F5-E5366DC83338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{302D8595-800E-49AA-8E73-6474104CD58D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302D8595-800E-49AA-8E73-6474104CD58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302D8595-800E-49AA-8E73-6474104CD58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302D8595-800E-49AA-8E73-6474104CD58D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +117,7 @@ Global
 		{97A76827-0157-4E45-96AA-773B5EB37E11} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{69683201-2A67-4D20-957E-1AB7093B22FA} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{1DEFB36C-B754-4A6B-A0F5-E5366DC83338} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
+		{302D8595-800E-49AA-8E73-6474104CD58D} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}

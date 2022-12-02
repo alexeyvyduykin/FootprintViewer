@@ -33,6 +33,9 @@
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/SidePanel.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/BottomPanel.axaml"/>
 
+		<StyleInclude Source="avares://TimeDataViewer/Styles/Default.axaml"/>
+		<StyleInclude Source="avares://TimeDataViewer/Styles/TimelineControl.axaml"/>
+
 	</Application.Styles>
 
 </Application>
