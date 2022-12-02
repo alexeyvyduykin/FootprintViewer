@@ -7,6 +7,7 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.TimelinePanel;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Microsoft.Extensions.Configuration;
@@ -113,6 +114,8 @@ public static class Bootstrapper
         services.RegisterLazySingleton<SettingsTabViewModel>(() => new SettingsTabViewModel(resolver));
 
         services.RegisterLazySingleton<CustomToolBarViewModel>(() => new CustomToolBarViewModel(resolver));
+
+        services.RegisterLazySingleton<TimelinePanelViewModel>(() => new TimelinePanelViewModel(resolver));
 
         services.RegisterLazySingleton<SidePanelViewModel>(() => new SidePanelViewModel()
         {

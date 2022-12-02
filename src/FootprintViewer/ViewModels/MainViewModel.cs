@@ -1,6 +1,4 @@
-﻿using Avalonia.Media;
-using DynamicData;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
@@ -9,6 +7,7 @@ using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
+using FootprintViewer.ViewModels.TimelinePanel;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
@@ -25,30 +24,12 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using TimeDataViewer.Core;
 
 namespace FootprintViewer.ViewModels;
-
-public class Interval
-{
-    public string Category { get; init; } = "Default";
-
-    public DateTime BeginTime { get; set; }
-
-    public DateTime EndTime { get; set; }
-}
-
-public class LabelViewModel : ViewModelBase
-{
-    public string? Label { get; set; }
-}
 
 public class MainViewModel : RoutableViewModel
 {
@@ -65,12 +46,12 @@ public class MainViewModel : RoutableViewModel
     private readonly UserGeometryTabViewModel _userGeometryTab;
     private readonly FootprintPreviewTabViewModel _footprintPreviewTab;
     private readonly ScaleMapBar _scaleMapBar;
+    private readonly TimelinePanelViewModel _timelinePanel;
     private ISelector? _selector;
     private readonly IDataManager _dataManager;
     private readonly FeatureManager _featureManager;
     private double _lastScreenPointX = 0;
     private double _lastScreenPointY = 0;
-    private readonly DateTime _timeOrigin = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
 
     public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
@@ -88,6 +69,7 @@ public class MainViewModel : RoutableViewModel
         _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
+        _timelinePanel = dependencyResolver.GetExistingService<TimelinePanelViewModel>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -126,164 +108,13 @@ public class MainViewModel : RoutableViewModel
             .Subscribe();
 
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => Observable.StartAsync(async _ =>
-            {
-                Begin = ToTotalDays(Epoch, _timeOrigin);
-                Duration = 1.0;
-                SeriesBrushes = new[] { Brushes.LightCoral, Brushes.Green, Brushes.Blue, Brushes.Red, Brushes.Yellow };
-                PlotModel = await CreatePlotModel();
-            }));
+            .ToSignal()
+            .InvokeCommand(_timelinePanel.Init);
     }
 
     public ReactiveCommand<(double, double), Unit> Moved { get; }
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
-
-    [Reactive]
-    public PlotModel? PlotModel { get; set; }
-
-    [Reactive]
-    public IList<IBrush>? SeriesBrushes { get; set; }
-
-    [Reactive]
-    public DateTime Epoch { get; set; }
-
-    [Reactive]
-    public double BeginScenario { get; set; }
-
-    [Reactive]
-    public double EndScenario { get; set; }
-
-    [Reactive]
-    public double Begin { get; set; }
-
-    [Reactive]
-    public double Duration { get; set; }
-
-    private async Task<PlotModel> CreatePlotModel()
-    {
-        var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
-        var list = footprints.ToList();
-        var min = list.Select(s => s.Begin).Min();
-        var max = list.Select(s => s.Begin).Max();
-        var satellites = list.Select(s => s.SatelliteName!).Distinct().ToList() ?? new List<string>();
-
-        Epoch = min.Date;
-
-        BeginScenario = ToTotalDays(Epoch.Date, _timeOrigin) - 1;
-        EndScenario = BeginScenario + 3;
-
-        var dict = new Dictionary<string, IList<Interval>>();
-        foreach (var satName in satellites)
-        {
-            var items = footprints.Where(s => Equals(s.SatelliteName, satName)).Select(s => CreateInterval(s, Epoch)).ToList();
-            dict.Add(satName, items);
-        }
-        var Labels = satellites.Select(s => new LabelViewModel() { Label = s }).ToList();
-
-        var plotModel = new PlotModel()
-        {
-            PlotMarginLeft = 0,
-            PlotMarginTop = 30,
-            PlotMarginRight = 0,
-            PlotMarginBottom = 0
-        };
-
-        plotModel.Axises.AddRange(new[]
-        {
-            CreateAxisY(Labels),
-            CreateAxisX(Epoch, BeginScenario, EndScenario)
-        });
-        
-        plotModel.Series.AddRange(dict.Values.Select(s => CreateSeries(s)).ToList());
-
-        return plotModel;
-    }
-
-    private static Series CreateSeries(IEnumerable<Interval> intervals)
-    {
-        return new TimelineSeries()
-        {
-            BarWidth = 0.5,
-            ItemsSource = intervals,
-            CategoryField = "Category",
-            BeginField = "BeginTime",
-            EndField = "EndTime",
-            IsVisible = true,
-            TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
-        };
-    }
-
-    private static Axis CreateAxisY(IEnumerable<LabelViewModel> labels)
-    {
-        var axisY = new CategoryAxis()
-        {
-            Position = AxisPosition.Left,
-            AbsoluteMinimum = -0.5,
-            AbsoluteMaximum = 4.5,
-            IsZoomEnabled = false,
-            LabelField = "Label",
-            IsTickCentered = false,
-            GapWidth = 1.0,
-            ItemsSource = labels
-        };
-
-        axisY.Labels.Clear();
-        axisY.Labels.AddRange(labels.Select(s => s.Label)!);
-
-        return axisY;
-    }
-
-    private static Axis CreateAxisX(DateTime epoch, double begin, double end)
-    {
-        return new DateTimeAxis()
-        {
-            Position = AxisPosition.Top,
-            IntervalType = DateTimeIntervalType.Auto,
-            AbsoluteMinimum = begin,
-            AbsoluteMaximum = end,
-            CalendarWeekRule = CalendarWeekRule.FirstFourDayWeek,
-            FirstDayOfWeek = DayOfWeek.Monday,
-            MinorIntervalType = DateTimeIntervalType.Auto,
-            Minimum = DateTimeAxis.ToDouble(epoch),
-            AxisDistance = 0.0,
-            AxisTickToLabelDistance = 4.0,
-            ExtraGridlines = null,
-            IntervalLength = 60.0,
-            IsPanEnabled = true,
-            IsAxisVisible = true,
-            IsZoomEnabled = true,
-            Key = null,
-            MajorStep = double.NaN,
-            MajorTickSize = 7.0,
-            MinorStep = double.NaN,
-            MinorTickSize = 4.0,
-            Maximum = double.NaN,
-            MinimumRange = 0.0,
-            MaximumRange = double.PositiveInfinity,
-            StringFormat = null
-        };
-    }
-
-    private static Interval CreateInterval(Footprint footprint, DateTime epoch)
-    {
-        var secs = footprint.Begin.TimeOfDay.TotalSeconds;
-
-        var date = epoch.Date;
-
-        return new Interval()
-        {
-            Category = footprint.SatelliteName,
-            BeginTime = date.AddSeconds(secs),
-            EndTime = date.AddSeconds(secs + footprint.Duration)
-        };
-    }
-
-    private static double ToTotalDays(DateTime value, DateTime timeOrigin)
-    {
-        return (value - timeOrigin).TotalDays + 1;
-    }
 
     private void MovedImpl((double, double) screenPosition)
     {
@@ -1034,6 +865,8 @@ public class MainViewModel : RoutableViewModel
     public CustomToolBarViewModel ToolBar => _customToolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
+
+    public TimelinePanelViewModel TimelinePanel => _timelinePanel;
 
     [Reactive]
     public IMapNavigator MapNavigator { get; set; }

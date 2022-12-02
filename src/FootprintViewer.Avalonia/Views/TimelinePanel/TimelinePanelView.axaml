@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:FootprintViewer.ViewModels.TimelinePanel;assembly=FootprintViewer"
+			 xmlns:selectors="clr-namespace:TimeDataViewer.Selectors;assembly=TimeDataViewer"
+			 xmlns:controls="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d" d:DesignWidth="800"
+			 MinHeight="360"
+			 x:DataType="vm:TimelinePanelViewModel"
+             x:Class="FootprintViewer.Avalonia.Views.TimelinePanel.TimelinePanelView">
+
+	<Design.DataContext>
+		<vmd:DesignTimeTimelinePanelViewModel/>
+	</Design.DataContext>
+
+	<UserControl.Resources>
+		<selectors:TrackerTemplateSelector x:Key="TrackerSelector">
+			<DataTemplate x:Key="Satellite23">
+				<Border Width="120" Height="120" Background="Blue"/>
+			</DataTemplate>
+			<DataTemplate x:Key="Satellite34">
+				<Border Width="70" Height="70" Background="Green"/>
+			</DataTemplate>
+			<DataTemplate x:Key="Default">
+				<TextBlock Text="{Binding Text}"
+                           Foreground="Black"
+                           Margin="7"/>
+			</DataTemplate>
+		</selectors:TrackerTemplateSelector>
+	</UserControl.Resources>
+
+	<Panel>
+		<controls:TimelineControl Margin="8"
+								  DataContext="{Binding PlotModel}"
+								  SeriesBrushes="{Binding $parent[UserControl].DataContext.SeriesBrushes}"
+								  Begin="{Binding $parent[UserControl].DataContext.Begin}"
+								  Duration="{Binding $parent[UserControl].DataContext.Duration}"
+								  TrackerTemplate="{StaticResource TrackerSelector}"
+								  SelectedInterval="{Binding $parent[UserControl].DataContext.SelectedInterval}"
+								  x:CompileBindings="False">
+		</controls:TimelineControl>
+	</Panel>
+
+</UserControl>

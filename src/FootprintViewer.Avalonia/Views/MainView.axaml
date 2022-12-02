@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:FootprintViewer.Avalonia.Views"
-			 xmlns:timeline="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"        
              xmlns:sidePanel="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel"
              xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
@@ -11,6 +10,7 @@
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:behaviors="clr-namespace:FootprintViewer.Avalonia.Behaviors"
              xmlns:bottomPanel="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
+             xmlns:timelinePanel="clr-namespace:FootprintViewer.Avalonia.Views.TimelinePanel"
              xmlns:local="clr-namespace:FootprintViewer.Avalonia"
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
@@ -31,7 +31,7 @@
 	</UserControl.Resources>
 
 	<Grid ColumnDefinitions="*,Auto"
-		  RowDefinitions="*,Auto,300">
+		  RowDefinitions="*,Auto,Auto">
 
 		<Panel>
 
@@ -92,20 +92,12 @@
 								 Grid.RowSpan="3"
 								 DataContext="{Binding SidePanel}"/>
 
-
 		<views:ScaleMapBarView Grid.Row="1"
 							   DataContext="{Binding ScaleMapBar}"/>
 
-		<timeline:TimelineControl Grid.Row="3"
-								  Margin="8"
-						          DataContext="{Binding PlotModel}"
-							      SeriesBrushes="{Binding $parent[UserControl].DataContext.SeriesBrushes}"
-							      Begin="{Binding $parent[UserControl].DataContext.Begin}"
-							      Duration="{Binding $parent[UserControl].DataContext.Duration}"
-								  	  x:CompileBindings="False">
-		</timeline:TimelineControl>
-	  <!--TrackerTemplate="{StaticResource TrackerSelector}"-->
-		<!--SelectedInterval="{Binding $parent[UserControl].DataContext.SelectedInterval}"-->
+		<timelinePanel:TimelinePanelView Grid.Row="3"
+										 DataContext="{Binding TimelinePanel}"/>
+
 	</Grid>
 
 </UserControl>
