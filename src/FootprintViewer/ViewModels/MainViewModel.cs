@@ -4,6 +4,7 @@ using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Navigation;
+using FootprintViewer.ViewModels.Settings;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
@@ -107,12 +108,29 @@ public class MainViewModel : RoutableViewModel
             .Do(s => s.SetActive())
             .Subscribe();
 
+        Connection = ReactiveCommand.CreateFromTask(async () =>
+        {
+            var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+
+            var connectionDialog = new ConnectionViewModel(dependencyResolver);
+
+            DialogNavigationStack.To(connectionDialog);
+
+            var dialogResult = await connectionDialog.GetDialogResultAsync();
+
+            DialogNavigationStack.Clear();
+
+            dataManager.UpdateData();
+        });
+
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
 
     public ReactiveCommand<(double, double), Unit> Moved { get; }
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
+
+    private ReactiveCommand<Unit, Unit> Connection { get; }
 
     private void MovedImpl((double, double) screenPosition)
     {
