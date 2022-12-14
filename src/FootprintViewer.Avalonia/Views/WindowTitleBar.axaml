@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 x:DataType="vm:MainViewModel"
+			 mc:Ignorable="d" d:DesignWidth="400"
+             x:Class="FootprintViewer.Avalonia.Views.WindowTitleBar">
+
+	<Design.DataContext>
+		<vmd:DesignTimeMainViewModel/>
+	</Design.DataContext>
+
+	<Panel>
+		<DockPanel Background="{DynamicResource MaterialDesignPaper}"
+				   IsHitTestVisible="False"/>
+		<DockPanel>
+			<StackPanel Orientation="Horizontal"
+						DockPanel.Dock="Left">
+				<Image Source="/Assets/app-logo.ico"
+					   Height="32"
+					   Width="32"
+					   VerticalAlignment="Center"
+					   Margin="5,0,5,0"/>
+				<TextBlock Text="FootprintViewer"
+						   Classes="Subtitle1"
+						   Foreground="White"
+						   VerticalAlignment="Center"
+						   IsHitTestVisible="False"/>
+			</StackPanel>
+			<StackPanel HorizontalAlignment="Right"
+						Orientation="Horizontal">
+
+				<Button Margin="0,4,8,4"
+						Padding="2,4,8,4"
+						Classes="Outline">
+					<Grid ColumnDefinitions="Auto,*">
+						<materialIcons:MaterialIcon Width="20"
+													Height="20"
+													Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="PowerPlug"/>
+
+						<TextBlock Grid.Column="1"
+								   VerticalAlignment="Center"
+								   Text="Connect"/>
+					</Grid>
+				</Button>
+
+				<Button Width="46"
+						Click="OnMinimizeButtonClick"
+						Cursor="Arrow"
+						Classes="Flat">
+					<materialIcons:MaterialIcon Kind="WindowMinimize"/>
+				</Button>
+
+				<Button Width="46"
+						Click="OnMaximizeButtonClick"
+						Cursor="Arrow"
+						Classes="Flat">
+					<materialIcons:MaterialIcon Kind="WindowMaximize"/>
+				</Button>
+
+				<Button Width="46"
+						Click="OnCloseButtonClick"
+						Cursor="Arrow"
+						Classes="Flat">
+					<Button.Styles>
+						<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+							<Setter Property="Background" Value="Red"/>
+						</Style>
+					</Button.Styles>
+					<materialIcons:MaterialIcon Kind="WindowClose"/>
+				</Button>
+
+			</StackPanel>
+		</DockPanel>
+	</Panel>
+
+</UserControl>

@@ -8,22 +8,28 @@
         xmlns:reactiveUi="http://reactiveui.net"
         xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
         mc:Ignorable="d"
-        Title="FootprintViewer"
 		WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaTitleBarHeightHint="-1"
+		Icon="/Assets/app-logo.ico"
 		x:DataType="vm:MainViewModel"
 		x:CompileBindings="True"
-        d:DesignWidth="800" d:DesignHeight="450"
-        Icon="/Assets/avalonia-logo.ico">
+        d:DesignWidth="800" d:DesignHeight="450">
 
 	<Design.DataContext>
 		<vmd:DesignTimeMainViewModel/>
 	</Design.DataContext>
 
-	<Panel>
-		<views:BackgroundView />
-		<views:MainView x:CompileBindings="False"
-						IsHitTestVisible="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}" />
-		<views:DialogsView />
-	</Panel>
-	
+	<DockPanel>
+		<views:WindowTitleBar DockPanel.Dock="Top"
+							  DataContext="{Binding}"/>
+		<Panel>
+			<views:BackgroundView />
+			<views:MainView x:CompileBindings="False"
+							IsHitTestVisible="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}" />
+			<views:DialogsView />
+		</Panel>
+	</DockPanel>
+
 </Window>
