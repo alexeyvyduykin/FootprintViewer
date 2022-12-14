@@ -28,9 +28,16 @@ public class TimelinePanelViewModel : ViewModelBase
         SelectedInterval = ReactiveCommand.Create<object?>(SelectedIntervalImpl, outputScheduler: RxApp.MainThreadScheduler);
 
         Init = ReactiveCommand.CreateFromTask(InitImpl, outputScheduler: RxApp.MainThreadScheduler);
+
+        this.WhenAnyValue(s => s.Show)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Init);
     }
 
-    public ReactiveCommand<Unit, Unit> Init { get; }
+    private ReactiveCommand<Unit, Unit> Init { get; }
 
     public ReactiveCommand<object?, Unit> SelectedInterval { get; }
 
@@ -194,4 +201,7 @@ public class TimelinePanelViewModel : ViewModelBase
 
     [Reactive]
     public double Duration { get; set; }
+
+    [Reactive]
+    public bool Show { get; set; }
 }

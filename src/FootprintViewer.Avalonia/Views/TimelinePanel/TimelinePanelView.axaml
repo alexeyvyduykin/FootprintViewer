@@ -8,6 +8,7 @@
 			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d" d:DesignWidth="800"
 			 MinHeight="360"
+			 IsVisible="{Binding Show}"
 			 x:DataType="vm:TimelinePanelViewModel"
              x:Class="FootprintViewer.Avalonia.Views.TimelinePanel.TimelinePanelView">
 

@@ -107,9 +107,7 @@ public class MainViewModel : RoutableViewModel
             .Do(s => s.SetActive())
             .Subscribe();
 
-        Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler)
-            .ToSignal()
-            .InvokeCommand(_timelinePanel.Init);
+        Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
 
     public ReactiveCommand<(double, double), Unit> Moved { get; }
