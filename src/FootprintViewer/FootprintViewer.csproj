@@ -28,6 +28,7 @@
 		<PackageReference Include="NetTopologySuite" Version="2.4.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.4" />
+		<PackageReference Include="TimeDataViewer" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,9 +36,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
-	  <ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
-	  <ProjectReference Include="..\..\..\TimeDataViewer\TimeDataViewer\src\TimeDataViewer\TimeDataViewer.csproj" />
+		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
+		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
 	</ItemGroup>
 
 </Project>
