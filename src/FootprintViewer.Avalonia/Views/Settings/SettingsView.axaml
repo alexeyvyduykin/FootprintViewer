@@ -3,17 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vmd="using:FootprintViewer.Designer"
-			 xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-	         xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:controls="using:FootprintViewer.Avalonia.Controls"
 	         xmlns:views="using:FootprintViewer.Avalonia.Views.Settings"
 	         xmlns:vm="using:FootprintViewer.ViewModels.Settings"
 			 xmlns:vm2="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
 			 xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
 			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"
-			 xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 xmlns:settings="clr-namespace:FootprintViewer.Avalonia.Views.Settings"
-	         x:DataType="vm:SettingsViewModel"
+			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="True"
              mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="550"
@@ -59,26 +55,6 @@
 						  Height="500">
 
 		<TabControl TabStripPlacement="Left">
-
-			<TabItem Header="Source containers">
-				<TabControl TabStripPlacement="Left"
-							Margin="8,0"
-							Items="{Binding SourceContainers}"
-						    SelectedItem="{Binding SelectedSourceContainer}">
-					<TabControl.ItemTemplate>
-						<DataTemplate x:DataType="vm:SourceContainerViewModel">
-							<TextBlock Text="{Binding Header}" FontSize="14"/>
-						</DataTemplate>
-					</TabControl.ItemTemplate>
-
-					<TabControl.ContentTemplate>
-						<DataTemplate x:DataType="vm:SourceContainerViewModel">
-							<views:SourceContainerView Margin="24, 16"
-													   DataContext="{Binding}"/>
-						</DataTemplate>
-					</TabControl.ContentTemplate>
-				</TabControl>
-			</TabItem>
 
 			<TabItem Header="Languages">
 
