@@ -42,7 +42,7 @@
 					  Grid.Column="2"
 					  HorizontalAlignment="Center"
 					  Padding="0"
-					  IsChecked="{Binding IsVisible}"/>
+					  IsChecked="{Binding IsAllVisible}"/>
 
 			<Separator Grid.Row="3" Grid.ColumnSpan="3"/>
 

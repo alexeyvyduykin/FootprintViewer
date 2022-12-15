@@ -1,11 +1,15 @@
 ﻿using DynamicData;
+using DynamicData.Binding;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -22,11 +26,20 @@ public class LayerContainerViewModel : ViewModelBase
         _dependencyResolver = dependencyResolver;
 
         _layers
-            .Connect()
+           .Connect()
+           .ObserveOn(RxApp.MainThreadScheduler)
+           .Transform(s => new LayerItemViewModel(s))
+           .Bind(out _layerItems)
+           .Subscribe();
+
+        _layerItems
+            .ToObservableChangeSet()
+            .WhenPropertyChanged(p => p.IsVisible)
+            .Subscribe(_ => LayerItemChangedImpl());
+
+        this.WhenAnyValue(s => s.IsAllVisible)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new LayerItemViewModel(s))
-            .Bind(out _layerItems)
-            .Subscribe();
+            .Subscribe(IsAllVisibleChanged);
 
         Observable.StartAsync(() => Task.Run(UpdateLayers), RxApp.MainThreadScheduler).Subscribe();
     }
@@ -41,6 +54,40 @@ public class LayerContainerViewModel : ViewModelBase
             innerList.AddRange(map.Layers);
         });
     }
+
+    private void LayerItemChangedImpl()
+    {
+        var allTrue = LayerItems.All(s => s.IsVisible == true);
+        var allFalse = LayerItems.All(s => s.IsVisible == false);
+        var anyFalse = LayerItems.Any(s => s.IsVisible == false);
+
+        if (allTrue == true)
+        {
+            IsAllVisible = true;
+        }
+        else if (allFalse == true)
+        {
+            IsAllVisible = false;
+        }
+        else if (anyFalse == true)
+        {
+            IsAllVisible = null;
+        }
+    }
+
+    private void IsAllVisibleChanged(bool? value)
+    {
+        if (value is bool visible)
+        {
+            foreach (var item in LayerItems)
+            {
+                item.IsVisible = visible;
+            }
+        }
+    }
+
+    [Reactive]
+    public bool? IsAllVisible { get; set; }
 
     public IReadOnlyList<LayerItemViewModel> LayerItems => _layerItems;
 }
