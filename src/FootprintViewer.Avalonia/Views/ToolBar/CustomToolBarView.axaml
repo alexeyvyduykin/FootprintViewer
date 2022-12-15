@@ -24,17 +24,6 @@
 
 	<UserControl.Resources>
 		<conv:ToolBarToolTipConverter x:Key="ToolTipConv"/>
-
-		<DataTemplate x:Key="LayerItemTemplate" x:DataType="toolBar:LayerItemViewModel">
-			<Grid ColumnDefinitions="*,8,Auto"
-				  Margin="4">
-				<TextBlock Classes="Body2" VerticalAlignment="Center"
-						   Text="{Binding Name}"/>
-				<CheckBox Grid.Column="2"
-						  Padding="0"
-						  IsChecked="{Binding IsVisible}"/>
-			</Grid>
-		</DataTemplate>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -180,19 +169,14 @@
 
 			<!-- LayerItems -->
 			<ToggleButton x:Name="MapLayerSelectorButton"
-						  IsChecked="{Binding IsLayerItemsOpen}"
+						  IsChecked="{Binding IsLayerContainerOpen}"
 						  Margin="0,1,0,0"
 						  Classes="toolCheck">
 				<ToggleButton.Flyout>
 					<Flyout x:CompileBindings="False"
 							Placement="RightEdgeAlignedTop"
 							ShowMode="TransientWithDismissOnPointerMoveAway">
-						<Panel Background="{DynamicResource ThemeBackgroundBrush}">
-							<ItemsControl Margin="8" 
-										  Foreground="{DynamicResource ThemeForegroundBrush}"
-										  Items="{Binding $parent[UserControl].DataContext.LayerItems}"
-										  ItemTemplate="{StaticResource LayerItemTemplate}"/>
-						</Panel>
+						<toolBarView:LayerContainerView DataContext="{Binding LayerContainer}"/>
 					</Flyout>
 				</ToggleButton.Flyout>
 				<Viewbox Width="36" Height="36">

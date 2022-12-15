@@ -2,7 +2,6 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -21,8 +20,6 @@ public class CustomToolBarViewModel : ToolBarViewModel
     private readonly IDataManager _dataManager;
     private readonly SourceList<MapResource> _mapResources = new();
     private readonly ReadOnlyObservableCollection<MenuItemViewModel> _mapItems;
-    private readonly SourceList<ILayer> _layers = new();
-    private readonly ReadOnlyObservableCollection<LayerItemViewModel> _layerItems;
 
     public CustomToolBarViewModel(IReadonlyDependencyResolver dependencyResolver) : base()
     {
@@ -166,21 +163,12 @@ public class CustomToolBarViewModel : ToolBarViewModel
             .Bind(out _mapItems)
             .Subscribe();
 
-        _layers
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new LayerItemViewModel(s))
-            .Bind(out _layerItems)
-            .Subscribe();
-
         Observable.StartAsync(UpdateMapsAsync, RxApp.MainThreadScheduler).Subscribe();
-        //Observable.StartAsync(() => Task.Run(UpdateLayers), RxApp.MainThreadScheduler).Subscribe();
 
-        this.WhenAnyValue(s => s.IsLayerItemsOpen)
+        this.WhenAnyValue(s => s.IsLayerContainerOpen)
             .ObserveOn(RxApp.MainThreadScheduler)
             .WhereTrue()
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(() => Task.Run(UpdateLayers)));
+            .Subscribe(_ => LayerContainer = new LayerContainerViewModel(_dependencyResolver));
     }
 
     private async Task UpdateMapsAsync()
@@ -191,17 +179,6 @@ public class CustomToolBarViewModel : ToolBarViewModel
         {
             innerList.Clear();
             innerList.AddRange(maps);
-        });
-    }
-
-    private void UpdateLayers()
-    {
-        var map = (Map)_dependencyResolver.GetExistingService<IMap>();
-
-        _layers.Edit(innerList =>
-        {
-            innerList.Clear();
-            innerList.AddRange(map.Layers);
         });
     }
 
@@ -267,9 +244,10 @@ public class CustomToolBarViewModel : ToolBarViewModel
     public ToolCheck Polygon { get; }
 
     [Reactive]
-    public bool IsLayerItemsOpen { get; set; }
+    public bool IsLayerContainerOpen { get; set; }
 
     public IReadOnlyList<MenuItemViewModel> MapItems => _mapItems;
 
-    public IReadOnlyList<LayerItemViewModel> LayerItems => _layerItems;
+    [Reactive]
+    public LayerContainerViewModel? LayerContainer { get; set; }
 }

@@ -120,9 +120,9 @@ public class MainViewModel : RoutableViewModel
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
 
-    private ReactiveCommand<Unit, Unit> Connection { get; }
+    public ReactiveCommand<Unit, Unit> Connection { get; }
 
-    private ReactiveCommand<Unit, Unit> Settings { get; }
+    public ReactiveCommand<Unit, Unit> Settings { get; }
 
     private async Task ConnectionImpl()
     {
@@ -132,7 +132,7 @@ public class MainViewModel : RoutableViewModel
 
         DialogNavigationStack.To(connectionDialog);
 
-        var dialogResult = await connectionDialog.GetDialogResultAsync();
+        _ = await connectionDialog.GetDialogResultAsync();
 
         DialogNavigationStack.Clear();
 
@@ -147,7 +147,7 @@ public class MainViewModel : RoutableViewModel
 
         DialogNavigationStack.To(settingsDialog);
 
-        var dialogResult = await settingsDialog.GetDialogResultAsync();
+        _ = await settingsDialog.GetDialogResultAsync();
 
         DialogNavigationStack.Clear();
 
