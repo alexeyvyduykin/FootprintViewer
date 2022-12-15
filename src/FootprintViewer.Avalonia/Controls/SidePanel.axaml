@@ -14,13 +14,14 @@
 			<Border.Styles>
 				<Style Selector="controls|SidePanelItem">
 					<Setter Property="DockPanel.Dock" Value="Top"/>
+					<Setter Property="VerticalAlignment" Value="Top"/>
 					<Setter Property="Width" Value="50"/>
 					<Setter Property="Height" Value="50"/>
 				</Style>
-				<Style Selector="controls|SidePanelItem:nth-last-child(1)">
+				<!--<Style Selector="controls|SidePanelItem:nth-last-child(1)">
 					<Setter Property="DockPanel.Dock" Value="Bottom"/>
 					<Setter Property="VerticalAlignment" Value="Bottom"/>
-				</Style>
+				</Style>-->
 			</Border.Styles>
 			<controls:SidePanel x:Name="SidePanel"
 								PaneWidth="280">

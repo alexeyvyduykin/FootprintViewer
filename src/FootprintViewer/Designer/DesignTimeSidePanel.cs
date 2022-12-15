@@ -18,7 +18,6 @@ public class DesignTimeSidePanel : SidePanelViewModel
             new GroundTargetTabViewModel(data),
             new FootprintTabViewModel(data),
             new UserGeometryTabViewModel(data),
-            new SettingsTabViewModel(data),
         };
 
         Tabs.AddRange(new List<SidePanelTabViewModel>(tabs));

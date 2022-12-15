@@ -100,7 +100,8 @@ public class MainViewModel : RoutableViewModel
         _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
-        IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s).ObserveOn(RxApp.MainThreadScheduler);
+        IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s)
+            .ObserveOn(RxApp.MainThreadScheduler);
 
         this.WhenAnyValue(s => s.DialogNavigationStack.CurrentPage)
             .WhereNotNull()
@@ -108,20 +109,9 @@ public class MainViewModel : RoutableViewModel
             .Do(s => s.SetActive())
             .Subscribe();
 
-        Connection = ReactiveCommand.CreateFromTask(async () =>
-        {
-            var dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        Connection = ReactiveCommand.CreateFromTask(ConnectionImpl);
 
-            var connectionDialog = new ConnectionViewModel(dependencyResolver);
-
-            DialogNavigationStack.To(connectionDialog);
-
-            var dialogResult = await connectionDialog.GetDialogResultAsync();
-
-            DialogNavigationStack.Clear();
-
-            dataManager.UpdateData();
-        });
+        Settings = ReactiveCommand.CreateFromTask(SettingsImpl);
 
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
@@ -131,6 +121,38 @@ public class MainViewModel : RoutableViewModel
     public ReactiveCommand<Unit, Unit> Leave { get; }
 
     private ReactiveCommand<Unit, Unit> Connection { get; }
+
+    private ReactiveCommand<Unit, Unit> Settings { get; }
+
+    private async Task ConnectionImpl()
+    {
+        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
+
+        var connectionDialog = new ConnectionViewModel(_dependencyResolver);
+
+        DialogNavigationStack.To(connectionDialog);
+
+        var dialogResult = await connectionDialog.GetDialogResultAsync();
+
+        DialogNavigationStack.Clear();
+
+        dataManager.UpdateData();
+    }
+
+    private async Task SettingsImpl()
+    {
+        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
+
+        var settingsDialog = new SettingsViewModel(_dependencyResolver);
+
+        DialogNavigationStack.To(settingsDialog);
+
+        var dialogResult = await settingsDialog.GetDialogResultAsync();
+
+        DialogNavigationStack.Clear();
+
+        dataManager.UpdateData();
+    }
 
     private void MovedImpl((double, double) screenPosition)
     {

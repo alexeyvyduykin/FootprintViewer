@@ -5,9 +5,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
-             xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"      
+             xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
              xmlns:reactiveUi="http://reactiveui.net"
-             xmlns:materialIcons="using:Material.Icons.Avalonia"           
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels.SidePanel;assembly=FootprintViewer"
 			 x:DataType="vm:SidePanelViewModel"
@@ -60,11 +60,6 @@
 					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
 				</Viewbox>
 			</DataTemplate>
-			<DataTemplate x:Key="SettingsTabViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="AccountCog" />
-				</Viewbox>
-			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
@@ -75,11 +70,12 @@
 		</Style>
 		<Style Selector="controls|SidePanelItem">
 			<Setter Property="DockPanel.Dock" Value="Top"/>
+			<Setter Property="VerticalAlignment" Value="Top"/>
 		</Style>
-		<Style Selector="controls|SidePanelItem:nth-last-child(1)">
+		<!--<Style Selector="controls|SidePanelItem:nth-last-child(1)">
 			<Setter Property="DockPanel.Dock" Value="Bottom"/>
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
-		</Style>
+		</Style>-->
 		<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">
 			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue='', Converter={StaticResource sidePanelTitleConv}}"/>
 		</Style>
@@ -96,7 +92,7 @@
 					<DockPanel/>
 				</ItemsPanelTemplate>
 			</controls:SidePanel.ItemsPanel>
-			
+
 		</controls:SidePanel>
 	</Panel>
 
