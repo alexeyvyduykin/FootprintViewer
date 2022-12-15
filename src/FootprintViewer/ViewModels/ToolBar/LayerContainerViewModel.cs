@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
@@ -18,17 +19,19 @@ namespace FootprintViewer.ViewModels.ToolBar;
 public class LayerContainerViewModel : ViewModelBase
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
+    private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<ILayer> _layers = new();
     private readonly ReadOnlyObservableCollection<LayerItemViewModel> _layerItems;
 
     public LayerContainerViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dependencyResolver = dependencyResolver;
+        _layerStyleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
 
         _layers
            .Connect()
            .ObserveOn(RxApp.MainThreadScheduler)
-           .Transform(s => new LayerItemViewModel(s))
+           .Transform(s => new LayerItemViewModel(s, _layerStyleManager.GetStyles(s.Name)))
            .Bind(out _layerItems)
            .Subscribe();
 

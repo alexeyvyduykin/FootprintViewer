@@ -45,6 +45,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
     private IDataManager? _dataManager;
     private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
+    private LayerStyleManager? _layerStyleManager;
 
     public object? GetService(Type? serviceType, string? contract = null)
     {
@@ -55,6 +56,10 @@ public class DesignTimeData : IReadonlyDependencyResolver
         else if (serviceType == typeof(IMap))
         {
             return _map ??= CreateMap();
+        }
+        else if (serviceType == typeof(LayerStyleManager))
+        {
+            return _layerStyleManager ??= new LayerStyleManager();
         }
         else if (serviceType == typeof(AreaOfInterest))
         {

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:toolBar="clr-namespace:FootprintViewer.ViewModels.ToolBar;assembly=FootprintViewer"
-             
 			 mc:Ignorable="d" d:DesignHeight="350"
              x:DataType="toolBar:LayerContainerViewModel"
 			 x:Class="FootprintViewer.Avalonia.Views.ToolBar.LayerContainerView">
@@ -23,16 +22,22 @@
 	<Panel Background="{DynamicResource ThemeBackgroundBrush}">
 		<Grid Margin="8"
 			  ShowGridLines="False"
-			  ColumnDefinitions="120,8,48"
+			  ColumnDefinitions="120,8,48,8,120"
 			  RowDefinitions="Auto,Auto,Auto,Auto,*">
 
 			<TextBlock Classes="Body2"
 					   HorizontalAlignment="Center"
 					   Text="Name"/>
+
 			<TextBlock Grid.Column="2"
+					   HorizontalAlignment="Center"
 					   Text="Visible"/>
 
-			<Separator Grid.Row="1" Grid.ColumnSpan="3"/>
+			<TextBlock Grid.Column="4"
+					   HorizontalAlignment="Center"
+					   Text="Style"/>
+
+			<Separator Grid.Row="1" Grid.ColumnSpan="5"/>
 
 			<TextBlock Grid.Row="2"
 					   Classes="Body2"
@@ -44,10 +49,16 @@
 					  Padding="0"
 					  IsChecked="{Binding IsAllVisible}"/>
 
-			<Separator Grid.Row="3" Grid.ColumnSpan="3"/>
+			<ComboBox Grid.Row="2"
+					  Grid.Column="5"
+					  Padding="0"
+					  Items="{Binding Styles}"
+					  SelectedItem="{Binding SelectedStyle}"/>
+
+			<Separator Grid.Row="3" Grid.ColumnSpan="5"/>
 
 			<ItemsControl Grid.Row="4"
-						  Grid.ColumnSpan="3"
+						  Grid.ColumnSpan="5"
 						  Items="{Binding LayerItems}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -56,13 +67,18 @@
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate x:DataType="toolBar:LayerItemViewModel">
-						<Grid ColumnDefinitions="*,8,48">
+						<Grid ColumnDefinitions="120,8,48,8,120">
 							<TextBlock Classes="Body2"
 									   Text="{Binding Name}"/>
 							<CheckBox Grid.Column="2"
 									  Padding="0"
 									  HorizontalAlignment="Center"
 									  IsChecked="{Binding IsVisible}"/>
+
+							<ComboBox Grid.Column="5"
+									  Padding="0"
+									  Items="{Binding Styles}"
+									  SelectedItem="{Binding SelectedStyle}"/>
 						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>

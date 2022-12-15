@@ -5,23 +5,15 @@ using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Styles;
 
 public class LayerStyleManager
 {
-    private IStyle? _footprintStyle;
-    private IStyle? _targetStyle;
-    private IStyle? _sensorStyle;
-    private IStyle? _trackStyle;
-    private IStyle? _vertexOnlyStyle;
-    private IStyle? _editStyle;
-    private IStyle? _userStyle;
-    private IStyle? _footprintImageBorderStyle;
     private IStyle? _designerStyle;
     private IStyle? _decoratorStyle;
     private IStyle? _selectStyle;
-    private IStyle? _groundStationStyle;
 
     private const int _maxVisibleTargetStyle = 5000;
     private const int _maxVisibleFootprintStyle = 10000;
@@ -60,35 +52,55 @@ public class LayerStyleManager
         Line = new Pen(Color.Yellow, 3.0)
     };
 
-    public LayerStyleManager() { }
+    private readonly Dictionary<LayerType, LayerStyleViewModel[]> _dict;
+
+    public LayerStyleManager()
+    {
+        _dict = new()
+        {
+            { LayerType.Footprint, new[] { new LayerStyleViewModel("Footprint", "Light", CreateFootprintLayerStyle) } },
+            { LayerType.GroundTarget, new[] { new LayerStyleViewModel("GroundTarget", "Light", CreateTargetLayerStyle) } },
+            { LayerType.Track, new[] { new LayerStyleViewModel("Track", "Light", CreateTrackStyle) } },
+            { LayerType.Sensor, new[] { new LayerStyleViewModel("Sensor", "Light", CreateSensorStyle) } },
+            { LayerType.User, new[] { new LayerStyleViewModel("User", "Light", CreateUserLayerStyle) } },
+            { LayerType.Edit, new[] { new LayerStyleViewModel("Edit", "Light", CreateEditLayerStyle) } },
+            { LayerType.GroundStation, new[] { new LayerStyleViewModel("GroundStation", "Light", CreateGroundStationLayerStyle) } },
+            { LayerType.Vertex, new[] { new LayerStyleViewModel("Vertex", "Light", CreateVertexOnlyStyle) } },
+            { LayerType.FootprintImageBorder, new[] { new LayerStyleViewModel("FootprintBorder", "Light", CreateFootprintImageBorderStyle) } },
+        };
+    }
+
+    public IStyle? GetStyle(LayerType type)
+    {
+        if (_dict.ContainsKey(type) == true)
+        {
+            return _dict[type].FirstOrDefault()?.GetStyle();
+        }
+
+        return null;
+    }
+
+    public LayerStyleViewModel[]? GetStyles(string layerName)
+    {
+        Enum.TryParse(typeof(LayerType), layerName, out var result);
+
+        if (result is LayerType type)
+        {
+            return _dict.ContainsKey(type) ? _dict[type] : null;
+        }
+
+        return null;
+    }
 
     public static ColorPalette SatellitePalette => _satellitePalette;
 
     public static SingleHuePalette GroundStationPalette => _groundStationPalette;
-
-    public IStyle FootprintStyle => _footprintStyle ??= CreateFootprintLayerStyle();
-
-    public IStyle TargetStyle => _targetStyle ??= CreateTargetLayerStyle();
-
-    public IStyle SensorStyle => _sensorStyle ??= CreateSensorStyle();
-
-    public IStyle TrackStyle => _trackStyle ??= CreateTrackStyle();
-
-    public IStyle VertexOnlyStyle => _vertexOnlyStyle ??= CreateVertexOnlyStyle();
-
-    public IStyle EditStyle => _editStyle ??= CreateEditLayerStyle();
-
-    public IStyle UserStyle => _userStyle ??= CreateUserLayerStyle();
-
-    public IStyle FootprintImageBorderStyle => _footprintImageBorderStyle ??= CreateFootprintImageBorderStyle();
 
     public IStyle DesignerStyle => _designerStyle ??= CreateInteractiveLayerDesignerStyle();
 
     public IStyle DecoratorStyle => _decoratorStyle ??= CreateInteractiveLayerDecoratorStyle();
 
     public IStyle SelectStyle => _selectStyle ??= CreateInteractiveSelectLayerStyle();
-
-    public IStyle GroundStationStyle => _groundStationStyle ??= CreateGroundStationLayerStyle();
 
     public int MaxVisibleFootprintStyle => _maxVisibleFootprintStyle;
 

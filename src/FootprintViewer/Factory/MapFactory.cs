@@ -55,7 +55,7 @@ public class MapFactory
 
         return new EditLayer()
         {
-            Style = styleManager.EditStyle,
+            Style = styleManager.GetStyle(LayerType.Edit),
             IsMapInfoLayer = false,
         };
     }
@@ -67,7 +67,7 @@ public class MapFactory
 
         return new VertexOnlyLayer(editLayer!)
         {
-            Style = styleManager.VertexOnlyStyle,
+            Style = styleManager.GetStyle(LayerType.Vertex),
         };
     }
 
@@ -80,7 +80,7 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider, true)
         {
-            Style = styleManager.FootprintStyle,
+            Style = styleManager.GetStyle(LayerType.Footprint),
             //   MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
             IsMapInfoLayer = true,
         };
@@ -95,7 +95,7 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.GroundStationStyle,
+            Style = styleManager.GetStyle(LayerType.GroundStation),
             IsMapInfoLayer = false,
         };
 
@@ -109,7 +109,7 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.TrackStyle,
+            Style = styleManager.GetStyle(LayerType.Track),
             IsMapInfoLayer = false,
         };
 
@@ -125,7 +125,7 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider, true)
         {
-            Style = styleManager.TargetStyle,
+            Style = styleManager.GetStyle(LayerType.GroundTarget),
             //MaxVisible = styleManager.MaxVisibleTargetStyle,
             //DataSource = provider,
             IsMapInfoLayer = true,
@@ -141,7 +141,7 @@ public class MapFactory
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.SensorStyle,
+            Style = styleManager.GetStyle(LayerType.Sensor),
             IsMapInfoLayer = false,
         };
 
@@ -156,7 +156,7 @@ public class MapFactory
         var layer = new DynamicLayer(provider)
         {
             IsMapInfoLayer = true,
-            Style = styleManager.UserStyle,
+            Style = styleManager.GetStyle(LayerType.User),
         };
 
         return layer;
@@ -168,7 +168,7 @@ public class MapFactory
 
         return new WritableLayer
         {
-            Style = styleManager.FootprintImageBorderStyle,
+            Style = styleManager.GetStyle(LayerType.FootprintImageBorder),
         };
     }
 }
