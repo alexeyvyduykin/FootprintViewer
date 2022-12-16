@@ -68,7 +68,7 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
                 }
             });
 
-        this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode)
+        this.WhenAnyValue(s => s.InnerAngle, s => s.OuterAngle, s => s.AreaCount, s => s.CountMode, s => s.Palette)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Select(s => CreateAngles(s.Item1, s.Item2, s.Item3, s.Item4))
             .InvokeCommand(ReactiveCommand.Create<double[]>(UpdateAreas));
@@ -91,7 +91,9 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
 
     private void UpdateAreas(double[] angles)
     {
-        var list = angles.Select((angle, index) => BuildGroundStationArea(angle, index, angles.Length));
+        var palette = Palette ?? SingleHuePalette.Purples;
+
+        var list = angles.Select((angle, index) => BuildGroundStationArea(palette, angle, index, angles.Length));
 
         _gsAreas.Edit(innerList =>
         {
@@ -99,9 +101,9 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
             innerList.AddRange(list);
         });
 
-        static GroundStationAreaViewModel BuildGroundStationArea(double angle, int index, int count)
+        static GroundStationAreaViewModel BuildGroundStationArea(ISingleHuePalette palette, double angle, int index, int count)
         {
-            var color = SingleHuePalette.Purples.GetColor(index, count);// LayerStyleManager.GroundStationPalette.GetColor(index, count);
+            var color = palette.GetColor(index, count);
 
             return new GroundStationAreaViewModel()
             {
@@ -222,4 +224,7 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
     public bool IsShow { get; set; } = false;
 
     public bool IsShowInfo { get; set; }
+
+    [Reactive]
+    public ISingleHuePalette? Palette { get; set; }
 }

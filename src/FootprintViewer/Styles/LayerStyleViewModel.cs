@@ -28,5 +28,7 @@ public class LayerStyleViewModel
 
     public string? Group { get; }
 
+    public IPalette? Palette => _palette;
+
     public IStyle? GetStyle() => _style ??= _create.Invoke(_palette);
 }

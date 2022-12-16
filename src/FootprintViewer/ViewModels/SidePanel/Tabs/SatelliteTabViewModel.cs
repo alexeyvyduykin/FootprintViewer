@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using Splat;
@@ -22,12 +23,14 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly IDataManager _dataManager;
+    private readonly LayerStyleManager _layerStyleManager;
 
     public SatelliteTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _trackProvider = dependencyResolver.GetExistingService<TrackProvider>();
         _sensorProvider = dependencyResolver.GetExistingService<SensorProvider>();
+        _layerStyleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
 
         Title = "Просмотр спутников";
 
@@ -54,14 +57,31 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
+
+        _layerStyleManager.Selected
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(UpdateColorImpl);
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
     public bool IsLoading => _isLoading.Value;
 
+    private void UpdateColorImpl((LayerType, LayerStyleViewModel?) value)
+    {
+        if ((value.Item1 == LayerType.Track || value.Item1 == LayerType.Sensor)
+            && value.Item2?.Palette is IColorPalette palette)
+        {
+            foreach (var item in Items)
+            {
+                item.Color = palette.PickColor(item.Name).ToMapsuiColor();
+            }
+        }
+    }
+
     private async Task UpdateImpl()
     {
+        var palette = _layerStyleManager.GetPalette<IColorPalette>(LayerType.Track);
         var res = await _dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
 
         var list = res.Select(s => new SatelliteViewModel(s)).ToList();
@@ -70,6 +90,7 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
         {
             item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s));
             item.StripsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
+            item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
         }
 
         _satellites.Edit(innerList =>

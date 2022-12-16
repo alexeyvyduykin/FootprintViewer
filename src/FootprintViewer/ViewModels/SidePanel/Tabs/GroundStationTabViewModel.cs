@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using Splat;
@@ -17,6 +18,7 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 public class GroundStationTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
+    private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<GroundStationViewModel> _groundStation = new();
     private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -26,6 +28,7 @@ public class GroundStationTabViewModel : SidePanelTabViewModel
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _provider = dependencyResolver.GetExistingService<GroundStationProvider>();
+        _layerStyleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
 
         Title = "Просмотр наземных станций";
 
@@ -52,20 +55,39 @@ public class GroundStationTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
+
+        _layerStyleManager.Selected
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(UpdatePaletteImpl);
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
     public bool IsLoading => _isLoading.Value;
 
+    private void UpdatePaletteImpl((LayerType, LayerStyleViewModel?) value)
+    {
+        if (value.Item1 == LayerType.GroundStation
+            && value.Item2?.Palette is ISingleHuePalette palette)
+        {
+            foreach (var item in Items)
+            {
+                item.Palette = palette;
+            }
+        }
+    }
+
     private async Task UpdateImpl()
     {
+        var palette = _layerStyleManager.GetPalette<ISingleHuePalette>(LayerType.GroundStation);
+
         var res = await _dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
 
         var list = res.Select(s => new GroundStationViewModel(s)).ToList();
 
         foreach (var item in list)
         {
+            item.Palette = palette;
             item.UpdateObservable.Subscribe(s => _provider?.ChangedData(s));
         }
 

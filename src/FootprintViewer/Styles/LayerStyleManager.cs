@@ -4,6 +4,7 @@ using Mapsui.Nts;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +71,11 @@ public class LayerStyleManager
         };
 
         _selectedDict = _dict.ToDictionary(s => s.Key, s => s.Value.FirstOrDefault());
+
+        Selected = ReactiveCommand.Create<LayerType, (LayerType, LayerStyleViewModel?)>(s => (s, _selectedDict[s]), outputScheduler: RxApp.MainThreadScheduler);
     }
+
+    public ReactiveCommand<LayerType, (LayerType, LayerStyleViewModel?)> Selected { get; }
 
     public IStyle? GetStyle(LayerType type)
     {
@@ -95,6 +100,21 @@ public class LayerStyleManager
         }
 
         return null;
+    }
+
+    public T? GetPalette<T>(LayerType type) where T : IPalette
+    {
+        if (_selectedDict.ContainsKey(type) == true)
+        {
+            var p = _selectedDict[type]?.Palette;
+
+            if (p is T palette)
+            {
+                return palette;
+            }
+        }
+
+        return default;
     }
 
     public LayerStyleViewModel[]? GetStyles(string layerName)
@@ -132,6 +152,8 @@ public class LayerStyleManager
                     layer.Style = res.GetStyle();
 
                     _selectedDict[type] = res;
+
+                    Selected.Execute(type).Subscribe();
                 }
             }
         }
@@ -237,7 +259,7 @@ public class LayerStyleManager
     //    return stl0;
     //}
 
-    private static IStyle CreateTargetLayerStyle(IPalette? palette)
+    private static IStyle CreateTargetLayerStyle(IPalette? _)
     {
         var style1 = CreateTargetHighlightThemeStyle();
         var style2 = CreateTargetThemeStyle();
@@ -488,7 +510,7 @@ public class LayerStyleManager
         };
     }
 
-    private static IStyle CreateEditLayerStyle(IPalette? palette)
+    private static IStyle CreateEditLayerStyle(IPalette? _)
     {
         // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
         // depending on a "Selected" attribute.
@@ -531,7 +553,7 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateUserLayerStyle(IPalette? palette)
+    private static IStyle CreateUserLayerStyle(IPalette? _)
     {
         return new ThemeStyle(f =>
         {

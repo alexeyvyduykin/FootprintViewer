@@ -32,7 +32,7 @@
 
 			<DockPanel>
 
-				<Border Background="{Binding Name, Converter={StaticResource BrushConv}}"
+				<Border Background="{Binding Color, Converter={StaticResource BrushConv}}"
 						VerticalAlignment="Stretch"
 						Margin="0,4,8,4"
 						Width="10"/>

@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using Mapsui.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -65,4 +66,7 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
 
     [Reactive]
     public bool IsRightStrip { get; set; } = false;
+
+    [Reactive]
+    public Color? Color { get; set; }
 }

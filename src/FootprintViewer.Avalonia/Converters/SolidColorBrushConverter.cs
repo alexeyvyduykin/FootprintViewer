@@ -1,7 +1,6 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
-using FootprintViewer.Styles;
 using System;
 using System.Globalization;
 
@@ -19,20 +18,7 @@ public class SolidColorBrushConverter : IValueConverter
             };
         }
 
-        if (value is string name)
-        {
-            if (string.IsNullOrWhiteSpace(name) == true)
-            {
-                return new SolidColorBrush() { Color = Colors.Black };
-            }
-
-            var clr = ColorPalette.DefaultPalette.PickColor(name);// LayerStyleManager.SatellitePalette.PickColor(name);
-
-            return new SolidColorBrush()
-            {
-                Color = Color.FromRgb(clr.R, clr.G, clr.B)
-            };
-        }
+        return Brushes.Black;
 
         // converter used for the wrong type
         return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
