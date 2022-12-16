@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:toolBar="clr-namespace:FootprintViewer.ViewModels.ToolBar;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:FootprintViewer.Styles;assembly=FootprintViewer"
 			 mc:Ignorable="d" d:DesignHeight="350"
              x:DataType="toolBar:LayerContainerViewModel"
 			 x:Class="FootprintViewer.Avalonia.Views.ToolBar.LayerContainerView">
@@ -74,11 +75,16 @@
 									  Padding="0"
 									  HorizontalAlignment="Center"
 									  IsChecked="{Binding IsVisible}"/>
-
 							<ComboBox Grid.Column="5"
 									  Padding="0"
 									  Items="{Binding Styles}"
-									  SelectedItem="{Binding SelectedStyle}"/>
+									  SelectedItem="{Binding SelectedStyle}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate x:DataType="styles:LayerStyleViewModel">
+										<TextBlock Text="{Binding Name}" Margin="8,0,0,0"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
 						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>

@@ -117,16 +117,16 @@ public class LayerStyleManager
         return default;
     }
 
-    public LayerStyleViewModel[]? GetStyles(string layerName)
+    public LayerStyleViewModel[] GetStyles(string layerName)
     {
         Enum.TryParse(typeof(LayerType), layerName, out var result);
 
         if (result is LayerType type)
         {
-            return _dict.ContainsKey(type) ? _dict[type] : null;
+            return _dict.ContainsKey(type) ? _dict[type] : Array.Empty<LayerStyleViewModel>();
         }
 
-        return null;
+        return Array.Empty<LayerStyleViewModel>();
     }
 
     public void Select(ILayer layer, LayerStyleViewModel? selectedStyle = null)
