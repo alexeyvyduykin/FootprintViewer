@@ -101,7 +101,7 @@ public class GroundStationViewModel : ViewModelBase, IViewerItem
 
         static GroundStationAreaViewModel BuildGroundStationArea(double angle, int index, int count)
         {
-            var color = LayerStyleManager.GroundStationPalette.GetColor(index, count);
+            var color = SingleHuePalette.Purples.GetColor(index, count);// LayerStyleManager.GroundStationPalette.GetColor(index, count);
 
             return new GroundStationAreaViewModel()
             {

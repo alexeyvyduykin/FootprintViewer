@@ -31,7 +31,7 @@ public class LayerContainerViewModel : ViewModelBase
         _layers
            .Connect()
            .ObserveOn(RxApp.MainThreadScheduler)
-           .Transform(s => new LayerItemViewModel(s, _layerStyleManager.GetStyles(s.Name)))
+           .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
            .Bind(out _layerItems)
            .Subscribe();
 

@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -26,6 +27,9 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
     public FootprintProvider(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+
+        MaxVisible = styleManager.MaxVisibleFootprintStyle;
 
         _footprints
             .Connect()

@@ -1,4 +1,5 @@
 ﻿using Mapsui.Interactivity;
+using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
@@ -21,60 +22,76 @@ public class LayerStyleManager
     private const string SelectField = InteractiveFields.Select;
     private const string HoverField = "Highlight";
 
-    private static readonly ColorPalette _satellitePalette = ColorPalette.DefaultPalette;
-
-    private static readonly SingleHuePalette _groundStationPalette = SingleHuePalette.Purples;
-
-    private static readonly IStyle _footprintCommonStyle = new VectorStyle()
-    {
-        Fill = new Brush(Color.Opacity(Color.Green, 0.25f)),
-        Line = new Pen(Color.Green, 1.0),
-        Outline = new Pen(Color.Green, 1.0),
-        MinVisible = 0,
-        MaxVisible = _maxVisibleFootprintStyle,
-    };
-
-    private static readonly IStyle _footprintSelectStyle = new VectorStyle()
-    {
-        MinVisible = 0,
-        MaxVisible = _maxVisibleFootprintStyle,
-        Fill = new Brush(Color.Opacity(Color.Green, 0.55f)),
-        Outline = new Pen(Color.Black, 4.0),
-        Line = new Pen(Color.Black, 4.0)
-    };
-
-    private static readonly IStyle _footprintHoverStyle = new VectorStyle()
-    {
-        MinVisible = 0,
-        MaxVisible = _maxVisibleFootprintStyle,
-        Fill = new Brush(Color.Opacity(Color.Yellow, 0.55f)),
-        Outline = new Pen(Color.Yellow, 3.0),
-        Line = new Pen(Color.Yellow, 3.0)
-    };
-
     private readonly Dictionary<LayerType, LayerStyleViewModel[]> _dict;
+    private readonly Dictionary<LayerType, LayerStyleViewModel?> _selectedDict;
 
     public LayerStyleManager()
     {
+        var fotprintImageBorderPalette = new MapsuiPalette(new Color() { R = 76, G = 185, B = 247, A = 255 });
+        var defaultPalette = ColorPalette.DefaultPalette;
+        var springPastels = ColorPalette.SpringPastelsPalette;
+        var dutchField = ColorPalette.DutchFieldPalette;
+        var riverNights = ColorPalette.RiverNightsPalette;
+        var retroMetro = ColorPalette.RetroMetroPalette;
+
         _dict = new()
         {
-            { LayerType.Footprint, new[] { new LayerStyleViewModel("Footprint", "Light", CreateFootprintLayerStyle) } },
-            { LayerType.GroundTarget, new[] { new LayerStyleViewModel("GroundTarget", "Light", CreateTargetLayerStyle) } },
-            { LayerType.Track, new[] { new LayerStyleViewModel("Track", "Light", CreateTrackStyle) } },
-            { LayerType.Sensor, new[] { new LayerStyleViewModel("Sensor", "Light", CreateSensorStyle) } },
-            { LayerType.User, new[] { new LayerStyleViewModel("User", "Light", CreateUserLayerStyle) } },
-            { LayerType.Edit, new[] { new LayerStyleViewModel("Edit", "Light", CreateEditLayerStyle) } },
-            { LayerType.GroundStation, new[] { new LayerStyleViewModel("GroundStation", "Light", CreateGroundStationLayerStyle) } },
-            { LayerType.Vertex, new[] { new LayerStyleViewModel("Vertex", "Light", CreateVertexOnlyStyle) } },
-            { LayerType.FootprintImageBorder, new[] { new LayerStyleViewModel("FootprintBorder", "Light", CreateFootprintImageBorderStyle) } },
+            { LayerType.Footprint, new[] { new LayerStyleViewModel("Footprint", "Light", new MapsuiPalette(Color.Green), p => CreateFootprintLayerStyle(p)) } },
+            { LayerType.GroundTarget, new[] { new LayerStyleViewModel("GroundTarget", "Light", null, p => CreateTargetLayerStyle(p)) } },
+            { LayerType.Track, new[]
+            {
+                new LayerStyleViewModel("Default", "Light", defaultPalette, p => CreateTrackStyle(p)),
+                new LayerStyleViewModel("SpringPastels", "Light", springPastels, p => CreateTrackStyle(p)),
+                new LayerStyleViewModel("DutchField", "Light", dutchField, p => CreateTrackStyle(p)),
+                new LayerStyleViewModel("RiverNights", "Light", riverNights, p => CreateTrackStyle(p)),
+                new LayerStyleViewModel("RetroMetro", "Light", retroMetro, p => CreateTrackStyle(p)),
+            } },
+            { LayerType.Sensor, new[]
+            {
+                new LayerStyleViewModel("Default", "Light", defaultPalette, p => CreateSensorStyle(p)),
+                new LayerStyleViewModel("SpringPastels", "Light", springPastels, p => CreateSensorStyle(p)),
+                new LayerStyleViewModel("DutchField", "Light", dutchField, p => CreateSensorStyle(p)),
+                new LayerStyleViewModel("RiverNights", "Light", riverNights, p => CreateSensorStyle(p)),
+                new LayerStyleViewModel("RetroMetro", "Light", retroMetro, p => CreateSensorStyle(p)),
+            } },
+            { LayerType.User, new[] { new LayerStyleViewModel("User", "Light", null, p => CreateUserLayerStyle(p)) } },
+            { LayerType.Edit, new[] { new LayerStyleViewModel("Edit", "Light", null, p => CreateEditLayerStyle(p)) } },
+            { LayerType.GroundStation, new[]
+            {
+                new LayerStyleViewModel("Purple", "Light", SingleHuePalette.Purples, p => CreateGroundStationLayerStyle(p)),
+                new LayerStyleViewModel("Green", "Light", SingleHuePalette.Greens, p => CreateGroundStationLayerStyle(p)),
+                new LayerStyleViewModel("Blue", "Light", SingleHuePalette.Blues, p => CreateGroundStationLayerStyle(p)),
+                new LayerStyleViewModel("Grey", "Light", SingleHuePalette.Greys, p => CreateGroundStationLayerStyle(p)),
+                new LayerStyleViewModel("Orange", "Light", SingleHuePalette.Oranges, p => CreateGroundStationLayerStyle(p)),
+                new LayerStyleViewModel("Red", "Light", SingleHuePalette.Reds, p => CreateGroundStationLayerStyle(p)),
+            } },
+            { LayerType.Vertex, new[] { new LayerStyleViewModel("Vertex", "Light", null, p => CreateVertexOnlyStyle()) } },
+            { LayerType.FootprintImageBorder, new[] { new LayerStyleViewModel("FootprintBorder", "Light", fotprintImageBorderPalette, p => CreateFootprintImageBorderStyle(p)) } },
         };
+
+        _selectedDict = _dict.ToDictionary(s => s.Key, s => s.Value.FirstOrDefault());
     }
 
     public IStyle? GetStyle(LayerType type)
     {
-        if (_dict.ContainsKey(type) == true)
+        if (_selectedDict.ContainsKey(type) == true)
         {
-            return _dict[type].FirstOrDefault()?.GetStyle();
+            return _selectedDict[type]?.GetStyle();
+        }
+
+        return null;
+    }
+
+    public LayerStyleViewModel? GetStyle(string layerName)
+    {
+        Enum.TryParse(typeof(LayerType), layerName, out var result);
+
+        if (result is LayerType type)
+        {
+            if (_selectedDict.ContainsKey(type) == true)
+            {
+                return _selectedDict[type];
+            }
         }
 
         return null;
@@ -92,9 +109,33 @@ public class LayerStyleManager
         return null;
     }
 
-    public static ColorPalette SatellitePalette => _satellitePalette;
+    public void Select(ILayer layer, LayerStyleViewModel? selectedStyle = null)
+    {
+        var layerName = layer.Name;
 
-    public static SingleHuePalette GroundStationPalette => _groundStationPalette;
+        Enum.TryParse(typeof(LayerType), layerName, out var result);
+
+        if (result is LayerType type)
+        {
+            if (selectedStyle == null)
+            {
+                layer.Style = GetStyle(type);
+                return;
+            }
+
+            if (_dict.ContainsKey(type) == true)
+            {
+                var res = _dict[type].Where(s => Equals(s.Name, selectedStyle.Name)).FirstOrDefault();
+
+                if (res != null)
+                {
+                    layer.Style = res.GetStyle();
+
+                    _selectedDict[type] = res;
+                }
+            }
+        }
+    }
 
     public IStyle DesignerStyle => _designerStyle ??= CreateInteractiveLayerDesignerStyle();
 
@@ -106,15 +147,7 @@ public class LayerStyleManager
 
     public int MaxVisibleTargetStyle => _maxVisibleTargetStyle;
 
-    private static IStyle CreateFootprintLayerStyle()
-    {
-        //var style1 = CreateFootprintPreviewThemeStyle();
-        var style2 = CreateFootprintThemeStyle();
-
-        return style2;// new StyleCollection() { style1, style2 };
-    }
-
-    private static IStyle CreateFootprintThemeStyle()
+    private static IStyle CreateFootprintLayerStyle(IPalette? palette)
     {
         return new ThemeStyle(f =>
         {
@@ -128,17 +161,43 @@ public class LayerStyleManager
                 return null;
             }
 
+            if ((palette is IMapsuiPalette mapsuiPalette) == false)
+            {
+                return null;
+            }
+
             if (gf[SelectField] is true)
             {
-                return _footprintSelectStyle;
+                return new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(mapsuiPalette.Color, 0.55f)),
+                    Outline = new Pen(Color.Black, 4.0),
+                    Line = new Pen(Color.Black, 4.0)
+                };
             }
 
             if (gf[HoverField] is true)
             {
-                return _footprintHoverStyle;
+                return new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(mapsuiPalette.Color, 0.85f)),
+                    Outline = new Pen(Color.Yellow, 3.0),
+                    Line = new Pen(Color.Yellow, 3.0)
+                };
             }
 
-            return _footprintCommonStyle;
+            return new VectorStyle()
+            {
+                Fill = new Brush(Color.Opacity(mapsuiPalette.Color, 0.25f)),
+                Line = new Pen(mapsuiPalette.Color, 1.0),
+                Outline = new Pen(mapsuiPalette.Color, 1.0),
+                MinVisible = 0,
+                MaxVisible = _maxVisibleFootprintStyle,
+            };
         });
     }
 
@@ -178,7 +237,7 @@ public class LayerStyleManager
     //    return stl0;
     //}
 
-    private static IStyle CreateTargetLayerStyle()
+    private static IStyle CreateTargetLayerStyle(IPalette? palette)
     {
         var style1 = CreateTargetHighlightThemeStyle();
         var style2 = CreateTargetThemeStyle();
@@ -320,7 +379,7 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateSensorStyle()
+    private static IStyle CreateSensorStyle(IPalette? palette)
     {
         return new ThemeStyle(f =>
         {
@@ -334,6 +393,11 @@ public class LayerStyleManager
                 return null;
             }
 
+            if ((palette is IColorPalette colorPalette) == false)
+            {
+                return null;
+            }
+
             if (gf.Fields != null)
             {
                 foreach (var item in gf.Fields)
@@ -342,7 +406,7 @@ public class LayerStyleManager
                     {
                         var name = (string)gf["Name"]!;
 
-                        var color = _satellitePalette.PickColor(name);
+                        var color = colorPalette.PickColor(name);
 
                         return new VectorStyle
                         {
@@ -365,7 +429,7 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateTrackStyle()
+    private static IStyle CreateTrackStyle(IPalette? palette)
     {
         return new ThemeStyle(f =>
         {
@@ -379,6 +443,11 @@ public class LayerStyleManager
                 return null;
             }
 
+            if ((palette is IColorPalette colorPalette) == false)
+            {
+                return null;
+            }
+
             if (gf.Fields != null)
             {
                 foreach (var item in gf.Fields)
@@ -387,7 +456,7 @@ public class LayerStyleManager
                     {
                         var name = (string)gf["Name"]!;
 
-                        var color = _satellitePalette.PickColor(name);
+                        var color = colorPalette.PickColor(name);
 
                         return new VectorStyle
                         {
@@ -419,7 +488,7 @@ public class LayerStyleManager
         };
     }
 
-    private static IStyle CreateEditLayerStyle()
+    private static IStyle CreateEditLayerStyle(IPalette? palette)
     {
         // To show the selected style a ThemeStyle is used which switches on and off the SelectedStyle
         // depending on a "Selected" attribute.
@@ -462,7 +531,7 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateUserLayerStyle()
+    private static IStyle CreateUserLayerStyle(IPalette? palette)
     {
         return new ThemeStyle(f =>
         {
@@ -529,15 +598,18 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateFootprintImageBorderStyle()
+    private static IStyle CreateFootprintImageBorderStyle(IPalette? palette)
     {
-        var color = new Color() { R = 76, G = 185, B = 247, A = 255 };
+        if ((palette is MapsuiPalette mapsuiPalette) == false)
+        {
+            return new ThemeStyle(f => null);
+        }
 
         return new VectorStyle
         {
-            Fill = new Brush(Color.Opacity(color, 0.25f)),
-            Line = new Pen(color, 1.0),
-            Outline = new Pen(color, 1.0),
+            Fill = new Brush(Color.Opacity(mapsuiPalette.Color, 0.25f)),
+            Line = new Pen(mapsuiPalette.Color, 1.0),
+            Outline = new Pen(mapsuiPalette.Color, 1.0),
             Enabled = true
         };
     }
@@ -676,7 +748,78 @@ public class LayerStyleManager
         });
     }
 
-    private static IStyle CreateGroundStationLayerStyle()
+    //private static IStyle CreateGroundStationLayerStyle()
+    //{
+    //    return new ThemeStyle(f =>
+    //    {
+    //        if (f is not GeometryFeature gf)
+    //        {
+    //            return null;
+    //        }
+
+    //        if (gf.Geometry is Point)
+    //        {
+    //            return null;
+    //        }
+
+    //        if (gf.Geometry is MultiPolygon)
+    //        {
+    //            foreach (var item in gf.Fields)
+    //            {
+    //                if (item.Equals("Count"))
+    //                {
+    //                    var count = int.Parse(gf["Count"]!.ToString()!);
+    //                    var index = int.Parse(gf["Index"]!.ToString()!);
+    //                    var color = _groundStationPalette.GetColor(index, count);
+    //                    return new VectorStyle
+    //                    {
+    //                        Fill = new Brush(Color.Opacity(new Color(color.R, color.G, color.B), 0.45f)),
+    //                        Line = null,
+    //                        Outline = null,
+    //                        Enabled = true
+    //                    };
+    //                }
+    //            }
+    //        }
+
+    //        if (gf.Fields != null && gf.Geometry is MultiLineString)
+    //        {
+    //            foreach (var item in gf.Fields)
+    //            {
+    //                if (item.Equals("InnerBorder"))
+    //                {
+    //                    var count = int.Parse(gf["Count"]!.ToString()!);
+    //                    var color = _groundStationPalette.GetColor(0, count);
+
+    //                    return new VectorStyle
+    //                    {
+    //                        Fill = null,
+    //                        Line = new Pen(new Color(color.R, color.G, color.B), 2.0),
+    //                        Outline = new Pen(new Color(color.R, color.G, color.B), 2.0),
+    //                        Enabled = true
+    //                    };
+    //                }
+    //                if (item.Equals("OuterBorder"))
+    //                {
+    //                    var count = int.Parse(gf["Count"]!.ToString()!);
+    //                    var color = _groundStationPalette.GetColor(count - 1, count);
+
+    //                    return new VectorStyle
+    //                    {
+    //                        Fill = null,
+    //                        Line = new Pen(new Color(color.R, color.G, color.B), 2.0),
+    //                        Outline = new Pen(new Color(color.R, color.G, color.B), 2.0),
+    //                        Enabled = true
+    //                    };
+    //                }
+    //            }
+    //        }
+
+    //        return null;
+    //    });
+    //}
+
+    private static IStyle CreateGroundStationLayerStyle(IPalette? palette)
     {
         return new ThemeStyle(f =>
         {
@@ -690,6 +833,11 @@ public class LayerStyleManager
                 return null;
             }
 
+            if ((palette is ISingleHuePalette singleHuePalette) == false)
+            {
+                return null;
+            }
+
             if (gf.Geometry is MultiPolygon)
             {
                 foreach (var item in gf.Fields)
@@ -698,7 +846,7 @@ public class LayerStyleManager
                     {
                         var count = int.Parse(gf["Count"]!.ToString()!);
                         var index = int.Parse(gf["Index"]!.ToString()!);
-                        var color = _groundStationPalette.GetColor(index, count);
+                        var color = singleHuePalette.GetColor(index, count);
                         return new VectorStyle
                         {
                             Fill = new Brush(Color.Opacity(new Color(color.R, color.G, color.B), 0.45f)),
@@ -717,7 +865,7 @@ public class LayerStyleManager
                     if (item.Equals("InnerBorder"))
                     {
                         var count = int.Parse(gf["Count"]!.ToString()!);
-                        var color = _groundStationPalette.GetColor(0, count);
+                        var color = singleHuePalette.GetColor(0, count);
 
                         return new VectorStyle
                         {
@@ -730,7 +878,7 @@ public class LayerStyleManager
                     if (item.Equals("OuterBorder"))
                     {
                         var count = int.Parse(gf["Count"]!.ToString()!);
-                        var color = _groundStationPalette.GetColor(count - 1, count);
+                        var color = singleHuePalette.GetColor(count - 1, count);
 
                         return new VectorStyle
                         {

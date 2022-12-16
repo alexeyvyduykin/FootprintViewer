@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -29,6 +30,9 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
     public GroundTargetProvider(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+
+        MaxVisible = styleManager.MaxVisibleTargetStyle;
 
         _groundTargets
             .Connect()
@@ -50,7 +54,7 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
             .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
-
+       
         Observable.StartAsync(UpdateImpl);
     }
 

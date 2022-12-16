@@ -26,7 +26,7 @@ public class SolidColorBrushConverter : IValueConverter
                 return new SolidColorBrush() { Color = Colors.Black };
             }
 
-            var clr = LayerStyleManager.SatellitePalette.PickColor(name);
+            var clr = ColorPalette.DefaultPalette.PickColor(name);// LayerStyleManager.SatellitePalette.PickColor(name);
 
             return new SolidColorBrush()
             {

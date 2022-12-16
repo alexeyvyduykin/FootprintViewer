@@ -11,7 +11,7 @@ namespace FootprintViewer.ViewModels.ToolBar;
 
 public class LayerItemViewModel : ViewModelBase
 {
-    public LayerItemViewModel(ILayer layer, LayerStyleViewModel[]? styles)
+    public LayerItemViewModel(ILayer layer, LayerStyleManager layerStyleManager)
     {
         Name = layer.Name;
 
@@ -20,9 +20,26 @@ public class LayerItemViewModel : ViewModelBase
         this.WhenAnyValue(s => s.IsVisible)
             .Subscribe(s => layer.Enabled = s);
 
+        var styles = layerStyleManager.GetStyles(layer.Name);
+        var selectedStyle = layerStyleManager.GetStyle(layer.Name);
+
         Styles = new List<string>(styles?.Select(s => s.Name) ?? Array.Empty<string>());
 
-        SelectedStyle = Styles.FirstOrDefault();
+        SelectedStyle = selectedStyle?.Name ?? Styles.FirstOrDefault();
+
+        this.WhenAnyValue(s => s.SelectedStyle)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s =>
+            {
+                var res = styles?.Where(style => Equals(style.Name, s)).FirstOrDefault();
+
+                if (res != null)
+                {
+                    layerStyleManager.Select(layer, res);
+
+                    layer.DataHasChanged();
+                }
+            });
     }
 
     public string Name { get; set; }

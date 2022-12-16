@@ -19,6 +19,8 @@ public class MapFactory
 
     public Map CreateMap()
     {
+        var styleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
+
         var map = new Map()
         {
             CRS = "EPSG:3857",
@@ -32,10 +34,15 @@ public class MapFactory
         map.AddLayer(CreateSensorLayer(_dependencyResolver), LayerType.Sensor);
         map.AddLayer(CreateTrackLayer(_dependencyResolver), LayerType.Track);
         map.AddLayer(CreateFootprintLayer(_dependencyResolver), LayerType.Footprint);
-        map.AddLayer(CreateFootprintImageBorderLayer(_dependencyResolver), LayerType.FootprintImageBorder);
-        map.AddLayer(CreateEditLayer(_dependencyResolver), LayerType.Edit);
-        map.AddLayer(CreateVertexOnlyLayer(map, _dependencyResolver), LayerType.Vertex);
+        map.AddLayer(CreateFootprintImageBorderLayer(), LayerType.FootprintImageBorder);
+        map.AddLayer(CreateEditLayer(), LayerType.Edit);
+        map.AddLayer(CreateVertexOnlyLayer(map), LayerType.Vertex);
         map.AddLayer(CreateUserLayer(_dependencyResolver), LayerType.User);
+
+        foreach (var item in map.Layers)
+        {
+            styleManager.Select(item);
+        }
 
         return map;
     }
@@ -49,38 +56,27 @@ public class MapFactory
             .WithLeave(f => f["Highlight"] = false);
     }
 
-    private static ILayer CreateEditLayer(IReadonlyDependencyResolver dependencyResolver)
+    private static ILayer CreateEditLayer()
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-
         return new EditLayer()
         {
-            Style = styleManager.GetStyle(LayerType.Edit),
             IsMapInfoLayer = false,
         };
     }
 
-    private static ILayer CreateVertexOnlyLayer(Map map, IReadonlyDependencyResolver dependencyResolver)
+    private static ILayer CreateVertexOnlyLayer(Map map)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var editLayer = map.GetLayer(LayerType.Edit);
 
-        return new VertexOnlyLayer(editLayer!)
-        {
-            Style = styleManager.GetStyle(LayerType.Vertex),
-        };
+        return new VertexOnlyLayer(editLayer!);
     }
 
     private static ILayer CreateFootprintLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<FootprintProvider>();
-
-        provider.MaxVisible = styleManager.MaxVisibleFootprintStyle;
 
         var layer = new DynamicLayer(provider, true)
         {
-            Style = styleManager.GetStyle(LayerType.Footprint),
             //   MaxVisiblePreview = styleManager.MaxVisibleFootprintStyle,
             IsMapInfoLayer = true,
         };
@@ -90,12 +86,10 @@ public class MapFactory
 
     private static ILayer CreateGroundStationLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<GroundStationProvider>();
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.GetStyle(LayerType.GroundStation),
             IsMapInfoLayer = false,
         };
 
@@ -104,12 +98,10 @@ public class MapFactory
 
     private static ILayer CreateTrackLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<TrackProvider>();
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.GetStyle(LayerType.Track),
             IsMapInfoLayer = false,
         };
 
@@ -118,14 +110,10 @@ public class MapFactory
 
     private static ILayer CreateTargetLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-
-        provider.MaxVisible = styleManager.MaxVisibleTargetStyle;
 
         var layer = new DynamicLayer(provider, true)
         {
-            Style = styleManager.GetStyle(LayerType.GroundTarget),
             //MaxVisible = styleManager.MaxVisibleTargetStyle,
             //DataSource = provider,
             IsMapInfoLayer = true,
@@ -136,12 +124,10 @@ public class MapFactory
 
     private static ILayer CreateSensorLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<SensorProvider>();
 
         var layer = new DynamicLayer(provider)
         {
-            Style = styleManager.GetStyle(LayerType.Sensor),
             IsMapInfoLayer = false,
         };
 
@@ -150,25 +136,18 @@ public class MapFactory
 
     private static ILayer CreateUserLayer(IReadonlyDependencyResolver dependencyResolver)
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
         var provider = dependencyResolver.GetExistingService<UserGeometryProvider>();
 
         var layer = new DynamicLayer(provider)
         {
             IsMapInfoLayer = true,
-            Style = styleManager.GetStyle(LayerType.User),
         };
 
         return layer;
     }
 
-    private static ILayer CreateFootprintImageBorderLayer(IReadonlyDependencyResolver dependencyResolver)
+    private static ILayer CreateFootprintImageBorderLayer()
     {
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
-
-        return new WritableLayer
-        {
-            Style = styleManager.GetStyle(LayerType.FootprintImageBorder),
-        };
+        return new WritableLayer();
     }
 }
