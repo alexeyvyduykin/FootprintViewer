@@ -109,18 +109,16 @@ internal static class DbHelper
             case DbKeys.UserGeometries:
                 if (newValue is UserGeometry newUserGeometry)
                 {
-                    using (var context = new UserGeometryDbContext(tableName, connectionString))
+                    using var context = new UserGeometryDbContext(tableName, connectionString);
+                    var userGeometry = await context.UserGeometries
+                        .Where(b => b.Name == id)
+                        .FirstOrDefaultAsync();
+
+                    if (userGeometry != null)
                     {
-                        var userGeometry = await context.UserGeometries
-                            .Where(b => b.Name == id)
-                            .FirstOrDefaultAsync();
+                        userGeometry.Geometry = newUserGeometry.Geometry;
 
-                        if (userGeometry != null)
-                        {
-                            userGeometry.Geometry = newUserGeometry.Geometry;
-
-                            await context.SaveChangesAsync();
-                        }
+                        await context.SaveChangesAsync();
                     }
                 }
                 break;
@@ -255,11 +253,28 @@ internal static class DbHelper
 
     private static IList<object> GetValues<T>(IList<string> paths)
     {
-        return paths.SelectMany(s => DeserializeFromStream<T>(s).Cast<object>()).ToList();
+        return paths.SelectMany(s => GetValues<T>(s)).ToList();
     }
 
     private static IList<object> GetValues<T>(string path)
     {
-        return DeserializeFromStream<T>(path).Cast<object>().ToList();
+        try
+        {
+            var res = DeserializeFromFile<IList<T>>(path, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
+
+            if (res is IList<T> list)
+            {
+                return list.Cast<object>().ToList();
+            }
+        }
+        catch (Exception)
+        {
+            return Array.Empty<object>();
+        }
+
+        return Array.Empty<object>();
     }
 }

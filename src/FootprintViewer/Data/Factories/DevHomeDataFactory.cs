@@ -12,31 +12,23 @@ public class DevHomeDataFactory : IDataFactory
     {
         // footprints
         var footprintsKey = DbKeys.Footprints.ToString();
-        //var footprintSource = new FootprintRandomSource()
-        //{
-        //    GenerateCount = 2000
-        //};
+        var footprintPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/Footprints.json");
+        var footprintSource = new JsonSource(footprintsKey, footprintPath);
 
         // groundTargets
         var groundTargetsKey = DbKeys.GroundTargets.ToString();
-        //var groundTargetsSource = new GroundTargetRandomSource()
-        //{
-        //    GenerateCount = 5000
-        //};
+        var groundTargetPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/GroundTargets.json");
+        var groundTargetsSource = new JsonSource(groundTargetsKey, groundTargetPath);
 
         // satellites
         var satellitesKey = DbKeys.Satellites.ToString();
-        //var satellitesSource = new SatelliteRandomSource()
-        //{
-        //    GenerateCount = 5
-        //};
+        var satellitePath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/Satellites.json");
+        var satellitesSource = new JsonSource(satellitesKey, satellitePath);
 
         // groundStations
         var groundStationsKey = DbKeys.GroundStations.ToString();
-        //var groundStationsSource = new GroundStationRandomSource()
-        //{
-        //    GenerateCount = 6
-        //};
+        var groundStationPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/GroundStations.json");
+        var groundStationsSource = new JsonSource(groundStationsKey, groundStationPath);
 
         // maps
         var mapsKey = DbKeys.Maps.ToString();
@@ -65,10 +57,10 @@ public class DevHomeDataFactory : IDataFactory
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
-  //          { footprintsKey, new[] { footprintSource } },
-  //          { groundTargetsKey, new[] { groundTargetsSource } },
-  //          { satellitesKey, new[] { satellitesSource } },
-  //          { groundStationsKey, new[] { groundStationsSource } },
+            { footprintsKey, new[] { footprintSource } },
+            { groundTargetsKey, new[] { groundTargetsSource } },
+            { satellitesKey, new[] { satellitesSource } },
+            { groundStationsKey, new[] { groundStationsSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },
             { footprintPreviewGeometriesKey, new[] { mapSource5 } }
