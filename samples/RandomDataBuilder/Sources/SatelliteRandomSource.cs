@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FootprintViewer.Data;
 
-namespace FootprintViewer.Data.DataManager.Sources;
+namespace RandomDataBuilder.Sources;
 
 public class SatelliteRandomSource : BaseRandomSource
 {

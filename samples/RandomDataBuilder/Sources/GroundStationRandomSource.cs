@@ -1,9 +1,7 @@
-﻿using NetTopologySuite.Geometries;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FootprintViewer.Data;
+using NetTopologySuite.Geometries;
 
-namespace FootprintViewer.Data.DataManager.Sources;
+namespace RandomDataBuilder.Sources;
 
 public class GroundStationRandomSource : BaseRandomSource
 {

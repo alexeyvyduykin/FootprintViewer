@@ -1,10 +1,9 @@
-﻿using SpaceScience;
-using System;
-using System.Collections.Generic;
+﻿using FootprintViewer.Data;
+using SpaceScience;
 
-namespace FootprintViewer.Data;
+namespace RandomDataBuilder;
 
-internal static class SatelliteBuilder
+public static class SatelliteBuilder
 {
     public static IEnumerable<Satellite> Create(int num)
     {

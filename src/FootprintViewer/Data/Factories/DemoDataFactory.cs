@@ -12,31 +12,31 @@ public class DemoDataFactory : IDataFactory
     {
         // footprints
         var footprintsKey = DbKeys.Footprints.ToString();
-        var footprintSource = new FootprintRandomSource()
-        {
-            GenerateCount = 2000
-        };
+        //var footprintSource = new FootprintRandomSource()
+        //{
+        //    GenerateCount = 2000
+        //};
 
         // groundTargets
         var groundTargetsKey = DbKeys.GroundTargets.ToString();
-        var groundTargetsSource = new GroundTargetRandomSource()
-        {
-            GenerateCount = 5000
-        };
+        //var groundTargetsSource = new GroundTargetRandomSource()
+        //{
+        //    GenerateCount = 5000
+        //};
 
         // satellites
         var satellitesKey = DbKeys.Satellites.ToString();
-        var satellitesSource = new SatelliteRandomSource()
-        {
-            GenerateCount = 5
-        };
+        //var satellitesSource = new SatelliteRandomSource()
+        //{
+        //    GenerateCount = 5
+        //};
 
         // groundStations
         var groundStationsKey = DbKeys.GroundStations.ToString();
-        var groundStationsSource = new GroundStationRandomSource()
-        {
-            GenerateCount = 6
-        };
+        //var groundStationsSource = new GroundStationRandomSource()
+        //{
+        //    GenerateCount = 6
+        //};
 
         // maps
         var mapsKey = DbKeys.Maps.ToString();
@@ -65,10 +65,10 @@ public class DemoDataFactory : IDataFactory
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
-            { footprintsKey, new[] { footprintSource } },
-            { groundTargetsKey, new[] { groundTargetsSource } },
-            { satellitesKey, new[] { satellitesSource } },
-            { groundStationsKey, new[] { groundStationsSource } },
+ //           { footprintsKey, new[] { footprintSource } },
+ //           { groundTargetsKey, new[] { groundTargetsSource } },
+ //           { satellitesKey, new[] { satellitesSource } },
+ //           { groundStationsKey, new[] { groundStationsSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },
             { footprintPreviewGeometriesKey, new[] { mapSource5 } }

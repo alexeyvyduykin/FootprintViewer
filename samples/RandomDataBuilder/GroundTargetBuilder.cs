@@ -1,11 +1,10 @@
-﻿using NetTopologySuite.Geometries;
+﻿using FootprintViewer.Data;
+using NetTopologySuite.Geometries;
 using SpaceScience;
-using System;
-using System.Collections.Generic;
 
-namespace FootprintViewer.Data;
+namespace RandomDataBuilder;
 
-internal static class GroundTargetBuilder
+public static class GroundTargetBuilder
 {
     private static readonly Random _random = new();
     private static readonly int _countTargets = 5000;

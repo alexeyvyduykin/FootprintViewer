@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager.Sources;
+using RandomDataBuilder.Sources;
 
 namespace JsonDataBuilderSample;
 

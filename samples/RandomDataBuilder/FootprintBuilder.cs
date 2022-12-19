@@ -1,12 +1,10 @@
-﻿using NetTopologySuite.Geometries;
+﻿using FootprintViewer.Data;
+using NetTopologySuite.Geometries;
 using SpaceScience;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace FootprintViewer.Data;
+namespace RandomDataBuilder;
 
-internal static class FootprintBuilder
+public static class FootprintBuilder
 {
     private static readonly Random _random = new();
     private static readonly double _size = 1.2;
