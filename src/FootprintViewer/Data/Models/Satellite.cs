@@ -1,5 +1,5 @@
-﻿using FootprintViewer.Data.Science;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SpaceScience;
 using System;
 
 namespace FootprintViewer.Data;
@@ -59,21 +59,18 @@ public static class SatelliteExtensions
         return new PRDCTSatellite(orbit, 1);
     }
 
-    public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, SatelliteStripDirection direction)
+    public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, SwathDirection direction)
     {
         var inner = satellite.InnerHalfAngleDeg;
         var outer = satellite.OuterHalfAngleDeg;
         var angle = (outer - inner) / 2.0;
         var roll = inner + angle;
 
-        switch (direction)
+        return direction switch
         {
-            case SatelliteStripDirection.Left:
-                return new PRDCTSensor(angle, roll);
-            case SatelliteStripDirection.Right:
-                return new PRDCTSensor(angle, -roll);
-            default:
-                throw new Exception();
-        }
+            SwathDirection.Left => new PRDCTSensor(angle, roll),
+            SwathDirection.Right => new PRDCTSensor(angle, -roll),
+            _ => throw new Exception(),
+        };
     }
 }

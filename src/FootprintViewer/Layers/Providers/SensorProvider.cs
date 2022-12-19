@@ -63,8 +63,8 @@ public class SensorProvider : IProvider, IDynamic
     {
         var name = satellite.Name;
         var node = satellite.CurrentNode;
-        var isShowLeft = satellite.IsShow && satellite.IsLeftStrip;
-        var isShowRight = satellite.IsShow && satellite.IsRightStrip;
+        var isShowLeft = satellite.IsShow && satellite.IsLeftSwath;
+        var isShowRight = satellite.IsShow && satellite.IsRightSwath;
 
         if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
         {
@@ -103,13 +103,13 @@ public class SensorProvider : IProvider, IDynamic
     {
         return await Task.Run(() =>
         {
-            var leftStrips = StripBuilder.CreateLeft(satellites);
+            var leftSwaths = SwathBuilder.CreateLeft(satellites);
             var _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             foreach (var sat in satellites)
             {
                 var name = sat.Name!;
-                var dictLeft = FeatureBuilder.Build(name, leftStrips[name]);
+                var dictLeft = FeatureBuilder.Build(name, leftSwaths[name]);
 
                 _dictLeft.Add(name, dictLeft);
             }
@@ -122,13 +122,13 @@ public class SensorProvider : IProvider, IDynamic
     {
         return await Task.Run(() =>
         {
-            var rightStrips = StripBuilder.CreateRight(satellites);
+            var rightSwaths = SwathBuilder.CreateRight(satellites);
             var _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             foreach (var sat in satellites)
             {
                 var name = sat.Name!;
-                var dictRight = FeatureBuilder.Build(name, rightStrips[name]);
+                var dictRight = FeatureBuilder.Build(name, rightSwaths[name]);
 
                 _dictright.Add(name, dictRight);
             }

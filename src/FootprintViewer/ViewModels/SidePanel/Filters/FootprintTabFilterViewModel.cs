@@ -24,8 +24,8 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
     private readonly IObservable<Func<FootprintViewModel, bool>> _filterObservable;
     private readonly ObservableAsPropertyHelper<bool> _isDirty;
 
-    private const bool IsLeftStripDefault = true;
-    private const bool IsRightStripDefault = true;
+    private const bool IsLeftSwathDefault = true;
+    private const bool IsRightSwathDefault = true;
     private const int FromNodeDefault = 1;
     private const int ToNodeDefault = 15;
 
@@ -33,8 +33,8 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
-        IsLeftStrip = true;
-        IsRightStrip = true;
+        IsLeftSwath = true;
+        IsRightSwath = true;
         FromNode = 1;
         ToNode = 15;
 
@@ -51,7 +51,7 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
         var _activeChanged = _satellites.Connect().WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftStrip, s => s.IsRightStrip)
+        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -90,8 +90,8 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
     private void ResetImpl()
     {
-        IsLeftStrip = IsLeftStripDefault;
-        IsRightStrip = IsRightStripDefault;
+        IsLeftSwath = IsLeftSwathDefault;
+        IsRightSwath = IsRightSwathDefault;
         FromNode = FromNodeDefault;
         ToNode = ToNodeDefault;
 
@@ -103,8 +103,8 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
 
     private static bool IsNotDefault(FootprintTabFilterViewModel filter)
     {
-        if (IsLeftStripDefault == filter.IsLeftStrip
-            && IsRightStripDefault == filter.IsRightStrip
+        if (IsLeftSwathDefault == filter.IsLeftSwath
+            && IsRightSwathDefault == filter.IsRightSwath
             && FromNodeDefault == filter.FromNode
             && ToNodeDefault == filter.ToNode)
         {
@@ -157,12 +157,12 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
             {
                 if (footprint.Node >= FromNode && footprint.Node <= ToNode)
                 {
-                    if (footprint.Direction == SatelliteStripDirection.Left && IsLeftStrip == true)
+                    if (footprint.Direction == SwathDirection.Left && IsLeftSwath == true)
                     {
                         return true;
                     }
 
-                    if (footprint.Direction == SatelliteStripDirection.Right && IsRightStrip == true)
+                    if (footprint.Direction == SwathDirection.Right && IsRightSwath == true)
                     {
                         return true;
                     }
@@ -180,10 +180,10 @@ public class FootprintTabFilterViewModel : ViewModelBase, IFilter<FootprintViewM
     public int ToNode { get; set; }
 
     [Reactive]
-    public bool IsLeftStrip { get; set; }
+    public bool IsLeftSwath { get; set; }
 
     [Reactive]
-    public bool IsRightStrip { get; set; }
+    public bool IsRightSwath { get; set; }
 
     public ReadOnlyObservableCollection<SatelliteItemViewModel> Satellites => _items;
 

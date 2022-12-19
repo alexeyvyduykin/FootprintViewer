@@ -87,7 +87,7 @@
 								   VerticalAlignment="Center"/>
 					</DockPanel>
 					<DockPanel>
-						<CheckBox IsChecked="{Binding IsLeftStrip}"
+						<CheckBox IsChecked="{Binding IsLeftSwath}"
 								  Cursor="Hand"
 								  DockPanel.Dock="Right"/>
 						<TextBlock Text="{x:Static prop:Resources.SatelliteLeftSwath}"
@@ -97,7 +97,7 @@
 								   HorizontalAlignment="Right"/>
 					</DockPanel>
 					<DockPanel>
-						<CheckBox IsChecked="{Binding IsRightStrip}"
+						<CheckBox IsChecked="{Binding IsRightSwath}"
 								  Cursor="Hand"
 								  DockPanel.Dock="Right"/>
 						<TextBlock Text="{x:Static prop:Resources.SatelliteRightSwath}"

@@ -38,6 +38,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
+		<ProjectReference Include="..\SpaceScience\SpaceScience.csproj" />
 	</ItemGroup>
 
 </Project>

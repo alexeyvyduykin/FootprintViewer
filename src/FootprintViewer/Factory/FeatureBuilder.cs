@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FootprintViewer.Data;
-using FootprintViewer.Data.Science;
+﻿using FootprintViewer.Data;
 using Mapsui;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
+using SpaceScience;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer;
 
@@ -365,11 +365,11 @@ public static class FeatureBuilder
         return list;
     }
 
-    public static Dictionary<int, List<IFeature>> Build(string name, Dictionary<int, List<List<(double lon, double lat)>>> strips)
+    public static Dictionary<int, List<IFeature>> Build(string name, Dictionary<int, List<List<(double lon, double lat)>>> swaths)
     {
         var dict = new Dictionary<int, List<IFeature>>();
 
-        foreach (var item in strips)
+        foreach (var item in swaths)
         {
             var list = item.Value.Select(s =>
             {

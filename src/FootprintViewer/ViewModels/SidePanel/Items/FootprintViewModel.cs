@@ -17,7 +17,7 @@ public class FootprintViewModel : ViewModelBase, IViewerItem
     private readonly DateTime _begin;
     private readonly double _duration;
     private readonly int _node;
-    private readonly SatelliteStripDirection _direction;
+    private readonly SwathDirection _direction;
 
     public FootprintViewModel(Footprint footprint)
     {
@@ -69,7 +69,7 @@ public class FootprintViewModel : ViewModelBase, IViewerItem
 
     public int Node => _node;
 
-    public SatelliteStripDirection Direction => _direction;
+    public SwathDirection Direction => _direction;
 
     [Reactive]
     public bool IsShowInfo { get; set; } = false;

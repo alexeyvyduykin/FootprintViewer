@@ -1,67 +1,67 @@
-﻿using FootprintViewer.Data.Science;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using SpaceScience;
 using System;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Data
+namespace FootprintViewer.Data;
+
+internal static class GroundTargetBuilder
 {
-    internal static class GroundTargetBuilder
+    private static readonly Random _random = new();
+    private static readonly int _countTargets = 5000;
+
+    public static IEnumerable<GroundTarget> Create(IEnumerable<Footprint>? footprints)
     {
-        private static readonly Random _random = new();
-        private static readonly int _countTargets = 5000;
+        var targets = new List<GroundTarget>();
 
-        public static IEnumerable<GroundTarget> Create(IEnumerable<Footprint>? footprints)
+        if (footprints == null)
         {
-            var targets = new List<GroundTarget>();
-
-            if (footprints == null)
-            {
-                return targets;
-            }
-
-            var list = new List<Footprint>(footprints);
-
-            int counts = list.Count;
-
-            int index = 0;
-
-            for (int i = 0; i < counts; i++)
-            {
-                var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
-
-                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, list[i].Center!);
-
-                list[i].TargetName = target.Name;
-
-                targets.Add(target);
-            }
-
-            for (int i = 0; i < _countTargets - counts; i++)
-            {
-                var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
-
-                var center = new Point(_random.Next(-180, 180 + 1), _random.Next(-80, 80 + 1));
-
-                var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, center);
-
-                targets.Add(target);
-            }
-
             return targets;
         }
 
-        private static GroundTarget CreateRandomTarget(string name, GroundTargetType type, Point center)
+        var list = new List<Footprint>(footprints);
+
+        int counts = list.Count;
+
+        int index = 0;
+
+        for (int i = 0; i < counts; i++)
         {
-            switch (type)
-            {
-                case GroundTargetType.Point:
-                    return new GroundTarget()
-                    {
-                        Name = name,
-                        Type = GroundTargetType.Point,
-                        Points = new Point(center.X, center.Y),
-                    };
-                case GroundTargetType.Route:
+            var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
+
+            var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, list[i].Center!);
+
+            list[i].TargetName = target.Name;
+
+            targets.Add(target);
+        }
+
+        for (int i = 0; i < _countTargets - counts; i++)
+        {
+            var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
+
+            var center = new Point(_random.Next(-180, 180 + 1), _random.Next(-80, 80 + 1));
+
+            var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, center);
+
+            targets.Add(target);
+        }
+
+        return targets;
+    }
+
+    private static GroundTarget CreateRandomTarget(string name, GroundTargetType type, Point center)
+    {
+        switch (type)
+        {
+            case GroundTargetType.Point:
+                return new GroundTarget()
+                {
+                    Name = name,
+                    Type = GroundTargetType.Point,
+                    Points = new Point(center.X, center.Y),
+                };
+            case GroundTargetType.Route:
                 {
                     var list = new List<Coordinate>();
                     double r = _random.Next(10, 20 + 1) / 10.0;
@@ -128,7 +128,7 @@ namespace FootprintViewer.Data
                         Points = new LineString(list.ToArray()),//Rotate(list, center, _random.Next(0, 360 + 1)),
                     };
                 }
-                case GroundTargetType.Area:
+            case GroundTargetType.Area:
                 {
                     var list = new List<Coordinate>();
 
@@ -168,9 +168,8 @@ namespace FootprintViewer.Data
                         Points = new LineString(list.ToArray()),
                     };
                 }
-                default:
-                    throw new Exception();
-            }
+            default:
+                throw new Exception();
         }
     }
 }

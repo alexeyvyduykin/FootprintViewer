@@ -4,7 +4,7 @@ using System;
 
 namespace FootprintViewer.Data;
 
-public enum SatelliteStripDirection
+public enum SwathDirection
 {
     Left,
     Right
@@ -38,5 +38,5 @@ public class Footprint
     public int Node { get; set; }
 
     [JsonProperty("Direction")]
-    public SatelliteStripDirection Direction { get; set; }
+    public SwathDirection Direction { get; set; }
 }

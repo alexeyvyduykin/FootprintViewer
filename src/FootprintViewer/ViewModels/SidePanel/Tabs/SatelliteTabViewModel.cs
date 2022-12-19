@@ -89,7 +89,7 @@ public class SatelliteTabViewModel : SidePanelTabViewModel
         foreach (var item in list)
         {
             item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s));
-            item.StripsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
+            item.SwathsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
             item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
         }
 

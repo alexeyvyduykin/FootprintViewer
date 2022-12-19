@@ -14,7 +14,7 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
     private readonly int _minNode = 1;
     private readonly int _maxNode;
     private readonly IObservable<SatelliteViewModel> _trackObservable;
-    private readonly IObservable<SatelliteViewModel> _stripsObservable;
+    private readonly IObservable<SatelliteViewModel> _swathsObservable;
 
     public SatelliteViewModel(Satellite satellite)
     {
@@ -32,14 +32,14 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
             .ObserveOn(RxApp.MainThreadScheduler)
             .Select(_ => this);
 
-        _stripsObservable = this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsLeftStrip, s => s.IsRightStrip)
+        _swathsObservable = this.WhenAnyValue(s => s.IsShow, s => s.CurrentNode, s => s.IsLeftSwath, s => s.IsRightSwath)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Select(_ => this);
     }
 
     public IObservable<SatelliteViewModel> TrackObservable => _trackObservable;
 
-    public IObservable<SatelliteViewModel> StripsObservable => _stripsObservable;
+    public IObservable<SatelliteViewModel> SwathsObservable => _swathsObservable;
 
     public string Name => _name;
 
@@ -62,10 +62,10 @@ public class SatelliteViewModel : ViewModelBase, IViewerItem
     public bool IsTrack { get; set; } = true;
 
     [Reactive]
-    public bool IsLeftStrip { get; set; } = true;
+    public bool IsLeftSwath { get; set; } = true;
 
     [Reactive]
-    public bool IsRightStrip { get; set; } = false;
+    public bool IsRightSwath { get; set; } = false;
 
     [Reactive]
     public Color? Color { get; set; }
