@@ -10,6 +10,7 @@ using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -23,6 +24,13 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
     private readonly ReadOnlyObservableCollection<FootprintPreviewGeometry> _geometryItems;
     private readonly IDataManager _dataManager;
     private readonly IObservable<Func<FootprintPreviewViewModel, bool>> _filterObservable;
+    private readonly ObservableAsPropertyHelper<bool> _isDirty;
+
+    private const double CloudinessDefault = 0.0;
+    private const double MinSunElevationDefault = 0.0;
+    private const double MaxSunElevationDefault = 90.0;
+    private static readonly DateTime FromDateDefault = DateTime.Today.AddDays(-1);
+    private static readonly DateTime ToDateDefault = DateTime.Today.AddDays(1);
 
     public FootprintPreviewTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
@@ -54,7 +62,7 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
 
         var _activeChanged = _sensors.Connect().WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI, s => s.AOI)
+        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -62,9 +70,24 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        var merged = Observable.Merge(observable1, observable2);
+        var observable3 = this.WhenAnyValue(s => s.AOI)
+            .Select(_ => this);
+
+        var merged = Observable.Merge(observable1, observable2, observable3);
+        var dirtyMerged = Observable.Merge(observable1, observable2);
 
         _filterObservable = merged.Select(CreatePredicate);
+
+        var obs1 = dirtyMerged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(s => IsNotDefault(s));
+
+        Reset = ReactiveCommand.Create(ResetImpl, outputScheduler: RxApp.MainThreadScheduler);
+
+        var obs2 = Reset.Select(_ => false);
+
+        _isDirty = Observable.Merge(obs1, obs2)
+            .ToProperty(this, x => x.IsDirty);
 
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
@@ -95,6 +118,34 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
             innerList.Clear();
             innerList.AddRange(geometries);
         });
+    }
+
+    private void ResetImpl()
+    {
+        Cloudiness = CloudinessDefault;
+        MinSunElevation = MinSunElevationDefault;
+        MaxSunElevation = MaxSunElevationDefault;
+        FromDate = FromDateDefault;
+        ToDate = ToDateDefault;
+
+        foreach (var item in Sensors)
+        {
+            item.IsActive = true;
+        }
+    }
+
+    private static bool IsNotDefault(FootprintPreviewTabFilterViewModel filter)
+    {
+        if (CloudinessDefault == filter.Cloudiness
+            && MinSunElevationDefault == filter.MinSunElevation
+            && MaxSunElevationDefault == filter.MaxSunElevation
+            && FromDateDefault == filter.FromDate
+            && ToDateDefault == filter.ToDate)
+        {
+            return filter.Sensors.Any(s => s.IsActive == false);
+        }
+
+        return true;
     }
 
     private static Func<FootprintPreviewViewModel, bool> CreatePredicate(FootprintPreviewTabFilterViewModel filter)
@@ -173,4 +224,8 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
 
     [Reactive]
     public Geometry? AOI { get; set; }
+
+    public ReactiveCommand<Unit, Unit> Reset { get; }
+
+    public bool IsDirty => _isDirty.Value;
 }
