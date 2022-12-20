@@ -16,15 +16,13 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<FootprintPreviewViewModel>
+public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintPreviewViewModel>
 {
     private readonly SourceList<SensorItemViewModel> _sensors = new();
     private readonly ReadOnlyObservableCollection<SensorItemViewModel> _items;
     private readonly SourceList<FootprintPreviewGeometry> _geometries = new();
     private readonly ReadOnlyObservableCollection<FootprintPreviewGeometry> _geometryItems;
     private readonly IDataManager _dataManager;
-    private readonly IObservable<Func<FootprintPreviewViewModel, bool>> _filterObservable;
-    private readonly ObservableAsPropertyHelper<bool> _isDirty;
 
     private const double CloudinessDefault = 0.0;
     private const double MinSunElevationDefault = 0.0;
@@ -60,7 +58,9 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
 
-        var _activeChanged = _sensors.Connect().WhenValueChanged(p => p.IsActive);
+        var _activeChanged = _sensors
+            .Connect()
+            .WhenValueChanged(p => p.IsActive);
 
         var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI)
             .Throttle(TimeSpan.FromSeconds(1))
@@ -73,26 +73,11 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
         var observable3 = this.WhenAnyValue(s => s.AOI)
             .Select(_ => this);
 
-        var merged = Observable.Merge(observable1, observable2, observable3);
-        var dirtyMerged = Observable.Merge(observable1, observable2);
-
-        _filterObservable = merged.Select(CreatePredicate);
-
-        var obs1 = dirtyMerged
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Select(s => IsNotDefault(s));
-
-        Reset = ReactiveCommand.Create(ResetImpl, outputScheduler: RxApp.MainThreadScheduler);
-
-        var obs2 = Reset.Select(_ => false);
-
-        _isDirty = Observable.Merge(obs1, obs2)
-            .ToProperty(this, x => x.IsDirty);
+        SetMergeObservables(new[] { observable1, observable2, observable3 });
+        SetDirtyMergeObservables(new[] { observable1, observable2 });
 
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
-
-    public IObservable<Func<FootprintPreviewViewModel, bool>> FilterObservable => _filterObservable;
 
     private async Task UpdateImpl()
     {
@@ -120,7 +105,7 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
         });
     }
 
-    private void ResetImpl()
+    protected override void ResetImpl()
     {
         Cloudiness = CloudinessDefault;
         MinSunElevation = MinSunElevationDefault;
@@ -134,26 +119,21 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
         }
     }
 
-    private static bool IsNotDefault(FootprintPreviewTabFilterViewModel filter)
+    protected override bool IsDefaultImpl()
     {
-        if (CloudinessDefault == filter.Cloudiness
-            && MinSunElevationDefault == filter.MinSunElevation
-            && MaxSunElevationDefault == filter.MaxSunElevation
-            && FromDateDefault == filter.FromDate
-            && ToDateDefault == filter.ToDate)
+        if (CloudinessDefault == Cloudiness
+            && MinSunElevationDefault == MinSunElevation
+            && MaxSunElevationDefault == MaxSunElevation
+            && FromDateDefault == FromDate
+            && ToDateDefault == ToDate)
         {
-            return filter.Sensors.Any(s => s.IsActive == false);
+            return Sensors.All(s => s.IsActive == true);
         }
 
-        return true;
+        return false;
     }
 
-    private static Func<FootprintPreviewViewModel, bool> CreatePredicate(FootprintPreviewTabFilterViewModel filter)
-    {
-        return s => filter.Filtering(s);
-    }
-
-    private bool Filtering(FootprintPreviewViewModel footprintPreview)
+    protected override bool Filtering(FootprintPreviewViewModel footprintPreview)
     {
         bool isAoiCondition = false;
 
@@ -224,8 +204,4 @@ public class FootprintPreviewTabFilterViewModel : ViewModelBase, IFilter<Footpri
 
     [Reactive]
     public Geometry? AOI { get; set; }
-
-    public ReactiveCommand<Unit, Unit> Reset { get; }
-
-    public bool IsDirty => _isDirty.Value;
 }
