@@ -9,7 +9,9 @@
 			 xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
-             xmlns:prop="using:FootprintViewer.Avalonia.Properties"
+             xmlns:filtersView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Filters"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 x:DataType="tabs:GroundTargetTabViewModel"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
@@ -30,35 +32,82 @@
 	</UserControl.Resources>
 
 	<UserControl.Styles>
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Padding" Value="0,0,0,0"/>
+		</Style>
 		<Style Selector="ListBoxItem">
 			<Setter Property="Padding" Value="12,4"/>
 		</Style>
-		<Style Selector="TextBlock.preview">
-			<Setter Property="VerticalAlignment" Value="Center"></Setter>
-			<Setter Property="TextWrapping" Value="Wrap"></Setter>
-			<Setter Property="Margin" Value="10"></Setter>
-			<Setter Property="TextAlignment" Value="Center"></Setter>
+		<Style Selector="ToggleButton.search">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Padding" Value="0" />
+		</Style>
+		<Style Selector="ToggleButton.search /template/ Border">
+			<Setter Property="CornerRadius" Value="0" />
+		</Style>
+		<Style Selector="ToggleButton.search:checked">
+			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.a1">
+			<Setter Property="Kind" Value="Tune"></Setter>
+			<Setter Property="Width" Value="22"></Setter>
+			<Setter Property="Height" Value="22"></Setter>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.a2">
+			<Setter Property="Kind" Value="Close"></Setter>
+			<Setter Property="Width" Value="26"></Setter>
+			<Setter Property="Height" Value="26"></Setter>
 		</Style>
 	</UserControl.Styles>
 
-	<Panel>
-		<Panel IsVisible="{Binding !IsEnable}">
-			<TextBlock Classes="Headline4 preview"
-					   Text="{x:Static prop:Resources.GroundTargetPreviewText}"/>
-		</Panel>
+	<Grid RowDefinitions="Auto,*">
+		<ToggleButton x:Name="SearchToggleButton"
+					  Classes="search">
 
-		<Panel IsVisible="{Binding IsEnable}">
+			<ToggleButton.Flyout>
+				<Flyout Placement="LeftEdgeAlignedTop">
+					<filtersView:GroundTargetFilterView DataContext="{Binding Filter}"/>
+				</Flyout>
+			</ToggleButton.Flyout>
+
+			<Grid ColumnDefinitions="Auto,10,*,Auto" Margin="10">
+				<Panel Width="38" Height="38">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource PrimaryHueMidBrush}"
+												Width="38"
+												Height="38"
+												Kind="Circle"/>
+					<materialIcons:MaterialIcon Classes.a1="{Binding !#SearchToggleButton.IsChecked}"
+												Classes.a2="{Binding #SearchToggleButton.IsChecked}"/>
+				</Panel>
+
+				<TextBlock Classes="Subtitle1"
+						   Grid.Column="2"
+						   VerticalAlignment="Center"
+						   Text="{x:Static prop:Resources.FilterOptions}"/>
+
+				<Button Grid.Column="3"
+						IsVisible="{Binding Filter.IsDirty}"
+					    Command="{Binding Filter.Reset}">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeForegroundBrush}"
+												Kind="FilterRemove"/>
+				</Button>
+
+			</Grid>
+
+		</ToggleButton>
+
+		<Grid Grid.Row="1">
 			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"
 						 VerticalAlignment="Center"
 						 HorizontalAlignment="Center"
 						 IsIndeterminate="True"/>
-
 			<ListBox IsVisible="{Binding !IsLoading}"
 					 Items="{Binding Items}"
 					 SelectedItem="{Binding SelectedItem}"
 					 ItemTemplate="{StaticResource GroundTargetItemTemplate}"/>
-		</Panel>
-	</Panel>
+		</Grid>
+	</Grid>
 
 </UserControl>

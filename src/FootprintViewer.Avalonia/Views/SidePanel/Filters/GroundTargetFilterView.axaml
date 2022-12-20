@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:filters="clr-namespace:FootprintViewer.ViewModels.SidePanel.Filters;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 mc:Ignorable="d"
+			 MinWidth="400"
+             d:DesignWidth="400" d:DesignHeight="500"
+             x:Class="FootprintViewer.Avalonia.Views.SidePanel.Filters.GroundTargetFilterView">
+
+	<Design.DataContext>
+		<vmd:DesignTimeGroundTargetTabFilterViewModel/>
+	</Design.DataContext>
+
+	<styles:ColorZone Padding="20">
+		<Grid RowDefinitions="Auto,Auto,Auto">
+
+			<DockPanel LastChildFill="True"
+					   Margin="0,0,0,10">
+				<materialIcons:MaterialIcon Width="20" Height="20"
+											Kind="Shape"
+											VerticalAlignment="Center"
+											Foreground="{StaticResource IconAccentBrush}"/>
+				<TextBlock Classes="Body2"
+						   VerticalAlignment="Center"
+						   Margin="4,0,32,0"
+						   Text="Types"/>
+
+				<CheckBox IsChecked="{Binding IsAllTypes}"
+						  VerticalAlignment="Center"/>
+			</DockPanel>
+
+			<StackPanel Grid.Row="1"
+						Margin="16,8"
+						Spacing="8">
+
+				<CheckBox IsChecked="{Binding IsArea}"
+						  Content="Area"/>
+
+				<CheckBox IsChecked="{Binding IsRoute}"
+						  Content="Route"/>
+
+				<CheckBox IsChecked="{Binding IsPoint}"
+						  Content="Point"/>
+			</StackPanel>
+
+			<CheckBox Grid.Row="2"
+					  Margin="0,8"
+					  IsChecked="{Binding IsFullCoverAOI}"
+					  Content="Full cover AOI"/>
+
+		</Grid>
+	</styles:ColorZone>
+
+</UserControl>

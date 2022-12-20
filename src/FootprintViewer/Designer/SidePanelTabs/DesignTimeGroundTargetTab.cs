@@ -25,8 +25,6 @@ public class DesignTimeGroundTargetTab : GroundTargetTabViewModel
 
         provider.ActiveFeaturesChanged.Execute(features).Subscribe();
 
-        Filter.IsActive = true;
-
         IsActive = true;
     }
 }

@@ -81,12 +81,12 @@
 
 			</Grid>
 
-			<CheckBox IsChecked="{Binding IsLeftStrip}"
+			<CheckBox IsChecked="{Binding IsLeftSwath}"
 					  Grid.Row="2"
 					  Margin="0,0,0,4"
 					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"/>
 
-			<CheckBox IsChecked="{Binding IsRightStrip}"
+			<CheckBox IsChecked="{Binding IsRightSwath}"
 					  Grid.Row="3"
 					  Margin="0,4,0,20"
 					  Content="{x:Static prop:Resources.SatelliteRightSwath}"/>

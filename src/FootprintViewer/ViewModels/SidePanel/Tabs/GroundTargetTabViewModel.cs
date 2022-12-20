@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers.Providers;
@@ -25,7 +26,6 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly ObservableAsPropertyHelper<bool> _isEnable;
     private readonly FeatureManager _featureManager;
     private readonly ILayer? _layer;
     private readonly GroundTargetProvider _provider;
@@ -40,13 +40,16 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр наземных целей";
 
-        Filter = new GroundTargetNameFilterViewModel(dependencyResolver);
+        Filter = new GroundTargetTabFilterViewModel(dependencyResolver);
+
+        var filter = Filter.FilterObservable;
 
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new GroundTargetViewModel(s))
-            .Filter(Filter.FilterObservable)
+            .Filter(filter)
+            .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
             .Bind(out _items)
             .Subscribe();
 
@@ -70,20 +73,13 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         this.WhenAnyValue(s => s.IsActive)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => Filter.IsActive = s);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
             .WhereTrue()
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
-
-        _isEnable = Filter.EnableFilterObservable
-            .ToProperty(this, x => x.IsEnable);
     }
 
-    protected GroundTargetNameFilterViewModel Filter { get; }
+    public IFilter<GroundTargetViewModel> Filter { get; }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
@@ -137,8 +133,6 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
     }
 
     public bool IsLoading => _isLoading.Value;
-
-    public bool IsEnable => _isEnable.Value;
 
     public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
 
