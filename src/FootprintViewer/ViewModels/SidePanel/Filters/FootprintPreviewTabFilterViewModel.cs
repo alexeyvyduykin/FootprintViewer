@@ -76,6 +76,15 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         SetMergeObservables(new[] { observable1, observable2, observable3 });
         SetDirtyMergeObservables(new[] { observable1, observable2 });
 
+        _items
+            .ToObservableChangeSet()
+            .WhenPropertyChanged(p => p.IsActive)
+            .Subscribe(_ => SensorItemsChangedImpl());
+
+        this.WhenAnyValue(s => s.IsAllSensors)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(IsAllSensorsChanged);
+
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
 
@@ -180,6 +189,37 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         return false;
     }
 
+    private void SensorItemsChangedImpl()
+    {
+        var allTrue = Sensors.All(s => s.IsActive == true);
+        var allFalse = Sensors.All(s => s.IsActive == false);
+        var anyFalse = Sensors.Any(s => s.IsActive == false);
+
+        if (allTrue == true)
+        {
+            IsAllSensors = true;
+        }
+        else if (allFalse == true)
+        {
+            IsAllSensors = false;
+        }
+        else if (anyFalse == true)
+        {
+            IsAllSensors = null;
+        }
+    }
+
+    private void IsAllSensorsChanged(bool? value)
+    {
+        if (value is bool active)
+        {
+            foreach (var item in Sensors)
+            {
+                item.IsActive = active;
+            }
+        }
+    }
+
     [Reactive]
     public DateTime FromDate { get; set; }
 
@@ -204,4 +244,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     [Reactive]
     public Geometry? AOI { get; set; }
+
+    [Reactive]
+    public bool? IsAllSensors { get; set; }
 }

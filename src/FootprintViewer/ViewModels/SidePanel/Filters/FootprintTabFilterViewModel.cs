@@ -65,6 +65,15 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         SetMergeObservables(new[] { observable1, observable2, observable3 });
         SetDirtyMergeObservables(new[] { observable1, observable2 });
 
+        _items
+            .ToObservableChangeSet()
+            .WhenPropertyChanged(p => p.IsActive)
+            .Subscribe(_ => SatelliteItemsChangedImpl());
+
+        this.WhenAnyValue(s => s.IsAllSatellites)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(IsAllSatellitesChanged);
+
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler);
     }
 
@@ -153,6 +162,37 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         });
     }
 
+    private void SatelliteItemsChangedImpl()
+    {
+        var allTrue = Satellites.All(s => s.IsActive == true);
+        var allFalse = Satellites.All(s => s.IsActive == false);
+        var anyFalse = Satellites.Any(s => s.IsActive == false);
+
+        if (allTrue == true)
+        {
+            IsAllSatellites = true;
+        }
+        else if (allFalse == true)
+        {
+            IsAllSatellites = false;
+        }
+        else if (anyFalse == true)
+        {
+            IsAllSatellites = null;
+        }
+    }
+
+    private void IsAllSatellitesChanged(bool? value)
+    {
+        if (value is bool active)
+        {
+            foreach (var item in Satellites)
+            {
+                item.IsActive = active;
+            }
+        }
+    }
+
     [Reactive]
     public int FromNode { get; set; }
 
@@ -169,4 +209,7 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
 
     [Reactive]
     public Geometry? AOI { get; set; }
+
+    [Reactive]
+    public bool? IsAllSatellites { get; set; }
 }

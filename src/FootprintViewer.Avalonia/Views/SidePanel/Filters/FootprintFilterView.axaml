@@ -94,14 +94,17 @@
 			<DockPanel LastChildFill="True"
 					   Grid.Row="4"
 					   Margin="0,0,0,10">
-				<Viewbox Width="18" Height="18" VerticalAlignment="Center">
+				<Viewbox Width="20" Height="20"
+						 VerticalAlignment="Center">
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{DynamicResource IconSatellite}"/>
 				</Viewbox>
 				<TextBlock Text="{x:Static prop:Resources.FilterSatellites}"
 						   Classes="Body2"
 						   VerticalAlignment="Center"
-						   Margin="8,0,0,0"/>
+						   Margin="8,0,32,0"/>
+				<CheckBox IsChecked="{Binding IsAllSatellites}"
+						  VerticalAlignment="Center"/>
 			</DockPanel>
 
 			<ItemsControl Items="{Binding Satellites}"

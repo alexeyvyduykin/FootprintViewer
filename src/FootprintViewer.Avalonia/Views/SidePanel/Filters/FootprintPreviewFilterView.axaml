@@ -99,14 +99,17 @@
 					  IsChecked="{Binding IsFullCoverAOI}"
 					  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
 
-			<DockPanel LastChildFill="True" Margin="0,0,0,10">
+			<DockPanel Margin="0,0,0,10">
 				<Viewbox Width="18" Height="18" VerticalAlignment="Center">
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{DynamicResource IconSatellite}"/>
 				</Viewbox>
 				<TextBlock Text="{x:Static prop:Resources.FilterSensors}"
+						   VerticalAlignment="Center"
 						   Classes="Body2"
-						   Margin="8,0,0,0"/>
+						   Margin="8,0,32,0"/>
+				<CheckBox IsChecked="{Binding IsAllSensors}"
+						  VerticalAlignment="Center"/>
 			</DockPanel>
 
 			<ItemsControl Items="{Binding Sensors}">
