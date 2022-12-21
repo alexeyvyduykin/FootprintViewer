@@ -37,6 +37,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         _layer = map.GetLayer(LayerType.GroundTarget);
         _provider = dependencyResolver.GetExistingService<GroundTargetProvider>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
+        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
 
         Title = "Просмотр наземных целей";
 
@@ -77,6 +78,10 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
+
+        areaOfInterest.AOIChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => ((GroundTargetTabFilterViewModel)Filter).AOI = s);
     }
 
     public IFilter<GroundTargetViewModel> Filter { get; }

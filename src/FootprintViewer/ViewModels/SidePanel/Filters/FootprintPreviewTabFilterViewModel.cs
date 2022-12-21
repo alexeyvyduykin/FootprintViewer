@@ -46,10 +46,12 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
             .Bind(out _geometryItems)
             .Subscribe();
 
+        IsAOIActive = true;
+        IsFullCoverAOI = false;
+
         Cloudiness = 0.0;
         MinSunElevation = 0.0;
         MaxSunElevation = 90.0;
-        IsFullCoverAOI = false;
         FromDate = DateTime.Today.AddDays(-1);
         ToDate = DateTime.Today.AddDays(1);
 
@@ -62,7 +64,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
             .Connect()
             .WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsFullCoverAOI)
+        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsAOIActive, s => s.IsFullCoverAOI)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -147,18 +149,16 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     protected override bool Filtering(FootprintPreviewViewModel footprintPreview)
     {
-        bool isAoiCondition = false;
+        bool isAoiCondition = true;
 
-        if (AOI == null)
-        {
-            isAoiCondition = true;
-        }
-        else
+        if (IsAOIActive == true && AOI != null)
         {
             var geometry = Geometries
                 .Where(s => Equals(s.Name, footprintPreview.Name))
                 .Select(s => s.Geometry)
                 .FirstOrDefault();
+
+            isAoiCondition = false;
 
             if (geometry != null)
             {
@@ -208,14 +208,17 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
     public double MaxSunElevation { get; set; }
 
     [Reactive]
+    public Geometry? AOI { get; set; }
+
+    [Reactive]
     public bool IsFullCoverAOI { get; set; }
+
+    [Reactive]
+    public bool IsAOIActive { get; set; }
 
     public ReadOnlyObservableCollection<SensorItemViewModel> Sensors => _items;
 
     private ReadOnlyObservableCollection<FootprintPreviewGeometry> Geometries => _geometryItems;
-
-    [Reactive]
-    public Geometry? AOI { get; set; }
 
     [Reactive]
     public bool? IsAllSensors { get; set; }

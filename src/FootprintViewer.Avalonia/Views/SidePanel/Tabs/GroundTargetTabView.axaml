@@ -29,6 +29,16 @@
 				</i:Interaction.Behaviors>
 			</itemsView:GroundTargetView>
 		</DataTemplate>
+		<DataTemplate x:Key="GroupTemplate">
+			<Border Background="Transparent"
+					Cursor="Help"
+					ToolTip.Tip="Area of Interest(AOI) active">
+				<Viewbox Width="24" Height="24">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+												Kind="Group"/>
+				</Viewbox>
+			</Border>
+		</DataTemplate>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -61,7 +71,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,Auto,*">
 		<ToggleButton x:Name="SearchToggleButton"
 					  Classes="search">
 
@@ -97,7 +107,21 @@
 
 		</ToggleButton>
 
-		<Grid Grid.Row="1">
+		<Grid Grid.Row="1"
+			  Margin="16,8"
+			  RowDefinitions="Auto,Auto"
+			  ColumnDefinitions="Auto,*">
+
+			<DockPanel>
+				<ContentPresenter ContentTemplate="{StaticResource GroupTemplate}"/>
+				<ToggleSwitch IsChecked="{Binding Filter.IsAOIActive}"
+							  Cursor="Hand" VerticalAlignment="Center"
+							  Margin="8,0,0,0"/>
+			</DockPanel>
+
+		</Grid>
+
+		<Grid Grid.Row="2">
 			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"
 						 VerticalAlignment="Center"

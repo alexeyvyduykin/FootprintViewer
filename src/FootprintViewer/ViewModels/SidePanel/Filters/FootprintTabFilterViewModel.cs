@@ -31,6 +31,9 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
+        IsAOIActive = true;
+        IsFullCoverAOI = false;
+
         IsLeftSwath = true;
         IsRightSwath = true;
         FromNode = 1;
@@ -51,7 +54,7 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
             .Connect()
             .WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath)
+        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath, s => s.IsAOIActive, s => s.IsFullCoverAOI)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -108,19 +111,17 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
 
     protected override bool Filtering(FootprintViewModel footprint)
     {
-        bool isAoiCondition = false;
+        bool isAoiCondition = true;
 
-        if (AOI == null)
+        if (IsAOIActive == true && AOI != null)
         {
-            isAoiCondition = true;
-        }
-        else
-        {
+            isAoiCondition = false;
+
             if (footprint.Polygon is Polygon polygon)
             {
                 var aoiPolygon = (Polygon)AOI;
 
-                isAoiCondition = aoiPolygon.Intersection(polygon, true);
+                isAoiCondition = aoiPolygon.Intersection(polygon, IsFullCoverAOI);
             }
         }
 
@@ -181,6 +182,12 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
 
     [Reactive]
     public Geometry? AOI { get; set; }
+
+    [Reactive]
+    public bool IsFullCoverAOI { get; set; }
+
+    [Reactive]
+    public bool IsAOIActive { get; set; }
 
     [Reactive]
     public bool? IsAllSatellites { get; set; }

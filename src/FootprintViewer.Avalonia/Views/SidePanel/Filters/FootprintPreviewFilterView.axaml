@@ -95,10 +95,6 @@
 						Value="{Binding MinSunElevation}"/>
 			</StackPanel>
 
-			<CheckBox Margin="0,0,0,20"
-					  IsChecked="{Binding IsFullCoverAOI}"
-					  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
-
 			<DockPanel Margin="0,0,0,10">
 				<Viewbox Width="18" Height="18" VerticalAlignment="Center">
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
@@ -112,7 +108,7 @@
 						  VerticalAlignment="Center"/>
 			</DockPanel>
 
-			<ItemsControl Items="{Binding Sensors}">
+			<ItemsControl Margin="0,0,0,10" Items="{Binding Sensors}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate DataType="filters:SensorItemViewModel">
 						<Border Padding="16,8">
@@ -122,6 +118,12 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
+
+			<StackPanel IsVisible="{Binding IsAOIActive}">
+				<Separator Margin="0,0,0,18"/>
+				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
+						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
+			</StackPanel>
 
 		</StackPanel>
 	</styles:ColorZone>

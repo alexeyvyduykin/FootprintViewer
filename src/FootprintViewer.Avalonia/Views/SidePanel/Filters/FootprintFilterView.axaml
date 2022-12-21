@@ -10,7 +10,7 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 mc:Ignorable="d"
              MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="500">
+             d:DesignWidth="400" d:DesignHeight="520">
 
 	<Design.DataContext>
 		<vmd:DesignTimeFootprintTabFilter/>
@@ -29,7 +29,7 @@
 	</UserControl.Styles>
 
 	<styles:ColorZone Padding="20">
-		<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+		<StackPanel>
 
 			<Grid Margin="0,0,0,20"
 				  RowDefinitions="Auto,Auto">
@@ -55,7 +55,6 @@
 			</Grid>
 
 			<Grid Margin="0,0,0,20"
-				  Grid.Row="1"
 				  RowDefinitions="Auto,Auto">
 
 				<Grid ColumnDefinitions="*,24"
@@ -82,17 +81,14 @@
 			</Grid>
 
 			<CheckBox IsChecked="{Binding IsLeftSwath}"
-					  Grid.Row="2"
 					  Margin="0,0,0,4"
 					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"/>
 
 			<CheckBox IsChecked="{Binding IsRightSwath}"
-					  Grid.Row="3"
 					  Margin="0,4,0,20"
 					  Content="{x:Static prop:Resources.SatelliteRightSwath}"/>
 
 			<DockPanel LastChildFill="True"
-					   Grid.Row="4"
 					   Margin="0,0,0,10">
 				<Viewbox Width="20" Height="20"
 						 VerticalAlignment="Center">
@@ -107,8 +103,7 @@
 						  VerticalAlignment="Center"/>
 			</DockPanel>
 
-			<ItemsControl Items="{Binding Satellites}"
-						  Grid.Row="5">
+			<ItemsControl Margin="0,0,0,10" Items="{Binding Satellites}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate DataType="filters:SatelliteItemViewModel">
 						<Border Padding="16,8">
@@ -119,7 +114,13 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 
-		</Grid>
+			<StackPanel IsVisible="{Binding IsAOIActive}">
+				<Separator Margin="0,0,0,18"/>
+				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
+						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
+			</StackPanel>
+
+		</StackPanel>
 	</styles:ColorZone>
 
 </UserControl>

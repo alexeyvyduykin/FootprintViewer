@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.ViewModels.SidePanel.Items;
+using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -17,17 +18,23 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
 
     public GroundTargetTabFilterViewModel(IReadonlyDependencyResolver _)
     {
+        IsAOIActive = true;
+        IsFullCoverAOI = false;
+
         IsArea = true;
         IsRoute = true;
         IsPoint = true;
 
-        var observable = this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint)
+        var observable1 = this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint, s => s.IsAOIActive, s => s.IsFullCoverAOI)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        SetMergeObservables(new[] { observable });
-        SetDirtyMergeObservables(new[] { observable });
+        var observable2 = this.WhenAnyValue(s => s.AOI)
+            .Select(_ => this);
+
+        SetMergeObservables(new[] { observable1, observable2 });
+        SetDirtyMergeObservables(new[] { observable1 });
 
         this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint, (s1, s2, s3) => new[] { s1, s2, s3 })
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -43,13 +50,38 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
 
     protected override bool Filtering(GroundTargetViewModel groundTarget)
     {
-        var type = groundTarget.Type;
+        bool isAoiCondition = true;
 
-        if ((type == GroundTargetType.Area && IsArea == true)
-            || (type == GroundTargetType.Route && IsRoute == true)
-            || (type == GroundTargetType.Point && IsPoint == true))
+        if (IsAOIActive == true && AOI is Polygon aoiPoly)
         {
-            return true;
+            isAoiCondition = false;
+
+            var geometry = groundTarget.Geometry;
+
+            if (geometry is Point point)
+            {
+                isAoiCondition = aoiPoly.Contains(point);
+            }
+            else if (geometry is LineString lineString)
+            {
+                isAoiCondition = aoiPoly.Intersection(lineString.ToLinearPolygon(), IsFullCoverAOI);
+            }
+            else if (geometry is Polygon polygon)
+            {
+                isAoiCondition = aoiPoly.Intersection(polygon, IsFullCoverAOI);
+            }
+        }
+
+        if (isAoiCondition == true)
+        {
+            var type = groundTarget.Type;
+
+            if ((type == GroundTargetType.Area && IsArea == true)
+                || (type == GroundTargetType.Route && IsRoute == true)
+                || (type == GroundTargetType.Point && IsPoint == true))
+            {
+                return true;
+            }
         }
 
         return false;
@@ -87,5 +119,11 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
     public bool IsPoint { get; set; }
 
     [Reactive]
+    public Geometry? AOI { get; set; }
+
+    [Reactive]
     public bool IsFullCoverAOI { get; set; }
+
+    [Reactive]
+    public bool IsAOIActive { get; set; }
 }
