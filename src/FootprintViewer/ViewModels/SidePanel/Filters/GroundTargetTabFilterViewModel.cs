@@ -10,7 +10,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetViewModel>
+public class GroundTargetTabFilterViewModel : AOIFilterViewModel<GroundTargetViewModel>
 {
     private const bool IsAreaDefault = true;
     private const bool IsRouteDefault = true;
@@ -18,22 +18,16 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
 
     public GroundTargetTabFilterViewModel(IReadonlyDependencyResolver _)
     {
-        IsAOIActive = true;
-        IsFullCoverAOI = false;
-
         IsArea = true;
         IsRoute = true;
         IsPoint = true;
 
-        var observable1 = this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint, s => s.IsAOIActive, s => s.IsFullCoverAOI)
+        var observable1 = this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        var observable2 = this.WhenAnyValue(s => s.AOI)
-            .Select(_ => this);
-
-        SetMergeObservables(new[] { observable1, observable2 });
+        SetMergeObservables(new[] { observable1 });
         SetDirtyMergeObservables(new[] { observable1 });
 
         this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint, (s1, s2, s3) => new[] { s1, s2, s3 })
@@ -50,41 +44,39 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
 
     protected override bool Filtering(GroundTargetViewModel groundTarget)
     {
-        bool isAoiCondition = true;
+        var type = groundTarget.Type;
 
+        if ((type == GroundTargetType.Area && IsArea == true)
+            || (type == GroundTargetType.Route && IsRoute == true)
+            || (type == GroundTargetType.Point && IsPoint == true))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected override bool AOIFiltering(GroundTargetViewModel groundTarget)
+    {
         if (IsAOIActive == true && AOI is Polygon aoiPoly)
         {
-            isAoiCondition = false;
-
             var geometry = groundTarget.Geometry;
 
             if (geometry is Point point)
             {
-                isAoiCondition = aoiPoly.Contains(point);
+                return aoiPoly.Contains(point);
             }
             else if (geometry is LineString lineString)
             {
-                isAoiCondition = aoiPoly.Intersection(lineString.ToLinearPolygon(), IsFullCoverAOI);
+                return aoiPoly.Intersection(lineString.ToLinearPolygon(), IsFullCoverAOI);
             }
             else if (geometry is Polygon polygon)
             {
-                isAoiCondition = aoiPoly.Intersection(polygon, IsFullCoverAOI);
+                return aoiPoly.Intersection(polygon, IsFullCoverAOI);
             }
         }
 
-        if (isAoiCondition == true)
-        {
-            var type = groundTarget.Type;
-
-            if ((type == GroundTargetType.Area && IsArea == true)
-                || (type == GroundTargetType.Route && IsRoute == true)
-                || (type == GroundTargetType.Point && IsPoint == true))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
     protected override bool IsDefaultImpl()
@@ -117,13 +109,4 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
 
     [Reactive]
     public bool IsPoint { get; set; }
-
-    [Reactive]
-    public Geometry? AOI { get; set; }
-
-    [Reactive]
-    public bool IsFullCoverAOI { get; set; }
-
-    [Reactive]
-    public bool IsAOIActive { get; set; }
 }

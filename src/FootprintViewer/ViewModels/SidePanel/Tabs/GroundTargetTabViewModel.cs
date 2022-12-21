@@ -43,13 +43,15 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         Filter = new GroundTargetTabFilterViewModel(dependencyResolver);
 
-        var filter = Filter.FilterObservable;
+        var filter1 = Filter.AOIFilterObservable;
+        var filter2 = Filter.FilterObservable;
 
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new GroundTargetViewModel(s))
-            .Filter(filter)
+            .Filter(filter1)
+            .Filter(filter2)
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
             .Bind(out _items)
             .Subscribe();
@@ -81,10 +83,10 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
         areaOfInterest.AOIChanged
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => ((GroundTargetTabFilterViewModel)Filter).AOI = s);
+            .Subscribe(s => Filter.AOI = s);
     }
 
-    public IFilter<GroundTargetViewModel> Filter { get; }
+    public IAOIFilter<GroundTargetViewModel> Filter { get; }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 

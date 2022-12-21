@@ -40,11 +40,15 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
         Title = "Поиск сцены";
 
+        var filter1 = Filter.AOIFilterObservable;
+        var filter2 = Filter.FilterObservable;
+
         _footprintPreviews
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintPreviewViewModel(s))
-            .Filter(Filter.FilterObservable)
+            .Filter(filter1)
+            .Filter(filter2)
             .Bind(out _items)
             .Subscribe();
 
@@ -159,7 +163,7 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         }
     }
 
-    public IFilter<FootprintPreviewViewModel> Filter { get; }
+    public IAOIFilter<FootprintPreviewViewModel> Filter { get; }
 
     private ReadOnlyObservableCollection<FootprintPreviewGeometry> Geometries => _geometryItems;
 

@@ -48,9 +48,10 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр рабочей программы";
 
-        var Filter1 = Filter.FilterObservable;
+        var filter1 = Filter.AOIFilterObservable;
+        var filter2 = Filter.FilterObservable;
 
-        var Filter2 = this.WhenAnyValue(s => s.SearchString)
+        var filter3 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(SearchStringPredicate);
@@ -59,8 +60,9 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
-            .Filter(Filter1)
-            .Filter(Filter2)
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
             .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
             .DisposeMany()
@@ -78,8 +80,9 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
-            .Filter(Filter1)
-            .Filter(Filter2)
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
             .ToCollection()
             .Subscribe(UpdateProvider);
 
@@ -119,7 +122,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
         areaOfInterest.AOIChanged
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => ((FootprintTabFilterViewModel)Filter).AOI = s);
+            .Subscribe(s => Filter.AOI = s);
     }
 
     private static Func<FootprintViewModel, bool> SearchStringPredicate(string? arg)
@@ -211,7 +214,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         return Items.Where(s => s.Name.Equals(name)).FirstOrDefault();
     }
 
-    public IFilter<FootprintViewModel> Filter { get; }
+    public IAOIFilter<FootprintViewModel> Filter { get; }
 
     public ReadOnlyObservableCollection<FootprintViewModel> Items => _items;
 

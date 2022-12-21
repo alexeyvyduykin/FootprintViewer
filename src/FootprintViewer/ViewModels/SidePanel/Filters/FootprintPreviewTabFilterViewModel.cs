@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintPreviewViewModel>
+public class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<FootprintPreviewViewModel>
 {
     private readonly SourceList<SensorItemViewModel> _sensors = new();
     private readonly ReadOnlyObservableCollection<SensorItemViewModel> _items;
@@ -46,9 +46,6 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
             .Bind(out _geometryItems)
             .Subscribe();
 
-        IsAOIActive = true;
-        IsFullCoverAOI = false;
-
         Cloudiness = 0.0;
         MinSunElevation = 0.0;
         MaxSunElevation = 90.0;
@@ -64,7 +61,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
             .Connect()
             .WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation, s => s.IsAOIActive, s => s.IsFullCoverAOI)
+        var observable1 = this.WhenAnyValue(s => s.Cloudiness, s => s.MinSunElevation, s => s.MaxSunElevation)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -72,10 +69,7 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        var observable3 = this.WhenAnyValue(s => s.AOI)
-            .Select(_ => this);
-
-        SetMergeObservables(new[] { observable1, observable2, observable3 });
+        SetMergeObservables(new[] { observable1, observable2 });
         SetDirtyMergeObservables(new[] { observable1, observable2 });
 
         _items
@@ -149,47 +143,42 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     protected override bool Filtering(FootprintPreviewViewModel footprintPreview)
     {
-        bool isAoiCondition = true;
+        var isFound = Sensors
+            .Where(s => s.IsActive == true)
+            .Select(s => s.Name)
+            .Contains(footprintPreview.SatelliteName);
 
-        if (IsAOIActive == true && AOI != null)
+        if (isFound == true)
+        {
+            if (footprintPreview.CloudCoverFull >= Cloudiness)
+            {
+                if (footprintPreview.SunElevation >= MinSunElevation
+                    && footprintPreview.SunElevation <= MaxSunElevation)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected override bool AOIFiltering(FootprintPreviewViewModel footprintPreview)
+    {
+        if (IsAOIActive == true && AOI is Polygon aoiPolygon)
         {
             var geometry = Geometries
                 .Where(s => Equals(s.Name, footprintPreview.Name))
                 .Select(s => s.Geometry)
                 .FirstOrDefault();
 
-            isAoiCondition = false;
-
-            if (geometry != null)
+            if (geometry is Polygon polygon)
             {
-                var footprintPolygon = (Polygon)geometry;
-                var aoiPolygon = (Polygon)AOI;
-
-                isAoiCondition = aoiPolygon.Intersection(footprintPolygon, IsFullCoverAOI);
+                return aoiPolygon.Intersection(polygon, IsFullCoverAOI);
             }
         }
 
-        if (isAoiCondition == true)
-        {
-            var isFound = Sensors
-                .Where(s => s.IsActive == true)
-                .Select(s => s.Name)
-                .Contains(footprintPreview.SatelliteName);
-
-            if (isFound == true)
-            {
-                if (footprintPreview.CloudCoverFull >= Cloudiness)
-                {
-                    if (footprintPreview.SunElevation >= MinSunElevation
-                        && footprintPreview.SunElevation <= MaxSunElevation)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return true;
     }
 
     [Reactive]
@@ -206,15 +195,6 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
 
     [Reactive]
     public double MaxSunElevation { get; set; }
-
-    [Reactive]
-    public Geometry? AOI { get; set; }
-
-    [Reactive]
-    public bool IsFullCoverAOI { get; set; }
-
-    [Reactive]
-    public bool IsAOIActive { get; set; }
 
     public ReadOnlyObservableCollection<SensorItemViewModel> Sensors => _items;
 

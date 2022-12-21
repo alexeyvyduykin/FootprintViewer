@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewModel>
+public class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();
@@ -30,9 +30,6 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     public FootprintTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-
-        IsAOIActive = true;
-        IsFullCoverAOI = false;
 
         IsLeftSwath = true;
         IsRightSwath = true;
@@ -54,7 +51,7 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
             .Connect()
             .WhenValueChanged(p => p.IsActive);
 
-        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath, s => s.IsAOIActive, s => s.IsFullCoverAOI)
+        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
@@ -62,10 +59,7 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        var observable3 = this.WhenAnyValue(s => s.AOI)
-            .Select(_ => this);
-
-        SetMergeObservables(new[] { observable1, observable2, observable3 });
+        SetMergeObservables(new[] { observable1, observable2 });
         SetDirtyMergeObservables(new[] { observable1, observable2 });
 
         _items
@@ -111,40 +105,36 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
 
     protected override bool Filtering(FootprintViewModel footprint)
     {
-        bool isAoiCondition = true;
-
-        if (IsAOIActive == true && AOI != null)
+        if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
         {
-            isAoiCondition = false;
-
-            if (footprint.Polygon is Polygon polygon)
+            if (footprint.Node >= FromNode && footprint.Node <= ToNode)
             {
-                var aoiPolygon = (Polygon)AOI;
-
-                isAoiCondition = aoiPolygon.Intersection(polygon, IsFullCoverAOI);
-            }
-        }
-
-        if (isAoiCondition == true)
-        {
-            if (Satellites.Where(s => s.IsActive == true).Select(s => s.Name).Contains(footprint.SatelliteName) == true)
-            {
-                if (footprint.Node >= FromNode && footprint.Node <= ToNode)
+                if (footprint.Direction == SwathDirection.Left && IsLeftSwath == true)
                 {
-                    if (footprint.Direction == SwathDirection.Left && IsLeftSwath == true)
-                    {
-                        return true;
-                    }
+                    return true;
+                }
 
-                    if (footprint.Direction == SwathDirection.Right && IsRightSwath == true)
-                    {
-                        return true;
-                    }
+                if (footprint.Direction == SwathDirection.Right && IsRightSwath == true)
+                {
+                    return true;
                 }
             }
         }
 
         return false;
+    }
+
+    protected override bool AOIFiltering(FootprintViewModel footprint)
+    {
+        if (IsAOIActive == true && AOI is Polygon aoiPolygon)
+        {
+            if (footprint.Polygon is Polygon polygon)
+            {
+                return aoiPolygon.Intersection(polygon, IsFullCoverAOI);
+            }
+        }
+
+        return true;
     }
 
     private async Task UpdateImpl()
@@ -179,15 +169,6 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
     public bool IsRightSwath { get; set; }
 
     public ReadOnlyObservableCollection<SatelliteItemViewModel> Satellites => _items;
-
-    [Reactive]
-    public Geometry? AOI { get; set; }
-
-    [Reactive]
-    public bool IsFullCoverAOI { get; set; }
-
-    [Reactive]
-    public bool IsAOIActive { get; set; }
 
     [Reactive]
     public bool? IsAllSatellites { get; set; }
