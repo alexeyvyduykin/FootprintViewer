@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -38,11 +37,14 @@ public class LayerContainerViewModel : ViewModelBase
         _layerItems
             .ToObservableChangeSet()
             .WhenPropertyChanged(p => p.IsVisible)
-            .Subscribe(_ => LayerItemChangedImpl());
+            .Select(_ => LayerItems.AllPropertyCheck(p => p.IsVisible))
+            .Subscribe(s => IsAllVisible = s);
 
         this.WhenAnyValue(s => s.IsAllVisible)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(IsAllVisibleChanged);
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(value => LayerItems.SetValue(s => s.IsVisible = value));
 
         Observable.StartAsync(() => Task.Run(UpdateLayers), RxApp.MainThreadScheduler).Subscribe();
     }
@@ -56,37 +58,6 @@ public class LayerContainerViewModel : ViewModelBase
             innerList.Clear();
             innerList.AddRange(map.Layers);
         });
-    }
-
-    private void LayerItemChangedImpl()
-    {
-        var allTrue = LayerItems.All(s => s.IsVisible == true);
-        var allFalse = LayerItems.All(s => s.IsVisible == false);
-        var anyFalse = LayerItems.Any(s => s.IsVisible == false);
-
-        if (allTrue == true)
-        {
-            IsAllVisible = true;
-        }
-        else if (allFalse == true)
-        {
-            IsAllVisible = false;
-        }
-        else if (anyFalse == true)
-        {
-            IsAllVisible = null;
-        }
-    }
-
-    private void IsAllVisibleChanged(bool? value)
-    {
-        if (value is bool visible)
-        {
-            foreach (var item in LayerItems)
-            {
-                item.IsVisible = visible;
-            }
-        }
     }
 
     [Reactive]

@@ -79,11 +79,14 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         _items
             .ToObservableChangeSet()
             .WhenPropertyChanged(p => p.IsActive)
-            .Subscribe(_ => SensorItemsChangedImpl());
+            .Select(_ => Sensors.AllPropertyCheck(p => p.IsActive))
+            .Subscribe(s => IsAllSensors = s);
 
         this.WhenAnyValue(s => s.IsAllSensors)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(IsAllSensorsChanged);
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(value => Sensors.SetValue(s => s.IsActive = value));
 
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler).Subscribe();
     }
@@ -187,37 +190,6 @@ public class FootprintPreviewTabFilterViewModel : BaseFilterViewModel<FootprintP
         }
 
         return false;
-    }
-
-    private void SensorItemsChangedImpl()
-    {
-        var allTrue = Sensors.All(s => s.IsActive == true);
-        var allFalse = Sensors.All(s => s.IsActive == false);
-        var anyFalse = Sensors.Any(s => s.IsActive == false);
-
-        if (allTrue == true)
-        {
-            IsAllSensors = true;
-        }
-        else if (allFalse == true)
-        {
-            IsAllSensors = false;
-        }
-        else if (anyFalse == true)
-        {
-            IsAllSensors = null;
-        }
-    }
-
-    private void IsAllSensorsChanged(bool? value)
-    {
-        if (value is bool active)
-        {
-            foreach (var item in Sensors)
-            {
-                item.IsActive = active;
-            }
-        }
     }
 
     [Reactive]

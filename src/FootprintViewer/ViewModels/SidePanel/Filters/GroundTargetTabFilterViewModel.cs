@@ -21,21 +21,24 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
         IsRoute = true;
         IsPoint = true;
 
-        this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => TypesChangedImpl());
-
         var observable = this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => this);
 
-        this.WhenAnyValue(s => s.IsAllTypes)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(IsAllTypesChanged);
-
         SetMergeObservables(new[] { observable });
         SetDirtyMergeObservables(new[] { observable });
+
+        this.WhenAnyValue(s => s.IsArea, s => s.IsRoute, s => s.IsPoint, (s1, s2, s3) => new[] { s1, s2, s3 })
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(s => s.AllPropertyCheck())
+            .Subscribe(s => IsAllTypes = s);
+
+        this.WhenAnyValue(s => s.IsAllTypes)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(s => IsArea = IsRoute = IsPoint = s);
     }
 
     protected override bool Filtering(GroundTargetViewModel groundTarget)
@@ -69,36 +72,6 @@ public class GroundTargetTabFilterViewModel : BaseFilterViewModel<GroundTargetVi
         IsArea = IsAreaDefault;
         IsRoute = IsRouteDefault;
         IsPoint = IsPointDefault;
-    }
-
-    private void TypesChangedImpl()
-    {
-        var allTrue = IsArea && IsRoute && IsPoint;
-        var allFalse = !IsArea && !IsRoute && !IsPoint;
-        var anyFalse = !IsArea || !IsRoute || !IsPoint;
-
-        if (allTrue == true)
-        {
-            IsAllTypes = true;
-        }
-        else if (allFalse == true)
-        {
-            IsAllTypes = false;
-        }
-        else if (anyFalse == true)
-        {
-            IsAllTypes = null;
-        }
-    }
-
-    private void IsAllTypesChanged(bool? value)
-    {
-        if (value is bool available)
-        {
-            IsArea = available;
-            IsRoute = available;
-            IsPoint = available;
-        }
     }
 
     [Reactive]

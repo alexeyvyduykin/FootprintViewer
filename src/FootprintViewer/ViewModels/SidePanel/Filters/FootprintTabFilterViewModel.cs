@@ -68,11 +68,14 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
         _items
             .ToObservableChangeSet()
             .WhenPropertyChanged(p => p.IsActive)
-            .Subscribe(_ => SatelliteItemsChangedImpl());
+            .Select(_ => Satellites.AllPropertyCheck(p => p.IsActive))
+            .Subscribe(s => IsAllSatellites = s);
 
         this.WhenAnyValue(s => s.IsAllSatellites)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(IsAllSatellitesChanged);
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(value => Satellites.SetValue(s => s.IsActive = value));
 
         Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler);
     }
@@ -160,37 +163,6 @@ public class FootprintTabFilterViewModel : BaseFilterViewModel<FootprintViewMode
             innerList.Clear();
             innerList.AddRange(satellites);
         });
-    }
-
-    private void SatelliteItemsChangedImpl()
-    {
-        var allTrue = Satellites.All(s => s.IsActive == true);
-        var allFalse = Satellites.All(s => s.IsActive == false);
-        var anyFalse = Satellites.Any(s => s.IsActive == false);
-
-        if (allTrue == true)
-        {
-            IsAllSatellites = true;
-        }
-        else if (allFalse == true)
-        {
-            IsAllSatellites = false;
-        }
-        else if (anyFalse == true)
-        {
-            IsAllSatellites = null;
-        }
-    }
-
-    private void IsAllSatellitesChanged(bool? value)
-    {
-        if (value is bool active)
-        {
-            foreach (var item in Satellites)
-            {
-                item.IsActive = active;
-            }
-        }
     }
 
     [Reactive]
