@@ -46,12 +46,18 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;
 
+        var filter3 = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
+
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
+            .Filter(filter3)
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
             .Bind(out _items)
             .Subscribe();
@@ -69,6 +75,8 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);
+
+        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
@@ -139,9 +147,27 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         }
     }
 
+    private static Func<GroundTargetViewModel, bool> SearchStringPredicate(string? arg)
+    {
+        return (s =>
+        {
+            if (string.IsNullOrEmpty(arg) == true)
+            {
+                return true;
+            }
+
+            return s.Name?.Contains(arg, StringComparison.CurrentCultureIgnoreCase) ?? true;
+        });
+    }
+
     public bool IsLoading => _isLoading.Value;
 
     public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
+
+    [Reactive]
+    public string? SearchString { get; set; }
+
+    public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
 
     [Reactive]
     public GroundTargetViewModel? SelectedItem { get; set; }

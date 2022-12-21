@@ -131,6 +131,27 @@
 							  Margin="8,0,0,0"/>
 			</DockPanel>
 
+			<TextBox Margin="0,8,0,0"
+					 Grid.Row="1"
+					 Text="{Binding SearchString}"
+					 BorderThickness="0"
+					 Grid.ColumnSpan="2">
+				<TextBox.InnerLeftContent>
+					<Viewbox Width="24" Height="24" Margin="0,0,4,0">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="Search" />
+					</Viewbox>
+				</TextBox.InnerLeftContent>
+				<TextBox.InnerRightContent>
+					<Button Background="Transparent"
+							Command="{Binding EmptySearchString}"
+							Classes="Flat">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="Remove" />
+					</Button>
+				</TextBox.InnerRightContent>
+			</TextBox>
+
 		</Grid>
 
 		<Grid Grid.Row="2">

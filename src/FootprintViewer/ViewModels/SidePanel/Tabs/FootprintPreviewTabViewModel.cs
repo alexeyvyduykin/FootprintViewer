@@ -43,12 +43,18 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;
 
+        var filter3 = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
+
         _footprintPreviews
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintPreviewViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
+            .Filter(filter3)
             .Bind(out _items)
             .Subscribe();
 
@@ -72,6 +78,8 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         Enter = ReactiveCommand.Create<FootprintPreviewViewModel>(EnterImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);
+
+        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         this.WhenAnyValue(s => s.SelectedItem)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -163,11 +171,29 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         }
     }
 
+    private static Func<FootprintPreviewViewModel, bool> SearchStringPredicate(string? arg)
+    {
+        return (s =>
+        {
+            if (string.IsNullOrEmpty(arg) == true)
+            {
+                return true;
+            }
+
+            return s.TileNumber?.Contains(arg, StringComparison.CurrentCultureIgnoreCase) ?? true;
+        });
+    }
+
     public IAOIFilter<FootprintPreviewViewModel> Filter { get; }
 
     private ReadOnlyObservableCollection<FootprintPreviewGeometry> Geometries => _geometryItems;
 
     public ReadOnlyObservableCollection<FootprintPreviewViewModel> Items => _items;
+
+    [Reactive]
+    public string? SearchString { get; set; }
+
+    public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
 
     [Reactive]
     public FootprintPreviewViewModel? SelectedItem { get; set; }
