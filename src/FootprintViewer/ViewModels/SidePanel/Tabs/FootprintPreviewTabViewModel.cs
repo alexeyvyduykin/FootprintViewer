@@ -51,12 +51,21 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
         _footprintPreviews
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _footprintPreviews.Count);
+
+        _footprintPreviews
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintPreviewViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
             .Filter(filter3)
             .Bind(out _items)
-            .Subscribe();
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
 
         _geometries
             .Connect()
@@ -197,4 +206,13 @@ public class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public FootprintPreviewViewModel? SelectedItem { get; set; }
+
+    [Reactive]
+    public int ItemCount { get; set; }
+
+    [Reactive]
+    public int FilteringItemCount { get; set; }
+
+    [Reactive]
+    public bool IsFilteringActive { get; set; }
 }

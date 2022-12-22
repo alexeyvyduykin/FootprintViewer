@@ -59,6 +59,11 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         _footprints
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _footprints.Count);
+
+        _footprints
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
@@ -66,7 +71,11 @@ public class FootprintTabViewModel : SidePanelTabViewModel
             .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
             .DisposeMany()
-            .Subscribe();
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
 
         this.WhenAnyValue(s => s.IsFilterOnMap)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -228,4 +237,13 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool ShowTimeline { get; set; }
+
+    [Reactive]
+    public int ItemCount { get; set; }
+
+    [Reactive]
+    public int FilteringItemCount { get; set; }
+
+    [Reactive]
+    public bool IsFilteringActive { get; set; }
 }

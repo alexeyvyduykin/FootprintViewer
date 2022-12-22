@@ -55,13 +55,22 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _groundTargets.Count);
+
+        _groundTargets
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
             .Filter(filter3)
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
             .Bind(out _items)
-            .Subscribe();
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
@@ -217,4 +226,13 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public GroundTargetViewModel? SelectedItem { get; set; }
+
+    [Reactive]
+    public int ItemCount { get; set; }
+
+    [Reactive]
+    public int FilteringItemCount { get; set; }
+
+    [Reactive]
+    public bool IsFilteringActive { get; set; }
 }

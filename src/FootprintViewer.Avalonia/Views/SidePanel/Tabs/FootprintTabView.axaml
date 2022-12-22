@@ -206,6 +206,15 @@
 					 VirtualizationMode="Simple"/>
 		</Grid>
 
+		<StackPanel Grid.Row="3"
+					Margin="16,8"
+					Spacing="4">
+			<TextBlock Text="{Binding ItemCount, StringFormat={}Item count:  {0}}"
+					   Classes="Caption"/>
+			<TextBlock Text="{Binding FilteringItemCount, StringFormat={}Filtering item count:  {0}}"
+					   IsVisible="{Binding IsFilteringActive}"
+					   Classes="Caption"/>
+		</StackPanel>
 	</Grid>
 
 </UserControl>
