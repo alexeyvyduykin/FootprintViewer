@@ -39,6 +39,15 @@
 				</Viewbox>
 			</Border>
 		</DataTemplate>
+		<DataTemplate x:Key="MapSearchTemplate">
+			<Border Background="Transparent" Cursor="Help"
+					ToolTip.Tip="Set filter to map">
+				<Viewbox Width="24" Height="24">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+												Kind="MapSearch"/>
+				</Viewbox>
+			</Border>
+		</DataTemplate>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -115,6 +124,13 @@
 			<DockPanel>
 				<ContentPresenter ContentTemplate="{StaticResource GroupTemplate}"/>
 				<ToggleSwitch IsChecked="{Binding Filter.IsAOIActive}"
+							  Cursor="Hand" VerticalAlignment="Center"
+							  Margin="8,0,0,0"/>
+			</DockPanel>
+
+			<DockPanel Grid.Column="1" Margin="32,0,0,0">
+				<ContentPresenter ContentTemplate="{StaticResource MapSearchTemplate}"/>
+				<ToggleSwitch IsChecked="{Binding IsFilterOnMap}"
 							  Cursor="Hand" VerticalAlignment="Center"
 							  Margin="8,0,0,0"/>
 			</DockPanel>

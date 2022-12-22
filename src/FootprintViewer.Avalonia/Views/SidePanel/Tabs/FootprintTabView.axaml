@@ -54,12 +54,12 @@
 				</Viewbox>
 			</Border>
 		</DataTemplate>
-		<DataTemplate x:Key="MapCheckTemplate">
+		<DataTemplate x:Key="MapSearchTemplate">
 			<Border Background="Transparent" Cursor="Help"
-					ToolTip.Tip="Redo search when map moved">
+					ToolTip.Tip="Set filter to map">
 				<Viewbox Width="24" Height="24">
 					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
-												Kind="MapCheck"/>
+												Kind="MapSearch"/>
 				</Viewbox>
 			</Border>
 		</DataTemplate>
@@ -156,7 +156,7 @@
 			</DockPanel>
 
 			<DockPanel Grid.Column="1" Margin="32,0,0,0">
-				<ContentPresenter ContentTemplate="{StaticResource MapCheckTemplate}"/>
+				<ContentPresenter ContentTemplate="{StaticResource MapSearchTemplate}"/>
 				<ToggleSwitch IsChecked="{Binding IsFilterOnMap}"
 							  Cursor="Hand" VerticalAlignment="Center"
 							  Margin="8,0,0,0"/>

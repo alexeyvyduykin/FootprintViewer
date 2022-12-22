@@ -12,6 +12,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -28,14 +29,14 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly FeatureManager _featureManager;
     private readonly ILayer? _layer;
-    private readonly GroundTargetProvider _provider;
+    private readonly GroundTargetProvider _layerProvider;
 
     public GroundTargetTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         var map = dependencyResolver.GetExistingService<IMap>();
         _layer = map.GetLayer(LayerType.GroundTarget);
-        _provider = dependencyResolver.GetExistingService<GroundTargetProvider>();
+        _layerProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
         var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
 
@@ -63,6 +64,20 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
             .Subscribe();
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        this.WhenAnyValue(s => s.IsFilterOnMap)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => IsFilterOnMapChanged());
+
+        _groundTargets
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new GroundTargetViewModel(s))
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
+            .ToCollection()
+            .Subscribe(UpdateProvider);
 
         _dataManager.DataChanged
             .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
@@ -121,7 +136,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         {
             _featureManager
                 .OnLayer(_layer)
-                .Enter(_provider.Find(name, "Name"));
+                .Enter(_layerProvider.Find(name, "Name"));
         }
     }
 
@@ -142,7 +157,7 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
             {
                 _featureManager
                     .OnLayer(_layer)
-                    .Select(_provider.Find(name, "Name"));
+                    .Select(_layerProvider.Find(name, "Name"));
             }
         }
     }
@@ -160,9 +175,40 @@ public class GroundTargetTabViewModel : SidePanelTabViewModel
         });
     }
 
+    private void IsFilterOnMapChanged()
+    {
+        if (IsFilterOnMap == true)
+        {
+            var res = Items
+                .Select(s => s.GroundTarget)
+                .ToList();
+
+            _layerProvider.UpdateData(res);
+        }
+        else
+        {
+            _layerProvider.Update.Execute().Subscribe();
+        }
+    }
+
+    private void UpdateProvider(IReadOnlyCollection<GroundTargetViewModel> groundTarget)
+    {
+        if (IsFilterOnMap == true)
+        {
+            var res = groundTarget
+                .Select(s => s.GroundTarget)
+                .ToList();
+
+            _layerProvider.UpdateData(res);
+        }
+    }
+
     public bool IsLoading => _isLoading.Value;
 
     public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
+
+    [Reactive]
+    public bool IsFilterOnMap { get; set; }
 
     [Reactive]
     public string? SearchString { get; set; }

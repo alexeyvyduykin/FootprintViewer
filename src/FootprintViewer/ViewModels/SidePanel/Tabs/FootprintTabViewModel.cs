@@ -31,7 +31,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly FeatureManager _featureManager;
     private readonly ILayer? _layer;
-    private readonly FootprintProvider _provider;
+    private readonly FootprintProvider _layerProvider;
 
     public FootprintTabViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
@@ -39,7 +39,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
         var map = dependencyResolver.GetExistingService<IMap>();
         _layer = map.GetLayer(LayerType.Footprint);
-        _provider = dependencyResolver.GetExistingService<FootprintProvider>();
+        _layerProvider = dependencyResolver.GetExistingService<FootprintProvider>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
         var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
         var timelinePanel = dependencyResolver.GetExistingService<TimelinePanelViewModel>();
@@ -117,7 +117,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
 
                 _featureManager
                     .OnLayer(_layer)
-                    .Select(_provider.Find(s.Name, "Name"));
+                    .Select(_layerProvider.Find(s.Name, "Name"));
             }), outputScheduler: RxApp.MainThreadScheduler);
 
         areaOfInterest.AOIChanged
@@ -169,7 +169,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
         {
             _featureManager
                 .OnLayer(_layer)
-                .Enter(_provider.Find(name, "Name"));
+                .Enter(_layerProvider.Find(name, "Name"));
         }
     }
 
@@ -189,7 +189,7 @@ public class FootprintTabViewModel : SidePanelTabViewModel
                 .Select(s => s.Footprint!)
                 .ToList();
 
-            _provider.UpdateData(res);
+            _layerProvider.UpdateData(res);
         }
     }
 
@@ -201,11 +201,11 @@ public class FootprintTabViewModel : SidePanelTabViewModel
                 .Select(s => s.Footprint!)
                 .ToList();
 
-            _provider.UpdateData(res);
+            _layerProvider.UpdateData(res);
         }
         else
         {
-            _provider.Update.Execute().Subscribe();
+            _layerProvider.Update.Execute().Subscribe();
         }
     }
 
