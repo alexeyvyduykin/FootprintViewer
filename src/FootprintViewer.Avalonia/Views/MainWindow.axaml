@@ -9,8 +9,8 @@
         xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
         mc:Ignorable="d"
 		WindowStartupLocation="CenterScreen"
-        ExtendClientAreaToDecorationsHint="True"
-		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaTitleBarHeightHint="-1"
 		Icon="/Assets/app-logo.ico"
 		x:DataType="vm:MainViewModel"
@@ -20,6 +20,12 @@
 	<Design.DataContext>
 		<vmd:DesignTimeMainViewModel/>
 	</Design.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Window[WindowState=Maximized]">
+			<Setter Property="Padding" Value="8" />
+		</Style>
+	</Window.Styles>
 
 	<DockPanel>
 		<views:WindowTitleBar DockPanel.Dock="Top"
