@@ -10,12 +10,10 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
 			 x:DataType="items:GroundStationViewModel"
-             mc:Ignorable="d" d:DesignWidth="380"
-             x:Class="FootprintViewer.Avalonia.Views.SidePanel.Items.GroundStationView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeGroundStationViewModel/>
-	</Design.DataContext>
+             mc:Ignorable="d"
+			 d:DesignWidth="380"
+             x:Class="FootprintViewer.Avalonia.Views.SidePanel.Items.GroundStationView"
+			 d:DataContext="{x:Static vmd:DesignData.GroundStation}">
 
 	<UserControl.Resources>
 		<conv:GroundStationModeConverter x:Key="GroundStationModeConv"/>

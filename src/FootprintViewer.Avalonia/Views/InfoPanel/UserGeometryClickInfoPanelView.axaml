@@ -5,12 +5,10 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.UserGeometryClickInfoPanelView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeUserGeometryClickInfoPanelItem/>
-	</Design.DataContext>
+			 mc:Ignorable="d"
+			 d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.UserGeometryClickInfoPanelView"
+			 d:DataContext="{x:Static vmd:DesignData.UserGeometryClickInfoPanel}">
 
 	<Panel VerticalAlignment="Center"
 		   HorizontalAlignment="Center">

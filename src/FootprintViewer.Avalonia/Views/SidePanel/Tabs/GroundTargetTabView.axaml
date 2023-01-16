@@ -14,11 +14,8 @@
 			 xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 x:DataType="tabs:GroundTargetTabViewModel"
              mc:Ignorable="d"
-             d:DesignWidth="380" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeGroundTargetTab/>
-	</Design.DataContext>
+             d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.GroundTargetTab}">
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="GroundTargetItemTemplate" x:DataType="items:GroundTargetViewModel">

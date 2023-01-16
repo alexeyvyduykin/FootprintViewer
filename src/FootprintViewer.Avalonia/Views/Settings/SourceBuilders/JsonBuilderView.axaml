@@ -6,14 +6,12 @@
 	         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:builders="using:FootprintViewer.ViewModels.Settings.SourceBuilders"
-			 xmlns:vmd="using:FootprintViewer.Designer"		
+			 xmlns:vmd="using:FootprintViewer.Designer"
 			 x:DataType="builders:JsonBuilderViewModel"
-			 mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="350"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.SourceBuilders.JsonBuilderView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeJsonBuilderViewModel/>
-	</Design.DataContext>
+			 mc:Ignorable="d"
+			 d:DesignWidth="480" d:DesignHeight="350"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.SourceBuilders.JsonBuilderView"
+			 d:DataContext="{x:Static vmd:DesignData.JsonBuilder}">
 
 	<UserControl.Styles>
 		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
@@ -36,11 +34,11 @@
 		<Grid RowDefinitions="Auto,*">
 
 			<Grid ColumnDefinitions="*,8,32">
-				<TextBox x:Name="DirectoryTextBox"						 
+				<TextBox x:Name="DirectoryTextBox"
 						 Text="{Binding Directory, Mode=TwoWay}"
 						 IsReadOnly="True"/>
-				<Button x:Name="SearchButton" 
-						Grid.Column="2"					
+				<Button x:Name="SearchButton"
+						Grid.Column="2"
 						Padding="0"
 						Height="32">
 					<Viewbox Margin="4">
@@ -70,9 +68,9 @@
 					</ScrollViewer>
 				</Border>
 
-				<StackPanel VerticalAlignment="Center"							
+				<StackPanel VerticalAlignment="Center"
 							Grid.Column="1">
-					<Button Padding="0"		
+					<Button Padding="0"
 							Margin="4"
 							Height="32"
 							Command="{Binding ToTarget}">

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewerItem
+public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewerItem
 {
     private readonly GroundTarget _groundTarget;
     private readonly GroundTargetType _type;

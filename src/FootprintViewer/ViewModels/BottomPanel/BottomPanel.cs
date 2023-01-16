@@ -1,17 +1,15 @@
-﻿using ReactiveUI;
-using Splat;
+﻿using Splat;
 
-namespace FootprintViewer.ViewModels
+namespace FootprintViewer.ViewModels;
+
+public sealed class BottomPanel : ViewModelBase
 {
-    public class BottomPanel : ReactiveObject
+    private readonly SnapshotMaker _snapshotMaker;
+
+    public BottomPanel(IReadonlyDependencyResolver dependencyResolver)
     {
-        private readonly SnapshotMaker _snapshotMaker;
-
-        public BottomPanel(IReadonlyDependencyResolver dependencyResolver)
-        {
-            _snapshotMaker = new SnapshotMaker(dependencyResolver);
-        }
-
-        public SnapshotMaker SnapshotMaker => _snapshotMaker;
+        _snapshotMaker = new SnapshotMaker(dependencyResolver);
     }
+
+    public SnapshotMaker SnapshotMaker => _snapshotMaker;
 }

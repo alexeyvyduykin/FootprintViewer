@@ -7,11 +7,8 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 mc:Ignorable="d"
              d:DesignHeight="250"
-             x:Class="FootprintViewer.Avalonia.Views.BottomPanel.SnapshotMakerView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeSnapshotMaker/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.BottomPanel.SnapshotMakerView"
+			 d:DataContext="{x:Static vmd:DesignData.SnapshotMaker}">
 
 	<Grid>
 		<Grid ColumnDefinitions="Auto,4,Auto,4,100"

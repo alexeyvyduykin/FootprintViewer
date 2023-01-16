@@ -10,7 +10,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class GroundTargetTabFilterViewModel : AOIFilterViewModel<GroundTargetViewModel>
+public sealed class GroundTargetTabFilterViewModel : AOIFilterViewModel<GroundTargetViewModel>
 {
     private const bool IsAreaDefault = true;
     private const bool IsRouteDefault = true;

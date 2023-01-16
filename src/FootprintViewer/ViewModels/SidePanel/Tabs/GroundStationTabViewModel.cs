@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class GroundStationTabViewModel : SidePanelTabViewModel
+public sealed class GroundStationTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly LayerStyleManager _layerStyleManager;

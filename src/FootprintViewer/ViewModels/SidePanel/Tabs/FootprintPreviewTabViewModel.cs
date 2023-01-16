@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class FootprintPreviewTabViewModel : SidePanelTabViewModel
+public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly Map _map;

@@ -9,11 +9,9 @@
              xmlns:icons="using:Material.Icons.Avalonia"
              xmlns:conv="using:FootprintViewer.Avalonia.Converters"
 			 x:DataType="items:FootprintPreviewViewModel"
-			 mc:Ignorable="d" d:DesignWidth="320">
-
-	<Design.DataContext>
-		<vmd:DesignTimeFootprintPreviewViewModel/>
-	</Design.DataContext>
+			 mc:Ignorable="d"
+			 d:DesignWidth="320"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintPreview}">
 
 	<UserControl.Resources>
 		<conv:ImageConverter x:Key="ImageConv"/>

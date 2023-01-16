@@ -10,11 +10,8 @@
 			 MinHeight="360"
 			 IsVisible="{Binding Show}"
 			 x:DataType="vm:TimelinePanelViewModel"
-             x:Class="FootprintViewer.Avalonia.Views.TimelinePanel.TimelinePanelView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeTimelinePanelViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.TimelinePanel.TimelinePanelView"
+			 d:DataContext="{x:Static vmd:DesignData.TimelinePanel}">
 
 	<UserControl.Resources>
 		<selectors:TrackerTemplateSelector x:Key="TrackerSelector">

@@ -16,11 +16,8 @@
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
 			 x:DataType="toolBar:CustomToolBarViewModel"
              x:Class="FootprintViewer.Avalonia.Views.ToolBar.CustomToolBarView"
-			 x:CompileBindings="True">
-
-	<Design.DataContext>
-		<vmd:DesignTimeCustomToolBar/>
-	</Design.DataContext>
+			 x:CompileBindings="True"
+			 d:DataContext="{x:Static vmd:DesignData.CustomToolBar}">
 
 	<UserControl.Resources>
 		<conv:ToolBarToolTipConverter x:Key="ToolTipConv"/>

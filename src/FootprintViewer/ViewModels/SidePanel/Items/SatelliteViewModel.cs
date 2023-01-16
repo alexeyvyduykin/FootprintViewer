@@ -7,7 +7,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class SatelliteViewModel : ViewModelBase, IViewerItem
+public sealed class SatelliteViewModel : ViewModelBase, IViewerItem
 {
     private readonly string _name;
     private readonly Satellite _satellite;

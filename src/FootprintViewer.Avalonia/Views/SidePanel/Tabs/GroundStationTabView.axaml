@@ -7,14 +7,11 @@
              xmlns:reactiveUi="http://reactiveui.net"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              mc:Ignorable="d"
-			 d:DesignWidth="380" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeGroundStationTab/>
-	</Design.DataContext>
+			 d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.GroundStationTab}">
 
 	<Panel>
-		
+
 		<ProgressBar IsVisible="{Binding IsLoading}"
 					 Classes="Circle"
 					 VerticalAlignment="Center"

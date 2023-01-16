@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace FootprintViewer.ViewModels.Settings;
 
-public class TableInfoViewModel : DialogViewModelBase<object>
+public sealed class TableInfoViewModel : DialogViewModelBase<object>
 {
-    protected TableInfoViewModel()
+    private TableInfoViewModel()
     {
         NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
     }
@@ -25,7 +25,7 @@ public class TableInfoViewModel : DialogViewModelBase<object>
         };
     }
 
-    protected static List<TableColumnViewModel> GetFields(TableInfoType type) => _dict[type].ToList();
+    private static List<TableColumnViewModel> GetFields(TableInfoType type) => _dict[type].ToList();
 
     private static readonly IDictionary<TableInfoType, TableColumnViewModel[]> _dict = new Dictionary<TableInfoType, TableColumnViewModel[]>()
     {

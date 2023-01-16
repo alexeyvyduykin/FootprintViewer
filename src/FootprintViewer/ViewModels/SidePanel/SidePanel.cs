@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel;
 
-public class SidePanelViewModel : ViewModelBase
+public sealed class SidePanelViewModel : ViewModelBase
 {
     public SidePanelViewModel()
     {

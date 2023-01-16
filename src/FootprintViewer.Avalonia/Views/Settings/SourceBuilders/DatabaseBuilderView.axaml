@@ -8,12 +8,10 @@
 			 xmlns:builders="using:FootprintViewer.ViewModels.Settings.SourceBuilders"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="builders:DatabaseBuilderViewModel"
-             mc:Ignorable="d" d:DesignWidth="360" d:DesignHeight="300"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.SourceBuilders.DatabaseBuilderView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeDatabaseBuilderViewModel/>
-	</Design.DataContext>
+             mc:Ignorable="d"
+			 d:DesignWidth="360" d:DesignHeight="300"
+             x:Class="FootprintViewer.Avalonia.Views.Settings.SourceBuilders.DatabaseBuilderView"
+			 d:DataContext="{x:Static vmd:DesignData.DatabaseBuilder}">
 
 	<UserControl.Styles>
 		<Style Selector="TextBlock.t1">

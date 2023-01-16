@@ -15,7 +15,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.Settings.SourceBuilders;
 
-public class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
+public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
 {
     private readonly ObservableAsPropertyHelper<bool> _isVerified;
     private readonly ReadOnlyObservableCollection<string> _availableTables;

@@ -13,11 +13,8 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              x:DataType="filters:FootprintPreviewTabFilterViewModel"
 			 mc:Ignorable="d"
-			 d:DesignWidth="400" d:DesignHeight="440">
-
-	<Design.DataContext>
-		<vmd:DesignTimeFootprintPreviewTabFilter/>
-	</Design.DataContext>
+			 d:DesignWidth="400" d:DesignHeight="440"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintPreviewFilter}">
 
 	<UserControl.Styles>
 		<Style Selector="CheckBox">

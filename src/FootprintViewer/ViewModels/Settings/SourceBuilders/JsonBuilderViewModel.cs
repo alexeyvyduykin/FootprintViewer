@@ -1,25 +1,21 @@
 ﻿using DynamicData;
-using FootprintViewer.Data.DataManager.Sources;
+using DynamicData.Binding;
 using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.DataManager.Sources;
 using FootprintViewer.ViewModels.Dialogs;
-using ReactiveUI.Fody.Helpers;
 using ReactiveUI;
-using Svg.Model;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reactive.Linq;
-using DynamicData.Binding;
 
 namespace FootprintViewer.ViewModels.Settings.SourceBuilders;
 
-public class JsonBuilderViewModel : DialogViewModelBase<ISource>
+public sealed class JsonBuilderViewModel : DialogViewModelBase<ISource>
 {
     private readonly string _key;
     private readonly SourceList<FileViewModel> _targetList = new();

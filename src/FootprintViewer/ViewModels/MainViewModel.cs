@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels;
 
-public class MainViewModel : RoutableViewModel
+public sealed class MainViewModel : RoutableViewModel
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly Map _map;

@@ -10,11 +10,8 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
              x:Name="UserGeometryName"
              mc:Ignorable="d"
-             d:DesignWidth="380" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeUserGeometryTab/>
-	</Design.DataContext>
+             d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.UserGeometryTab}">
 
 	<UserControl.Styles>
 		<Style Selector="ListBoxItem">

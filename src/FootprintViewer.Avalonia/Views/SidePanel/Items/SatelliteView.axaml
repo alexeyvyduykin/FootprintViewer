@@ -10,11 +10,9 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
 			 x:DataType="items:SatelliteViewModel"
-			 mc:Ignorable="d" d:DesignWidth="380">
-
-	<Design.DataContext>
-		<vmd:DesignTimeSatelliteViewModel/>
-	</Design.DataContext>
+			 mc:Ignorable="d"
+			 d:DesignWidth="380"
+			 d:DataContext="{x:Static vmd:DesignData.Satellite}">
 
 	<UserControl.Resources>
 		<conv:SolidColorBrushConverter x:Key="BrushConv"/>

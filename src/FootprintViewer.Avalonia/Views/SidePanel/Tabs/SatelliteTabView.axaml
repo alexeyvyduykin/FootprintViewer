@@ -7,11 +7,8 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Items"
 			 xmlns:reactiveUi="http://reactiveui.net"
              mc:Ignorable="d"
-			 d:DesignWidth="380" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeSatelliteTab/>
-	</Design.DataContext>
+			 d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.SatelliteTab}">
 
 	<Panel>
 
@@ -34,7 +31,7 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</ScrollViewer>
-		
+
 	</Panel>
 
 </UserControl>

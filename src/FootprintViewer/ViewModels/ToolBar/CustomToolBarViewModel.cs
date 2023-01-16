@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels.ToolBar;
 
-public class CustomToolBarViewModel : ToolBarViewModel
+public sealed class CustomToolBarViewModel : ToolBarViewModel
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly IDataManager _dataManager;

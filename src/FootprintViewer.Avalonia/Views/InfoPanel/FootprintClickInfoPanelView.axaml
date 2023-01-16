@@ -10,11 +10,8 @@
 			 mc:Ignorable="d"
              d:DesignWidth="450" d:DesignHeight="250"
 			 x:DataType="vm:FootprintClickInfoPanel"
-             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.FootprintClickInfoPanelView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeFootprintClickInfoPanelItem/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.InfoPanel.FootprintClickInfoPanelView"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintClickInfoPanel}">
 
 	<UserControl.Resources>
 		<conv:CoordinateConverter x:Key="CoordinateConv"/>

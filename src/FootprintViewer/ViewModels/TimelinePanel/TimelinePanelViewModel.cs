@@ -16,7 +16,7 @@ using TimeDataViewer.Core;
 
 namespace FootprintViewer.ViewModels.TimelinePanel;
 
-public class TimelinePanelViewModel : ViewModelBase
+public sealed class TimelinePanelViewModel : ViewModelBase
 {
     private readonly IDataManager _dataManager;
     private readonly DateTime _timeOrigin = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);

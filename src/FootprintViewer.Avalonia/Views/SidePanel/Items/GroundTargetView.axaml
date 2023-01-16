@@ -7,11 +7,9 @@
              xmlns:selectors="clr-namespace:FootprintViewer.Avalonia.Selectors"
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             mc:Ignorable="d" d:DesignWidth="280">
-
-	<Design.DataContext>
-		<vmd:DesignTimeGroundTargetViewModel/>
-	</Design.DataContext>
+             mc:Ignorable="d"
+			 d:DesignWidth="280"
+			 d:DataContext="{x:Static vmd:DesignData.GroundTarget}">
 
 	<UserControl.Resources>
 		<selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">

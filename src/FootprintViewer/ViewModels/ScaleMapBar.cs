@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels;
 
-public class ScaleMapBar : ViewModelBase
+public sealed class ScaleMapBar : ViewModelBase
 {
     private static readonly double MaxWidthScaleBar = 100;
     private readonly ObservableAsPropertyHelper<MPoint?> _position;

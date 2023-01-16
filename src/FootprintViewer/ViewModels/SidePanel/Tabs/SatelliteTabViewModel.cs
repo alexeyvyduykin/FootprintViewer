@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class SatelliteTabViewModel : SidePanelTabViewModel
+public sealed class SatelliteTabViewModel : SidePanelTabViewModel
 {
     private readonly TrackProvider? _trackProvider;
     private readonly SensorProvider? _sensorProvider;

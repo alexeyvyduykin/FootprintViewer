@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.Settings;
 
-public class SettingsViewModel : DialogViewModelBase<object>
+public sealed class SettingsViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 

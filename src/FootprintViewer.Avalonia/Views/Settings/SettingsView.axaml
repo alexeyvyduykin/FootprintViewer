@@ -13,11 +13,8 @@
 			 x:CompileBindings="True"
              mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="550"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.SettingsView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeSettingsViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.Settings.SettingsView"
+			 d:DataContext="{x:Static vmd:DesignData.Settings}">
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="languageTemplate" DataType="vm2:LanguageViewModel">

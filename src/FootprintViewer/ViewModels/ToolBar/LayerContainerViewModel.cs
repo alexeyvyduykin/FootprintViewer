@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.ToolBar;
 
-public class LayerContainerViewModel : ViewModelBase
+public sealed class LayerContainerViewModel : ViewModelBase
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly LayerStyleManager _layerStyleManager;

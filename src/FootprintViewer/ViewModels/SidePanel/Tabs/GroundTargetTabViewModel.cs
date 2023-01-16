@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class GroundTargetTabViewModel : SidePanelTabViewModel
+public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<GroundTarget> _groundTargets = new();

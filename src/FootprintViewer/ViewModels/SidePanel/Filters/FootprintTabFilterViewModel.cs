@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
+public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();

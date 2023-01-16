@@ -12,11 +12,8 @@
              Width="800"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="380"
 			 x:DataType="settings:TableInfoViewModel"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.TableInfoView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeTableInfoViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.Settings.TableInfoView"
+			 d:DataContext="{x:Static vmd:DesignData.TableInfo}">
 
 	<UserControl.Styles>
 		<Style Selector="Button.link">

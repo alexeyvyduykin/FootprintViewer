@@ -3,7 +3,7 @@ using SkiaSharp;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class FootprintPreviewViewModel : ViewModelBase, IViewerItem
+public sealed class FootprintPreviewViewModel : ViewModelBase, IViewerItem
 {
     public FootprintPreviewViewModel(FootprintPreview model)
     {

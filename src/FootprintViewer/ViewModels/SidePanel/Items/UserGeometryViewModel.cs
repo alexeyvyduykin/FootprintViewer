@@ -2,7 +2,7 @@
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class UserGeometryViewModel : ViewModelBase, IViewerItem, ISelectorItem
+public sealed class UserGeometryViewModel : ViewModelBase, IViewerItem, ISelectorItem
 {
     private readonly UserGeometry _model;
 

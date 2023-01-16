@@ -5,9 +5,9 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.Tips;
 
-public class CustomTipViewModel : ViewModelBase
+public sealed class CustomTipViewModel : ViewModelBase
 {
-    protected CustomTipViewModel()
+    private CustomTipViewModel()
     {
 
     }

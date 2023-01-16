@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class FootprintTabViewModel : SidePanelTabViewModel
+public sealed class FootprintTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly IMapNavigator _mapNavigator;

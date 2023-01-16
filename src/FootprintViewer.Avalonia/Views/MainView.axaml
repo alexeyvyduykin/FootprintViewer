@@ -19,11 +19,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
-             x:Class="FootprintViewer.Avalonia.Views.MainView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeMainViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.MainView"
+			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
 	<UserControl.Resources>
 		<!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->

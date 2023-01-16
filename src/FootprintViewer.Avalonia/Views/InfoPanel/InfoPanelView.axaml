@@ -13,11 +13,8 @@
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.InfoPanel"
              x:DataType="vm:InfoPanel"
 			 mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeInfoPanel/>
-	</Design.DataContext>
+             d:DesignHeight="600" d:DesignWidth="450"
+			 d:DataContext="{x:Static vmd:DesignData.InfoPanel}">
 
 	<UserControl.Styles>
 

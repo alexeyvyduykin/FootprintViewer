@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
+using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer;
 
-public class DesignTimeData : IReadonlyDependencyResolver
+internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
 {
     private Map? _map;
     private IMapNavigator? _mapNavigator;
@@ -200,15 +201,15 @@ public class DesignTimeData : IReadonlyDependencyResolver
         }
 
         private static List<Satellite> BuildSatellites() =>
-            new int[5].Select(_ => DesignTimeSatelliteViewModel.BuildModel()).ToList();
+            new int[5].Select(_ => RandomModelBuilder.BuildSatellite()).ToList();
         private static List<Footprint> BuildFootprints() =>
-            new int[10].Select(_ => DesignTimeFootprintViewModel.BuildModel()).ToList();
+            new int[10].Select(_ => RandomModelBuilder.BuildFootprint()).ToList();
 
         private static List<GroundTarget> BuildGroundTargets() =>
-            new int[10].Select(_ => DesignTimeGroundTargetViewModel.BuildModel()).ToList();
+            new int[10].Select(_ => RandomModelBuilder.BuildGroundTarget()).ToList();
 
         private static List<UserGeometry> BuildUserGeometries() =>
-            new int[10].Select(_ => DesignTimeUserGeometryViewModel.BuildModel()).ToList();
+            new int[10].Select(_ => RandomModelBuilder.BuildUserGeometry()).ToList();
 
         private static List<GroundStation> BuildGroundStations() =>
             new()
@@ -230,7 +231,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
             };
 
         private static List<FootprintPreview> BuildFootprintPreviews() =>
-            new int[8].Select(_ => DesignTimeFootprintPreviewViewModel.BuildModel()).ToList();
+            new int[8].Select(_ => RandomModelBuilder.BuildFootprintPreview()).ToList();
 
         private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
             new()
@@ -241,7 +242,7 @@ public class DesignTimeData : IReadonlyDependencyResolver
             };
     }
 
-    internal class LocalSource<T> : ISource
+    private class LocalSource<T> : ISource
     {
         private List<T>? _list;
         private readonly Task<List<T>> _task;

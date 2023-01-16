@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Filters;
 
-public class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<FootprintPreviewViewModel>
+public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<FootprintPreviewViewModel>
 {
     private readonly SourceList<SensorItemViewModel> _sensors = new();
     private readonly ReadOnlyObservableCollection<SensorItemViewModel> _items;

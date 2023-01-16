@@ -12,11 +12,8 @@
              xmlns:vm="clr-namespace:FootprintViewer.ViewModels.SidePanel;assembly=FootprintViewer"
 			 x:DataType="vm:SidePanelViewModel"
              mc:Ignorable="d"
-             d:DesignHeight="550">
-
-	<Design.DataContext>
-		<vmd:DesignTimeSidePanel/>
-	</Design.DataContext>
+             d:DesignHeight="550"
+			 d:DataContext="{x:Static vmd:DesignData.SidePanel}">
 
 	<UserControl.Resources>
 		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>

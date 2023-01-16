@@ -8,11 +8,8 @@
 			 xmlns:conv="clr-namespace:FootprintViewer.Avalonia.Converters"
 			 x:DataType="tips:CustomTipViewModel"
 			 mc:Ignorable="d"
-             x:Class="FootprintViewer.Avalonia.Views.Tips.CustomTipView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeCustomTipViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.Tips.CustomTipView"
+			 d:DataContext="{x:Static vmd:DesignData.CustomTip}">
 
 	<UserControl.Resources>
 		<SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>

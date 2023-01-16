@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.Settings;
 
-public class ConnectionViewModel : DialogViewModelBase<object>
+public sealed class ConnectionViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 

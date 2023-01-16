@@ -15,11 +15,8 @@
 		Icon="/Assets/app-logo.ico"
 		x:DataType="vm:MainViewModel"
 		x:CompileBindings="True"
-        d:DesignWidth="800" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeMainViewModel/>
-	</Design.DataContext>
+        d:DesignWidth="800" d:DesignHeight="450"
+		d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
 	<Window.Styles>
 		<Style Selector="Window[WindowState=Maximized]">

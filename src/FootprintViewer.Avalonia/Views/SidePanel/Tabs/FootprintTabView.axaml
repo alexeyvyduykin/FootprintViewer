@@ -15,11 +15,8 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
              x:DataType="tabs:FootprintTabViewModel"
              mc:Ignorable="d"
-             d:DesignWidth="380" d:DesignHeight="450">
-
-	<Design.DataContext>
-		<vmd:DesignTimeFootprintTab/>
-	</Design.DataContext>
+             d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintTab}">
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:FootprintViewModel">

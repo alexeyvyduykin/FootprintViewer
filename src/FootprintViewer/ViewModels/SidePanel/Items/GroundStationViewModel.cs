@@ -12,7 +12,7 @@ using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class GroundStationViewModel : ViewModelBase, IViewerItem
+public sealed class GroundStationViewModel : ViewModelBase, IViewerItem
 {
     private readonly SourceList<GroundStationAreaViewModel> _gsAreas = new();
     private readonly ReadOnlyObservableCollection<GroundStationAreaViewModel> _items;

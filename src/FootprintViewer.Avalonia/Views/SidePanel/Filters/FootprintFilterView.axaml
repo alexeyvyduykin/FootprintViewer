@@ -10,11 +10,8 @@
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
 			 mc:Ignorable="d"
              MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="520">
-
-	<Design.DataContext>
-		<vmd:DesignTimeFootprintTabFilter/>
-	</Design.DataContext>
+             d:DesignWidth="400" d:DesignHeight="520"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintFilter}">
 
 	<UserControl.Styles>
 		<Style Selector="CheckBox">

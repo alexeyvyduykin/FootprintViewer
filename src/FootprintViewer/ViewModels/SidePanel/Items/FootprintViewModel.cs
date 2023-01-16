@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 
-public class FootprintViewModel : ViewModelBase, IViewerItem
+public sealed class FootprintViewModel : ViewModelBase, IViewerItem
 {
     private readonly Footprint? _footprint;
     private readonly string _name;

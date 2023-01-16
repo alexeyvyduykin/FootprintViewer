@@ -7,11 +7,8 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:MainViewModel"
 			 mc:Ignorable="d" d:DesignWidth="460"
-             x:Class="FootprintViewer.Avalonia.Views.WindowTitleBar">
-
-	<Design.DataContext>
-		<vmd:DesignTimeMainViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.WindowTitleBar"
+			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
 	<Panel>
 		<DockPanel Background="{DynamicResource MaterialDesignPaper}"

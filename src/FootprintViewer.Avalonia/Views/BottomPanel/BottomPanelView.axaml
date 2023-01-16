@@ -5,30 +5,28 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:panels="clr-namespace:FootprintViewer.Avalonia.Views.BottomPanel"
              xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls"
-             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
-             x:Class="FootprintViewer.Avalonia.Views.BottomPanel.BottomPanelView">
+             mc:Ignorable="d"
+			 d:DesignWidth="300" d:DesignHeight="450"
+             x:Class="FootprintViewer.Avalonia.Views.BottomPanel.BottomPanelView"
+			 d:DataContext="{x:Static vmd:DesignData.BottomPanel}">
 
-  <UserControl.Resources>
-    <SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-  </UserControl.Resources>
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+	</UserControl.Resources>
 
-  <Design.DataContext>
-    <vmd:DesignTimeBottomPanel/>
-  </Design.DataContext>
+	<UserControl.Styles>
+		<Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
+			<Setter Property="Opacity" Value="0.65"/>
+		</Style>
+	</UserControl.Styles>
 
-  <UserControl.Styles>
-    <Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
-      <Setter Property="Opacity" Value="0.65"/>
-    </Style>
-  </UserControl.Styles>
-
-  <controls:BottomPanel Background="{StaticResource MainBrush}">
-    <Grid>
-      <Border Opacity="0.65"
-              Background="{StaticResource MainBrush}"/>
-      <panels:SnapshotMakerView Padding="8" 
-                                DataContext="{Binding SnapshotMaker}"/>
-    </Grid>
-  </controls:BottomPanel>
+	<controls:BottomPanel Background="{StaticResource MainBrush}">
+		<Grid>
+			<Border Opacity="0.65"
+					Background="{StaticResource MainBrush}"/>
+			<panels:SnapshotMakerView Padding="8"
+									  DataContext="{Binding SnapshotMaker}"/>
+		</Grid>
+	</controls:BottomPanel>
 
 </UserControl>

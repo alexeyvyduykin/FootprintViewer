@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 
-public class UserGeometryTabViewModel : SidePanelTabViewModel
+public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<UserGeometry> _userGeometries = new();

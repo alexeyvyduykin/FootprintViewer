@@ -10,11 +10,8 @@
 			 x:CompileBindings="True"
 			 mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FootprintViewer.Avalonia.Views.Settings.ConnectionView">
-
-	<Design.DataContext>
-		<vmd:DesignTimeConnectionViewModel/>
-	</Design.DataContext>
+             x:Class="FootprintViewer.Avalonia.Views.Settings.ConnectionView"
+			 d:DataContext="{x:Static vmd:DesignData.Connection}">
 
 	<UserControl.Styles>
 		<Style Selector="TabControl[TabStripPlacement=Left] > TabItem /template/ LayoutTransformControl#LayoutTransform">
