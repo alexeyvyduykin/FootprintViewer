@@ -8,7 +8,8 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.Settings;
 
@@ -62,7 +63,9 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
         {
             var mainState = dependencyResolver.GetExistingService<MainState>();
 
-            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            await Observable
+                .Return(Unit.Default)
+                .Delay(TimeSpan.FromSeconds(0.1));
 
             foreach (var container in SourceContainers)
             {

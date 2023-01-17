@@ -119,15 +119,7 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .ToSignal()
             .InvokeCommand(Update);
 
-        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel>(
-            s => Task.Run(() =>
-            {
-                _mapNavigator.FlyToFootprint(s.Center);
-
-                _featureManager
-                    .OnLayer(_layer)
-                    .Select(_layerProvider.Find(s.Name, "Name"));
-            }), outputScheduler: RxApp.MainThreadScheduler);
+        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel>(s => TargetToMapImpl(s), outputScheduler: RxApp.MainThreadScheduler);
 
         areaOfInterest.AOIChanged
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -147,6 +139,20 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         });
     }
 
+    private async Task TargetToMapImpl(FootprintViewModel vm)
+    {
+        await Observable.Start(() => flyTo(vm), RxApp.MainThreadScheduler);
+
+        void flyTo(FootprintViewModel vm)
+        {
+            _mapNavigator.FlyToFootprint(vm.Center);
+
+            _featureManager
+                .OnLayer(_layer)
+                .Select(_layerProvider.Find(vm.Name, "Name"));
+        }
+    }
+
     public ReactiveCommand<FootprintViewModel, Unit> TargetToMap { get; }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
@@ -159,7 +165,9 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Observable
+            .Return(Unit.Default)
+            .Delay(TimeSpan.FromSeconds(1));
 
         var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
 

@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -7,16 +8,16 @@ namespace FootprintViewer.ViewModels.ToolBar;
 
 public class ToolClick : ViewModelBase, IToolClick
 {
-    private Func<Task> _click = () => Task.Run(() => { });
+    private Func<Task> _click = async () => await Observable.Start(() => { }, RxApp.TaskpoolScheduler);
 
     public ToolClick()
     {
         Click = ReactiveCommand.CreateFromTask(() => _click(), outputScheduler: RxApp.MainThreadScheduler);
     }
 
-    public void SubscribeAsync(Func<Task> click)
+    public void SubscribeAsync(Action click)
     {
-        _click = click;
+        _click = async () => await Observable.Start(click, RxApp.TaskpoolScheduler);
     }
 
     public string GetKey() => (string?)Tag ?? string.Empty;

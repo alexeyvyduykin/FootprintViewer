@@ -46,8 +46,10 @@ public sealed class LayerContainerViewModel : ViewModelBase
             .Select(s => (bool)s!)
             .Subscribe(value => LayerItems.SetValue(s => s.IsVisible = value));
 
-        Observable.StartAsync(() => Task.Run(UpdateLayers), RxApp.MainThreadScheduler).Subscribe();
+        Observable.StartAsync(UpdateLayersAsync, RxApp.MainThreadScheduler);
     }
+
+    private async Task UpdateLayersAsync() => await Observable.Start(() => UpdateLayers(), RxApp.TaskpoolScheduler);
 
     private void UpdateLayers()
     {

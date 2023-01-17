@@ -6,7 +6,8 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
 using System;
-using System.Threading.Tasks;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.Settings;
 
@@ -23,7 +24,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         {
             var mainState = dependencyResolver.GetExistingService<MainState>();
 
-            await Task.Delay(TimeSpan.FromSeconds(0.1));
+            await Observable
+                .Return(Unit.Default)
+                .Delay(TimeSpan.FromSeconds(0.1));
 
             mainState.SaveData(_dataManager);
 

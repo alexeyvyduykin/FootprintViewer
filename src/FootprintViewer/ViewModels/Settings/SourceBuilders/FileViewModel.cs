@@ -2,6 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -38,7 +39,9 @@ public class FileViewModel : ReactiveObject
             return false;
         }
 
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await Observable
+            .Return(Unit.Default)
+            .Delay(TimeSpan.FromSeconds(1));
 
         return await DbHelper.JsonValidationAsync(key, _path);
     }

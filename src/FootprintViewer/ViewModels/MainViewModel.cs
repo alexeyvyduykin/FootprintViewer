@@ -84,8 +84,8 @@ public sealed class MainViewModel : RoutableViewModel
 
         _bottomPanel = factory.CreateBottomPanel();
 
-        _customToolBar.ZoomIn.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomIn()));
-        _customToolBar.ZoomOut.SubscribeAsync(() => Task.Run(() => MapNavigator.ZoomOut()));
+        _customToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        _customToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
         _customToolBar.AddRectangle.Subscribe(RectangleCommand, Reset);
         _customToolBar.AddPolygon.Subscribe(PolygonCommand, Reset);
         _customToolBar.AddCircle.Subscribe(CircleCommand, Reset);
@@ -575,7 +575,7 @@ public sealed class MainViewModel : RoutableViewModel
     {
         if (feature is GeometryFeature gf)
         {
-            Task.Run(async () =>
+            Observable.Start(async () =>
             {
                 if (gf.Fields.Contains("Name") == true)
                 {
@@ -594,7 +594,8 @@ public sealed class MainViewModel : RoutableViewModel
 
                     _dataManager.ForceUpdateData(key);
                 }
-            });
+            },
+            RxApp.TaskpoolScheduler);
         }
     }
 
@@ -606,7 +607,7 @@ public sealed class MainViewModel : RoutableViewModel
 
             gf["Name"] = name;
 
-            Task.Run(async () =>
+            Observable.Start(async () =>
             {
                 var model = new UserGeometry()
                 {
@@ -620,7 +621,8 @@ public sealed class MainViewModel : RoutableViewModel
                 await _dataManager.TryAddAsync(key, model);
 
                 _dataManager.ForceUpdateData(key);
-            });
+            },
+            RxApp.TaskpoolScheduler);
         }
 
         static string GenerateName(UserGeometryType type)
