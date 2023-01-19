@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
 
-public sealed class DataManager : IDataManager
+public class DataManager : IDataManager
 {
     private readonly AsyncLock _mutex = new();
     private readonly Cache<string, ISource> _sourceCache = new();

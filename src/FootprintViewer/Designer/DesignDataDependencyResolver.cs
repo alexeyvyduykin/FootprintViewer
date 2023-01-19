@@ -13,10 +13,12 @@ using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Layers;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Designer;
@@ -140,12 +142,17 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         }
         else if (serviceType == typeof(IDataManager))
         {
-            return _dataManager ??= new DesignTimeRepository();
+            return _dataManager ??= CreateDataManager();
         }
         else if (serviceType == typeof(ILanguageManager))
         {
             return _languageManager ??= new LanguageManager(new LanguagesConfiguration() { AvailableLocales = new[] { "en", "ru" } });
         }
+        throw new Exception();
+    }
+
+    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    {
         throw new Exception();
     }
 
@@ -162,106 +169,92 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         return map;
     }
 
-    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
+    private static DataManager CreateDataManager()
     {
-        throw new Exception();
+        var source1 = new LocalSource<Footprint>(BuildFootprints);
+        var source2 = new LocalSource<GroundTarget>(BuildGroundTargets);
+        var source3 = new LocalSource<Satellite>(BuildSatellites);
+        var source4 = new LocalSource<GroundStation>(BuildGroundStations);
+        var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
+        var source6 = new LocalSource<MapResource>(BuildMapResources);
+        var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
+        var source8 = new LocalSource<FootprintPreviewGeometry>(BuildFootprintPreviewGeometries);
+
+        var sources = new Dictionary<string, IList<ISource>>()
+        {
+            { DbKeys.Footprints.ToString(), new[] { source1 } },
+            { DbKeys.GroundTargets.ToString(), new[] { source2 } },
+            { DbKeys.Satellites.ToString(), new[] { source3 } },
+            { DbKeys.GroundStations.ToString(), new[] { source4 } },
+            { DbKeys.UserGeometries.ToString(), new[] { source5 } },
+            { DbKeys.Maps.ToString(), new[] { source6 } },
+            { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
+            { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } }
+        };
+
+        return new DataManager(sources);
     }
 
-    private class DesignTimeRepository : DataManager
+    private static List<T> Build<T>(int count, Func<T> func)
     {
-        private static readonly Dictionary<string, IList<ISource>> _sources;
+        var tasks = new int[count]
+            .Select(_ => Task<T>.Factory.StartNew(() => func()))
+            .ToArray();
 
-        static DesignTimeRepository()
+        Task.WaitAll(tasks);
+
+        return tasks.Select(s => s.Result).ToList();
+    }
+
+    private static List<Satellite> BuildSatellites() => Build(5, RandomModelBuilder.BuildSatellite);
+
+    private static List<Footprint> BuildFootprints() => Build(10, RandomModelBuilder.BuildFootprint);
+
+    private static List<GroundTarget> BuildGroundTargets() => Build(10, RandomModelBuilder.BuildGroundTarget);
+
+    private static List<UserGeometry> BuildUserGeometries() => Build(10, RandomModelBuilder.BuildUserGeometry);
+
+    private static List<GroundStation> BuildGroundStations() =>
+        new()
         {
-            var source1 = new LocalSource<Footprint>(Task.Run(() => BuildFootprints()));
-            var source2 = new LocalSource<GroundTarget>(Task.Run(() => BuildGroundTargets()));
-            var source3 = new LocalSource<Satellite>(Task.Run(() => BuildSatellites()));
-            var source4 = new LocalSource<GroundStation>(Task.Run(() => BuildGroundStations()));
-            var source5 = new LocalSource<UserGeometry>(Task.Run(() => BuildUserGeometries()));
-            var source6 = new LocalSource<MapResource>(Task.Run(() => BuildMapResources()));
-            var source7 = new LocalSource<FootprintPreview>(Task.Run(() => BuildFootprintPreviews()));
-            var source8 = new LocalSource<FootprintPreviewGeometry>(Task.Run(() => BuildFootprintPreviewGeometries()));
-
-            _sources = new Dictionary<string, IList<ISource>>()
-            {
-                { DbKeys.Footprints.ToString(), new[] { source1 } },
-                { DbKeys.GroundTargets.ToString(), new[] { source2 } },
-                { DbKeys.Satellites.ToString(), new[] { source3 } },
-                { DbKeys.GroundStations.ToString(), new[] { source4 } },
-                { DbKeys.UserGeometries.ToString(), new[] { source5 } },
-                { DbKeys.Maps.ToString(), new[] { source6 } },
-                { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
-                { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } }
-            };
-        }
-
-        public DesignTimeRepository() : base(_sources)
-        {
-
-        }
-
-        private static List<Satellite> BuildSatellites() =>
-            new int[5].Select(_ => RandomModelBuilder.BuildSatellite()).ToList();
-        private static List<Footprint> BuildFootprints() =>
-            new int[10].Select(_ => RandomModelBuilder.BuildFootprint()).ToList();
-
-        private static List<GroundTarget> BuildGroundTargets() =>
-            new int[10].Select(_ => RandomModelBuilder.BuildGroundTarget()).ToList();
-
-        private static List<UserGeometry> BuildUserGeometries() =>
-            new int[10].Select(_ => RandomModelBuilder.BuildUserGeometry()).ToList();
-
-        private static List<GroundStation> BuildGroundStations() =>
-            new()
-            {
                 new GroundStation() { Name = "Москва",      Center = new Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Новосибирск", Center = new Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Хабаровск",   Center = new Point(135.04, 48.29), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Шпицберген",  Center = new Point(    21, 78.38), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Анадырь",     Center = new Point(177.31, 64.44), Angles = new [] { 0.0, 6, 10, 11 } },
                 new GroundStation() { Name = "Тикси",       Center = new Point(128.52, 71.38), Angles = new [] { 0.0, 6, 10, 11 } },
-            };
+        };
 
-        private static List<MapResource> BuildMapResources() =>
-            new()
-            {
+    private static List<MapResource> BuildMapResources() =>
+        new()
+        {
                 new MapResource("WorldMapDefault", ""),
                 new MapResource("OAM-World-1-8-min-J70", ""),
                 new MapResource("OAM-World-1-10-J70", "")
-            };
+        };
 
-        private static List<FootprintPreview> BuildFootprintPreviews() =>
-            new int[8].Select(_ => RandomModelBuilder.BuildFootprintPreview()).ToList();
+    private static List<FootprintPreview> BuildFootprintPreviews() => Build(8, RandomModelBuilder.BuildFootprintPreview);
 
-        private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
-            new()
-            {
+    private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
+        new()
+        {
                 new FootprintPreviewGeometry() { Name = "WorldMapDefault" },
                 new FootprintPreviewGeometry() { Name = "OAM-World-1-8-min-J70" },
                 new FootprintPreviewGeometry() { Name = "OAM-World-1-10-J70" }
-            };
-    }
+        };
 
     private class LocalSource<T> : ISource
     {
-        private List<T>? _list;
-        private readonly Task<List<T>> _task;
+        private readonly Func<List<T>> _func;
 
-        public LocalSource(Task<List<T>> task)
+        public LocalSource(Func<List<T>> func)
         {
-            _task = task;
+            _func = func;
         }
 
-        public IList<object> GetValues()
-        {
-            _list ??= _task.Result;
-            return _list.Cast<object>().ToList();
-        }
+        public IList<object> GetValues() => _func.Invoke().Cast<object>().ToList();
 
-        public async Task<IList<object>> GetValuesAsync() => await Task.Run(async () =>
-        {
-            _list ??= await _task;
-            return _list.Cast<object>().ToList();
-        });
+        public async Task<IList<object>> GetValuesAsync() =>
+            await Observable.Start(() => _func.Invoke().Cast<object>().ToList(), RxApp.TaskpoolScheduler);
     }
 }
