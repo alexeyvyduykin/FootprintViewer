@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using FootprintViewer.Data.DataManager.Caches;
 using Nito.AsyncEx;
 using ReactiveUI;
 using System;
@@ -6,15 +7,15 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Data.DataManager;
 
-// TODO: try to ConcurentDictionary
-public class DataManager : IDataManager
+public sealed class DataManager : IDataManager
 {
     private readonly AsyncLock _mutex = new();
-    private readonly Dictionary<string, IDictionary<ISource, IList<object>>> _cache = new();
+    private readonly Cache<string, ISource> _sourceCache = new();
     private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
     private readonly HashSet<string> _dirtyKeys = new();
 
@@ -23,17 +24,13 @@ public class DataManager : IDataManager
         DataChanged = ReactiveCommand.Create<string[], string[]>(s => s, outputScheduler: RxApp.MainThreadScheduler);
     }
 
-    public DataManager(IDictionary<string, IList<ISource>> sources) : this()
+    public DataManager(IDictionary<string, IList<ISource>> dict) : this()
     {
-        var keys = sources.Keys;
-
-        foreach (var key in keys)
+        foreach (var key in dict.Keys)
         {
-            var list = sources[key].ToList();
+            var list = dict[key].ToList();
 
             _sources.Add(key, list);
-
-            _cache.Add(key, new Dictionary<ISource, IList<object>>());
         }
     }
 
@@ -55,11 +52,6 @@ public class DataManager : IDataManager
         {
             _sources.Add(key, new List<ISource>() { source });
         }
-
-        if (_cache.ContainsKey(key) == false)
-        {
-            _cache.Add(key, new Dictionary<ISource, IList<object>>());
-        }
     }
 
     public void UnregisterSource(string key, ISource source)
@@ -70,23 +62,13 @@ public class DataManager : IDataManager
 
             _sources[key].Remove(source);
 
-            // clear cache
-            var isRemove = _cache[key].Remove(source);
-
-            if (isRemove == false)
-            {
-                throw new Exception();
-            }
-
             if (_sources[key].Count == 0)
             {
                 _sources.Remove(key);
-
-                _cache[key].Clear();
-
-                _cache.Remove(key);
             }
         }
+
+        _sourceCache.Clear(key, new[] { source });
     }
 
     public void UpdateData()
@@ -134,7 +116,7 @@ public class DataManager : IDataManager
 
     public async Task<IList<T>> GetDataAsync<T>(string key, bool caching = true)
     {
-        return await Task.Run(async () =>
+        return await Observable.StartAsync(async () =>
         {
             if (_sources.ContainsKey(key) == true)
             {
@@ -153,30 +135,28 @@ public class DataManager : IDataManager
 
                 foreach (var source in _sources[key])
                 {
-                    if (_cache[key].ContainsKey(source) == false)
+                    if (_sourceCache.ContainsKeys(key, source) == false)
                     {
                         using (await _mutex.LockAsync())
                         {
-                            if (_cache[key].ContainsKey(source) == false)
+                            if (_sourceCache.ContainsKeys(key, source) == false)
                             {
                                 var list = await source.GetValuesAsync();
-                                _cache[key].Add(source, list);
+                                _sourceCache.Caching(key, source, list);
                             }
                         }
                     }
                 }
-
-                return _cache[key].Values.SelectMany(s => s).Cast<T>().ToList();
+                return _sourceCache.GetValues<T>(key);
             }
 
             return new List<T>();
-        });
+        }, RxApp.TaskpoolScheduler);
     }
 
-    // TODO: not safety
     public async Task<bool> TryAddAsync(string key, object value)
     {
-        return await Task.Run(async () =>
+        return await Observable.StartAsync(async () =>
         {
             if (_sources.ContainsKey(key) == true)
             {
@@ -186,15 +166,14 @@ public class DataManager : IDataManager
                     {
                         if (item is IEditableSource editableSource)
                         {
+                            using (await _mutex.LockAsync())
+                            {
+                                _sourceCache.Clear(key, new[] { editableSource });
+                            }
+
                             await editableSource.AddAsync(key, value);
 
-                            if (_cache.ContainsKey(key) == true)
-                            {
-                                if (_cache[key].ContainsKey(item) == true)
-                                {
-                                    _cache[key][item].Add(value);
-                                }
-                            }
+                            ForceUpdateData(key);
 
                             return true;
                         }
@@ -203,13 +182,12 @@ public class DataManager : IDataManager
             }
 
             return false;
-        });
+        }, RxApp.TaskpoolScheduler);
     }
 
-    // TODO: not safety
     public async Task<bool> TryRemoveAsync(string key, object value)
     {
-        return await Task.Run(async () =>
+        return await Observable.StartAsync(async () =>
         {
             if (_sources.ContainsKey(key) == true)
             {
@@ -219,15 +197,14 @@ public class DataManager : IDataManager
                     {
                         if (item is IEditableSource editableSource)
                         {
+                            using (await _mutex.LockAsync())
+                            {
+                                _sourceCache.Clear(key, new[] { editableSource });
+                            }
+
                             await editableSource.RemoveAsync(key, value);
 
-                            if (_cache.ContainsKey(key) == true)
-                            {
-                                if (_cache[key].ContainsKey(item) == true)
-                                {
-                                    _cache[key][item].Remove(value);
-                                }
-                            }
+                            ForceUpdateData(key);
 
                             return true;
                         }
@@ -236,13 +213,12 @@ public class DataManager : IDataManager
             }
 
             return false;
-        });
+        }, RxApp.TaskpoolScheduler);
     }
 
-    // TODO: not safety
     public async Task<bool> TryEditAsync(string key, string id, object newValue)
     {
-        return await Task.Run(async () =>
+        return await Observable.StartAsync(async () =>
         {
             if (_sources.ContainsKey(key) == true)
             {
@@ -252,17 +228,14 @@ public class DataManager : IDataManager
                     {
                         if (item is IEditableSource editableSource)
                         {
+                            using (await _mutex.LockAsync())
+                            {
+                                _sourceCache.Clear(key, new[] { editableSource });
+                            }
+
                             await editableSource.EditAsync(key, id, newValue);
 
-                            if (_cache.ContainsKey(key) == true)
-                            {
-                                if (_cache[key].ContainsKey(item) == true)
-                                {
-                                    //  _cache[key][item].Replace(oldValue, newValue);
-                                    // clear cache
-                                    _cache[key].Remove(item);//.Replace(oldValue, newValue);
-                                }
-                            }
+                            ForceUpdateData(key);
 
                             return true;
                         }
@@ -271,6 +244,6 @@ public class DataManager : IDataManager
             }
 
             return false;
-        });
+        }, RxApp.TaskpoolScheduler);
     }
 }
