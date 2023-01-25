@@ -45,7 +45,7 @@ public class TaskResultConverter : JsonConverter
         }
         else if (jsonObject.ContainsKey("Type"))
         {
-            taskResult = new ComunicationTaskResult();
+            taskResult = new CommunicationTaskResult();
         }
         else
         {

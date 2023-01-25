@@ -18,11 +18,11 @@ public class MainWindowViewModel : ViewModelBase
 {
     private readonly SourceList<TaskViewModel> _tasks = new();
     private readonly SourceList<SatelliteViewModel> _satellites = new();
-    private readonly SourceList<ScheduleItemViewModel> _schedules = new();
+    private readonly SourceList<ViewModelBase> _schedules = new();
 
     private readonly ReadOnlyObservableCollection<TaskViewModel> _taskItems;
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _satelliteItems;
-    private readonly ReadOnlyObservableCollection<ScheduleItemViewModel> _scheduleItems;
+    private readonly ReadOnlyObservableCollection<ViewModelBase> _scheduleItems;
 
     private readonly PlannedScheduleResult _result;
 
@@ -103,15 +103,21 @@ public class MainWindowViewModel : ViewModelBase
     {
         var satelliteName = satellite.Name!;
 
-        var list = _result.PlannedSchedules[satelliteName]
+        var list1 = _result.PlannedSchedules[satelliteName]
             .Where(s => s is ObservationTaskResult)
-            .Select(s => new ScheduleItemViewModel((ObservationTaskResult)s))
+            .Select(s => new ObservationViewModel((ObservationTaskResult)s))
+            .ToList();
+
+        var list2 = _result.PlannedSchedules[satelliteName]
+            .Where(s => s is CommunicationTaskResult)
+            .Select(s => new CommunicationViewModel((CommunicationTaskResult)s))
             .ToList();
 
         _schedules.Edit(innerList =>
         {
             innerList.Clear();
-            innerList.AddRange(list);
+            innerList.AddRange(list1);
+            innerList.AddRange(list2);
         });
     }
 
@@ -119,7 +125,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ReadOnlyObservableCollection<SatelliteViewModel> Satellites => _satelliteItems;
 
-    public ReadOnlyObservableCollection<ScheduleItemViewModel> ScheduleItems => _scheduleItems;
+    public ReadOnlyObservableCollection<ViewModelBase> ScheduleItems => _scheduleItems;
 
     [Reactive]
     public SatelliteViewModel? CurrentSatellite { get; set; }

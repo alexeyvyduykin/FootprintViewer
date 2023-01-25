@@ -9,7 +9,7 @@ public enum CommunicationType
 }
 
 [JsonObject]
-public class ComunicationTaskResult : BaseTaskResult
+public class CommunicationTaskResult : BaseTaskResult
 {
     [JsonProperty("Type")]
     public CommunicationType Type { get; set; }

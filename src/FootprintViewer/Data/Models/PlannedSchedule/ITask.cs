@@ -38,7 +38,7 @@ public class TaskConverter : JsonConverter
         }
         else if (jsonObject.ContainsKey("GroundTargetName"))
         {
-            task = new ComunicationTask();
+            task = new CommunicationTask();
         }
         else
         {

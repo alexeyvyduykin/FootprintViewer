@@ -42,18 +42,26 @@
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 
-
 		<ListBox Items="{Binding ScheduleItems}"
 				 Grid.Column="2">
-			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="vm:ScheduleItemViewModel">
+			<ListBox.DataTemplates>
+				<DataTemplate DataType="{x:Type vm:ObservationViewModel}">
 					<StackPanel>
 						<TextBlock Text="{Binding TaskName}"/>
 						<TextBlock Text="{Binding Begin, StringFormat={}Begin: {0}}"/>
 						<TextBlock Text="{Binding Duration, StringFormat={}Duration: {0}}"/>
+						<TextBlock Text="{Binding Center}"/>
 					</StackPanel>
 				</DataTemplate>
-			</ListBox.ItemTemplate>
+				<DataTemplate DataType="{x:Type vm:CommunicationViewModel}">
+					<StackPanel>
+						<TextBlock Text="{Binding TaskName}"/>
+						<TextBlock Text="{Binding Begin, StringFormat={}Begin: {0}}"/>
+						<TextBlock Text="{Binding Duration, StringFormat={}Duration: {0}}"/>
+						<TextBlock Text="{Binding Type}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.DataTemplates>
 		</ListBox>
 
 	</Grid>
