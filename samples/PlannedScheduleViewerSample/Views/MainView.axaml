@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="using:PlannedScheduleViewerSample.Views"
+             xmlns:vm="using:PlannedScheduleViewerSample.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PlannedScheduleViewerSample.Views.MainView">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="240,120,*"
+		  RowDefinitions="*">
+
+		<ListBox Items="{Binding Tasks}"
+				 Margin="8"
+				 Grid.Column="0">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<views:TaskView DataContext="{Binding}"/>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<TextBlock Grid.Column="1"
+				   Margin="8"
+				   Text="{Binding CurrentSatellite.Name}"/>
+
+		<ItemsControl Grid.Column="1"
+					  Margin="8,38,8,8"
+					  Items="{Binding Satellites}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<RadioButton Content="{Binding Name}"
+								 IsChecked="{Binding IsCheck}"
+								 Command="{Binding $parent[UserControl].DataContext.SatelliteCheck}"
+								 CommandParameter="{Binding}"
+								 GroupName="group"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+
+		<ListBox Items="{Binding ScheduleItems}"
+				 Grid.Column="2">
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="vm:ScheduleItemViewModel">
+					<StackPanel>
+						<TextBlock Text="{Binding TaskName}"/>
+						<TextBlock Text="{Binding Begin, StringFormat={}Begin: {0}}"/>
+						<TextBlock Text="{Binding Duration, StringFormat={}Duration: {0}}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+	</Grid>
+
+</UserControl>
