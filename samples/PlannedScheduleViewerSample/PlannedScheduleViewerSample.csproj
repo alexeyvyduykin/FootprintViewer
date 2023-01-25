@@ -30,6 +30,7 @@
 		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\TimeDataViewer\TimeDataViewer\src\TimeDataViewer\TimeDataViewer.csproj" />
 		<ProjectReference Include="..\JsonDataBuilderSample\JsonDataBuilderSample.csproj" />
 	</ItemGroup>
 </Project>

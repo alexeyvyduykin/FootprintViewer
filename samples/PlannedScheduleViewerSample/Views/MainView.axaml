@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="using:PlannedScheduleViewerSample.Views"
+			 xmlns:controls="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
              xmlns:vm="using:PlannedScheduleViewerSample.ViewModels"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PlannedScheduleViewerSample.Views.MainView">
@@ -11,12 +12,13 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<Grid ColumnDefinitions="240,120,*"
-		  RowDefinitions="*">
+	<Grid ColumnDefinitions="240,240,*"
+		  RowDefinitions="200,*">
 
 		<ListBox Items="{Binding Tasks}"
 				 Margin="8"
-				 Grid.Column="0">
+				 Grid.Column="0"
+				 Grid.Row="1">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<views:TaskView DataContext="{Binding}"/>
@@ -24,11 +26,11 @@
 			</ListBox.ItemTemplate>
 		</ListBox>
 
-		<TextBlock Grid.Column="1"
+		<TextBlock Grid.Row="0"
 				   Margin="8"
 				   Text="{Binding CurrentSatellite.Name}"/>
 
-		<ItemsControl Grid.Column="1"
+		<ItemsControl Grid.Row="0"
 					  Margin="8,38,8,8"
 					  Items="{Binding Satellites}">
 			<ItemsControl.ItemTemplate>
@@ -43,7 +45,9 @@
 		</ItemsControl>
 
 		<ListBox Items="{Binding ScheduleItems}"
-				 Grid.Column="2">
+				 Margin="8"
+				 Grid.Column="1"
+				 Grid.RowSpan="2">
 			<ListBox.DataTemplates>
 				<DataTemplate DataType="{x:Type vm:ObservationViewModel}">
 					<StackPanel>
@@ -63,6 +67,21 @@
 				</DataTemplate>
 			</ListBox.DataTemplates>
 		</ListBox>
+
+		<Panel Grid.Column="2"
+			   Grid.RowSpan="2">
+			<controls:TimelineControl Margin="8"
+									  DataContext="{Binding PlotModel}"
+									  Begin="{Binding $parent[UserControl].DataContext.Begin}"
+									  Duration="{Binding $parent[UserControl].DataContext.Duration}"
+									  x:CompileBindings="False">
+			</controls:TimelineControl>
+		</Panel>
+
+
+		<!--
+		
+		"-->
 
 	</Grid>
 

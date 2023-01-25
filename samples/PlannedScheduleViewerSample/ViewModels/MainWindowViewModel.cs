@@ -14,7 +14,7 @@ using System.Reflection;
 
 namespace PlannedScheduleViewerSample.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly SourceList<TaskViewModel> _tasks = new();
     private readonly SourceList<SatelliteViewModel> _satellites = new();
@@ -68,7 +68,9 @@ public class MainWindowViewModel : ViewModelBase
 
     private void SatelliteCheckImpl(SatelliteViewModel parameter)
     {
-        CurrentSatellite = parameter;
+        CurrentSatellite = parameter; 
+        
+        InitImpl(CurrentSatellite?.Name ?? string.Empty, _result);
     }
 
     private void LoadTasks(PlannedScheduleResult result)
