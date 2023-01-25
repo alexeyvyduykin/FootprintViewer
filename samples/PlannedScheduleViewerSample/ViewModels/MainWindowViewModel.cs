@@ -103,8 +103,9 @@ public class MainWindowViewModel : ViewModelBase
     {
         var satelliteName = satellite.Name!;
 
-        var list = _result.PlannedSchedules[satelliteName].Items
-            .Select(s => new ScheduleItemViewModel(s))
+        var list = _result.PlannedSchedules[satelliteName]
+            .Where(s => s is ObservationTaskResult)
+            .Select(s => new ScheduleItemViewModel((ObservationTaskResult)s))
             .ToList();
 
         _schedules.Edit(innerList =>

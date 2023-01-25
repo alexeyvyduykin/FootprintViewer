@@ -13,7 +13,7 @@ public static class PlannedScheduleBuilder
             TargetName = s.Name ?? string.Empty
         }).OfType<ITask>().ToList();
 
-        var communicationTasks = groundStations.Select((s, index) => new CommunicationTask()
+        var communicationTasks = groundStations.Select((s, index) => new ComunicationTask()
         {
             Name = $"CommunicationTask_{index + 1}",
             GroundTargetName = s.Name ?? string.Empty
@@ -21,8 +21,7 @@ public static class PlannedScheduleBuilder
 
         var tasks = observationTasks.Concat(communicationTasks).ToList();
 
-        var plannedScheduleItems = satellites.ToDictionary(s => s.Name ?? string.Empty, _ => new List<PlannedScheduleItem>());
-        var plannedSchedules = satellites.ToDictionary(s => s.Name ?? string.Empty, _ => new PlannedSchedule());
+        var taskResults = satellites.ToDictionary(s => s.Name ?? string.Empty, _ => new List<ITaskResult>());
 
         foreach (var item in footprints)
         {
@@ -38,46 +37,24 @@ public static class PlannedScheduleBuilder
                 .Where(s => s is ObservationTask observationTask && Equals(observationTask.TargetName, targetName))
                 .FirstOrDefault();
 
-            var plannedScheduleItem = new PlannedScheduleItem()
+            var observationTaskResult = new ObservationTaskResult()
             {
                 TaskName = task?.Name ?? string.Empty,
                 Interval = interval,
+                Footprint = new FootprintFrame()
+                {
+                    Center = item.Center ?? new(null),
+                    Points = item.Points ?? new(null)
+                }
             };
 
-            plannedScheduleItems[satelliteName].Add(plannedScheduleItem);
-        }
-
-        foreach (var item in satellites)
-        {
-            var satelliteName = item.Name ?? string.Empty;
-
-            var satellitePlannedSchedule = plannedScheduleItems[satelliteName];
-
-            string? Func(IList<ITask>? tasks, string targetName)
-            {
-                return tasks?
-                    .Where(s => s is ObservationTask observationTask && Equals(observationTask.TargetName, targetName))
-                    .FirstOrDefault()?.Name;
-            }
-
-            var fs = footprints.Select(s => new FootprintFrame()
-            {
-                TaskName = Func(tasks, s.TargetName ?? string.Empty) ?? string.Empty,
-                Center = s.Center ?? new(null),
-                Points = s.Points ?? new(null)
-            }).ToList();
-
-            plannedSchedules[satelliteName] = new PlannedSchedule()
-            {
-                Items = plannedScheduleItems[satelliteName],
-                Footprints = fs
-            };
+            taskResults[satelliteName].Add(observationTaskResult);
         }
 
         return new PlannedScheduleResult()
         {
             Tasks = tasks,
-            PlannedSchedules = plannedSchedules
+            PlannedSchedules = taskResults
         };
     }
 }

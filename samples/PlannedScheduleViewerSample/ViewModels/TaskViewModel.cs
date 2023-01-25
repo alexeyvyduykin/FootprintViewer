@@ -14,7 +14,7 @@ public class TaskViewModel : ViewModelBase
         {
             Description = observationTask.TargetName;
         }
-        else if (task is CommunicationTask communicationTask)
+        else if (task is ComunicationTask communicationTask)
         {
             Description = communicationTask.GroundTargetName;
         }

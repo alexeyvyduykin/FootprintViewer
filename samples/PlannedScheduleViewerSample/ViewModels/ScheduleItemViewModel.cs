@@ -5,11 +5,11 @@ namespace PlannedScheduleViewerSample.ViewModels;
 
 public class ScheduleItemViewModel : ViewModelBase
 {
-    public ScheduleItemViewModel(PlannedScheduleItem item)
+    public ScheduleItemViewModel(ObservationTaskResult result)
     {
-        TaskName = item.TaskName;
-        Begin = item.Interval.Begin;
-        Duration = item.Interval.Duration;
+        TaskName = result.TaskName;
+        Begin = result.Interval.Begin;
+        Duration = result.Interval.Duration;
     }
 
     public string TaskName { get; set; }

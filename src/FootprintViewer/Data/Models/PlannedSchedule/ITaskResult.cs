@@ -1,23 +1,30 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace FootprintViewer.Data.Models;
 
 [JsonObject]
-[JsonConverter(typeof(TaskConverter))]
-public interface ITask
+[JsonConverter(typeof(TaskResultConverter))]
+public interface ITaskResult
 {
-    string Name { get; set; }
+    string TaskName { get; set; }
+
+    Interval Interval { get; set; }
+
+    List<Interval>? Windows { get; set; }
+
+    Interval? Transition { get; set; }
 }
 
-public class TaskConverter : JsonConverter
+public class TaskResultConverter : JsonConverter
 {
     public override bool CanWrite => false;
 
     public override bool CanRead => true;
 
-    public override bool CanConvert(Type objectType) => objectType == typeof(ITask);
+    public override bool CanConvert(Type objectType) => objectType == typeof(ITaskResult);
 
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new InvalidOperationException("Use default serialization.");
 
@@ -30,23 +37,23 @@ public class TaskConverter : JsonConverter
 
         var jsonObject = JObject.Load(reader);
 
-        ITask? task;
+        ITaskResult? taskResult;
 
-        if (jsonObject.ContainsKey("TargetName"))
+        if (jsonObject.ContainsKey("Footprint"))
         {
-            task = new ObservationTask();
+            taskResult = new ObservationTaskResult();
         }
-        else if (jsonObject.ContainsKey("GroundTargetName"))
+        else if (jsonObject.ContainsKey("Type"))
         {
-            task = new ComunicationTask();
+            taskResult = new ComunicationTaskResult();
         }
         else
         {
             return null;
         }
 
-        serializer.Populate(jsonObject.CreateReader(), task!);
+        serializer.Populate(jsonObject.CreateReader(), taskResult!);
 
-        return task;
+        return taskResult;
     }
 }
