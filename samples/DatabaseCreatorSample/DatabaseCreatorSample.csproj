@@ -15,6 +15,10 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.4" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SpaceScience\SpaceScience.csproj" />
+  </ItemGroup>
   
   <ItemGroup>
     <None Update="appsettings.json">

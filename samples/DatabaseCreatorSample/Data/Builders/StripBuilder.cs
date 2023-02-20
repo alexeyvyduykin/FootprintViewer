@@ -1,5 +1,5 @@
-﻿using DatabaseCreatorSample.Science;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using SpaceScience;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,11 +18,11 @@ internal static class StripBuilder
             var sensorLeft = satellite.ToPRDCTSensor(SwathDirection.Left);
             var sensorRight = satellite.ToPRDCTSensor(SwathDirection.Right);
 
-            var band1 = new Band(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
-            var band2 = new Band(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
+            var swath1 = new Swath(sat.Orbit, sensorLeft.VerticalHalfAngleDEG, sensorLeft.RollAngleDEG);
+            var swath2 = new Swath(sat.Orbit, sensorRight.VerticalHalfAngleDEG, sensorRight.RollAngleDEG);
 
-            var left = BuildStrips(sat, band1);
-            var right = BuildStrips(sat, band2);
+            var left = BuildStrips(sat, swath1);
+            var right = BuildStrips(sat, swath2);
 
             leftStrips.Add(satellite.Name, left);
             rightStrips.Add(satellite.Name, right);
@@ -31,16 +31,16 @@ internal static class StripBuilder
         return (leftStrips, rightStrips);
     }
 
-    private static Dictionary<int, List<List<Point>>> BuildStrips(PRDCTSatellite satellite, Band band)
+    private static Dictionary<int, List<List<Point>>> BuildStrips(PRDCTSatellite satellite, Swath swath)
     {
         var strips = new Dictionary<int, List<List<Point>>>();
 
         foreach (var node in satellite.Nodes().Select(s => s.Value))
         {
-            var near = band.GetNearGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
-            var far = band.GetFarGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
+            var near = swath.GetNearGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
+            var far = swath.GetFarGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
 
-            var engine2D = new BandCore2D(near, far, band.IsCoverPolis);
+            var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
 
             var shapes = engine2D.CreateShapes(false, false);
 

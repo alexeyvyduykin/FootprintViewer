@@ -1,5 +1,5 @@
-﻿using DatabaseCreatorSample.Science;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using SpaceScience;
 using System;
 using System.Collections.Generic;
 using System.Linq;

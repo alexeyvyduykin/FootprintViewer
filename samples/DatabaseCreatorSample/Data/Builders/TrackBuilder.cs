@@ -1,4 +1,4 @@
-﻿using DatabaseCreatorSample.Science;
+﻿using SpaceScience;
 using System;
 using System.Collections.Generic;
 

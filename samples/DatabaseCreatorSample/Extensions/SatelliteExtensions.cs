@@ -1,5 +1,5 @@
 ﻿using DatabaseCreatorSample.Data;
-using DatabaseCreatorSample.Science;
+using SpaceScience;
 using System;
 
 namespace DatabaseCreatorSample;

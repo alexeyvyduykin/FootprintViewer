@@ -1,5 +1,5 @@
-﻿using DatabaseCreatorSample.Science;
-using NetTopologySuite.Geometries;
+﻿using NetTopologySuite.Geometries;
+using SpaceScience;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +26,10 @@ internal static class FootprintBuilder
             var sensor1 = satellite.ToPRDCTSensor(SwathDirection.Left);
             var sensor2 = satellite.ToPRDCTSensor(SwathDirection.Right);
 
-            var band1 = new Band(sat.Orbit, sensor1.VerticalHalfAngleDEG, sensor1.RollAngleDEG);
-            var band2 = new Band(sat.Orbit, sensor2.VerticalHalfAngleDEG, sensor2.RollAngleDEG);
+            var swath1 = new Swath(sat.Orbit, sensor1.VerticalHalfAngleDEG, sensor1.RollAngleDEG);
+            var swath2 = new Swath(sat.Orbit, sensor2.VerticalHalfAngleDEG, sensor2.RollAngleDEG);
 
-            Band[] bands = new Band[] { band1, band2 };
+            Swath[] bands = new Swath[] { swath1, swath2 };
 
             var epoch = sat.Orbit.Epoch;
 
@@ -104,11 +104,11 @@ internal static class FootprintBuilder
         return aCenter + res / 2.0;
     }
 
-    private static (double, Point, IEnumerable<Geo2D>) GetRandomFootprint(PRDCTSatellite satellite, Band band, int node, double u)
+    private static (double, Point, IEnumerable<Geo2D>) GetRandomFootprint(PRDCTSatellite satellite, Swath swath, int node, double u)
     {
         var list = new List<Geo2D>();
 
-        var (t, c) = GetRandomCenterPoint(satellite, band, node, u);
+        var (t, c) = GetRandomCenterPoint(satellite, swath, node, u);
         var center = c.ToDegrees();
 
         double a = _random.Next(0, 90 + 1) * ScienceMath.DegreesToRadians;
@@ -190,14 +190,14 @@ internal static class FootprintBuilder
         return (t, new Point(center.Lon, center.Lat), list);
     }
 
-    private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Band band, int node, double u)
+    private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Swath swath, int node, double u)
     {
-        var a1 = band.NearLine.Alpha1 * ScienceMath.RadiansToDegrees;
-        var a2 = band.FarLine.Alpha1 * ScienceMath.RadiansToDegrees;
+        var a1 = swath.NearLine.Alpha1 * ScienceMath.RadiansToDegrees;
+        var a2 = swath.FarLine.Alpha1 * ScienceMath.RadiansToDegrees;
 
         var angle = GetRandomAngle(a1, a2);
 
-        var track = new CustomTrack(satellite.Orbit, angle, band.NearLine.Direction);
+        var track = new CustomTrack(satellite.Orbit, angle, swath.NearLine.Direction);
 
         var (t, p) = GetGroundPoint(node, u, track, satellite);
 

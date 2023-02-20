@@ -1,4 +1,4 @@
-﻿using DatabaseCreatorSample.Science;
+﻿using SpaceScience;
 using System;
 using System.Collections.Generic;
 
@@ -43,7 +43,7 @@ internal static class SatelliteBuilder
 
     private static double GetRAAN(DateTime epoch, double tAN, double lonAN)
     {
-        Julian jd = new Julian(epoch);
+        var jd = new Julian(epoch);
         double S = jd.ToGmst();
         //double S = orbitState.SiderealTime();       
         return (tAN * Constants.Omega + S) * ScienceMath.RadiansToDegrees + lonAN;
