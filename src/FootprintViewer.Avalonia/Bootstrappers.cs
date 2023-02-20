@@ -105,7 +105,6 @@ public static class Bootstrapper
         services.RegisterConstant(factory.CreateMapNavigator((Map)resolver.GetExistingService<IMap>()), typeof(IMapNavigator));
         services.RegisterConstant(new AreaOfInterest((Map)resolver.GetExistingService<IMap>()), typeof(AreaOfInterest));
 
-        services.RegisterLazySingleton<FootprintPreviewTabViewModel>(() => new FootprintPreviewTabViewModel(resolver));
         services.RegisterLazySingleton<SatelliteTabViewModel>(() => new SatelliteTabViewModel(resolver));
         services.RegisterLazySingleton<GroundTargetTabViewModel>(() => new GroundTargetTabViewModel(resolver));
         services.RegisterLazySingleton<FootprintTabViewModel>(() => new FootprintTabViewModel(resolver));
@@ -120,7 +119,6 @@ public static class Bootstrapper
         {
             Tabs = new List<SidePanelTabViewModel>(new SidePanelTabViewModel[]
             {
-                resolver.GetExistingService<FootprintPreviewTabViewModel>(),
                 resolver.GetExistingService<SatelliteTabViewModel>(),
                 resolver.GetExistingService<GroundStationTabViewModel>(),
                 resolver.GetExistingService<GroundTargetTabViewModel>(),

@@ -45,7 +45,6 @@ public sealed class MainViewModel : RoutableViewModel
     private readonly FootprintTabViewModel _footprintTab;
     private readonly GroundTargetTabViewModel _groundTargetTab;
     private readonly UserGeometryTabViewModel _userGeometryTab;
-    private readonly FootprintPreviewTabViewModel _footprintPreviewTab;
     private readonly ScaleMapBar _scaleMapBar;
     private readonly TimelinePanelViewModel _timelinePanel;
     private ISelector? _selector;
@@ -67,7 +66,6 @@ public sealed class MainViewModel : RoutableViewModel
         _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
         _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
-        _footprintPreviewTab = dependencyResolver.GetExistingService<FootprintPreviewTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
         _timelinePanel = dependencyResolver.GetExistingService<TimelinePanelViewModel>();
