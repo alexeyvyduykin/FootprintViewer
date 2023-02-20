@@ -1,15 +1,12 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace DatabaseCreatorSample.Data
+namespace DatabaseCreatorSample.Data;
+
+public class UserGeometry
 {
-    public enum UserGeometryType { Point, Rectangle, Polygon, Circle }
+    public string Name { get; set; }
 
-    public class UserGeometry
-    {
-        public string Name { get; set; }
+    public UserGeometryType Type { get; set; }
 
-        public UserGeometryType Type { get; set; }
-
-        public Geometry Geometry { get; set; }
-    }
+    public Geometry Geometry { get; set; }
 }

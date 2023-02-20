@@ -1,13 +1,12 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace DatabaseCreatorSample.Data
+namespace DatabaseCreatorSample.Data;
+
+public class GroundStation
 {
-    public class GroundStation
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public Point Center { get; set; }
+    public Point Center { get; set; }
 
-        public double[] Angles { get; set; }
-    }
+    public double[] Angles { get; set; }
 }

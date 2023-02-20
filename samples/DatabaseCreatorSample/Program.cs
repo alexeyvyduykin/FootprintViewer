@@ -11,11 +11,11 @@ namespace DatabaseCreatorSample
     {
         static void Main(string[] args)
         {
-            var model = SceneModel.Build();
+            //var model = SceneModel.Build();
 
             Console.WriteLine("Model load");
 
-            DatabaseBuild(model);
+            //DatabaseBuild(model);
 
             Console.WriteLine("Database build");
         }
