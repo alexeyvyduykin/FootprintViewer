@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
+﻿using DatabaseCreatorSample.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
-using DatabaseCreatorSample.Data;
+using System.Threading.Tasks;
 
 namespace DatabaseCreatorSample
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            //var model = SceneModel.Build();
+            var model = await SceneModel.BuildAsync();
 
             Console.WriteLine("Model load");
 
@@ -21,8 +21,8 @@ namespace DatabaseCreatorSample
         }
 
         static void DatabaseBuild(SceneModel model)
-        {       
-            using FootprintViewerDbContext db = new FootprintViewerDbContext(GetOptions());
+        {
+            using var db = new FootprintViewerDbContext(GetOptions());
 
             db.AddModel(model);
         }
