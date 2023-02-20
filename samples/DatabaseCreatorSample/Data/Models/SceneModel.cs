@@ -1,7 +1,10 @@
-﻿using FootprintViewer.Data;
+﻿using DatabaseCreatorSample.Data.Models;
+using FootprintViewer.Data;
 using RandomDataBuilder.Sources;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace DatabaseCreatorSample.Data;
@@ -17,6 +20,12 @@ public sealed class SceneModel
     public List<Footprint> Footprints { get; set; } = new();
 
     public List<GroundStation> GroundStations { get; set; } = new();
+
+    public List<ObservationTask> ObservationTasks { get; set; } = new();
+
+    public List<CommunicationTask> CommunicationTasks { get; set; } = new();
+
+    public List<TransitionTask> TransitionTasks { get; set; } = new();
 
     private static async Task<IList<Footprint>> CreateRandomFootprints(IList<Satellite> satellites, int count)
     {
@@ -68,25 +77,42 @@ public sealed class SceneModel
         return res.Cast<GroundStation>().ToList();
     }
 
+    private static async Task<IList<ObservationTask>> CreateObservationTasks(IList<Footprint> footprints)
+    {
+        return await Observable.Start(() => ObservationTaskBuilder.Create(footprints), RxApp.TaskpoolScheduler);
+    }
+
+    private static async Task<IList<CommunicationTask>> CreateCommunicationTasks()
+    {
+        return await Observable.Start(() => new List<CommunicationTask>(), RxApp.TaskpoolScheduler);
+    }
+
+    private static async Task<IList<TransitionTask>> CreateTransitionTasks()
+    {
+        return await Observable.Start(() => new List<TransitionTask>(), RxApp.TaskpoolScheduler);
+    }
+
     public static async Task<SceneModel> BuildAsync()
     {
-        var sceneModel = new SceneModel()
-        {
-            Satellites = new List<Satellite>(),
-            GroundTargets = new List<GroundTarget>(),
-            Footprints = new List<Footprint>(),
-            GroundStations = new List<GroundStation>(),
-        };
+        var sceneModel = new SceneModel();
 
         var satellites = await CreateRandomSatellites(5);
         var gss = await CreateRandomGroundStations(6);
         var footprints = await CreateRandomFootprints(satellites, 2000);
         var gts = await CreateRandomGroundTargets(footprints, 5000);
 
+        var observationTasks = await CreateObservationTasks(footprints);
+        var communicationTasks = await CreateCommunicationTasks();
+        var transitionTasks = await CreateTransitionTasks();
+
         sceneModel.Satellites.AddRange(satellites);
         sceneModel.Footprints.AddRange(footprints);
         sceneModel.GroundTargets.AddRange(gts);
         sceneModel.GroundStations.AddRange(gss);
+
+        sceneModel.ObservationTasks.AddRange(observationTasks);
+        sceneModel.CommunicationTasks.AddRange(communicationTasks);
+        sceneModel.TransitionTasks.AddRange(transitionTasks);
 
         return sceneModel;
     }

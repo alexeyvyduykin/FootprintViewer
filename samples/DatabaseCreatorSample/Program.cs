@@ -17,12 +17,21 @@ namespace DatabaseCreatorSample
 
             //DatabaseBuild(model);
 
+            PlannedScheduleDbCreate(model);
+
             Console.WriteLine("Database build");
         }
 
         static void DatabaseBuild(SceneModel model)
         {
             using var db = new FootprintViewerDbContext(GetOptions());
+
+            db.AddModel(model);
+        }
+
+        static void PlannedScheduleDbCreate(SceneModel model)
+        {
+            using var db = new PlannedScheduleDbContext(GetPlannedScheduleOptions());
 
             db.AddModel(model);
         }
@@ -45,6 +54,18 @@ namespace DatabaseCreatorSample
             var options = optionsBuilder.UseNpgsql(connectionString, options =>
             {
                 options.SetPostgresVersion(new Version(major, minor));
+                options.UseNetTopologySuite();
+            }).Options;
+
+            return options;
+        }
+
+        static DbContextOptions<PlannedScheduleDbContext> GetPlannedScheduleOptions()
+        {
+            var connectionString = "Host=localhost;Port=5432;Database=PlannedScheduleDatabase;Username=postgres;Password=user";
+            var optionsBuilder = new DbContextOptionsBuilder<PlannedScheduleDbContext>();
+            var options = optionsBuilder.UseNpgsql(connectionString, options =>
+            {
                 options.UseNetTopologySuite();
             }).Options;
 
