@@ -1,5 +1,5 @@
-﻿using DatabaseCreatorSample.Data.Models;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.Models;
 using RandomDataBuilder.Sources;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -21,11 +21,9 @@ public sealed class SceneModel
 
     public List<GroundStation> GroundStations { get; set; } = new();
 
-    public List<ObservationTask> ObservationTasks { get; set; } = new();
+    public Dictionary<string, List<ITaskResult>> ObservationTasks { get; set; } = new();
 
-    public List<CommunicationTask> CommunicationTasks { get; set; } = new();
-
-    public List<TransitionTask> TransitionTasks { get; set; } = new();
+    public List<ITask> Tasks { get; set; } = new();
 
     private static async Task<IList<Footprint>> CreateRandomFootprints(IList<Satellite> satellites, int count)
     {
@@ -77,19 +75,19 @@ public sealed class SceneModel
         return res.Cast<GroundStation>().ToList();
     }
 
-    private static async Task<IList<ObservationTask>> CreateObservationTasks(IList<Footprint> footprints)
+    //private static async Task<IList<ObservationTask2>> CreateObservationTasks(IList<Footprint> footprints)
+    //{
+    //    return await Observable.Start(() => ObservationTaskBuilder.Create(footprints), RxApp.TaskpoolScheduler);
+    //}
+
+    private static async Task<Dictionary<string, List<ITaskResult>>> CreateObservationTasks(IList<ITask> tasks, IList<Footprint> footprints)
     {
-        return await Observable.Start(() => ObservationTaskBuilder.Create(footprints), RxApp.TaskpoolScheduler);
+        return await Observable.Start(() => ObservationTaskBuilder.Create(tasks, footprints), RxApp.TaskpoolScheduler);
     }
 
-    private static async Task<IList<CommunicationTask>> CreateCommunicationTasks()
+    private static async Task<List<ITask>> CreateTasks(IList<GroundTarget> groundTargets)
     {
-        return await Observable.Start(() => new List<CommunicationTask>(), RxApp.TaskpoolScheduler);
-    }
-
-    private static async Task<IList<TransitionTask>> CreateTransitionTasks()
-    {
-        return await Observable.Start(() => new List<TransitionTask>(), RxApp.TaskpoolScheduler);
+        return await Observable.Start(() => TaskBuilder.CreateTasks(groundTargets), RxApp.TaskpoolScheduler);
     }
 
     public static async Task<SceneModel> BuildAsync()
@@ -101,18 +99,16 @@ public sealed class SceneModel
         var footprints = await CreateRandomFootprints(satellites, 2000);
         var gts = await CreateRandomGroundTargets(footprints, 5000);
 
-        var observationTasks = await CreateObservationTasks(footprints);
-        var communicationTasks = await CreateCommunicationTasks();
-        var transitionTasks = await CreateTransitionTasks();
+        var tasks = await CreateTasks(gts);
+        var observationTasks = await CreateObservationTasks(tasks, footprints);
 
         sceneModel.Satellites.AddRange(satellites);
         sceneModel.Footprints.AddRange(footprints);
         sceneModel.GroundTargets.AddRange(gts);
         sceneModel.GroundStations.AddRange(gss);
 
-        sceneModel.ObservationTasks.AddRange(observationTasks);
-        sceneModel.CommunicationTasks.AddRange(communicationTasks);
-        sceneModel.TransitionTasks.AddRange(transitionTasks);
+        sceneModel.Tasks = tasks;
+        sceneModel.ObservationTasks = observationTasks;
 
         return sceneModel;
     }

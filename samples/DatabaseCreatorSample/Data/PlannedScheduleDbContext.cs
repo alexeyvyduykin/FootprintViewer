@@ -1,8 +1,12 @@
-﻿using DatabaseCreatorSample.Data.Models;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NetTopologySuite.IO;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace DatabaseCreatorSample.Data;
 
@@ -16,11 +20,7 @@ internal class PlannedScheduleDbContext : DbContext
 
     public DbSet<UserGeometry> UserGeometries { get; set; }
 
-    public DbSet<ObservationTask> ObservationTasks { get; set; }
-
-    public DbSet<CommunicationTask> CommunicationTasks { get; set; }
-
-    public DbSet<TransitionTask> TransitionTasks { get; set; }
+    public DbSet<PlannedScheduleResult> PlannedSchedules { get; set; }
 
     public PlannedScheduleDbContext(DbContextOptions<PlannedScheduleDbContext> options) : base(options) { }
 
@@ -34,20 +34,30 @@ internal class PlannedScheduleDbContext : DbContext
         // GroudnTargets
         modelBuilder.Entity<GroundTarget>(GroundTargetConfigure);
 
-        // ObservationTasks
-        modelBuilder.Entity<ObservationTask>(ObservationTaskConfigure);
-
-        // CommunicationTasks
-        modelBuilder.Entity<CommunicationTask>(CommunicationTaskConfigure);
-
-        // TransitionTasks
-        modelBuilder.Entity<TransitionTask>(TransitionTaskConfigure);
-
         // GroundStations
         modelBuilder.Entity<GroundStation>(GroundStationConfigure);
 
         // UserGeometries
         modelBuilder.Entity<UserGeometry>(UserGeometryConfigure);
+
+        // PlannedSchedules
+        modelBuilder.Entity<PlannedScheduleResult>(PlannedScheduleRecordConfigure);
+    }
+
+    protected void PlannedScheduleRecordConfigure(EntityTypeBuilder<PlannedScheduleResult> builder)
+    {
+        builder.Property(b => b.Name).IsRequired();
+        builder.HasKey(b => b.Name);
+
+        builder.Property(e => e.DateTime).HasColumnType("timestamp without time zone");
+
+        builder.Property(e => e.Tasks).HasConversion(
+            v => SerializeObject(v),
+            v => DeserializeObject<List<ITask>>(v) ?? new());
+
+        builder.Property(e => e.PlannedSchedules).HasConversion(
+            v => SerializeObject(v),
+            v => DeserializeObject<Dictionary<string, List<ITaskResult>>>(v) ?? new());
     }
 
     protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)
@@ -64,34 +74,6 @@ internal class PlannedScheduleDbContext : DbContext
         builder.Property(e => e.Type).HasConversion(
             v => v.ToString(),
             v => (GroundTargetType)Enum.Parse(typeof(GroundTargetType), v));
-    }
-
-    protected void TaskConfigure<T>(EntityTypeBuilder<T> builder) where T : BaseTask
-    {
-        builder.Property(b => b.Name).IsRequired();
-        builder.HasKey(b => b.Name);
-
-        builder.Property(e => e.ActiveBeginTime).HasColumnType("timestamp without time zone");
-        builder.Property(e => e.AvailableBeginTime).HasColumnType("timestamp without time zone");
-    }
-
-    protected void ObservationTaskConfigure(EntityTypeBuilder<ObservationTask> builder)
-    {
-        TaskConfigure(builder);
-
-        builder.Property(e => e.Direction).HasConversion(
-            v => v.ToString(),
-            v => (SwathDirection)Enum.Parse(typeof(SwathDirection), v));
-    }
-
-    protected void CommunicationTaskConfigure(EntityTypeBuilder<CommunicationTask> builder)
-    {
-        TaskConfigure(builder);
-    }
-
-    protected void TransitionTaskConfigure(EntityTypeBuilder<TransitionTask> builder)
-    {
-        TaskConfigure(builder);
     }
 
     protected void GroundStationConfigure(EntityTypeBuilder<GroundStation> builder)
@@ -114,14 +96,55 @@ internal class PlannedScheduleDbContext : DbContext
         Database.EnsureDeleted();
         Database.EnsureCreated();
 
-        Satellites.AddRange(model.Satellites);
+        var observations = model.ObservationTasks;
+        var satellites = model.Satellites;
+        var tasks = model.Tasks;
+
+        Satellites.AddRange(satellites);
         GroundTargets.AddRange(model.GroundTargets);
         GroundStations.AddRange(model.GroundStations);
 
-        ObservationTasks.AddRange(model.ObservationTasks);
-        CommunicationTasks.AddRange(model.CommunicationTasks);
-        TransitionTasks.AddRange(model.TransitionTasks);
+        var res = new PlannedScheduleResult()
+        {
+            Name = "PlannedSchedule1",
+            DateTime = DateTime.Now,
+            Tasks = tasks,
+            PlannedSchedules = observations
+        };
+
+        PlannedSchedules.Add(res);
 
         SaveChanges();
+    }
+
+    private static string SerializeObject(object? value)
+    {
+        var serializer = GeoJsonSerializer.Create();
+        using var stringWriter = new StringWriter();
+        using var jsonWriter = new JsonTextWriter(stringWriter);
+        serializer.Serialize(jsonWriter, value);
+        return stringWriter.ToString();
+
+        //return JsonConvert.SerializeObject(value,
+        //    new JsonSerializerSettings
+        //    {
+        //        NullValueHandling = NullValueHandling.Ignore
+        //    });
+    }
+
+    private static T? DeserializeObject<T>(string value)
+    {
+        var serializer = GeoJsonSerializer.Create();
+
+        using var stringReader = new StringReader(value);
+        using var jsonReader = new JsonTextReader(stringReader);
+
+        return serializer.Deserialize<T>(jsonReader);
+
+        //return JsonConvert.DeserializeObject<T>(value,
+        //    new JsonSerializerSettings
+        //    {
+        //        NullValueHandling = NullValueHandling.Ignore
+        //    });
     }
 }
