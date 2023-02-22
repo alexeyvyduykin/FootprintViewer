@@ -56,6 +56,11 @@ public static class DesignData
 
     public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
 
+    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver)
+    {
+        IsActive = true,
+    };
+
     public static FootprintPreviewViewModel FootprintPreview => new(RandomModelBuilder.BuildFootprintPreview());
 
     public static FootprintViewModel Footprint => new(RandomModelBuilder.BuildFootprint()) { IsShowInfo = true };

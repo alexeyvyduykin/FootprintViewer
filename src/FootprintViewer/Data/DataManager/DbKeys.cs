@@ -20,4 +20,6 @@ public enum DbKeys
     FootprintPreviews,
     [EnumMember(Value = "footprintPreviewGeometries")]
     FootprintPreviewGeometries,
+    [EnumMember(Value = "plannedSchedules")]
+    PlannedSchedules,
 }

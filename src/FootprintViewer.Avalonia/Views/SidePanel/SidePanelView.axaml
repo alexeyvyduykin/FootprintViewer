@@ -57,6 +57,11 @@
 					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
 				</Viewbox>
 			</DataTemplate>
+			<DataTemplate x:Key="PlannedScheduleTabViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="ChartTimeline"/>
+				</Viewbox>
+			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 

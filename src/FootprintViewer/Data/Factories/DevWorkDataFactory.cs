@@ -11,6 +11,7 @@ public class DevWorkDataFactory : IDataFactory
     public IDataManager CreateDataManager()
     {
         var connectionString = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
+        var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
 
         // footprints
         var footprintsKey = DbKeys.Footprints.ToString();
@@ -31,6 +32,10 @@ public class DevWorkDataFactory : IDataFactory
         // userGeometries
         var userGeometriesKey = DbKeys.UserGeometries.ToString();
         var userGeometriesSource = new EditableDatabaseSource(userGeometriesKey, connectionString, "UserGeometries");
+
+        // plannedSchedules
+        var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
+        var plannedSchedulesSource = new DatabaseSource(plannedSchedulesKey, connectionString2, "PlannedSchedules");
 
         // maps
         var mapsKey = DbKeys.Maps.ToString();
@@ -66,7 +71,8 @@ public class DevWorkDataFactory : IDataFactory
             { userGeometriesKey, new[] { userGeometriesSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },
-            { footprintPreviewGeometriesKey, new[] { mapSource5 } }
+            { footprintPreviewGeometriesKey, new[] { mapSource5 } },
+            { plannedSchedulesKey, new[] { plannedSchedulesSource } }
         };
 
         return new DataManager.DataManager(sources);
