@@ -1,6 +1,9 @@
-﻿using NetTopologySuite.Geometries;
+﻿using FootprintViewer.Data.Models;
+using NetTopologySuite.Geometries;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -90,6 +93,29 @@ internal static class RandomModelBuilder
         {
             Name = $"UserGeometry{_random.Next(1, 101):000}",
             Type = (UserGeometryType)_random.Next(0, 4),
+        };
+    }
+
+    public static PlannedScheduleResult BuildPlannedSchedule()
+    {
+        var count = 10;
+
+        var footprints = Enumerable.Range(0, count).Select(_ => BuildFootprint()).ToList();
+        var satellites = footprints.Select(s => s.SatelliteName).Distinct().ToList();
+
+        var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", TargetName = s.TargetName! }).ToList();
+
+        var list = tasks.Select((s, i) => ObservationTaskBuilder.CreateObservationTaskResult(s.Name, footprints[i])).ToList();
+
+        return new PlannedScheduleResult()
+        {
+            Name = "PlannedSchedule01",
+            DateTime = DateTime.Now,
+            Tasks = tasks,
+            PlannedSchedules = new Dictionary<string, List<ITaskResult>>()
+            {
+                { "Satellite1", list }
+            },
         };
     }
 }

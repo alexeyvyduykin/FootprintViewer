@@ -1,12 +1,11 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DatabaseCreatorSample.Data;
+namespace FootprintViewer.Data;
 
-public static class ObservationTaskBuilder
+internal class ObservationTaskBuilder
 {
     private static readonly Random _random = new();
 

@@ -1,4 +1,5 @@
-﻿using FootprintViewer.ViewModels.Settings;
+﻿using FootprintViewer.Data.Models;
+using FootprintViewer.ViewModels.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -96,7 +97,8 @@ internal static class DbHelper
             DbKeys.Satellites => s => new SatelliteDbContext(tableName, s),
             DbKeys.GroundStations => s => new GroundStationDbContext(tableName, s),
             DbKeys.UserGeometries => s => new UserGeometryDbContext(tableName, s),
-            _ => throw new Exception(),
+            DbKeys.PlannedSchedules => s => new PlannedScheduleDbContext(tableName, s),
+            _ => throw new Exception($"DBContext for key={key} not register."),
         };
     }
 
@@ -155,7 +157,7 @@ internal static class DbHelper
             DbKeys.Satellites => TableInfoType.Satellite,
             DbKeys.GroundStations => TableInfoType.GroundStation,
             DbKeys.UserGeometries => TableInfoType.UserGeometry,
-            _ => throw new Exception(),
+            _ => throw new Exception($"Table info for key={key} not register."),
         };
     }
 
@@ -169,6 +171,7 @@ internal static class DbHelper
             DbKeys.Satellites => typeof(Satellite),
             DbKeys.GroundStations => typeof(GroundStation),
             DbKeys.UserGeometries => typeof(UserGeometry),
+            DbKeys.PlannedSchedules => typeof(PlannedScheduleResult),
             _ => throw new Exception(),
         };
     }
@@ -183,7 +186,7 @@ internal static class DbHelper
             DbKeys.Satellites => s => GetValues<Satellite>(s),
             DbKeys.GroundStations => s => GetValues<GroundStation>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
-            _ => throw new Exception(),
+            _ => throw new Exception($"DbHelper key={key} not register."),
         };
     }
 
@@ -197,7 +200,7 @@ internal static class DbHelper
             DbKeys.Satellites => s => GetValues<Satellite>(s),
             DbKeys.GroundStations => s => GetValues<GroundStation>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
-            _ => throw new Exception(),
+            _ => throw new Exception($"DbHelper key={key} not register."),
         };
     }
 
@@ -210,7 +213,7 @@ internal static class DbHelper
             DbKeys.Maps => MapResource.Builder,
             DbKeys.FootprintPreviews => FootprintPreview.Builder,
             DbKeys.FootprintPreviewGeometries => FootprintPreviewGeometry.Builder,
-            _ => throw new Exception(),
+            _ => throw new Exception($"DbHelper key={key} not register."),
         };
     }
 
@@ -246,7 +249,7 @@ internal static class DbHelper
                 DbKeys.Satellites => JsonValidation<List<Satellite>>(path),
                 DbKeys.GroundStations => JsonValidation<List<GroundStation>>(path),
                 DbKeys.UserGeometries => JsonValidation<List<UserGeometry>>(path),
-                _ => throw new Exception()
+                _ => throw new Exception($"DbHelper key={key} not register.")
             };
         });
     }

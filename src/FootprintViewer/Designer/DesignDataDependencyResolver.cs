@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.Models;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.Styles;
@@ -37,6 +38,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private UserGeometryProvider? _userGeometryProvider;
     private SatelliteTabViewModel? _satelliteTab;
     private FootprintTabViewModel? _footprintTab;
+    private PlannedScheduleTabViewModel? _plannedScheduleTab;
     private GroundTargetTabViewModel? _groundTargetTab;
     private GroundStationTabViewModel? _groundStationTab;
     private UserGeometryTabViewModel? _userGeometryTab;
@@ -112,6 +114,10 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         {
             return _footprintTab ??= new FootprintTabViewModel(this);
         }
+        else if (serviceType == typeof(PlannedScheduleTabViewModel))
+        {
+            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel(this);
+        }
         else if (serviceType == typeof(GroundTargetTabViewModel))
         {
             return _groundTargetTab ??= new GroundTargetTabViewModel(this);
@@ -179,6 +185,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         var source6 = new LocalSource<MapResource>(BuildMapResources);
         var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
         var source8 = new LocalSource<FootprintPreviewGeometry>(BuildFootprintPreviewGeometries);
+        var source9 = new LocalSource<PlannedScheduleResult>(BuildPlannedSchedule);
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
@@ -189,7 +196,8 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },
             { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
-            { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } }
+            { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } },
+            { DbKeys.PlannedSchedules.ToString(), new[] { source9 } }
         };
 
         return new DataManager(sources);
@@ -209,6 +217,8 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private static List<Satellite> BuildSatellites() => Build(5, RandomModelBuilder.BuildSatellite);
 
     private static List<Footprint> BuildFootprints() => Build(10, RandomModelBuilder.BuildFootprint);
+
+    private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, RandomModelBuilder.BuildPlannedSchedule);
 
     private static List<GroundTarget> BuildGroundTargets() => Build(10, RandomModelBuilder.BuildGroundTarget);
 
