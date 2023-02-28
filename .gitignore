@@ -338,3 +338,6 @@ userData/
 
 # Snapshots
 snapshots/
+
+# Json files
+samples/JsonDataBuilderSample/Output/
