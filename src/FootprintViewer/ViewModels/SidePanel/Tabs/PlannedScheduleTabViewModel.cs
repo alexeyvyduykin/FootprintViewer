@@ -22,7 +22,7 @@ namespace FootprintViewer.ViewModels.SidePanel.Tabs;
 public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
-    private readonly SourceList<(string, ITaskResult)> _plannedSchedules = new();
+    private readonly SourceList<ITaskResult> _plannedSchedules = new();
     private readonly ReadOnlyObservableCollection<TaskResultViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly IMapNavigator _mapNavigator;
@@ -48,7 +48,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
         _plannedSchedules
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new TaskResultViewModel(s.Item1, s.Item2))
+            .Transform(s => new TaskResultViewModel(s))
             .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
             .Bind(out _items)
             .DisposeMany()
@@ -93,7 +93,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
         if (result != null)
         {
-            var list = result.PlannedSchedules.SelectMany(s => s.Value.Select(task => (s.Key, task))).ToList();
+            var list = result.PlannedSchedules.ToList();
 
             _plannedSchedules.Edit(innerList =>
             {

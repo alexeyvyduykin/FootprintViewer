@@ -12,15 +12,15 @@ namespace DatabaseCreatorSample.Data;
 
 internal class PlannedScheduleDbContext : DbContext
 {
-    public DbSet<Satellite> Satellites { get; set; }
+    public DbSet<Satellite> Satellites => Set<Satellite>();
 
-    public DbSet<GroundTarget> GroundTargets { get; set; }
+    public DbSet<GroundTarget> GroundTargets => Set<GroundTarget>();
 
-    public DbSet<GroundStation> GroundStations { get; set; }
+    public DbSet<GroundStation> GroundStations => Set<GroundStation>();
 
-    public DbSet<UserGeometry> UserGeometries { get; set; }
+    public DbSet<UserGeometry> UserGeometries => Set<UserGeometry>();
 
-    public DbSet<PlannedScheduleResult> PlannedSchedules { get; set; }
+    public DbSet<PlannedScheduleResult> PlannedSchedules => Set<PlannedScheduleResult>();
 
     public PlannedScheduleDbContext(DbContextOptions<PlannedScheduleDbContext> options) : base(options) { }
 
@@ -57,7 +57,7 @@ internal class PlannedScheduleDbContext : DbContext
 
         builder.Property(e => e.PlannedSchedules).HasConversion(
             v => SerializeObject(v),
-            v => DeserializeObject<Dictionary<string, List<ITaskResult>>>(v) ?? new());
+            v => DeserializeObject<List<ITaskResult>>(v) ?? new());
     }
 
     protected void SatelliteConfigure(EntityTypeBuilder<Satellite> builder)

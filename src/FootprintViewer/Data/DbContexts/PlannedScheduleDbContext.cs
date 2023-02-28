@@ -46,7 +46,7 @@ public class PlannedScheduleDbContext : DbCustomContext
 
         builder.Property(e => e.PlannedSchedules).HasConversion(
             v => SerializeObject(v),
-            v => DeserializeObject<Dictionary<string, List<ITaskResult>>>(v) ?? new());
+            v => DeserializeObject<List<ITaskResult>>(v) ?? new());
     }
 
     public override IQueryable<object> GetTable() => PlannedSchedules.Cast<object>();

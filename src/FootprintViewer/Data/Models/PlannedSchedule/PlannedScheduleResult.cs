@@ -17,5 +17,5 @@ public class PlannedScheduleResult
     public List<ITask> Tasks { get; set; } = new();
 
     [JsonProperty("PlannedSchedules")]
-    public Dictionary<string, List<ITaskResult>> PlannedSchedules { get; set; } = new();
+    public List<ITaskResult> PlannedSchedules { get; set; } = new();
 }

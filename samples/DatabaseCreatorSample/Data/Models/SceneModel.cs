@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data;
+using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Models;
 using RandomDataBuilder.Sources;
 using ReactiveUI;
@@ -21,7 +22,7 @@ public sealed class SceneModel
 
     public List<GroundStation> GroundStations { get; set; } = new();
 
-    public Dictionary<string, List<ITaskResult>> ObservationTasks { get; set; } = new();
+    public List<ITaskResult> ObservationTasks { get; set; } = new();
 
     public List<ITask> Tasks { get; set; } = new();
 
@@ -75,14 +76,9 @@ public sealed class SceneModel
         return res.Cast<GroundStation>().ToList();
     }
 
-    //private static async Task<IList<ObservationTask2>> CreateObservationTasks(IList<Footprint> footprints)
-    //{
-    //    return await Observable.Start(() => ObservationTaskBuilder.Create(footprints), RxApp.TaskpoolScheduler);
-    //}
-
-    private static async Task<Dictionary<string, List<ITaskResult>>> CreateObservationTasks(IList<ITask> tasks, IList<Footprint> footprints)
+    private static async Task<List<ITaskResult>> CreateObservationTasks(IList<ITask> tasks, IList<Footprint> footprints)
     {
-        return await Observable.Start(() => ObservationTaskBuilder.Create(tasks, footprints), RxApp.TaskpoolScheduler);
+        return await Observable.Start(() => RandomModelBuilder.Create(tasks, footprints), RxApp.TaskpoolScheduler);
     }
 
     private static async Task<List<ITask>> CreateTasks(IList<GroundTarget> groundTargets)

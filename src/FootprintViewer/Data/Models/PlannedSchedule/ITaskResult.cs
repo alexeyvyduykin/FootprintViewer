@@ -11,6 +11,8 @@ public interface ITaskResult
 {
     string TaskName { get; set; }
 
+    string SatelliteName { get; set; }
+
     Interval Interval { get; set; }
 
     List<Interval>? Windows { get; set; }

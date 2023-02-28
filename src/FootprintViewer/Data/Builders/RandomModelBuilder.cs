@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
-internal static class RandomModelBuilder
+public static class RandomModelBuilder
 {
     private static readonly Random _random = new();
 
@@ -101,21 +101,72 @@ internal static class RandomModelBuilder
         var count = 10;
 
         var footprints = Enumerable.Range(0, count).Select(_ => BuildFootprint()).ToList();
-        var satellites = footprints.Select(s => s.SatelliteName).Distinct().ToList();
 
         var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", TargetName = s.TargetName! }).ToList();
 
-        var list = tasks.Select((s, i) => ObservationTaskBuilder.CreateObservationTaskResult(s.Name, footprints[i])).ToList();
+        var list = tasks.Select((s, i) => CreateObservationTaskResult(s.Name, footprints[i])).ToList();
 
         return new PlannedScheduleResult()
         {
             Name = "PlannedSchedule01",
             DateTime = DateTime.Now,
             Tasks = tasks,
-            PlannedSchedules = new Dictionary<string, List<ITaskResult>>()
-            {
-                { "Satellite1", list }
-            },
+            PlannedSchedules = list
+        };
+    }
+
+    public static List<ITaskResult> Create(IList<ITask> tasks, IList<Footprint>? footprints)
+    {
+        if (footprints == null)
+        {
+            return new();
+        }
+
+        return tasks
+            .Where(s => s is ObservationTask)
+            .Cast<ObservationTask>()
+            .SelectMany(s =>
+                footprints
+                    .Where(f => Equals(f.TargetName, s.TargetName))
+                    .Select(f => CreateObservationTaskResult(s.Name, f)))
+            .ToList();
+
+        //foreach (var item in tasks.Where(s => s is ObservationTask).Cast<ObservationTask>())
+        //{
+        //    var list = footprints.Where(s => Equals(s.TargetName, item.TargetName)).ToList();
+
+        //    foreach (var footprint in list)
+        //    {
+        //        var satelliteName = footprint.SatelliteName!;
+
+        //        var task = CreateObservationTaskResult(item.Name, footprint);
+
+        //        result.Add(task);
+        //    }
+        //}
+
+        //return result;
+    }
+
+    public static ITaskResult CreateObservationTaskResult(string taskName, Footprint footprint)
+    {
+        var begin = footprint.Begin;
+        var duration = footprint.Duration;
+
+        var windowDuration = duration * (_random.Next(30, 51) / 10.0);
+
+        var windowBeginSec = _random.Next(0, (int)(windowDuration - duration) + 1);
+
+        var windowBegin = begin.AddSeconds(-windowBeginSec);
+
+        return new ObservationTaskResult()
+        {
+            TaskName = taskName,
+            SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
+            Interval = new Interval { Begin = begin, Duration = duration },
+            Footprint = new FootprintFrame { Center = footprint.Center!, Points = footprint.Points! },
+            Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList(),
+            Transition = null
         };
     }
 }

@@ -5,11 +5,11 @@ namespace FootprintViewer.ViewModels.SidePanel.Items;
 
 public sealed class TaskResultViewModel : ViewModelBase
 {
-    public TaskResultViewModel(string satelliteName, ITaskResult taskResult)
+    public TaskResultViewModel(ITaskResult taskResult)
     {
         Model = taskResult;
 
-        SatelliteName = satelliteName;
+        SatelliteName = taskResult.SatelliteName;
         TaskName = taskResult.TaskName;
         Begin = taskResult.Interval.Begin;
         Duration = taskResult.Interval.Duration;

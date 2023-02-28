@@ -21,31 +21,24 @@ public static class PlannedScheduleBuilder
 
         var tasks = observationTasks.Concat(communicationTasks).ToList();
 
-        var observationTaskResults = BuildObservationTaskResults(satellites, footprints, tasks);
+        var observationTaskResults = BuildObservationTaskResults(footprints, tasks);
         var comminicationTaskResults = BuildCommunicationTaskResults(satellites, groundStations, footprints, tasks);
 
-        var dict = new Dictionary<string, List<ITaskResult>>();
-
-        foreach (var satName in observationTaskResults.Keys)
-        {
-            var list = observationTaskResults[satName].Concat(comminicationTaskResults[satName]).ToList();
-            dict.Add(satName, list);
-        }
+        var list = observationTaskResults.Concat(comminicationTaskResults).ToList();
 
         return new PlannedScheduleResult()
         {
             Tasks = tasks,
-            PlannedSchedules = dict
+            PlannedSchedules = list
         };
     }
 
-    private static Dictionary<string, List<ITaskResult>> BuildObservationTaskResults(IList<Satellite> satellites, IList<Footprint> footprints, IList<ITask> tasks)
+    private static List<ITaskResult> BuildObservationTaskResults(IList<Footprint> footprints, IList<ITask> tasks)
     {
-        var taskResults = satellites.ToDictionary(s => s.Name ?? string.Empty, _ => new List<ITaskResult>());
+        var taskResults = new List<ITaskResult>();
 
         foreach (var item in footprints)
         {
-            var satelliteName = item.SatelliteName ?? string.Empty;
             var targetName = item.TargetName;
             var interval = new Interval()
             {
@@ -60,6 +53,7 @@ public static class PlannedScheduleBuilder
             var observationTaskResult = new ObservationTaskResult()
             {
                 TaskName = task?.Name ?? string.Empty,
+                SatelliteName = item.SatelliteName ?? "SatelliteDefault",
                 Interval = interval,
                 Footprint = new FootprintFrame()
                 {
@@ -68,13 +62,13 @@ public static class PlannedScheduleBuilder
                 }
             };
 
-            taskResults[satelliteName].Add(observationTaskResult);
+            taskResults.Add(observationTaskResult);
         }
 
         return taskResults;
     }
 
-    private static Dictionary<string, List<ITaskResult>> BuildCommunicationTaskResults(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
+    private static List<ITaskResult> BuildCommunicationTaskResults(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
     {
         var minDate = footprints.Select(s => s.Begin).Min();
         var maxDate = footprints.Select(s => s.Begin.AddSeconds(s.Duration)).Max();
@@ -83,12 +77,10 @@ public static class PlannedScheduleBuilder
         var dt1 = totalSeconds / 2.0;
         var dt2 = totalSeconds / 2.0;
 
-        var taskResults = satellites.ToDictionary(s => s.Name ?? string.Empty, _ => new List<ITaskResult>());
+        var taskResults = new List<ITaskResult>();
 
-        foreach (var sat in satellites)
+        foreach (var satName in satellites.Select(s => s.Name ?? "SatelliteDefault"))
         {
-            var satelliteName = sat.Name ?? string.Empty;
-
             foreach (var gs in groundStations)
             {
                 var task = tasks
@@ -107,6 +99,7 @@ public static class PlannedScheduleBuilder
                 var communicationTaskResult1 = new CommunicationTaskResult()
                 {
                     TaskName = task?.Name ?? string.Empty,
+                    SatelliteName = satName,
                     Interval = interval1,
                     Type = CommunicationType.Uplink,
                 };
@@ -114,16 +107,16 @@ public static class PlannedScheduleBuilder
                 var communicationTaskResult2 = new CommunicationTaskResult()
                 {
                     TaskName = task?.Name ?? string.Empty,
+                    SatelliteName = satName,
                     Interval = interval2,
                     Type = CommunicationType.Downlink,
                 };
 
-                taskResults[satelliteName].Add(communicationTaskResult1);
-                taskResults[satelliteName].Add(communicationTaskResult2);
+                taskResults.Add(communicationTaskResult1);
+                taskResults.Add(communicationTaskResult2);
             }
         }
 
         return taskResults;
     }
-
 }
