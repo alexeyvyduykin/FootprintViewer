@@ -13,7 +13,7 @@ public static class TaskBuilder
             .Select((s, i) => (ITask)new ObservationTask()
             {
                 Name = $"ObservationTask{(i + 1):0000}",
-                TargetName = s.Name!
+                GroundTargetName = s.Name!
             }).ToList() ?? new();
     }
 }

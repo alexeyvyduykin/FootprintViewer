@@ -32,11 +32,11 @@ public class TaskConverter : JsonConverter
 
         ITask? task;
 
-        if (jsonObject.ContainsKey("TargetName"))
+        if (jsonObject.ContainsKey("GroundTargetName"))
         {
             task = new ObservationTask();
         }
-        else if (jsonObject.ContainsKey("GroundTargetName"))
+        else if (jsonObject.ContainsKey("GroundStationName"))
         {
             task = new CommunicationTask();
         }

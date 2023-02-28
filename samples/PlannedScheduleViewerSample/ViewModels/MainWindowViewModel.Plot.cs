@@ -25,23 +25,25 @@ public partial class MainWindowViewModel
 
     private PlotModel CreatePlotModel(string satName, PlannedScheduleResult result)
     {
-        var satelliteNames = result.PlannedSchedules.Keys.ToList();
+        var satelliteNames = result.PlannedSchedules.Select(s => s.SatelliteName).Distinct().ToList();
 
-        var min = result.PlannedSchedules.Values.Select(s => s.Min(t => t.Interval.Begin)).Min();
-        var max = result.PlannedSchedules.Values.Select(s => s.Max(t => t.Interval.Begin)).Max();
+        var min = result.PlannedSchedules.Min(t => t.Interval.Begin);
+        var max = result.PlannedSchedules.Max(t => t.Interval.Begin);
 
         Epoch = min.Date;
 
         BeginScenario = ToTotalDays(Epoch.Date, _timeOrigin) - 1;
         EndScenario = BeginScenario + 3;
-         
-        var items = result.PlannedSchedules[satName]         
+
+        var items = result.PlannedSchedules
+            .Where(s => Equals(s.SatelliteName, satName))
             .Select(s =>
             {
                 return CreateInterval(s.TaskName, Epoch, s.Interval.Begin, s.Interval.Duration);
             }).ToList();
 
-        var Labels = result.PlannedSchedules[satName]
+        var Labels = result.PlannedSchedules
+            .Where(s => Equals(s.SatelliteName, satName))
             .Take(5)
             .Select(s => new LabelViewModel() { Label = s.TaskName })
             .ToList();

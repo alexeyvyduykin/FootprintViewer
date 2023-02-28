@@ -8,6 +8,6 @@ public class ObservationTask : ITask
     [JsonProperty("Name")]
     public string Name { get; set; } = string.Empty;
 
-    [JsonProperty("TargetName")]
-    public string TargetName { get; set; } = string.Empty;
+    [JsonProperty("GroundTargetName")]
+    public string GroundTargetName { get; set; } = string.Empty;
 }

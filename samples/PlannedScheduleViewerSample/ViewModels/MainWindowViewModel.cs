@@ -68,8 +68,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void SatelliteCheckImpl(SatelliteViewModel parameter)
     {
-        CurrentSatellite = parameter; 
-        
+        CurrentSatellite = parameter;
+
         InitImpl(CurrentSatellite?.Name ?? string.Empty, _result);
     }
 
@@ -86,11 +86,14 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void LoadSatellites(PlannedScheduleResult result)
     {
-        var list = result.PlannedSchedules.Keys.Select((s, index) => new SatelliteViewModel()
-        {
-            Name = s,
-            IsCheck = (index == 0)
-        });
+        var list = result.PlannedSchedules
+            .Select(s => s.SatelliteName)
+            .Distinct()
+            .Select((s, index) => new SatelliteViewModel()
+            {
+                Name = s,
+                IsCheck = (index == 0)
+            });
 
         CurrentSatellite = list.FirstOrDefault()!;
 
@@ -105,12 +108,14 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         var satelliteName = satellite.Name!;
 
-        var list1 = _result.PlannedSchedules[satelliteName]
+        var list1 = _result.PlannedSchedules
+            .Where(s => Equals(s.SatelliteName, satelliteName))
             .Where(s => s is ObservationTaskResult)
             .Select(s => new ObservationViewModel((ObservationTaskResult)s))
             .ToList();
 
-        var list2 = _result.PlannedSchedules[satelliteName]
+        var list2 = _result.PlannedSchedules
+            .Where(s => Equals(s.SatelliteName, satelliteName))
             .Where(s => s is CommunicationTaskResult)
             .Select(s => new CommunicationViewModel((CommunicationTaskResult)s))
             .ToList();

@@ -12,11 +12,11 @@ public class TaskViewModel : ViewModelBase
 
         if (task is ObservationTask observationTask)
         {
-            Description = observationTask.TargetName;
+            Description = observationTask.GroundTargetName;
         }
         else if (task is CommunicationTask communicationTask)
         {
-            Description = communicationTask.GroundTargetName;
+            Description = communicationTask.GroundStationName;
         }
     }
 

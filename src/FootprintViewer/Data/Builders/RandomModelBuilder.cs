@@ -102,7 +102,7 @@ public static class RandomModelBuilder
 
         var footprints = Enumerable.Range(0, count).Select(_ => BuildFootprint()).ToList();
 
-        var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", TargetName = s.TargetName! }).ToList();
+        var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", GroundTargetName = s.TargetName! }).ToList();
 
         var list = tasks.Select((s, i) => CreateObservationTaskResult(s.Name, footprints[i])).ToList();
 
@@ -127,7 +127,7 @@ public static class RandomModelBuilder
             .Cast<ObservationTask>()
             .SelectMany(s =>
                 footprints
-                    .Where(f => Equals(f.TargetName, s.TargetName))
+                    .Where(f => Equals(f.TargetName, s.GroundTargetName))
                     .Select(f => CreateObservationTaskResult(s.Name, f)))
             .ToList();
 
