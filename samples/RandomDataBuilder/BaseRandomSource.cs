@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data.DataManager;
+﻿using FootprintViewer.Data;
 
 namespace RandomDataBuilder;
 

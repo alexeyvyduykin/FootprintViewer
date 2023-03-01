@@ -1,7 +1,9 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Factories;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.Styles;
@@ -41,7 +43,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private GroundTargetTabViewModel? _groundTargetTab;
     private GroundStationTabViewModel? _groundStationTab;
     private UserGeometryTabViewModel? _userGeometryTab;
-    private FootprintPreviewTabViewModel? _footprintPreviewTab;
+    //private FootprintPreviewTabViewModel? _footprintPreviewTab;
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
     private CustomToolBarViewModel? _customToolBar;
@@ -121,10 +123,10 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         {
             return _groundTargetTab ??= new GroundTargetTabViewModel(this);
         }
-        else if (serviceType == typeof(FootprintPreviewTabViewModel))
-        {
-            return _footprintPreviewTab ??= new FootprintPreviewTabViewModel(this);
-        }
+        //else if (serviceType == typeof(FootprintPreviewTabViewModel))
+        //{
+        //    return _footprintPreviewTab ??= new FootprintPreviewTabViewModel(this);
+        //}
         else if (serviceType == typeof(UserGeometryTabViewModel))
         {
             return _userGeometryTab ??= new UserGeometryTabViewModel(this);
@@ -182,8 +184,8 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         var source4 = new LocalSource<GroundStation>(BuildGroundStations);
         var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
         var source6 = new LocalSource<MapResource>(BuildMapResources);
-        var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
-        var source8 = new LocalSource<FootprintPreviewGeometry>(BuildFootprintPreviewGeometries);
+        //var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
+        //var source8 = new LocalSource<FootprintPreviewGeometry>(BuildFootprintPreviewGeometries);
         var source9 = new LocalSource<PlannedScheduleResult>(BuildPlannedSchedule);
 
         var sources = new Dictionary<string, IList<ISource>>()
@@ -194,8 +196,8 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
             { DbKeys.GroundStations.ToString(), new[] { source4 } },
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },
-            { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
-            { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } },
+            //{ DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
+            //{ DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } },
             { DbKeys.PlannedSchedules.ToString(), new[] { source9 } }
         };
 
@@ -242,15 +244,15 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
                 new MapResource("OAM-World-1-10-J70", "")
         };
 
-    private static List<FootprintPreview> BuildFootprintPreviews() => Build(8, RandomModelBuilder.BuildFootprintPreview);
+    //private static List<FootprintPreview> BuildFootprintPreviews() => Build(8, RandomModelBuilder.BuildFootprintPreview);
 
-    private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
-        new()
-        {
-                new FootprintPreviewGeometry() { Name = "WorldMapDefault" },
-                new FootprintPreviewGeometry() { Name = "OAM-World-1-8-min-J70" },
-                new FootprintPreviewGeometry() { Name = "OAM-World-1-10-J70" }
-        };
+    //private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
+    //    new()
+    //    {
+    //            new FootprintPreviewGeometry() { Name = "WorldMapDefault" },
+    //            new FootprintPreviewGeometry() { Name = "OAM-World-1-8-min-J70" },
+    //            new FootprintPreviewGeometry() { Name = "OAM-World-1-10-J70" }
+    //    };
 
     private class LocalSource<T> : ISource
     {

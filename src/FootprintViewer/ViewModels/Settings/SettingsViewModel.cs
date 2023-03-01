@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.AppStates;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data;
 using FootprintViewer.Localization;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;

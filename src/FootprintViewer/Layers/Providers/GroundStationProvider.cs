@@ -1,6 +1,8 @@
 ﻿using ConcurrentCollections;
 using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
+using FootprintViewer.Factories;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Fetcher;

@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.AppStates;
-using FootprintViewer.Data.DataManager;
-using FootprintViewer.Data.DataManager.Sources;
+using FootprintViewer.Data;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels.Navigation;
 using FootprintViewer.ViewModels.Settings.SourceBuilders;
 using ReactiveUI;

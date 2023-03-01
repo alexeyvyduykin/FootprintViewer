@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data.DataManager;
+﻿using FootprintViewer.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 

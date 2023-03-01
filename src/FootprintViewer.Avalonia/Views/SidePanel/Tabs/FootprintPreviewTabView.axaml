@@ -14,20 +14,20 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:filtersView="clr-namespace:FootprintViewer.Avalonia.Views.SidePanel.Filters"
              xmlns:prop="using:FootprintViewer.Avalonia.Properties"
-			 x:DataType="tabs:FootprintPreviewTabViewModel"
+			
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850"
 			 d:DataContext="{x:Static vmd:DesignData.FootprintPreviewTab}">
-
+	<!--x:DataType="tabs:FootprintPreviewTabViewModel"-->
 	<UserControl.Resources>
-		<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">
+		<!--<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">
 			<itemsView:FootprintPreviewView DataContext="{Binding}">
 				<i:Interaction.Behaviors>
 					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
 					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
 				</i:Interaction.Behaviors>
 			</itemsView:FootprintPreviewView>
-		</DataTemplate>
+		</DataTemplate>-->
 		<DataTemplate x:Key="GroupTemplate">
 			<Border Background="Transparent"
 					Cursor="Help"

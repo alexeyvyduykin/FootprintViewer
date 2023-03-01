@@ -8,7 +8,7 @@
 			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:conv="using:FootprintViewer.Avalonia.Converters"
-			 xmlns:dataModels="clr-namespace:FootprintViewer.Data.Models;assembly=FootprintViewer"
+			 xmlns:dataModels="clr-namespace:FootprintViewer.Data.Models;assembly=FootprintViewer.Data"
 			 x:DataType="items:TaskResultViewModel"
              mc:Ignorable="d"
 			 d:DesignWidth="280"

@@ -1,5 +1,5 @@
 using DynamicData;
-using FootprintViewer.Data.DataManager.Caches;
+using FootprintViewer.Data.Caches;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.UnitTests.Data;

@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.AppStates.Extensions;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data;
 using System.Linq;
 using System.Runtime.Serialization;
 

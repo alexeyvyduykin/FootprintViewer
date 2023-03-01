@@ -1,5 +1,5 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
+using FootprintViewer.Data.Models;
 using FootprintViewer.Styles;
 using NetTopologySuite.Geometries;
 using ReactiveUI;

@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data;
 using FootprintViewer.ViewModels;
 using ReactiveUI;
 using Splat;

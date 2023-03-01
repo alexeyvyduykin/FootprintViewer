@@ -1,6 +1,8 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
+using FootprintViewer.Factories;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;

@@ -1,4 +1,5 @@
-﻿using FootprintViewer.ViewModels.Dialogs;
+﻿using FootprintViewer.Data;
+using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;

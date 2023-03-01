@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Data.DataManager;
-using FootprintViewer.Data.DataManager.Sources;
+using FootprintViewer.Data;
+using FootprintViewer.Data.Sources;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;

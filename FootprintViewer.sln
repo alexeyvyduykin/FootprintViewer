@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlannedScheduleViewerSample
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeDataViewer", "..\TimeDataViewer\TimeDataViewer\src\TimeDataViewer\TimeDataViewer.csproj", "{7CEF8DBB-DC81-47BC-BFA5-678686F50808}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootprintViewer.Data", "src\FootprintViewer.Data\FootprintViewer.Data.csproj", "{D113C86C-6E81-416B-A1FE-FEDCE204E04B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,6 +121,10 @@ Global
 		{7CEF8DBB-DC81-47BC-BFA5-678686F50808}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CEF8DBB-DC81-47BC-BFA5-678686F50808}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CEF8DBB-DC81-47BC-BFA5-678686F50808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D113C86C-6E81-416B-A1FE-FEDCE204E04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D113C86C-6E81-416B-A1FE-FEDCE204E04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D113C86C-6E81-416B-A1FE-FEDCE204E04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D113C86C-6E81-416B-A1FE-FEDCE204E04B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +147,7 @@ Global
 		{4EC768DC-D7B6-4BEB-A1DD-14EE68D4F9B1} = {DA262A54-175F-4675-ABA8-5F37C5145BA8}
 		{8ADDAC8A-7C31-4ECB-A828-0D4829FA623E} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{7CEF8DBB-DC81-47BC-BFA5-678686F50808} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
+		{D113C86C-6E81-416B-A1FE-FEDCE204E04B} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}

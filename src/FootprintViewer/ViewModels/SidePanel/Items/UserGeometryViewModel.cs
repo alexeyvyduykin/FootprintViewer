@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Data.Models;
 
 namespace FootprintViewer.ViewModels.SidePanel.Items;
 

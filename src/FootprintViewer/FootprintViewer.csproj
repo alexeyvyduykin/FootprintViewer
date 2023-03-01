@@ -32,12 +32,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Data\" />
 		<Folder Include="Settings\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
+		<ProjectReference Include="..\FootprintViewer.Data\FootprintViewer.Data.csproj" />
 		<ProjectReference Include="..\SpaceScience\SpaceScience.csproj" />
 	</ItemGroup>
 

@@ -1,5 +1,7 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
+using FootprintViewer.Factories;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.Dialogs;
@@ -755,7 +757,7 @@ public sealed class MainViewModel : RoutableViewModel
 
         designer.EndCreating.Subscribe(s =>
         {
-            AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Point);
+            AddUserGeometry(s.Feature.Copy(), UserGeometryType.Point);
 
             HideTip();
 
@@ -783,7 +785,7 @@ public sealed class MainViewModel : RoutableViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Rectangle);
+                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Rectangle);
 
                 HideTip();
 
@@ -811,7 +813,7 @@ public sealed class MainViewModel : RoutableViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Circle);
+                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Circle);
 
                 HideTip();
 
@@ -870,7 +872,7 @@ public sealed class MainViewModel : RoutableViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), Data.UserGeometryType.Polygon);
+                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Polygon);
 
                 HideTip();
 

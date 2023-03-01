@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
 using SpaceScience;
 

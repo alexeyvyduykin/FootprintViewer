@@ -1,5 +1,6 @@
 ﻿using BruTile.MbTiles;
-using FootprintViewer.Data;
+using FootprintViewer.Data.Models;
+using FootprintViewer.Factories;
 using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Layers;

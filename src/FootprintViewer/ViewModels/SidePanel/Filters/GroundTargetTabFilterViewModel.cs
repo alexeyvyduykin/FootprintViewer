@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Data.Models;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;

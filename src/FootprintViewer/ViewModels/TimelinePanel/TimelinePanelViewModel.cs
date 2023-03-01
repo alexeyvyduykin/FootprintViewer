@@ -1,7 +1,8 @@
 ﻿using Avalonia.Media;
 using DynamicData;
 using FootprintViewer.Data;
-using FootprintViewer.Data.DataManager;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
