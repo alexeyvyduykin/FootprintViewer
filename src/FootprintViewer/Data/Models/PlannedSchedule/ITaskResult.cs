@@ -15,7 +15,7 @@ public interface ITaskResult
 
     Interval Interval { get; set; }
 
-    List<Interval>? Windows { get; set; }
+    //List<Interval>? Windows { get; set; }
 
     Interval? Transition { get; set; }
 }

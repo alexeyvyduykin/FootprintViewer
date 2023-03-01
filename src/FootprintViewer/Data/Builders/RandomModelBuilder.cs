@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer.Data.Builders;
+namespace FootprintViewer.Data;
 
 public static class RandomModelBuilder
 {
@@ -104,18 +104,20 @@ public static class RandomModelBuilder
 
         var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", GroundTargetName = s.TargetName! }).ToList();
 
-        var list = tasks.Select((s, i) => CreateObservationTaskResult(s.Name, footprints[i])).ToList();
+        var list = tasks.Select((s, i) => BuildObservationTaskResult(s.Name, footprints[i])).ToList();
+        var windows = tasks.Select((s, i) => BuildTaskAvailabilities(s.Name, footprints[i])).ToList();
 
         return new PlannedScheduleResult()
         {
             Name = "PlannedSchedule01",
             DateTime = DateTime.Now,
             Tasks = tasks,
+            TaskAvailabilities = windows,
             PlannedSchedules = list
         };
     }
 
-    public static List<ITaskResult> Create(IList<ITask> tasks, IList<Footprint>? footprints)
+    public static List<ITaskResult> BuildObservationTaskResults(IList<ITask> tasks, IList<Footprint>? footprints)
     {
         if (footprints == null)
         {
@@ -128,7 +130,7 @@ public static class RandomModelBuilder
             .SelectMany(s =>
                 footprints
                     .Where(f => Equals(f.TargetName, s.GroundTargetName))
-                    .Select(f => CreateObservationTaskResult(s.Name, f)))
+                    .Select(f => BuildObservationTaskResult(s.Name, f)))
             .ToList();
 
         //foreach (var item in tasks.Where(s => s is ObservationTask).Cast<ObservationTask>())
@@ -148,7 +150,7 @@ public static class RandomModelBuilder
         //return result;
     }
 
-    public static ITaskResult CreateObservationTaskResult(string taskName, Footprint footprint)
+    public static ITaskResult BuildObservationTaskResult(string taskName, Footprint footprint)
     {
         var begin = footprint.Begin;
         var duration = footprint.Duration;
@@ -159,14 +161,241 @@ public static class RandomModelBuilder
 
         var windowBegin = begin.AddSeconds(-windowBeginSec);
 
-        return new ObservationTaskResult()
+        var taskResult = new ObservationTaskResult()
         {
             TaskName = taskName,
             SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
             Interval = new Interval { Begin = begin, Duration = duration },
             Footprint = new FootprintFrame { Center = footprint.Center!, Points = footprint.Points! },
-            Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList(),
+            //Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList(),
             Transition = null
         };
+
+        return taskResult;
+    }
+
+    private static TaskAvailability BuildTaskAvailabilities(string taskName, Footprint footprint)
+    {
+        var begin = footprint.Begin;
+        var duration = footprint.Duration;
+
+        var windowDuration = duration * (_random.Next(30, 51) / 10.0);
+
+        var windowBeginSec = _random.Next(0, (int)(windowDuration - duration) + 1);
+
+        var windowBegin = begin.AddSeconds(-windowBeginSec);
+
+        return new TaskAvailability()
+        {
+            TaskName = taskName,
+            SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
+            Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList()
+        };
+    }
+
+    public static List<ITaskResult> BuildCommunicationTaskResults(List<TaskAvailability> availabilities)
+    {
+        var taskResults = new List<ITaskResult>();
+
+        foreach (var item in availabilities)
+        {
+            var count = item.Windows.Count;
+
+            var indexUplink = _random.Next(0, count);
+            var indexDownlink = _random.Next(0, count);
+            if (indexUplink == indexDownlink)
+            {
+                indexDownlink++;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var ival = item.Windows[i];
+
+                if (i == indexUplink)
+                {
+                    var begin = ival.Begin;
+                    var duration = ival.Duration;
+                    var newDuration = _random.Next((int)(duration / 3), (int)(duration / 2) + 1);
+                    var start = _random.Next(0, (int)(duration - newDuration));
+
+                    var taskResult = new CommunicationTaskResult()
+                    {
+                        TaskName = item.TaskName,
+                        SatelliteName = item.SatelliteName,
+                        Interval = new() { Begin = begin.AddSeconds(start), Duration = newDuration },
+                        Type = CommunicationType.Uplink,
+                    };
+
+                    taskResults.Add(taskResult);
+                }
+
+                if (i == indexDownlink)
+                {
+                    var begin = ival.Begin;
+                    var duration = ival.Duration;
+                    var newDuration = _random.Next((int)(duration / 3), (int)(duration / 2) + 1);
+                    var start = _random.Next(0, (int)(duration - newDuration));
+
+                    var taskResult = new CommunicationTaskResult()
+                    {
+                        TaskName = item.TaskName,
+                        SatelliteName = item.SatelliteName,
+                        Interval = new() { Begin = begin.AddSeconds(start), Duration = newDuration },
+                        Type = CommunicationType.Downlink,
+                    };
+
+                    taskResults.Add(taskResult);
+                }
+            }
+        }
+
+        return taskResults;
+    }
+
+    public static List<TaskAvailability> BuildCommunicationTaskAvailabilities(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
+    {
+        var radius = 10.0;
+        var minTaskAvailability = 120;
+        var maxTaskAvailability = 181;
+
+        var list = new List<TaskAvailability>();
+
+        var commiunicationTasks = tasks.Where(s => s is CommunicationTask).Cast<CommunicationTask>().ToList();
+
+        foreach (var satName in satellites.Select(s => s.Name ?? "SatelliteDefault"))
+        {
+            foreach (var item in commiunicationTasks)
+            {
+                var gsName = item.GroundStationName;
+                var gs = groundStations.Where(s => Equals(s.Name, gsName)).Single();
+
+                var visibleIntervals = footprints
+                    .Where(s => IsInArea(s.Center!, gs.Center, radius))
+                    .Select(s => (s.Begin, s.Duration))
+                    .ToList();
+
+                var newIntervals = new List<Interval>();
+
+                foreach (var (begin, duration) in visibleIntervals)
+                {
+                    var centerDateTime = begin.AddSeconds(duration / 2.0);
+                    var newDuration = _random.Next(minTaskAvailability, maxTaskAvailability);
+                    var newHalfDuration = newDuration / 2.0;
+
+                    var newBegin = centerDateTime.AddSeconds(-newHalfDuration);
+
+                    newIntervals.Add(new Interval() { Begin = newBegin, Duration = newDuration });
+                }
+
+                var validIntervals = ToValidRange(newIntervals);
+
+                var res = new TaskAvailability()
+                {
+                    TaskName = item.Name,
+                    SatelliteName = satName,
+                    Windows = validIntervals
+                };
+
+                list.Add(res);
+            }
+        }
+
+        return list;
+    }
+
+    public static List<TaskAvailability> BuildObservationTaskAvailabilities(IList<Footprint> footprints, IList<ITask> tasks)
+    {
+        var minTaskAvailability = 60;
+        var maxTaskAvailability = 121;
+
+        var observationTasks = tasks.Where(s => s is ObservationTask).Cast<ObservationTask>().ToList();
+
+        var list = new List<TaskAvailability>();
+
+        foreach (var item in footprints)
+        {
+            var begin = item.Begin;
+            var duration = item.Duration;
+
+            var gtName = item.TargetName;
+            var interval = new Interval()
+            {
+                Begin = item.Begin,
+                Duration = item.Duration
+            };
+
+            var centerDateTime = begin.AddSeconds(duration / 2.0);
+            var newDuration = _random.Next(minTaskAvailability, maxTaskAvailability);
+            var newHalfDuration = newDuration / 2.0;
+
+            var newBegin = centerDateTime.AddSeconds(-newHalfDuration);
+
+            var ival = new Interval { Begin = newBegin, Duration = newDuration };
+
+            var task = observationTasks
+                .Where(s => Equals(s.GroundTargetName, gtName))
+                .FirstOrDefault()!;
+
+            var res = new TaskAvailability()
+            {
+                TaskName = task.Name,
+                SatelliteName = item.SatelliteName!,
+                Windows = new() { ival }
+            };
+
+            list.Add(res);
+        }
+
+        return list;
+    }
+
+
+    private static bool IsInArea(Point point, Point center, double r)
+    {
+        var c0 = center.Coordinate;
+        var c1 = new Coordinate(c0.X - r, c0.Y + r);
+        var c2 = new Coordinate(c0.X + r, c0.Y + r);
+        var c3 = new Coordinate(c0.X + r, c0.Y - r);
+        var c4 = new Coordinate(c0.X - r, c0.Y - r);
+        var poly = new Polygon(new LinearRing(new[] { c1, c2, c3, c4, c1 }));
+        return poly.Contains(point);
+    }
+
+    private static List<Interval> ToValidRange(List<Interval> intervals)
+    {
+        var list = new List<Interval>();
+
+        foreach (var item in intervals)
+        {
+            if (list.Count == 0)
+            {
+                list.Add(item);
+            }
+            else
+            {
+                var current = list.Last();
+
+                if (current.End() > item.Begin)
+                {
+                    var min = current.Begin > item.Begin ? item.Begin : current.Begin;
+                    var max = current.End() > item.End() ? current.End() : item.End();
+
+                    list.RemoveAt(list.Count - 1);
+                    list.Add(new() { Begin = min, Duration = (max - min).TotalSeconds });
+                }
+                else
+                {
+                    list.Add(item);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    private static DateTime End(this Interval interval)
+    {
+        return interval.Begin.AddSeconds(interval.Duration);
     }
 }

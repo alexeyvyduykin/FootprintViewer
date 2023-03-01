@@ -25,7 +25,7 @@ public class FootprintViewerDbContext : DbContext
     //        options => options.SetPostgresVersion(new Version(9, 6)));
     //}
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("postgis");
 

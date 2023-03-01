@@ -23,7 +23,7 @@ public class PlannedScheduleDbContext : DbCustomContext
 
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("postgis");
 
@@ -43,6 +43,10 @@ public class PlannedScheduleDbContext : DbCustomContext
         builder.Property(e => e.Tasks).HasConversion(
             v => SerializeObject(v),
             v => DeserializeObject<List<ITask>>(v) ?? new());
+
+        builder.Property(e => e.TaskAvailabilities).HasConversion(
+            v => SerializeObject(v),
+            v => DeserializeObject<List<TaskAvailability>>(v) ?? new());
 
         builder.Property(e => e.PlannedSchedules).HasConversion(
             v => SerializeObject(v),

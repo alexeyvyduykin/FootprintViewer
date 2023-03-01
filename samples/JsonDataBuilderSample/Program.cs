@@ -22,19 +22,19 @@ internal class Program
         var groundTargets = await DataBuilder.CreateRandomGroundTargets(footprints, 5000);
         var plannedSchedule = PlannedScheduleBuilder.Build(satellites, groundTargets, groundStations, footprints);
 
-    //    JsonHelper.SerializeToFile(footprintPath, footprints);
+        //    JsonHelper.SerializeToFile(footprintPath, footprints);
         var footprintSuccess = JsonHelper.Verified<IList<Footprint>>(footprintPath);
         Console.WriteLine($"File {Path.GetFileName(footprintPath)} is build and verified = {footprintSuccess}.");
 
-    //    JsonHelper.SerializeToFile(satellitePath, satellites);
+        //    JsonHelper.SerializeToFile(satellitePath, satellites);
         var satelliteSuccess = JsonHelper.Verified<IList<Satellite>>(satellitePath);
         Console.WriteLine($"File {Path.GetFileName(satellitePath)} is build and verified = {satelliteSuccess}.");
 
-    //    JsonHelper.SerializeToFile(groundStationPath, groundStations);
+        //    JsonHelper.SerializeToFile(groundStationPath, groundStations);
         var groundStationSuccess = JsonHelper.Verified<IList<GroundStation>>(groundStationPath);
         Console.WriteLine($"File {Path.GetFileName(groundStationPath)} is build and verified = {groundStationSuccess}.");
 
-    //    JsonHelper.SerializeToFile(groundTargetPath, groundTargets);
+        //    JsonHelper.SerializeToFile(groundTargetPath, groundTargets);
         var groundTargetSuccess = JsonHelper.Verified<IList<GroundTarget>>(groundTargetPath);
         Console.WriteLine($"File {Path.GetFileName(groundTargetPath)} is build and verified = {groundTargetSuccess}.");
 

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace FootprintViewer.Data.Models;
 
@@ -15,8 +14,8 @@ public abstract class BaseTaskResult : ITaskResult
     [JsonProperty("Interval")]
     public Interval Interval { get; set; } = new();
 
-    [JsonProperty("Windows")]
-    public List<Interval>? Windows { get; set; }
+    //[JsonProperty("Windows")]
+    //public List<Interval>? Windows { get; set; }
 
     [JsonProperty("Transition")]
     public Interval? Transition { get; set; }

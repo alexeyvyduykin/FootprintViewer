@@ -20,7 +20,7 @@ namespace FootprintViewer.Data
 
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("postgis");
 

@@ -16,6 +16,9 @@ public class PlannedScheduleResult
     [JsonProperty("Tasks")]
     public List<ITask> Tasks { get; set; } = new();
 
+    [JsonProperty("TaskAvailabilities")]
+    public List<TaskAvailability> TaskAvailabilities { get; set; } = new();
+
     [JsonProperty("PlannedSchedules")]
     public List<ITaskResult> PlannedSchedules { get; set; } = new();
 }

@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Data.Builders;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.Settings;
@@ -66,7 +66,7 @@ public static class DesignData
     public static FootprintViewModel Footprint => new(RandomModelBuilder.BuildFootprint()) { IsShowInfo = true };
 
     public static TaskResultViewModel TaskResult =>
-        new(RandomModelBuilder.CreateObservationTaskResult("ObservationTask0063", RandomModelBuilder.BuildFootprint()));
+        new(RandomModelBuilder.BuildObservationTaskResult("ObservationTask0063", RandomModelBuilder.BuildFootprint()));
 
     public static GroundStationViewModel GroundStation => new(RandomModelBuilder.BuildGroundStation()) { IsShow = true };
 

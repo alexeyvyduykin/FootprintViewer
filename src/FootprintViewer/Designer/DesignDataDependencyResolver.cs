@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
-using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DataManager;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Layers.Providers;

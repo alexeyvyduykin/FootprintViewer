@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Models;
 using RandomDataBuilder.Sources;
 using ReactiveUI;
@@ -76,11 +75,6 @@ public sealed class SceneModel
         return res.Cast<GroundStation>().ToList();
     }
 
-    private static async Task<List<ITaskResult>> CreateObservationTasks(IList<ITask> tasks, IList<Footprint> footprints)
-    {
-        return await Observable.Start(() => RandomModelBuilder.Create(tasks, footprints), RxApp.TaskpoolScheduler);
-    }
-
     private static async Task<List<ITask>> CreateTasks(IList<GroundTarget> groundTargets)
     {
         return await Observable.Start(() => TaskBuilder.CreateTasks(groundTargets), RxApp.TaskpoolScheduler);
@@ -96,7 +90,7 @@ public sealed class SceneModel
         var gts = await CreateRandomGroundTargets(footprints, 5000);
 
         var tasks = await CreateTasks(gts);
-        var observationTasks = await CreateObservationTasks(tasks, footprints);
+        var observationTasks = await ModelBuilder.CreateObservationTasksAsync(tasks, footprints);
 
         sceneModel.Satellites.AddRange(satellites);
         sceneModel.Footprints.AddRange(footprints);
