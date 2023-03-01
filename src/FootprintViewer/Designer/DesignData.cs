@@ -23,7 +23,7 @@ public static class DesignData
 {
     private static readonly IReadonlyDependencyResolver _resolver = new DesignDataDependencyResolver();
 
-    //public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new(_resolver);
+    public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new(_resolver);
 
     public static FootprintTabFilterViewModel FootprintFilter => new(_resolver);
 
@@ -41,7 +41,7 @@ public static class DesignData
 
     public static TimelinePanelViewModel TimelinePanel => new(_resolver) { Show = true };
 
-    //public static FootprintPreviewTabViewModel FootprintPreviewTab => new(_resolver) { IsActive = true };
+    public static FootprintPreviewTabViewModel FootprintPreviewTab => new(_resolver) { IsActive = true };
 
     public static FootprintTabViewModel FootprintTab => new(_resolver)
     {
@@ -57,12 +57,9 @@ public static class DesignData
 
     public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
 
-    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver)
-    {
-        IsActive = true,
-    };
+    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver) { IsActive = true };
 
-    //public static FootprintPreviewViewModel FootprintPreview => new(RandomModelBuilder.BuildFootprintPreview());
+    public static FootprintPreviewViewModel FootprintPreview => new(RandomModelBuilder.BuildFootprintPreview());
 
     public static FootprintViewModel Footprint => new(RandomModelBuilder.BuildFootprint()) { IsShowInfo = true };
 
@@ -250,7 +247,7 @@ public static class DesignData
 
         var tabs = new SidePanelTabViewModel[]
         {
-            //new FootprintPreviewTabViewModel(_resolver),
+            new FootprintPreviewTabViewModel(_resolver),
             new SatelliteTabViewModel(_resolver),
             new GroundStationTabViewModel(_resolver),
             new GroundTargetTabViewModel(_resolver),
@@ -269,7 +266,7 @@ public static class DesignData
 
         var tabs = new SidePanelTabViewModel[]
         {
-            //new FootprintPreviewTabViewModel(_resolver),
+            new FootprintPreviewTabViewModel(_resolver),
             new SatelliteTabViewModel(_resolver),
             new GroundStationTabViewModel(_resolver),
             new GroundTargetTabViewModel(_resolver),

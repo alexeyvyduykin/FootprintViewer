@@ -1,9 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-//using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SkiaSharp;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -11,28 +8,28 @@ public static class RandomModelBuilder
 {
     private static readonly Random _random = new();
 
-    //public static FootprintPreview BuildFootprintPreview()
-    //{
-    //    var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
-    //    var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
+    public static FootprintPreview BuildFootprintPreview()
+    {
+        var names = new[] { "02-65-lr_2000-3857-lite", "36-65-ur_2000-3857-lite", "38-50-ll_3857-lite", "38-50-lr_3857-lite", "38-50-ul_3857-lite", "38-50-ur_3857-lite", "41-55-ul_2000-3857-lite", "44-70-ur_2000-3857-lite" };
+        var satellites = new[] { "Satellite1", "Satellite2", "Satellite3" };
 
-    //    var name = names[_random.Next(0, names.Length)].Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
-    //    var date = DateTime.UtcNow;
+        var name = names[_random.Next(0, names.Length)].Replace("lite", "").Replace("2000", "").Replace("3857", "").Replace("_", "").Replace("-", "");
+        var date = DateTime.UtcNow;
 
-    //    var unitBitmap = new SKBitmap(1, 1);
-    //    unitBitmap.SetPixel(0, 0, SKColors.White);
+        var unitBitmap = new SKBitmap(1, 1);
+        unitBitmap.SetPixel(0, 0, SKColors.White);
 
-    //    return new FootprintPreview()
-    //    {
-    //        Name = name.ToUpper(),
-    //        Date = date.Date.ToShortDateString(),
-    //        SatelliteName = satellites[_random.Next(0, satellites.Length)],
-    //        SunElevation = _random.Next(0, 91),
-    //        CloudCoverFull = _random.Next(0, 101),
-    //        TileNumber = name.ToUpper(),
-    //        Image = SKImage.FromBitmap(unitBitmap)
-    //    };
-    //}
+        return new FootprintPreview()
+        {
+            Name = name.ToUpper(),
+            Date = date.Date.ToShortDateString(),
+            SatelliteName = satellites[_random.Next(0, satellites.Length)],
+            SunElevation = _random.Next(0, 91),
+            CloudCoverFull = _random.Next(0, 101),
+            TileNumber = name.ToUpper(),
+            Image = SKImage.FromBitmap(unitBitmap)
+        };
+    }
 
     public static Footprint BuildFootprint()
     {
@@ -155,19 +152,12 @@ public static class RandomModelBuilder
         var begin = footprint.Begin;
         var duration = footprint.Duration;
 
-        var windowDuration = duration * (_random.Next(30, 51) / 10.0);
-
-        var windowBeginSec = _random.Next(0, (int)(windowDuration - duration) + 1);
-
-        var windowBegin = begin.AddSeconds(-windowBeginSec);
-
         var taskResult = new ObservationTaskResult()
         {
             TaskName = taskName,
             SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
             Interval = new Interval { Begin = begin, Duration = duration },
             Footprint = new FootprintFrame { Center = footprint.Center!, Points = footprint.Points! },
-            //Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList(),
             Transition = null
         };
 

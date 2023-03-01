@@ -3,36 +3,17 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
-
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
-		<PackageReference Include="CliWrap" Version="3.4.4" />
-		<PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
-		<PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
-		<PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="2.0.4" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
 		<PackageReference Include="ReactiveUI" Version="18.0.10" />
 		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
-		<PackageReference Include="SkiaSharp" Version="2.88.1-preview.63" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="CliWrap" Version="3.4.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-		<PackageReference Include="NetTopologySuite" Version="2.4.0" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.4" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.4" />
 		<PackageReference Include="TimeDataViewer" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Data\" />
 		<Folder Include="Settings\" />
 	</ItemGroup>
 
