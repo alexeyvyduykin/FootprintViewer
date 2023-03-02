@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using NetTopologySuite.IO;
+using Newtonsoft.Json;
 
 namespace FootprintViewer.Data.DbContexts;
 
@@ -27,12 +29,12 @@ class CustomModelCacheKey
 public abstract class DbCustomContext : DbContext
 {
     private readonly string _tableName;
-    private readonly string? _connectionString;
+    private readonly string _connectionString;
 
-    public DbCustomContext(string tableName, DbContextOptions options) : base(options)
-    {
-        _tableName = tableName;
-    }
+    //public DbCustomContext(string tableName, DbContextOptions options) : base(options)
+    //{
+    //    _tableName = tableName;
+    //}
 
     public DbCustomContext(string tableName, string connectionString) : base()
     {
@@ -84,6 +86,37 @@ public abstract class DbCustomContext : DbContext
                 options.UseNetTopologySuite();
             });
         }
+    }
+
+    protected static string SerializeObject(object? value)
+    {
+        var serializer = GeoJsonSerializer.Create();
+        using var stringWriter = new StringWriter();
+        using var jsonWriter = new JsonTextWriter(stringWriter);
+        serializer.Serialize(jsonWriter, value);
+        return stringWriter.ToString();
+
+        //return JsonConvert.SerializeObject(value,
+        //    new JsonSerializerSettings
+        //    {
+        //        NullValueHandling = NullValueHandling.Ignore
+        //    });
+    }
+
+    protected static T? DeserializeObject<T>(string value)
+    {
+        var serializer = GeoJsonSerializer.Create();
+
+        using var stringReader = new StringReader(value);
+        using var jsonReader = new JsonTextReader(stringReader);
+
+        return serializer.Deserialize<T>(jsonReader);
+
+        //return JsonConvert.DeserializeObject<T>(value,
+        //    new JsonSerializerSettings
+        //    {
+        //        NullValueHandling = NullValueHandling.Ignore
+        //    });
     }
 
     public string TableName => _tableName;

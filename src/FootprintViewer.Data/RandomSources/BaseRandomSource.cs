@@ -1,6 +1,4 @@
-﻿using FootprintViewer.Data;
-
-namespace RandomDataBuilder;
+﻿namespace FootprintViewer.Data.RandomSources;
 
 public abstract class BaseRandomSource : BaseSource
 {

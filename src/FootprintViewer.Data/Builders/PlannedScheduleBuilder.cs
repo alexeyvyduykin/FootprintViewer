@@ -1,4 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
+using ReactiveUI;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -34,6 +36,11 @@ public static class PlannedScheduleBuilder
             TaskAvailabilities = taskAvailabilities,
             PlannedSchedules = list
         };
+    }
+
+    public static async Task<PlannedScheduleResult> BuildAsync(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
+    {
+        return await Observable.Start(() => Build(satellites, groundTargets, groundStations, footprints), RxApp.TaskpoolScheduler);
     }
 
     private static List<ITaskResult> BuildObservationTaskResults(IList<Footprint> footprints, IList<ITask> tasks)

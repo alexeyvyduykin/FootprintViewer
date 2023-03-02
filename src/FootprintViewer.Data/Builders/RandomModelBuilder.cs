@@ -1,6 +1,9 @@
 ﻿using FootprintViewer.Data.Models;
+using FootprintViewer.Data.RandomSources;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using SkiaSharp;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -145,6 +148,26 @@ public static class RandomModelBuilder
         //}
 
         //return result;
+    }
+
+    public static async Task<List<ITaskResult>> BuildObservationTaskResultsAsync(IList<ITask> tasks, IList<Footprint> footprints)
+    {
+        return await Observable.Start(() => BuildObservationTaskResults(tasks, footprints), RxApp.TaskpoolScheduler);
+    }
+
+    public static List<ITask> BuildTasks(IList<GroundTarget>? groundTargets)
+    {
+        return groundTargets?
+            .Select((s, i) => (ITask)new ObservationTask()
+            {
+                Name = $"ObservationTask{(i + 1):0000}",
+                GroundTargetName = s.Name!
+            }).ToList() ?? new();
+    }
+
+    public static async Task<List<ITask>> BuildTasksAsync(IList<GroundTarget> groundTargets)
+    {
+        return await Observable.Start(() => BuildTasks(groundTargets), RxApp.TaskpoolScheduler);
     }
 
     public static ITaskResult BuildObservationTaskResult(string taskName, Footprint footprint)
@@ -340,7 +363,6 @@ public static class RandomModelBuilder
         return list;
     }
 
-
     private static bool IsInArea(Point point, Point center, double r)
     {
         var c0 = center.Coordinate;
@@ -387,5 +409,57 @@ public static class RandomModelBuilder
     private static DateTime End(this Interval interval)
     {
         return interval.Begin.AddSeconds(interval.Duration);
+    }
+
+    //--------------------------------------------------------------
+
+    public static async Task<IList<Footprint>> BuildRandomFootprintsAsync(IList<Satellite> satellites, int count)
+    {
+        var footprintSource = new FootprintRandomSource()
+        {
+            GenerateCount = count,
+            Satellites = satellites
+        };
+
+        var res = await footprintSource.GetValuesAsync();
+
+        return res.Cast<Footprint>().ToList();
+    }
+
+    public static async Task<IList<GroundTarget>> BuildRandomGroundTargetsAsync(IList<Footprint> footprints, int count)
+    {
+        var groundTargetsSource = new GroundTargetRandomSource()
+        {
+            GenerateCount = count,
+            Footprints = footprints
+        };
+
+        var res = await groundTargetsSource.GetValuesAsync();
+
+        return res.Cast<GroundTarget>().ToList();
+    }
+
+    public static async Task<IList<Satellite>> BuildRandomSatellitesAsync(int count)
+    {
+        var satellitesSource = new SatelliteRandomSource()
+        {
+            GenerateCount = count
+        };
+
+        var res = await satellitesSource.GetValuesAsync();
+
+        return res.Cast<Satellite>().ToList();
+    }
+
+    public static async Task<IList<GroundStation>> BuildRandomGroundStationsAsync(int count)
+    {
+        var groundStationsSource = new GroundStationRandomSource()
+        {
+            GenerateCount = (count > 6) ? 6 : count
+        };
+
+        var res = await groundStationsSource.GetValuesAsync();
+
+        return res.Cast<GroundStation>().ToList();
     }
 }

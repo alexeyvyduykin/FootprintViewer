@@ -1,75 +1,86 @@
-﻿using DatabaseCreatorSample.Data;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Databases;
+using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DatabaseCreatorSample
+namespace DatabaseCreatorSample;
+
+class Program
 {
-    class Program
+    static async Task Main(string[] _)
     {
-        static async Task Main(string[] args)
+        var connectionString1 = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
+        var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
+
+        var satellites = await RandomModelBuilder.BuildRandomSatellitesAsync(5);
+        var gss = await RandomModelBuilder.BuildRandomGroundStationsAsync(6);
+        var footprints = await RandomModelBuilder.BuildRandomFootprintsAsync(satellites, 2000);
+        var gts = await RandomModelBuilder.BuildRandomGroundTargetsAsync(footprints, 5000);
+
+        var tasks = await RandomModelBuilder.BuildTasksAsync(gts);
+        var observationTasks = await RandomModelBuilder.BuildObservationTaskResultsAsync(tasks, footprints);
+
+        var plannedSchedule = new PlannedScheduleResult()
         {
-            var model = await SceneModel.BuildAsync();
+            Name = "PlannedSchedule1",
+            DateTime = DateTime.Now,
+            Tasks = tasks,
+            PlannedSchedules = observationTasks
+        };
 
-            Console.WriteLine("Model load");
+        Console.WriteLine("Model load");
 
-            //DatabaseBuild(model);
+        using var db1 = new FootprintViewerDatabase(GetOptions<FootprintViewerDatabase>(connectionString1));
+        using var db2 = new PlannedScheduleDatabase(GetOptions<PlannedScheduleDatabase>(connectionString2));
 
-            PlannedScheduleDbCreate(model);
+        var dbs = new DbContext[] { db1, db2 };
 
-            Console.WriteLine("Database build");
-        }
+        CreateDb(dbs);
 
-        static void DatabaseBuild(SceneModel model)
+        db1.Satellites.AddRange(satellites);
+        db1.GroundTargets.AddRange(gts);
+        db1.Footprints.AddRange(footprints);
+        db1.GroundStations.AddRange(gss);
+
+        db2.Satellites.AddRange(satellites);
+        db2.GroundTargets.AddRange(gts);
+        db2.GroundStations.AddRange(gss);
+        db2.PlannedSchedules.Add(plannedSchedule);
+
+        SaveDb(dbs);
+
+        Console.WriteLine("Database build");
+    }
+
+    private static void CreateDb(IEnumerable<DbContext> dbs)
+    {
+        foreach (var item in dbs)
         {
-            using var db = new FootprintViewerDbContext(GetOptions());
-
-            db.AddModel(model);
+            item.Database.EnsureDeleted();
+            item.Database.EnsureCreated();
         }
+    }
 
-        static void PlannedScheduleDbCreate(SceneModel model)
+    private static void SaveDb(IEnumerable<DbContext> dbs)
+    {
+        foreach (var item in dbs)
         {
-            using var db = new PlannedScheduleDbContext(GetPlannedScheduleOptions());
-
-            db.AddModel(model);
+            item.SaveChanges();
         }
+    }
 
-        static DbContextOptions<FootprintViewerDbContext> GetOptions()
+    private static DbContextOptions<T> GetOptions<T>(string connectionString) where T : DbContext
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<T>();
+        var options = optionsBuilder.UseNpgsql(connectionString, options =>
         {
-            var builder = new ConfigurationBuilder();
-            // установка пути к текущему каталогу
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            // получаем конфигурацию из файла appsettings.json
-            builder.AddJsonFile("appsettings.json");
-            // создаем конфигурацию
-            var config = builder.Build();
-            // получаем строку подключения
-            string connectionString = config.GetConnectionString("DefaultConnection");
-            var major = int.Parse(config["PostgresVersionMajor"]);
-            var minor = int.Parse(config["PostgresVersionMinor"]);
+            options.UseNetTopologySuite();
+        }).Options;
 
-            var optionsBuilder = new DbContextOptionsBuilder<FootprintViewerDbContext>();
-            var options = optionsBuilder.UseNpgsql(connectionString, options =>
-            {
-                options.SetPostgresVersion(new Version(major, minor));
-                options.UseNetTopologySuite();
-            }).Options;
-
-            return options;
-        }
-
-        static DbContextOptions<PlannedScheduleDbContext> GetPlannedScheduleOptions()
-        {
-            var connectionString = "Host=localhost;Port=5432;Database=PlannedScheduleDatabase;Username=postgres;Password=user";
-            var optionsBuilder = new DbContextOptionsBuilder<PlannedScheduleDbContext>();
-            var options = optionsBuilder.UseNpgsql(connectionString, options =>
-            {
-                options.UseNetTopologySuite();
-            }).Options;
-
-            return options;
-        }
+        return options;
     }
 }

@@ -2,7 +2,7 @@
 using NetTopologySuite.Geometries;
 using SpaceScience;
 
-namespace RandomDataBuilder;
+namespace FootprintViewer.Data.Builders;
 
 public static class GroundTargetBuilder
 {

@@ -6,7 +6,7 @@ namespace JsonDataBuilderSample;
 
 internal class Program
 {
-    static async Task Main(string[] args)
+    static async Task Main(string[] _)
     {
         var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
@@ -16,11 +16,11 @@ internal class Program
         var groundStationPath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "GroundStations.json"));
         var plannedSchedulePath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "PlannedSchedule.json"));
 
-        var satellites = await DataBuilder.CreateRandomSatellites(5);
-        var groundStations = await DataBuilder.CreateRandomGroundStations(6);
-        var footprints = await DataBuilder.CreateRandomFootprints(satellites, 2000);
-        var groundTargets = await DataBuilder.CreateRandomGroundTargets(footprints, 5000);
-        var plannedSchedule = PlannedScheduleBuilder.Build(satellites, groundTargets, groundStations, footprints);
+        var satellites = await RandomModelBuilder.BuildRandomSatellitesAsync(5);
+        var groundStations = await RandomModelBuilder.BuildRandomGroundStationsAsync(6);
+        var footprints = await RandomModelBuilder.BuildRandomFootprintsAsync(satellites, 2000);
+        var groundTargets = await RandomModelBuilder.BuildRandomGroundTargetsAsync(footprints, 5000);
+        var plannedSchedule = await PlannedScheduleBuilder.BuildAsync(satellites, groundTargets, groundStations, footprints);
 
         //    JsonHelper.SerializeToFile(footprintPath, footprints);
         var footprintSuccess = JsonHelper.Verified<IList<Footprint>>(footprintPath);

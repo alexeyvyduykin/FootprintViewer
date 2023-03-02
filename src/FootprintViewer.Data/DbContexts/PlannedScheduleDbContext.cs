@@ -1,8 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NetTopologySuite.IO;
-using Newtonsoft.Json;
 
 namespace FootprintViewer.Data.DbContexts;
 
@@ -10,27 +8,29 @@ public class PlannedScheduleDbContext : DbCustomContext
 {
     public DbSet<PlannedScheduleResult> PlannedSchedules => Set<PlannedScheduleResult>();
 
-    public PlannedScheduleDbContext(string tableName, DbContextOptions<PlannedScheduleDbContext> options) : base(tableName, options)
-    {
+    //public PlannedScheduleDbContext(string tableName, DbContextOptions<PlannedScheduleDbContext> options) : base(tableName, options)
+    //{
 
-    }
+    //}
 
     public PlannedScheduleDbContext(string tableName, string connectionString) : base(tableName, connectionString)
     {
 
     }
 
-    protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
+    public static Action<EntityTypeBuilder<PlannedScheduleResult>> Configure => s => PlannedScheduleConfigureImpl(s);
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("postgis");
 
         modelBuilder.Entity<PlannedScheduleResult>().ToTable(TableName);
 
         // PlannedSchedules
-        modelBuilder.Entity<PlannedScheduleResult>(PlannedScheduleConfigure);
+        modelBuilder.Entity<PlannedScheduleResult>(Configure);
     }
 
-    protected static void PlannedScheduleConfigure(EntityTypeBuilder<PlannedScheduleResult> builder)
+    protected static void PlannedScheduleConfigureImpl(EntityTypeBuilder<PlannedScheduleResult> builder)
     {
         builder.Property(b => b.Name).IsRequired();
         builder.HasKey(b => b.Name);
@@ -51,35 +51,4 @@ public class PlannedScheduleDbContext : DbCustomContext
     }
 
     public override IQueryable<object> GetTable() => PlannedSchedules.Cast<object>();
-
-    private static string SerializeObject(object? value)
-    {
-        var serializer = GeoJsonSerializer.Create();
-        using var stringWriter = new StringWriter();
-        using var jsonWriter = new JsonTextWriter(stringWriter);
-        serializer.Serialize(jsonWriter, value);
-        return stringWriter.ToString();
-
-        //return JsonConvert.SerializeObject(value,
-        //    new JsonSerializerSettings
-        //    {
-        //        NullValueHandling = NullValueHandling.Ignore
-        //    });
-    }
-
-    private static T? DeserializeObject<T>(string value)
-    {
-        var serializer = GeoJsonSerializer.Create();
-
-        using var stringReader = new StringReader(value);
-        using var jsonReader = new JsonTextReader(stringReader);
-
-        return serializer.Deserialize<T>(jsonReader);
-
-        //return JsonConvert.DeserializeObject<T>(value,
-        //    new JsonSerializerSettings
-        //    {
-        //        NullValueHandling = NullValueHandling.Ignore
-        //    });
-    }
 }

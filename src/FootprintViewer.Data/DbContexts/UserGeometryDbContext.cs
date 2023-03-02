@@ -8,27 +8,29 @@ public class UserGeometryDbContext : DbCustomContext
 {
     public DbSet<UserGeometry> UserGeometries => Set<UserGeometry>();
 
-    public UserGeometryDbContext(string tableName, DbContextOptions<UserGeometryDbContext> options) : base(tableName, options)
-    {
+    //public UserGeometryDbContext(string tableName, DbContextOptions<UserGeometryDbContext> options) : base(tableName, options)
+    //{
 
-    }
+    //}
 
     public UserGeometryDbContext(string tableName, string connectionString) : base(tableName, connectionString)
     {
 
     }
 
-    protected override void OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder modelBuilder)
+    public static Action<EntityTypeBuilder<UserGeometry>> Configure => s => UserGeometriesConfigureImpl(s);
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("postgis");
 
         modelBuilder.Entity<UserGeometry>().ToTable(TableName);
 
         // UserGeometries
-        modelBuilder.Entity<UserGeometry>(UserGeometriesConfigure);
+        modelBuilder.Entity<UserGeometry>(Configure);
     }
 
-    protected static void UserGeometriesConfigure(EntityTypeBuilder<UserGeometry> builder)
+    protected static void UserGeometriesConfigureImpl(EntityTypeBuilder<UserGeometry> builder)
     {
         builder.Property(b => b.Name).IsRequired();
         builder.HasKey(b => b.Name);

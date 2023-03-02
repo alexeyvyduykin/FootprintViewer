@@ -1,6 +1,7 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Models;
 
-namespace RandomDataBuilder.Sources;
+namespace FootprintViewer.Data.RandomSources;
 
 public class SatelliteRandomSource : BaseRandomSource
 {

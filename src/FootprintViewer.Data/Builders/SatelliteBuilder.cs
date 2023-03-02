@@ -1,7 +1,7 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Data.Models;
 using SpaceScience;
 
-namespace RandomDataBuilder;
+namespace FootprintViewer.Data.Builders;
 
 public static class SatelliteBuilder
 {
