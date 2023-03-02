@@ -38,6 +38,23 @@ public static class ScienceMath
             return -Degrees - Minutes / 60 - Seconds / 3600;
     }
 
+    public static double LongitudeNormalization(double lon, double left = 0.0, double right = 360.0)
+    {
+        var res = lon;
+
+        while (res < left)
+        {
+            res += 360;
+        }
+
+        while (res > right)
+        {
+            res -= 360;
+        }
+
+        return res;
+    }
+
     public static double MapTo0To360Range(double Degrees)
     {
         double fResult = Math.IEEERemainder(Degrees, 360);

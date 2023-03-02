@@ -33,6 +33,6 @@ public class GroundTargetRandomSource : BaseRandomSource
 
     private static async Task<IList<GroundTarget>> Build(IList<Footprint> footprints, int generateCount)
     {
-        return await Task.Run(() => GroundTargetBuilder.Create(footprints).Take(generateCount).ToList());
+        return await Task.Run(() => GroundTargetBuilder.Create(footprints, generateCount).ToList());
     }
 }

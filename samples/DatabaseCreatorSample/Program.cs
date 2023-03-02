@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Databases;
 using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,21 +15,12 @@ class Program
         var connectionString1 = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
         var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
 
-        var satellites = await RandomModelBuilder.BuildRandomSatellitesAsync(5);
-        var gss = await RandomModelBuilder.BuildRandomGroundStationsAsync(6);
-        var footprints = await RandomModelBuilder.BuildRandomFootprintsAsync(satellites, 2000);
-        var gts = await RandomModelBuilder.BuildRandomGroundTargetsAsync(footprints, 5000);
+        var satellites = await RandomModelBuilder.CreateSatellitesAsync(5);
+        var gss = await ModelFactory.CreateDefaultGroundStationsAsync();
+        var footprints = await RandomModelBuilder.CreateFootprintsAsync(satellites, 2000);
+        var gts = await RandomModelBuilder.CreateGroundTargetsAsync(footprints, 5000);
 
-        var tasks = await RandomModelBuilder.BuildTasksAsync(gts);
-        var observationTasks = await RandomModelBuilder.BuildObservationTaskResultsAsync(tasks, footprints);
-
-        var plannedSchedule = new PlannedScheduleResult()
-        {
-            Name = "PlannedSchedule1",
-            DateTime = DateTime.Now,
-            Tasks = tasks,
-            PlannedSchedules = observationTasks
-        };
+        var plannedSchedule = await RandomModelBuilder.CreatePlannedScheduleAsync(satellites, gts, gss, footprints);
 
         Console.WriteLine("Model load");
 

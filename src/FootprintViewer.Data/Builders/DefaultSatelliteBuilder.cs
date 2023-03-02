@@ -3,18 +3,14 @@ using SpaceScience;
 
 namespace FootprintViewer.Data.Builders;
 
-public static class SatelliteBuilder
+internal static class DefaultSatelliteBuilder
 {
-    public static IEnumerable<Satellite> Create(int num)
+    public static IList<Satellite> Create(int num)
     {
-        var list = new List<Satellite>();
-
-        for (int i = 0; i < num; i++)
-        {
-            list.Add(CreateSatellite(i));
-        }
-
-        return list;
+        return Enumerable
+            .Range(0, num)
+            .Select(index => CreateSatellite(index))
+            .ToList();
     }
 
     private static Satellite CreateSatellite(int index)
@@ -22,11 +18,6 @@ public static class SatelliteBuilder
         var dt = Convert.ToDateTime("1 Jul 2007 12:00:00.000");
 
         var raan = GetRAAN(dt, 0.0, index * 72.0);
-
-        while (raan > 360.0)
-        {
-            raan -= 360.0;
-        }
 
         // double a, double ecc, double incl, double argOfPer, double lonAN, double om, double period, DateTime epoch
         return new Satellite()
@@ -37,7 +28,7 @@ public static class SatelliteBuilder
             InclinationDeg = 97.65,
             ArgumentOfPerigeeDeg = 0.0,
             LongitudeAscendingNodeDeg = 0.0,
-            RightAscensionAscendingNodeDeg = raan,
+            RightAscensionAscendingNodeDeg = ScienceMath.LongitudeNormalization(raan),
             Period = 5760.0,
             Epoch = dt,
             InnerHalfAngleDeg = 32,

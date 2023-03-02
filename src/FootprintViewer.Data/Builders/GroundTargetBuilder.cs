@@ -4,46 +4,43 @@ using SpaceScience;
 
 namespace FootprintViewer.Data.Builders;
 
-public static class GroundTargetBuilder
+internal static class GroundTargetBuilder
 {
     private static readonly Random _random = new();
-    private static readonly int _countTargets = 5000;
 
-    public static IEnumerable<GroundTarget> Create(IEnumerable<Footprint>? footprints)
+    public static IList<GroundTarget> Create(IList<Footprint> footprints, int targetCount)
     {
         var targets = new List<GroundTarget>();
 
-        if (footprints == null)
-        {
-            return targets;
-        }
-
-        var list = new List<Footprint>(footprints);
-
-        int counts = list.Count;
+        int count1 = footprints.Count;
 
         int index = 0;
 
-        for (int i = 0; i < counts; i++)
+        for (int i = 0; i < count1; i++)
         {
             var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
 
-            var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, list[i].Center!);
+            var targetName = footprints[i].TargetName ?? $"EmptyGroundTarget{++index:0000}";
 
-            list[i].TargetName = target.Name;
+            var target = CreateRandomTarget(targetName, type, footprints[i].Center!);
 
             targets.Add(target);
         }
 
-        for (int i = 0; i < _countTargets - counts; i++)
+        var count2 = targetCount - count1;
+
+        if (count2 > 0)
         {
-            var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
+            for (int i = 0; i < count2; i++)
+            {
+                var type = (GroundTargetType)Enum.ToObject(typeof(GroundTargetType), _random.Next(0, 2 + 1));
 
-            var center = new Point(_random.Next(-180, 180 + 1), _random.Next(-80, 80 + 1));
+                var center = new Point(_random.Next(-180, 180 + 1), _random.Next(-80, 80 + 1));
 
-            var target = CreateRandomTarget($"GroundTarget{++index:0000}", type, center);
+                var target = CreateRandomTarget($"EmptyGroundTarget{++index:0000}", type, center);
 
-            targets.Add(target);
+                targets.Add(target);
+            }
         }
 
         return targets;

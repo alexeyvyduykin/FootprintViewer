@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data.Models;
-using FootprintViewer.Data.RandomSources;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using SkiaSharp;
@@ -10,6 +9,39 @@ namespace FootprintViewer.Data.Builders;
 public static class RandomModelBuilder
 {
     private static readonly Random _random = new();
+
+    private static async Task<T> Start<T>(Func<T> func)
+        => await Observable.Start(func, RxApp.TaskpoolScheduler);
+
+    public static async Task<IList<Satellite>> CreateSatellitesAsync(int count)
+        => await Start(() => CreateSatellites(count));
+
+    public static IList<Satellite> CreateSatellites(int count)
+        => DefaultSatelliteBuilder.Create(count);
+
+    public static async Task<IList<Footprint>> CreateFootprintsAsync(IList<Satellite> satellites, int count)
+        => await Start(() => CreateFootprints(satellites, count));
+
+    public static IList<Footprint> CreateFootprints(IList<Satellite> satellites, int count)
+        => FootprintBuilder.Create(satellites, count);
+
+    public static async Task<IList<GroundTarget>> CreateGroundTargetsAsync(IList<Footprint> footprints, int count)
+        => await Start(() => CreateGroundTargets(footprints, count));
+
+    public static IList<GroundTarget> CreateGroundTargets(IList<Footprint> footprints, int count)
+        => GroundTargetBuilder.Create(footprints, count);
+
+    public static async Task<List<ITaskResult>> CreateCommunicationTaskResultsAsync(List<TaskAvailability> availabilities)
+        => await Start(() => CreateCommunicationTaskResults(availabilities));
+
+    public static async Task<List<TaskAvailability>> CreateCommunicationTaskAvailabilitiesAsync(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
+        => await Start(() => CreateCommunicationTaskAvailabilities(satellites, groundStations, footprints, tasks));
+
+    public static async Task<List<TaskAvailability>> CreateObservationTaskAvailabilitiesAsync(IList<Footprint> footprints, IList<ITask> tasks)
+        => await Start(() => CreateObservationTaskAvailabilities(footprints, tasks));
+
+    public static async Task<PlannedScheduleResult> CreatePlannedScheduleAsync(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
+        => await Start(() => CreatePlannedSchedule(satellites, groundTargets, groundStations, footprints));
 
     public static FootprintPreview BuildFootprintPreview()
     {
@@ -100,12 +132,13 @@ public static class RandomModelBuilder
     {
         var count = 10;
 
-        var footprints = Enumerable.Range(0, count).Select(_ => BuildFootprint()).ToList();
+        var satellites = RandomModelBuilder.CreateSatellites(1);
+        var footprints = RandomModelBuilder.CreateFootprints(satellites, count);
+        var gts = RandomModelBuilder.CreateGroundTargets(footprints, count);
 
-        var tasks = footprints.Select((s, i) => (ITask)new ObservationTask() { Name = $"ObservationTask{i + 1}", GroundTargetName = s.TargetName! }).ToList();
-
-        var list = tasks.Select((s, i) => BuildObservationTaskResult(s.Name, footprints[i])).ToList();
-        var windows = tasks.Select((s, i) => BuildTaskAvailabilities(s.Name, footprints[i])).ToList();
+        var tasks = ModelFactory.CreateTasks(gts, new List<GroundStation>());
+        var observationTasks = ModelFactory.CreateObservationTaskResults(tasks, footprints);
+        var windows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, tasks);
 
         return new PlannedScheduleResult()
         {
@@ -113,100 +146,11 @@ public static class RandomModelBuilder
             DateTime = DateTime.Now,
             Tasks = tasks,
             TaskAvailabilities = windows,
-            PlannedSchedules = list
+            PlannedSchedules = observationTasks
         };
     }
 
-    public static List<ITaskResult> BuildObservationTaskResults(IList<ITask> tasks, IList<Footprint>? footprints)
-    {
-        if (footprints == null)
-        {
-            return new();
-        }
-
-        return tasks
-            .Where(s => s is ObservationTask)
-            .Cast<ObservationTask>()
-            .SelectMany(s =>
-                footprints
-                    .Where(f => Equals(f.TargetName, s.GroundTargetName))
-                    .Select(f => BuildObservationTaskResult(s.Name, f)))
-            .ToList();
-
-        //foreach (var item in tasks.Where(s => s is ObservationTask).Cast<ObservationTask>())
-        //{
-        //    var list = footprints.Where(s => Equals(s.TargetName, item.TargetName)).ToList();
-
-        //    foreach (var footprint in list)
-        //    {
-        //        var satelliteName = footprint.SatelliteName!;
-
-        //        var task = CreateObservationTaskResult(item.Name, footprint);
-
-        //        result.Add(task);
-        //    }
-        //}
-
-        //return result;
-    }
-
-    public static async Task<List<ITaskResult>> BuildObservationTaskResultsAsync(IList<ITask> tasks, IList<Footprint> footprints)
-    {
-        return await Observable.Start(() => BuildObservationTaskResults(tasks, footprints), RxApp.TaskpoolScheduler);
-    }
-
-    public static List<ITask> BuildTasks(IList<GroundTarget>? groundTargets)
-    {
-        return groundTargets?
-            .Select((s, i) => (ITask)new ObservationTask()
-            {
-                Name = $"ObservationTask{(i + 1):0000}",
-                GroundTargetName = s.Name!
-            }).ToList() ?? new();
-    }
-
-    public static async Task<List<ITask>> BuildTasksAsync(IList<GroundTarget> groundTargets)
-    {
-        return await Observable.Start(() => BuildTasks(groundTargets), RxApp.TaskpoolScheduler);
-    }
-
-    public static ITaskResult BuildObservationTaskResult(string taskName, Footprint footprint)
-    {
-        var begin = footprint.Begin;
-        var duration = footprint.Duration;
-
-        var taskResult = new ObservationTaskResult()
-        {
-            TaskName = taskName,
-            SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
-            Interval = new Interval { Begin = begin, Duration = duration },
-            Footprint = new FootprintFrame { Center = footprint.Center!, Points = footprint.Points! },
-            Transition = null
-        };
-
-        return taskResult;
-    }
-
-    private static TaskAvailability BuildTaskAvailabilities(string taskName, Footprint footprint)
-    {
-        var begin = footprint.Begin;
-        var duration = footprint.Duration;
-
-        var windowDuration = duration * (_random.Next(30, 51) / 10.0);
-
-        var windowBeginSec = _random.Next(0, (int)(windowDuration - duration) + 1);
-
-        var windowBegin = begin.AddSeconds(-windowBeginSec);
-
-        return new TaskAvailability()
-        {
-            TaskName = taskName,
-            SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
-            Windows = new[] { new Interval { Begin = windowBegin, Duration = windowDuration } }.ToList()
-        };
-    }
-
-    public static List<ITaskResult> BuildCommunicationTaskResults(List<TaskAvailability> availabilities)
+    public static List<ITaskResult> CreateCommunicationTaskResults(List<TaskAvailability> availabilities)
     {
         var taskResults = new List<ITaskResult>();
 
@@ -266,7 +210,7 @@ public static class RandomModelBuilder
         return taskResults;
     }
 
-    public static List<TaskAvailability> BuildCommunicationTaskAvailabilities(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
+    public static List<TaskAvailability> CreateCommunicationTaskAvailabilities(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
     {
         var radius = 10.0;
         var minTaskAvailability = 120;
@@ -317,7 +261,7 @@ public static class RandomModelBuilder
         return list;
     }
 
-    public static List<TaskAvailability> BuildObservationTaskAvailabilities(IList<Footprint> footprints, IList<ITask> tasks)
+    public static List<TaskAvailability> CreateObservationTaskAvailabilities(IList<Footprint> footprints, IList<ITask> tasks)
     {
         var minTaskAvailability = 60;
         var maxTaskAvailability = 121;
@@ -411,55 +355,22 @@ public static class RandomModelBuilder
         return interval.Begin.AddSeconds(interval.Duration);
     }
 
-    //--------------------------------------------------------------
-
-    public static async Task<IList<Footprint>> BuildRandomFootprintsAsync(IList<Satellite> satellites, int count)
+    public static PlannedScheduleResult CreatePlannedSchedule(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
     {
-        var footprintSource = new FootprintRandomSource()
+        var tasks = ModelFactory.CreateTasks(groundTargets, groundStations);
+
+        var observationTasks = ModelFactory.CreateObservationTaskResults(tasks, footprints);
+        var observationWindows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, tasks);
+        var communicationWindows = RandomModelBuilder.CreateCommunicationTaskAvailabilities(satellites, groundStations, footprints, tasks);
+        var communicationTasks = RandomModelBuilder.CreateCommunicationTaskResults(communicationWindows);
+
+        return new PlannedScheduleResult()
         {
-            GenerateCount = count,
-            Satellites = satellites
+            Name = "PlannedSchedule1",
+            DateTime = DateTime.Now,
+            Tasks = tasks,
+            TaskAvailabilities = observationWindows.Concat(communicationWindows).ToList(),
+            PlannedSchedules = observationTasks.Concat(communicationTasks).ToList()
         };
-
-        var res = await footprintSource.GetValuesAsync();
-
-        return res.Cast<Footprint>().ToList();
-    }
-
-    public static async Task<IList<GroundTarget>> BuildRandomGroundTargetsAsync(IList<Footprint> footprints, int count)
-    {
-        var groundTargetsSource = new GroundTargetRandomSource()
-        {
-            GenerateCount = count,
-            Footprints = footprints
-        };
-
-        var res = await groundTargetsSource.GetValuesAsync();
-
-        return res.Cast<GroundTarget>().ToList();
-    }
-
-    public static async Task<IList<Satellite>> BuildRandomSatellitesAsync(int count)
-    {
-        var satellitesSource = new SatelliteRandomSource()
-        {
-            GenerateCount = count
-        };
-
-        var res = await satellitesSource.GetValuesAsync();
-
-        return res.Cast<Satellite>().ToList();
-    }
-
-    public static async Task<IList<GroundStation>> BuildRandomGroundStationsAsync(int count)
-    {
-        var groundStationsSource = new GroundStationRandomSource()
-        {
-            GenerateCount = (count > 6) ? 6 : count
-        };
-
-        var res = await groundStationsSource.GetValuesAsync();
-
-        return res.Cast<GroundStation>().ToList();
     }
 }

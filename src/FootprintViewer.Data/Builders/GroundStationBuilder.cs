@@ -11,11 +11,11 @@ public class GroundStationResult
 
     public double OuterAngle { get; init; }
 
-    public IList<IEnumerable<IEnumerable<(double lon, double lat)>>> Areas { get; init; } = new List<IEnumerable<IEnumerable<(double, double)>>>();
+    public List<IEnumerable<IEnumerable<(double lon, double lat)>>> Areas { get; init; } = new();
 
-    public IEnumerable<IEnumerable<(double lon, double lat)>> InnerBorder { get; init; } = new List<IEnumerable<(double, double)>>();
+    public List<IEnumerable<(double lon, double lat)>> InnerBorder { get; init; } = new();
 
-    public IEnumerable<IEnumerable<(double lon, double lat)>> OuterBorder { get; init; } = new List<IEnumerable<(double, double)>>();
+    public List<IEnumerable<(double lon, double lat)>> OuterBorder { get; init; } = new();
 }
 
 public static class GroundStationBuilder
@@ -40,8 +40,8 @@ public static class GroundStationBuilder
             InnerAngle = (isHole == false) ? 0.0 : angles.First(),
             OuterAngle = angles.Last(),
             Areas = circles.Select(s => s.Areas).ToList(),
-            InnerBorder = (isHole == false) ? new List<IEnumerable<(double, double)>>() : circles.First().Borders,
-            OuterBorder = circles.Last().Borders,
+            InnerBorder = (isHole == false) ? new List<IEnumerable<(double, double)>>() : circles.First().Borders.ToList(),
+            OuterBorder = circles.Last().Borders.ToList(),
         };
     }
 

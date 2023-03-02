@@ -5,19 +5,22 @@ using SpaceScience;
 
 namespace FootprintViewer.Data.Builders;
 
-public static class FootprintBuilder
+internal static class FootprintBuilder
 {
     private static readonly Random _random = new();
     private static readonly double _size = 1.2;
     private static readonly double _r = Math.Sqrt(_size * _size / 2.0);
-    private static readonly int _countFootprints = 440;
     private static readonly int _durationMin = 10;
     private static readonly int _durationMax = 30;
 
-    public static IEnumerable<Footprint> Create(IEnumerable<Satellite> satellites)
+    public static IList<Footprint> Create(IList<Satellite> satellites, int footprintCount)
     {
         var footprints = new List<Footprint>();
-        int footprintCount = 0;
+        int footprintIndex = 0;
+
+        var satCount = satellites.Count;
+
+        var footprintCountPerSat = (double)footprintCount / satCount;
 
         foreach (var satellite in satellites)
         {
@@ -34,7 +37,7 @@ public static class FootprintBuilder
 
             var nodes = sat.Nodes();
 
-            var countPerNode = _countFootprints / nodes.Count;
+            var countPerNode = (int)(footprintCountPerSat / nodes.Count);
 
             var uDelta = 360.0 / countPerNode;
 
@@ -68,7 +71,8 @@ public static class FootprintBuilder
 
                     footprints.Add(new Footprint()
                     {
-                        Name = $"Footprint{++footprintCount:0000}",
+                        Name = $"Footprint{++footprintIndex:0000}",
+                        TargetName = $"GroundTarget{footprintIndex:0000}",
                         SatelliteName = satellite.Name,
                         Center = center,
                         Points = new LineString(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray()),

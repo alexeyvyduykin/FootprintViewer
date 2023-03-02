@@ -64,7 +64,7 @@ public static class DesignData
     public static FootprintViewModel Footprint => new(RandomModelBuilder.BuildFootprint()) { IsShowInfo = true };
 
     public static TaskResultViewModel TaskResult =>
-        new(RandomModelBuilder.BuildObservationTaskResult("ObservationTask0063", RandomModelBuilder.BuildFootprint()));
+        new(ModelFactory.CreateObservationTaskResult("ObservationTask0063", RandomModelBuilder.BuildFootprint()));
 
     public static GroundStationViewModel GroundStation => new(RandomModelBuilder.BuildGroundStation()) { IsShow = true };
 

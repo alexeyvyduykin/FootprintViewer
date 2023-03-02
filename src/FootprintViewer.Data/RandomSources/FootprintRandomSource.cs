@@ -33,6 +33,6 @@ public class FootprintRandomSource : BaseRandomSource
 
     private static async Task<IList<Footprint>> Build(IList<Satellite> satellites, int generateCount)
     {
-        return await Task.Run(() => FootprintBuilder.Create(satellites).Take(generateCount).ToList());
+        return await Task.Run(() => FootprintBuilder.Create(satellites, generateCount));
     }
 }
