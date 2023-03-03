@@ -6,7 +6,7 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:MainViewModel"
-			 mc:Ignorable="d" d:DesignWidth="460"
+			 mc:Ignorable="d" d:DesignWidth="560"
              x:Class="FootprintViewer.Avalonia.Views.WindowTitleBar"
 			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
@@ -26,6 +26,23 @@
 						   Foreground="White"
 						   VerticalAlignment="Center"
 						   IsHitTestVisible="False"/>
+
+				<Button Margin="8,4,8,4"
+						Padding="2,4,8,4"
+						Command="{Binding Timelines}"
+						Classes="Outline">
+					<Grid ColumnDefinitions="Auto,*">
+						<materialIcons:MaterialIcon Width="20"
+													Height="20"
+													Margin="2,0,2,0"
+													Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="ChartTimeline"/>
+						<TextBlock Grid.Column="1"
+								   VerticalAlignment="Center"
+								   Text="Timelines"/>
+					</Grid>
+				</Button>
+
 			</StackPanel>
 			<StackPanel HorizontalAlignment="Right"
 						Orientation="Horizontal">

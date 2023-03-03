@@ -11,6 +11,7 @@ using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.TimelinePanel;
+using FootprintViewer.ViewModels.Timelines;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
@@ -113,6 +114,8 @@ public sealed class MainViewModel : RoutableViewModel
 
         Settings = ReactiveCommand.CreateFromTask(SettingsImpl);
 
+        Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);
+
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
 
@@ -123,6 +126,8 @@ public sealed class MainViewModel : RoutableViewModel
     public ReactiveCommand<Unit, Unit> Connection { get; }
 
     public ReactiveCommand<Unit, Unit> Settings { get; }
+
+    public ReactiveCommand<Unit, Unit> Timelines { get; }
 
     private async Task ConnectionImpl()
     {
@@ -152,6 +157,19 @@ public sealed class MainViewModel : RoutableViewModel
         DialogNavigationStack.Clear();
 
         dataManager.UpdateData();
+    }
+
+    private async Task TimelinesImpl()
+    {
+        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
+
+        var timelinesDialog = new TimelinesViewModel(_dependencyResolver);
+
+        DialogNavigationStack.To(timelinesDialog);
+
+        _ = await timelinesDialog.GetDialogResultAsync();
+
+        DialogNavigationStack.Clear();
     }
 
     private void MovedImpl((double, double) screenPosition)
