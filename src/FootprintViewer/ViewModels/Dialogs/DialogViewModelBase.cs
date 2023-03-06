@@ -8,7 +8,13 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels.Dialogs;
 
-public abstract class DialogViewModelBase<TResult> : RoutableViewModel
+public abstract partial class DialogViewModelBase : RoutableViewModel
+{
+    [Reactive]
+    public bool IsDialogOpen { get; set; }
+}
+
+public abstract class DialogViewModelBase<TResult> : DialogViewModelBase
 {
     private readonly IDisposable _disposable;
     private TaskCompletionSource<DialogResult<TResult>>? _currentTaskCompletionSource;
@@ -27,7 +33,7 @@ public abstract class DialogViewModelBase<TResult> : RoutableViewModel
         CancelCommand = ReactiveCommand.Create(() =>
         {
             Close(DialogResultKind.Cancel);
-            DialogStack().Clear();
+            Navigate().Clear();
         });
     }
 
@@ -40,6 +46,21 @@ public abstract class DialogViewModelBase<TResult> : RoutableViewModel
         }
     }
 
+    protected override void OnNavigatedFrom(bool isInHistory)
+    {
+        if (isInHistory == false)
+        {
+            Close(DialogResultKind.Cancel);
+        }
+
+        base.OnNavigatedFrom(isInHistory);
+    }
+
+    /// <summary>
+    /// Method to be called when the dialog intends to close
+    /// and ready to pass a value back to the caller.
+    /// </summary>
+    /// <param name="result">The return value of the dialog</param>
     protected void Close(DialogResultKind kind = DialogResultKind.Normal, TResult? result = default)
     {
         if (_currentTaskCompletionSource!.Task.IsCompleted)
@@ -54,8 +75,14 @@ public abstract class DialogViewModelBase<TResult> : RoutableViewModel
         _currentTaskCompletionSource = new TaskCompletionSource<DialogResult<TResult>>();
 
         IsDialogOpen = false;
+
+        OnDialogClosed();
     }
 
+    /// <summary>
+    /// Gets the dialog result.
+    /// </summary>
+    /// <returns>The value to be returned when the dialog is finished.</returns>
     public Task<DialogResult<TResult>> GetDialogResultAsync()
     {
         IsDialogOpen = true;
@@ -63,6 +90,8 @@ public abstract class DialogViewModelBase<TResult> : RoutableViewModel
         return _currentTaskCompletionSource!.Task;
     }
 
-    [Reactive]
-    public bool IsDialogOpen { get; set; }
+    /// <summary>         
+    /// Method that is triggered when the dialog is closed.         
+    /// </summary>
+    protected virtual void OnDialogClosed() { }
 }

@@ -140,7 +140,7 @@ public static class DesignData
         {
             connection.SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(DbKeys.Footprints.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.Footprints.ToString(), _resolver)
             {
                 Header = DbKeys.Footprints.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -150,7 +150,7 @@ public static class DesignData
                     new SourceViewModel(source) { Name = "Source3" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.GroundTargets.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.GroundTargets.ToString(), _resolver)
             {
                 Header = DbKeys.GroundTargets.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -160,7 +160,7 @@ public static class DesignData
                     new SourceViewModel(source) { Name = "Source6" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.Satellites.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.Satellites.ToString(), _resolver)
             {
                 Header = DbKeys.Satellites.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -170,7 +170,7 @@ public static class DesignData
                     new SourceViewModel(source) { Name = "Source9" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.GroundStations.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.GroundStations.ToString(), _resolver)
             {
                 Header = DbKeys.GroundStations.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -180,7 +180,7 @@ public static class DesignData
                     new SourceViewModel(source) { Name = "Source12" },
                 },
             },
-            new SourceContainerViewModel(DbKeys.UserGeometries.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.UserGeometries.ToString(), _resolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -200,7 +200,7 @@ public static class DesignData
 
     private static SourceContainerViewModel CreateSourceContainer()
     {
-        var container = new SourceContainerViewModel(DbKeys.Footprints.ToString(), _resolver)
+        var container = new SourceContainerViewModel(Connection, DbKeys.Footprints.ToString(), _resolver)
         {
             Header = DbKeys.Footprints.ToString()
         };

@@ -33,27 +33,27 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(DbKeys.Footprints.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.Footprints.ToString(), dependencyResolver)
             {
                 Header = DbKeys.Footprints.ToString(),
                 Sources = footprintsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" }).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.GroundTargets.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.GroundTargets.ToString(), dependencyResolver)
             {
                 Header = DbKeys.GroundTargets.ToString(),
                 Sources = groundTargetsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.Satellites.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.Satellites.ToString(), dependencyResolver)
             {
                 Header = DbKeys.Satellites.ToString(),
                 Sources = satellitesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.GroundStations.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.GroundStations.ToString(), dependencyResolver)
             {
                 Header = DbKeys.GroundStations.ToString(),
                 Sources = groundStationsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
             },
-            new SourceContainerViewModel(DbKeys.UserGeometries.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.UserGeometries.ToString(), dependencyResolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = userGeometriesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),

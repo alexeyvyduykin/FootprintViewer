@@ -2,6 +2,7 @@
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using Splat;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.ViewModels.Timelines;
 
@@ -13,9 +14,8 @@ public class TimelinesViewModel : DialogViewModelBase<object>
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
-        NextCommand = ReactiveCommand.Create(() =>
-        {
-            Close(DialogResultKind.Normal);
-        });
+        var cancelCommandCanExecute = this.WhenAnyValue(x => x.IsDialogOpen).ObserveOn(RxApp.MainThreadScheduler);
+
+        NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Normal), cancelCommandCanExecute);
     }
 }

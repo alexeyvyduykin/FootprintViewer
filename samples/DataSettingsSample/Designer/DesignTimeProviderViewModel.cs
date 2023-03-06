@@ -4,24 +4,23 @@ using DataSettingsSample.ViewModels.Interfaces;
 using Splat;
 using System.Collections.Generic;
 
-namespace DataSettingsSample.Designer
+namespace DataSettingsSample.Designer;
+
+public class DesignTimeProviderViewModel : ProviderViewModel
 {
-    public class DesignTimeProviderViewModel : ProviderViewModel
+    private static readonly Repository _repository = new DesignTimeData().GetService<Repository>()!;
+
+    public DesignTimeProviderViewModel() : base(new DesignTimeSettingsViewModel(), DbKeys.Footprints)
     {
-        private static readonly Repository _repository = new DesignTimeData().GetService<Repository>()!;
+        var source = _repository.GetSources(DbKeys.Footprints.ToString())[0];
 
-        public DesignTimeProviderViewModel() : base(DbKeys.Footprints)
+        Header = DbKeys.Footprints.ToString();
+
+        Sources = new List<ISourceViewModel>()
         {
-            var source = _repository.GetSources(DbKeys.Footprints.ToString())[0];
-
-            Header = DbKeys.Footprints.ToString();
-
-            Sources = new List<ISourceViewModel>()
-            {
-                new SourceViewModel(source) { Name = "Source1" },
-                new SourceViewModel(source) { Name = "Source2" },
-                new SourceViewModel(source) { Name = "Source3" },
-            };
-        }
+            new SourceViewModel(source) { Name = "Source1" },
+            new SourceViewModel(source) { Name = "Source2" },
+            new SourceViewModel(source) { Name = "Source3" },
+        };
     }
 }

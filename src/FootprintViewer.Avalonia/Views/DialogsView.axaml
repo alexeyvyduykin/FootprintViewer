@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FootprintViewer.Avalonia.Views.DialogsView"			 
+             x:Class="FootprintViewer.Avalonia.Views.DialogsView"
 			 xmlns:controls="using:FootprintViewer.Avalonia.Controls"
 			 xmlns:vm="using:FootprintViewer.ViewModels"
 			 x:DataType="vm:MainViewModel">
@@ -27,16 +27,38 @@
 
 		</ExperimentalAcrylicBorder>
 
-		<ContentControl DataContext="{Binding DialogNavigationStack}">
-			<controls:Dialog IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
-							 IsActive="{Binding CurrentPage.IsActive}"
-							 IsBackEnabled="{Binding CurrentPage.EnableBack}"
-							 IsCancelEnabled="{Binding CurrentPage.EnableCancel}"
-							 HorizontalAlignment="Stretch"
-							 VerticalAlignment="Stretch">
-				<ContentControl Content="{Binding CurrentPage}" />
-			</controls:Dialog>
-		</ContentControl>
+		<controls:Dialog DataContext="{Binding FullScreen}"
+						 IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
+						 IsActive="{Binding CurrentPage.IsActive}"
+						 IsBackEnabled="{Binding CurrentPage.EnableBack, FallbackValue=False}"
+						 IsCancelEnabled="{Binding CurrentPage.EnableCancel, FallbackValue=False}"
+						 HorizontalContentAlignment="Stretch"
+						 VerticalContentAlignment="Stretch"
+						 HorizontalAlignment="Stretch"
+						 VerticalAlignment="Stretch">
+			<!--<controls:Dialog.Styles>
+				<Style Selector="controls|Dialog /template/ Panel#PART_Overlay">
+					<Setter Property="Background" Value="{DynamicResource RegionColor}" />
+				</Style>
+				<Style Selector="controls|Dialog /template/ Border#PART_Border">
+					<Setter Property="Margin" Value="0" />
+					<Setter Property="CornerRadius" Value="0" />
+				</Style>
+			</controls:Dialog.Styles>-->
+			<ContentControl Content="{Binding CurrentPage}" />
+		</controls:Dialog>
+
+		<controls:Dialog DataContext="{Binding DialogScreen}"
+						 IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
+						 IsActive="{Binding CurrentPage.IsActive}"
+						 IsBackEnabled="{Binding CurrentPage.EnableBack, FallbackValue=False}"
+						 IsCancelEnabled="{Binding CurrentPage.EnableCancel, FallbackValue=False}"
+						 HorizontalAlignment="Stretch"
+						 VerticalAlignment="Stretch"
+						 HorizontalContentAlignment="Center"
+						 VerticalContentAlignment="Center">
+			<ContentControl Content="{Binding CurrentPage}" />
+		</controls:Dialog>
 
 	</Panel>
 

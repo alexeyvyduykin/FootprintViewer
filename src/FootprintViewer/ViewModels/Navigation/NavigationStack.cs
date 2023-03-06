@@ -1,10 +1,12 @@
 ﻿using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.ViewModels.Navigation;
 
-public class NavigationStack<T> : ViewModelBase, INavigationStack<T> where T : class
+public class NavigationStack<T> : ViewModelBase, INavigationStack<T> where T : class, INavigatable
 {
+    private bool _operationsEnabled = true;
     private readonly Stack<T> _backStack;
 
     protected NavigationStack()
@@ -12,39 +14,92 @@ public class NavigationStack<T> : ViewModelBase, INavigationStack<T> where T : c
         _backStack = new Stack<T>();
     }
 
+    protected IEnumerable<T> Stack => _backStack;
+
     [Reactive]
     public T? CurrentPage { get; set; }
 
-    protected virtual void OnNavigated(T? oldPage, T? newPage) { }
+    [Reactive]
+    public bool CanNavigateBack { get; set; }
+
+    protected virtual void OnNavigated(T? oldPage, bool oldInStack, T? newPage, bool newInStack) { }
+
+    private void NavigationOperation(T? oldPage, bool oldInStack, T? newPage, bool newInStack)
+    {
+        if (_operationsEnabled)
+        {
+            oldPage?.OnNavigatedFrom(oldInStack);
+        }
+
+        CurrentPage = newPage;
+
+        if (!oldInStack && oldPage is { })
+        {
+            OnPopped(oldPage);
+        }
+
+        if (_operationsEnabled)
+        {
+            OnNavigated(oldPage, oldInStack, newPage, newInStack);
+        }
+
+        if (_operationsEnabled && newPage is { })
+        {
+            newPage.OnNavigatedTo(newInStack);
+        }
+
+        UpdateCanNavigateBack();
+    }
+
+    protected virtual void OnPopped(T page) { }
 
     public virtual void Clear()
     {
-        if (_backStack.Count == 0 && CurrentPage is null)
+        Clear(false);
+    }
+
+    protected virtual void Clear(bool keepRoot)
+    {
+        var root = _backStack.Count > 0 ? _backStack.Last() : CurrentPage;
+
+        if ((keepRoot && CurrentPage == root) || (!keepRoot && _backStack.Count == 0 && CurrentPage is null))
         {
             return;
         }
 
         var oldPage = CurrentPage;
 
+        var oldItems = _backStack.ToList();
+
         _backStack.Clear();
 
-        CurrentPage = null;
-
-        OnNavigated(oldPage, CurrentPage);
-    }
-
-    public void To(T viewmodel)
-    {
-        var oldPage = CurrentPage;
-
-        if (oldPage is { })
+        if (keepRoot)
         {
-            _backStack.Push(oldPage);
+            foreach (var item in oldItems)
+            {
+                if (item != root)
+                {
+                    OnPopped(item);
+                }
+            }
+            CurrentPage = root;
+        }
+        else
+        {
+            foreach (var item in oldItems)
+            {
+                if (item is INavigatable navigatable)
+                {
+                    navigatable.OnNavigatedFrom(false);
+                }
+
+                OnPopped(item);
+            }
+
+            CurrentPage = null;
         }
 
-        CurrentPage = viewmodel;
-
-        OnNavigated(oldPage, CurrentPage);
+        NavigationOperation(oldPage, false, CurrentPage, CurrentPage is { });
     }
 
     public void Back()
@@ -55,11 +110,76 @@ public class NavigationStack<T> : ViewModelBase, INavigationStack<T> where T : c
 
             CurrentPage = _backStack.Pop();
 
-            OnNavigated(oldPage, CurrentPage);
+            NavigationOperation(oldPage, false, CurrentPage, true);
         }
         else
         {
             Clear(); // in this case only CurrentPage might be set and Clear will provide correct behavior.
         }
+    }
+
+    public void To(T viewmodel, NavigationMode mode = NavigationMode.Normal)
+    {
+        var oldPage = CurrentPage;
+
+        bool oldInStack = true;
+        bool newInStack = false;
+
+        switch (mode)
+        {
+            case NavigationMode.Normal:
+                if (oldPage is { })
+                {
+                    _backStack.Push(oldPage);
+                }
+                break;
+
+            case NavigationMode.Clear:
+                oldInStack = false;
+                _operationsEnabled = false;
+                Clear();
+                _operationsEnabled = true;
+                break;
+
+            case NavigationMode.Skip:
+                // Do not push old page on the back stack.
+                break;
+        }
+
+        NavigationOperation(oldPage, oldInStack, viewmodel, newInStack);
+    }
+
+    public void BackTo(T viewmodel)
+    {
+        if (CurrentPage == viewmodel)
+        {
+            return;
+        }
+
+        if (_backStack.Contains(viewmodel))
+        {
+            var oldPage = CurrentPage;
+
+            while (_backStack.Pop() != viewmodel)
+            {
+            }
+
+            NavigationOperation(oldPage, false, viewmodel, true);
+        }
+    }
+
+    public void BackTo<TViewModel>() where TViewModel : T
+    {
+        var previous = _backStack.Reverse().SingleOrDefault(x => x is TViewModel);
+
+        if (previous is { })
+        {
+            BackTo(previous);
+        }
+    }
+
+    private void UpdateCanNavigateBack()
+    {
+        CanNavigateBack = _backStack.Count > 0;
     }
 }

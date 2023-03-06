@@ -2,7 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Sources;
-using FootprintViewer.ViewModels.Navigation;
+using FootprintViewer.ViewModels.Dialogs;
 using FootprintViewer.ViewModels.Settings.SourceBuilders;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -14,9 +14,9 @@ using System.Windows.Input;
 
 namespace FootprintViewer.ViewModels.Settings;
 
-public sealed class SourceContainerViewModel : RoutableViewModel
+public sealed class SourceContainerViewModel : ViewModelBase
 {
-    public SourceContainerViewModel(string key, IReadonlyDependencyResolver dependencyResolver)
+    public SourceContainerViewModel(DialogViewModelBase<object> dialog, string key, IReadonlyDependencyResolver dependencyResolver)
     {
         Sources = new List<ISourceViewModel>();
 
@@ -35,11 +35,7 @@ public sealed class SourceContainerViewModel : RoutableViewModel
                 Password = state?.Password ?? "user"
             };
 
-            DialogStack().To(databaseBuilderDialog);
-
-            var dialogResult = await databaseBuilderDialog.GetDialogResultAsync();
-
-            DialogStack().Back();
+            var dialogResult = await dialog.NavigateDialogAsync(databaseBuilderDialog);
 
             if (dialogResult.Result is DatabaseSource source)
             {
@@ -64,11 +60,7 @@ public sealed class SourceContainerViewModel : RoutableViewModel
                 Directory = mainState.LastOpenDirectory
             };
 
-            DialogStack().To(jsonBuilderDialog);
-
-            var dialogResult = await jsonBuilderDialog.GetDialogResultAsync();
-
-            DialogStack().Back();
+            var dialogResult = await dialog.NavigateDialogAsync(jsonBuilderDialog);
 
             if (dialogResult.Result is JsonSource source)
             {

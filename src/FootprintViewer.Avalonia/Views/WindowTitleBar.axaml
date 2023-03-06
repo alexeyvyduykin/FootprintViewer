@@ -26,8 +26,8 @@
 						   Foreground="White"
 						   VerticalAlignment="Center"
 						   IsHitTestVisible="False"/>
-
-				<Button Margin="8,4,8,4"
+				<Button IsEnabled="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}"
+					    Margin="8,4,8,4"
 						Padding="2,4,8,4"
 						Command="{Binding Timelines}"
 						Classes="Outline">
@@ -42,12 +42,12 @@
 								   Text="Timelines"/>
 					</Grid>
 				</Button>
-
 			</StackPanel>
 			<StackPanel HorizontalAlignment="Right"
 						Orientation="Horizontal">
 
-				<Button Margin="0,4,8,4"
+				<Button IsEnabled="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}"
+					    Margin="0,4,8,4"
 						Padding="2,4,8,4"
 						Command="{Binding Connection}"
 						Classes="Outline">
@@ -63,7 +63,8 @@
 					</Grid>
 				</Button>
 
-				<Button Margin="0,4,8,4"
+				<Button IsEnabled="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}"
+						Margin="0,4,8,4"
 						Padding="4"
 						Command="{Binding Settings}"
 						Classes="Outline">

@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.ViewModels;
 
-public sealed class MainViewModel : RoutableViewModel
+public sealed class MainViewModel : ViewModelBase
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly Map _map;
@@ -58,6 +58,14 @@ public sealed class MainViewModel : RoutableViewModel
 
     public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
+        DialogScreen = new DialogScreenViewModel();
+
+        FullScreen = new DialogScreenViewModel(NavigationTarget.FullScreen);
+
+        MainScreen = new TargettedNavigationStack(NavigationTarget.HomeScreen);
+
+        NavigationState.Register(MainScreen, DialogScreen, FullScreen);
+
         _dependencyResolver = dependencyResolver;
         var factory = dependencyResolver.GetExistingService<ProjectFactory>();
         // TODO: make _map as IMap
@@ -101,13 +109,20 @@ public sealed class MainViewModel : RoutableViewModel
         _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
 
-        IsMainContentEnabled = this.WhenAnyValue(s => s.DialogNavigationStack.IsDialogOpen, (s) => !s)
+        IsMainContentEnabled = this.WhenAnyValue(
+            s => s.DialogScreen.IsDialogOpen,
+            s => s.FullScreen.IsDialogOpen,
+            (dialogIsOpen, fullScreenIsOpen) => !(dialogIsOpen || fullScreenIsOpen))
             .ObserveOn(RxApp.MainThreadScheduler);
 
-        this.WhenAnyValue(s => s.DialogNavigationStack.CurrentPage)
+        this.WhenAnyValue(
+            s => s.DialogScreen.CurrentPage,
+            s => s.FullScreen.CurrentPage,
+            s => s.MainScreen.CurrentPage,
+            (dialog, fullScreenDialog, mainScreen) => dialog ?? fullScreenDialog ?? mainScreen)
             .WhereNotNull()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Do(s => s.SetActive())
+            .Do(page => page.SetActive())
             .Subscribe();
 
         Connection = ReactiveCommand.CreateFromTask(ConnectionImpl);
@@ -118,6 +133,12 @@ public sealed class MainViewModel : RoutableViewModel
 
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
+
+    public TargettedNavigationStack MainScreen { get; }
+
+    private DialogScreenViewModel DialogScreen { get; set; }
+
+    private DialogScreenViewModel FullScreen { get; set; }
 
     public ReactiveCommand<(double, double), Unit> Moved { get; }
 
@@ -135,11 +156,7 @@ public sealed class MainViewModel : RoutableViewModel
 
         var connectionDialog = new ConnectionViewModel(_dependencyResolver);
 
-        DialogNavigationStack.To(connectionDialog);
-
-        _ = await connectionDialog.GetDialogResultAsync();
-
-        DialogNavigationStack.Clear();
+        _ = await DialogScreen.NavigateDialogAsync(connectionDialog);
 
         dataManager.UpdateData();
     }
@@ -150,11 +167,7 @@ public sealed class MainViewModel : RoutableViewModel
 
         var settingsDialog = new SettingsViewModel(_dependencyResolver);
 
-        DialogNavigationStack.To(settingsDialog);
-
-        _ = await settingsDialog.GetDialogResultAsync();
-
-        DialogNavigationStack.Clear();
+        _ = await DialogScreen.NavigateDialogAsync(settingsDialog);
 
         dataManager.UpdateData();
     }
@@ -165,11 +178,7 @@ public sealed class MainViewModel : RoutableViewModel
 
         var timelinesDialog = new TimelinesViewModel(_dependencyResolver);
 
-        DialogNavigationStack.To(timelinesDialog);
-
-        _ = await timelinesDialog.GetDialogResultAsync();
-
-        DialogNavigationStack.Clear();
+        _ = await FullScreen.NavigateDialogAsync(timelinesDialog);
     }
 
     private void MovedImpl((double, double) screenPosition)
@@ -235,7 +244,7 @@ public sealed class MainViewModel : RoutableViewModel
             .ForEach(s => s.DataHasChanged());
     }
 
-    public DialogNavigationStack DialogNavigationStack => DialogStack();
+    //public DialogNavigationStack DialogNavigationStack => null;// DialogStack();
 
     private void Reset()
     {

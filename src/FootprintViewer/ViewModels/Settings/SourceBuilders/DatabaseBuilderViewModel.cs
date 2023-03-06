@@ -62,11 +62,7 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
         {
             var tableInfoDialog = TableInfoViewModel.Build(DbHelper.GetTableType(key));
 
-            DialogStack().To(tableInfoDialog);
-
-            _ = await tableInfoDialog.GetDialogResultAsync();
-
-            DialogStack().Back();
+            _ = await NavigateDialogAsync(tableInfoDialog);
         });
     }
 
