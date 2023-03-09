@@ -37,8 +37,8 @@ public static class RandomModelBuilder
     public static async Task<List<TaskAvailability>> CreateCommunicationTaskAvailabilitiesAsync(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
         => await Start(() => CreateCommunicationTaskAvailabilities(satellites, groundStations, footprints, tasks));
 
-    public static async Task<List<TaskAvailability>> CreateObservationTaskAvailabilitiesAsync(IList<Footprint> footprints, IList<ITask> tasks)
-        => await Start(() => CreateObservationTaskAvailabilities(footprints, tasks));
+    public static async Task<List<TaskAvailability>> CreateObservationTaskAvailabilitiesAsync(IList<Footprint> footprints, IList<Satellite> satellites, IList<ITask> tasks)
+        => await Start(() => CreateObservationTaskAvailabilities(footprints, satellites, tasks));
 
     public static async Task<PlannedScheduleResult> CreatePlannedScheduleAsync(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
         => await Start(() => CreatePlannedSchedule(satellites, groundTargets, groundStations, footprints));
@@ -138,7 +138,7 @@ public static class RandomModelBuilder
 
         var tasks = ModelFactory.CreateTasks(gts, new List<GroundStation>());
         var observationTasks = ModelFactory.CreateObservationTaskResults(tasks, footprints);
-        var windows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, tasks);
+        var windows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, satellites, tasks);
 
         return new PlannedScheduleResult()
         {
@@ -261,7 +261,7 @@ public static class RandomModelBuilder
         return list;
     }
 
-    public static List<TaskAvailability> CreateObservationTaskAvailabilities(IList<Footprint> footprints, IList<ITask> tasks)
+    public static List<TaskAvailability> CreateObservationTaskAvailabilities(IList<Footprint> footprints, IList<Satellite> satellites, IList<ITask> tasks)
     {
         var minTaskAvailability = 60;
         var maxTaskAvailability = 121;
@@ -282,26 +282,33 @@ public static class RandomModelBuilder
                 Duration = item.Duration
             };
 
-            var centerDateTime = begin.AddSeconds(duration / 2.0);
-            var newDuration = _random.Next(minTaskAvailability, maxTaskAvailability);
-            var newHalfDuration = newDuration / 2.0;
-
-            var newBegin = centerDateTime.AddSeconds(-newHalfDuration);
-
-            var ival = new Interval { Begin = newBegin, Duration = newDuration };
-
             var task = observationTasks
                 .Where(s => Equals(s.GroundTargetName, gtName))
                 .FirstOrDefault()!;
 
-            var res = new TaskAvailability()
-            {
-                TaskName = task.Name,
-                SatelliteName = item.SatelliteName!,
-                Windows = new() { ival }
-            };
+            var centerDateTime = begin.AddSeconds(duration / 2.0);
 
-            list.Add(res);
+            var arr = new List<TaskAvailability>();
+
+            foreach (var satName in satellites.Select(s => s.Name))
+            {
+                var newDuration = _random.Next(minTaskAvailability, maxTaskAvailability);
+                var newHalfDuration = newDuration / 2.0;
+                var newBegin = centerDateTime.AddSeconds(-newHalfDuration);
+
+                var ival = new Interval { Begin = newBegin, Duration = newDuration };
+
+                var res = new TaskAvailability()
+                {
+                    TaskName = task.Name,
+                    SatelliteName = satName!,
+                    Windows = new() { ival }
+                };
+
+                arr.Add(res);
+            }
+
+            list.AddRange(arr);
         }
 
         return list;
@@ -360,7 +367,7 @@ public static class RandomModelBuilder
         var tasks = ModelFactory.CreateTasks(groundTargets, groundStations);
 
         var observationTasks = ModelFactory.CreateObservationTaskResults(tasks, footprints);
-        var observationWindows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, tasks);
+        var observationWindows = RandomModelBuilder.CreateObservationTaskAvailabilities(footprints, satellites, tasks);
         var communicationWindows = RandomModelBuilder.CreateCommunicationTaskAvailabilities(satellites, groundStations, footprints, tasks);
         var communicationTasks = RandomModelBuilder.CreateCommunicationTaskResults(communicationWindows);
 

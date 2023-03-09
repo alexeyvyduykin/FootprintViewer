@@ -35,6 +35,7 @@
 
 		<StyleInclude Source="avares://TimeDataViewer/Styles/Default.axaml"/>
 		<StyleInclude Source="avares://TimeDataViewer/Styles/TimelineControl.axaml"/>
+		<StyleInclude Source="avares://TimeDataViewerLite/Styles/Styles.axaml"/>
 
 	</Application.Styles>
 

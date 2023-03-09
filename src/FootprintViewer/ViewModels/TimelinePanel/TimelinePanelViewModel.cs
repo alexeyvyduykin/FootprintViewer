@@ -74,8 +74,8 @@ public sealed class TimelinePanelViewModel : ViewModelBase
         var dict = new Dictionary<string, IList<Interval>>();
         foreach (var satName in satellites)
         {
-            var items = footprints.Where(s => Equals(s.SatelliteName, satName)).Select(s => CreateInterval(s, Epoch)).ToList();
-            dict.Add(satName, items);
+            //var items = footprints.Where(s => Equals(s.SatelliteName, satName)).Select(s => CreateInterval(s, Epoch)).ToList();
+            //dict.Add(satName, items);
         }
         var Labels = satellites.Select(s => new LabelViewModel() { Label = s }).ToList();
 
@@ -93,24 +93,24 @@ public sealed class TimelinePanelViewModel : ViewModelBase
             CreateAxisX(Epoch, BeginScenario, EndScenario)
         });
 
-        plotModel.Series.AddRange(dict.Values.Select(s => CreateSeries(s)).ToList());
+        //plotModel.Series.AddRange(dict.Values.Select(s => CreateSeries(s)).ToList());
 
         return plotModel;
     }
 
-    private static Series CreateSeries(IEnumerable<Interval> intervals)
-    {
-        return new TimelineSeries()
-        {
-            BarWidth = 0.5,
-            ItemsSource = intervals,
-            CategoryField = "Category",
-            BeginField = "BeginTime",
-            EndField = "EndTime",
-            IsVisible = true,
-            TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
-        };
-    }
+    //private static Series CreateSeries(IEnumerable<Interval> intervals)
+    //{
+    //    return new TimelineSeries()
+    //    {
+    //        BarWidth = 0.5,
+    //        ItemsSource = intervals,
+    //        CategoryField = "Category",
+    //        BeginField = "BeginTime",
+    //        EndField = "EndTime",
+    //        IsVisible = true,
+    //        TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
+    //    };
+    //}
 
     private static Axis CreateAxisY(IEnumerable<LabelViewModel> labels)
     {
@@ -163,19 +163,19 @@ public sealed class TimelinePanelViewModel : ViewModelBase
         };
     }
 
-    private static Interval CreateInterval(Footprint footprint, DateTime epoch)
-    {
-        var secs = footprint.Begin.TimeOfDay.TotalSeconds;
+    //private static Interval CreateInterval(Footprint footprint, DateTime epoch)
+    //{
+    //    var secs = footprint.Begin.TimeOfDay.TotalSeconds;
 
-        var date = epoch.Date;
+    //    var date = epoch.Date;
 
-        return new Interval()
-        {
-            Category = footprint.SatelliteName,
-            BeginTime = date.AddSeconds(secs),
-            EndTime = date.AddSeconds(secs + footprint.Duration)
-        };
-    }
+    //    return new Interval()
+    //    {
+    //        Category = footprint.SatelliteName,
+    //        BeginTime = date.AddSeconds(secs),
+    //        EndTime = date.AddSeconds(secs + footprint.Duration)
+    //    };
+    //}
 
     private static double ToTotalDays(DateTime value, DateTime timeOrigin)
     {

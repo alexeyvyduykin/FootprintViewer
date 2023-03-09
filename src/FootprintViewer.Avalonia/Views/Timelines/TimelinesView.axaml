@@ -4,23 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:FootprintViewer.Avalonia.Controls"
 	         xmlns:converters="using:FootprintViewer.Avalonia.Converters"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FootprintViewer.Avalonia.Views.Timelines.TimelinesView">
+			 xmlns:timeline="clr-namespace:TimeDataViewerLite.Controls;assembly=TimeDataViewerLite"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d"
+			 d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FootprintViewer.Avalonia.Views.Timelines.TimelinesView"
+			 d:DataContext="{x:Static vmd:DesignData.Timelines}">
 
 	<UserControl.Resources>
-		<converters:DialogMarginConverter x:Key="DialogMarginConverter"/>
+		<DataTemplate x:Key="TaskContentTemplate"
+                      DataType="{x:Type timeline:CategoryListBoxItem}">
+			<TextBlock Text="{Binding Text}"
+					   Background="Transparent"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center">
+				<TextBlock.Foreground>
+					<SolidColorBrush Color="#C3C3C3"/>
+				</TextBlock.Foreground>
+			</TextBlock>
+		</DataTemplate>
 	</UserControl.Resources>
 
 	<controls:ContentArea x:Name="ContentArea"
 						  EnableCancel="False"
 						  EnableNext="True"
-						  NextContent="OK"
-						  Width="{Binding $parent[Window].Width,
-						         Converter={StaticResource DialogMarginConverter},
-						         ConverterParameter=120}"
-						  Height="{Binding $parent[Window].Height,
-						          Converter={StaticResource DialogMarginConverter},
-						          ConverterParameter=120}">
+						  NextContent="OK">
+
+		<timeline:TimelineControl Margin="8"
+								  PlotModel="{Binding PlotModel}"
+								  CategoryListBoxItemTemplate="{StaticResource TaskContentTemplate}">
+		</timeline:TimelineControl>
 
 	</controls:ContentArea>
 

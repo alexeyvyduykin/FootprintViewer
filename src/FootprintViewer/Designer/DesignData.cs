@@ -9,6 +9,7 @@ using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.TimelinePanel;
+using FootprintViewer.ViewModels.Timelines;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
@@ -73,6 +74,8 @@ public static class DesignData
     public static SatelliteViewModel Satellite => new(RandomModelBuilder.BuildSatellite()) { IsShow = true, IsShowInfo = true };
 
     public static UserGeometryViewModel UserGeometry => new(RandomModelBuilder.BuildUserGeometry());
+
+    public static TimelinesViewModel Timelines => new(_resolver);
 
     public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(RandomModelBuilder.BuildFootprint()));
 
