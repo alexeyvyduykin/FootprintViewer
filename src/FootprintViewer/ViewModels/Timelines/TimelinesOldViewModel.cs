@@ -3,6 +3,7 @@ using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -15,14 +16,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using TimeDataViewer.Core;
 
-namespace FootprintViewer.ViewModels.TimelinePanel;
+namespace FootprintViewer.ViewModels.Timelines;
 
-public sealed class TimelinePanelViewModel : ViewModelBase
+public class TimelinesOldViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
     private readonly DateTime _timeOrigin = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
 
-    public TimelinePanelViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public TimelinesOldViewModel(IReadonlyDependencyResolver dependencyResolver)
     {
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
 
@@ -30,12 +31,11 @@ public sealed class TimelinePanelViewModel : ViewModelBase
 
         Init = ReactiveCommand.CreateFromTask(InitImpl, outputScheduler: RxApp.MainThreadScheduler);
 
-        this.WhenAnyValue(s => s.Show)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Init);
+        var cancelCommandCanExecute = this.WhenAnyValue(x => x.IsDialogOpen).ObserveOn(RxApp.MainThreadScheduler);
+
+        NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Normal), cancelCommandCanExecute);
+
+        Observable.StartAsync(InitImpl, RxApp.MainThreadScheduler);
     }
 
     private ReactiveCommand<Unit, Unit> Init { get; }
@@ -71,11 +71,13 @@ public sealed class TimelinePanelViewModel : ViewModelBase
         BeginScenario = ToTotalDays(Epoch.Date, _timeOrigin) - 1;
         EndScenario = BeginScenario + 3;
 
-        var dict = new Dictionary<string, IList<Interval>>();
+        var dict = new Dictionary<string, IList<TimeDataViewerLite.IntervalInfo>>();
         foreach (var satName in satellites)
         {
-            //var items = footprints.Where(s => Equals(s.SatelliteName, satName)).Select(s => CreateInterval(s, Epoch)).ToList();
-            //dict.Add(satName, items);
+            var items = footprints
+                .Where(s => Equals(s.SatelliteName, satName))
+                .Select(s => CreateInterval(s, Epoch)).ToList();
+            dict.Add(satName, items);
         }
         var Labels = satellites.Select(s => new LabelViewModel() { Label = s }).ToList();
 
@@ -93,24 +95,24 @@ public sealed class TimelinePanelViewModel : ViewModelBase
             CreateAxisX(Epoch, BeginScenario, EndScenario)
         });
 
-        //plotModel.Series.AddRange(dict.Values.Select(s => CreateSeries(s)).ToList());
+        plotModel.Series.AddRange(dict.Values.Select(s => CreateSeries(s)).ToList());
 
         return plotModel;
     }
 
-    //private static Series CreateSeries(IEnumerable<Interval> intervals)
-    //{
-    //    return new TimelineSeries()
-    //    {
-    //        BarWidth = 0.5,
-    //        ItemsSource = intervals,
-    //        CategoryField = "Category",
-    //        BeginField = "BeginTime",
-    //        EndField = "EndTime",
-    //        IsVisible = true,
-    //        TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
-    //    };
-    //}
+    private static Series CreateSeries(IEnumerable<TimeDataViewerLite.IntervalInfo> intervals)
+    {
+        return new TimelineSeries()
+        {
+            BarWidth = 0.5,
+            ItemsSource = intervals,
+            CategoryField = "Category",
+            BeginField = "Begin",
+            EndField = "End",
+            IsVisible = true,
+            TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
+        };
+    }
 
     private static Axis CreateAxisY(IEnumerable<LabelViewModel> labels)
     {
@@ -163,19 +165,19 @@ public sealed class TimelinePanelViewModel : ViewModelBase
         };
     }
 
-    //private static Interval CreateInterval(Footprint footprint, DateTime epoch)
-    //{
-    //    var secs = footprint.Begin.TimeOfDay.TotalSeconds;
+    private static TimeDataViewerLite.IntervalInfo CreateInterval(Footprint footprint, DateTime epoch)
+    {
+        var secs = footprint.Begin.TimeOfDay.TotalSeconds;
 
-    //    var date = epoch.Date;
+        var date = epoch.Date;
 
-    //    return new Interval()
-    //    {
-    //        Category = footprint.SatelliteName,
-    //        BeginTime = date.AddSeconds(secs),
-    //        EndTime = date.AddSeconds(secs + footprint.Duration)
-    //    };
-    //}
+        return new TimeDataViewerLite.IntervalInfo()
+        {
+            Category = footprint.SatelliteName!,
+            Begin = date.AddSeconds(secs),
+            End = date.AddSeconds(secs + footprint.Duration)
+        };
+    }
 
     private static double ToTotalDays(DateTime value, DateTime timeOrigin)
     {
@@ -202,7 +204,5 @@ public sealed class TimelinePanelViewModel : ViewModelBase
 
     [Reactive]
     public double Duration { get; set; }
-
-    [Reactive]
-    public bool Show { get; set; }
 }
+

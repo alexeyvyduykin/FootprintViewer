@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.Models;
-using FootprintViewer.ViewModels.TimelinePanel;
+using FootprintViewer.ViewModels.Timelines;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
 using TimeDataViewer.Core;
-using TimelineInterval = FootprintViewer.ViewModels.TimelinePanel.Interval;
+using TimeDataViewerLite;
 
 namespace PlannedScheduleViewerSample.ViewModels;
 
@@ -67,15 +67,15 @@ public partial class MainWindowViewModel
         return plotModel;
     }
 
-    private static Series CreateSeries(IEnumerable<TimelineInterval> intervals)
+    private static Series CreateSeries(IEnumerable<IntervalInfo> intervals)
     {
         return new TimelineSeries()
         {
             BarWidth = 0.5,
             ItemsSource = intervals,
             CategoryField = "Category",
-            BeginField = "BeginTime",
-            EndField = "EndTime",
+            BeginField = "Begin",
+            EndField = "End",
             IsVisible = true,
             TrackerKey = intervals.FirstOrDefault()?.Category ?? string.Empty,
         };
@@ -132,17 +132,17 @@ public partial class MainWindowViewModel
         };
     }
 
-    private static TimelineInterval CreateInterval(string category, DateTime epoch, DateTime begin, double duration)
+    private static IntervalInfo CreateInterval(string category, DateTime epoch, DateTime begin, double duration)
     {
         var secs = begin.TimeOfDay.TotalSeconds;
 
         var date = epoch.Date;
 
-        return new TimelineInterval()
+        return new IntervalInfo()
         {
             Category = category,
-            BeginTime = date.AddSeconds(secs),
-            EndTime = date.AddSeconds(secs + duration)
+            Begin = date.AddSeconds(secs),
+            End = date.AddSeconds(secs + duration)
         };
     }
 

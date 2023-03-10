@@ -10,7 +10,6 @@ using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
-using FootprintViewer.ViewModels.TimelinePanel;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Layers;
@@ -47,7 +46,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
     private CustomToolBarViewModel? _customToolBar;
-    private TimelinePanelViewModel? _timelinePanel;
     private IDataManager? _dataManager;
     private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
@@ -138,10 +136,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         else if (serviceType == typeof(SidePanelViewModel))
         {
             return _sidePanel ??= new SidePanelViewModel();
-        }
-        else if (serviceType == typeof(TimelinePanelViewModel))
-        {
-            return _timelinePanel ??= new TimelinePanelViewModel(this);
         }
         else if (serviceType == typeof(MainViewModel))
         {

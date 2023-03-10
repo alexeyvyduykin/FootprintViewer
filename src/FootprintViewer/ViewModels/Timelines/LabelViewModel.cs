@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.ViewModels.TimelinePanel;
+﻿namespace FootprintViewer.ViewModels.Timelines;
 
 public class LabelViewModel : ViewModelBase
 {

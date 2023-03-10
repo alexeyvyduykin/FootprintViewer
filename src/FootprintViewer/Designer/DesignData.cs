@@ -8,7 +8,6 @@ using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
-using FootprintViewer.ViewModels.TimelinePanel;
 using FootprintViewer.ViewModels.Timelines;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
@@ -39,8 +38,6 @@ public static class DesignData
     public static LayerContainerViewModel LayerContainer => new(_resolver);
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.BeginCreating(TipTarget.Rectangle, 34545.432);
-
-    public static TimelinePanelViewModel TimelinePanel => new(_resolver) { Show = true };
 
     public static FootprintPreviewTabViewModel FootprintPreviewTab => new(_resolver) { IsActive = true };
 
@@ -76,6 +73,8 @@ public static class DesignData
     public static UserGeometryViewModel UserGeometry => new(RandomModelBuilder.BuildUserGeometry());
 
     public static TimelinesViewModel Timelines => new(_resolver);
+
+    public static TimelinesOldViewModel TimelinesOld => new(_resolver);
 
     public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(RandomModelBuilder.BuildFootprint()));
 

@@ -8,7 +8,6 @@ using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels.SidePanel.Filters;
 using FootprintViewer.ViewModels.SidePanel.Items;
-using FootprintViewer.ViewModels.TimelinePanel;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
@@ -44,7 +43,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         _layerProvider = dependencyResolver.GetExistingService<FootprintProvider>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
         var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
-        var timelinePanel = dependencyResolver.GetExistingService<TimelinePanelViewModel>();
 
         Filter = new FootprintTabFilterViewModel(dependencyResolver);
 
@@ -82,10 +80,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         this.WhenAnyValue(s => s.IsFilterOnMap)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(_ => IsFilterOnMapChanged());
-
-        this.WhenAnyValue(s => s.ShowTimeline)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => timelinePanel.Show = s);
 
         _footprints
             .Connect()
@@ -244,9 +238,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilterOnMap { get; set; }
-
-    [Reactive]
-    public bool ShowTimeline { get; set; }
 
     [Reactive]
     public int ItemCount { get; set; }

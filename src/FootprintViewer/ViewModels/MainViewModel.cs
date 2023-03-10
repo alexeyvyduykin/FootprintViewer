@@ -10,7 +10,6 @@ using FootprintViewer.ViewModels.Settings;
 using FootprintViewer.ViewModels.SidePanel;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using FootprintViewer.ViewModels.SidePanel.Tabs;
-using FootprintViewer.ViewModels.TimelinePanel;
 using FootprintViewer.ViewModels.Timelines;
 using FootprintViewer.ViewModels.Tips;
 using FootprintViewer.ViewModels.ToolBar;
@@ -49,7 +48,6 @@ public sealed class MainViewModel : ViewModelBase
     private readonly GroundTargetTabViewModel _groundTargetTab;
     private readonly UserGeometryTabViewModel _userGeometryTab;
     private readonly ScaleMapBar _scaleMapBar;
-    private readonly TimelinePanelViewModel _timelinePanel;
     private ISelector? _selector;
     private readonly IDataManager _dataManager;
     private readonly FeatureManager _featureManager;
@@ -79,7 +77,6 @@ public sealed class MainViewModel : ViewModelBase
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
         _dataManager = dependencyResolver.GetExistingService<IDataManager>();
         _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
-        _timelinePanel = dependencyResolver.GetExistingService<TimelinePanelViewModel>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -131,6 +128,8 @@ public sealed class MainViewModel : ViewModelBase
 
         Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);
 
+        TimelinesOld = ReactiveCommand.CreateFromTask(TimelinesOldImpl);
+
         Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
     }
 
@@ -149,6 +148,8 @@ public sealed class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> Settings { get; }
 
     public ReactiveCommand<Unit, Unit> Timelines { get; }
+
+    public ReactiveCommand<Unit, Unit> TimelinesOld { get; }
 
     private async Task ConnectionImpl()
     {
@@ -179,6 +180,13 @@ public sealed class MainViewModel : ViewModelBase
         var timelinesDialog = new TimelinesViewModel(_dependencyResolver);
 
         _ = await FullScreen.NavigateDialogAsync(timelinesDialog);
+    }
+
+    private async Task TimelinesOldImpl()
+    {
+        var timelinesOldDialog = new TimelinesOldViewModel(_dependencyResolver);
+
+        _ = await FullScreen.NavigateDialogAsync(timelinesOldDialog);
     }
 
     private void MovedImpl((double, double) screenPosition)
@@ -243,8 +251,6 @@ public sealed class MainViewModel : ViewModelBase
             .ToList()
             .ForEach(s => s.DataHasChanged());
     }
-
-    //public DialogNavigationStack DialogNavigationStack => null;// DialogStack();
 
     private void Reset()
     {
@@ -932,8 +938,6 @@ public sealed class MainViewModel : ViewModelBase
     public CustomToolBarViewModel ToolBar => _customToolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
-
-    public TimelinePanelViewModel TimelinePanel => _timelinePanel;
 
     [Reactive]
     public IMapNavigator MapNavigator { get; set; }
