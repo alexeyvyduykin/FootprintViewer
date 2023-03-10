@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Extensions;
+using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using SkiaSharp;
@@ -218,11 +219,11 @@ public static class RandomModelBuilder
 
         var list = new List<TaskAvailability>();
 
-        var commiunicationTasks = tasks.Where(s => s is CommunicationTask).Cast<CommunicationTask>().ToList();
+        var communicationTasks = tasks.Where(s => s is CommunicationTask).Cast<CommunicationTask>().ToList();
 
         foreach (var satName in satellites.Select(s => s.Name ?? "SatelliteDefault"))
         {
-            foreach (var item in commiunicationTasks)
+            foreach (var item in communicationTasks)
             {
                 var gsName = item.GroundStationName;
                 var gs = groundStations.Where(s => Equals(s.Name, gsName)).Single();
@@ -245,13 +246,11 @@ public static class RandomModelBuilder
                     newIntervals.Add(new Interval() { Begin = newBegin, Duration = newDuration });
                 }
 
-                var validIntervals = ToValidRange(newIntervals);
-
                 var res = new TaskAvailability()
                 {
                     TaskName = item.Name,
                     SatelliteName = satName,
-                    Windows = validIntervals
+                    Windows = newIntervals.Merge()
                 };
 
                 list.Add(res);
@@ -323,43 +322,6 @@ public static class RandomModelBuilder
         var c4 = new Coordinate(c0.X - r, c0.Y - r);
         var poly = new Polygon(new LinearRing(new[] { c1, c2, c3, c4, c1 }));
         return poly.Contains(point);
-    }
-
-    private static List<Interval> ToValidRange(List<Interval> intervals)
-    {
-        var list = new List<Interval>();
-
-        foreach (var item in intervals)
-        {
-            if (list.Count == 0)
-            {
-                list.Add(item);
-            }
-            else
-            {
-                var current = list.Last();
-
-                if (current.End() > item.Begin)
-                {
-                    var min = current.Begin > item.Begin ? item.Begin : current.Begin;
-                    var max = current.End() > item.End() ? current.End() : item.End();
-
-                    list.RemoveAt(list.Count - 1);
-                    list.Add(new() { Begin = min, Duration = (max - min).TotalSeconds });
-                }
-                else
-                {
-                    list.Add(item);
-                }
-            }
-        }
-
-        return list;
-    }
-
-    private static DateTime End(this Interval interval)
-    {
-        return interval.Begin.AddSeconds(interval.Duration);
     }
 
     public static PlannedScheduleResult CreatePlannedSchedule(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)

@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
@@ -54,7 +55,6 @@ public class TimelinesViewModel : DialogViewModelBase<object>
             .Distinct()
             .ToList();
 
-        // PlotModelControl -> PlotModelChanged changed to e.NewValue (error AttachToView after dialog close)
         PlotModel = await Observable.Start(() => PlotModelBuilder.Build(tasks, seriesInfos, state),
             RxApp.TaskpoolScheduler);
     }
@@ -63,12 +63,11 @@ public class TimelinesViewModel : DialogViewModelBase<object>
     {
         var windows = ps.TaskAvailabilities;
 
-        var dict = new Dictionary<string, List<(string taskName, Interval ival)>>();
+        var dict = new Dictionary<string, List<(ITaskResult taskResult, Interval ival)>>();
 
         foreach (var taskResult in ps.PlannedSchedules)
         {
             var satName = taskResult.SatelliteName;
-            var task = taskResult.TaskName;
             var ival = taskResult.Interval;
 
             if (dict.ContainsKey(satName) == false)
@@ -76,7 +75,7 @@ public class TimelinesViewModel : DialogViewModelBase<object>
                 dict.Add(satName, new());
             }
 
-            dict[satName].Add((task, ival));
+            dict[satName].Add((taskResult, ival));
         }
 
         var seriesInfos = new List<SeriesInfo>();
@@ -97,13 +96,30 @@ public class TimelinesViewModel : DialogViewModelBase<object>
                 .Select(s => new IntervalInfo()
                 {
                     Begin = s.ival.Begin,
-                    End = s.ival.Begin.AddSeconds(s.ival.Duration),
-                    Category = s.taskName,
-                    BrushMode = BrushMode.Solid
+                    End = s.ival.End(),
+                    Category = s.taskResult.TaskName,
+                    BrushMode = ToBrushMode(s.taskResult)
                 }).ToList(),
                 Brush = new Brush(Colors.Palette[i]),
                 StackGroup = satName
             };
+
+            static BrushMode ToBrushMode(ITaskResult taskResult)
+            {
+                if (taskResult is CommunicationTaskResult comRes)
+                {
+                    if (comRes.Type == CommunicationType.Uplink)
+                    {
+                        return BrushMode.UpLine;
+                    }
+                    else if (comRes.Type == CommunicationType.Downlink)
+                    {
+                        return BrushMode.DownLine;
+                    }
+                }
+
+                return BrushMode.Solid;
+            }
 
             var series2 = new SeriesInfo()
             {
@@ -112,7 +128,7 @@ public class TimelinesViewModel : DialogViewModelBase<object>
                 .Select(s => new IntervalInfo()
                 {
                     Begin = s.ival.Begin,
-                    End = s.ival.Begin.AddSeconds(s.ival.Duration),
+                    End = s.ival.End(),
                     Category = s.taskName,
                     BrushMode = BrushMode.Solid
                 }).ToList(),
