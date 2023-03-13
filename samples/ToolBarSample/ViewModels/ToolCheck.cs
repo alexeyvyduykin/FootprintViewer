@@ -1,20 +1,30 @@
-﻿using ReactiveUI.Fody.Helpers;
-using ReactiveUI;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
+using System.Reactive.Linq;
 
 namespace ToolBarSample.ViewModels;
 
 public class ToolCheck : ViewModelBase
 {
-    public ToolCheck()
-    {
+    bool _stop = false;
 
+    public ToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator)
+    {
+        update
+            .Subscribe(s =>
+        {
+            _stop = true;
+            IsCheck = validator?.Invoke() ?? false;
+            _stop = false;
+        });
+
+        this.WhenAnyValue(s => s.IsCheck)
+            .Skip(1)
+            .Where(_ => _stop == false)
+            .Subscribe(_ => selector?.Invoke());
     }
 
     [Reactive]

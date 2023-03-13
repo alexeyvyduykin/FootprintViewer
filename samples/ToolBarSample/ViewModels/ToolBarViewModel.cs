@@ -1,22 +1,31 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using ToolBarSample.Models;
 
 namespace ToolBarSample.ViewModels;
 
 public class ToolBarViewModel : ViewModelBase
 {
-    public ToolBarViewModel()
+    public ToolBarViewModel(MapState mapState)
     {
-        AddRectangle = new ToolCheck()
+        AddRectangle = new ToolCheck(
+            mapState.Change,
+            () => mapState.RectAOI(),
+            () => mapState.IsInState(States.RectAOI))
         {
             Tag = "AddRectangle",
         };
 
-        AddPolygon = new ToolCheck()
+        AddPolygon = new ToolCheck(
+            mapState.Change,
+            () => mapState.PolygonAOI(),
+            () => mapState.IsInState(States.PolygonAOI))
         {
             Tag = "AddPolygon",
         };
 
-        AddCircle = new ToolCheck()
+        AddCircle = new ToolCheck(
+            mapState.Change,
+            () => mapState.CircleAOI(),
+            () => mapState.IsInState(States.CircleAOI))
         {
             Tag = "AddCircle",
         };
@@ -26,32 +35,50 @@ public class ToolBarViewModel : ViewModelBase
         //AOICollection.AddItem(AddPolygon);
         //AOICollection.AddItem(AddCircle);
 
-        RouteDistance = new ToolCheck()
+        RouteDistance = new ToolCheck(
+            mapState.Change,
+            () => mapState.Route(),
+            () => mapState.IsInState(States.Route))
         {
             Tag = "Route",
         };
 
-        SelectGeometry = new ToolCheck()
+        SelectGeometry = new ToolCheck(
+            mapState.Change,
+            () => mapState.Select(),
+            () => mapState.IsInState(States.Select))
         {
             Tag = "Select",
         };
 
-        Point = new ToolCheck()
+        Point = new ToolCheck(
+            mapState.Change,
+            () => mapState.Point(),
+            () => mapState.IsInState(States.DrawPoint))
         {
             Tag = "Point",
         };
 
-        Rectangle = new ToolCheck()
+        Rectangle = new ToolCheck(
+            mapState.Change,
+            () => mapState.Rect(),
+            () => mapState.IsInState(States.DrawRect))
         {
             Tag = "Rectangle",
         };
 
-        Circle = new ToolCheck()
+        Circle = new ToolCheck(
+            mapState.Change,
+            () => mapState.Circle(),
+            () => mapState.IsInState(States.DrawCircle))
         {
             Tag = "Circle",
         };
 
-        Polygon = new ToolCheck()
+        Polygon = new ToolCheck(
+            mapState.Change,
+            () => mapState.Polygon(),
+            () => mapState.IsInState(States.DrawPolygon))
         {
             Tag = "Polygon",
         };
@@ -62,22 +89,34 @@ public class ToolBarViewModel : ViewModelBase
         //GeometryCollection.AddItem(Circle);
         //GeometryCollection.AddItem(Polygon);
 
-        TranslateGeometry = new ToolCheck()
+        TranslateGeometry = new ToolCheck(
+            mapState.Change,
+            () => mapState.Translate(),
+            () => mapState.IsInState(States.Translate))
         {
             Tag = "Translate",
         };
 
-        RotateGeometry = new ToolCheck()
+        RotateGeometry = new ToolCheck(
+            mapState.Change,
+            () => mapState.Rotate(),
+            () => mapState.IsInState(States.Rotate))
         {
             Tag = "Rotate",
         };
 
-        ScaleGeometry = new ToolCheck()
+        ScaleGeometry = new ToolCheck(
+            mapState.Change,
+            () => mapState.Scale(),
+            () => mapState.IsInState(States.Scale))
         {
             Tag = "Scale",
         };
 
-        EditGeometry = new ToolCheck()
+        EditGeometry = new ToolCheck(
+            mapState.Change,
+            () => mapState.Edit(),
+            () => mapState.IsInState(States.Edit))
         {
             Tag = "Edit",
         };
@@ -112,7 +151,4 @@ public class ToolBarViewModel : ViewModelBase
     public ToolCheck Circle { get; }
 
     public ToolCheck Polygon { get; }
-
-    [Reactive]
-    public string ConsoleString { get; set; } = "Console";
 }

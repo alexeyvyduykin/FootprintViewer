@@ -8,67 +8,66 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="ToolBarSample">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
 	<Window.Styles>
 		<Style Selector="ToggleButton">
-			<Setter Property="HorizontalAlignment" Value="Stretch"/>			
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		</Style>
 	</Window.Styles>
 
-	<DockPanel>	
+	<DockPanel>
 		<StackPanel DataContext="{Binding ToolBar}"
 					DockPanel.Dock="Left"
 					Width="160"
 					HorizontalAlignment="Left">
-		<ToggleButton DataContext="{Binding RouteDistance}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Route"></ToggleButton>
-		<ToggleButton DataContext="{Binding SelectGeometry}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Select"></ToggleButton>
-		<ToggleButton DataContext="{Binding TranslateGeometry}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Translate"></ToggleButton>
-		<ToggleButton DataContext="{Binding RotateGeometry}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Rotate"></ToggleButton>
-		<ToggleButton DataContext="{Binding ScaleGeometry}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Scale"></ToggleButton>
-		<ToggleButton DataContext="{Binding EditGeometry}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Edit"></ToggleButton>
-		<ToggleButton DataContext="{Binding AddRectangle}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="AOI Rectangle"></ToggleButton>
-		<ToggleButton DataContext="{Binding AddPolygon}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="AOI Polygon"></ToggleButton>
-		<ToggleButton DataContext="{Binding AddCircle}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="AOI Circle"></ToggleButton>
-		<ToggleButton DataContext="{Binding Point}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Point"></ToggleButton>
-		<ToggleButton DataContext="{Binding Rectangle}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Rectangle"></ToggleButton>
-		<ToggleButton DataContext="{Binding Circle}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Circle"></ToggleButton>
-		<ToggleButton DataContext="{Binding Polygon}"
-					  IsChecked="{Binding IsCheck}"
-					  Content="Polygon"></ToggleButton>
-	</StackPanel>
+			<ToggleButton DataContext="{Binding RouteDistance}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Route"></ToggleButton>
+			<ToggleButton DataContext="{Binding SelectGeometry}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Select"></ToggleButton>
+			<ToggleButton DataContext="{Binding TranslateGeometry}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Translate"></ToggleButton>
+			<ToggleButton DataContext="{Binding RotateGeometry}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Rotate"></ToggleButton>
+			<ToggleButton DataContext="{Binding ScaleGeometry}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Scale"></ToggleButton>
+			<ToggleButton DataContext="{Binding EditGeometry}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Edit"></ToggleButton>
+			<ToggleButton DataContext="{Binding AddRectangle}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="AOI Rectangle"></ToggleButton>
+			<ToggleButton DataContext="{Binding AddPolygon}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="AOI Polygon"></ToggleButton>
+			<ToggleButton DataContext="{Binding AddCircle}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="AOI Circle"></ToggleButton>
+			<ToggleButton DataContext="{Binding Point}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Point"></ToggleButton>
+			<ToggleButton DataContext="{Binding Rectangle}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Rectangle"></ToggleButton>
+			<ToggleButton DataContext="{Binding Circle}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Circle"></ToggleButton>
+			<ToggleButton DataContext="{Binding Polygon}"
+						  IsChecked="{Binding IsCheck}"
+						  Content="Polygon"></ToggleButton>
+		</StackPanel>
 
 		<TextBox DockPanel.Dock="Bottom"
-				 DataContext="{Binding ToolBar}"
 				 IsReadOnly="True"
 				 Text="{Binding ConsoleString}">
-			
+
 		</TextBox>
 	</DockPanel>
 
