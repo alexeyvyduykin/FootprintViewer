@@ -38,12 +38,14 @@ public sealed class MainViewModel : ViewModelBase
 {
     private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly Map _map;
+    private readonly StateMachines.MapState _mapState;
     private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanel _infoPanel;
     private readonly InfoPanel _clickInfoPanel;
     private readonly SidePanelViewModel _sidePanel;
     private readonly BottomPanel _bottomPanel;
     private readonly CustomToolBarViewModel _customToolBar;
+    private readonly CustomToolBar2ViewModel _customToolBar2;
     private readonly FootprintTabViewModel _footprintTab;
     private readonly GroundTargetTabViewModel _groundTargetTab;
     private readonly UserGeometryTabViewModel _userGeometryTab;
@@ -68,10 +70,13 @@ public sealed class MainViewModel : ViewModelBase
         var factory = dependencyResolver.GetExistingService<ProjectFactory>();
         // TODO: make _map as IMap
         _map = (Map)dependencyResolver.GetExistingService<IMap>();
+        _mapState = dependencyResolver.GetExistingService<StateMachines.MapState>();
+
         MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
         _areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
         _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
         _customToolBar = dependencyResolver.GetExistingService<CustomToolBarViewModel>();
+        _customToolBar2 = dependencyResolver.GetExistingService<CustomToolBar2ViewModel>();
         _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
         _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
@@ -105,6 +110,24 @@ public sealed class MainViewModel : ViewModelBase
         _customToolBar.Rectangle.Subscribe(DrawingRectangleCommand, Reset);
         _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
         _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
+
+        _customToolBar2.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        _customToolBar2.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+
+        _mapState.ResetObservable.Subscribe(_ => Reset());
+        _mapState.RectAOIObservable.Subscribe(_ => RectangleCommand());
+        _mapState.PolygonAOIObservable.Subscribe(_ => PolygonCommand());
+        _mapState.CircleAOIObservable.Subscribe(_ => CircleCommand());
+        _mapState.RouteObservable.Subscribe(_ => RouteCommand());
+        _mapState.SelectObservable.Subscribe(_ => SelectCommand());
+        _mapState.TranslateObservable.Subscribe(_ => TranslateCommand());
+        _mapState.RotateObservable.Subscribe(_ => RotateCommand());
+        _mapState.ScaleObservable.Subscribe(_ => ScaleCommand());
+        _mapState.EditObservable.Subscribe(_ => EditCommand());
+        _mapState.PointObservable.Subscribe(_ => DrawingPointCommand());
+        _mapState.RectObservable.Subscribe(_ => DrawingRectangleCommand());
+        _mapState.CircleObservable.Subscribe(_ => DrawingCircleCommand());
+        _mapState.PolygonObservable.Subscribe(_ => DrawingPolygonCommand());
 
         IsMainContentEnabled = this.WhenAnyValue(
             s => s.DialogScreen.IsDialogOpen,
@@ -286,7 +309,9 @@ public sealed class MainViewModel : ViewModelBase
 
             _areaOfInterest.Update(feature, FeatureType.AOIRectangle);
 
-            _customToolBar.Uncheck();
+            _mapState.Reset();
+
+            //_customToolBar.Uncheck();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
@@ -323,7 +348,9 @@ public sealed class MainViewModel : ViewModelBase
 
             _areaOfInterest.Update(feature, FeatureType.AOIPolygon);
 
-            _customToolBar.Uncheck();
+            //_customToolBar.Uncheck();
+
+            _mapState.Reset();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));
@@ -355,7 +382,9 @@ public sealed class MainViewModel : ViewModelBase
 
             _areaOfInterest.Update(feature, FeatureType.AOICircle);
 
-            _customToolBar.Uncheck();
+            //_customToolBar.Uncheck(); 
+            
+            _mapState.Reset();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
@@ -394,7 +423,9 @@ public sealed class MainViewModel : ViewModelBase
 
             HideTip();
 
-            _customToolBar.Uncheck();
+            //_customToolBar.Uncheck(); 
+            
+            _mapState.Reset();
         });
 
         layer?.ClearRoute();
@@ -752,7 +783,9 @@ public sealed class MainViewModel : ViewModelBase
 
             HideTip();
 
-            ToolBar.Uncheck();
+            //ToolBar.Uncheck(); 
+            
+            _mapState.Reset();
         });
 
         return panel;
@@ -775,7 +808,9 @@ public sealed class MainViewModel : ViewModelBase
 
             HideTip();
 
-            ToolBar.Uncheck();
+            //ToolBar.Uncheck(); 
+            
+            _mapState.Reset();
         });
 
         return panel;
@@ -794,7 +829,9 @@ public sealed class MainViewModel : ViewModelBase
 
             HideTip();
 
-            _customToolBar.Uncheck();
+            //_customToolBar.Uncheck(); 
+            
+            _mapState.Reset();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Point));
@@ -822,7 +859,9 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                _customToolBar.Uncheck();
+                //_customToolBar.Uncheck(); 
+                
+                _mapState.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
@@ -850,7 +889,9 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                _customToolBar.Uncheck();
+                //_customToolBar.Uncheck(); 
+                
+                _mapState.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
@@ -876,7 +917,9 @@ public sealed class MainViewModel : ViewModelBase
             {
                 HideTip();
 
-                _customToolBar.Uncheck();
+                //_customToolBar.Uncheck(); 
+                
+                _mapState.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Route));
@@ -909,7 +952,9 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                _customToolBar.Uncheck();
+                //_customToolBar.Uncheck(); 
+                
+                _mapState.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));
@@ -936,6 +981,8 @@ public sealed class MainViewModel : ViewModelBase
     public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
     public CustomToolBarViewModel ToolBar => _customToolBar;
+
+    public CustomToolBar2ViewModel ToolBar2 => _customToolBar2;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
 

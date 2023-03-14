@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Factories;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
+using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
@@ -92,6 +93,9 @@ public static class Bootstrapper
 
         services.RegisterConstant(mapFactory.CreateFeatureManager(), typeof(FeatureManager));
 
+        // StateMachines
+        services.RegisterConstant(new MapState(), typeof(MapState));
+
         // Layer providers
         services.RegisterConstant(new GroundTargetProvider(resolver), typeof(GroundTargetProvider));
         services.RegisterConstant(new TrackProvider(resolver), typeof(TrackProvider));
@@ -112,6 +116,7 @@ public static class Bootstrapper
         services.RegisterLazySingleton<PlannedScheduleTabViewModel>(() => new PlannedScheduleTabViewModel(resolver));
 
         services.RegisterLazySingleton<CustomToolBarViewModel>(() => new CustomToolBarViewModel(resolver));
+        services.RegisterLazySingleton<CustomToolBar2ViewModel>(() => new CustomToolBar2ViewModel(resolver));
 
         services.RegisterLazySingleton<SidePanelViewModel>(() => new SidePanelViewModel()
         {

@@ -59,11 +59,16 @@
 
 			</local:UserMapControl>
 
-			<toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
+			<!--<toolBar:CustomToolBarView DataContext="{Binding ToolBar}"
+									   VerticalAlignment="Center"
+									   HorizontalAlignment="Left"
+									   Margin="8"/>-->
+
+			<toolBar:CustomToolBar2View DataContext="{Binding ToolBar2}"
 									   VerticalAlignment="Center"
 									   HorizontalAlignment="Left"
 									   Margin="8"/>
-
+			
 			<panels:InfoPanelView DataContext="{Binding InfoPanel}"
 								  VerticalAlignment="Bottom"
 								  HorizontalAlignment="Center"

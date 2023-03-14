@@ -16,3 +16,16 @@ public interface IToolCollection : IToolItem
 
     ObservableCollection<IToolCheck> Items { get; }
 }
+
+public interface IToolCollection2 : IToolItem
+{
+    void AddItem(IToolCheck2 item);
+
+    ICommand Open { get; }
+
+    ICommand Close { get; }
+
+    IEnumerable<IToolCheck2> GetItems();
+
+    ObservableCollection<IToolCheck2> Items { get; }
+}

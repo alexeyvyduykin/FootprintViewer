@@ -178,6 +178,15 @@ public class MapState
 
     public IObservable<Unit> PolygonObservable => _drawPolygonSubj.AsObservable();
 
+    public void Reset()
+    {
+        // TODO: issue (Default state -> Reset trigger)
+        if (Equals(State, States.Default) == false)
+        {
+            _machine.Fire(Triggers.Reset);
+        }
+    }
+
     public void Select()
     {
         _machine.Fire(Triggers.Selectable);

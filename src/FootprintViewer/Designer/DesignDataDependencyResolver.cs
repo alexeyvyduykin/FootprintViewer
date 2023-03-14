@@ -6,6 +6,7 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
+using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using FootprintViewer.ViewModels;
 using FootprintViewer.ViewModels.SidePanel;
@@ -50,6 +51,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
     private LayerStyleManager? _layerStyleManager;
+    private MapState? _mapState;
 
     public object? GetService(Type? serviceType, string? contract = null)
     {
@@ -140,6 +142,10 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         else if (serviceType == typeof(MainViewModel))
         {
             return _mainViewModel ??= new MainViewModel(this);
+        }
+        else if (serviceType == typeof(MapState))
+        {
+            return _mapState ??= new MapState();
         }
         else if (serviceType == typeof(IDataManager))
         {

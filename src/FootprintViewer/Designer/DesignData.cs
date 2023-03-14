@@ -35,6 +35,8 @@ public static class DesignData
 
     public static CustomToolBarViewModel CustomToolBar => new(_resolver);
 
+    public static CustomToolBar2ViewModel CustomToolBar2 => new(_resolver);
+
     public static LayerContainerViewModel LayerContainer => new(_resolver);
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.BeginCreating(TipTarget.Rectangle, 34545.432);
