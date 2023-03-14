@@ -72,6 +72,9 @@
 		<Compile Update="Views\SidePanel\Items\UserGeometryView.axaml.cs">
 			<DependentUpon>UserGeometryView.axaml</DependentUpon>
 		</Compile>
+		<Compile Update="Views\ToolBar\ToolBarView.axaml.cs">
+		  <DependentUpon>ToolBarView.axaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>

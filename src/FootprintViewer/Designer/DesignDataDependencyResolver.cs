@@ -46,7 +46,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private FootprintPreviewTabViewModel? _footprintPreviewTab;
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
-    private CustomToolBarViewModel? _customToolBar;
+    private ToolBarViewModel? _toolBar;
     private IDataManager? _dataManager;
     private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
@@ -131,9 +131,9 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         {
             return _userGeometryTab ??= new UserGeometryTabViewModel(this);
         }
-        else if (serviceType == typeof(CustomToolBarViewModel))
+        else if (serviceType == typeof(ToolBarViewModel))
         {
-            return _customToolBar ??= new CustomToolBarViewModel(this);
+            return _toolBar ??= new ToolBarViewModel(this);
         }
         else if (serviceType == typeof(SidePanelViewModel))
         {

@@ -44,8 +44,7 @@ public sealed class MainViewModel : ViewModelBase
     private readonly InfoPanel _clickInfoPanel;
     private readonly SidePanelViewModel _sidePanel;
     private readonly BottomPanel _bottomPanel;
-    private readonly CustomToolBarViewModel _customToolBar;
-    private readonly CustomToolBar2ViewModel _customToolBar2;
+    private readonly ToolBarViewModel _toolBar;
     private readonly FootprintTabViewModel _footprintTab;
     private readonly GroundTargetTabViewModel _groundTargetTab;
     private readonly UserGeometryTabViewModel _userGeometryTab;
@@ -75,8 +74,7 @@ public sealed class MainViewModel : ViewModelBase
         MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
         _areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
         _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
-        _customToolBar = dependencyResolver.GetExistingService<CustomToolBarViewModel>();
-        _customToolBar2 = dependencyResolver.GetExistingService<CustomToolBar2ViewModel>();
+        _toolBar = dependencyResolver.GetExistingService<ToolBarViewModel>();
         _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
         _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
         _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
@@ -95,24 +93,8 @@ public sealed class MainViewModel : ViewModelBase
 
         _bottomPanel = factory.CreateBottomPanel();
 
-        _customToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        _customToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
-        _customToolBar.AddRectangle.Subscribe(RectangleCommand, Reset);
-        _customToolBar.AddPolygon.Subscribe(PolygonCommand, Reset);
-        _customToolBar.AddCircle.Subscribe(CircleCommand, Reset);
-        _customToolBar.RouteDistance.Subscribe(RouteCommand, Reset);
-        _customToolBar.SelectGeometry.Subscribe(SelectCommand, Reset);
-        _customToolBar.TranslateGeometry.Subscribe(TranslateCommand, Reset);
-        _customToolBar.RotateGeometry.Subscribe(RotateCommand, Reset);
-        _customToolBar.ScaleGeometry.Subscribe(ScaleCommand, Reset);
-        _customToolBar.EditGeometry.Subscribe(EditCommand, Reset);
-        _customToolBar.Point.Subscribe(DrawingPointCommand, Reset);
-        _customToolBar.Rectangle.Subscribe(DrawingRectangleCommand, Reset);
-        _customToolBar.Circle.Subscribe(DrawingCircleCommand, Reset);
-        _customToolBar.Polygon.Subscribe(DrawingPolygonCommand, Reset);
-
-        _customToolBar2.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        _customToolBar2.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+        _toolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        _toolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
 
         _mapState.ResetObservable.Subscribe(_ => Reset());
         _mapState.RectAOIObservable.Subscribe(_ => RectangleCommand());
@@ -198,8 +180,6 @@ public sealed class MainViewModel : ViewModelBase
 
     private async Task TimelinesImpl()
     {
-        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
-
         var timelinesDialog = new TimelinesViewModel(_dependencyResolver);
 
         _ = await FullScreen.NavigateDialogAsync(timelinesDialog);
@@ -310,8 +290,6 @@ public sealed class MainViewModel : ViewModelBase
             _areaOfInterest.Update(feature, FeatureType.AOIRectangle);
 
             _mapState.Reset();
-
-            //_customToolBar.Uncheck();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
@@ -348,8 +326,6 @@ public sealed class MainViewModel : ViewModelBase
 
             _areaOfInterest.Update(feature, FeatureType.AOIPolygon);
 
-            //_customToolBar.Uncheck();
-
             _mapState.Reset();
         });
 
@@ -382,8 +358,6 @@ public sealed class MainViewModel : ViewModelBase
 
             _areaOfInterest.Update(feature, FeatureType.AOICircle);
 
-            //_customToolBar.Uncheck(); 
-            
             _mapState.Reset();
         });
 
@@ -419,12 +393,10 @@ public sealed class MainViewModel : ViewModelBase
         {
             var feature = s.Feature.Copy();
 
-            layer?.AddRoute(new InteractiveRoute(feature), Styles.FeatureType.Route.ToString());
+            layer?.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
 
             HideTip();
 
-            //_customToolBar.Uncheck(); 
-            
             _mapState.Reset();
         });
 
@@ -784,7 +756,7 @@ public sealed class MainViewModel : ViewModelBase
             HideTip();
 
             //ToolBar.Uncheck(); 
-            
+
             _mapState.Reset();
         });
 
@@ -809,7 +781,7 @@ public sealed class MainViewModel : ViewModelBase
             HideTip();
 
             //ToolBar.Uncheck(); 
-            
+
             _mapState.Reset();
         });
 
@@ -829,8 +801,6 @@ public sealed class MainViewModel : ViewModelBase
 
             HideTip();
 
-            //_customToolBar.Uncheck(); 
-            
             _mapState.Reset();
         });
 
@@ -859,8 +829,6 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                //_customToolBar.Uncheck(); 
-                
                 _mapState.Reset();
             });
 
@@ -889,8 +857,6 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                //_customToolBar.Uncheck(); 
-                
                 _mapState.Reset();
             });
 
@@ -917,8 +883,6 @@ public sealed class MainViewModel : ViewModelBase
             {
                 HideTip();
 
-                //_customToolBar.Uncheck(); 
-                
                 _mapState.Reset();
             });
 
@@ -952,8 +916,6 @@ public sealed class MainViewModel : ViewModelBase
 
                 HideTip();
 
-                //_customToolBar.Uncheck(); 
-                
                 _mapState.Reset();
             });
 
@@ -980,9 +942,7 @@ public sealed class MainViewModel : ViewModelBase
 
     public InfoPanel ClickInfoPanel => _clickInfoPanel;
 
-    public CustomToolBarViewModel ToolBar => _customToolBar;
-
-    public CustomToolBar2ViewModel ToolBar2 => _customToolBar2;
+    public ToolBarViewModel ToolBar => _toolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
 

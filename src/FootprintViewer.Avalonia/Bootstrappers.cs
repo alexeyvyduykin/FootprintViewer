@@ -115,8 +115,7 @@ public static class Bootstrapper
         services.RegisterLazySingleton<GroundStationTabViewModel>(() => new GroundStationTabViewModel(resolver));
         services.RegisterLazySingleton<PlannedScheduleTabViewModel>(() => new PlannedScheduleTabViewModel(resolver));
 
-        services.RegisterLazySingleton<CustomToolBarViewModel>(() => new CustomToolBarViewModel(resolver));
-        services.RegisterLazySingleton<CustomToolBar2ViewModel>(() => new CustomToolBar2ViewModel(resolver));
+        services.RegisterLazySingleton<ToolBarViewModel>(() => new ToolBarViewModel(resolver));
 
         services.RegisterLazySingleton<SidePanelViewModel>(() => new SidePanelViewModel()
         {

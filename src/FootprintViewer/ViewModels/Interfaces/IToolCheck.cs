@@ -1,17 +1,13 @@
-﻿using ReactiveUI;
+﻿using System;
 using System.Reactive;
 
 namespace FootprintViewer.ViewModels;
 
 public interface IToolCheck : ITool
 {
-    string? Group { get; set; }
+    IObservable<IToolCheck> Activate { get; }
+
+    IObservable<Unit> Deactivate { get; }
 
     bool IsCheck { get; set; }
-
-    ReactiveCommand<Unit, IToolCheck> BeforeActivate { get; }
-
-    ReactiveCommand<Unit, IToolCheck> Activate { get; }
-
-    ReactiveCommand<Unit, IToolCheck> Deactivate { get; }
 }

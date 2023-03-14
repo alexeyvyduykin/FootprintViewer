@@ -33,9 +33,7 @@ public static class DesignData
 
     public static SnapshotMaker SnapshotMaker => new(_resolver);
 
-    public static CustomToolBarViewModel CustomToolBar => new(_resolver);
-
-    public static CustomToolBar2ViewModel CustomToolBar2 => new(_resolver);
+    public static ToolBarViewModel ToolBar => new(_resolver);
 
     public static LayerContainerViewModel LayerContainer => new(_resolver);
 

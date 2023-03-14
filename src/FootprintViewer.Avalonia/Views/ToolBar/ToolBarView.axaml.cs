@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace FootprintViewer.Avalonia.Views.ToolBar
 {
-    public partial class CustomToolBar2View : UserControl
+    public partial class ToolBarView : UserControl
     {
-        public CustomToolBar2View()
+        public ToolBarView()
         {
             InitializeComponent();
 

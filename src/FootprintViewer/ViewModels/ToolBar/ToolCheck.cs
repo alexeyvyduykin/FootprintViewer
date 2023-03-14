@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -9,51 +8,42 @@ namespace FootprintViewer.ViewModels.ToolBar;
 
 public class ToolCheck : ViewModelBase, IToolCheck
 {
-    public ToolCheck()
+    bool _stop = false;
+
+    public ToolCheck() { }
+
+    public ToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator)
     {
-        BeforeActivate = ReactiveCommand.Create<IToolCheck>(() =>
-        {
-            Debug.WriteLine($"{Tag} tool is before activate.");
-            return this;
-        });
+        update
+            .Subscribe(s =>
+            {
+                _stop = true;
+                IsCheck = validator?.Invoke() ?? false;
+                _stop = false;
+            });
 
-        Activate = ReactiveCommand.Create<IToolCheck>(() =>
-        {
-            Debug.WriteLine($"{Tag} tool  is activate.");
-            return this;
-        });
-
-        Deactivate = ReactiveCommand.Create<IToolCheck>(() =>
-        {
-            Debug.WriteLine($"{Tag} tool is deactivate.");
-            return this;
-        });
-
-        var combined = ReactiveCommand.CreateCombined(new[] { BeforeActivate, Activate });
-
-        this.WhenAnyValue(s => s.IsCheck).Where(s => s == true).Select(_ => Unit.Default).InvokeCommand(combined);
-
-        this.WhenAnyValue(s => s.IsCheck).Where(s => s == false).Select(_ => Unit.Default).InvokeCommand(Deactivate);
+        this.WhenAnyValue(s => s.IsCheck)
+            .Skip(1)
+            .Where(_ => _stop == false)
+            .Subscribe(_ => selector?.Invoke());
     }
 
-    public void Subscribe(Action activate, Action deactivate)
-    {
-        Activate.Subscribe(_ => activate.Invoke());
-        Deactivate.Subscribe(_ => deactivate.Invoke());
-    }
+    public IObservable<IToolCheck> Activate
+        => this.WhenAnyValue(s => s.IsCheck)
+        .ObserveOn(RxApp.MainThreadScheduler)
+        .Where(s => s == true)
+        .Select(_ => this);
 
-    public string GetKey() => (string?)Tag ?? string.Empty;
+    public IObservable<Unit> Deactivate
+        => this.WhenAnyValue(s => s.IsCheck)
+        .ObserveOn(RxApp.MainThreadScheduler)
+        .Where(s => s == false)
+        .Select(_ => Unit.Default);
+
+    public string GetKey() => Tag is string tag ? tag : string.Empty;
 
     [Reactive]
-    public bool IsCheck { get; set; }
-
-    public string? Group { get; set; }
+    public bool IsCheck { get; set; } = false;
 
     public object? Tag { get; set; }
-
-    public ReactiveCommand<Unit, IToolCheck> BeforeActivate { get; }
-
-    public ReactiveCommand<Unit, IToolCheck> Activate { get; }
-
-    public ReactiveCommand<Unit, IToolCheck> Deactivate { get; }
 }
