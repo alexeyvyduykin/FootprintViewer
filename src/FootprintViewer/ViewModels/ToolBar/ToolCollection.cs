@@ -1,8 +1,9 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+﻿using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 
@@ -10,14 +11,18 @@ namespace FootprintViewer.ViewModels.ToolBar;
 
 public class ToolCollection : ViewModelBase, IToolCollection
 {
-    private readonly IList<IToolCheck> _items;
-    private IToolCheck? _first;
+    private readonly List<IToolCheck> _cacheItems = new();
+    private readonly SourceList<IToolCheck> _tools = new();
+    private readonly ReadOnlyObservableCollection<IToolCheck> _items;
 
     public ToolCollection()
     {
-        _items = new List<IToolCheck>();
-
-        Items = new ObservableCollection<IToolCheck>();
+        _tools
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .DisposeMany()
+            .Subscribe();
 
         Open = ReactiveCommand.Create<ToolCollection>(_ => OpenImpl());
 
@@ -32,48 +37,54 @@ public class ToolCollection : ViewModelBase, IToolCollection
 
     public void OpenImpl()
     {
-        Items = new ObservableCollection<IToolCheck>(_items);
+        _tools.Edit(innerList =>
+        {
+            innerList.Clear();
+            innerList.AddRange(_cacheItems);
+        });
     }
 
     public void CloseImpl()
     {
-        if (_first != null)
+        _tools.Edit(innerList =>
         {
-            Items = new ObservableCollection<IToolCheck>(new[] { _first });
-        }
-        else
-        {
-            Items = new ObservableCollection<IToolCheck>();
-        }
+            innerList.Clear();
+
+            var first = _cacheItems.FirstOrDefault();
+
+            if (first != null)
+            {
+                innerList.Add(first);
+            }
+        });
     }
 
     public void AddItem(IToolCheck item)
     {
-        _items.Add(item);
+        _cacheItems.Add(item);
 
         item.Activate.Subscribe(ActivateChanged);
 
         item.Deactivate.Subscribe(_ => CloseImpl());
 
-        if (_items.Count == 1)
+        if (_cacheItems.Count == 1)
         {
-            _first = item;
-
-            Items = new ObservableCollection<IToolCheck>(new[] { item });
+            _tools.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(new[] { item });
+            });
         }
     }
 
     private void ActivateChanged(IToolCheck tool)
     {
-        _first = tool;
+        _cacheItems.Remove(tool);
 
-        _items.Remove(tool);
-
-        _items.Insert(0, tool);
+        _cacheItems.Insert(0, tool);
 
         CloseImpl();
     }
 
-    [Reactive]
-    public ObservableCollection<IToolCheck> Items { get; set; }
+    public ReadOnlyObservableCollection<IToolCheck> Items => _items;
 }

@@ -14,5 +14,5 @@ public interface IToolCollection : IToolItem
 
     IEnumerable<IToolCheck> GetItems();
 
-    ObservableCollection<IToolCheck> Items { get; }
+    ReadOnlyObservableCollection<IToolCheck> Items { get; }
 }
