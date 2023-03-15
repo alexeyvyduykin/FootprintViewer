@@ -1,7 +1,7 @@
 ﻿using ConcurrentCollections;
 using FootprintViewer.Data;
-using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.ViewModels.SidePanel.Items;
@@ -10,6 +10,7 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
+using SpaceScience;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -54,8 +55,7 @@ public class SensorProvider : IProvider, IDynamic
     {
         var satellites = await _dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
 
-        _dictLeft = await CreateLeftDataAsync(satellites);
-        _dictRight = await CreateRightDataAsync(satellites);
+        (_dictLeft, _dictRight) = await CreateDataAsync(satellites);
 
         _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
 
@@ -102,42 +102,38 @@ public class SensorProvider : IProvider, IDynamic
         }
     }
 
-    private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateLeftDataAsync(IList<Satellite> satellites)
+    private static async Task<(Dictionary<string, Dictionary<int, List<IFeature>>>, Dictionary<string, Dictionary<int, List<IFeature>>>)> CreateDataAsync(IList<Satellite> satellites)
     {
         return await Task.Run(() =>
         {
-            var leftSwaths = SwathBuilder.CreateLeft(satellites);
-            var _dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            var dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            var dictRight = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
             foreach (var sat in satellites)
             {
-                var name = sat.Name!;
-                var dictLeft = FeatureBuilder.Build(name, leftSwaths[name]);
+                var (angleDeg, rollDeg) = ToPRDCTSensor(sat);
+                var swaths = SpaceScienceBuilder.BuildSwaths(sat.ToPRDCTSatellite(), angleDeg, rollDeg);
 
-                _dictLeft.Add(name, dictLeft);
+                var name = sat.Name!;
+                var leftRes = FeatureBuilder.Build(name, swaths.Left);
+                var rightRes = FeatureBuilder.Build(name, swaths.Right);
+
+                dictLeft.Add(name, leftRes);
+                dictRight.Add(name, rightRes);
             }
 
-            return _dictLeft;
+            return (dictLeft, dictRight);
         });
-    }
 
-    private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateRightDataAsync(IList<Satellite> satellites)
-    {
-        return await Task.Run(() =>
+        static (double angle, double roll) ToPRDCTSensor(Satellite satellite)
         {
-            var rightSwaths = SwathBuilder.CreateRight(satellites);
-            var _dictright = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            var inner = satellite.InnerHalfAngleDeg;
+            var outer = satellite.OuterHalfAngleDeg;
+            var angle = (outer - inner) / 2.0;
+            var roll = inner + angle;
 
-            foreach (var sat in satellites)
-            {
-                var name = sat.Name!;
-                var dictRight = FeatureBuilder.Build(name, rightSwaths[name]);
-
-                _dictright.Add(name, dictRight);
-            }
-
-            return _dictright;
-        });
+            return (angle, roll);
+        }
     }
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)

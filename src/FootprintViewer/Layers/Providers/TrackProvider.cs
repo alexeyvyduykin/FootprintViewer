@@ -1,7 +1,7 @@
 ﻿using ConcurrentCollections;
 using FootprintViewer.Data;
-using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.ViewModels.SidePanel.Items;
@@ -10,6 +10,7 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
+using SpaceScience;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -94,16 +95,15 @@ public class TrackProvider : IProvider, IDynamic
     {
         return await Task.Run(() =>
         {
-            var tracks = TrackBuilder.Create(satellites);
+            var tracks = satellites.Select(s => (s.Name!, SpaceScienceBuilder.BuildTracks(s.ToPRDCTSatellite())));
 
             var _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
 
-            foreach (var sat in satellites)
+            foreach (var (satName, track) in tracks)
             {
-                var name = sat.Name!;
-                var dict = FeatureBuilder.BuildTrack(name, tracks[name]);
+                var dict = FeatureBuilder.BuildTrack(satName, track.Track);
 
-                _dict.Add(name, dict);
+                _dict.Add(satName, dict);
             }
 
             return _dict;

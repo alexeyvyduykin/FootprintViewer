@@ -11,7 +11,23 @@ public class TrackBuilderResult
         _tracks = tracks;
     }
 
+    public Dictionary<int, List<List<(double, double)>>> Track => _tracks;
+}
 
+public class SwathBuilderResult
+{
+    private readonly Dictionary<int, List<List<(double, double)>>> _leftSwaths;
+    private readonly Dictionary<int, List<List<(double, double)>>> _rightSwaths;
+
+    internal SwathBuilderResult(Dictionary<int, List<List<(double, double)>>> leftSwaths, Dictionary<int, List<List<(double, double)>>> rightSwaths)
+    {
+        _leftSwaths = leftSwaths;
+        _rightSwaths = rightSwaths;
+    }
+
+    public Dictionary<int, List<List<(double, double)>>> Left => _leftSwaths;
+
+    public Dictionary<int, List<List<(double, double)>>> Right => _rightSwaths;
 }
 
 public static class SpaceScienceBuilder
@@ -30,7 +46,7 @@ public static class SpaceScienceBuilder
             var temp = new List<(double, double)>();
 
             var prev = coords.FirstOrDefault();
-                   
+
             foreach (var cur in coords)
             {
                 var (curLonDeg, curLatDeg) = cur.ToDegrees();
@@ -72,7 +88,37 @@ public static class SpaceScienceBuilder
         return new TrackBuilderResult(tracks);
     }
 
+    public static SwathBuilderResult BuildSwaths(PRDCTSatellite satellite, double verticalHalfAngleDEG, double rollAngleDEG)
+    {
+        var leftSwath = new Swath(satellite.Orbit, verticalHalfAngleDEG, Math.Abs(rollAngleDEG));
+        var rightSwath = new Swath(satellite.Orbit, verticalHalfAngleDEG, -Math.Abs(rollAngleDEG));
 
+        var leftRes = BuildSwaths(satellite, leftSwath);
+        var rightRes = BuildSwaths(satellite, rightSwath);
+
+        return new SwathBuilderResult(leftRes, rightRes);
+    }
+
+    private static Dictionary<int, List<List<(double lon, double lat)>>> BuildSwaths(PRDCTSatellite satellite, Swath swath)
+    {
+        var swaths = new Dictionary<int, List<List<(double, double)>>>();
+
+        foreach (var node in satellite.Nodes().Select(s => s.Value))
+        {
+            var near = swath.GetNearGroundTrack(satellite, node - 1, SpaceConverters.From180To180);
+            var far = swath.GetFarGroundTrack(satellite, node - 1, SpaceConverters.From180To180);
+
+            var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
+
+            var shapes = engine2D.CreateShapes(false, false);
+
+            var convertShapes = shapes.Select(s => s.Select(g => g.Deconstruct()).ToList()).ToList();
+
+            swaths.Add(node, convertShapes);
+        }
+
+        return swaths;
+    }
 
     private static double LinearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
     {
