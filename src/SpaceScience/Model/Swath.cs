@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace SpaceScience;
+namespace SpaceScience.Model;
 
 public class Swath
 {
@@ -78,7 +78,7 @@ public class Swath
         if (NearLine.PolisMod(latRAD, ref angleToPolis1) == true &&
             FarLine.PolisMod(latRAD, ref angleToPolis2) == true)
         {
-            if (ScienceMath.InRange(Math.PI / 2.0, angleToPolis1, angleToPolis2))
+            if (SpaceMath.InRange(Math.PI / 2.0, angleToPolis1, angleToPolis2))
             {
                 if (latRAD >= 0.0)
                 {
@@ -101,7 +101,7 @@ public class Swath
         if (NearLine.PolisMod(latRAD, ref angleToPolis1) == true &&
             FarLine.PolisMod(latRAD, ref angleToPolis2) == true)
         {
-            if (ScienceMath.InRange(Math.PI / 2.0, angleToPolis1, angleToPolis2))
+            if (SpaceMath.InRange(SpaceMath.HALFPI, angleToPolis1, angleToPolis2))
             {
                 return true;
             }
@@ -113,19 +113,19 @@ public class Swath
 
     public IList<Geo2D> GetNearGroundTrack(PRDCTSatellite satellite, int node, Func<Geo2D, Geo2D>? converter = null)
     {
-        var track1 = new CustomTrack(Orbit, NearLine.Alpha1 * ScienceMath.RadiansToDegrees, NearLine.Direction);
+        var track1 = new CustomTrack(Orbit, NearLine.Alpha1 * SpaceMath.RadiansToDegrees, NearLine.Direction);
         return GetGroundTrack(track1, satellite, node, converter);
     }
 
     public IList<Geo2D> GetFarGroundTrack(PRDCTSatellite satellite, int node, Func<Geo2D, Geo2D>? converter = null)
     {
-        var track2 = new CustomTrack(Orbit, FarLine.Alpha1 * ScienceMath.RadiansToDegrees, FarLine.Direction);
+        var track2 = new CustomTrack(Orbit, FarLine.Alpha1 * SpaceMath.RadiansToDegrees, FarLine.Direction);
         return GetGroundTrack(track2, satellite, node, converter);
     }
 
     private static IList<Geo2D> GetGroundTrack(CustomTrack track, PRDCTSatellite satellite, int node, Func<Geo2D, Geo2D>? converter = null)
     {
-        converter ??= ScienceConverters.From0To360;
+        converter ??= SpaceConverters.From0To360;
 
         var points = new List<Geo2D>();
 

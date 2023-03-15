@@ -2,6 +2,7 @@
 using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
 using SpaceScience;
+using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -111,7 +112,7 @@ internal static class FootprintBuilder
         var (t, c) = GetRandomCenterPoint(satellite, swath, node, u);
         var center = c.ToDegrees();
 
-        double a = _random.Next(0, 90 + 1) * ScienceMath.DegreesToRadians;
+        double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
 
         var (dlon1, dlat1) = (_r * Math.Cos(a), _r * Math.Sin(a));
         var lon1 = center.Lon + dlon1;
@@ -192,8 +193,8 @@ internal static class FootprintBuilder
 
     private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Swath swath, int node, double u)
     {
-        var a1 = swath.NearLine.Alpha1 * ScienceMath.RadiansToDegrees;
-        var a2 = swath.FarLine.Alpha1 * ScienceMath.RadiansToDegrees;
+        var a1 = swath.NearLine.Alpha1 * SpaceMath.RadiansToDegrees;
+        var a2 = swath.FarLine.Alpha1 * SpaceMath.RadiansToDegrees;
 
         var angle = GetRandomAngle(a1, a2);
 
@@ -246,6 +247,6 @@ internal static class FootprintBuilder
         double t = (u - u0) * (t1 - t0) / (u1 - u0) + t0;
 
         var point = track.ContinuousTrack(node, t, satellite.TrueTimePastAN, quart);
-        return (t, ScienceConverters.From180To180(point));
+        return (t, SpaceConverters.From180To180(point));
     }
 }

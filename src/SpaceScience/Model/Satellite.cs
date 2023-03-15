@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public class PRDCTSatellite
 {
@@ -345,7 +345,7 @@ public class PRDCTSatellite
 
     public List<Geo2D> GetGroundTrackDynStep(int node, double seconds, Func<Geo2D, Geo2D>? converter = null)
     {
-        converter ??= ScienceConverters.From0To360;
+        converter ??= SpaceConverters.From0To360;
 
         var points = new List<Geo2D>();
 

@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using SpaceScience;
+using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -52,8 +53,8 @@ public static class SwathBuilder
 
         foreach (var node in satellite.Nodes().Select(s => s.Value))
         {
-            var near = swath.GetNearGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
-            var far = swath.GetFarGroundTrack(satellite, node - 1, ScienceConverters.From180To180).ToList();
+            var near = swath.GetNearGroundTrack(satellite, node - 1, SpaceConverters.From180To180).ToList();
+            var far = swath.GetFarGroundTrack(satellite, node - 1, SpaceConverters.From180To180).ToList();
 
             var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
 

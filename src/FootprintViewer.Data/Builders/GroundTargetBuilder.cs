@@ -96,7 +96,7 @@ internal static class GroundTargetBuilder
                     for (int i = 0; i < count; i++)
                     {
                         var direction = _random.Next(0, 120 + 1) - 60;
-                        var a = direction * ScienceMath.DegreesToRadians;
+                        var a = direction * SpaceMath.DegreesToRadians;
                         var yd = dd * Math.Tan(a);
                         var lon = last.X + dd;
                         if (lon < -180)
@@ -135,7 +135,7 @@ internal static class GroundTargetBuilder
                     for (int i = 0; i < vertexCount; i++)
                     {
                         var r = _random.Next(2, 10) / 10.0;
-                        var a = angle0 * ScienceMath.DegreesToRadians;
+                        var a = angle0 * SpaceMath.DegreesToRadians;
 
                         var (dlon, dlat) = (r * Math.Cos(a), r * Math.Sin(a));
 

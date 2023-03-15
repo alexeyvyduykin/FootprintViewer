@@ -26,7 +26,7 @@ public static class TrackBuilder
 
         foreach (var node in sat.Nodes())
         {
-            var coords = sat.GetGroundTrackDynStep(node.Value - 1, 60.0, ScienceConverters.From180To180);
+            var coords = sat.GetGroundTrackDynStep(node.Value - 1, 60.0, SpaceConverters.From180To180);
 
             tracks.Add(node.Value, new List<List<(double, double)>>());
 
@@ -78,10 +78,14 @@ public static class TrackBuilder
 
     private static double LinearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
     {
-        Geo2D p1 = pp1.ToRadians(), p2 = pp2.ToRadians();
+        Geo2D p1 = pp1.ToRadians();
+        Geo2D p2 = pp2.ToRadians();
 
         // one longitude should be negative one positive, make them both positive
-        double lon1 = p1.Lon, lat1 = p1.Lat, lon2 = p2.Lon, lat2 = p2.Lat;
+        double lon1 = p1.Lon;
+        double lat1 = p1.Lat;
+        double lon2 = p2.Lon;
+        double lat2 = p2.Lat;
         if (lon1 > lon2)
         {
             lon2 += 2 * Math.PI; // in radians

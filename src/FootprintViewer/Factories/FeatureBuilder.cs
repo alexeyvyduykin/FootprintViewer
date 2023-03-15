@@ -374,7 +374,7 @@ public static class FeatureBuilder
         {
             var list = item.Value.Select(s =>
             {
-                var vertices = s.Select(s => SphericalMercator.FromLonLat(s.lon * ScienceMath.RadiansToDegrees, s.lat * ScienceMath.RadiansToDegrees));
+                var vertices = s.Select(s => SphericalMercator.FromLonLat(SpaceMath.FromRadToDeg(s.lon), SpaceMath.FromRadToDeg(s.lat)));
 
                 var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
 

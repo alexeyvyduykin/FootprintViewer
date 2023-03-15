@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public enum SwathMode
 {
@@ -13,8 +13,8 @@ public class FactorShiftTrack
     {
         int mdf = 0, ch23, ch4, pls1 = 0, pls2 = 0;
 
-        double gam1 = gam1DEG * ScienceMath.DegreesToRadians;
-        double gam2 = gam2DEG * ScienceMath.DegreesToRadians;
+        double gam1 = gam1DEG * SpaceMath.DegreesToRadians;
+        double gam2 = gam2DEG * SpaceMath.DegreesToRadians;
 
         switch (direction)
         {
@@ -30,36 +30,36 @@ public class FactorShiftTrack
                 break;
         }
 
-        double semi_axis = orbit.Semiaxis(Math.PI / 2.0);
+        double semi_axis = orbit.Semiaxis(SpaceMath.HALFPI);
 
-        double fi1 = Math.PI / 2.0 - (Math.Acos(semi_axis * Math.Sin(gam1) / Constants.Re)) - gam1;
-        double fi2 = Math.PI / 2.0 - (Math.Acos(semi_axis * Math.Sin(gam2) / Constants.Re)) - gam2;
+        double fi1 = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(gam1) / Constants.Re) - gam1;
+        double fi2 = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(gam2) / Constants.Re) - gam2;
 
         double i1_90 = orbit.Inclination - fi1 * pls1;
         double i2_90 = orbit.Inclination - fi2 * pls2;
-        double di1_90 = Math.Abs(Math.PI / 2.0 - i1_90);
-        double di2_90 = Math.Abs(Math.PI / 2.0 - i2_90);
+        double di1_90 = Math.Abs(SpaceMath.HALFPI - i1_90);
+        double di2_90 = Math.Abs(SpaceMath.HALFPI - i2_90);
 
         double i1_270 = Math.PI + orbit.Inclination + fi1 * pls1;
         double i2_270 = Math.PI + orbit.Inclination + fi2 * pls2;
-        double di1_270 = Math.Abs(3.0 * Math.PI / 2.0 - i1_270);
-        double di2_270 = Math.Abs(3.0 * Math.PI / 2.0 - i2_270);
+        double di1_270 = Math.Abs(3.0 * SpaceMath.HALFPI - i1_270);
+        double di2_270 = Math.Abs(3.0 * SpaceMath.HALFPI - i2_270);
 
         ////////////////////////////////////////////////////////////////////
-        double uTr1 = Math.Acos(Math.Cos(fi1) * Math.Cos(Math.PI / 2.0));
-        double iTr1 = orbit.Inclination - Math.Atan2(Math.Tan(fi1), Math.Sin(Math.PI / 2.0)) * pls1;
+        double uTr1 = Math.Acos(Math.Cos(fi1) * Math.Cos(SpaceMath.HALFPI));
+        double iTr1 = orbit.Inclination - Math.Atan2(Math.Tan(fi1), Math.Sin(SpaceMath.HALFPI)) * pls1;
         double lat1 = Math.Asin(Math.Sin(uTr1) * Math.Sin(iTr1));
         double asinlon1 = Math.Tan(lat1) / Math.Tan(iTr1);
         if (Math.Abs(asinlon1) > 1.0)
-            asinlon1 = ScienceMath.Sign(asinlon1);
+            asinlon1 = SpaceMath.Sign(asinlon1);
         double lon1 = Math.Asin(asinlon1) - Constants.Omega * orbit.Quart1;// Period / 4.0;
 
-        double uTr2 = Math.Acos(Math.Cos(fi2) * Math.Cos(Math.PI / 2.0));
-        double iTr2 = orbit.Inclination - Math.Atan2(Math.Tan(fi2), Math.Sin(Math.PI / 2.0)) * pls2;
+        double uTr2 = Math.Acos(Math.Cos(fi2) * Math.Cos(SpaceMath.HALFPI));
+        double iTr2 = orbit.Inclination - Math.Atan2(Math.Tan(fi2), Math.Sin(SpaceMath.HALFPI)) * pls2;
         double lat2 = Math.Asin(Math.Sin(uTr2) * Math.Sin(iTr2));
         double asinlon2 = Math.Tan(lat2) / Math.Tan(iTr2);
         if (Math.Abs(asinlon2) > 1.0)
-            asinlon2 = ScienceMath.Sign(asinlon2);
+            asinlon2 = SpaceMath.Sign(asinlon2);
         double lon2 = Math.Asin(asinlon2) - Constants.Omega * orbit.Quart1;// Period / 4.0;
                                                                            ////////////////////////////////////////////////////////////////////
         ch23 = 0;
@@ -73,30 +73,30 @@ public class FactorShiftTrack
                 ch23++;
         /////////////////////////////////////////////////////////////////////
 
-        uTr1 = Math.Acos(Math.Cos(fi1) * Math.Cos(3.0 * Math.PI / 2.0));
-        iTr1 = orbit.Inclination - Math.Atan2(Math.Tan(fi1), Math.Sin(3.0 * Math.PI / 2.0)) * pls1;
+        uTr1 = Math.Acos(Math.Cos(fi1) * Math.Cos(3.0 * SpaceMath.HALFPI));
+        iTr1 = orbit.Inclination - Math.Atan2(Math.Tan(fi1), Math.Sin(3.0 * SpaceMath.HALFPI)) * pls1;
         lat1 = Math.Asin(Math.Sin(uTr1) * Math.Sin(iTr1));
         asinlon1 = Math.Tan(lat1) / Math.Tan(iTr1);
         if (Math.Abs(asinlon1) > 1.0)
-            asinlon1 = ScienceMath.Sign(asinlon1);
-        lon1 = 2.0 * Math.PI + Math.Asin(asinlon1) - Constants.Omega * orbit.Quart3;// 3.0 * Period / 4.0;
+            asinlon1 = SpaceMath.Sign(asinlon1);
+        lon1 = SpaceMath.TWOPI + Math.Asin(asinlon1) - Constants.Omega * orbit.Quart3;// 3.0 * Period / 4.0;
 
-        uTr2 = Math.Acos(Math.Cos(fi2) * Math.Cos(3.0 * Math.PI / 2.0));
-        iTr2 = orbit.Inclination - Math.Atan2(Math.Tan(fi2), Math.Sin(3.0 * Math.PI / 2.0)) * pls2;
+        uTr2 = Math.Acos(Math.Cos(fi2) * Math.Cos(3.0 * SpaceMath.HALFPI));
+        iTr2 = orbit.Inclination - Math.Atan2(Math.Tan(fi2), Math.Sin(3.0 * SpaceMath.HALFPI)) * pls2;
         lat2 = Math.Asin(Math.Sin(uTr2) * Math.Sin(iTr2));
         asinlon2 = Math.Tan(lat2) / Math.Tan(iTr2);
         if (Math.Abs(asinlon2) > 1.0)
-            asinlon2 = ScienceMath.Sign(asinlon2);
-        lon2 = 2.0 * Math.PI + Math.Asin(asinlon2) - Constants.Omega * orbit.Quart3;// 3.0 * Period / 4.0;
-                                                                                    ///////////////////////////////////////////////////////////////////////////////
+            asinlon2 = SpaceMath.Sign(asinlon2);
+        lon2 = SpaceMath.TWOPI + Math.Asin(asinlon2) - Constants.Omega * orbit.Quart3;// 3.0 * Period / 4.0;
+                                                                                      ///////////////////////////////////////////////////////////////////////////////
         ch4 = ch23;
 
-        if (lon1 > 2.0 * Math.PI && lon2 > 2.0 * Math.PI)
+        if (lon1 > SpaceMath.TWOPI && lon2 > SpaceMath.TWOPI)
             ch4++;
-        if (lon1 > 2.0 * Math.PI && lon2 < 2.0 * Math.PI)
+        if (lon1 > SpaceMath.TWOPI && lon2 < SpaceMath.TWOPI)
             if (di1_270 > di2_270)
                 ch4++;
-        if (lon1 < 2.0 * Math.PI && lon2 > 2.0 * Math.PI)
+        if (lon1 < SpaceMath.TWOPI && lon2 > SpaceMath.TWOPI)
             if (di1_270 < di2_270)
                 ch4++;
         ///////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ public class FactorShiftTrack
         //--------------------------------------------------------------------------------------
         int pmdf;
         double modnakl = orbit.InclinationNormal;
-        if ((modnakl + fi1 < Math.PI / 2.0) && (modnakl + fi2 < Math.PI / 2.0))
+        if (modnakl + fi1 < SpaceMath.HALFPI && modnakl + fi2 < SpaceMath.HALFPI)
             pmdf = 1;
         else
             pmdf = 0;
@@ -139,7 +139,7 @@ public class Track
 {
     public Track(Orbit orbit)
     {
-        this.Orbit = orbit;
+        Orbit = orbit;
     }
 
     /// <summary>
@@ -149,23 +149,23 @@ public class Track
     /// <returns></returns>
     public Geo2D Position1(double tnorm)
     {
-        double u = ScienceMath.WrapAngle(Orbit.Anomalia(tnorm) + Orbit.ArgumentOfPerigee);
+        double u = SpaceMath.WrapAngle(Orbit.Anomalia(tnorm) + Orbit.ArgumentOfPerigee);
         double lat = Math.Asin(Math.Sin(u) * Math.Sin(Orbit.Inclination));
         double asinlon = Math.Tan(lat) / Math.Tan(Orbit.Inclination);
         if (Math.Abs(asinlon) > 1.0)
-            asinlon = ScienceMath.Sign(asinlon);
+            asinlon = SpaceMath.Sign(asinlon);
         double lon = Math.Asin(asinlon);
-        if ((u <= Math.PI / 2.0) && (u >= 0))
+        if (u <= SpaceMath.HALFPI && u >= 0)
             lon = Math.Asin(asinlon);
-        if ((u > Math.PI / 2.0) && (u <= 3 * Math.PI / 2))
+        if (u > SpaceMath.HALFPI && u <= 3 * Math.PI / 2)
             lon = Math.PI - lon;
-        if (u > 3 * Math.PI / 2 && u <= 2.0 * Math.PI)
-            lon = 2.0 * Math.PI + lon;
-        lon = Orbit.LonAscnNode + lon - Constants.Omega * (tnorm);
+        if (u > 3 * Math.PI / 2 && u <= SpaceMath.TWOPI)
+            lon = SpaceMath.TWOPI + lon;
+        lon = Orbit.LonAscnNode + lon - Constants.Omega * tnorm;
         while (lon > Math.PI)
-            lon -= 2.0 * Math.PI;
+            lon -= SpaceMath.TWOPI;
         while (lon < -Math.PI)
-            lon += 2.0 * Math.PI;
+            lon += SpaceMath.TWOPI;
         return new Geo2D(lon, lat, GeoCoordTypes.Radians);
     }
 
@@ -178,17 +178,17 @@ public class Track
         double asinlon = Math.Tan(lat) / Math.Tan(Orbit.Inclination);
 
         if (Math.Abs(asinlon) > 1.0)
-            asinlon = ScienceMath.Sign(asinlon);
+            asinlon = SpaceMath.Sign(asinlon);
 
         double lon = Math.Asin(asinlon);
 
         //if( quart == 1 )lon = lon;
         if (quart == 2 || quart == 3)
-            lon = (Math.PI - lon);// - factor.ch23 * 2.0 * Math.PI;
+            lon = Math.PI - lon;// - factor.ch23 * SpaceMath.TWOPI;
         else if (quart == 4)
-            lon = 2.0 * Math.PI + lon;// - factor.ch4 * 2.0 * Math.PI;
+            lon = SpaceMath.TWOPI + lon;// - factor.ch4 * SpaceMath.TWOPI;
 
-        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * 2.0 * Math.PI;// * factor.mdf;
+        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * SpaceMath.TWOPI;// * factor.mdf;
         return new Geo2D(lon, lat);
     }
 
@@ -199,12 +199,12 @@ public class Track
         if (Math.Abs(asinlon) > 1.0)
             asinlon = Math.Sign(asinlon);
         double lon = 0.0;
-        if (u >= 0.0 && u < Math.PI / 2.0)
+        if (u >= 0.0 && u < SpaceMath.HALFPI)
             lon = Math.Asin(asinlon);
-        else if (u >= Math.PI / 2.0 && u < 3.0 * Math.PI / 2.0)
+        else if (u >= SpaceMath.HALFPI && u < 3.0 * SpaceMath.HALFPI)
             lon = Math.PI - Math.Asin(asinlon);
-        else if (u >= 3.0 * Math.PI / 2.0 && u < 2.0 * Math.PI)
-            lon = 2.0 * Math.PI + Math.Asin(asinlon);
+        else if (u >= 3.0 * SpaceMath.HALFPI && u < SpaceMath.TWOPI)
+            lon = SpaceMath.TWOPI + Math.Asin(asinlon);
         return new Geo2D(lon, lat);
     }
 
@@ -217,9 +217,9 @@ public class CustomTrack : Track
 
     public CustomTrack(Orbit orbit, double alpha1DEG, TrackPointDirection direction) : base(orbit)
     {
-        Alpha1 = alpha1DEG * ScienceMath.DegreesToRadians;
+        Alpha1 = alpha1DEG * SpaceMath.DegreesToRadians;
 
-        this.Direction = direction;
+        Direction = direction;
 
         _dir = direction switch
         {
@@ -247,13 +247,13 @@ public class CustomTrack : Track
 
         //double per = 3.0 * Orbit.Period / 4.0;
 
-        double fi = CentralAngleFromT(t_polis + Orbit.ArgumentOfPerigee * Orbit.Period / (2.0 * Math.PI));
+        double fi = CentralAngleFromT(t_polis + Orbit.ArgumentOfPerigee * Orbit.Period / SpaceMath.TWOPI);
         double i = Orbit.Inclination - fi * _dir;
 
         //double i_deg = Orbit.Inclination * ScienceMath.RadiansToDegrees;
         //double fi_deg = fi * ScienceMath.RadiansToDegrees;
 
-        if (i > Math.PI / 2.0)
+        if (i > SpaceMath.HALFPI)
             i = Math.PI - i;
         if (i <= Math.Abs(lat))
         {
@@ -267,7 +267,7 @@ public class CustomTrack : Track
     {
         double u = Orbit.Anomalia(t) + Orbit.ArgumentOfPerigee;
         double semi_axis = Orbit.Semiaxis(u);
-        return Math.PI / 2.0 - (Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re)) - Alpha1;
+        return SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
     }
 
     public override Geo2D ContinuousTrack(double node, double t, double tPastAN, int quart)
@@ -276,24 +276,24 @@ public class CustomTrack : Track
         double u = v + Orbit.ArgumentOfPerigee;
 
         double semi_axis = Orbit.Semiaxis(u);
-        double angle = Math.PI / 2.0 - (Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re)) - Alpha1;
+        double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
         double uTr = Math.Acos(Math.Cos(angle) * Math.Cos(u));
         double iTr = Orbit.Inclination - Math.Atan2(Math.Tan(angle), Math.Sin(u)) * _dir;
         double lat = Math.Asin(Math.Sin(uTr) * Math.Sin(iTr));
         double asinlon = Math.Tan(lat) / Math.Tan(iTr);
 
         if (Math.Abs(asinlon) > 1.0)
-            asinlon = ScienceMath.Sign(asinlon);
+            asinlon = SpaceMath.Sign(asinlon);
 
         double lon = Math.Asin(asinlon);
 
         //if( quart == 1 )lon = lon;
         if (quart == 2 || quart == 3)
-            lon = (Math.PI - lon);// - factor.ch23 * 2.0 * Math.PI;
+            lon = Math.PI - lon;// - factor.ch23 * SpaceMath.TWOPI;
         else if (quart == 4)
-            lon = 2.0 * Math.PI + lon;// - factor.ch4 * 2.0 * Math.PI;
+            lon = SpaceMath.TWOPI + lon;// - factor.ch4 * SpaceMath.TWOPI;
 
-        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * 2.0 * Math.PI;// * factor.mdf;
+        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * SpaceMath.TWOPI;// * factor.mdf;
         return new Geo2D(lon, lat, GeoCoordTypes.Radians);
     }
 
@@ -316,13 +316,13 @@ public class CustomTrack : Track
         if (Math.Abs(asinlon) > 1.0)
             asinlon = Math.Sign(asinlon);
         double lon = 0.0;
-        if (u >= 0.0 && u < Math.PI / 2.0)
+        if (u >= 0.0 && u < SpaceMath.HALFPI)
             lon = Math.Asin(asinlon);
-        else if (u >= Math.PI / 2.0 && u < 3.0 * Math.PI / 2.0)
+        else if (u >= SpaceMath.HALFPI && u < 3.0 * SpaceMath.HALFPI)
             lon = Math.PI - Math.Asin(asinlon);
-        else if (u >= 3.0 * Math.PI / 2.0 && u < 2.0 * Math.PI)
+        else if (u >= 3.0 * SpaceMath.HALFPI && u < SpaceMath.TWOPI)
 
-            lon = 2.0 * Math.PI + Math.Asin(asinlon);
+            lon = SpaceMath.TWOPI + Math.Asin(asinlon);
         return new Geo2D(lon, lat);
     }
 
@@ -330,7 +330,7 @@ public class CustomTrack : Track
     {
         double semiAxis, alphaGround, angle;
         semiAxis = Orbit.Semiaxis(u);
-        angle = Math.PI / 2.0 - (Math.Acos(semiAxis * Math.Sin(Alpha1) / Constants.Re)) - Alpha1;
+        angle = SpaceMath.HALFPI - Math.Acos(semiAxis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
         if (Alpha2 != 0.0)
         {
             alphaGround = Math.Atan(Math.Tan(Alpha2) * Math.Sin(Alpha1));
@@ -344,7 +344,7 @@ public class FactorTrack : CustomTrack
 {
     private readonly FactorShiftTrack _factor;
 
-    public FactorTrack(CustomTrack track, FactorShiftTrack factor) : base(track.Orbit, track.Alpha1 * ScienceMath.RadiansToDegrees, track.Direction)
+    public FactorTrack(CustomTrack track, FactorShiftTrack factor) : base(track.Orbit, track.Alpha1 * SpaceMath.RadiansToDegrees, track.Direction)
     {
         _factor = factor;
     }
@@ -355,24 +355,24 @@ public class FactorTrack : CustomTrack
         double u = v + Orbit.ArgumentOfPerigee;
 
         double semi_axis = Orbit.Semiaxis(u);
-        double angle = Math.PI / 2.0 - (Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re)) - Alpha1;
+        double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
         double uTr = Math.Acos(Math.Cos(angle) * Math.Cos(u));
         double iTr = Orbit.Inclination - Math.Atan2(Math.Tan(angle), Math.Sin(u)) * _dir;
         double lat = Math.Asin(Math.Sin(uTr) * Math.Sin(iTr));
         double asinlon = Math.Tan(lat) / Math.Tan(iTr);
 
         if (Math.Abs(asinlon) > 1.0)
-            asinlon = ScienceMath.Sign(asinlon);
+            asinlon = SpaceMath.Sign(asinlon);
 
         double lon = Math.Asin(asinlon);
 
         //if( quart == 1 )lon = lon;
         if (quart == 2 || quart == 3)
-            lon = (Math.PI - lon) - _factor.Quart23 * 2.0 * Math.PI;
+            lon = Math.PI - lon - _factor.Quart23 * SpaceMath.TWOPI;
         else if (quart == 4)
-            lon = 2.0 * Math.PI + lon - _factor.Quart4 * 2.0 * Math.PI;
+            lon = SpaceMath.TWOPI + lon - _factor.Quart4 * SpaceMath.TWOPI;
 
-        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * 2.0 * Math.PI * _factor.Offset;
+        lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * SpaceMath.TWOPI * _factor.Offset;
         return new Geo2D(lon, lat, GeoCoordTypes.Radians);
     }
 }

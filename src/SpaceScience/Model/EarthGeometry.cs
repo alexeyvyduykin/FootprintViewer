@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public class EarthCircle
 {
@@ -250,9 +250,9 @@ public static class EarthGeometry
         out double[] lons, out double[] lats,
         out bool isNorthPoleCover, out bool isSouthPoleCover)
     {
-        double lat = latDeg * ScienceMath.DegreesToRadians;
-        double lon = lonDeg * ScienceMath.DegreesToRadians + Math.PI;
-        double angle = angleDeg * ScienceMath.DegreesToRadians;
+        double lat = latDeg * SpaceMath.DegreesToRadians;
+        double lon = lonDeg * SpaceMath.DegreesToRadians + Math.PI;
+        double angle = angleDeg * SpaceMath.DegreesToRadians;
 
         double xs = Rearth * Math.Cos(angle);
         double zs = Rearth * Math.Sin(angle);
@@ -265,7 +265,7 @@ public static class EarthGeometry
         for (int i = 0; i <= 360; i += SegmentDelta)
         {
             int j = i / 4;
-            double g = i * ScienceMath.DegreesToRadians;
+            double g = i * SpaceMath.DegreesToRadians;
             double xg = xs * Math.Cos(lat) * Math.Cos(-lon) + zs * (-Math.Sin(lat) * Math.Cos(g) * Math.Cos(-lon) + Math.Sin(g) * Math.Sin(-lon));
             double yg = xs * (-Math.Sin(-lon) * Math.Cos(lat)) + zs * (Math.Sin(-lon) * Math.Sin(lat) * Math.Cos(g) + Math.Sin(g) * Math.Cos(-lon));
             double zg = xs * Math.Sin(lat) + zs * Math.Cos(lat) * Math.Cos(g);
@@ -283,8 +283,8 @@ public static class EarthGeometry
                 lon1 -= 2 * Math.PI;
             }
 
-            lon1 *= ScienceMath.RadiansToDegrees;
-            lat1 *= ScienceMath.RadiansToDegrees;
+            lon1 *= SpaceMath.RadiansToDegrees;
+            lat1 *= SpaceMath.RadiansToDegrees;
 
             if (lon1 > 270)
             {
@@ -295,8 +295,8 @@ public static class EarthGeometry
             lats[j] = lat1;
         }
 
-        isNorthPoleCover = (latDeg + angleDeg > 90);
-        isSouthPoleCover = (latDeg - angleDeg < -90);
+        isNorthPoleCover = latDeg + angleDeg > 90;
+        isSouthPoleCover = latDeg - angleDeg < -90;
     }
 
     private static int Check(int index)
@@ -328,6 +328,6 @@ public static class EarthGeometry
             lon1 += 2 * Math.PI;
         }
 
-        return (lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1));
+        return lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1);
     }
 }

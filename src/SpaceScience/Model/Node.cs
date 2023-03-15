@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public struct NodeQuarter
 {

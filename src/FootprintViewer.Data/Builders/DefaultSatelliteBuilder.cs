@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
 using SpaceScience;
+using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -28,7 +29,7 @@ internal static class DefaultSatelliteBuilder
             InclinationDeg = 97.65,
             ArgumentOfPerigeeDeg = 0.0,
             LongitudeAscendingNodeDeg = 0.0,
-            RightAscensionAscendingNodeDeg = ScienceMath.LongitudeNormalization(raan),
+            RightAscensionAscendingNodeDeg = SpaceMath.LongitudeNormalization(raan),
             Period = 5760.0,
             Epoch = dt,
             InnerHalfAngleDeg = 32,
@@ -41,6 +42,6 @@ internal static class DefaultSatelliteBuilder
         var jd = new Julian(epoch);
         double S = jd.ToGmst();
         //double S = orbitState.SiderealTime();       
-        return (tAN * Constants.Omega + S) * ScienceMath.RadiansToDegrees + lonAN;
+        return (tAN * Constants.Omega + S) * SpaceMath.RadiansToDegrees + lonAN;
     }
 }

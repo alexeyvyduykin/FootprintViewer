@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public class SwathCore2D
 {
@@ -150,8 +150,8 @@ public class SwathCore2D
                         {
                             var first = new Geo2D(data.First());
 
-                            int signLat = (data.Count == 2) ? ((first.Lat > 0.0) ? 1 : -1) : 0;
-                            int signLon = (first.Lon > 0.0) ? 1 : -1;
+                            int signLat = data.Count == 2 ? first.Lat > 0.0 ? 1 : -1 : 0;
+                            int signLon = first.Lon > 0.0 ? 1 : -1;
 
                             shapes.Last().Add(new Geo2D(first.Lon + signLon * ExtrudeStep, first.Lat + signLat * ExtrudeStep));
                         }
@@ -165,8 +165,8 @@ public class SwathCore2D
                         {
                             var last = new Geo2D(data.Last());
 
-                            int signLat = (data.Count == 2) ? ((last.Lat > 0.0) ? 1 : -1) : 0;
-                            int signLon = (last.Lon > 0.0) ? 1 : -1;
+                            int signLat = data.Count == 2 ? last.Lat > 0.0 ? 1 : -1 : 0;
+                            int signLon = last.Lon > 0.0 ? 1 : -1;
 
                             shapes.Last().Add(new Geo2D(last.Lon + signLon * ExtrudeStep, last.Lat + signLat * ExtrudeStep));
                         }
@@ -187,44 +187,44 @@ public class SwathCore2D
 
         if (isCoverPolis(Math.PI / 2.0) == true)
         {
-            AddSpecialSegment(SwathCore2D.SpecialSegmentType.Top);
+            AddSpecialSegment(SpecialSegmentType.Top);
         }
 
         if (isCoverPolis(-Math.PI / 2.0) == true)
         {
-            AddSpecialSegment(SwathCore2D.SpecialSegmentType.BottomReverse);
+            AddSpecialSegment(SpecialSegmentType.BottomReverse);
         }
 
         if (near.Count == 1)
         {
-            AddSegment(near.Single(), SwathCore2D.SegmentType.Single);
+            AddSegment(near.Single(), SegmentType.Single);
         }
         else
         {
-            AddSegment(near.First(), SwathCore2D.SegmentType.Begin);
+            AddSegment(near.First(), SegmentType.Begin);
 
             foreach (var item in near.Skip(1).Take(near.Count - 2))
             {
-                AddSegment(item, SwathCore2D.SegmentType.Full);
+                AddSegment(item, SegmentType.Full);
             }
 
-            AddSegment(near.Last(), SwathCore2D.SegmentType.End);
+            AddSegment(near.Last(), SegmentType.End);
         }
 
         if (far.Count == 1)
         {
-            AddSegment(far.Single(), SwathCore2D.SegmentType.Single);
+            AddSegment(far.Single(), SegmentType.Single);
         }
         else
         {
-            AddSegment(far.First(), SwathCore2D.SegmentType.Begin);
+            AddSegment(far.First(), SegmentType.Begin);
 
             foreach (var item in far.Skip(1).Take(far.Count - 2))
             {
-                AddSegment(item, SwathCore2D.SegmentType.Full);
+                AddSegment(item, SegmentType.Full);
             }
 
-            AddSegment(far.Last(), SwathCore2D.SegmentType.End);
+            AddSegment(far.Last(), SegmentType.End);
         }
 
         #region Cut Points Test
@@ -300,7 +300,7 @@ public class SwathCore2D
         {
             bs.Seg = SwathSegment.Segment.Full;
             bs.AddFirst(neww.Fix);
-            _dict[bs] = Tuple.Create<FixPoint, FixPoint>(neww, _dict[bs].Item2);
+            _dict[bs] = Tuple.Create(neww, _dict[bs].Item2);
         }
     }
 
@@ -322,7 +322,7 @@ public class SwathCore2D
         {
             bs.Seg = SwathSegment.Segment.Full;
             bs.AddLast(neww.Fix);
-            _dict[bs] = Tuple.Create<FixPoint, FixPoint>(_dict[bs].Item1, neww);
+            _dict[bs] = Tuple.Create(_dict[bs].Item1, neww);
         }
     }
 
@@ -1121,7 +1121,7 @@ public class SwathCore2D
             lon1 += 2 * Math.PI;
         }
 
-        return (lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1));
+        return lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1);
     }
 
     private class FixPoint
@@ -1170,7 +1170,7 @@ public class SwathCore2D
 
         public override string ToString()
         {
-            return string.Format("FixPoint {0:00}({1},Lat={2:0,0})", id, Enum.GetName(typeof(EType), Type), Fix.Lat * ScienceMath.RadiansToDegrees);
+            return string.Format("FixPoint {0:00}({1},Lat={2:0,0})", id, Enum.GetName(typeof(EType), Type), Fix.Lat * SpaceMath.RadiansToDegrees);
         }
 
         public string ShortDescription()
@@ -1181,10 +1181,10 @@ public class SwathCore2D
 
     private class SwathSegment
     {
-        public static List<Geo2D> TopArr = new() { new Geo2D(-Math.PI, Math.PI / 2.0), new Geo2D(Math.PI, Math.PI / 2.0) };
-        public static List<Geo2D> TopReverseArr = new() { new Geo2D(Math.PI, Math.PI / 2.0), new Geo2D(-Math.PI, Math.PI / 2.0) };
-        public static List<Geo2D> BottomArr = new() { new Geo2D(-Math.PI, -Math.PI / 2.0), new Geo2D(Math.PI, -Math.PI / 2.0) };
-        public static List<Geo2D> BottomReverseArr = new() { new Geo2D(Math.PI, -Math.PI / 2.0), new Geo2D(-Math.PI, -Math.PI / 2.0) };
+        public static List<Geo2D> TopArr = new() { new Geo2D(-Math.PI, SpaceMath.HALFPI), new Geo2D(Math.PI, SpaceMath.HALFPI) };
+        public static List<Geo2D> TopReverseArr = new() { new Geo2D(Math.PI, SpaceMath.HALFPI), new Geo2D(-Math.PI, SpaceMath.HALFPI) };
+        public static List<Geo2D> BottomArr = new() { new Geo2D(-Math.PI, -SpaceMath.HALFPI), new Geo2D(Math.PI, -SpaceMath.HALFPI) };
+        public static List<Geo2D> BottomReverseArr = new() { new Geo2D(Math.PI, -SpaceMath.HALFPI), new Geo2D(-Math.PI, -SpaceMath.HALFPI) };
 
         public SwathSegment(IList<Geo2D> arr, Segment eseg) : this()
         {

@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public class Julian
 {
@@ -10,7 +10,7 @@ public class Julian
 
     public Julian(DateTime utc)
     {
-        double day = utc.DayOfYear + (utc.Hour + ((utc.Minute + ((utc.Second + (utc.Millisecond / 1000.0)) / 60.0)) / 60.0)) / 24.0;
+        double day = utc.DayOfYear + (utc.Hour + (utc.Minute + (utc.Second + utc.Millisecond / 1000.0) / 60.0) / 60.0) / 24.0;
         Initialize(utc.Year, day);
     }
 
@@ -30,12 +30,12 @@ public class Julian
 
         year--;
 
-        int A = (year / 100);
-        int B = 2 - A + (A / 4);
+        int A = year / 100;
+        int B = 2 - A + A / 4;
 
         double NewYears = (int)(365.25 * year) + (int)(30.6001 * 14) + 1720994.5 + B;
 
-        this.Date = NewYears + day;
+        Date = NewYears + day;
     }
 
     // Calculate Greenwich Mean Sidereal Time for the Julian date
@@ -103,7 +103,7 @@ internal static class Meeus
         year--;
 
         int A = year / 100;
-        int B = 2 - A + (A / 4);
+        int B = 2 - A + A / 4;
 
         double NewYears = (int)(365.25 * year) + (int)(30.6001 * 14) + 1720994.5 + B;
         double jdate = NewYears + day;
@@ -179,7 +179,7 @@ internal static class Meeus
 
              + 8640184.812866 * th + 3155760000 * th;
 
-        double gst = (st / 3600.0) % 24;
+        double gst = st / 3600.0 % 24;
 
         if (gst < 0.0)
             gst += 24;

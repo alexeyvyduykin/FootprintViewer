@@ -1,4 +1,4 @@
-﻿namespace SpaceScience;
+﻿namespace SpaceScience.Model;
 
 public class Orbit
 {
@@ -8,14 +8,14 @@ public class Orbit
 
     public Orbit(double a, double ecc, double incl, double argOfPer, double lonAN, double om, double period, DateTime epoch)
     {
-        this.SemimajorAxis = a;
-        this.Eccentricity = ecc;
-        this.Inclination = incl;
-        this.ArgumentOfPerigee = argOfPer;
-        this.LonAscnNode = lonAN;
-        this.RAAN = om;
-        this.Period = period;
-        this.Epoch = epoch;
+        SemimajorAxis = a;
+        Eccentricity = ecc;
+        Inclination = incl;
+        ArgumentOfPerigee = argOfPer;
+        LonAscnNode = lonAN;
+        RAAN = om;
+        Period = period;
+        Epoch = epoch;
 
         _pTemp = a * (1 - ecc * ecc);
         _nTemp = Math.Sqrt(Constants.GM / a) / a;
@@ -65,7 +65,7 @@ public class Orbit
             e2 = M + Eccentricity * Math.Sin(e1);
         }
         v = Math.Atan2(Math.Sin(e2) * Math.Sqrt(1 - Eccentricity * Eccentricity), Math.Cos(e2) - Eccentricity);
-        v = ScienceMath.WrapAngle(v);
+        v = SpaceMath.WrapAngle(v);
         return v;
     }
 
@@ -92,5 +92,5 @@ public class Orbit
         return e2 / _nTemp;
     }
 
-    public double InclinationNormal => (Inclination >= 0.0 && Inclination <= Math.PI / 2.0) ? Inclination : Math.PI - Inclination;
+    public double InclinationNormal => Inclination >= 0.0 && Inclination <= Math.PI / 2.0 ? Inclination : Math.PI - Inclination;
 }

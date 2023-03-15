@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
 using SpaceScience;
+using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Extensions;
 
@@ -9,10 +10,10 @@ public static class SatelliteExtensions
     {
         var a = satellite.Semiaxis;
         var ecc = satellite.Eccentricity;
-        var incl = satellite.InclinationDeg * ScienceMath.DegreesToRadians;
-        var argOfPer = satellite.ArgumentOfPerigeeDeg * ScienceMath.DegreesToRadians;
-        var lonAN = satellite.LongitudeAscendingNodeDeg * ScienceMath.DegreesToRadians;
-        var raan = satellite.RightAscensionAscendingNodeDeg * ScienceMath.DegreesToRadians;
+        var incl = satellite.InclinationDeg * SpaceMath.DegreesToRadians;
+        var argOfPer = satellite.ArgumentOfPerigeeDeg * SpaceMath.DegreesToRadians;
+        var lonAN = satellite.LongitudeAscendingNodeDeg * SpaceMath.DegreesToRadians;
+        var raan = satellite.RightAscensionAscendingNodeDeg * SpaceMath.DegreesToRadians;
         var period = satellite.Period;
         var epoch = satellite.Epoch;
 

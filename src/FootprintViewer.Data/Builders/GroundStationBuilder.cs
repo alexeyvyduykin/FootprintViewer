@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
-using SpaceScience;
+using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Builders;
 

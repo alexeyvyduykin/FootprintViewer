@@ -6,6 +6,11 @@ public enum GeoCoordTypes
     Degrees
 }
 
+internal static class Geo2DExtensions
+{
+    public static (double lon, double lat) Deconstruct(this Geo2D coord) => (coord.Lon, coord.Lat);
+}
+
 public class Geo2D
 {
     public static Geo2D Empty => new();
@@ -29,6 +34,19 @@ public class Geo2D
         this.Lon = geo.Lon;
         this.Lat = geo.Lat;
         this.Type = geo.Type;
+    }
+
+    public void Deconstruct(out double lon, out double lat)
+    {
+        lon = Lon;
+        lat = Lat;
+    }
+
+    public void Deconstruct(out double lon, out double lat, out GeoCoordTypes type)
+    {
+        lon = Lon;
+        lat = Lat;
+        type = Type;
     }
 
     public GeoCoordTypes Type { get; protected set; }
@@ -92,8 +110,8 @@ public class Geo2D
     {
         if (Type == GeoCoordTypes.Degrees)
         {
-            Lon *= ScienceMath.DegreesToRadians;
-            Lat *= ScienceMath.DegreesToRadians;
+            Lon *= SpaceMath.DegreesToRadians;
+            Lat *= SpaceMath.DegreesToRadians;
             this.Type = GeoCoordTypes.Radians;
         }
     }
@@ -102,8 +120,8 @@ public class Geo2D
     {
         if (Type == GeoCoordTypes.Radians)
         {
-            Lon *= ScienceMath.RadiansToDegrees;
-            Lat *= ScienceMath.RadiansToDegrees;
+            Lon *= SpaceMath.RadiansToDegrees;
+            Lat *= SpaceMath.RadiansToDegrees;
             this.Type = GeoCoordTypes.Degrees;
         }
     }
@@ -131,6 +149,5 @@ public class Geo2D
         {
             coord.Lon += 180.0;
         }
-
     }
 }
