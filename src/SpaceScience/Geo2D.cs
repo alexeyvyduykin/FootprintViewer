@@ -9,6 +9,24 @@ public enum GeoCoordTypes
 internal static class Geo2DExtensions
 {
     public static (double lon, double lat) Deconstruct(this Geo2D coord) => (coord.Lon, coord.Lat);
+
+    public static Geo2D ToLonRange(this Geo2D coord, Func<double, bool> min, Func<double, bool> max)
+    {
+        var lon = coord.ToRadians().Lon;
+        var lat = coord.ToRadians().Lat;
+
+        while (max.Invoke(lon) == true)
+        {
+            lon -= 2 * Math.PI;
+        }
+
+        while (min.Invoke(lon) == true)
+        {
+            lon += 2 * Math.PI;
+        }
+
+        return new Geo2D(lon, lat, GeoCoordTypes.Radians);
+    }
 }
 
 public class Geo2D

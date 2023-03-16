@@ -1,6 +1,6 @@
 ﻿namespace SpaceScience.Model;
 
-public class EarthCircle
+internal class EarthCircle
 {
     public bool IsNorthPoleCover { get; init; }
 
@@ -14,7 +14,7 @@ public class EarthCircle
     public IEnumerable<IEnumerable<(double lon, double lat)>> Areas { get; init; } = new List<List<(double, double)>>();
 }
 
-public static class EarthGeometry
+internal static class EarthGeometry
 {
     public static double Bottom { get; set; } = -89.0;
 

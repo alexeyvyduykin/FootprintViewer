@@ -258,7 +258,7 @@ public static class FeatureBuilder
     {
         var list = new List<IFeature>();
 
-        var gs = GroundStationBuilder.Create(groundStation);
+        var gs = SpaceScienceBuilder.BuildGroundStation(groundStation.Center.X, groundStation.Center.Y, groundStation.Angles);
 
         var areaCount = gs.Areas.Count;
 

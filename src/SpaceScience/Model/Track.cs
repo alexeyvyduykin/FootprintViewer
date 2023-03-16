@@ -277,7 +277,7 @@ public class CustomTrack : Track
 
         double semi_axis = Orbit.Semiaxis(u);
         double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
-        double uTr = Math.Acos(Math.Cos(angle) * Math.Cos(u));
+        double uTr = (angle == 0.0) ? u : Math.Acos(Math.Cos(angle) * Math.Cos(u));
         double iTr = Orbit.Inclination - Math.Atan2(Math.Tan(angle), Math.Sin(u)) * _dir;
         double lat = Math.Asin(Math.Sin(uTr) * Math.Sin(iTr));
         double asinlon = Math.Tan(lat) / Math.Tan(iTr);
