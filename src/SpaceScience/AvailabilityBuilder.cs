@@ -32,15 +32,12 @@ public class AvailabilityBuilder
 
     public IList<AvailabilityBuilderResult> BuildSample()
     {
-        double mu = 398600.44;
         double a = 6948.0;
-        double ecc = 0.0;
-        double incl = 97.65 * SpaceMath.DegreesToRadians;
-        double w = 0.0;
-        double lmgr = 0.0;
-        var T = 2 * Math.PI * Math.Sqrt(a * a * a / mu);
-        var orbit = new Orbit(a, ecc, incl, w, lmgr, 0.0, T, new DateTime());
-        var satellite = new PRDCTSatellite(orbit, 1);
+        double incl = 97.65;
+
+        var factory = new SpaceScienceFactory();
+        var orbit = factory.CreateOrbit(a, incl);
+        var satellite = factory.CreateSatellite(orbit);
 
         var builder = new AvailabilityBuilder();
         var random = new Random();

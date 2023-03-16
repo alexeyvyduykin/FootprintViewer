@@ -2,19 +2,13 @@
 
 public class PRDCTSatellite
 {
-    public PRDCTSatellite(Orbit orbit, DateTime startTime, DateTime stopTime, double trueAnomaly)
+    internal PRDCTSatellite(Orbit orbit, DateTime startTime, DateTime stopTime, double trueAnomaly)
     {
         Orbit = orbit;
         StartTime = startTime;
         StopTime = stopTime;
         TrueAnomaly = trueAnomaly;
     }
-
-    public PRDCTSatellite(Orbit orbit, DateTime startTime, DateTime stopTime) : this(orbit, startTime, stopTime, 0.0) { }
-
-    public PRDCTSatellite(Orbit orbit, int days) : this(orbit, orbit.Epoch, orbit.Epoch.AddDays(days), 0.0) { }
-
-    public PRDCTSatellite(Orbit orbit, int days, double trueAnomaly) : this(orbit, orbit.Epoch, orbit.Epoch.AddDays(days), trueAnomaly) { }
 
     public Orbit Orbit { get; }
 

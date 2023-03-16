@@ -6,7 +6,7 @@ public class Orbit
     private readonly double _pTemp;
     private readonly double _timeHalfPi;
 
-    public Orbit(double a, double ecc, double incl, double argOfPer, double lonAN, double om, double period, DateTime epoch)
+    internal Orbit(double a, double ecc, double incl, double argOfPer, double lonAN, double om, double period, DateTime epoch)
     {
         SemimajorAxis = a;
         Eccentricity = ecc;
@@ -21,8 +21,6 @@ public class Orbit
         _nTemp = Math.Sqrt(Constants.GM / a) / a;
         _timeHalfPi = TimeHalfPi();
     }
-
-    public Orbit(Orbit orbit) : this(orbit.SemimajorAxis, orbit.Eccentricity, orbit.Inclination, orbit.ArgumentOfPerigee, orbit.LonAscnNode, orbit.RAAN, orbit.Period, orbit.Epoch) { }
 
     public static double Quart0 => 0.0;
 

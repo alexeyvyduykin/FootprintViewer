@@ -10,29 +10,31 @@ public static class SatelliteExtensions
     {
         var a = satellite.Semiaxis;
         var ecc = satellite.Eccentricity;
-        var incl = satellite.InclinationDeg * SpaceMath.DegreesToRadians;
-        var argOfPer = satellite.ArgumentOfPerigeeDeg * SpaceMath.DegreesToRadians;
-        var lonAN = satellite.LongitudeAscendingNodeDeg * SpaceMath.DegreesToRadians;
-        var raan = satellite.RightAscensionAscendingNodeDeg * SpaceMath.DegreesToRadians;
+        var inclDeg = satellite.InclinationDeg;
+        var argOfPerDeg = satellite.ArgumentOfPerigeeDeg;
+        var lonANDeg = satellite.LongitudeAscendingNodeDeg;
+        var raanDeg = satellite.RightAscensionAscendingNodeDeg;
         var period = satellite.Period;
         var epoch = satellite.Epoch;
 
-        var orbit = new Orbit(a, ecc, incl, argOfPer, lonAN, raan, period, epoch);
+        var factory = new SpaceScienceFactory();
 
-        return new PRDCTSatellite(orbit, 1);
+        var orbit = factory.CreateOrbit(a, ecc, inclDeg, argOfPerDeg, lonANDeg, raanDeg, period, epoch);
+
+        return factory.CreateSatellite(orbit, 1);
     }
 
     public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, SwathDirection direction)
     {
-        var inner = satellite.InnerHalfAngleDeg;
-        var outer = satellite.OuterHalfAngleDeg;
-        var angle = (outer - inner) / 2.0;
-        var roll = inner + angle;
+        var innerDeg = satellite.InnerHalfAngleDeg;
+        var outerDeg = satellite.OuterHalfAngleDeg;
+
+        var factory = new SpaceScienceFactory();
 
         return direction switch
         {
-            SwathDirection.Left => new PRDCTSensor(angle, roll),
-            SwathDirection.Right => new PRDCTSensor(angle, -roll),
+            SwathDirection.Left => factory.CreateLeftSensor(innerDeg, outerDeg),
+            SwathDirection.Right => factory.CreateRightSensor(innerDeg, outerDeg),
             _ => throw new Exception(),
         };
     }
