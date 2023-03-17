@@ -4,13 +4,17 @@ namespace SpaceScience;
 
 public class AvailabilityBuilderResult
 {
-    public int obj_nomer { get; set; }
+    public string Name { get; set; } = null!;
     public double Lat { get; set; }
     public double Lon { get; set; }
-    public int nomer_vitka { get; set; }
-    public int lev_polosa { get; set; }
-    public int prav_polosa { get; set; }
-    public double t_vid { get; set; }
+    public int Node { get; set; }
+    public bool IsLeftSwath { get; set; }
+    public double NadirTime { get; set; }
+    public double BeginTime { get; set; }
+    public double EndTime { get; set; }
+    public double NadirU { get; set; }
+    public double BeginU { get; set; }
+    public double EndU { get; set; }
 }
 
 public class AvailabilityBuilder
@@ -42,20 +46,20 @@ public class AvailabilityBuilder
         var builder = new AvailabilityBuilder();
         var random = new Random();
 
-        var targets = new List<(double, double, int)>();
+        var targets = new List<(double, double, string)>();
 
         for (int i = 0; i < 100; i++)
         {
             var lat = (double)random.Next(-80, 81);
             var lon = (double)random.Next(0, 360);
 
-            targets.Add((lon, lat, i + 1));
+            targets.Add((lon, lat, $"{i + 1}"));
         }
 
         return builder.Build(satellite, 20.0, 55.0, targets);
     }
 
-    public IList<AvailabilityBuilderResult> Build(PRDCTSatellite satellite, double angle1Deg, double angle2Deg, IList<(double lon, double lat, int obj_n)> targets)
+    public IList<AvailabilityBuilderResult> Build(PRDCTSatellite satellite, double angle1Deg, double angle2Deg, IList<(double lon, double lat, string obj_name)> targets)
     {
         var orbit = satellite.Orbit;
         double u0 = 0;
@@ -90,8 +94,12 @@ public class AvailabilityBuilder
             while (L < -PI) L += 2 * PI;
 
             double l1LEV = 0, m1LEV = 0, l1PR = 0, m1PR = 0;
-            double t_vid = 0;
-            // double Tk_vid, Tn_vid;
+            double tVis = double.NaN;
+            double tBeginVis = double.MinValue;
+            double tEndVis = double.MaxValue;
+            double uVis = double.NaN;
+            double uBeginVis = double.MinValue;
+            double uEndVis = double.MaxValue;
             for (int i = 0; i < nodeCount; i++)
             {
                 double rMin = 10000;
@@ -102,7 +110,7 @@ public class AvailabilityBuilder
 
                 for (int j = 0; j < jCount; j++)
                 {
-                    var (t, _, lon, lat) = _cacheTrack[i][j];
+                    var (t, u, lon, lat) = _cacheTrack[i][j];
                     var (_, _, lonLeft, latLeft) = _cacheLeft[i][j];
                     var (_, _, lonRight, latRight) = _cacheRight[i][j];
 
@@ -130,14 +138,20 @@ public class AvailabilityBuilder
                         if (dltob < rMin)
                         {
                             dltob = rMin;
-                            t_vid = t;
+                            tVis = t;
+                            uVis = u;
                             l1LEV = latLeft;
                             m1LEV = lonLeft;
                             l1PR = latRight;
                             m1PR = lonRight;
                         }
-                        //if(COUNTER==1){Tn_vid=t;}
-                        //Tk_vid=t;
+                        if (COUNTER == 1)
+                        {
+                            tBeginVis = t;
+                            uBeginVis = u;
+                        }
+                        tEndVis = t;
+                        uEndVis = u;
                     }
                 }
 
@@ -154,28 +168,22 @@ public class AvailabilityBuilder
                     double zPrav = R * sin(l1PR) / sqrt(1 - sin(l1PR) * sin(l1PR));
                     var rLev = acos((xob * xLev + yob * yLev + zob * zLev) / (sqrt(xob * xob + yob * yob + zob * zob) * sqrt(xLev * xLev + yLev * yLev + zLev * zLev))) * GR;//2
                     var rPrav = acos((xob * xPrav + yob * yPrav + zob * zPrav) / (sqrt(xob * xob + yob * yob + zob * zob) * sqrt(xPrav * xPrav + yPrav * yPrav + zPrav * zPrav))) * GR;//2
-                    int lev_polosa;
-                    int prav_polosa;
-                    if (rLev < rPrav)
-                    {
-                        lev_polosa = 1;
-                        prav_polosa = 0;
-                    }
-                    else
-                    {
-                        prav_polosa = 1;
-                        lev_polosa = 0;
-                    }
+
+                    var isLeftSwath = (rLev < rPrav);
 
                     list.Add(new()
                     {
-                        obj_nomer = OBJ_N,
+                        Name = OBJ_N,
                         Lat = latTarget,
                         Lon = L,
-                        nomer_vitka = i + 1,
-                        lev_polosa = lev_polosa,
-                        prav_polosa = prav_polosa,
-                        t_vid = t_vid
+                        Node = i + 1,
+                        IsLeftSwath = isLeftSwath,
+                        NadirTime = tVis,
+                        BeginTime = tBeginVis,
+                        EndTime = tEndVis,
+                        NadirU = uVis,
+                        BeginU = uBeginVis,
+                        EndU = uEndVis
                     });
                 }
             }

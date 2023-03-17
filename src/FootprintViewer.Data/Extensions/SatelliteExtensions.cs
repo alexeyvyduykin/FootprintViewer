@@ -23,4 +23,11 @@ public static class SatelliteExtensions
 
         return factory.CreateSatellite(orbit, 1);
     }
+
+    public static PRDCTSensor ToPRDCTSensor(this Satellite satellite)
+    {
+        var factory = new SpaceScienceFactory();
+
+        return factory.CreateSensor(satellite.LookAngleDeg, satellite.RadarAngleDeg);
+    }
 }
