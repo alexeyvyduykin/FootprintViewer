@@ -34,23 +34,8 @@ public class SpaceScienceFactory
         return new PRDCTSatellite(orbit, begin, end, trueAnomaly);
     }
 
-    public PRDCTSensor CreateLeftSensor(double innerHalfAngleDeg, double outerHalfAngleDeg)
+    public PRDCTSensor CreateSensor(double lookAngleDeg, double radarAngleDeg)
     {
-        var inner = innerHalfAngleDeg;
-        var outer = outerHalfAngleDeg;
-        var angle = (outer - inner) / 2.0;
-        var roll = inner + angle;
-
-        return new PRDCTSensor(angle, roll);
-    }
-
-    public PRDCTSensor CreateRightSensor(double innerHalfAngleDeg, double outerHalfAngleDeg)
-    {
-        var inner = innerHalfAngleDeg;
-        var outer = outerHalfAngleDeg;
-        var angle = (outer - inner) / 2.0;
-        var roll = inner + angle;
-
-        return new PRDCTSensor(angle, -roll);
+        return new PRDCTSensor(lookAngleDeg, radarAngleDeg);
     }
 }

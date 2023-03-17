@@ -184,7 +184,7 @@ public class AvailabilityBuilder
         return list;
     }
 
-    public void Cache(PRDCTSatellite satellite, double angle = 20.0, double dt = 1.0)
+    private void Cache(PRDCTSatellite satellite, double angle = 20.0, double dt = 1.0)
     {
         _cacheTrack.Clear();
         _cacheLeft.Clear();

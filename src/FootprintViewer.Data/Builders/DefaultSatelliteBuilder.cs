@@ -32,8 +32,8 @@ internal static class DefaultSatelliteBuilder
             RightAscensionAscendingNodeDeg = SpaceMath.LongitudeNormalization(raan),
             Period = 5760.0,
             Epoch = dt,
-            InnerHalfAngleDeg = 32,
-            OuterHalfAngleDeg = 48
+            LookAngleDeg = 40, // gam1 = 32, gam2 = 48
+            RadarAngleDeg = 16
         };
     }
 

@@ -219,23 +219,23 @@
   <data name="SatelliteInclination" xml:space="preserve">
     <value>Наклонение</value>
   </data>
-  <data name="SatelliteInnerHalfAngle" xml:space="preserve">
-    <value>Внутренний половинный угол</value>
-  </data>
   <data name="SatelliteLeftSwath" xml:space="preserve">
     <value>Левая полоса</value>
   </data>
   <data name="SatelliteLonAN" xml:space="preserve">
     <value>Долгота в. у.</value>
   </data>
-  <data name="SatelliteOuterHalfAngle" xml:space="preserve">
-    <value>Внешний половинный угол</value>
+  <data name="SatelliteLookAngle" xml:space="preserve">
+    <value>Угол обзора</value>
   </data>
   <data name="SatellitePeriod" xml:space="preserve">
     <value>Период</value>
   </data>
   <data name="SatelliteRAAN" xml:space="preserve">
     <value>Прямое восхождение в. у.</value>
+  </data>
+  <data name="SatelliteRadarAngle" xml:space="preserve">
+    <value>Угол радара</value>
   </data>
   <data name="SatelliteRightSwath" xml:space="preserve">
     <value>Правая полоса</value>

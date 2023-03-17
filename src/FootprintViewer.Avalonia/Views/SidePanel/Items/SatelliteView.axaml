@@ -175,17 +175,17 @@
 						<Separator/>
 
 						<DockPanel>
-							<TextBlock Text="{x:Static prop:Resources.SatelliteInnerHalfAngle}"
+							<TextBlock Text="{x:Static prop:Resources.SatelliteLookAngle}"
 									   Classes="Caption"/>
-							<TextBlock Text="{Binding Satellite.InnerHalfAngleDeg, StringFormat={}{0:0.##}}"
+							<TextBlock Text="{Binding Satellite.LookAngleDeg, StringFormat={}{0:0.##}}"
 									   Classes="Subtitle1"
 									   HorizontalAlignment="Right"/>
 						</DockPanel>
 
 						<DockPanel>
-							<TextBlock Text="{x:Static prop:Resources.SatelliteOuterHalfAngle}"
+							<TextBlock Text="{x:Static prop:Resources.SatelliteRadarAngle}"
 									   Classes="Caption"/>
-							<TextBlock Text="{Binding Satellite.OuterHalfAngleDeg, StringFormat={}{0:0.##}}"
+							<TextBlock Text="{Binding Satellite.RadarAngleDeg, StringFormat={}{0:0.##}}"
 									   Classes="Subtitle1"
 									   HorizontalAlignment="Right"/>
 						</DockPanel>

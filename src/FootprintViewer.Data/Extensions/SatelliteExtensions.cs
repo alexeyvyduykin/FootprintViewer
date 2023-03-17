@@ -23,19 +23,4 @@ public static class SatelliteExtensions
 
         return factory.CreateSatellite(orbit, 1);
     }
-
-    public static PRDCTSensor ToPRDCTSensor(this Satellite satellite, SwathDirection direction)
-    {
-        var innerDeg = satellite.InnerHalfAngleDeg;
-        var outerDeg = satellite.OuterHalfAngleDeg;
-
-        var factory = new SpaceScienceFactory();
-
-        return direction switch
-        {
-            SwathDirection.Left => factory.CreateLeftSensor(innerDeg, outerDeg),
-            SwathDirection.Right => factory.CreateRightSensor(innerDeg, outerDeg),
-            _ => throw new Exception(),
-        };
-    }
 }

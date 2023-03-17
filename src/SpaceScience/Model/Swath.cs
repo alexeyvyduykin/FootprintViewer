@@ -4,72 +4,25 @@ namespace SpaceScience.Model;
 
 public class Swath
 {
-    public Swath(Orbit orbit, double gam1DEG, double gam2DEG, SwathMode mode)
+    public Swath(Orbit orbit, double lookAngleDEG, double radarAngleDEG, SwathMode mode)
     {
         Orbit = orbit;
 
-        TrackPointDirection[] dir = new TrackPointDirection[2];
-        switch (mode)
+        (TrackPointDirection near, TrackPointDirection far) = mode switch
         {
-            case SwathMode.Middle:
-                dir[0] = TrackPointDirection.Left;
-                dir[1] = TrackPointDirection.Right;
-                break;
-            case SwathMode.Left:
-                dir[0] = dir[1] = TrackPointDirection.Left;
-                break;
-            case SwathMode.Right:
-                dir[0] = dir[1] = TrackPointDirection.Right;
-                break;
-        }
+            SwathMode.Middle => (TrackPointDirection.Left, TrackPointDirection.Right),
+            SwathMode.Left => (TrackPointDirection.Left, TrackPointDirection.Left),
+            SwathMode.Right => (TrackPointDirection.Right, TrackPointDirection.Right),
+            _ => throw new NotImplementedException()
+        };
 
-        var factor = new FactorShiftTrack(orbit, gam1DEG, gam2DEG, mode);
+        double minLookAngleDeg = lookAngleDEG - radarAngleDEG / 2.0;
+        double maxLookAngleDeg = lookAngleDEG + radarAngleDEG / 2.0;
 
-        NearLine = new FactorTrack(new CustomTrack(orbit, gam1DEG, dir[0]), factor);
-        FarLine = new FactorTrack(new CustomTrack(orbit, gam2DEG, dir[1]), factor);
-    }
+        var factor = new FactorShiftTrack(orbit, minLookAngleDeg, maxLookAngleDeg, mode);
 
-    public Swath(Orbit orbit, double verticalHalfAngleDEG, double rollAngleDEG)
-    {
-        Orbit = orbit;
-
-        SwathMode mode;
-
-        if (rollAngleDEG == 0)
-        {
-            mode = SwathMode.Middle;
-        }
-        else if (rollAngleDEG > 0.0)
-        {
-            mode = SwathMode.Left;
-        }
-        else
-        {
-            mode = SwathMode.Right;
-        }
-
-        TrackPointDirection[] dir = new TrackPointDirection[2];
-        switch (mode)
-        {
-            case SwathMode.Middle:
-                dir[0] = TrackPointDirection.Left;
-                dir[1] = TrackPointDirection.Right;
-                break;
-            case SwathMode.Left:
-                dir[0] = dir[1] = TrackPointDirection.Left;
-                break;
-            case SwathMode.Right:
-                dir[0] = dir[1] = TrackPointDirection.Right;
-                break;
-        }
-
-        double gam1DEG = Math.Abs(rollAngleDEG) - verticalHalfAngleDEG;
-        double gam2DEG = Math.Abs(rollAngleDEG) + verticalHalfAngleDEG;
-
-        var factor = new FactorShiftTrack(orbit, gam1DEG, gam2DEG, mode);
-
-        NearLine = new FactorTrack(new CustomTrack(orbit, gam1DEG, dir[0]), factor);
-        FarLine = new FactorTrack(new CustomTrack(orbit, gam2DEG, dir[1]), factor);
+        NearLine = new FactorTrack(new CustomTrack(orbit, minLookAngleDeg, near), factor);
+        FarLine = new FactorTrack(new CustomTrack(orbit, maxLookAngleDeg, far), factor);
     }
 
     public bool IsCoverPolis(double latRAD, ref double timeFromANToPolis)
@@ -143,17 +96,17 @@ public class Swath
 
     public static void ToFile(string path, PRDCTSatellite satellite, PRDCTSensor sensor, int node)
     {
-        var b1 = new Swath(satellite.Orbit, -Math.Abs(sensor.VerticalHalfAngleDEG), sensor.RollAngleDEG);
-        var b2 = new Swath(satellite.Orbit, Math.Abs(sensor.VerticalHalfAngleDEG), sensor.RollAngleDEG);
+        var leftSwath = new Swath(satellite.Orbit, sensor.LookAngleDeg, sensor.RadarAngleDeg, SwathMode.Left);
+        var rightSwath = new Swath(satellite.Orbit, sensor.LookAngleDeg, sensor.RadarAngleDeg, SwathMode.Right);
 
-        var near1 = b1.GetNearGroundTrack(satellite, node).ToList();
-        var far1 = b1.GetFarGroundTrack(satellite, node).ToList();
+        var near1 = leftSwath.GetNearGroundTrack(satellite, node).ToList();
+        var far1 = leftSwath.GetFarGroundTrack(satellite, node).ToList();
 
         near1.ForEach(s => { Geo2D.OffsetLeftLon(s); });
         far1.ForEach(s => { Geo2D.OffsetLeftLon(s); });
 
-        var near2 = b2.GetNearGroundTrack(satellite, node).ToList();
-        var far2 = b2.GetFarGroundTrack(satellite, node).ToList();
+        var near2 = rightSwath.GetNearGroundTrack(satellite, node).ToList();
+        var far2 = rightSwath.GetFarGroundTrack(satellite, node).ToList();
 
         near2.ForEach(s => { Geo2D.OffsetLeftLon(s); });
         far2.ForEach(s => { Geo2D.OffsetLeftLon(s); });

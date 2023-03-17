@@ -32,9 +32,9 @@ public class Satellite
     [JsonProperty("Epoch")]
     public DateTime Epoch { get; set; }
 
-    [JsonProperty("InnerHalfAngleDeg")]
-    public double InnerHalfAngleDeg { get; set; }
+    [JsonProperty("LookAngleDeg")]
+    public double LookAngleDeg { get; set; }
 
-    [JsonProperty("OuterHalfAngleDeg")]
-    public double OuterHalfAngleDeg { get; set; }
+    [JsonProperty("RadarAngleDeg")]
+    public double RadarAngleDeg { get; set; }
 }

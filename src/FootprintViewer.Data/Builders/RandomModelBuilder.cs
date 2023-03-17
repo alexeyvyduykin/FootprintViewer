@@ -115,8 +115,8 @@ public static class RandomModelBuilder
             RightAscensionAscendingNodeDeg = 0.0,
             Period = 5760.0,
             Epoch = DateTime.Now,
-            InnerHalfAngleDeg = 32,
-            OuterHalfAngleDeg = 48
+            LookAngleDeg = 40, // gam1 = 32, gam2 = 48
+            RadarAngleDeg = 16
         };
     }
 

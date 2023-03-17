@@ -111,8 +111,7 @@ public class SensorProvider : IProvider, IDynamic
 
             foreach (var sat in satellites)
             {
-                var (angleDeg, rollDeg) = ToPRDCTSensor(sat);
-                var swaths = SpaceScienceBuilder.BuildSwaths(sat.ToPRDCTSatellite(), angleDeg, rollDeg);
+                var swaths = SpaceScienceBuilder.BuildSwaths(sat.ToPRDCTSatellite(), sat.LookAngleDeg, sat.RadarAngleDeg);
 
                 var name = sat.Name!;
                 var leftRes = FeatureBuilder.Build(name, swaths.Left);
@@ -124,16 +123,6 @@ public class SensorProvider : IProvider, IDynamic
 
             return (dictLeft, dictRight);
         });
-
-        static (double angle, double roll) ToPRDCTSensor(Satellite satellite)
-        {
-            var inner = satellite.InnerHalfAngleDeg;
-            var outer = satellite.OuterHalfAngleDeg;
-            var angle = (outer - inner) / 2.0;
-            var roll = inner + angle;
-
-            return (angle, roll);
-        }
     }
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)

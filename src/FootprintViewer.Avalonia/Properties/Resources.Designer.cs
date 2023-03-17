@@ -367,15 +367,6 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Inner half angle.
-        /// </summary>
-        public static string SatelliteInnerHalfAngle {
-            get {
-                return ResourceManager.GetString("SatelliteInnerHalfAngle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Left swath.
         /// </summary>
         public static string SatelliteLeftSwath {
@@ -394,11 +385,11 @@ namespace FootprintViewer.Avalonia.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Outer half angle.
+        ///   Ищет локализованную строку, похожую на Look angle.
         /// </summary>
-        public static string SatelliteOuterHalfAngle {
+        public static string SatelliteLookAngle {
             get {
-                return ResourceManager.GetString("SatelliteOuterHalfAngle", resourceCulture);
+                return ResourceManager.GetString("SatelliteLookAngle", resourceCulture);
             }
         }
         
@@ -417,6 +408,15 @@ namespace FootprintViewer.Avalonia.Properties {
         public static string SatelliteRAAN {
             get {
                 return ResourceManager.GetString("SatelliteRAAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Radar angle.
+        /// </summary>
+        public static string SatelliteRadarAngle {
+            get {
+                return ResourceManager.GetString("SatelliteRadarAngle", resourceCulture);
             }
         }
         

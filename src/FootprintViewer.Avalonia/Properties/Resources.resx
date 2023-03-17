@@ -219,23 +219,23 @@
   <data name="SatelliteInclination" xml:space="preserve">
     <value>Inclination</value>
   </data>
-  <data name="SatelliteInnerHalfAngle" xml:space="preserve">
-    <value>Inner half angle</value>
-  </data>
   <data name="SatelliteLeftSwath" xml:space="preserve">
     <value>Left swath</value>
   </data>
   <data name="SatelliteLonAN" xml:space="preserve">
     <value>Longitude of the ascending node</value>
   </data>
-  <data name="SatelliteOuterHalfAngle" xml:space="preserve">
-    <value>Outer half angle</value>
+  <data name="SatelliteLookAngle" xml:space="preserve">
+    <value>Look angle</value>
   </data>
   <data name="SatellitePeriod" xml:space="preserve">
     <value>Period</value>
   </data>
   <data name="SatelliteRAAN" xml:space="preserve">
     <value>RAAN</value>
+  </data>
+  <data name="SatelliteRadarAngle" xml:space="preserve">
+    <value>Radar angle</value>
   </data>
   <data name="SatelliteRightSwath" xml:space="preserve">
     <value>Right swath</value>

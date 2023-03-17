@@ -104,10 +104,10 @@ public static class SpaceScienceBuilder
         return new TrackBuilderResult(tracks);
     }
 
-    public static SwathBuilderResult BuildSwaths(PRDCTSatellite satellite, double verticalHalfAngleDEG, double rollAngleDEG)
+    public static SwathBuilderResult BuildSwaths(PRDCTSatellite satellite, double lookAngleDeg, double radarAngleDeg)
     {
-        var leftSwath = new Swath(satellite.Orbit, verticalHalfAngleDEG, Math.Abs(rollAngleDEG));
-        var rightSwath = new Swath(satellite.Orbit, verticalHalfAngleDEG, -Math.Abs(rollAngleDEG));
+        var leftSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Left);
+        var rightSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Right);
 
         var leftRes = BuildSwaths(satellite, leftSwath);
         var rightRes = BuildSwaths(satellite, rightSwath);
@@ -195,11 +195,4 @@ public static class SpaceScienceBuilder
 
         return (lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1));
     }
-
-
-
-
-
-
-
 }

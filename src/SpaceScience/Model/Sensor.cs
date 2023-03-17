@@ -2,16 +2,25 @@
 
 public class PRDCTSensor
 {
-    private readonly double _verticalHalfAngleDEG;
-    private readonly double _rollAngleDEG;
+    private readonly double _radarAngleDeg;
+    private readonly double _lookAngleDeg;
+    private readonly double _minLookAngleDeg;
+    private readonly double _maxLookAngleDeg;
 
-    internal PRDCTSensor(double verticalHalfAngleDEG, double rollAngleDEG)
+    internal PRDCTSensor(double lookAngleDeg, double radarAngleDeg)
     {
-        _verticalHalfAngleDEG = verticalHalfAngleDEG;
-        _rollAngleDEG = rollAngleDEG;
+        _lookAngleDeg = lookAngleDeg;
+        _radarAngleDeg = radarAngleDeg;
+
+        _minLookAngleDeg = lookAngleDeg - radarAngleDeg / 2.0;
+        _maxLookAngleDeg = lookAngleDeg + radarAngleDeg / 2.0;
     }
 
-    public double VerticalHalfAngleDEG => _verticalHalfAngleDEG;
+    public double LookAngleDeg => _lookAngleDeg;
 
-    public double RollAngleDEG => _rollAngleDEG;
+    public double RadarAngleDeg => _radarAngleDeg;
+
+    public double MinLookAngleDeg => _minLookAngleDeg;
+
+    public double MaxLookAngleDeg => _maxLookAngleDeg;
 }

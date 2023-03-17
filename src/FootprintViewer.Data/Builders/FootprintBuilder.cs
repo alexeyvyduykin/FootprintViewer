@@ -26,11 +26,9 @@ internal static class FootprintBuilder
         foreach (var satellite in satellites)
         {
             var sat = satellite.ToPRDCTSatellite();
-            var sensor1 = satellite.ToPRDCTSensor(SwathDirection.Left);
-            var sensor2 = satellite.ToPRDCTSensor(SwathDirection.Right);
 
-            var swath1 = new Swath(sat.Orbit, sensor1.VerticalHalfAngleDEG, sensor1.RollAngleDEG);
-            var swath2 = new Swath(sat.Orbit, sensor2.VerticalHalfAngleDEG, sensor2.RollAngleDEG);
+            var swath1 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SwathMode.Left);
+            var swath2 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SwathMode.Right);
 
             Swath[] bands = new Swath[] { swath1, swath2 };
 
