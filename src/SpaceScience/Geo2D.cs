@@ -6,7 +6,7 @@ public enum GeoCoordTypes
     Degrees
 }
 
-internal static class Geo2DExtensions
+public static class Geo2DExtensions
 {
     public static (double lon, double lat) Deconstruct(this Geo2D coord) => (coord.Lon, coord.Lat);
 
