@@ -5,12 +5,12 @@ using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
+using Mapsui.Styles;
 using Mapsui.Tiling.Layers;
 using NetTopologySuite.Geometries;
 using SpaceScience;
-using SpaceScience.Model;
+using SpaceScienceSample.Models;
 using SQLite;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,15 +18,6 @@ namespace SpaceScienceSample;
 
 internal class MapFactory
 {
-    private readonly Dictionary<int, IList<(double t, double u, double lon, double lat)>> _cacheTrack = new();
-    private readonly Dictionary<int, IList<(double t, double u, double lon, double lat)>> _cacheLeft = new();
-    private readonly Dictionary<int, IList<(double t, double u, double lon, double lat)>> _cacheRight = new();
-
-    public MapFactory()
-    {
-
-    }
-
     public Map CreateMap()
     {
         var map = new Map()
@@ -45,95 +36,78 @@ internal class MapFactory
         map.Layers.Add(CreateWorldMapLayer(path));
 
         var layer = new WritableLayer();
+        var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
+        var pointsLayer2 = new WritableLayer() { Style = CreatePointsStyle(Color.Blue) };
 
-        add(layer);
-
-        map.Layers.Add(layer);
-
-        return map;
-    }
-
-    private void add(WritableLayer layer)
-    {
         double a = 6948.0;
         double incl = 97.65;
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
         var satellite = factory.CreateSatellite(orbit);
+        var nodes = satellite.Nodes().Count;
+        var track1 = new FactorTrack22(orbit);
+        var track2 = new FactorTrack22(orbit);
 
-        Cache(satellite);
+        track1.CalculateTrackWithLogStep(100);
+        track2.CalculateTrack(60);
 
-        var list0 = _cacheTrack[0].Select(s => ((lonDeg: s.lon * SpaceMath.RadiansToDegrees, latDeg: s.lat * SpaceMath.RadiansToDegrees)));
-        var list1 = _cacheLeft[0].Select(s => ((lonDeg: s.lon * SpaceMath.RadiansToDegrees, latDeg: s.lat * SpaceMath.RadiansToDegrees)));
-        var list2 = _cacheRight[0].Select(s => ((lonDeg: s.lon * SpaceMath.RadiansToDegrees, latDeg: s.lat * SpaceMath.RadiansToDegrees)));
-
-        var vertices0 = list0.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
-        var vertices1 = list1.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
-        var vertices2 = list2.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
-
-        var line0 = new GeometryFactory().CreateLineString(vertices0.ToCoordinates());
-        var line1 = new GeometryFactory().CreateLineString(vertices1.ToCoordinates());
-        var line2 = new GeometryFactory().CreateLineString(vertices2.ToCoordinates());
-
-        var point = new GeometryFactory().CreatePoint(vertices0.ToCoordinates().First());
-
-        layer.Add((IFeature)line0.ToFeature());
-        //layer.Add((IFeature)line1.ToFeature());
-        //layer.Add((IFeature)line2.ToFeature());
-        layer.Add((IFeature)point.ToFeature());
-    }
-
-    private void Cache(PRDCTSatellite satellite, double angle = 20.0, double dt = 1.0)
-    {
-        _cacheTrack.Clear();
-        _cacheLeft.Clear();
-        _cacheRight.Clear();
-
-        var orbit = satellite.Orbit;
-        var nodeCount = satellite.Nodes().Count;
-        var period = orbit.Period;
-
-        for (int i = 0; i < nodeCount; i++)
+        for (int i = 0; i < nodes; i++)
         {
-            _cacheTrack.Add(i, new List<(double t, double u, double lon, double lat)>());
-            _cacheLeft.Add(i, new List<(double t, double u, double lon, double lat)>());
-            _cacheRight.Add(i, new List<(double t, double u, double lon, double lat)>());
+            var offsetDeg = track1.NodeOffsetDeg;
+            var list = track1.CacheTrack.Select(s => (s.lonDeg + offsetDeg * i, s.latDeg)).ToList();
 
-            for (double t = 0; t <= period; t += dt)
-            {
-                var u = orbit.Anomalia(t);
-
-                var (lon, lat) = new CustomTrack(satellite.Orbit, 0.0, TrackPointDirection.None)
-                    .TrackPoint(u)
-                    .ToLonRange(MinLon, MaxLon);
-
-                var (lonLeft, latLeft) = new CustomTrack(satellite.Orbit, angle, TrackPointDirection.Left)
-                    .TrackPoint(u)
-                    .ToLonRange(MinLon, MaxLon);
-
-                var (lonRight, latRight) = new CustomTrack(satellite.Orbit, angle, TrackPointDirection.Right)
-                    .TrackPoint(u)
-                    .ToLonRange(MinLon, MaxLon);
-
-                _cacheTrack[i].Add((t, u, lon, lat));
-                _cacheLeft[i].Add((t, u, lonLeft, latLeft));
-                _cacheRight[i].Add((t, u, lonRight, latRight));
-            }
+            AddTrack(list, layer);
+            AddPoints(list, pointsLayer1);
         }
 
-        return;
+        var list2 = track2.CacheTrack.Select(s => (s.lonDeg + 5.0, s.latDeg)).ToList();
+
+        AddTrack(list2, layer);
+        AddPoints(list2, pointsLayer2);
+
+        map.Layers.Add(layer);
+        map.Layers.Add(pointsLayer1);
+        map.Layers.Add(pointsLayer2);
+
+        return map;
     }
 
-    private static bool MinLon(double lon) => lon < -Math.PI;
+    private static void AddTrack(IList<(double lonDeg, double latDeg)> cache, WritableLayer layer)
+    {
+        var vertices0 = cache.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
 
-    private static bool MaxLon(double lon) => lon > Math.PI;
+        var line0 = new GeometryFactory().CreateLineString(vertices0.ToCoordinates());
+
+        layer.Add((IFeature)line0.ToFeature());
+    }
+
+    private static void AddPoints(List<(double lonDeg, double latDeg)> cache, WritableLayer layer)
+    {
+        var vertices0 = cache.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
+
+        foreach (var item in vertices0.ToCoordinates())
+        {
+            var point = new GeometryFactory().CreatePoint(item);
+            layer.Add((IFeature)point.ToFeature());
+        }
+    }
 
     private static ILayer CreateWorldMapLayer(string path)
     {
         var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
 
         return new TileLayer(mbTilesTileSource);
+    }
+
+    private static SymbolStyle CreatePointsStyle(Color color)
+    {
+        return new SymbolStyle
+        {
+            SymbolType = SymbolType.Ellipse,
+            Fill = new Brush(color),
+            SymbolScale = 0.20,
+        };
     }
 }
 
@@ -163,3 +137,4 @@ public static class Class1Extensions
         return coordinates;
     }
 }
+
