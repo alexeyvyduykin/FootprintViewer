@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SpaceScienceSample.ViewModels"
+	    xmlns:local="using:SpaceScienceSample"
+        xmlns:views="using:SpaceScienceSample.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
+        mc:Ignorable="d"
+		d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SpaceScienceSample.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SpaceScienceSample">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="*"
+		  RowDefinitions="*,Auto">
+
+		<Panel>
+
+			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
+								  MapNavigator="{Binding MapNavigator}"
+								  HorizontalAlignment="Stretch"
+								  VerticalAlignment="Stretch">
+				<inter:Interaction.Behavior>
+					<inter:InteractivityBehavior Map="{Binding Map}"
+												 Interactive="{Binding Interactive}"
+												 State="{Binding State}"/>
+				</inter:Interaction.Behavior>
+			</local:UserMapControl>
+
+		</Panel>
+
+		<views:ScaleMapBarView Grid.Row="1"
+							   DataContext="{Binding ScaleMapBar}"/>
+
+	</Grid>
+
+
+</Window>

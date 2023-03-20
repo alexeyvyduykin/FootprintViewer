@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             
+             xmlns:vm="using:SpaceScienceSample.ViewModels"
+			 xmlns:conv="using:SpaceScienceSample.Converters"
+             			 
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
+			 x:CompileBindings="False"
+             x:Class="SpaceScienceSample.Views.ScaleMapBarView">
+
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+		<conv:MPointConverter x:Key="MPointConv"/>
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Center"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+		</Style>
+	</UserControl.Styles>
+
+	<!--Opacity="0.65"-->
+	<Border
+			Height="20"
+			Background="{StaticResource MainBrush}"
+			VerticalAlignment="Bottom"
+			HorizontalAlignment="Stretch">
+
+		<Grid ColumnDefinitions="180,150,60,Auto">
+			<TextBlock Text="{Binding Position, Converter={StaticResource MPointConv}}"
+					   x:CompileBindings="False"
+					   Classes="Caption"/>
+			<TextBlock Text="{Binding Resolution, StringFormat={}1:{0:N0}}"
+					   x:CompileBindings="False"
+					   Grid.Column="1"
+					   Classes="Caption"/>
+			<TextBlock Text="{Binding Scale}"
+					   x:CompileBindings="False"
+					   Grid.Column="2"
+					   Classes="Caption"/>
+			<Rectangle Width="{Binding ScaleLength}"
+					   x:CompileBindings="False"
+					   Margin="0,5,0,5"
+					   Grid.Column="3"
+					   Fill="WhiteSmoke"/>
+		</Grid>
+	</Border>
+
+
+</UserControl>

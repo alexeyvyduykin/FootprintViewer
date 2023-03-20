@@ -47,7 +47,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.Data", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeDataViewerLite", "..\TimeDataViewer\TimeDataViewer\src\TimeDataViewerLite\TimeDataViewerLite.csproj", "{754D90F2-424C-40DB-9CE7-89A4BAB500E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolBarSample", "samples\ToolBarSample\ToolBarSample.csproj", "{78D8150F-3BA3-4E37-8FD7-590D0B30BED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolBarSample", "samples\ToolBarSample\ToolBarSample.csproj", "{78D8150F-3BA3-4E37-8FD7-590D0B30BED2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceScienceSample", "samples\SpaceScienceSample\SpaceScienceSample.csproj", "{9E022310-D034-4B87-A1F3-86D2C100CE08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,10 @@ Global
 		{78D8150F-3BA3-4E37-8FD7-590D0B30BED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78D8150F-3BA3-4E37-8FD7-590D0B30BED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78D8150F-3BA3-4E37-8FD7-590D0B30BED2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E022310-D034-4B87-A1F3-86D2C100CE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E022310-D034-4B87-A1F3-86D2C100CE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E022310-D034-4B87-A1F3-86D2C100CE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E022310-D034-4B87-A1F3-86D2C100CE08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{D113C86C-6E81-416B-A1FE-FEDCE204E04B} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{754D90F2-424C-40DB-9CE7-89A4BAB500E7} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{78D8150F-3BA3-4E37-8FD7-590D0B30BED2} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
+		{9E022310-D034-4B87-A1F3-86D2C100CE08} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
