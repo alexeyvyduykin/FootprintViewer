@@ -35,9 +35,54 @@ internal class MapFactory
 
         map.Layers.Add(CreateWorldMapLayer(path));
 
+        //Sample1(map);
+        Sample2(map);
+
+        return map;
+    }
+
+    private void Sample2(Map map)
+    {
+        double a = 6948.0;
+        double incl = 97.65;
+
+        var factory = new SpaceScienceFactory();
+        var orbit = factory.CreateOrbit(a, incl);
+        var satellite = factory.CreateSatellite(orbit);
+
+        // var res0 = SpaceScienceBuilder2.BuildTracks(satellite, 120);
+        //var res = SpaceScienceBuilder2.BuildTracks22(satellite);
+        var tracks = satellite.BuildTracks();
+        //  var res2 = SpaceScienceBuilder2.BuildSwaths(satellite, 40, 16);
+
+        var features = FeatureBuilder.BuildTrack("Satellite1", tracks);
+        //  var dict0 = FeatureBuilder.BuildTrack("Satellite2", res0.Track);      
+        //  var leftRes = FeatureBuilder.Build("SatelliteLeft1", res2.Left);
+        //  var rightRes = FeatureBuilder.Build("SatelliteRight1", res2.Right);
+
+
+        var layer1 = new WritableLayer();
+        //     var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Green) };
+        var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
+
+        layer1.AddRange(features[0]);
+        layer1.AddRange(features[1]);
+        //      layer1.AddRange(dict0[2]);
+        //   layer2.AddRange(leftRes[1]);
+        //   layer2.AddRange(rightRes[1]);
+        AddPoints22(tracks[0], pointsLayer1);
+        AddPoints22(tracks[1], pointsLayer1);
+        //  AddPoints22(res0.Track[2], pointsLayer1);
+
+        map.Layers.Add(layer1);
+        //    map.Layers.Add(layer2); 
+        map.Layers.Add(pointsLayer1);
+    }
+
+    private void Sample1(Map map)
+    {
         var layer = new WritableLayer();
         var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
-        var pointsLayer2 = new WritableLayer() { Style = CreatePointsStyle(Color.Blue) };
 
         double a = 6948.0;
         double incl = 97.65;
@@ -47,30 +92,19 @@ internal class MapFactory
         var satellite = factory.CreateSatellite(orbit);
         var nodes = satellite.Nodes().Count;
         var track1 = new FactorTrack22(orbit);
-        var track2 = new FactorTrack22(orbit);
 
         track1.CalculateTrackWithLogStep(100);
-        track2.CalculateTrack(60);
 
         for (int i = 0; i < nodes; i++)
         {
-            var offsetDeg = track1.NodeOffsetDeg;
-            var list = track1.CacheTrack.Select(s => (s.lonDeg + offsetDeg * i, s.latDeg)).ToList();
+            var list = track1.GetTrack(i);
 
             AddTrack(list, layer);
             AddPoints(list, pointsLayer1);
         }
 
-        var list2 = track2.CacheTrack.Select(s => (s.lonDeg + 5.0, s.latDeg)).ToList();
-
-        AddTrack(list2, layer);
-        AddPoints(list2, pointsLayer2);
-
         map.Layers.Add(layer);
         map.Layers.Add(pointsLayer1);
-        map.Layers.Add(pointsLayer2);
-
-        return map;
     }
 
     private static void AddTrack(IList<(double lonDeg, double latDeg)> cache, WritableLayer layer)
@@ -93,6 +127,17 @@ internal class MapFactory
         }
     }
 
+    public static void AddPoints22(List<List<(double lon, double lat)>> tracks, WritableLayer layer)
+    {
+        var vertices0 = tracks.SelectMany(s => s.Select(t => SphericalMercator.FromLonLat(t.lon, t.lat))).ToList();
+
+        foreach (var item in vertices0.ToCoordinates())
+        {
+            var point = new GeometryFactory().CreatePoint(item);
+            layer.Add((IFeature)point.ToFeature());
+        }
+    }
+
     private static ILayer CreateWorldMapLayer(string path)
     {
         var mbTilesTileSource = new MbTilesTileSource(new SQLiteConnectionString(path, true));
@@ -107,6 +152,15 @@ internal class MapFactory
             SymbolType = SymbolType.Ellipse,
             Fill = new Brush(color),
             SymbolScale = 0.20,
+        };
+    }
+
+    private static IStyle CreateSwathStyle(Color color)
+    {
+        return new VectorStyle
+        {
+            Fill = new Brush(color),
+            Opacity = 0.4f,
         };
     }
 }

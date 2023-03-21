@@ -8,9 +8,11 @@ namespace SpaceScienceSample.Models;
 
 public class FactorTrack22
 {
+    private readonly double _earthRotationSec = 86164.09053;
     private readonly FactorShiftTrack _factor;
     private readonly Orbit _orbit;
     private readonly double _angleRad;
+    private readonly double _period;
     private readonly int _direction;
     private readonly List<(double lonDeg, double latDeg)> _cacheTrack = new();
 
@@ -20,6 +22,7 @@ public class FactorTrack22
         _orbit = orbit;
         _factor = new FactorShiftTrack(_orbit, 0.0, 0.0, SwathMode.Middle);
         _direction = 0;
+        _period = orbit.Period;
         //_direction = direction switch
         //{
         //    TrackPointDirection.None => 0,
@@ -32,6 +35,8 @@ public class FactorTrack22
     public List<(double lonDeg, double latDeg)> CacheTrack => _cacheTrack;
 
     public double NodeOffsetDeg => 360.0 * _factor.Offset;
+
+    public double EarthRotateOffsetDeg => (_period / _earthRotationSec) * 360.0 * _factor.Offset;
 
     public void CalculateTrackWithLogStep(int counts)
     {
@@ -216,7 +221,108 @@ public class FactorTrack22
             lon = SpaceMath.TWOPI + lon - _factor.Quart4 * SpaceMath.TWOPI;
         }
 
+        lon = lon - (_period / _earthRotationSec) * u;
+
         //   lon = lon + SpaceMath.TWOPI * _factor.Offset;
         return new Geo2D(lon, lat, GeoCoordTypes.Radians);
+    }
+}
+
+public static class FactorTrack22Extensions
+{
+    public static List<(double lonDeg, double latDeg)> GetTrack(this FactorTrack22 track, int node, Func<double, double>? lonConverter = null)
+    {
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+
+        if (lonConverter != null)
+        {
+            return track.CacheTrack
+                .Select(s => (lonConverter.Invoke(s.lonDeg + offset), s.latDeg))
+                .ToList();
+        }
+
+        return track.CacheTrack
+            .Select(s => (s.lonDeg + offset, s.latDeg))
+            .ToList();
+    }
+
+    public static List<List<(double lonDeg, double latDeg)>> GetCutTrack(this FactorTrack22 track, int node, Func<double, double>? lonConverter = null)
+    {
+        var res = new List<List<(double, double)>>();
+
+        var list = track.GetTrack(node, lonConverter);
+
+        var temp = new List<(double, double)>();
+
+        var (prevLonDeg, prevLatDeg) = list.FirstOrDefault();
+
+        foreach (var (curLonDeg, curLatDeg) in list)
+        {
+            if (Math.Abs((curLonDeg - prevLonDeg) * SpaceMath.DegreesToRadians) >= 3.2)
+            {
+                var cutLatDeg = LinearInterpDiscontLat(prevLonDeg, prevLatDeg, curLonDeg, curLatDeg);
+
+                if (prevLonDeg > 0.0)
+                {
+                    temp.Add((180.0, cutLatDeg));
+                    res.Add(temp);
+                    temp = new() { (-180.0, cutLatDeg), (curLonDeg, curLatDeg) };
+                }
+                else
+                {
+                    temp.Add((-180.0, cutLatDeg));
+                    res.Add(temp);
+                    temp = new() { (180.0, cutLatDeg), (curLonDeg, curLatDeg) };
+                }
+            }
+            else
+            {
+                temp.Add((curLonDeg, curLatDeg));
+            }
+
+            prevLonDeg = curLonDeg;
+            prevLatDeg = curLatDeg;
+        }
+
+        res.Add(temp);
+
+        return res;
+    }
+
+    private static double LinearInterpDiscontLat(double lonDeg1, double latDeg1, double lonDeg2, double latDeg2)
+    {
+        if (lonDeg1 > lonDeg2)
+        {
+            lonDeg2 += 360.0;
+        }
+        else
+        {
+            lonDeg1 += 360.0;
+        }
+
+        return (latDeg1 + (180.0 - lonDeg1) * (latDeg2 - latDeg1) / (lonDeg2 - lonDeg1));
+    }
+
+    public static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildTracks(this PRDCTSatellite satellite)
+    {
+        var track = new FactorTrack22(satellite.Orbit);
+
+        track.CalculateTrackWithLogStep(100);
+
+        var res = satellite
+            .Nodes()
+            .Select((_, index) => index)
+            .ToDictionary(s => s, s => track.GetCutTrack(s, LonConverter));
+        //  .ToDictionary(s => s, s => new List<List<(double,double)>> { track.GetTrack(s) });
+
+        return res;
+    }
+
+    private static double LonConverter(double lonDeg)
+    {
+        var value = lonDeg;
+        while (value > 180) value -= 360.0;
+        while (value < -180) value += 360.0;
+        return value;
     }
 }

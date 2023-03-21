@@ -6,7 +6,7 @@ public class TrackBuilderResult
 {
     private readonly Dictionary<int, List<List<(double, double)>>> _tracks;
 
-    internal TrackBuilderResult(Dictionary<int, List<List<(double, double)>>> tracks)
+    public TrackBuilderResult(Dictionary<int, List<List<(double, double)>>> tracks)
     {
         _tracks = tracks;
     }
@@ -19,7 +19,7 @@ public class SwathBuilderResult
     private readonly Dictionary<int, List<List<(double, double)>>> _leftSwaths;
     private readonly Dictionary<int, List<List<(double, double)>>> _rightSwaths;
 
-    internal SwathBuilderResult(Dictionary<int, List<List<(double, double)>>> leftSwaths, Dictionary<int, List<List<(double, double)>>> rightSwaths)
+    public SwathBuilderResult(Dictionary<int, List<List<(double, double)>>> leftSwaths, Dictionary<int, List<List<(double, double)>>> rightSwaths)
     {
         _leftSwaths = leftSwaths;
         _rightSwaths = rightSwaths;
