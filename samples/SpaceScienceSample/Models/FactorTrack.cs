@@ -32,6 +32,21 @@ public class FactorTrack22
         //};
     }
 
+    public FactorTrack22(Orbit orbit, FactorShiftTrack factor, double angleDeg, SwathMode mode)
+    {
+        _angleRad = angleDeg * SpaceMath.DegreesToRadians;       
+        _orbit = orbit;
+        _factor = factor;      
+        _period = orbit.Period;
+        _direction = mode switch
+        {
+            SwathMode.Middle => 0,
+            SwathMode.Left => -1,
+            SwathMode.Right => 1,
+            _ => 0,
+        };
+    }
+
     public List<(double lonDeg, double latDeg)> CacheTrack => _cacheTrack;
 
     public double NodeOffsetDeg => 360.0 * _factor.Offset;

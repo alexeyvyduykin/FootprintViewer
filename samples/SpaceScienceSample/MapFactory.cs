@@ -50,33 +50,39 @@ internal class MapFactory
         var orbit = factory.CreateOrbit(a, incl);
         var satellite = factory.CreateSatellite(orbit);
 
-        // var res0 = SpaceScienceBuilder2.BuildTracks(satellite, 120);
-        //var res = SpaceScienceBuilder2.BuildTracks22(satellite);
         var tracks = satellite.BuildTracks();
-        //  var res2 = SpaceScienceBuilder2.BuildSwaths(satellite, 40, 16);
+        var res2 = SpaceScienceBuilder2.BuildSwaths(satellite, 40, 16);
 
         var features = FeatureBuilder.BuildTrack("Satellite1", tracks);
-        //  var dict0 = FeatureBuilder.BuildTrack("Satellite2", res0.Track);      
-        //  var leftRes = FeatureBuilder.Build("SatelliteLeft1", res2.Left);
-        //  var rightRes = FeatureBuilder.Build("SatelliteRight1", res2.Right);
+        var leftFeatures = FeatureBuilder.Build("SatelliteLeft1", res2.Left);
+        var rightFeatures = FeatureBuilder.Build("SatelliteRight1", res2.Right);
 
 
         var layer1 = new WritableLayer();
-        //     var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Green) };
+        var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Green) };
         var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
+        var pointsLayer2 = new WritableLayer() { Style = CreatePointsStyle(Color.Blue) };
 
-        layer1.AddRange(features[0]);
-        layer1.AddRange(features[1]);
-        //      layer1.AddRange(dict0[2]);
-        //   layer2.AddRange(leftRes[1]);
-        //   layer2.AddRange(rightRes[1]);
-        AddPoints22(tracks[0], pointsLayer1);
-        AddPoints22(tracks[1], pointsLayer1);
-        //  AddPoints22(res0.Track[2], pointsLayer1);
+        AddFeatures(features[0], layer1);
+        AddFeatures(features[1], layer1);
+
+        AddFeatures(leftFeatures[0], layer2);
+        AddFeatures(rightFeatures[0], layer2);
+        AddFeatures(leftFeatures[1], layer2);
+        AddFeatures(rightFeatures[1], layer2);
+
+        AddPoints(tracks[0], pointsLayer1);
+        AddPoints(tracks[1], pointsLayer1);
+
+        AddPoints(res2.Left[0], pointsLayer2);
+        AddPoints(res2.Right[0], pointsLayer2);
+        AddPoints(res2.Left[1], pointsLayer2);
+        AddPoints(res2.Right[1], pointsLayer2);
 
         map.Layers.Add(layer1);
-        //    map.Layers.Add(layer2); 
+        map.Layers.Add(layer2);
         map.Layers.Add(pointsLayer1);
+        map.Layers.Add(pointsLayer2);
     }
 
     private void Sample1(Map map)
@@ -116,6 +122,11 @@ internal class MapFactory
         layer.Add((IFeature)line0.ToFeature());
     }
 
+    private static void AddFeatures(List<IFeature> features, WritableLayer layer)
+    {
+        layer.AddRange(features);
+    }
+
     private static void AddPoints(List<(double lonDeg, double latDeg)> cache, WritableLayer layer)
     {
         var vertices0 = cache.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
@@ -127,7 +138,7 @@ internal class MapFactory
         }
     }
 
-    public static void AddPoints22(List<List<(double lon, double lat)>> tracks, WritableLayer layer)
+    public static void AddPoints(List<List<(double lon, double lat)>> tracks, WritableLayer layer)
     {
         var vertices0 = tracks.SelectMany(s => s.Select(t => SphericalMercator.FromLonLat(t.lon, t.lat))).ToList();
 

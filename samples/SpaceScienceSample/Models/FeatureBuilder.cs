@@ -3,7 +3,6 @@ using Mapsui.Interactivity;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using SpaceScience;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -214,7 +213,7 @@ public static class FeatureBuilder
         return (lat1 + (180 - lon1) * (lat2 - lat1) / (lon2 - lon1));
     }
 
-    public static Dictionary<int, List<IFeature>> Build(string name, Dictionary<int, List<List<(double lon, double lat)>>> swaths)
+    public static Dictionary<int, List<IFeature>> Build(string name, Dictionary<int, List<List<(double lonDeg, double latDeg)>>> swaths)
     {
         var dict = new Dictionary<int, List<IFeature>>();
 
@@ -222,7 +221,7 @@ public static class FeatureBuilder
         {
             var list = item.Value.Select(s =>
             {
-                var vertices = s.Select(s => SphericalMercator.FromLonLat(SpaceMath.FromRadToDeg(s.lon), SpaceMath.FromRadToDeg(s.lat)));
+                var vertices = s.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
 
                 var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
 
