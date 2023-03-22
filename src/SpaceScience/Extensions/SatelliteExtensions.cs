@@ -21,8 +21,8 @@ public static class SatelliteExtensions
 
     public static SwathBuilderResult BuildSwaths(this PRDCTSatellite satellite, double lookAngleDeg, double radarAngleDeg)
     {
-        var leftSwath = new Swath22(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Left);
-        var rightSwath = new Swath22(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Right);
+        var leftSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Left);
+        var rightSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Right);
 
         var leftRes = BuildSwaths(satellite, leftSwath);
         var rightRes = BuildSwaths(satellite, rightSwath);
@@ -30,7 +30,7 @@ public static class SatelliteExtensions
         return new SwathBuilderResult(leftRes, rightRes);
     }
 
-    private static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildSwaths(PRDCTSatellite satellite, Swath22 swath)
+    private static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildSwaths(PRDCTSatellite satellite, Swath swath)
     {
         var swaths = new Dictionary<int, List<List<(double lonDeg, double latDeg)>>>();
 

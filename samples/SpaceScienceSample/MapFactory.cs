@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using BruTile.MbTiles;
+using FootprintViewer.Extensions;
 using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Layers;
@@ -9,7 +10,6 @@ using Mapsui.Tiling.Layers;
 using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
-using SpaceScienceSample.Extensions;
 using SQLite;
 using System.Collections.Generic;
 

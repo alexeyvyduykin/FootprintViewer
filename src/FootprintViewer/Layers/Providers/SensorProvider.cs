@@ -3,14 +3,15 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+using FootprintViewer.Extensions;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
-using SpaceScience;
+using SpaceScience.Extensions;
+using SpaceScience.Model;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,8 @@ public class SensorProvider : IProvider, IDynamic
     public void ChangedData(SatelliteViewModel satellite)
     {
         var name = satellite.Name;
-        var node = satellite.CurrentNode;
+        // TODO: node value refactoring
+        var node = satellite.CurrentNode - 1;
         var isShowLeft = satellite.IsShow && satellite.IsLeftSwath;
         var isShowRight = satellite.IsShow && satellite.IsRightSwath;
 
@@ -111,11 +113,12 @@ public class SensorProvider : IProvider, IDynamic
 
             foreach (var sat in satellites)
             {
-                var swaths = SpaceScienceBuilder.BuildSwaths(sat.ToPRDCTSatellite(), sat.LookAngleDeg, sat.RadarAngleDeg);
+                var swaths = sat.ToPRDCTSatellite().BuildSwaths(sat.LookAngleDeg, sat.RadarAngleDeg);
 
                 var name = sat.Name!;
-                var leftRes = FeatureBuilder.Build(name, swaths.Left);
-                var rightRes = FeatureBuilder.Build(name, swaths.Right);
+
+                var leftRes = swaths.ToFeature(name, SwathMode.Left);
+                var rightRes = swaths.ToFeature(name, SwathMode.Right);
 
                 dictLeft.Add(name, leftRes);
                 dictRight.Add(name, rightRes);

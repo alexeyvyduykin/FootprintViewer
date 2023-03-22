@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data.Builders;
-using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Models;
 using Mapsui;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
@@ -364,27 +363,6 @@ public static class FeatureBuilder
         }
 
         return list;
-    }
-
-    public static Dictionary<int, List<IFeature>> Build(string name, Dictionary<int, List<List<(double lon, double lat)>>> swaths)
-    {
-        var dict = new Dictionary<int, List<IFeature>>();
-
-        foreach (var item in swaths)
-        {
-            var list = item.Value.Select(s =>
-            {
-                var vertices = s.Select(s => SphericalMercator.FromLonLat(SpaceMath.FromRadToDeg(s.lon), SpaceMath.FromRadToDeg(s.lat)));
-
-                var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
-
-                return (IFeature)poly.ToFeature(name);
-            }).ToList();
-
-            dict.Add(item.Key, list);
-        }
-
-        return dict;
     }
 
     public static Dictionary<int, List<IFeature>> BuildTrack(string name, Dictionary<int, List<List<(double lon, double lat)>>> tracks)

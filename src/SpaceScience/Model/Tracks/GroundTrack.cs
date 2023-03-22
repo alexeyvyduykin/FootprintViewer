@@ -6,25 +6,31 @@ public class GroundTrack
     private readonly FactorShiftTrack _factor;
     private readonly Orbit _orbit;
     private readonly double _angleRad;
+    private readonly double _angleDeg;
     private readonly double _period;
+    private readonly TrackPointDirection _trackPointDirection;
     private readonly int _direction;
     private readonly List<(double lonDeg, double latDeg)> _cacheTrack = new();
 
     public GroundTrack(Orbit orbit)
     {
+        _angleDeg = 0.0;
         _angleRad = 0.0;
         _orbit = orbit;
         _factor = new FactorShiftTrack(_orbit, 0.0, 0.0, SwathMode.Middle);
         _direction = 0;
+        _trackPointDirection = TrackPointDirection.None;
         _period = orbit.Period;
     }
 
     public GroundTrack(Orbit orbit, FactorShiftTrack factor, double angleDeg, TrackPointDirection direction)
     {
+        _angleDeg = angleDeg;
         _angleRad = angleDeg * SpaceMath.DegreesToRadians;
         _orbit = orbit;
         _factor = factor;
         _period = orbit.Period;
+        _trackPointDirection = direction;
         _direction = direction switch
         {
             TrackPointDirection.None => 0,
@@ -35,6 +41,10 @@ public class GroundTrack
     }
 
     public List<(double lonDeg, double latDeg)> CacheTrack => _cacheTrack;
+
+    public double AngleDeg => _angleDeg;
+
+    public TrackPointDirection Direction => _trackPointDirection;
 
     public double NodeOffsetDeg => 360.0 * _factor.Offset;
 

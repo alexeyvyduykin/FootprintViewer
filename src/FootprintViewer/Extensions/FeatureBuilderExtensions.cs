@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpaceScienceSample.Extensions;
+namespace FootprintViewer.Extensions;
 
 public static class FeatureBuilderExtensions
 {
