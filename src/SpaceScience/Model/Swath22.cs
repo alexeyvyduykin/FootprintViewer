@@ -1,8 +1,4 @@
-﻿using SpaceScience;
-using SpaceScience.Model;
-using System;
-
-namespace SpaceScienceSample.Models;
+﻿namespace SpaceScience.Model;
 
 public class Swath22
 {

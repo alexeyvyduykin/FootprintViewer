@@ -1,10 +1,4 @@
-﻿using SpaceScience;
-using SpaceScience.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SpaceScienceSample.Models;
+﻿namespace SpaceScience.Model;
 
 public class GroundTrack
 {

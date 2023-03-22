@@ -7,9 +7,9 @@ using Mapsui.Nts.Extensions;
 using Mapsui.Styles;
 using Mapsui.Tiling.Layers;
 using SpaceScience;
+using SpaceScience.Extensions;
 using SpaceScience.Model;
 using SpaceScienceSample.Extensions;
-using SpaceScienceSample.Models;
 using SQLite;
 using System.Collections.Generic;
 
