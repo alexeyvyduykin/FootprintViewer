@@ -231,6 +231,8 @@ public class GroundTrack
 
         lon = lon - (_period / _earthRotationSec) * u;
 
+        lon = lon + _orbit.LonAscnNode;
+
         //   lon = lon + SpaceMath.TWOPI * _factor.Offset;
         return (lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees);
     }

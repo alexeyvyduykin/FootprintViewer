@@ -46,7 +46,8 @@ internal class MapFactory
         double incl = 97.65;
 
         var factory = new SpaceScienceFactory();
-        var orbit = factory.CreateOrbit(a, incl);
+        //var orbit = factory.CreateOrbit(a, incl); 
+        var orbit = factory.CreateOrbit(a, incl, 50.0);
         var satellite = factory.CreateSatellite(orbit);
 
         var tracks = satellite.BuildTracks();
