@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SpaceScienceSample.Models;
 
-public class FactorTrack22
+public class GroundTrack
 {
     private readonly double _earthRotationSec = 86164.09053;
     private readonly FactorShiftTrack _factor;
@@ -16,33 +16,26 @@ public class FactorTrack22
     private readonly int _direction;
     private readonly List<(double lonDeg, double latDeg)> _cacheTrack = new();
 
-    public FactorTrack22(Orbit orbit)
+    public GroundTrack(Orbit orbit)
     {
-        _angleRad = 0.0;// angleDeg * SpaceMath.DegreesToRadians;       
+        _angleRad = 0.0;
         _orbit = orbit;
         _factor = new FactorShiftTrack(_orbit, 0.0, 0.0, SwathMode.Middle);
         _direction = 0;
         _period = orbit.Period;
-        //_direction = direction switch
-        //{
-        //    TrackPointDirection.None => 0,
-        //    TrackPointDirection.Left => -1,
-        //    TrackPointDirection.Right => 1,
-        //    _ => 0,
-        //};
     }
 
-    public FactorTrack22(Orbit orbit, FactorShiftTrack factor, double angleDeg, SwathMode mode)
+    public GroundTrack(Orbit orbit, FactorShiftTrack factor, double angleDeg, TrackPointDirection direction)
     {
-        _angleRad = angleDeg * SpaceMath.DegreesToRadians;       
+        _angleRad = angleDeg * SpaceMath.DegreesToRadians;
         _orbit = orbit;
-        _factor = factor;      
+        _factor = factor;
         _period = orbit.Period;
-        _direction = mode switch
+        _direction = direction switch
         {
-            SwathMode.Middle => 0,
-            SwathMode.Left => -1,
-            SwathMode.Right => 1,
+            TrackPointDirection.None => 0,
+            TrackPointDirection.Left => -1,
+            TrackPointDirection.Right => 1,
             _ => 0,
         };
     }
@@ -51,7 +44,7 @@ public class FactorTrack22
 
     public double NodeOffsetDeg => 360.0 * _factor.Offset;
 
-    public double EarthRotateOffsetDeg => (_period / _earthRotationSec) * 360.0 * _factor.Offset;
+    public double EarthRotateOffsetDeg => -(_period / _earthRotationSec) * 360.0;
 
     public void CalculateTrackWithLogStep(int counts)
     {
@@ -64,9 +57,9 @@ public class FactorTrack22
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lon, lat) = ContinuousTrack22(u);
+            var res = ContinuousTrack22(u);
 
-            _cacheTrack.Add((lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees));
+            _cacheTrack.Add(res);
         }
 
         // [90 - 180)
@@ -74,9 +67,9 @@ public class FactorTrack22
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lon, lat) = ContinuousTrack22(u);
+            var res = ContinuousTrack22(u);
 
-            _cacheTrack.Add((lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees));
+            _cacheTrack.Add(res);
         }
 
         // [180 - 270)
@@ -84,9 +77,9 @@ public class FactorTrack22
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lon, lat) = ContinuousTrack22(u);
+            var res = ContinuousTrack22(u);
 
-            _cacheTrack.Add((lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees));
+            _cacheTrack.Add(res);
         }
 
         // [270 - 360]
@@ -94,9 +87,9 @@ public class FactorTrack22
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lon, lat) = ContinuousTrack22(u);
+            var res = ContinuousTrack22(u);
 
-            _cacheTrack.Add((lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees));
+            _cacheTrack.Add(res);
         }
         return;
     }
@@ -111,9 +104,9 @@ public class FactorTrack22
         {
             var u = _orbit.Anomalia(t);
 
-            var (lon, lat) = ContinuousTrack22(u);
+            var res = ContinuousTrack22(u);
 
-            _cacheTrack.Add((lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees));
+            _cacheTrack.Add(res);
         }
 
         return;
@@ -207,7 +200,7 @@ public class FactorTrack22
         return arr;
     }
 
-    private Geo2D ContinuousTrack22(double u)
+    private (double lonDeg, double latDeg) ContinuousTrack22(double u)
     {
         double semi_axis = (_orbit.Eccentricity == 0.0) ? _orbit.SemimajorAxis : _orbit.Semiaxis(u);
         double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(_angleRad) / Constants.Re) - _angleRad;
@@ -239,105 +232,52 @@ public class FactorTrack22
         lon = lon - (_period / _earthRotationSec) * u;
 
         //   lon = lon + SpaceMath.TWOPI * _factor.Offset;
-        return new Geo2D(lon, lat, GeoCoordTypes.Radians);
-    }
-}
-
-public static class FactorTrack22Extensions
-{
-    public static List<(double lonDeg, double latDeg)> GetTrack(this FactorTrack22 track, int node, Func<double, double>? lonConverter = null)
-    {
-        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
-
-        if (lonConverter != null)
-        {
-            return track.CacheTrack
-                .Select(s => (lonConverter.Invoke(s.lonDeg + offset), s.latDeg))
-                .ToList();
-        }
-
-        return track.CacheTrack
-            .Select(s => (s.lonDeg + offset, s.latDeg))
-            .ToList();
+        return (lon * SpaceMath.RadiansToDegrees, lat * SpaceMath.RadiansToDegrees);
     }
 
-    public static List<List<(double lonDeg, double latDeg)>> GetCutTrack(this FactorTrack22 track, int node, Func<double, double>? lonConverter = null)
+    public bool PolisMod(double lat, out double polis_mod)
     {
-        var res = new List<List<(double, double)>>();
+        polis_mod = double.NaN;
 
-        var list = track.GetTrack(node, lonConverter);
-
-        var temp = new List<(double, double)>();
-
-        var (prevLonDeg, prevLatDeg) = list.FirstOrDefault();
-
-        foreach (var (curLonDeg, curLatDeg) in list)
+        double t_polis;
+        int err;
+        if (lat >= 0.0)
         {
-            if (Math.Abs((curLonDeg - prevLonDeg) * SpaceMath.DegreesToRadians) >= 3.2)
-            {
-                var cutLatDeg = LinearInterpDiscontLat(prevLonDeg, prevLatDeg, curLonDeg, curLatDeg);
-
-                if (prevLonDeg > 0.0)
-                {
-                    temp.Add((180.0, cutLatDeg));
-                    res.Add(temp);
-                    temp = new() { (-180.0, cutLatDeg), (curLonDeg, curLatDeg) };
-                }
-                else
-                {
-                    temp.Add((-180.0, cutLatDeg));
-                    res.Add(temp);
-                    temp = new() { (180.0, cutLatDeg), (curLonDeg, curLatDeg) };
-                }
-            }
-            else
-            {
-                temp.Add((curLonDeg, curLatDeg));
-            }
-
-            prevLonDeg = curLonDeg;
-            prevLatDeg = curLatDeg;
-        }
-
-        res.Add(temp);
-
-        return res;
-    }
-
-    private static double LinearInterpDiscontLat(double lonDeg1, double latDeg1, double lonDeg2, double latDeg2)
-    {
-        if (lonDeg1 > lonDeg2)
-        {
-            lonDeg2 += 360.0;
+            t_polis = _orbit.TimeHalfPi();
+            err = 1;
         }
         else
         {
-            lonDeg1 += 360.0;
+            t_polis = 3.0 * _orbit.TimeHalfPi();
+            err = -1;
         }
 
-        return (latDeg1 + (180.0 - lonDeg1) * (latDeg2 - latDeg1) / (lonDeg2 - lonDeg1));
+        //double per = 3.0 * Orbit.Period / 4.0;
+
+        double fi = CentralAngleFromT(t_polis + _orbit.ArgumentOfPerigee * _orbit.Period / SpaceMath.TWOPI);
+        double i = _orbit.Inclination - fi * _direction;
+
+        //double i_deg = Orbit.Inclination * ScienceMath.RadiansToDegrees;
+        //double fi_deg = fi * ScienceMath.RadiansToDegrees;
+
+        if (i > SpaceMath.HALFPI)
+        {
+            i = Math.PI - i;
+        }
+
+        if (i <= Math.Abs(lat))
+        {
+            polis_mod = _orbit.InclinationNormal + fi * _direction * err;
+            return true;
+        }
+
+        return false;
     }
 
-    public static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildTracks(this PRDCTSatellite satellite)
+    private double CentralAngleFromT(double t)
     {
-        var track = new FactorTrack22(satellite.Orbit);
-
-        track.CalculateTrackWithLogStep(100);
-
-        var res = satellite
-            .Nodes()
-            .Select((_, index) => index)
-            .ToDictionary(s => s, s => track.GetCutTrack(s, LonConverter));
-        //  .ToDictionary(s => s, s => new List<List<(double,double)>> { track.GetTrack(s) });
-
-        return res;
-    }
-
-    private static double LonConverter(double lonDeg)
-    {
-        var value = lonDeg;
-        while (value > 180) value -= 360.0;
-        while (value < -180) value += 360.0;
-        return value;
+        double u = _orbit.Anomalia(t) + _orbit.ArgumentOfPerigee;
+        double a = _orbit.Semiaxis(u);
+        return SpaceMath.HALFPI - Math.Acos(a * Math.Sin(_angleRad) / Constants.Re) - _angleRad;
     }
 }

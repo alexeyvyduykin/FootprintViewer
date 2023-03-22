@@ -4,14 +4,14 @@ namespace SpaceScience;
 
 public class TrackBuilderResult
 {
-    private readonly Dictionary<int, List<List<(double, double)>>> _tracks;
+    private readonly Dictionary<int, List<List<(double lonDeg, double latDeg)>>> _tracks;
 
-    public TrackBuilderResult(Dictionary<int, List<List<(double, double)>>> tracks)
+    public TrackBuilderResult(Dictionary<int, List<List<(double lonDeg, double latDeg)>>> tracks)
     {
         _tracks = tracks;
     }
 
-    public Dictionary<int, List<List<(double, double)>>> Track => _tracks;
+    public Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Track => _tracks;
 }
 
 public class SwathBuilderResult
