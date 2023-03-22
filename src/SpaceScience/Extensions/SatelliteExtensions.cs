@@ -4,6 +4,10 @@ namespace SpaceScience.Extensions;
 
 public static class SatelliteExtensions
 {
+    public record class TrackBuilderResult(Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Track);
+
+    public record class SwathBuilderResult(Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Left, Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Right);
+
     public static TrackBuilderResult BuildTracks(this PRDCTSatellite satellite)
     {
         var track = new GroundTrack(satellite.Orbit);

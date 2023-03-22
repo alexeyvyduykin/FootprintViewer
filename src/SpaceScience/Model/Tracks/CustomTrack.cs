@@ -1,11 +1,14 @@
 ﻿namespace SpaceScience.Model;
 
-public class CustomTrack : Track
+public class CustomTrack //: Track
 {
+    private readonly Orbit _orbit;
     protected int _dir;
 
-    public CustomTrack(Orbit orbit, double alpha1DEG, TrackPointDirection direction) : base(orbit)
+    public CustomTrack(Orbit orbit, double alpha1DEG, TrackPointDirection direction)// : base(orbit)
     {
+        _orbit = orbit;
+
         Alpha1 = alpha1DEG * SpaceMath.DegreesToRadians;
 
         Direction = direction;
@@ -18,6 +21,8 @@ public class CustomTrack : Track
             _ => 0,
         };
     }
+
+    public Orbit Orbit => _orbit;
 
     public double Alpha1 { get; }
 
@@ -59,7 +64,7 @@ public class CustomTrack : Track
         return SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
     }
 
-    public override Geo2D ContinuousTrack(double node, double t, double tPastAN, int quart)
+    public Geo2D ContinuousTrack(double node, double t, double tPastAN, int quart)
     {
         double v = Orbit.Anomalia(t, tPastAN);
         double u = v + Orbit.ArgumentOfPerigee;
@@ -86,7 +91,7 @@ public class CustomTrack : Track
         return new Geo2D(lon, lat, GeoCoordTypes.Radians);
     }
 
-    public override Geo2D TrackPoint(double u)
+    public Geo2D TrackPoint(double u)
     {
         double uTr, iTr;
         if (Alpha1 == 0.0)

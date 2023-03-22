@@ -3,14 +3,14 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+using FootprintViewer.Extensions;
 using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
-using SpaceScience;
+using SpaceScience.Extensions;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -64,7 +64,8 @@ public class TrackProvider : IProvider, IDynamic
     public void ChangedData(SatelliteViewModel satellite)
     {
         var name = satellite.Name;
-        var node = satellite.CurrentNode;
+        // TODO: node value refactoring
+        var node = satellite.CurrentNode - 1;
         var isShow = satellite.IsShow && satellite.IsTrack;
 
         if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
@@ -93,21 +94,12 @@ public class TrackProvider : IProvider, IDynamic
 
     private static async Task<Dictionary<string, Dictionary<int, List<IFeature>>>> CreateDataAsync(IList<Satellite> satellites)
     {
-        return await Task.Run(() =>
+        return await Observable.Start(() =>
         {
-            var tracks = satellites.Select(s => (s.Name!, SpaceScienceBuilder.BuildTracks(s.ToPRDCTSatellite())));
-
-            var _dict = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-
-            foreach (var (satName, track) in tracks)
-            {
-                var dict = FeatureBuilder.BuildTrack(satName, track.Track);
-
-                _dict.Add(satName, dict);
-            }
-
-            return _dict;
-        });
+            return satellites.ToDictionary(
+                s => s.Name!,
+                s => s.ToPRDCTSatellite().BuildTracks().ToFeature(s.Name!));
+        }, RxApp.TaskpoolScheduler);
     }
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)

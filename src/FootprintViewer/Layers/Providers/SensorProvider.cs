@@ -106,26 +106,22 @@ public class SensorProvider : IProvider, IDynamic
 
     private static async Task<(Dictionary<string, Dictionary<int, List<IFeature>>>, Dictionary<string, Dictionary<int, List<IFeature>>>)> CreateDataAsync(IList<Satellite> satellites)
     {
-        return await Task.Run(() =>
+        return await Observable.Start(() =>
         {
-            var dictLeft = new Dictionary<string, Dictionary<int, List<IFeature>>>();
-            var dictRight = new Dictionary<string, Dictionary<int, List<IFeature>>>();
+            var dict = satellites.ToDictionary(
+                s => s.Name!,
+                s => s.ToPRDCTSatellite().BuildSwaths(s.LookAngleDeg, s.RadarAngleDeg));
 
-            foreach (var sat in satellites)
-            {
-                var swaths = sat.ToPRDCTSatellite().BuildSwaths(sat.LookAngleDeg, sat.RadarAngleDeg);
+            var leftDict = dict.ToDictionary(
+                s => s.Key,
+                s => s.Value.ToFeature(s.Key, SwathMode.Left));
 
-                var name = sat.Name!;
+            var rightDict = dict.ToDictionary(
+                s => s.Key,
+                s => s.Value.ToFeature(s.Key, SwathMode.Right));
 
-                var leftRes = swaths.ToFeature(name, SwathMode.Left);
-                var rightRes = swaths.ToFeature(name, SwathMode.Right);
-
-                dictLeft.Add(name, leftRes);
-                dictRight.Add(name, rightRes);
-            }
-
-            return (dictLeft, dictRight);
-        });
+            return (leftDict, rightDict);
+        }, RxApp.TaskpoolScheduler);
     }
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)

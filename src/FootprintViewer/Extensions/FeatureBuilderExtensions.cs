@@ -2,11 +2,11 @@
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
-using SpaceScience;
 using SpaceScience.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SpaceScience.Extensions.SatelliteExtensions;
 
 namespace FootprintViewer.Extensions;
 
