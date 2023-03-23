@@ -20,11 +20,26 @@ public static class GroundTrackExtensions
             .ToList();
     }
 
-    public static List<List<(double lonDeg, double latDeg)>> GetCutTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
+    public static List<(double lonDeg, double latDeg, double u, double t)> GetFullTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
+    {
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+
+        if (lonConverter != null)
+        {
+            return track.CacheFullTrack
+                .Select(s => (lonConverter.Invoke(s.lonDeg + offset), s.latDeg, s.u, s.t))
+                .ToList();
+        }
+
+        return track.CacheFullTrack
+            .Select(s => (s.lonDeg + offset, s.latDeg, s.u, s.t))
+            .ToList();
+    }
+
+    // TODO: only for interval (-180;+180) ?
+    public static List<List<(double lonDeg, double latDeg)>> ToCutList(this List<(double lonDeg, double latDeg)> list)
     {
         var res = new List<List<(double, double)>>();
-
-        var list = track.GetTrack(node, lonConverter);
 
         var temp = new List<(double, double)>();
 
@@ -32,7 +47,7 @@ public static class GroundTrackExtensions
 
         foreach (var (curLonDeg, curLatDeg) in list)
         {
-            if (Math.Abs((curLonDeg - prevLonDeg) * SpaceMath.DegreesToRadians) >= 3.2)
+            if (Math.Abs(curLonDeg - prevLonDeg) > 180)
             {
                 var cutLatDeg = LinearInterpDiscontLat(prevLonDeg, prevLatDeg, curLonDeg, curLatDeg);
 

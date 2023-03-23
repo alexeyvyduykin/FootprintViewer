@@ -11,6 +11,7 @@ public class GroundTrack
     private readonly TrackPointDirection _trackPointDirection;
     private readonly int _direction;
     private readonly List<(double lonDeg, double latDeg)> _cacheTrack = new();
+    private readonly List<(double lonDeg, double latDeg, double u, double t)> _cacheFullTrack = new();
 
     public GroundTrack(Orbit orbit)
     {
@@ -41,6 +42,8 @@ public class GroundTrack
     }
 
     public List<(double lonDeg, double latDeg)> CacheTrack => _cacheTrack;
+
+    public List<(double lonDeg, double latDeg, double u, double t)> CacheFullTrack => _cacheFullTrack;
 
     public double AngleDeg => _angleDeg;
 
@@ -111,6 +114,40 @@ public class GroundTrack
             var res = ContinuousTrack22(u);
 
             _cacheTrack.Add(res);
+        }
+
+        return;
+    }
+
+    public void CalculateTrack(double uBegin, double uEnd, int counts = 10)
+    {
+        _cacheTrack.Clear();
+
+        var du = (uEnd - uBegin) / (counts - 1);
+
+        for (double u = uBegin; u <= uEnd; u += du)
+        {
+            var res = ContinuousTrack22(u);
+
+            _cacheTrack.Add(res);
+        }
+
+        return;
+    }
+
+    public void CalculateFullTrack(double dt = 60.0)
+    {
+        var period = _orbit.Period;
+
+        _cacheFullTrack.Clear();
+
+        for (double t = 0; t < period; t += dt)
+        {
+            var u = _orbit.Anomalia(t);
+
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
+
+            _cacheFullTrack.Add((lonDeg, latDeg, u, t));
         }
 
         return;

@@ -17,8 +17,7 @@ public static class SatelliteExtensions
         var res = satellite
             .Nodes()
             .Select((_, index) => index)
-            .ToDictionary(s => s, s => track.GetCutTrack(s, LonConverter));
-        //  .ToDictionary(s => s, s => new List<List<(double,double)>> { track.GetTrack(s) });
+            .ToDictionary(s => s, s => track.GetTrack(s, LonConverter).ToCutList());
 
         return new TrackBuilderResult(res);
     }
