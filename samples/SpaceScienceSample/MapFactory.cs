@@ -18,7 +18,7 @@ namespace SpaceScienceSample;
 
 internal class MapFactory
 {
-    public Map CreateMap()
+    public Map CreateDefaultMap()
     {
         var map = new Map()
         {
@@ -34,6 +34,13 @@ internal class MapFactory
         }
 
         map.Layers.Add(CreateWorldMapLayer(path));
+
+        return map;
+    }
+
+    public Map CreateMap()
+    {
+        Map map = CreateDefaultMap();
 
         _ = new Sample4(map);
 
@@ -58,13 +65,13 @@ internal class MapFactory
 
         var track = new GroundTrack(orbit);
 
-        track.CalculateFullTrack(1.0);
+        track.CalculateTrack(1.0);
 
         var list = new List<PlotItem>();
 
         foreach (var (lonDeg, latDeg, u, t) in track.GetFullTrack(node))
         {
-            var res2 = TimeWindowBuilder.CreateCentralAngle((lonDeg, latDeg), targetDeg);
+            var res2 = SpaceMethods.CreateCentralAngle((lonDeg, latDeg), targetDeg);
 
             list.Add(new PlotItem()
             {
@@ -171,15 +178,13 @@ internal class MapFactory
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
         var period = orbit.Period;
-        var satellite = factory.CreateSatellite(orbit);
 
-        var builder = new TimeWindowBuilder();
-        var res = builder.BuildValidConus(satellite, gam1Deg, gam2Deg);
+        var (centralAngleMinDeg, centralAngleMaxDeg) = orbit.GetValidRange(gam1Deg, gam2Deg);
 
         return new()
         {
-            new PlotItem() { Time = 0, MinAngle = res.angle1, MaxAngle = res.angle2 },
-            new PlotItem() { Time = period, MinAngle = res.angle1, MaxAngle = res.angle2 }
+            new PlotItem() { Time = 0, MinAngle = centralAngleMinDeg, MaxAngle = centralAngleMaxDeg },
+            new PlotItem() { Time = period, MinAngle = centralAngleMinDeg, MaxAngle = centralAngleMaxDeg }
         };
     }
 
@@ -200,7 +205,7 @@ internal class MapFactory
 
         var track = new GroundTrack(orbit);
 
-        track.CalculateFullTrack(dt);
+        track.CalculateTrack(dt);
 
         GoldenSectionSearch gss = new();
         var tOpt = gss.Search(func, 0.0, period);
@@ -222,7 +227,7 @@ internal class MapFactory
 
             var (lonDeg, latDeg) = track.ContinuousTrack22(u);
 
-            lonDeg = GetTrack(track, lonDeg, node, LonConverter);
+            lonDeg = GetTrack(track, lonDeg, node, LonConverters.Default);
 
             double dltob = CreateCentralAngle((lonDeg, latDeg), (target.lonTargetDeg, target.latTargetDeg));
 
@@ -262,12 +267,5 @@ internal class MapFactory
         double z = R * Math.Sin(targetLatRad) / Math.Sqrt(1 - Math.Sin(targetLatRad) * Math.Sin(targetLatRad));
 
         return Math.Acos((x * X + y * Y + z * Z) / (Math.Sqrt(x * x + y * y + z * z) * Math.Sqrt(X * X + Y * Y + Z * Z))) * SpaceMath.RadiansToDegrees;
-    }
-
-    private static double LonConverter(double lonDeg)
-    {
-        while (lonDeg > 180) lonDeg -= 360.0;
-        while (lonDeg < -180) lonDeg += 360.0;
-        return lonDeg;
     }
 }

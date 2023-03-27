@@ -1,7 +1,31 @@
 ﻿namespace SpaceScience;
 
-internal static class SpaceMethods
+public static class SpaceMethods
 {
+    public static double CreateCentralAngle((double lonDeg, double latDeg) trackPoint, (double lonDeg, double latDeg) target)
+    {
+        //(X, Y, D) - Координаты подспутниковой точки
+        var (X, Y, D) = GetCoord(trackPoint.lonDeg, trackPoint.latDeg);
+
+        //(x, y, d) - Координаты объекта наблюдения
+        var (x, y, d) = GetCoord(target.lonDeg, target.latDeg);
+
+        return Math.Acos((x * X + y * Y + d * D) / (Math.Sqrt(x * x + y * y + d * d) * Math.Sqrt(X * X + Y * Y + D * D))) * SpaceMath.RadiansToDegrees;
+
+        static (double x, double y, double d) GetCoord(double lonDeg, double latDeg)
+        {
+            var lonRad = lonDeg * SpaceMath.DegreesToRadians;
+            var latRad = latDeg * SpaceMath.DegreesToRadians;
+
+            //(x, y, d) - Координаты подспутниковой точки
+            double x = /*Constants.Re **/ Math.Cos(lonRad);
+            double y = /*Constants.Re **/ Math.Sin(lonRad);
+            double d = /*Constants.Re **/ Math.Sin(latRad) / Math.Sqrt(1 - Math.Sin(latRad) * Math.Sin(latRad));
+
+            return (x, y, d);
+        }
+    }
+
     public static double DateToMJD(int Year, int Month, int Day)
     {
         double Var1, Var2, Var3;

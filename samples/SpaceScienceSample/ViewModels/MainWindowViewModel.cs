@@ -1,25 +1,26 @@
 ﻿using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Interactivity.UI;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SpaceScienceSample.Models;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 
 namespace SpaceScienceSample.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly Map _map;
     private readonly ScaleMapBar _scaleMapBar;
 
     public MainWindowViewModel()
     {
         var factory = new MapFactory();
 
-        _map = factory.CreateMap();
+        Map = factory.CreateDefaultMap();
 
-        MapNavigator = new MapNavigator(_map);
+        MapNavigator = new MapNavigator(Map);
 
         _scaleMapBar = new ScaleMapBar();
 
@@ -41,9 +42,12 @@ public class MainWindowViewModel : ViewModelBase
 
             (Points2, Info2) = factory.Method2(s.lonDeg, s.latDeg);
         });
+
+        Observable.Start(() => Map = factory.CreateMap(), RxApp.TaskpoolScheduler);
     }
 
-    public Map Map => _map;
+    [Reactive]
+    public Map Map { get; set; }
 
     [Reactive]
     public IInteractive? Interactive { get; set; }

@@ -4,36 +4,56 @@ namespace SpaceScience.Extensions;
 
 public static class GroundTrackExtensions
 {
-    public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
-    {
-        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
-
-        if (lonConverter != null)
-        {
-            return track.CacheTrack
-                .Select(s => (lonConverter.Invoke(s.lonDeg + offset), s.latDeg))
-                .ToList();
-        }
-
-        return track.CacheTrack
-            .Select(s => (s.lonDeg + offset, s.latDeg))
-            .ToList();
-    }
-
     public static List<(double lonDeg, double latDeg, double u, double t)> GetFullTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
     {
         var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
 
         if (lonConverter != null)
         {
-            return track.CacheFullTrack
+            return track.CacheTrack
                 .Select(s => (lonConverter.Invoke(s.lonDeg + offset), s.latDeg, s.u, s.t))
                 .ToList();
         }
 
-        return track.CacheFullTrack
+        return track.CacheTrack
             .Select(s => (s.lonDeg + offset, s.latDeg, s.u, s.t))
             .ToList();
+    }
+
+    public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
+    {
+        return track
+            .GetFullTrack(node, lonConverter)
+            .Select(s => (s.lonDeg, s.latDeg))
+            .ToList();
+    }
+
+    public static (double lonDeg, double latDeg) GetTrackOfIndex(this GroundTrack track, int index, int node, Func<double, double>? lonConverter = null)
+    {
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+
+        var (lonDeg, latDeg, _, _) = track.CacheTrack[index];
+
+        if (lonConverter != null)
+        {
+            return (lonConverter.Invoke(lonDeg + offset), latDeg);
+        }
+
+        return (lonDeg + offset, latDeg);
+    }
+
+    public static (double lonDeg, double latDeg, double u, double t) GetFullTrackOfIndex(this GroundTrack track, int index, int node, Func<double, double>? lonConverter = null)
+    {
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+
+        var (lonDeg, latDeg, u, t) = track.CacheTrack[index];
+
+        if (lonConverter != null)
+        {
+            return (lonConverter.Invoke(lonDeg + offset), latDeg, u, t);
+        }
+
+        return (lonDeg + offset, latDeg, u, t);
     }
 
     // TODO: only for interval (-180;+180) ?

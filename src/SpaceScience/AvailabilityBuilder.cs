@@ -246,7 +246,7 @@ public class AvailabilityBuilder
         var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackPointDirection.Left);
         var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackPointDirection.Left);
 
-        track.CalculateFullTrack(dt);
+        track.CalculateTrack(dt);
         nearTrack.CalculateTrack(dt);
         farTrack.CalculateTrack(dt);
 
@@ -289,8 +289,8 @@ public class AvailabilityBuilder
                     if (dltob < rMin)
                     {
                         counterSave = COUNTER;
-                        leftSaveDeg = nearTrack.CacheTrack[i];
-                        rightSaveDeg = farTrack.CacheTrack[i];
+                        leftSaveDeg = nearTrack.GetTrackOfIndex(i, node, LonConverter);
+                        rightSaveDeg = farTrack.GetTrackOfIndex(i, node, LonConverter);
                         rMin = dltob;
                         tVis = t;
                         uVis = u;
@@ -374,7 +374,7 @@ public class AvailabilityBuilder
         var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackPointDirection.Left);
         var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackPointDirection.Left);
 
-        track.CalculateFullTrack(dt);
+        track.CalculateTrack(dt);
         nearTrack.CalculateTrack(dt);
         farTrack.CalculateTrack(dt);
 
@@ -420,8 +420,8 @@ public class AvailabilityBuilder
                         if (dltob < rMin)
                         {
                             counterSave = COUNTER;
-                            leftSaveDeg = nearTrack.CacheTrack[i];
-                            rightSaveDeg = farTrack.CacheTrack[i];
+                            leftSaveDeg = nearTrack.GetTrackOfIndex(i, node, LonConverter);
+                            rightSaveDeg = farTrack.GetTrackOfIndex(i, node, LonConverter);
                             rMin = dltob;
                             tVis = t;
                             uVis = u;

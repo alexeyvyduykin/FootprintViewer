@@ -36,7 +36,8 @@ internal class Sample4 : BaseSample
         var leftFeatures = swaths.ToFeature("", SwathMode.Left);
         var rightFeatures = swaths.ToFeature("", SwathMode.Right);
 
-        var targets = CreateEquatorTargets(3000);
+        var targets = CreateTargets(3000);
+        //var targets = CreateEquatorTargets(3000);
         //var targets = new List<(double,double,string)>() { (-30.01, -0.98, ""), (-27.4, -0.65, ""), (-20.75, 0.75, ""), (-18.25, 1.1, "") };
         //var targets = new List<(double,double,string)>() { (-18.23, 0.72, "") };
         //var targets = new List<(double,double,string)>() { (-18.28, 0.94, "") };

@@ -32,13 +32,6 @@ public abstract class BaseSample
         };
     }
 
-    protected static double LonConverter(double lonDeg)
-    {
-        while (lonDeg > 180) lonDeg -= 360.0;
-        while (lonDeg < -180) lonDeg += 360.0;
-        return lonDeg;
-    }
-
     protected static List<(double lonDeg, double latDeg, string name)> CreateTargets(int counts)
     {
         var random = new Random();

@@ -10,8 +10,7 @@ public class GroundTrack
     private readonly double _period;
     private readonly TrackPointDirection _trackPointDirection;
     private readonly int _direction;
-    private readonly List<(double lonDeg, double latDeg)> _cacheTrack = new();
-    private readonly List<(double lonDeg, double latDeg, double u, double t)> _cacheFullTrack = new();
+    private readonly List<(double lonDeg, double latDeg, double u, double t)> _cache = new();
 
     public GroundTrack(Orbit orbit)
     {
@@ -41,9 +40,7 @@ public class GroundTrack
         };
     }
 
-    public List<(double lonDeg, double latDeg)> CacheTrack => _cacheTrack;
-
-    public List<(double lonDeg, double latDeg, double u, double t)> CacheFullTrack => _cacheFullTrack;
+    public List<(double lonDeg, double latDeg, double u, double t)> CacheTrack => _cache;
 
     public double AngleDeg => _angleDeg;
 
@@ -55,7 +52,7 @@ public class GroundTrack
 
     public void CalculateTrackWithLogStep(int counts)
     {
-        _cacheTrack.Clear();
+        _cache.Clear();
 
         var slices = (int)Math.Ceiling(counts / 4.0);
 
@@ -64,9 +61,9 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var res = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
 
-            _cacheTrack.Add(res);
+            _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
 
         // [90 - 180)
@@ -74,9 +71,9 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var res = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
 
-            _cacheTrack.Add(res);
+            _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
 
         // [180 - 270)
@@ -84,9 +81,9 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var res = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
 
-            _cacheTrack.Add(res);
+            _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
 
         // [270 - 360]
@@ -94,9 +91,9 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var res = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
 
-            _cacheTrack.Add(res);
+            _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
         return;
     }
@@ -105,41 +102,7 @@ public class GroundTrack
     {
         var period = _orbit.Period;
 
-        _cacheTrack.Clear();
-
-        for (double t = 0; t < period; t += dt)
-        {
-            var u = _orbit.Anomalia(t);
-
-            var res = ContinuousTrack22(u);
-
-            _cacheTrack.Add(res);
-        }
-
-        return;
-    }
-
-    public void CalculateTrack(double uBegin, double uEnd, int counts = 10)
-    {
-        _cacheTrack.Clear();
-
-        var du = (uEnd - uBegin) / (counts - 1);
-
-        for (double u = uBegin; u <= uEnd; u += du)
-        {
-            var res = ContinuousTrack22(u);
-
-            _cacheTrack.Add(res);
-        }
-
-        return;
-    }
-
-    public void CalculateFullTrack(double dt = 60.0)
-    {
-        var period = _orbit.Period;
-
-        _cacheFullTrack.Clear();
+        _cache.Clear();
 
         for (double t = 0; t < period; t += dt)
         {
@@ -147,7 +110,23 @@ public class GroundTrack
 
             var (lonDeg, latDeg) = ContinuousTrack22(u);
 
-            _cacheFullTrack.Add((lonDeg, latDeg, u, t));
+            _cache.Add((lonDeg, latDeg, u, t));
+        }
+
+        return;
+    }
+
+    public void CalculateTrack(double uBegin, double uEnd, int counts = 10)
+    {
+        _cache.Clear();
+
+        var du = (uEnd - uBegin) / (counts - 1);
+
+        for (double u = uBegin; u <= uEnd; u += du)
+        {
+            var (lonDeg, latDeg) = ContinuousTrack22(u);
+
+            _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
 
         return;
