@@ -6,17 +6,28 @@ using ReactiveUI;
 using SpaceScienceSample.Models;
 using System;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 
 namespace SpaceScienceSample.ViewModels;
 
-public class MapNavigator : IMapNavigator
+public class MapNavigator : ViewModelBase, IMapNavigator
 {
+    private readonly Subject<(double lonDeg, double latDeg)> _clickSubj = new();
     private readonly Map _map;
 
     public MapNavigator(Map map)
     {
         _map = map;
+    }
+
+    public IObservable<(double lonDeg, double latDeg)> ClickObservable => _clickSubj.AsObservable();
+
+    public void Click(MPoint worldPosition)
+    {
+        var (lon, lat) = SphericalMercator.ToLonLat(worldPosition.X, worldPosition.Y);
+
+        _clickSubj.OnNext((lon, lat));
     }
 
     public void ZoomIn()

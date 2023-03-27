@@ -241,12 +241,13 @@ public class GroundTrack
         return arr;
     }
 
-    private (double lonDeg, double latDeg) ContinuousTrack22(double u)
+    public (double lonDeg, double latDeg) ContinuousTrack22(double u)
     {
         double semi_axis = (_orbit.Eccentricity == 0.0) ? _orbit.SemimajorAxis : _orbit.Semiaxis(u);
         double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(_angleRad) / Constants.Re) - _angleRad;
         double uTr = (angle == 0.0) ? u : Math.Acos(Math.Cos(angle) * Math.Cos(u));
         double iTr = _orbit.Inclination - Math.Atan2(Math.Tan(angle), Math.Sin(u)) * _direction;
+
         double lat = Math.Asin(Math.Sin(uTr) * Math.Sin(iTr));
         double asinlon = Math.Tan(lat) / Math.Tan(iTr);
 

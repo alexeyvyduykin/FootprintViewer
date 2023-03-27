@@ -5,6 +5,7 @@
         xmlns:views="using:SpaceScienceSample.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:oxy="clr-namespace:OxyPlot.Avalonia;assembly=OxyPlot.Avalonia"
         xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
         mc:Ignorable="d"
 		d:DesignWidth="800" d:DesignHeight="450"
@@ -16,28 +17,95 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<Grid ColumnDefinitions="*"
-		  RowDefinitions="*,Auto">
+	<TabControl SelectedIndex="1">
+		<TabItem Header="Map">
+			<Grid ColumnDefinitions="*"
+				  RowDefinitions="*,Auto">
 
-		<Panel>
+				<Panel>
 
-			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
-								  MapNavigator="{Binding MapNavigator}"
-								  HorizontalAlignment="Stretch"
-								  VerticalAlignment="Stretch">
-				<inter:Interaction.Behavior>
-					<inter:InteractivityBehavior Map="{Binding Map}"
-												 Interactive="{Binding Interactive}"
-												 State="{Binding State}"/>
-				</inter:Interaction.Behavior>
-			</local:UserMapControl>
+					<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
+										  MapNavigator="{Binding MapNavigator}"
+										  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Stretch">
+						<inter:Interaction.Behavior>
+							<inter:InteractivityBehavior Map="{Binding Map}"
+														 Interactive="{Binding Interactive}"
+														 State="{Binding State}"/>
+						</inter:Interaction.Behavior>
+					</local:UserMapControl>
 
-		</Panel>
+				</Panel>
 
-		<views:ScaleMapBarView Grid.Row="1"
-							   DataContext="{Binding ScaleMapBar}"/>
+				<views:ScaleMapBarView Grid.Row="1"
+									   DataContext="{Binding ScaleMapBar}"/>
 
-	</Grid>
+			</Grid>
+
+		</TabItem>
+		<TabItem Header="Oxy">
+
+			<Grid ColumnDefinitions="180,*">
+
+				<StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Ellipse Width="10"
+								 Height="10"
+								 Margin="4,0,4,0"
+								 Fill="Blue"/>
+						<TextBlock Text="{Binding Info1}"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Ellipse Width="10"
+								 Height="10"
+								 Margin="4,0,4,0"
+								 Fill="Purple"/>
+						<TextBlock Text="{Binding Info2}"/>
+					</StackPanel>
+				</StackPanel>
+
+				<oxy:Plot Grid.Column="1"
+						  Background="Gray">
+					<oxy:Plot.Series>
+						<oxy:LineSeries
+							DataFieldX="Time"
+							DataFieldY="Angle"
+							Items="{Binding Values}"
+							Color="Orange" />
+						<oxy:LineSeries
+							DataFieldX="Time"
+							DataFieldY="ArgumentOfLatitude"
+							Items="{Binding Values}"
+							Color="Green" />
+						<oxy:LineSeries
+							DataFieldX="Time"
+							DataFieldY="MinAngle"
+							Items="{Binding Asymptotes}"
+							Color="Red" />
+						<oxy:LineSeries
+							DataFieldX="Time"
+							DataFieldY="MaxAngle"
+							Items="{Binding Asymptotes}"
+							Color="Red" />
+						<oxy:ScatterSeries
+							DataFieldX="Time"
+							DataFieldY="Angle"
+							Items="{Binding Points1}"
+							MarkerType="Circle"
+							MarkerFill="Blue" />
+						<oxy:ScatterSeries
+							DataFieldX="Time"
+							DataFieldY="Angle"
+							Items="{Binding Points2}"
+							MarkerType="Circle"
+							MarkerFill="Purple" />
+					</oxy:Plot.Series>
+				</oxy:Plot>
+			</Grid>
+
+		</TabItem>
+	</TabControl>
+
 
 
 </Window>

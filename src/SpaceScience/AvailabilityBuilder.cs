@@ -16,6 +16,7 @@ public class AvailabilityBuilderResult
     public double NadirU { get; set; }
     public double BeginU { get; set; }
     public double EndU { get; set; }
+    public double MinAngle { get; set; }
     public List<List<(double lonDeg, double latDeg)>> Interval { get; set; } = new();
     public List<List<(double lonDeg, double latDeg)>> Direction { get; set; } = new();
 }
@@ -195,7 +196,156 @@ public class AvailabilityBuilder
         return list;
     }
 
-    public IList<AvailabilityBuilderResult> BuildOnNode(PRDCTSatellite satellite, int node, double angle1Deg, double angle2Deg, IList<(double lon, double lat, string obj_name)> targets)
+    public (double angle1, double angle2) BuildValidConus(PRDCTSatellite satellite, double angle1Deg, double angle2Deg)
+    {
+        var orbit = satellite.Orbit;
+        double u0 = 0;
+        double a = orbit.SemimajorAxis;
+        double ecc = orbit.Eccentricity;
+        double w = orbit.ArgumentOfPerigee;
+        double z1 = (90.0 - angle1Deg) * SpaceMath.DegreesToRadians; //  gam1=20
+        double z2 = (90.0 - angle2Deg) * SpaceMath.DegreesToRadians; //  gam2=55
+
+        var gam1 = PI / 2 - z1;
+        var gam2 = PI / 2 - z2;
+        var ph = a * (1 - ecc * ecc);
+        var H = ph / (1 + ecc * cos(u0 - w)) - R;
+
+        double dlt1 = (PI / 2 - gam1 - acos((R + H) * sin(gam1) / R)) * GR; //2 центр.угол мин.огр полосы обзора
+        double dlt2 = (PI / 2 - gam2 - acos((R + H) * sin(gam2) / R)) * GR; //2 центр.угол макс.огр.полосы обзора
+
+        return (dlt1, dlt2);
+    }
+
+    public IList<AvailabilityBuilderResult> BuildOnNode(PRDCTSatellite satellite, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
+    {
+        var orbit = satellite.Orbit;
+        double u0 = 0;
+        double a = orbit.SemimajorAxis;
+        double ecc = orbit.Eccentricity;
+        double w = orbit.ArgumentOfPerigee;
+        double z1 = (90.0 - angle1Deg) * SpaceMath.DegreesToRadians; //  gam1=20
+        double z2 = (90.0 - angle2Deg) * SpaceMath.DegreesToRadians; //  gam2=55
+
+        var gam1 = PI / 2 - z1;
+        var gam2 = PI / 2 - z2;
+        var ph = a * (1 - ecc * ecc);
+        var H = ph / (1 + ecc * cos(u0 - w)) - R;
+
+        double dlt1 = (PI / 2 - gam1 - acos((R + H) * sin(gam1) / R)) * GR; //2 центр.угол мин.огр полосы обзора
+        double dlt2 = (PI / 2 - gam2 - acos((R + H) * sin(gam2) / R)) * GR; //2 центр.угол макс.огр.полосы обзора
+        double dltpredel = acos(R / (R + H)) * GR;//2 центр угол (вроде не нужен, но хз)
+
+        var list = new List<AvailabilityBuilderResult>();
+
+        var dt = 60.0;
+
+        var track = new GroundTrack(orbit);
+
+        var factor = new FactorShiftTrack(orbit, angle1Deg, angle2Deg, SwathMode.Left);
+        var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackPointDirection.Left);
+        var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackPointDirection.Left);
+
+        track.CalculateFullTrack(dt);
+        nearTrack.CalculateTrack(dt);
+        farTrack.CalculateTrack(dt);
+
+        foreach (var (lonTargetDeg, latTargetDeg, OBJ_N) in targets)
+        {
+            double dltka1 = dlt1;
+            double dltka2 = dlt2;
+
+            (double lon, double lat) leftSaveDeg = (0.0, 0.0);
+            (double lon, double lat) rightSaveDeg = (0.0, 0.0);
+            double lonSaveDeg = 0.0;
+            double latSaveDeg = 0.0;
+            double tVis = double.NaN;
+            double tBeginVis = double.MinValue;
+            double tEndVis = double.MaxValue;
+            double uVis = double.NaN;
+            double uBeginVis = double.MinValue;
+            double uEndVis = double.MaxValue;
+
+            double rMin = double.MaxValue;
+            int counterSave = 0;
+            int COUNTER = 0;
+
+            foreach (var ((lonDeg, latDeg, u, t), i) in track.GetFullTrack(node, LonConverter).Select((s, index) => (s, index)))
+            {
+                double dltob = CreateCentralAngle((lonDeg, latDeg), (lonTargetDeg, latTargetDeg));
+
+                if (dltob < dltka1)
+                {
+                    // для исключение точек попавших в зону между полосами
+                    COUNTER = -1000;
+                }
+
+                if (dltob <= dltka2
+                    && dltob >= dltka1
+                    && dltob <= dltpredel
+                    && dltob >= (-dltpredel))
+                {
+                    COUNTER++;
+                    if (dltob < rMin)
+                    {
+                        counterSave = COUNTER;
+                        leftSaveDeg = nearTrack.CacheTrack[i];
+                        rightSaveDeg = farTrack.CacheTrack[i];
+                        rMin = dltob;
+                        tVis = t;
+                        uVis = u;
+                        lonSaveDeg = lonDeg;
+                        latSaveDeg = latDeg;
+                    }
+                    if (COUNTER == 1)
+                    {
+                        tBeginVis = t;
+                        uBeginVis = u;
+                    }
+                    tEndVis = t;
+                    uEndVis = u;
+                }
+            }
+
+            if (COUNTER > 0 /*&& counterSave != 1 && counterSave != COUNTER*/)
+            {
+                var rLev = CreateCentralAngle(leftSaveDeg, (lonTargetDeg, latTargetDeg));
+                var rPrav = CreateCentralAngle(rightSaveDeg, (lonTargetDeg, latTargetDeg));
+
+                var isLeftSwath = (rLev < rPrav);
+
+                var track33 = new GroundTrack(satellite.Orbit);
+                track33.CalculateTrack(uBeginVis, uEndVis);
+
+                var interval = track33.GetTrack(node, LonConverter);
+
+                var direction = new List<(double, double)>() { (lonSaveDeg, latSaveDeg), (lonTargetDeg, latTargetDeg) };
+
+                list.Add(new()
+                {
+                    Name = OBJ_N,
+                    Lat = latTargetDeg,
+                    Lon = lonTargetDeg,
+                    Node = node,
+                    IsLeftSwath = isLeftSwath,
+                    NadirTime = tVis,
+                    BeginTime = tBeginVis,
+                    EndTime = tEndVis,
+                    NadirU = uVis,
+                    BeginU = uBeginVis,
+                    EndU = uEndVis,
+                    MinAngle = rMin,
+                    Interval = interval.ToCutList(),
+                    Direction = direction.ToCutList()
+                });
+            }
+
+        }
+
+        return list;
+    }
+
+    public IList<AvailabilityBuilderResult> BuildOnNodes(PRDCTSatellite satellite, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
     {
         var orbit = satellite.Orbit;
         double u0 = 0;
@@ -244,84 +394,90 @@ public class AvailabilityBuilder
             double uBeginVis = double.MinValue;
             double uEndVis = double.MaxValue;
 
-            double rMin = 10000;
+            double rMin = double.MaxValue;
             int counterSave = 0;
             int COUNTER = 0;
 
-            foreach (var ((lonDeg, latDeg, u, t), i) in track.GetFullTrack(node, LonConverter).Select((s, index) => (s, index)))
+            for (int j = fromNode; j <= toNode; j++)
             {
-                double dltob = CreateCentralAngle((lonDeg, latDeg), (lonTargetDeg, latTargetDeg));
+                var node = j;
 
-                if (dltob < dltka1)
+                foreach (var ((lonDeg, latDeg, u, t), i) in track.GetFullTrack(node, LonConverter).Select((s, index) => (s, index)))
                 {
-                    COUNTER = -1000;
+                    double dltob = CreateCentralAngle((lonDeg, latDeg), (lonTargetDeg, latTargetDeg));
+
+                    if (dltob < dltka1)
+                    {
+                        COUNTER = -1000;
+                    }
+
+                    if (dltob <= dltka2
+                        && dltob >= dltka1
+                        && dltob <= dltpredel
+                        && dltob >= (-dltpredel))
+                    {
+                        COUNTER++;
+                        if (dltob < rMin)
+                        {
+                            counterSave = COUNTER;
+                            leftSaveDeg = nearTrack.CacheTrack[i];
+                            rightSaveDeg = farTrack.CacheTrack[i];
+                            rMin = dltob;
+                            tVis = t;
+                            uVis = u;
+                            lonSaveDeg = lonDeg;
+                            latSaveDeg = latDeg;
+                        }
+                        if (COUNTER == 1)
+                        {
+                            tBeginVis = t;
+                            uBeginVis = u;
+                        }
+                        tEndVis = t;
+                        uEndVis = u;
+                    }
                 }
 
-                if (dltob <= dltka2
-                    && dltob >= dltka1
-                    && dltob <= dltpredel
-                    && dltob >= (-dltpredel))
+                if (COUNTER > 0 /*&& counterSave != 1 && counterSave != COUNTER*/)
                 {
-                    COUNTER++;
-                    if (dltob < rMin)
+                    var rLev = CreateCentralAngle(leftSaveDeg, (lonTargetDeg, latTargetDeg));
+                    var rPrav = CreateCentralAngle(rightSaveDeg, (lonTargetDeg, latTargetDeg));
+
+                    var isLeftSwath = (rLev < rPrav);
+
+                    var track33 = new GroundTrack(satellite.Orbit);
+                    track33.CalculateTrack(uBeginVis, uEndVis);
+
+                    var interval = track33.GetTrack(node, LonConverter);
+
+                    var direction = new List<(double, double)>() { (lonSaveDeg, latSaveDeg), (lonTargetDeg, latTargetDeg) };
+
+                    list.Add(new()
                     {
-                        counterSave = COUNTER;
-                        leftSaveDeg = nearTrack.CacheTrack[i];
-                        rightSaveDeg = farTrack.CacheTrack[i];
-                        rMin = dltob;
-                        tVis = t;
-                        uVis = u;
-                        lonSaveDeg = lonDeg;
-                        latSaveDeg = latDeg;
-                    }
-                    if (COUNTER == 1)
-                    {
-                        tBeginVis = t;
-                        uBeginVis = u;
-                    }
-                    tEndVis = t;
-                    uEndVis = u;
+                        Name = OBJ_N,
+                        Lat = latTargetDeg,
+                        Lon = lonTargetDeg,
+                        Node = node,
+                        IsLeftSwath = isLeftSwath,
+                        NadirTime = tVis,
+                        BeginTime = tBeginVis,
+                        EndTime = tEndVis,
+                        NadirU = uVis,
+                        BeginU = uBeginVis,
+                        EndU = uEndVis,
+                        MinAngle = rMin,
+                        Interval = interval.ToCutList(),
+                        Direction = direction.ToCutList()
+                    });
                 }
             }
-
-            if (COUNTER > 0 && counterSave != 1 && counterSave != COUNTER)
-            {
-                var rLev = CreateCentralAngle(leftSaveDeg, (lonTargetDeg, latTargetDeg));
-                var rPrav = CreateCentralAngle(rightSaveDeg, (lonTargetDeg, latTargetDeg));
-
-                var isLeftSwath = (rLev < rPrav);
-
-                var track33 = new GroundTrack(satellite.Orbit);
-                track33.CalculateTrack(uBeginVis, uEndVis);
-
-                var interval = track33.GetTrack(node, LonConverter);
-
-                var direction = new List<(double, double)>() { (lonSaveDeg, latSaveDeg), (lonTargetDeg, latTargetDeg) };
-
-                list.Add(new()
-                {
-                    Name = OBJ_N,
-                    Lat = latTargetDeg,
-                    Lon = lonTargetDeg,
-                    Node = node,
-                    IsLeftSwath = isLeftSwath,
-                    NadirTime = tVis,
-                    BeginTime = tBeginVis,
-                    EndTime = tEndVis,
-                    NadirU = uVis,
-                    BeginU = uBeginVis,
-                    EndU = uEndVis,
-                    Interval = interval.ToCutList(),
-                    Direction = direction.ToCutList()
-                });
-            }
-
         }
 
         return list;
     }
 
-    private static double CreateCentralAngle((double lonDeg, double latDeg) trackPoint, (double lonDeg, double latDeg) target)
+
+    public static double CreateCentralAngle((double lonDeg, double latDeg) trackPoint, (double lonDeg, double latDeg) target)
     {
         double R = 6371.110;
 

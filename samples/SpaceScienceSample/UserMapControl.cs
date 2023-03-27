@@ -55,6 +55,22 @@ public class UserMapControl : MapControl
         }
     }
 
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        var isMiddleMouseDown = e.GetCurrentPoint(this).Properties.IsMiddleButtonPressed;
+
+        if (isMiddleMouseDown == true)
+        {
+            var position = e.GetPosition(this);
+
+            var worldPosition = Viewport.ScreenToWorld(position.X, position.Y);
+
+            MapNavigator?.Click(worldPosition);
+        }
+    }
+
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);

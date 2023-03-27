@@ -1,18 +1,17 @@
 ﻿using Avalonia.Controls;
 using BruTile.MbTiles;
-using FootprintViewer.Extensions;
 using Mapsui;
-using Mapsui.Interactivity;
 using Mapsui.Layers;
-using Mapsui.Nts.Extensions;
-using Mapsui.Styles;
 using Mapsui.Tiling.Layers;
 using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
+using SpaceScienceSample.Models;
+using SpaceScienceSample.Samples;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SpaceScienceSample;
@@ -36,12 +35,58 @@ internal class MapFactory
 
         map.Layers.Add(CreateWorldMapLayer(path));
 
-        Sample3(map);
+        _ = new Sample4(map);
 
         return map;
     }
 
-    private void Sample3(Map map)
+    public List<PlotItem> CreatePlotValues(double targetLonDeg, double targetLatDeg)
+    {
+        double a = 6948.0;
+        double incl = 97.65;
+        int node = 1;
+        double lookAngleDeg = 40.0;
+        double radarAngleDeg = 16.0;
+        double gam1Deg = lookAngleDeg - radarAngleDeg / 2.0; // 32.0; 
+        double gam2Deg = lookAngleDeg + radarAngleDeg / 2.0; // 48.0; 
+
+        (double, double) targetDeg = (targetLonDeg, targetLatDeg);
+
+        var factory = new SpaceScienceFactory();
+        var orbit = factory.CreateOrbit(a, incl);
+        var satellite = factory.CreateSatellite(orbit);
+
+        var track = new GroundTrack(orbit);
+
+        track.CalculateFullTrack(1.0);
+
+        var list = new List<PlotItem>();
+
+        foreach (var (lonDeg, latDeg, u, t) in track.GetFullTrack(node))
+        {
+            var res2 = TimeWindowBuilder.CreateCentralAngle((lonDeg, latDeg), targetDeg);
+
+            list.Add(new PlotItem()
+            {
+                Time = t,
+                Angle = res2,
+                ArgumentOfLatitude = u * SpaceMath.RadiansToDegrees
+            });
+        }
+
+
+        var watch = Stopwatch.StartNew();
+
+        var builder = new TimeWindowBuilder();
+        var res = builder.BuildOnNode(satellite, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
+
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
+
+        return list;
+    }
+
+    public (List<PlotPoint> point, string info) Method1(double targetLonDeg, double targetLatDeg)
     {
         double a = 6948.0;
         double incl = 97.65;
@@ -55,146 +100,87 @@ internal class MapFactory
         var orbit = factory.CreateOrbit(a, incl);
         var satellite = factory.CreateSatellite(orbit);
 
-        var tracks = satellite.BuildTracks();
-        var swaths = satellite.BuildSwaths(lookAngleDeg, radarAngleDeg);
+        var watch = Stopwatch.StartNew();
 
-        var trackFeatures = tracks.ToFeature("");
-        var leftFeatures = swaths.ToFeature("", SwathMode.Left);
-        var rightFeatures = swaths.ToFeature("", SwathMode.Right);
+        var builder = new TimeWindowBuilder();
+        var res = builder.BuildOnNode(satellite, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
 
-        var targets = CreateTargets(300);
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
 
-        var builder = new AvailabilityBuilder();
-        var res = builder.BuildOnNode(satellite, node, gam1Deg, gam2Deg, targets);
+        var res0 = res.FirstOrDefault();
 
-        var features = targets.Select(s => (s.Item1, s.Item2)).ToList().ToPointsFeatures();
+        var point = new PlotPoint();
 
-        var availableFeatures = res.Select(s => (s.Lon, s.Lat)).ToList().ToPointsFeatures();
-
-        var intervalFeatures = res.SelectMany(s => s.Interval.Select(t => t.ToLineStringFeature(""))).ToList();
-        var directionFeatures = res.SelectMany(s => s.Direction.Select(t => t.ToLineStringFeature(""))).ToList();
-
-        var gtLayer = new WritableLayer() { Style = CreateGroundTargetStyle(Color.Black) };
-        var layer1 = new WritableLayer();
-        var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Blue) };
-        var layer3 = new WritableLayer() { Style = CreateGroundTargetStyle(Color.Green) };
-        var layer5 = new WritableLayer() { Style = CreateIntervalStyle(Color.Green) };
-
-        AddFeatures(features, gtLayer);
-
-        AddFeatures(trackFeatures[node], layer1);
-        AddFeatures(leftFeatures[node], layer2);
-        AddFeatures(rightFeatures[node], layer2);
-        AddFeatures(availableFeatures, layer3);
-        AddFeatures(intervalFeatures, layer5);
-        AddFeatures(directionFeatures, layer5);
-
-        map.Layers.Add(gtLayer);
-        map.Layers.Add(layer1);
-        map.Layers.Add(layer2);
-        map.Layers.Add(layer3);
-        map.Layers.Add(layer5);
-    }
-
-    private List<(double, double, string)> CreateTargets(int counts)
-    {
-        var random = new Random();
-
-        var targets = new List<(double, double, string)>();
-
-        for (int i = 0; i < counts; i++)
+        if (res0 != null)
         {
-            var lat = (double)random.Next(-84, 84 + 1);
-            var lon = (double)random.Next(-179, 179 + 1);
-
-            targets.Add((lon, lat, $"{i + 1}"));
+            if (res0.MinAngle >= 0.0)
+            {
+                point = new PlotPoint()
+                {
+                    Time = res0.NadirTime,
+                    Angle = res0.MinAngle
+                };
+            }
         }
 
-        targets.Add((178, 70, $"{counts}"));
-        targets.Add((177, 58, $"{counts + 1}"));
-
-        return targets;
+        return (new() { point }, $"Method1: {elapsedMs} ms");
     }
 
-    private void Sample2(Map map)
+    public (List<PlotPoint> point, string info) Method2(double targetLonDeg, double targetLatDeg)
     {
         double a = 6948.0;
         double incl = 97.65;
-
-        var factory = new SpaceScienceFactory();
-        //var orbit = factory.CreateOrbit(a, incl); 
-        var orbit = factory.CreateOrbit(a, incl, 50.0);
-        var satellite = factory.CreateSatellite(orbit);
-
-        var tracks = satellite.BuildTracks();
-        var swaths = satellite.BuildSwaths(40, 16);
-
-        var features = tracks.ToFeature("Satellite1");
-        var leftFeatures = swaths.ToFeature("SatelliteLeft1", SwathMode.Left);
-        var rightFeatures = swaths.ToFeature("SatelliteRight1", SwathMode.Right);
-
-        var trackVertices = tracks.ToFeatureVertices();
-        var leftVertices = swaths.ToFeatureVertices(SwathMode.Left);
-        var rightVertices = swaths.ToFeatureVertices(SwathMode.Right);
-
-        var layer1 = new WritableLayer();
-        var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Green) };
-        var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
-        var pointsLayer2 = new WritableLayer() { Style = CreatePointsStyle(Color.Blue) };
-
-        AddFeatures(features[0], layer1);
-        AddFeatures(features[1], layer1);
-
-        AddFeatures(leftFeatures[0], layer2);
-        AddFeatures(rightFeatures[0], layer2);
-        AddFeatures(leftFeatures[1], layer2);
-        AddFeatures(rightFeatures[1], layer2);
-
-        AddFeatures(trackVertices[0], pointsLayer1);
-        AddFeatures(trackVertices[1], pointsLayer1);
-
-        AddFeatures(leftVertices[0], pointsLayer2);
-        AddFeatures(rightVertices[0], pointsLayer2);
-        AddFeatures(leftVertices[1], pointsLayer2);
-        AddFeatures(rightVertices[1], pointsLayer2);
-
-        map.Layers.Add(layer1);
-        map.Layers.Add(layer2);
-        map.Layers.Add(pointsLayer1);
-        map.Layers.Add(pointsLayer2);
-    }
-
-    private void Sample1(Map map)
-    {
-        var layer = new WritableLayer();
-        var pointsLayer1 = new WritableLayer() { Style = CreatePointsStyle(Color.Red) };
-
-        double a = 6948.0;
-        double incl = 97.65;
+        int node = 1;
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
         var satellite = factory.CreateSatellite(orbit);
-        var nodes = satellite.Nodes().Count;
-        var track1 = new GroundTrack(orbit);
 
-        track1.CalculateTrackWithLogStep(100);
+        var watch = Stopwatch.StartNew();
+        var res = Gss(satellite, node, (targetLonDeg, targetLatDeg));
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
 
-        for (int i = 0; i < nodes; i++)
+        var res0 = res.FirstOrDefault();
+
+        var point = new PlotPoint();
+
+        if (res0 != null)
         {
-            var list = track1.GetTrack(i);
-
-            AddFeatures(new() { list.ToLineStringFeature(string.Empty) }, layer);
-            AddFeatures(list.ToPointsFeatures(), pointsLayer1);
+            if (res0.MinAngle >= 0.0)
+            {
+                point = new PlotPoint()
+                {
+                    Time = res0.NadirTime,
+                    Angle = res0.MinAngle
+                };
+            }
         }
 
-        map.Layers.Add(layer);
-        map.Layers.Add(pointsLayer1);
+        return (new() { point }, $"Method2: {elapsedMs} ms");
     }
 
-    private static void AddFeatures(List<IFeature> features, WritableLayer layer)
+    public List<PlotItem> CreatePlotAsymptotes(double lookAngleDeg = 40.0, double radarAngleDeg = 16.0)
     {
-        layer.AddRange(features);
+        double a = 6948.0;
+        double incl = 97.65;
+        double gam1Deg = lookAngleDeg - radarAngleDeg / 2.0; // 32.0; 
+        double gam2Deg = lookAngleDeg + radarAngleDeg / 2.0; // 48.0; 
+
+        var factory = new SpaceScienceFactory();
+        var orbit = factory.CreateOrbit(a, incl);
+        var period = orbit.Period;
+        var satellite = factory.CreateSatellite(orbit);
+
+        var builder = new TimeWindowBuilder();
+        var res = builder.BuildValidConus(satellite, gam1Deg, gam2Deg);
+
+        return new()
+        {
+            new PlotItem() { Time = 0, MinAngle = res.angle1, MaxAngle = res.angle2 },
+            new PlotItem() { Time = period, MinAngle = res.angle1, MaxAngle = res.angle2 }
+        };
     }
 
     private static ILayer CreateWorldMapLayer(string path)
@@ -204,40 +190,84 @@ internal class MapFactory
         return new TileLayer(mbTilesTileSource);
     }
 
-    private static SymbolStyle CreatePointsStyle(Color color)
+    public IList<TimeWindowResult> Gss(PRDCTSatellite satellite, int node, (double lonTargetDeg, double latTargetDeg) target)
     {
-        return new SymbolStyle
+        var orbit = satellite.Orbit;
+        var period = orbit.Period;
+        var list = new List<TimeWindowResult>();
+
+        var dt = 1.0;
+
+        var track = new GroundTrack(orbit);
+
+        track.CalculateFullTrack(dt);
+
+        GoldenSectionSearch gss = new();
+        var tOpt = gss.Search(func, 0.0, period);
+
+        double dltob = func(tOpt);
+        var uOpt = orbit.Anomalia(tOpt);
+
+        list.Add(new TimeWindowResult()
         {
-            SymbolType = SymbolType.Ellipse,
-            Fill = new Brush(color),
-            SymbolScale = 0.20,
-        };
+            MinAngle = dltob,
+            NadirTime = tOpt
+        });
+
+        return list;
+
+        double func(double t)
+        {
+            var u = orbit.Anomalia(t);
+
+            var (lonDeg, latDeg) = track.ContinuousTrack22(u);
+
+            lonDeg = GetTrack(track, lonDeg, node, LonConverter);
+
+            double dltob = CreateCentralAngle((lonDeg, latDeg), (target.lonTargetDeg, target.latTargetDeg));
+
+            return dltob;
+        }
     }
 
-    private static IStyle CreateSwathStyle(Color color)
+    public double GetTrack(GroundTrack track, double lonDeg, int node, Func<double, double>? lonConverter = null)
     {
-        return new VectorStyle
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+
+        if (lonConverter != null)
         {
-            Fill = new Brush(color),
-            Opacity = 0.3f,
-        };
+            return lonConverter.Invoke(lonDeg + offset);
+        }
+
+        return lonDeg + offset;
     }
 
-    private static SymbolStyle CreateGroundTargetStyle(Color color)
+    public static double CreateCentralAngle((double lonDeg, double latDeg) trackPoint, (double lonDeg, double latDeg) target)
     {
-        return new SymbolStyle
-        {
-            SymbolType = SymbolType.Ellipse,
-            Fill = new Brush(color),
-            SymbolScale = 0.20,
-        };
+        double R = 6371.110;
+
+        var lonRad = trackPoint.lonDeg * SpaceMath.DegreesToRadians;
+        var latRad = trackPoint.latDeg * SpaceMath.DegreesToRadians;
+
+        var targetLonRad = target.lonDeg * SpaceMath.DegreesToRadians;
+        var targetLatRad = target.latDeg * SpaceMath.DegreesToRadians;
+
+        //(X, Y, Z) - Координаты подспутниковой точки
+        double X = R * Math.Cos(lonRad);
+        double Y = R * Math.Sin(lonRad);
+        double Z = R * Math.Sin(latRad) / Math.Sqrt(1 - Math.Sin(latRad) * Math.Sin(latRad));
+        //(x, y, z) - Координаты объекта наблюдения
+        double x = R * Math.Cos(targetLonRad);
+        double y = R * Math.Sin(targetLonRad);
+        double z = R * Math.Sin(targetLatRad) / Math.Sqrt(1 - Math.Sin(targetLatRad) * Math.Sin(targetLatRad));
+
+        return Math.Acos((x * X + y * Y + z * Z) / (Math.Sqrt(x * x + y * y + z * z) * Math.Sqrt(X * X + Y * Y + Z * Z))) * SpaceMath.RadiansToDegrees;
     }
 
-    private static IStyle CreateIntervalStyle(Color color)
+    private static double LonConverter(double lonDeg)
     {
-        return new VectorStyle
-        {
-            Line = new Pen(color, 5.0),
-        };
+        while (lonDeg > 180) lonDeg -= 360.0;
+        while (lonDeg < -180) lonDeg += 360.0;
+        return lonDeg;
     }
 }
