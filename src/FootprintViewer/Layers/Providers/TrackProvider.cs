@@ -98,7 +98,7 @@ public class TrackProvider : IProvider, IDynamic
         {
             return satellites.ToDictionary(
                 s => s.Name!,
-                s => s.ToPRDCTSatellite().BuildTracks().ToFeature(s.Name!));
+                s => s.ToOrbit().BuildTracks().ToFeature(s.Name!));
         }, RxApp.TaskpoolScheduler);
     }
 

@@ -4,6 +4,40 @@ namespace SpaceScience.Extensions;
 
 public static class OrbitExtensions
 {
+    public record class TrackBuilderResult(Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Track);
+
+    public record class SwathBuilderResult(Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Left, Dictionary<int, List<List<(double lonDeg, double latDeg)>>> Right);
+
+    public static int NodesOnDay(this Orbit orbit)
+    {
+        return (int)Math.Floor(86400.0 / orbit.Period);
+    }
+
+    public static TrackBuilderResult BuildTracks(this Orbit orbit)
+    {
+        var track = new GroundTrack(orbit);
+
+        track.CalculateTrackWithLogStep(100);
+
+        var nodes = orbit.NodesOnDay();
+
+        var res = Enumerable.Range(0, nodes)
+            .ToDictionary(s => s, s => track.GetTrack(s, LonConverters.Default).ToCutList());
+
+        return new TrackBuilderResult(res);
+    }
+
+    public static SwathBuilderResult BuildSwaths(this Orbit orbit, double lookAngleDeg, double radarAngleDeg)
+    {
+        var leftSwath = new Swath(orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Left);
+        var rightSwath = new Swath(orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Right);
+
+        var leftRes = BuildSwaths(orbit, leftSwath);
+        var rightRes = BuildSwaths(orbit, rightSwath);
+
+        return new SwathBuilderResult(leftRes, rightRes);
+    }
+
     public static (double centralAngleMinDeg, double centralAngleMaxDeg) GetValidRange(this Orbit orbit, double angle1Deg, double angle2Deg)
     {
         double u0 = 0;
@@ -25,5 +59,37 @@ public static class OrbitExtensions
         centralAngleMaxDeg *= SpaceMath.RadiansToDegrees;
 
         return (centralAngleMinDeg, centralAngleMaxDeg);
+    }
+
+    private static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildSwaths(Orbit orbit, Swath swath)
+    {
+        var swaths = new Dictionary<int, List<List<(double lonDeg, double latDeg)>>>();
+
+        swath.CalculateSwathWithLogStep();
+
+        var nodes = orbit.NodesOnDay();
+
+        for (int i = 0; i < nodes; i++)
+        {
+            var near = swath
+                .GetNearTrack(i, LonConverters.Default)
+                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
+                .ToList();
+
+            var far = swath
+                .GetFarTrack(i, LonConverters.Default)
+                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
+                .ToList();
+
+            var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
+
+            var shapes = engine2D.CreateShapes(false, false);
+
+            var convertShapes = shapes.Select(s => s.Select(g => (g.lonRad * SpaceMath.RadiansToDegrees, g.latRad * SpaceMath.RadiansToDegrees)).ToList()).ToList();
+
+            swaths.Add(i, convertShapes);
+        }
+
+        return swaths;
     }
 }

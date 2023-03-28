@@ -36,15 +36,13 @@ public class TimeWindowResult
 
 public class TimeWindowBuilder
 {
-    public IList<TimeWindowResult> BuildOnNode(PRDCTSatellite satellite, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
+    public IList<TimeWindowResult> BuildOnNode(Orbit orbit, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
     {
-        return BuildOnNodes(satellite, node, node, angle1Deg, angle2Deg, targets);
+        return BuildOnNodes(orbit, node, node, angle1Deg, angle2Deg, targets);
     }
 
-    public IList<TimeWindowResult> BuildOnNodes(PRDCTSatellite satellite, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
+    public IList<TimeWindowResult> BuildOnNodes(Orbit orbit, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
     {
-        var orbit = satellite.Orbit;
-
         var (centralAngleMinDeg, centralAngleMaxDeg) = orbit.GetValidRange(angle1Deg, angle2Deg);
 
         var list = new List<TimeWindowResult>();
@@ -153,7 +151,7 @@ public class TimeWindowBuilder
 
                             var isLeftSwath = (rLev < rPrav);
 
-                            var track33 = new GroundTrack(satellite.Orbit);
+                            var track33 = new GroundTrack(orbit);
                             track33.CalculateTrack(uBeginVisible, uEndVisible);
 
                             var interval = track33.GetTrack(node, LonConverters.Default);
@@ -193,7 +191,7 @@ public class TimeWindowBuilder
 
                     var isLeftSwath = (rLev < rPrav);
 
-                    var track33 = new GroundTrack(satellite.Orbit);
+                    var track33 = new GroundTrack(orbit);
                     track33.CalculateTrack(uBeginVisible, uEndVisible);
 
                     var interval = track33.GetTrack(toNode, LonConverters.Default);

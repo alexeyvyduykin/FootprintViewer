@@ -61,8 +61,6 @@ internal class MapFactory
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
-        var satellite = factory.CreateSatellite(orbit);
-
         var track = new GroundTrack(orbit);
 
         track.CalculateTrack(1.0);
@@ -85,7 +83,7 @@ internal class MapFactory
         var watch = Stopwatch.StartNew();
 
         var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNode(satellite, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
+        var res = builder.BuildOnNode(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
@@ -105,12 +103,11 @@ internal class MapFactory
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
-        var satellite = factory.CreateSatellite(orbit);
 
         var watch = Stopwatch.StartNew();
 
         var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNode(satellite, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
+        var res = builder.BuildOnNode(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
@@ -142,10 +139,9 @@ internal class MapFactory
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
-        var satellite = factory.CreateSatellite(orbit);
 
         var watch = Stopwatch.StartNew();
-        var res = Gss(satellite, node, (targetLonDeg, targetLatDeg));
+        var res = Gss(orbit, node, (targetLonDeg, targetLatDeg));
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
 
@@ -195,9 +191,8 @@ internal class MapFactory
         return new TileLayer(mbTilesTileSource);
     }
 
-    public IList<TimeWindowResult> Gss(PRDCTSatellite satellite, int node, (double lonTargetDeg, double latTargetDeg) target)
+    public IList<TimeWindowResult> Gss(Orbit orbit, int node, (double lonTargetDeg, double latTargetDeg) target)
     {
-        var orbit = satellite.Orbit;
         var period = orbit.Period;
         var list = new List<TimeWindowResult>();
 

@@ -20,8 +20,7 @@ internal class Sample1 : BaseSample
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
-        var satellite = factory.CreateSatellite(orbit);
-        var nodes = satellite.Nodes().Count;
+        var nodes = orbit.NodesOnDay();
         var track1 = new GroundTrack(orbit);
 
         track1.CalculateTrackWithLogStep(100);

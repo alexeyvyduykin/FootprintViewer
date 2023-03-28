@@ -6,7 +6,7 @@ using SpaceScience.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static SpaceScience.Extensions.SatelliteExtensions;
+using static SpaceScience.Extensions.OrbitExtensions;
 
 namespace FootprintViewer.Extensions;
 

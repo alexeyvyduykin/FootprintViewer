@@ -6,7 +6,7 @@ namespace FootprintViewer.Data.Extensions;
 
 public static class SatelliteExtensions
 {
-    public static PRDCTSatellite ToPRDCTSatellite(this Satellite satellite)
+    public static Orbit ToOrbit(this Satellite satellite)
     {
         var a = satellite.Semiaxis;
         var ecc = satellite.Eccentricity;
@@ -21,13 +21,6 @@ public static class SatelliteExtensions
 
         var orbit = factory.CreateOrbit(a, ecc, inclDeg, argOfPerDeg, lonANDeg, raanDeg, period, epoch);
 
-        return factory.CreateSatellite(orbit, 1);
-    }
-
-    public static PRDCTSensor ToPRDCTSensor(this Satellite satellite)
-    {
-        var factory = new SpaceScienceFactory();
-
-        return factory.CreateSensor(satellite.LookAngleDeg, satellite.RadarAngleDeg);
+        return orbit;
     }
 }

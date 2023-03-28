@@ -2,7 +2,7 @@
 
 namespace SpaceScience.Extensions;
 
-public static class BandExtensions
+public static class SwathExtensions
 {
     public static List<(double lonDeg, double latDeg)> GetNearTrack(this Swath swath, int node, Func<double, double>? lonConverter = null)
     {

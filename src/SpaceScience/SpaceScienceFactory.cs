@@ -36,18 +36,4 @@ public class SpaceScienceFactory
 
         return new Orbit(a, ecc, incl, argOfPer, lonAN, raan, period, epoch);
     }
-
-    public PRDCTSatellite CreateSatellite(Orbit orbit, int days = 1)
-    {
-        var begin = orbit.Epoch;
-        var end = orbit.Epoch.AddDays(days);
-        var trueAnomaly = 0.0;
-
-        return new PRDCTSatellite(orbit, begin, end, trueAnomaly);
-    }
-
-    public PRDCTSensor CreateSensor(double lookAngleDeg, double radarAngleDeg)
-    {
-        return new PRDCTSensor(lookAngleDeg, radarAngleDeg);
-    }
 }

@@ -26,22 +26,22 @@ public static class FootprintBuilder
 
         foreach (var satellite in satellites)
         {
-            var sat = satellite.ToPRDCTSatellite();
+            var orbit = satellite.ToOrbit();
 
-            var swath1 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Left);
-            var swath2 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Right);
+            var swath1 = new Swath(orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Left);
+            var swath2 = new Swath(orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Right);
 
             var bands = new[] { swath1, swath2 };
 
-            var epoch = sat.Orbit.Epoch;
+            var epoch = orbit.Epoch;
 
-            var nodes = sat.Nodes();
+            var nodes = orbit.NodesOnDay();
 
-            var countPerNode = (int)(footprintCountPerSat / nodes.Count);
+            var countPerNode = (int)(footprintCountPerSat / nodes);
 
             var uDelta = 360.0 / countPerNode;
 
-            for (int i = 0; i < nodes.Count; i++)
+            for (int i = 0; i < nodes; i++)
             {
                 double uLast = 0.0;
                 for (int j = 0; j < countPerNode; j++)
@@ -67,7 +67,7 @@ public static class FootprintBuilder
                         sensorIndex = (Models.SwathDirection)_random.Next(0, 1 + 1);
                     }
 
-                    var (t, center, border) = GetRandomFootprint(sat.Orbit, bands[(int)sensorIndex], nodes[i].Value - 1, u);
+                    var (t, center, border) = GetRandomFootprint(orbit, bands[(int)sensorIndex], i, u);
 
                     footprints.Add(new Footprint()
                     {
@@ -78,7 +78,7 @@ public static class FootprintBuilder
                         Points = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
                         Begin = epoch.AddSeconds(t - duration / 2.0),
                         Duration = duration,
-                        Node = nodes[i].Value,
+                        Node = i + 1,
                         Direction = sensorIndex,
                     });
 

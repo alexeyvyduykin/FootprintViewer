@@ -19,10 +19,9 @@ internal class Sample2 : BaseSample
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl, 50.0);
-        var satellite = factory.CreateSatellite(orbit);
 
-        var tracks = satellite.BuildTracks();
-        var swaths = satellite.BuildSwaths(40, 16);
+        var tracks = orbit.BuildTracks();
+        var swaths = orbit.BuildSwaths(40, 16);
 
         var features = tracks.ToFeature("Satellite1");
         var leftFeatures = swaths.ToFeature("SatelliteLeft1", SwathDirection.Left);

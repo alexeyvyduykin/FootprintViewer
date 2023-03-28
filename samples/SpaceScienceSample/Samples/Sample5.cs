@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data.Builders;
-using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Extensions;
 using FootprintViewer.Factories;
@@ -29,10 +28,9 @@ internal class Sample5 : BaseSample
 
         var factory = new SpaceScienceFactory();
         var orbit = factory.CreateOrbit(a, incl);
-        var satellite = factory.CreateSatellite(orbit);
 
-        var tracks = satellite.BuildTracks();
-        var swaths = satellite.BuildSwaths(lookAngleDeg, radarAngleDeg);
+        var tracks = orbit.BuildTracks();
+        var swaths = orbit.BuildSwaths(lookAngleDeg, radarAngleDeg);
 
         var trackFeatures = tracks.ToFeature("");
         var leftFeatures = swaths.ToFeature("", SpaceScience.Model.SwathDirection.Left);
@@ -54,7 +52,6 @@ internal class Sample5 : BaseSample
         };
 
         var footprints = FootprintBuilder.Create(new List<Satellite>() { satellite2 }, 1000);
-        var sat = satellite2.ToPRDCTSatellite();
 
         var footprintFeatures =
             footprints

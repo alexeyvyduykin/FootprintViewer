@@ -109,7 +109,7 @@ public class SensorProvider : IProvider, IDynamic
         {
             var dict = satellites.ToDictionary(
                 s => s.Name!,
-                s => s.ToPRDCTSatellite().BuildSwaths(s.LookAngleDeg, s.RadarAngleDeg));
+                s => s.ToOrbit().BuildSwaths(s.LookAngleDeg, s.RadarAngleDeg));
 
             var leftDict = dict.ToDictionary(
                 s => s.Key,
