@@ -42,11 +42,11 @@ public class Swath
             {
                 if (latRAD >= 0.0)
                 {
-                    timeFromANToPolis = Orbit.Quart1;
+                    timeFromANToPolis = Orbit.TimeHalfPi();// Orbit.Quart1;
                 }
                 else
                 {
-                    timeFromANToPolis = Orbit.Quart3;
+                    timeFromANToPolis = Orbit.Period - Orbit.TimeHalfPi();// Orbit.Quart3;
                 }
 
                 return true;

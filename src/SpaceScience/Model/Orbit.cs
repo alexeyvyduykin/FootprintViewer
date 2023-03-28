@@ -4,7 +4,6 @@ public class Orbit
 {
     private readonly double _nTemp;
     private readonly double _pTemp;
-    private readonly double _timeHalfPi;
 
     internal Orbit(double a, double ecc, double incl, double argOfPer, double lonAN, double om, double period, DateTime epoch)
     {
@@ -19,20 +18,7 @@ public class Orbit
 
         _pTemp = a * (1 - ecc * ecc);
         _nTemp = Math.Sqrt(Constants.GM / a) / a;
-        _timeHalfPi = TimeHalfPi();
     }
-
-    public static double Quart0 => 0.0;
-
-    public double Quart1 => _timeHalfPi;
-
-    public double Quart2 => Period / 2.0;
-
-    public double Quart3 => Period - _timeHalfPi;
-
-    public double Quart4 => Period;
-
-    public double[] Quarts => new[] { 0.0, _timeHalfPi, Period / 2.0, Period - _timeHalfPi, Period };
 
     public double SemimajorAxis { get; }
 
@@ -90,5 +76,6 @@ public class Orbit
         return e2 / _nTemp;
     }
 
-    public double InclinationNormal => Inclination >= 0.0 && Inclination <= Math.PI / 2.0 ? Inclination : Math.PI - Inclination;
+    public double InclinationNormal
+        => (Inclination >= 0.0 && Inclination <= Math.PI / 2.0) ? Inclination : Math.PI - Inclination;
 }

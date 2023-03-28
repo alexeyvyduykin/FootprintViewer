@@ -61,7 +61,7 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
@@ -71,7 +71,7 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
@@ -81,7 +81,7 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
@@ -91,7 +91,7 @@ public class GroundTrack
         {
             var u = item * SpaceMath.DegreesToRadians;
 
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
@@ -108,7 +108,7 @@ public class GroundTrack
         {
             var u = _orbit.Anomalia(t);
 
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, t));
         }
@@ -124,7 +124,7 @@ public class GroundTrack
 
         for (double u = uBegin; u <= uEnd; u += du)
         {
-            var (lonDeg, latDeg) = ContinuousTrack22(u);
+            var (lonDeg, latDeg) = ContinuousTrack(u);
 
             _cache.Add((lonDeg, latDeg, u, double.NaN));
         }
@@ -220,7 +220,7 @@ public class GroundTrack
         return arr;
     }
 
-    public (double lonDeg, double latDeg) ContinuousTrack22(double u)
+    public (double lonDeg, double latDeg) ContinuousTrack(double u)
     {
         double semi_axis = (_orbit.Eccentricity == 0.0) ? _orbit.SemimajorAxis : _orbit.Semiaxis(u);
         double angle = SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(_angleRad) / Constants.Re) - _angleRad;

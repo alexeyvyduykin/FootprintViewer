@@ -220,7 +220,7 @@ internal class MapFactory
         {
             var u = orbit.Anomalia(t);
 
-            var (lonDeg, latDeg) = track.ContinuousTrack22(u);
+            var (lonDeg, latDeg) = track.ContinuousTrack(u);
 
             lonDeg = GetTrack(track, lonDeg, node, LonConverters.Default);
 
