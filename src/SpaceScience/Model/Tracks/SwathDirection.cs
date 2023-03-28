@@ -1,6 +1,6 @@
 ﻿namespace SpaceScience.Model;
 
-public enum SwathMode
+public enum SwathDirection
 {
     Middle,
     Left,

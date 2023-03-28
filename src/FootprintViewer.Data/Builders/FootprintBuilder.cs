@@ -2,11 +2,12 @@
 using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
 using SpaceScience;
+using SpaceScience.Extensions;
 using SpaceScience.Model;
 
 namespace FootprintViewer.Data.Builders;
 
-internal static class FootprintBuilder
+public static class FootprintBuilder
 {
     private static readonly Random _random = new();
     private static readonly double _size = 1.2;
@@ -27,8 +28,8 @@ internal static class FootprintBuilder
         {
             var sat = satellite.ToPRDCTSatellite();
 
-            var swath1 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SwathMode.Left);
-            var swath2 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SwathMode.Right);
+            var swath1 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Left);
+            var swath2 = new Swath(sat.Orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, SpaceScience.Model.SwathDirection.Right);
 
             var bands = new[] { swath1, swath2 };
 
@@ -51,22 +52,22 @@ internal static class FootprintBuilder
                     double u = u1 + (u2 - u1) / 2.0;
                     double duration = _random.Next(_durationMin, _durationMax + 1);
 
-                    SwathDirection sensorIndex;
+                    Models.SwathDirection sensorIndex;
 
                     if (u >= 75 && u <= 105)
                     {
-                        sensorIndex = SwathDirection.Left;
+                        sensorIndex = Models.SwathDirection.Left;
                     }
                     else if (u >= 255 && u <= 285)
                     {
-                        sensorIndex = SwathDirection.Right;
+                        sensorIndex = Models.SwathDirection.Right;
                     }
                     else
                     {
-                        sensorIndex = (SwathDirection)_random.Next(0, 1 + 1);
+                        sensorIndex = (Models.SwathDirection)_random.Next(0, 1 + 1);
                     }
 
-                    var (t, center, border) = GetRandomFootprint(sat, bands[(int)sensorIndex], nodes[i].Value - 1, u);
+                    var (t, center, border) = GetRandomFootprint(sat.Orbit, bands[(int)sensorIndex], nodes[i].Value - 1, u);
 
                     footprints.Add(new Footprint()
                     {
@@ -103,11 +104,11 @@ internal static class FootprintBuilder
         return aCenter + res / 2.0;
     }
 
-    private static (double, Point, IEnumerable<(double lonRad, double latRad)>) GetRandomFootprint(PRDCTSatellite satellite, Swath swath, int node, double u)
+    private static (double, Point, IEnumerable<(double lonRad, double latRad)>) GetRandomFootprint(Orbit orbit, Swath swath, int node, double u)
     {
         var list = new List<(double lonRad, double latRad)>();
 
-        var (t, c) = GetRandomCenterPoint(satellite, swath, node, u);
+        var (t, c) = GetRandomCenterPoint(orbit, swath, node, u);
         var centerLonDeg = c.lonRad * SpaceMath.RadiansToDegrees;
         var centerLatDeg = c.latRad * SpaceMath.RadiansToDegrees;
 
@@ -190,69 +191,56 @@ internal static class FootprintBuilder
         return (t, new Point(centerLonDeg, centerLatDeg), list);
     }
 
-    private static (double, (double lonRad, double latRad)) GetRandomCenterPoint(PRDCTSatellite satellite, Swath swath, int node, double u)
+    private static (double, (double lonRad, double latRad)) GetRandomCenterPoint(Orbit orbit, Swath swath, int node, double u)
     {
         var a1 = swath.NearTrack.AngleDeg;
         var a2 = swath.FarTrack.AngleDeg;
 
         var angle = GetRandomAngle(a1, a2);
 
-        var track = new CustomTrack(satellite.Orbit, angle, swath.NearTrack.Direction);
+        var dir = swath.NearTrack.Direction;
 
-        var (t, p) = GetGroundPoint(node, u, track, satellite);
+        SpaceScience.Model.SwathDirection mode = dir switch
+        {
+            TrackDirection.None => SpaceScience.Model.SwathDirection.Middle,
+            TrackDirection.Left => SpaceScience.Model.SwathDirection.Left,
+            TrackDirection.Right => SpaceScience.Model.SwathDirection.Right,
+            _ => SpaceScience.Model.SwathDirection.Middle
+        };
+
+        var factor = new FactorShiftTrack(orbit, a1, a2, mode);
+        var track = new GroundTrack(orbit, factor, angle, dir);
+
+        var (t, p) = GetGroundPoint(node, u, track);
 
         return (t, p);
     }
 
-    private static (double, (double lonRad, double latRad)) GetGroundPoint(int node, double u, CustomTrack track, PRDCTSatellite satellite)
+    private static (double, (double lonRad, double latRad)) GetGroundPoint(int node, double u, GroundTrack track)
     {
-        var nodes = satellite.Nodes();
+        var counts = 10;
 
-        double u0, u1, t0, t1;
-        int quart;
         if (u >= 0.0 && u <= 90.0)
         {
-            u0 = 0.0;
-            u1 = 90.0;
-            t0 = nodes[node].Quarts[0].TimeBegin;
-            t1 = nodes[node].Quarts[0].TimeEnd;
-            quart = nodes[node].Quarts[0].Quart;
+            track.CalculateTrack(0.0, Math.Tau / 4.0, counts);
         }
         else if (u >= 90.0 && u <= 180.0)
         {
-            u0 = 90.0;
-            u1 = 180.0;
-            t0 = nodes[node].Quarts[1].TimeBegin;
-            t1 = nodes[node].Quarts[1].TimeEnd;
-            quart = nodes[node].Quarts[1].Quart;
+            track.CalculateTrack(Math.Tau / 4.0, Math.Tau / 2.0, counts);
         }
         else if (u >= 180.0 && u <= 270.0)
         {
-            u0 = 180.0;
-            u1 = 270.0;
-            t0 = nodes[node].Quarts[2].TimeBegin;
-            t1 = nodes[node].Quarts[2].TimeEnd;
-            quart = nodes[node].Quarts[2].Quart;
+            track.CalculateTrack(Math.Tau / 2.0, 3.0 * Math.Tau / 4.0, counts);
         }
         else
         {
-            u0 = 270.0;
-            u1 = 360.0;
-            t0 = nodes[node].Quarts[3].TimeBegin;
-            t1 = nodes[node].Quarts[3].TimeEnd;
-            quart = nodes[node].Quarts[3].Quart;
+            track.CalculateTrack(3.0 * Math.Tau / 4.0, Math.Tau, counts);
         }
 
-        double t = (u - u0) * (t1 - t0) / (u1 - u0) + t0;
+        Random random = new();
+        var i = random.Next(0, counts);
+        var (lonDeg, latDeg, _, t) = track.GetFullTrackOfIndex(i, node, LonConverters.Default);
 
-        var point = track.ContinuousTrack(node, t, satellite.TrueTimePastAN, quart);
-        return (t, (LonConverter(point.lonRad), point.latRad));
-
-        static double LonConverter(double lonRad)
-        {
-            while (lonRad > Math.PI) lonRad -= 2.0 * Math.PI;
-            while (lonRad < -Math.PI) lonRad += 2.0 * Math.PI;
-            return lonRad;
-        }
+        return (t, (lonDeg * SpaceMath.DegreesToRadians, latDeg * SpaceMath.DegreesToRadians));
     }
 }

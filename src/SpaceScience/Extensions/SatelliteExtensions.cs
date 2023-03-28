@@ -17,15 +17,15 @@ public static class SatelliteExtensions
         var res = satellite
             .Nodes()
             .Select((_, index) => index)
-            .ToDictionary(s => s, s => track.GetTrack(s, LonConverter).ToCutList());
+            .ToDictionary(s => s, s => track.GetTrack(s, LonConverters.Default).ToCutList());
 
         return new TrackBuilderResult(res);
     }
 
     public static SwathBuilderResult BuildSwaths(this PRDCTSatellite satellite, double lookAngleDeg, double radarAngleDeg)
     {
-        var leftSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Left);
-        var rightSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathMode.Right);
+        var leftSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Left);
+        var rightSwath = new Swath(satellite.Orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Right);
 
         var leftRes = BuildSwaths(satellite, leftSwath);
         var rightRes = BuildSwaths(satellite, rightSwath);
@@ -44,12 +44,12 @@ public static class SatelliteExtensions
         for (int i = 0; i < nodes; i++)
         {
             var near = swath
-                .GetNearTrack(i, LonConverter)
+                .GetNearTrack(i, LonConverters.Default)
                 .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
                 .ToList();
 
             var far = swath
-                .GetFarTrack(i, LonConverter)
+                .GetFarTrack(i, LonConverters.Default)
                 .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
                 .ToList();
 
@@ -63,13 +63,5 @@ public static class SatelliteExtensions
         }
 
         return swaths;
-    }
-
-    private static double LonConverter(double lonDeg)
-    {
-        var value = lonDeg;
-        while (value > 180) value -= 360.0;
-        while (value < -180) value += 360.0;
-        return value;
     }
 }

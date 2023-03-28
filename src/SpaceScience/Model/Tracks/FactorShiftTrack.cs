@@ -2,7 +2,7 @@
 
 public class FactorShiftTrack
 {
-    public FactorShiftTrack(Orbit orbit, double gam1DEG, double gam2DEG, SwathMode direction)
+    public FactorShiftTrack(Orbit orbit, double gam1DEG, double gam2DEG, SwathDirection direction)
     {
         int mdf = 0, ch23, ch4, pls1 = 0, pls2 = 0;
 
@@ -11,14 +11,14 @@ public class FactorShiftTrack
 
         switch (direction)
         {
-            case SwathMode.Middle:
+            case SwathDirection.Middle:
                 pls1 = -1;
                 pls2 = 1;
                 break;
-            case SwathMode.Left:
+            case SwathDirection.Left:
                 pls1 = pls2 = -1;
                 break;
-            case SwathMode.Right:
+            case SwathDirection.Right:
                 pls1 = pls2 = 1;
                 break;
         }

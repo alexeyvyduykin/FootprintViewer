@@ -11,7 +11,6 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
-using SpaceScience.Model;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -114,11 +113,11 @@ public class SensorProvider : IProvider, IDynamic
 
             var leftDict = dict.ToDictionary(
                 s => s.Key,
-                s => s.Value.ToFeature(s.Key, SwathMode.Left));
+                s => s.Value.ToFeature(s.Key, SpaceScience.Model.SwathDirection.Left));
 
             var rightDict = dict.ToDictionary(
                 s => s.Key,
-                s => s.Value.ToFeature(s.Key, SwathMode.Right));
+                s => s.Value.ToFeature(s.Key, SpaceScience.Model.SwathDirection.Right));
 
             return (leftDict, rightDict);
         }, RxApp.TaskpoolScheduler);

@@ -42,7 +42,7 @@ internal class MapFactory
     {
         Map map = CreateDefaultMap();
 
-        _ = new Sample4(map);
+        _ = new Sample5(map);
 
         return map;
     }

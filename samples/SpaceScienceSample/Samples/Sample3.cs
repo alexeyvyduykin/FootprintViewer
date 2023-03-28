@@ -7,7 +7,6 @@ using Mapsui.Styles;
 using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
-using SpaceScienceSample.Models;
 using System.Linq;
 
 namespace SpaceScienceSample.Samples;
@@ -32,8 +31,8 @@ internal class Sample3 : BaseSample
         var swaths = satellite.BuildSwaths(lookAngleDeg, radarAngleDeg);
 
         var trackFeatures = tracks.ToFeature("");
-        var leftFeatures = swaths.ToFeature("", SwathMode.Left);
-        var rightFeatures = swaths.ToFeature("", SwathMode.Right);
+        var leftFeatures = swaths.ToFeature("", SwathDirection.Left);
+        var rightFeatures = swaths.ToFeature("", SwathDirection.Right);
 
         var targets = CreateTargets(300);
 

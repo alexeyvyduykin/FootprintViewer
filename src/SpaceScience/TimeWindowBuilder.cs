@@ -55,9 +55,9 @@ public class TimeWindowBuilder
 
         var track = new GroundTrack(orbit);
 
-        var factor = new FactorShiftTrack(orbit, angle1Deg, angle2Deg, SwathMode.Left);
-        var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackPointDirection.Left);
-        var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackPointDirection.Left);
+        var factor = new FactorShiftTrack(orbit, angle1Deg, angle2Deg, SwathDirection.Left);
+        var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackDirection.Left);
+        var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackDirection.Left);
 
         track.CalculateTrack(dt);
         nearTrack.CalculateTrack(dt);

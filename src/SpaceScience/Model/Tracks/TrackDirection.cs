@@ -1,6 +1,6 @@
 ﻿namespace SpaceScience.Model;
 
-public enum TrackPointDirection
+public enum TrackDirection
 {
     None = 0,
     Left = 1,

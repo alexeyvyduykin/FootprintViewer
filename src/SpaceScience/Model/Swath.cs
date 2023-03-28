@@ -6,15 +6,15 @@ public class Swath
     private readonly GroundTrack _nearTrack;
     private readonly GroundTrack _farTrack;
 
-    public Swath(Orbit orbit, double lookAngleDEG, double radarAngleDEG, SwathMode mode)
+    public Swath(Orbit orbit, double lookAngleDEG, double radarAngleDEG, SwathDirection mode)
     {
         Orbit = orbit;
 
         var (near, far) = mode switch
         {
-            SwathMode.Middle => (TrackPointDirection.Left, TrackPointDirection.Right),
-            SwathMode.Left => (TrackPointDirection.Left, TrackPointDirection.Left),
-            SwathMode.Right => (TrackPointDirection.Right, TrackPointDirection.Right),
+            SwathDirection.Middle => (TrackDirection.Left, TrackDirection.Right),
+            SwathDirection.Left => (TrackDirection.Left, TrackDirection.Left),
+            SwathDirection.Right => (TrackDirection.Right, TrackDirection.Right),
             _ => throw new NotImplementedException()
         };
 

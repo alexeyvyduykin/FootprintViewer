@@ -12,32 +12,32 @@ namespace FootprintViewer.Extensions;
 
 public static class FeatureBuilderExtensions
 {
-    public static Dictionary<int, List<IFeature>> ToFeature(this SwathBuilderResult result, string name, SwathMode mode)
+    public static Dictionary<int, List<IFeature>> ToFeature(this SwathBuilderResult result, string name, SwathDirection mode)
     {
         return mode switch
         {
-            SwathMode.Middle => new(),
-            SwathMode.Left => result.Left.ToDictionary(
+            SwathDirection.Middle => new(),
+            SwathDirection.Left => result.Left.ToDictionary(
                                 s => s.Key,
-                                s => s.Value.Select(s => CreatePolygon(s)).ToList()),
-            SwathMode.Right => result.Right.ToDictionary(
+                                s => s.Value.Select(s => s.ToPolygonFeature(name)).ToList()),
+            SwathDirection.Right => result.Right.ToDictionary(
                                 s => s.Key,
-                                s => s.Value.Select(s => CreatePolygon(s)).ToList()),
+                                s => s.Value.Select(s => s.ToPolygonFeature(name)).ToList()),
             _ => throw new Exception(),
         };
+    }
 
-        IFeature CreatePolygon(List<(double lonDeg, double latDeg)> list)
-        {
-            var vertices = list.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
+    public static IFeature ToPolygonFeature(this List<(double lonDeg, double latDeg)> list, string name)
+    {
+        var vertices = list.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
 
-            var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
+        var poly = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
 
-            var feature = poly.ToFeature();
+        var feature = poly.ToFeature();
 
-            feature["Name"] = name;
+        feature["Name"] = name;
 
-            return (IFeature)feature;
-        }
+        return (IFeature)feature;
     }
 
     public static Dictionary<int, List<IFeature>> ToFeature(this TrackBuilderResult result, string name)
@@ -60,15 +60,15 @@ public static class FeatureBuilderExtensions
         return (IFeature)feature;
     }
 
-    public static Dictionary<int, List<IFeature>> ToFeatureVertices(this SwathBuilderResult result, SwathMode mode)
+    public static Dictionary<int, List<IFeature>> ToFeatureVertices(this SwathBuilderResult result, SwathDirection mode)
     {
         return mode switch
         {
-            SwathMode.Middle => new(),
-            SwathMode.Left => result.Left.ToDictionary(
+            SwathDirection.Middle => new(),
+            SwathDirection.Left => result.Left.ToDictionary(
                                 s => s.Key,
                                 s => s.Value.SelectMany(s => s.ToPointsFeatures()).ToList()),
-            SwathMode.Right => result.Right.ToDictionary(
+            SwathDirection.Right => result.Right.ToDictionary(
                                 s => s.Key,
                                 s => s.Value.SelectMany(s => s.ToPointsFeatures()).ToList()),
             _ => throw new Exception(),

@@ -25,12 +25,12 @@ internal class Sample2 : BaseSample
         var swaths = satellite.BuildSwaths(40, 16);
 
         var features = tracks.ToFeature("Satellite1");
-        var leftFeatures = swaths.ToFeature("SatelliteLeft1", SwathMode.Left);
-        var rightFeatures = swaths.ToFeature("SatelliteRight1", SwathMode.Right);
+        var leftFeatures = swaths.ToFeature("SatelliteLeft1", SwathDirection.Left);
+        var rightFeatures = swaths.ToFeature("SatelliteRight1", SwathDirection.Right);
 
         var trackVertices = tracks.ToFeatureVertices();
-        var leftVertices = swaths.ToFeatureVertices(SwathMode.Left);
-        var rightVertices = swaths.ToFeatureVertices(SwathMode.Right);
+        var leftVertices = swaths.ToFeatureVertices(SwathDirection.Left);
+        var rightVertices = swaths.ToFeatureVertices(SwathDirection.Right);
 
         var layer1 = new WritableLayer();
         var layer2 = new WritableLayer() { Style = CreateSwathStyle(Color.Green) };
