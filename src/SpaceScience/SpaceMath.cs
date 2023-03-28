@@ -2,8 +2,6 @@
 
 public static class SpaceMath
 {
-    public static double PI => Math.PI;
-
     public static double TWOPI => 2.0 * Math.PI;
 
     public static double HALFPI => Math.PI / 2.0;
@@ -21,9 +19,9 @@ public static class SpaceMath
 
     public static double RadiansToDegrees => 57.2957795130823208767;
 
-    public static double SecondsToRadians => (PI / 180.0) / 3600.0;
+    public static double SecondsToRadians => (Math.PI / 180.0) / 3600.0;
 
-    public static double RadiansToSeconds => 3600.0 / (PI / 180.0);
+    public static double RadiansToSeconds => 3600.0 / (Math.PI / 180.0);
 
     public static double FromRadToDeg(double radians) => radians * RadiansToDegrees;
 

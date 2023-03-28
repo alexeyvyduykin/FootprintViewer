@@ -3,6 +3,27 @@ using SpaceScience.Model;
 
 namespace SpaceScience;
 
+public static class Geo2DExtensions
+{
+    public static (double lonRad, double latRad) ToLonRange(this (double lonRad, double latRad) coord, Func<double, bool> min, Func<double, bool> max)
+    {
+        var lon = coord.lonRad;
+        var lat = coord.latRad;
+
+        while (max.Invoke(lon) == true)
+        {
+            lon -= 2 * Math.PI;
+        }
+
+        while (min.Invoke(lon) == true)
+        {
+            lon += 2 * Math.PI;
+        }
+
+        return (lon, lat);
+    }
+}
+
 public class AvailabilityBuilderResult
 {
     public string Name { get; set; } = null!;

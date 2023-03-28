@@ -59,7 +59,7 @@ internal static class EarthGeometry
 
                 if (Math.Abs(end.lon - begin) > 180.0)
                 {
-                    var cutLat = LinearInterpDiscontLat(new Geo2D(begin, lats[i]), new Geo2D(end.lon, end.lat));
+                    var cutLat = LinearInterpDiscontLat(begin, lats[i], end.lon, end.lat);
 
                     if (end.lon - begin >= 0)
                     {
@@ -126,7 +126,7 @@ internal static class EarthGeometry
 
                 if (Math.Abs(end.lon - begin) > 180.0)
                 {
-                    var cutLat = LinearInterpDiscontLat(new Geo2D(begin, lats[i]), new Geo2D(end.lon, end.lat));
+                    var cutLat = LinearInterpDiscontLat(begin, lats[i], end.lon, end.lat);
 
                     if (end.lon - begin >= 0)
                     {
@@ -191,7 +191,7 @@ internal static class EarthGeometry
 
                 if (Math.Abs(end.lon - begin) > 180.0)
                 {
-                    var cutLat = LinearInterpDiscontLat(new Geo2D(begin, lats[i]), new Geo2D(end.lon, end.lat));
+                    var cutLat = LinearInterpDiscontLat(begin, lats[i], end.lon, end.lat);
 
                     if (end.lon - begin >= 0)
                     {
@@ -313,21 +313,18 @@ internal static class EarthGeometry
         throw new Exception();
     }
 
-    private static double LinearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
+    private static double LinearInterpDiscontLat(double lonRad1, double latRad1, double lonRad2, double latRad2)
     {
-        Geo2D p1 = pp1.ToRadians(), p2 = pp2.ToRadians();
-
         // one longitude should be negative one positive, make them both positive
-        double lon1 = p1.Lon, lat1 = p1.Lat, lon2 = p2.Lon, lat2 = p2.Lat;
-        if (lon1 > lon2)
+        if (lonRad1 > lonRad2)
         {
-            lon2 += 2 * Math.PI; // in radians
+            lonRad2 += 2 * Math.PI; // in radians
         }
         else
         {
-            lon1 += 2 * Math.PI;
+            lonRad1 += 2 * Math.PI;
         }
 
-        return lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1);
+        return latRad1 + (Math.PI - lonRad1) * (latRad2 - latRad1) / (lonRad2 - lonRad1);
     }
 }

@@ -64,7 +64,7 @@ public class CustomTrack //: Track
         return SpaceMath.HALFPI - Math.Acos(semi_axis * Math.Sin(Alpha1) / Constants.Re) - Alpha1;
     }
 
-    public Geo2D ContinuousTrack(double node, double t, double tPastAN, int quart)
+    public (double lonRad, double latRad) ContinuousTrack(double node, double t, double tPastAN, int quart)
     {
         double v = Orbit.Anomalia(t, tPastAN);
         double u = v + Orbit.ArgumentOfPerigee;
@@ -88,10 +88,10 @@ public class CustomTrack //: Track
             lon = SpaceMath.TWOPI + lon;// - factor.ch4 * SpaceMath.TWOPI;
 
         lon = Orbit.LonAscnNode + lon - Constants.Omega * (t + tPastAN) + node * SpaceMath.TWOPI;// * factor.mdf;
-        return new Geo2D(lon, lat, GeoCoordTypes.Radians);
+        return (lon, lat);
     }
 
-    public Geo2D TrackPoint(double u)
+    public (double lonRad, double latRad) TrackPoint(double u)
     {
         double uTr, iTr;
         if (Alpha1 == 0.0)
@@ -117,7 +117,7 @@ public class CustomTrack //: Track
         else if (u >= 3.0 * SpaceMath.HALFPI && u < SpaceMath.TWOPI)
 
             lon = SpaceMath.TWOPI + Math.Asin(asinlon);
-        return new Geo2D(lon, lat);
+        return (lon, lat);
     }
 
     private double CentralAngleFromU(double u)

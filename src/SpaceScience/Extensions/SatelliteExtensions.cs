@@ -45,19 +45,19 @@ public static class SatelliteExtensions
         {
             var near = swath
                 .GetNearTrack(i, LonConverter)
-                .Select(s => new Geo2D(s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
+                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
                 .ToList();
 
             var far = swath
                 .GetFarTrack(i, LonConverter)
-                .Select(s => new Geo2D(s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
+                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
                 .ToList();
 
             var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
 
             var shapes = engine2D.CreateShapes(false, false);
 
-            var convertShapes = shapes.Select(s => s.Select(g => (g.Lon * SpaceMath.RadiansToDegrees, g.Lat * SpaceMath.RadiansToDegrees)).ToList()).ToList();
+            var convertShapes = shapes.Select(s => s.Select(g => (g.lonRad * SpaceMath.RadiansToDegrees, g.latRad * SpaceMath.RadiansToDegrees)).ToList()).ToList();
 
             swaths.Add(i, convertShapes);
         }

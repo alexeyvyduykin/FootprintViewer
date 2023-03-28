@@ -74,7 +74,7 @@ internal static class FootprintBuilder
                         TargetName = $"GroundTarget{footprintIndex:0000}",
                         SatelliteName = satellite.Name,
                         Center = center,
-                        Points = new LineString(border.Select(s => new Coordinate(s.Lon, s.Lat)).ToArray()),
+                        Points = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
                         Begin = epoch.AddSeconds(t - duration / 2.0),
                         Duration = duration,
                         Node = nodes[i].Value,
@@ -103,17 +103,18 @@ internal static class FootprintBuilder
         return aCenter + res / 2.0;
     }
 
-    private static (double, Point, IEnumerable<Geo2D>) GetRandomFootprint(PRDCTSatellite satellite, Swath swath, int node, double u)
+    private static (double, Point, IEnumerable<(double lonRad, double latRad)>) GetRandomFootprint(PRDCTSatellite satellite, Swath swath, int node, double u)
     {
-        var list = new List<Geo2D>();
+        var list = new List<(double lonRad, double latRad)>();
 
         var (t, c) = GetRandomCenterPoint(satellite, swath, node, u);
-        var center = c.ToDegrees();
+        var centerLonDeg = c.lonRad * SpaceMath.RadiansToDegrees;
+        var centerLatDeg = c.latRad * SpaceMath.RadiansToDegrees;
 
         double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
 
         var (dlon1, dlat1) = (_r * Math.Cos(a), _r * Math.Sin(a));
-        var lon1 = center.Lon + dlon1;
+        var lon1 = centerLonDeg + dlon1;
         if (lon1 < -180 || lon1 > 180)
         {
             if (lon1 < -180)
@@ -126,13 +127,13 @@ internal static class FootprintBuilder
                 lon1 -= 360;
             }
         }
-        var res1 = new Geo2D(lon1, center.Lat + dlat1, GeoCoordTypes.Degrees);
+        var res1 = (lon1, centerLatDeg + dlat1);
         list.Add(res1);
 
         a -= Math.PI / 2.0;
 
         var (dlon2, dlat2) = (_r * Math.Cos(a), _r * Math.Sin(a));
-        var lon2 = center.Lon + dlon2;
+        var lon2 = centerLonDeg + dlon2;
         if (lon2 < -180 || lon2 > 180)
         {
             if (lon2 < -180)
@@ -145,13 +146,13 @@ internal static class FootprintBuilder
                 lon2 -= 360;
             }
         }
-        var res2 = new Geo2D(lon2, center.Lat + dlat2, GeoCoordTypes.Degrees);
+        var res2 = (lon2, centerLatDeg + dlat2);
         list.Add(res2);
 
         a -= Math.PI / 2.0;
 
         var (dlon3, dlat3) = (_r * Math.Cos(a), _r * Math.Sin(a));
-        var lon3 = center.Lon + dlon3;
+        var lon3 = centerLonDeg + dlon3;
         if (lon3 < -180 || lon3 > 180)
         {
             if (lon3 < -180)
@@ -164,13 +165,13 @@ internal static class FootprintBuilder
                 lon3 -= 360;
             }
         }
-        var res3 = new Geo2D(lon3, center.Lat + dlat3, GeoCoordTypes.Degrees);
+        var res3 = (lon3, centerLatDeg + dlat3);
         list.Add(res3);
 
         a -= Math.PI / 2.0;
 
         var (dlon4, dlat4) = (_r * Math.Cos(a), _r * Math.Sin(a));
-        var lon4 = center.Lon + dlon4;
+        var lon4 = centerLonDeg + dlon4;
         if (lon4 < -180 || lon4 > 180)
         {
             if (lon4 < -180)
@@ -183,13 +184,13 @@ internal static class FootprintBuilder
                 lon4 -= 360;
             }
         }
-        var res4 = new Geo2D(lon4, center.Lat + dlat4, GeoCoordTypes.Degrees);
+        var res4 = (lon4, centerLatDeg + dlat4);
         list.Add(res4);
 
-        return (t, new Point(center.Lon, center.Lat), list);
+        return (t, new Point(centerLonDeg, centerLatDeg), list);
     }
 
-    private static (double, Geo2D) GetRandomCenterPoint(PRDCTSatellite satellite, Swath swath, int node, double u)
+    private static (double, (double lonRad, double latRad)) GetRandomCenterPoint(PRDCTSatellite satellite, Swath swath, int node, double u)
     {
         var a1 = swath.NearTrack.AngleDeg;
         var a2 = swath.FarTrack.AngleDeg;
@@ -203,7 +204,7 @@ internal static class FootprintBuilder
         return (t, p);
     }
 
-    private static (double, Geo2D) GetGroundPoint(int node, double u, CustomTrack track, PRDCTSatellite satellite)
+    private static (double, (double lonRad, double latRad)) GetGroundPoint(int node, double u, CustomTrack track, PRDCTSatellite satellite)
     {
         var nodes = satellite.Nodes();
 
@@ -245,6 +246,13 @@ internal static class FootprintBuilder
         double t = (u - u0) * (t1 - t0) / (u1 - u0) + t0;
 
         var point = track.ContinuousTrack(node, t, satellite.TrueTimePastAN, quart);
-        return (t, SpaceConverters.From180To180(point));
+        return (t, (LonConverter(point.lonRad), point.latRad));
+
+        static double LonConverter(double lonRad)
+        {
+            while (lonRad > Math.PI) lonRad -= 2.0 * Math.PI;
+            while (lonRad < -Math.PI) lonRad += 2.0 * Math.PI;
+            return lonRad;
+        }
     }
 }

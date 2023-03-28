@@ -25,99 +25,101 @@ public class SwathCore2D
         _rightPoints = new List<FixPoint>();
     }
 
-    public SwathCore2D(IList<Geo2D> near, IList<Geo2D> far, Func<double, bool> isCoverPolis) : this()
+    public SwathCore2D(IList<(double lonRad, double latRad)> near, IList<(double lonRad, double latRad)> far, Func<double, bool> isCoverPolis) : this()
     {
-        var NearPoints = new List<List<Geo2D>>();
-        var FarPoints = new List<List<Geo2D>>();
+        var NearPoints = new List<List<(double lonRad, double latRad)>>();
+        var FarPoints = new List<List<(double lonRad, double latRad)>>();
 
-        var truePointsNear = new List<Geo2D>();
-        var truePointsFar = new List<Geo2D>();
+        var truePointsNear = new List<(double lonRad, double latRad)>();
+        var truePointsFar = new List<(double lonRad, double latRad)>();
 
-        Geo2D old = near[0], cur;
+        var (oldLonRad, oldLatRad) = near[0];
+
         for (int i = 0; i < near.Count; i++)
         {
-            cur = near[i];
+            var (curLonRad, curLatRad) = near[i];
 
-            if (Math.Abs(cur.Lon - old.Lon) >= 3.2)
+            if (Math.Abs(curLonRad - oldLonRad) >= 3.2)
             {
-                double cutLat = LinearInterpDiscontLat(old, cur);
+                double cutLat = LinearInterpDiscontLat(oldLonRad, oldLatRad, curLonRad, curLatRad);
 
-                if (old.Lon > 0.0)
+                if (oldLonRad > 0.0)
                 {
-                    truePointsNear.Add(new Geo2D(Math.PI, cutLat));
-                    NearPoints.Add(new List<Geo2D>(truePointsNear));
+                    truePointsNear.Add((Math.PI, cutLat));
+                    NearPoints.Add(truePointsNear.ToList());
                     truePointsNear.Clear();
 
-                    truePointsNear.Add(new Geo2D(-Math.PI, cutLat));
+                    truePointsNear.Add((-Math.PI, cutLat));
 
-                    truePointsNear.Add(cur);
+                    truePointsNear.Add((curLonRad, curLatRad));
                 }
                 else
                 {
-                    truePointsNear.Add(new Geo2D(-Math.PI, cutLat));
-                    NearPoints.Add(new List<Geo2D>(truePointsNear));
+                    truePointsNear.Add((-Math.PI, cutLat));
+                    NearPoints.Add(truePointsNear.ToList());
                     truePointsNear.Clear();
 
-                    truePointsNear.Add(new Geo2D(Math.PI, cutLat));
+                    truePointsNear.Add((Math.PI, cutLat));
 
-                    truePointsNear.Add(cur);
+                    truePointsNear.Add((curLonRad, curLatRad));
                 }
             }
             else
             {
-                truePointsNear.Add(cur);
+                truePointsNear.Add((curLonRad, curLatRad));
             }
 
-            old = cur;
+            (oldLonRad, oldLatRad) = (curLonRad, curLatRad);
         }
 
         if (truePointsNear.Count != 0)
         {
-            NearPoints.Add(new List<Geo2D>(truePointsNear));
+            NearPoints.Add(truePointsNear.ToList());
             truePointsNear.Clear();
         }
 
-        old = far[0];
+        (oldLonRad, oldLatRad) = far[0];
+
         for (int i = 0; i < far.Count; i++)
         {
-            cur = far[i];
+            var (curLonRad, curLatRad) = far[i];
 
-            if (Math.Abs(cur.Lon - old.Lon) >= 3.2)
+            if (Math.Abs(curLonRad - oldLonRad) >= 3.2)
             {
-                double cutLat = LinearInterpDiscontLat(old, cur);
+                double cutLat = LinearInterpDiscontLat(oldLonRad, oldLatRad, curLonRad, curLatRad);
 
-                if (old.Lon > 0.0)
+                if (oldLonRad > 0.0)
                 {
-                    truePointsFar.Add(new Geo2D(Math.PI, cutLat));
-                    FarPoints.Add(new List<Geo2D>(truePointsFar));
+                    truePointsFar.Add((Math.PI, cutLat));
+                    FarPoints.Add(truePointsFar.ToList());
                     truePointsFar.Clear();
 
-                    truePointsFar.Add(new Geo2D(-Math.PI, cutLat));
+                    truePointsFar.Add((-Math.PI, cutLat));
 
-                    truePointsFar.Add(cur);
+                    truePointsFar.Add((curLonRad, curLatRad));
                 }
                 else
                 {
-                    truePointsFar.Add(new Geo2D(-Math.PI, cutLat));
-                    FarPoints.Add(new List<Geo2D>(truePointsFar));
+                    truePointsFar.Add((-Math.PI, cutLat));
+                    FarPoints.Add(truePointsFar.ToList());
                     truePointsFar.Clear();
 
-                    truePointsFar.Add(new Geo2D(Math.PI, cutLat));
+                    truePointsFar.Add((Math.PI, cutLat));
 
-                    truePointsFar.Add(cur);
+                    truePointsFar.Add((curLonRad, curLatRad));
                 }
             }
             else
             {
-                truePointsFar.Add(cur);
+                truePointsFar.Add((curLonRad, curLatRad));
             }
 
-            old = cur;
+            (oldLonRad, oldLatRad) = (curLonRad, curLatRad);
         }
 
         if (truePointsFar.Count != 0)
         {
-            FarPoints.Add(new List<Geo2D>(truePointsFar));
+            FarPoints.Add(truePointsFar.ToList());
             truePointsFar.Clear();
         }
 
@@ -126,17 +128,17 @@ public class SwathCore2D
 
     public static double ExtrudeStep => _defaultExtrudeStep;
 
-    public List<List<Geo2D>> CreateShapes(bool clockwise, bool extrudeMode = false)
+    public List<List<(double lonRad, double latRad)>> CreateShapes(bool clockwise, bool extrudeMode = false)
     {
         InitTempVectors();
 
-        var shapes = new List<List<Geo2D>>();
+        var shapes = new List<List<(double lonRad, double latRad)>>();
 
         while (GetShape(clockwise, out var point))
         {
-            shapes.Add(new List<Geo2D>());
+            shapes.Add(new List<(double lonRad, double latRad)>());
 
-            while (NextStep(point!, clockwise, out var nextPoint, out List<Geo2D>? data) == true)
+            while (NextStep(point!, clockwise, out var nextPoint, out List<(double lonRad, double latRad)>? data) == true)
             {
                 if (data != null)
                 {
@@ -148,12 +150,12 @@ public class SwathCore2D
                     {
                         if (point!.Type == FixPoint.EType.Left || point.Type == FixPoint.EType.Right)
                         {
-                            var first = new Geo2D(data.First());
+                            var first = data.First();
 
-                            int signLat = data.Count == 2 ? first.Lat > 0.0 ? 1 : -1 : 0;
-                            int signLon = first.Lon > 0.0 ? 1 : -1;
+                            int signLat = data.Count == 2 ? first.latRad > 0.0 ? 1 : -1 : 0;
+                            int signLon = first.lonRad > 0.0 ? 1 : -1;
 
-                            shapes.Last().Add(new Geo2D(first.Lon + signLon * ExtrudeStep, first.Lat + signLat * ExtrudeStep));
+                            shapes.Last().Add((first.lonRad + signLon * ExtrudeStep, first.latRad + signLat * ExtrudeStep));
                         }
 
                         if (data.Count != 2)
@@ -163,12 +165,12 @@ public class SwathCore2D
 
                         if (nextPoint!.Type == FixPoint.EType.Left || nextPoint.Type == FixPoint.EType.Right)
                         {
-                            var last = new Geo2D(data.Last());
+                            var last = data.Last();
 
-                            int signLat = data.Count == 2 ? last.Lat > 0.0 ? 1 : -1 : 0;
-                            int signLon = last.Lon > 0.0 ? 1 : -1;
+                            int signLat = data.Count == 2 ? last.latRad > 0.0 ? 1 : -1 : 0;
+                            int signLon = last.lonRad > 0.0 ? 1 : -1;
 
-                            shapes.Last().Add(new Geo2D(last.Lon + signLon * ExtrudeStep, last.Lat + signLat * ExtrudeStep));
+                            shapes.Last().Add((last.lonRad + signLon * ExtrudeStep, last.latRad + signLat * ExtrudeStep));
                         }
                     }
                 }
@@ -180,7 +182,7 @@ public class SwathCore2D
         return shapes;
     }
 
-    private void SwathCore2DInit(List<List<Geo2D>> near, List<List<Geo2D>> far, Func<double, bool> isCoverPolis)
+    private void SwathCore2DInit(List<List<(double lonRad, double latRad)>> near, List<List<(double lonRad, double latRad)>> far, Func<double, bool> isCoverPolis)
     {
         SwathSegment.ResetId();
         FixPoint.ResetId();
@@ -250,9 +252,9 @@ public class SwathCore2D
         var beg1 = tempbegins[0];
         var beg2 = tempbegins[1];
 
-        if (Math.Abs(beg1.Fix.Lon - beg2.Fix.Lon) > Math.PI)
+        if (Math.Abs(beg1.Fix.lonRad - beg2.Fix.lonRad) > Math.PI)
         {
-            double latCut = LinearInterpDiscontLat(beg1.Fix, beg2.Fix);
+            double latCut = LinearInterpDiscontLat(beg1.Fix.lonRad, beg1.Fix.latRad, beg2.Fix.lonRad, beg2.Fix.latRad);
 
             BeginCut(beg1, latCut);
             BeginCut(beg2, latCut);
@@ -273,9 +275,9 @@ public class SwathCore2D
         var end1 = tempends[0];
         var end2 = tempends[1];
 
-        if (Math.Abs(end1.Fix.Lon - end2.Fix.Lon) > Math.PI)
+        if (Math.Abs(end1.Fix.lonRad - end2.Fix.lonRad) > Math.PI)
         {
-            double latCut = LinearInterpDiscontLat(end1.Fix, end2.Fix);
+            double latCut = LinearInterpDiscontLat(end1.Fix.lonRad, end1.Fix.latRad, end2.Fix.lonRad, end2.Fix.latRad);
 
             EndCut(end1, latCut);
             EndCut(end2, latCut);
@@ -285,13 +287,13 @@ public class SwathCore2D
     private void BeginCut(FixPoint beg, double latCut)
     {
         FixPoint? neww;
-        if (beg.Fix.Lon > 0.0)
+        if (beg.Fix.lonRad > 0.0)
         {
-            neww = new FixPoint(new Geo2D(Math.PI, latCut), FixPoint.EType.Right);
+            neww = new FixPoint((Math.PI, latCut), FixPoint.EType.Right);
         }
         else
         {
-            neww = new FixPoint(new Geo2D(-Math.PI, latCut), FixPoint.EType.Left);
+            neww = new FixPoint((-Math.PI, latCut), FixPoint.EType.Left);
         }
 
         SwathSegment? bs = GetDictionaryIndex(beg);
@@ -307,13 +309,13 @@ public class SwathCore2D
     private void EndCut(FixPoint end, double latCut)
     {
         FixPoint? neww;
-        if (end.Fix.Lon > 0.0)
+        if (end.Fix.lonRad > 0.0)
         {
-            neww = new FixPoint(new Geo2D(Math.PI, latCut), FixPoint.EType.Right);
+            neww = new FixPoint((Math.PI, latCut), FixPoint.EType.Right);
         }
         else
         {
-            neww = new FixPoint(new Geo2D(-Math.PI, latCut), FixPoint.EType.Left);
+            neww = new FixPoint((-Math.PI, latCut), FixPoint.EType.Left);
         }
 
         SwathSegment? bs = GetDictionaryIndex(end);
@@ -326,7 +328,7 @@ public class SwathCore2D
         }
     }
 
-    private void AddSegment(List<Geo2D> arr, SegmentType type)
+    private void AddSegment(List<(double lonRad, double latRad)> arr, SegmentType type)
     {
         switch (type)
         {
@@ -388,12 +390,12 @@ public class SwathCore2D
         _leftPoints.AddRange(_dict.Select(s => s.Value.Item1).Where(s => s.Type == FixPoint.EType.Left));
         _leftPoints.AddRange(_dict.Select(s => s.Value.Item2).Where(s => s.Type == FixPoint.EType.Left));
 
-        _leftPoints = _leftPoints.OrderBy(s => s.Fix.Lat).ToList();
+        _leftPoints = _leftPoints.OrderBy(s => s.Fix.latRad).ToList();
 
         _rightPoints.AddRange(_dict.Select(s => s.Value.Item1).Where(s => s.Type == FixPoint.EType.Right));
         _rightPoints.AddRange(_dict.Select(s => s.Value.Item2).Where(s => s.Type == FixPoint.EType.Right));
 
-        _rightPoints = _rightPoints.OrderBy(s => s.Fix.Lat).ToList();
+        _rightPoints = _rightPoints.OrderBy(s => s.Fix.latRad).ToList();
 
         // if (this.BeginPoints.Count != 2 || this.EndPoints.Count != 2)
         //     throw new Exception();
@@ -485,7 +487,7 @@ public class SwathCore2D
         }
     }
 
-    private FixPoint GetData(SwathSegment segment, FixPoint asBegin, out List<Geo2D> data)
+    private FixPoint GetData(SwathSegment segment, FixPoint asBegin, out List<(double lonRad, double latRad)> data)
     {
         if (_dict[segment].Item1 == asBegin)
         {
@@ -852,7 +854,7 @@ public class SwathCore2D
     //            return isNext;
     //        }
 
-    private bool NextStep(FixPoint point, bool clockwise, out FixPoint? nextPoint, out List<Geo2D>? data)
+    private bool NextStep(FixPoint point, bool clockwise, out FixPoint? nextPoint, out List<(double lonRad, double latRad)>? data)
     {
         if (point == null)
         {
@@ -1106,34 +1108,31 @@ public class SwathCore2D
     }
 
     // latitude for the longitude of +/- 180 (both)
-    private static double LinearInterpDiscontLat(Geo2D pp1, Geo2D pp2)
+    private static double LinearInterpDiscontLat(double lonRad1, double latRad1, double lonRad2, double latRad2)
     {
-        Geo2D p1 = pp1.ToRadians(), p2 = pp2.ToRadians();
-
-        // one longitude should be negative one positive, make them both positive
-        double lon1 = p1.Lon, lat1 = p1.Lat, lon2 = p2.Lon, lat2 = p2.Lat;
-        if (lon1 > lon2)
+        // one longitude should be negative one positive, make them both positive  
+        if (lonRad1 > lonRad2)
         {
-            lon2 += 2 * Math.PI; // in radians
+            lonRad2 += 2 * Math.PI; // in radians
         }
         else
         {
-            lon1 += 2 * Math.PI;
+            lonRad1 += 2 * Math.PI;
         }
 
-        return lat1 + (Math.PI - lon1) * (lat2 - lat1) / (lon2 - lon1);
+        return latRad1 + (Math.PI - lonRad1) * (latRad2 - latRad1) / (lonRad2 - lonRad1);
     }
 
     private class FixPoint
     {
-        public FixPoint(Geo2D point)
+        public FixPoint((double lonRad, double latRad) point)
         {
-            if (point.Lon.Equals(-Math.PI))
+            if (point.lonRad.Equals(-Math.PI))
             {
                 Fix = point;
                 Type = EType.Left;
             }
-            else if (point.Lon.Equals(Math.PI))
+            else if (point.lonRad.Equals(Math.PI))
             {
                 Fix = point;
                 Type = EType.Right;
@@ -1146,7 +1145,7 @@ public class SwathCore2D
             id = ++classCounter;
         }
 
-        public FixPoint(Geo2D point, EType type)
+        public FixPoint((double lonRad, double latRad) point, EType type)
         {
             Fix = point;
             Type = type;
@@ -1154,13 +1153,13 @@ public class SwathCore2D
             id = ++classCounter;
         }
 
-        public FixPoint(double lon, double lat) : this(new Geo2D(lon, lat)) { }
+        public FixPoint(double lon, double lat) : this((lon, lat)) { }
 
         public enum EType { Begin, Left, Right, End }
 
         public EType Type { get; }
 
-        public Geo2D Fix { get; }
+        public (double lonRad, double latRad) Fix { get; }
 
         private static int classCounter = 0;
 
@@ -1170,7 +1169,7 @@ public class SwathCore2D
 
         public override string ToString()
         {
-            return string.Format("FixPoint {0:00}({1},Lat={2:0,0})", id, Enum.GetName(typeof(EType), Type), Fix.Lat * SpaceMath.RadiansToDegrees);
+            return string.Format("FixPoint {0:00}({1},Lat={2:0,0})", id, Enum.GetName(typeof(EType), Type), Fix.latRad * SpaceMath.RadiansToDegrees);
         }
 
         public string ShortDescription()
@@ -1181,23 +1180,23 @@ public class SwathCore2D
 
     private class SwathSegment
     {
-        public static List<Geo2D> TopArr = new() { new Geo2D(-Math.PI, SpaceMath.HALFPI), new Geo2D(Math.PI, SpaceMath.HALFPI) };
-        public static List<Geo2D> TopReverseArr = new() { new Geo2D(Math.PI, SpaceMath.HALFPI), new Geo2D(-Math.PI, SpaceMath.HALFPI) };
-        public static List<Geo2D> BottomArr = new() { new Geo2D(-Math.PI, -SpaceMath.HALFPI), new Geo2D(Math.PI, -SpaceMath.HALFPI) };
-        public static List<Geo2D> BottomReverseArr = new() { new Geo2D(Math.PI, -SpaceMath.HALFPI), new Geo2D(-Math.PI, -SpaceMath.HALFPI) };
+        public static List<(double lonRad, double latRad)> TopArr = new() { (-Math.PI, SpaceMath.HALFPI), (Math.PI, SpaceMath.HALFPI) };
+        public static List<(double lonRad, double latRad)> TopReverseArr = new() { (Math.PI, SpaceMath.HALFPI), (-Math.PI, SpaceMath.HALFPI) };
+        public static List<(double lonRad, double latRad)> BottomArr = new() { (-Math.PI, -SpaceMath.HALFPI), (Math.PI, -SpaceMath.HALFPI) };
+        public static List<(double lonRad, double latRad)> BottomReverseArr = new() { (Math.PI, -SpaceMath.HALFPI), (-Math.PI, -SpaceMath.HALFPI) };
 
-        public SwathSegment(IList<Geo2D> arr, Segment eseg) : this()
+        public SwathSegment(IList<(double lonRad, double latRad)> arr, Segment eseg) : this()
         {
             Seg = eseg;
 
-            data = new LinkedList<Geo2D>(arr);
+            data = new LinkedList<(double lonRad, double latRad)>(arr);
         }
 
-        protected SwathSegment(IList<Geo2D> arr) : this()
+        protected SwathSegment(IList<(double lonRad, double latRad)> arr) : this()
         {
             Seg = Segment.Full;
 
-            data = new LinkedList<Geo2D>(arr);
+            data = new LinkedList<(double lonRad, double latRad)>(arr);
         }
 
         protected SwathSegment() { id = ++ClassCounter; }
@@ -1208,7 +1207,7 @@ public class SwathCore2D
 
         public int Length { get { return data.Count; } }
 
-        public Geo2D Begin
+        public (double lonRad, double latRad) Begin
         {
             get
             {
@@ -1216,7 +1215,7 @@ public class SwathCore2D
             }
         }
 
-        public Geo2D End
+        public (double lonRad, double latRad) End
         {
             get
             {
@@ -1235,17 +1234,17 @@ public class SwathCore2D
             return string.Format("Segment {0:00}", id);
         }
 
-        public List<Geo2D> NewData { get { return new List<Geo2D>(data); } }
-        public List<Geo2D> NewReverseData { get { var temp = new List<Geo2D>(data); temp.Reverse(); return temp; } }
+        public List<(double lonRad, double latRad)> NewData { get { return new List<(double lonRad, double latRad)>(data); } }
+        public List<(double lonRad, double latRad)> NewReverseData { get { var temp = new List<(double lonRad, double latRad)>(data); temp.Reverse(); return temp; } }
 
-        private readonly LinkedList<Geo2D> data = new();
+        private readonly LinkedList<(double lonRad, double latRad)> data = new();
 
-        public void AddFirst(Geo2D point)
+        public void AddFirst((double lonRad, double latRad) point)
         {
             data.AddFirst(point);
         }
 
-        public void AddLast(Geo2D point)
+        public void AddLast((double lonRad, double latRad) point)
         {
             data.AddLast(point);
         }
