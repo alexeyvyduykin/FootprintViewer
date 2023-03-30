@@ -35,7 +35,7 @@ public class TrackProvider : IProvider, IDynamic
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Satellites.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -52,13 +52,18 @@ public class TrackProvider : IProvider, IDynamic
 
     private async Task UpdateImpl()
     {
-        var satellites = await _dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        _dict = await CreateDataAsync(satellites);
+        if (ps != null)
+        {
+            var satellites = ps.Satellites;
 
-        _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+            _dict = await CreateDataAsync(satellites);
 
-        _featureCache.Clear();
+            _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+
+            _featureCache.Clear();
+        }
     }
 
     public void ChangedData(SatelliteViewModel satellite)

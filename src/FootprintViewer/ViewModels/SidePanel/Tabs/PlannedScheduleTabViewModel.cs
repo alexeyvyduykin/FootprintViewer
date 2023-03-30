@@ -111,7 +111,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
         void flyTo(ObservationTaskResult result)
         {
-            _mapNavigator.FlyToFootprint(result.Footprint.Center.Coordinate);
+            _mapNavigator.FlyToFootprint(result.Geometry.Center.Coordinate);
 
             //_featureManager
             //    .OnLayer(_layer)

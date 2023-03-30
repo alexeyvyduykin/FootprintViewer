@@ -5,6 +5,9 @@ namespace FootprintViewer.Data.Models;
 [JsonObject]
 public class ObservationTaskResult : BaseTaskResult
 {
-    [JsonProperty("Footprint")]
-    public FootprintFrame? Footprint { get; set; }
+    [JsonProperty("Geometry")]
+    public FootprintGeometry Geometry { get; set; } = null!;
+
+    [JsonProperty("Direction")]
+    public SwathDirection Direction { get; set; }
 }

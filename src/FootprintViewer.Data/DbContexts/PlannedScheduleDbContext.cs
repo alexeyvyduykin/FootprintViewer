@@ -37,6 +37,10 @@ public class PlannedScheduleDbContext : DbCustomContext
 
         builder.Property(e => e.DateTime).HasColumnType("timestamp without time zone");
 
+        builder.Property(e => e.Satellites).HasConversion(
+            v => SerializeObject(v),
+            v => DeserializeObject<List<Satellite>>(v) ?? new());
+
         builder.Property(e => e.Tasks).HasConversion(
             v => SerializeObject(v),
             v => DeserializeObject<List<ITask>>(v) ?? new());

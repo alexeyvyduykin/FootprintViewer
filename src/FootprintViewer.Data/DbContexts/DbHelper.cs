@@ -88,7 +88,6 @@ public static class DbHelper
         {
             DbKeys.Footprints => s => new FootprintDbContext(tableName, s),
             DbKeys.GroundTargets => s => new GroundTargetDbContext(tableName, s),
-            DbKeys.Satellites => s => new SatelliteDbContext(tableName, s),
             DbKeys.GroundStations => s => new GroundStationDbContext(tableName, s),
             DbKeys.UserGeometries => s => new UserGeometryDbContext(tableName, s),
             DbKeys.PlannedSchedules => s => new PlannedScheduleDbContext(tableName, s),
@@ -148,7 +147,6 @@ public static class DbHelper
         {
             DbKeys.Footprints => TableInfoType.Footprint,
             DbKeys.GroundTargets => TableInfoType.GroundTarget,
-            DbKeys.Satellites => TableInfoType.Satellite,
             DbKeys.GroundStations => TableInfoType.GroundStation,
             DbKeys.UserGeometries => TableInfoType.UserGeometry,
             _ => throw new Exception($"Table info for key={key} not register."),
@@ -162,7 +160,6 @@ public static class DbHelper
         {
             DbKeys.Footprints => typeof(Footprint),
             DbKeys.GroundTargets => typeof(GroundTarget),
-            DbKeys.Satellites => typeof(Satellite),
             DbKeys.GroundStations => typeof(GroundStation),
             DbKeys.UserGeometries => typeof(UserGeometry),
             DbKeys.PlannedSchedules => typeof(PlannedScheduleResult),
@@ -177,7 +174,6 @@ public static class DbHelper
         {
             DbKeys.Footprints => s => GetValues<Footprint>(s),
             DbKeys.GroundTargets => s => GetValues<GroundTarget>(s),
-            DbKeys.Satellites => s => GetValues<Satellite>(s),
             DbKeys.GroundStations => s => GetValues<GroundStation>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
             _ => throw new Exception($"DbHelper key={key} not register."),
@@ -191,7 +187,6 @@ public static class DbHelper
         {
             DbKeys.Footprints => s => GetValues<Footprint>(s),
             DbKeys.GroundTargets => s => GetValues<GroundTarget>(s),
-            DbKeys.Satellites => s => GetValues<Satellite>(s),
             DbKeys.GroundStations => s => GetValues<GroundStation>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
             _ => throw new Exception($"DbHelper key={key} not register."),
@@ -240,7 +235,6 @@ public static class DbHelper
             {
                 DbKeys.Footprints => JsonValidation<List<Footprint>>(path),
                 DbKeys.GroundTargets => JsonValidation<List<GroundTarget>>(path),
-                DbKeys.Satellites => JsonValidation<List<Satellite>>(path),
                 DbKeys.GroundStations => JsonValidation<List<GroundStation>>(path),
                 DbKeys.UserGeometries => JsonValidation<List<UserGeometry>>(path),
                 _ => throw new Exception($"DbHelper key={key} not register.")

@@ -162,16 +162,6 @@ public static class DesignData
                     new SourceViewModel(source) { Name = "Source6" },
                 },
             },
-            new SourceContainerViewModel(connection, DbKeys.Satellites.ToString(), _resolver)
-            {
-                Header = DbKeys.Satellites.ToString(),
-                Sources = new List<ISourceViewModel>()
-                {
-                    new SourceViewModel(source) { Name = "Source7" },
-                    new SourceViewModel(source) { Name = "Source8" },
-                    new SourceViewModel(source) { Name = "Source9" },
-                },
-            },
             new SourceContainerViewModel(connection, DbKeys.GroundStations.ToString(), _resolver)
             {
                 Header = DbKeys.GroundStations.ToString(),

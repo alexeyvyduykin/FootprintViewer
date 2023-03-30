@@ -29,7 +29,7 @@ public sealed class FootprintViewModel : ViewModelBase, IViewerItem
         _duration = footprint.Duration;
         _node = footprint.Node;
         _direction = footprint.Direction;
-        _polygon = CreatePolygon(footprint.Points);
+        _polygon = CreatePolygon(footprint.Border);
     }
 
     private static Polygon? CreatePolygon(LineString? lineString)

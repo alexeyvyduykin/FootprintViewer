@@ -28,6 +28,7 @@ public static class PlannedScheduleBuilder
         {
             Name = "PlannedSchedule1",
             DateTime = DateTime.Now,
+            Satellites = satellites.ToList(),
             Tasks = tasks,
             TaskAvailabilities = observationWindows.Concat(communicationWindows).ToList(),
             PlannedSchedules = observationTasks.Concat(communicationTasks).ToList()
@@ -48,6 +49,7 @@ public static class PlannedScheduleBuilder
         {
             Name = "PlannedSchedule1",
             DateTime = DateTime.Now,
+            Satellites = satellites.ToList(),
             Tasks = tasks,
             // TaskAvailabilities = observationWindows.Concat(communicationWindows).ToList(),
             TaskAvailabilities = observationWindows.ToList(),
@@ -100,6 +102,7 @@ public static class PlannedScheduleBuilder
         {
             Name = "PlannedSchedule01",
             DateTime = DateTime.Now,
+            Satellites = satellites.ToList(),
             Tasks = tasks,
             TaskAvailabilities = windows,
             PlannedSchedules = observationTasks

@@ -174,7 +174,7 @@ public static class FeatureBuilder
 
     public static IFeature Build(Footprint footprint)
     {
-        var poly = AreaCutting(footprint.Points!.Coordinates);
+        var poly = AreaCutting(footprint.Border.Coordinates);
 
         var feature = poly.ToFeature(footprint.Name!);
 

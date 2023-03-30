@@ -11,6 +11,9 @@ public class PlannedScheduleResult
     [JsonIgnore]
     public DateTime DateTime { get; set; }
 
+    [JsonProperty("Satellites")]
+    public List<Satellite> Satellites { get; set; } = new();
+
     [JsonProperty("Tasks")]
     public List<ITask> Tasks { get; set; } = new();
 

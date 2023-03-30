@@ -8,8 +8,6 @@ public enum DbKeys
     Footprints,
     [EnumMember(Value = "groundTargets")]
     GroundTargets,
-    [EnumMember(Value = "satellites")]
-    Satellites,
     [EnumMember(Value = "groundStations")]
     GroundStations,
     [EnumMember(Value = "userGeometries")]

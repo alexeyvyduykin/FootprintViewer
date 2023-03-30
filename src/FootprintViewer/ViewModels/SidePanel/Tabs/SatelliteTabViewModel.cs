@@ -45,7 +45,7 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Satellites.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -83,23 +83,27 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var palette = _layerStyleManager.GetPalette<IColorPalette>(LayerType.Track);
-        var res = await _dataManager.GetDataAsync<Satellite>(DbKeys.Satellites.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        var list = res.Select(s => new SatelliteViewModel(s)).ToList();
-
-        foreach (var item in list)
+        if (ps != null)
         {
-            item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s));
-            item.SwathsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
-            item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
+            var palette = _layerStyleManager.GetPalette<IColorPalette>(LayerType.Track);
+
+            var list = ps.Satellites.Select(s => new SatelliteViewModel(s)).ToList();
+
+            foreach (var item in list)
+            {
+                item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s));
+                item.SwathsObservable.Subscribe(s => _sensorProvider?.ChangedData(s));
+                item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
+            }
+
+            _satellites.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
         }
-
-        _satellites.Edit(innerList =>
-        {
-            innerList.Clear();
-            innerList.AddRange(list);
-        });
     }
 
     public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;

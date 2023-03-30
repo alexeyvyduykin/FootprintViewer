@@ -4,6 +4,7 @@ using FootprintViewer.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DatabaseCreatorSample;
@@ -15,7 +16,7 @@ class Program
         var connectionString1 = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
         var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
 
-        var gts = await GroundTargetBuilder.CreateAsync(5000);
+        var gts = await GroundTargetBuilder.CreateAsync(300);
         var satellites = await SatelliteBuilder.CreateAsync(5);
         var gss = await GroundStationBuilder.CreateDefaultAsync();
 
@@ -33,19 +34,23 @@ class Program
 
         var dbs = new DbContext[] { db1, db2 };
 
-        //CreateDb(dbs);
+        var tempUserGeometry1 = db1.UserGeometries.ToList();
+        var tempUserGeometry2 = db2.UserGeometries.ToList();
 
-        db1.Satellites.AddRange(satellites);
+        CreateDb(dbs);
+
         db1.GroundTargets.AddRange(gts);
         //db1.Footprints.AddRange(footprints);
         db1.GroundStations.AddRange(gss);
 
-        db2.Satellites.AddRange(satellites);
-        db2.GroundTargets.AddRange(gts);
-        db2.GroundStations.AddRange(gss);
+        //db2.GroundTargets.AddRange(gts);
+        //db2.GroundStations.AddRange(gss);
         db2.PlannedSchedules.Add(plannedSchedule);
 
-        //SaveDb(dbs);
+        SaveDb(dbs);
+
+        db1.UserGeometries.AddRange(tempUserGeometry1);
+        db2.UserGeometries.AddRange(tempUserGeometry2);
 
         Console.WriteLine("Database build");
     }

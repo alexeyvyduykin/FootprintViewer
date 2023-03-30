@@ -80,7 +80,7 @@ public static class FootprintBuilder
                         TargetName = $"GroundTarget{footprintIndex:0000}",
                         SatelliteName = satellite.Name,
                         Center = center,
-                        Points = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
+                        Border = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
                         Begin = epoch.AddSeconds(t - duration / 2.0),
                         Duration = duration,
                         Node = i + 1,

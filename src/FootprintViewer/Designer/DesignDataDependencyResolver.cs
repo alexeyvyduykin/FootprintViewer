@@ -192,7 +192,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         {
             { DbKeys.Footprints.ToString(), new[] { source1 } },
             { DbKeys.GroundTargets.ToString(), new[] { source2 } },
-            { DbKeys.Satellites.ToString(), new[] { source3 } },
             { DbKeys.GroundStations.ToString(), new[] { source4 } },
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },

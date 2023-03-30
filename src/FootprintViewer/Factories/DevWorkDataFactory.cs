@@ -22,10 +22,6 @@ public class DevWorkDataFactory : IDataFactory
         var groundTargetsKey = DbKeys.GroundTargets.ToString();
         var groundTargetsSource = new DatabaseSource(groundTargetsKey, connectionString, "GroundTargets");
 
-        // satellites
-        var satellitesKey = DbKeys.Satellites.ToString();
-        var satellitesSource = new DatabaseSource(satellitesKey, connectionString, "Satellites");
-
         // groundStations
         var groundStationsKey = DbKeys.GroundStations.ToString();
         var groundStationsSource = new DatabaseSource(groundStationsKey, connectionString, "GroundStations");
@@ -67,7 +63,6 @@ public class DevWorkDataFactory : IDataFactory
         {
             { footprintsKey, new[] { footprintSource } },
             { groundTargetsKey, new[] { groundTargetsSource } },
-            { satellitesKey, new[] { satellitesSource } },
             { groundStationsKey, new[] { groundStationsSource } },
             { userGeometriesKey, new[] { userGeometriesSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },

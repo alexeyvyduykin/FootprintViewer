@@ -7,19 +7,19 @@ namespace FootprintViewer.Data.Models;
 public class Footprint
 {
     [JsonProperty("Name")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [JsonProperty("SatelliteName")]
-    public string? SatelliteName { get; set; }
+    public string SatelliteName { get; set; } = null!;
 
     [JsonProperty("TargetName")]
-    public string? TargetName { get; set; }
+    public string TargetName { get; set; } = null!;
 
     [JsonProperty("Center")]
-    public Point? Center { get; set; }
+    public Point Center { get; set; } = null!;
 
     [JsonProperty("Points")]
-    public LineString? Points { get; set; }
+    public LineString Border { get; set; } = null!;
 
     [JsonProperty("Begin")]
     public DateTime Begin { get; set; }

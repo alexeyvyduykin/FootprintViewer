@@ -33,6 +33,12 @@ public static class TaskResultBuilder
             var res = windows.Select(s => (s.satName, windows: s.windows.Where(t => Equals(t.Name, gtName)).ToList())).ToList();
 
             var i = random.Next(0, res.Count);
+
+            if (res[i].windows.Count == 0)
+            {
+                continue;
+            }
+
             var j = random.Next(0, res[i].windows.Count);
 
             var satName = res[i].satName;
@@ -59,10 +65,10 @@ public static class TaskResultBuilder
                     Begin = epoch.AddSeconds(begin),
                     Duration = duration
                 },
-                Footprint = new FootprintFrame
+                Geometry = new FootprintGeometry
                 {
                     Center = new Point(lonDeg, latDeg),
-                    Points = FootprintBuilder.CreateFootprintBorder(lonDeg, latDeg)
+                    Border = FootprintBuilder.CreateFootprintBorder(lonDeg, latDeg)
                 },
                 Transition = null
             };
@@ -95,7 +101,9 @@ public static class TaskResultBuilder
             TaskName = taskName,
             SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
             Interval = new Interval { Begin = begin, Duration = duration },
-            Footprint = new FootprintFrame { Center = footprint.Center!, Points = footprint.Points! },
+            Node = footprint.Node,
+            Direction = footprint.Direction,
+            Geometry = new FootprintGeometry { Center = footprint.Center, Border = footprint.Border },
             Transition = null
         };
 

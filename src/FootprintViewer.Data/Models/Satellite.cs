@@ -6,7 +6,7 @@ namespace FootprintViewer.Data.Models;
 public class Satellite
 {
     [JsonProperty("Name")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [JsonProperty("Semiaxis")]
     public double Semiaxis { get; set; }
