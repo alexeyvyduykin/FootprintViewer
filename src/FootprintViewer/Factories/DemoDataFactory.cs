@@ -16,10 +16,12 @@ public class DemoDataFactory : IDataFactory
         var footprintPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/Footprints.json");
         var footprintSource = new JsonSource(footprintsKey, footprintPath);
 
+        // TODO: Set empty plannedSchedule.json for deliviry ground targets
+
         // groundTargets
-        var groundTargetsKey = DbKeys.GroundTargets.ToString();
-        var groundTargetPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/GroundTargets.json");
-        var groundTargetsSource = new JsonSource(groundTargetsKey, groundTargetPath);
+        //var groundTargetsKey = DbKeys.GroundTargets.ToString();
+        //var groundTargetPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/GroundTargets.json");
+        //var groundTargetsSource = new JsonSource(groundTargetsKey, groundTargetPath);
 
         // TODO: Set empty plannedSchedule.json for deliviry satellites
 
@@ -61,7 +63,6 @@ public class DemoDataFactory : IDataFactory
         var sources = new Dictionary<string, IList<ISource>>()
         {
             { footprintsKey, new[] { footprintSource } },
-            { groundTargetsKey, new[] { groundTargetsSource } },
             { groundStationsKey, new[] { groundStationsSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },

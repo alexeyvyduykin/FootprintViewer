@@ -297,11 +297,11 @@ public sealed partial class MainViewModel : ViewModelBase
                     .Select(s => new FootprintClickInfoPanel(s))
                     .FirstOrDefault(),
             nameof(LayerType.GroundTarget) =>
-                (await _dataManager.GetDataAsync<GroundTarget>(nameof(DbKeys.GroundTargets)))
+                (await _dataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new GroundTargetViewModel(s))
                     .Select(s => new GroundTargetClickInfoPanel(s))
-                    .FirstOrDefault(),
+                    .FirstOrDefault() ?? null,
             nameof(LayerType.User) =>
                 (await _dataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
                     .Where(s => Equals(s.Name, feature?["Name"]))

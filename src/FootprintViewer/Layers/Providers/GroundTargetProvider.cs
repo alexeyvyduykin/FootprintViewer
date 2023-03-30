@@ -43,7 +43,7 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -64,9 +64,12 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
 
     private async Task UpdateImpl()
     {
-        var groundTargets = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        UpdateData(groundTargets);
+        if (ps != null)
+        {
+            UpdateData(ps.GroundTargets);
+        }
     }
 
     public void UpdateData(IList<GroundTarget> groundTargets)

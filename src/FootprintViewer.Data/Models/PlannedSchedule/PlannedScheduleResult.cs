@@ -14,6 +14,9 @@ public class PlannedScheduleResult
     [JsonProperty("Satellites")]
     public List<Satellite> Satellites { get; set; } = new();
 
+    [JsonProperty("GroundTargets")]
+    public List<GroundTarget> GroundTargets { get; set; } = new();
+
     [JsonProperty("Tasks")]
     public List<ITask> Tasks { get; set; } = new();
 

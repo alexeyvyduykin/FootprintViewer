@@ -6,8 +6,6 @@ namespace FootprintViewer.Data.Databases;
 
 public class PlannedScheduleDatabase : DbContext
 {
-    public DbSet<GroundTarget> GroundTargets => Set<GroundTarget>();
-
     public DbSet<GroundStation> GroundStations => Set<GroundStation>();
 
     public DbSet<UserGeometry> UserGeometries => Set<UserGeometry>();
@@ -19,9 +17,6 @@ public class PlannedScheduleDatabase : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("postgis");
-
-        // GroudnTargets
-        modelBuilder.Entity<GroundTarget>(GroundTargetDbContext.Configure);
 
         // GroundStations
         modelBuilder.Entity<GroundStation>(GroundStationDbContext.Configure);

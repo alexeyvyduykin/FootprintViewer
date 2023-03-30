@@ -95,31 +95,6 @@ public sealed class TableInfoViewModel : DialogViewModelBase<object>
                 Dimension="«Left», «Right»"
             },
         } },
-        { TableInfoType.GroundTarget, new[]
-        {
-            new TableColumnViewModel()
-            {
-                FieldName = "Name",
-                FieldType = "text",
-                PrimaryKey = true,
-                Description = "Имя наземной цели"
-            },
-            new TableColumnViewModel()
-            {
-                FieldName = "Type",
-                FieldType = "text",
-                Description = "Тип наземной цели",
-                Dimension = "«Point», «Route», «Area»"
-            },
-            new TableColumnViewModel()
-            {
-                FieldName = "Points",
-                FieldType = "geometry",
-                Hyperlink = "(PostGIS)",
-                Description = "Геометрия наземной цели",
-                Dimension = "Geometry"
-            }
-        } },
         { TableInfoType.GroundStation, new[]
         {
             new TableColumnViewModel()
@@ -145,8 +120,7 @@ public sealed class TableInfoViewModel : DialogViewModelBase<object>
                 Dimension="град"
             },
         } },
-        { TableInfoType.UserGeometry,
-            new[]
+        { TableInfoType.UserGeometry, new[]
             {
                 new TableColumnViewModel()
                 {

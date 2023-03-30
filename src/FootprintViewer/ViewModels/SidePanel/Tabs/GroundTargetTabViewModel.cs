@@ -91,7 +91,7 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .Subscribe(UpdateProvider);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.GroundTargets.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -130,13 +130,16 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<GroundTarget>(DbKeys.GroundTargets.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        _groundTargets.Edit(innerList =>
+        if (ps != null)
         {
-            innerList.Clear();
-            innerList.AddRange(res);
-        });
+            _groundTargets.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(ps.GroundTargets);
+            });
+        }
     }
 
     private void EnterImpl(GroundTargetViewModel groundTarget)

@@ -39,11 +39,9 @@ class Program
 
         CreateDb(dbs);
 
-        db1.GroundTargets.AddRange(gts);
         //db1.Footprints.AddRange(footprints);
         db1.GroundStations.AddRange(gss);
 
-        //db2.GroundTargets.AddRange(gts);
         //db2.GroundStations.AddRange(gss);
         db2.PlannedSchedules.Add(plannedSchedule);
 

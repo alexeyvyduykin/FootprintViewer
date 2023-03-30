@@ -179,8 +179,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private static DataManager CreateDataManager()
     {
         var source1 = new LocalSource<Footprint>(BuildFootprints);
-        var source2 = new LocalSource<GroundTarget>(BuildGroundTargets);
-        var source3 = new LocalSource<Satellite>(BuildSatellites);
         var source4 = new LocalSource<GroundStation>(BuildGroundStations);
         var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
         var source6 = new LocalSource<MapResource>(BuildMapResources);
@@ -191,7 +189,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         var sources = new Dictionary<string, IList<ISource>>()
         {
             { DbKeys.Footprints.ToString(), new[] { source1 } },
-            { DbKeys.GroundTargets.ToString(), new[] { source2 } },
             { DbKeys.GroundStations.ToString(), new[] { source4 } },
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },
@@ -214,13 +211,9 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         return tasks.Select(s => s.Result).ToList();
     }
 
-    private static List<Satellite> BuildSatellites() => Build(5, SatelliteBuilder.CreateRandom);
-
     private static List<Footprint> BuildFootprints() => Build(10, FootprintBuilder.CreateRandom);
 
     private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, PlannedScheduleBuilder.CreateRandom);
-
-    private static List<GroundTarget> BuildGroundTargets() => Build(10, GroundTargetBuilder.CreateRandom);
 
     private static List<UserGeometry> BuildUserGeometries() => Build(10, UserGeometryBuilder.CreateRandom);
 

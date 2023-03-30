@@ -6,8 +6,6 @@ public enum DbKeys
 {
     [EnumMember(Value = "footprints")]
     Footprints,
-    [EnumMember(Value = "groundTargets")]
-    GroundTargets,
     [EnumMember(Value = "groundStations")]
     GroundStations,
     [EnumMember(Value = "userGeometries")]
