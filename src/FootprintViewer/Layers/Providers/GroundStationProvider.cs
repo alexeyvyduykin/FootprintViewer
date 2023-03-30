@@ -33,7 +33,7 @@ public class GroundStationProvider : IProvider, IDynamic
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.GroundStations.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -50,16 +50,19 @@ public class GroundStationProvider : IProvider, IDynamic
 
     private async Task UpdateImpl()
     {
-        var groundStations = await _dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        _cache.Clear();
-
-        foreach (var item in groundStations)
+        if (ps != null)
         {
-            _cache.TryAdd(item.Name!, new List<IFeature>());
-        }
+            _cache.Clear();
 
-        _featureCache.Clear();
+            foreach (var item in ps.GroundStations)
+            {
+                _cache.TryAdd(item.Name, new List<IFeature>());
+            }
+
+            _featureCache.Clear();
+        }
     }
 
     public void ChangedData(GroundStationViewModel groundStation)

@@ -45,6 +45,10 @@ public class PlannedScheduleDbContext : DbCustomContext
             v => SerializeObject(v),
             v => DeserializeObject<List<GroundTarget>>(v) ?? new());
 
+        builder.Property(e => e.GroundStations).HasConversion(
+            v => SerializeObject(v),
+            v => DeserializeObject<List<GroundStation>>(v) ?? new());
+
         builder.Property(e => e.Tasks).HasConversion(
             v => SerializeObject(v),
             v => DeserializeObject<List<ITask>>(v) ?? new());

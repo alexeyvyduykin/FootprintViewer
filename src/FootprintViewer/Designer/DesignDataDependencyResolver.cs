@@ -14,7 +14,6 @@ using FootprintViewer.ViewModels.SidePanel.Tabs;
 using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Mapsui.Layers;
-using NetTopologySuite.Geometries;
 using ReactiveUI;
 using Splat;
 using System;
@@ -179,7 +178,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private static DataManager CreateDataManager()
     {
         var source1 = new LocalSource<Footprint>(BuildFootprints);
-        var source4 = new LocalSource<GroundStation>(BuildGroundStations);
         var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
         var source6 = new LocalSource<MapResource>(BuildMapResources);
         var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
@@ -189,7 +187,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         var sources = new Dictionary<string, IList<ISource>>()
         {
             { DbKeys.Footprints.ToString(), new[] { source1 } },
-            { DbKeys.GroundStations.ToString(), new[] { source4 } },
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },
             { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
@@ -216,17 +213,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, PlannedScheduleBuilder.CreateRandom);
 
     private static List<UserGeometry> BuildUserGeometries() => Build(10, UserGeometryBuilder.CreateRandom);
-
-    private static List<GroundStation> BuildGroundStations() =>
-        new()
-        {
-                new GroundStation() { Name = "Москва",      Center = new Point( 37.38, 55.56), Angles = new [] { 0.0, 6, 10, 11 } },
-                new GroundStation() { Name = "Новосибирск", Center = new Point( 82.57, 54.59), Angles = new [] { 0.0, 6, 10, 11 } },
-                new GroundStation() { Name = "Хабаровск",   Center = new Point(135.04, 48.29), Angles = new [] { 0.0, 6, 10, 11 } },
-                new GroundStation() { Name = "Шпицберген",  Center = new Point(    21, 78.38), Angles = new [] { 0.0, 6, 10, 11 } },
-                new GroundStation() { Name = "Анадырь",     Center = new Point(177.31, 64.44), Angles = new [] { 0.0, 6, 10, 11 } },
-                new GroundStation() { Name = "Тикси",       Center = new Point(128.52, 71.38), Angles = new [] { 0.0, 6, 10, 11 } },
-        };
 
     private static List<MapResource> BuildMapResources() =>
         new()

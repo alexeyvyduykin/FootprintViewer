@@ -8,8 +8,6 @@ public class FootprintViewerDatabase : DbContext
 {
     public DbSet<Footprint> Footprints => Set<Footprint>();
 
-    public DbSet<GroundStation> GroundStations => Set<GroundStation>();
-
     public DbSet<UserGeometry> UserGeometries => Set<UserGeometry>();
 
     public FootprintViewerDatabase(DbContextOptions<FootprintViewerDatabase> options) : base(options) { }
@@ -20,9 +18,6 @@ public class FootprintViewerDatabase : DbContext
 
         // Footprints
         modelBuilder.Entity<Footprint>(FootprintDbContext.Configure);
-
-        // GroundStations
-        modelBuilder.Entity<GroundStation>(GroundStationDbContext.Configure);
 
         // UserGeometries
         modelBuilder.Entity<UserGeometry>(UserGeometryDbContext.Configure);

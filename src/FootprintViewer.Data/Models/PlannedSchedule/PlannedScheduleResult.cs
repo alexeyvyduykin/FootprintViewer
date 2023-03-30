@@ -17,6 +17,9 @@ public class PlannedScheduleResult
     [JsonProperty("GroundTargets")]
     public List<GroundTarget> GroundTargets { get; set; } = new();
 
+    [JsonProperty("GroundStations")]
+    public List<GroundStation> GroundStations { get; set; } = new();
+
     [JsonProperty("Tasks")]
     public List<ITask> Tasks { get; set; } = new();
 

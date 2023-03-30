@@ -95,31 +95,6 @@ public sealed class TableInfoViewModel : DialogViewModelBase<object>
                 Dimension="«Left», «Right»"
             },
         } },
-        { TableInfoType.GroundStation, new[]
-        {
-            new TableColumnViewModel()
-            {
-                FieldName = "Name",
-                FieldType="text",
-                PrimaryKey=true,
-                Description="Имя наземной станции"
-            },
-            new TableColumnViewModel()
-            {
-                FieldName = "Center",
-                FieldType="geometry",
-                Hyperlink="(PostGIS)",
-                Description="Координаты центра наземной станции",
-                Dimension="Point"
-            },
-            new TableColumnViewModel()
-            {
-                FieldName = "Angles",
-                FieldType="double precision[]",
-                Description="Центральные углы определяющие области покрытия",
-                Dimension="град"
-            },
-        } },
         { TableInfoType.UserGeometry, new[]
             {
                 new TableColumnViewModel()

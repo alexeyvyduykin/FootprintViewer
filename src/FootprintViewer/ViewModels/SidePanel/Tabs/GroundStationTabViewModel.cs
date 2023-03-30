@@ -43,7 +43,7 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.GroundStations.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -81,23 +81,26 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var palette = _layerStyleManager.GetPalette<ISingleHuePalette>(LayerType.GroundStation);
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        var res = await _dataManager.GetDataAsync<GroundStation>(DbKeys.GroundStations.ToString());
-
-        var list = res.Select(s => new GroundStationViewModel(s)).ToList();
-
-        foreach (var item in list)
+        if (ps != null)
         {
-            item.Palette = palette;
-            item.UpdateObservable.Subscribe(s => _provider?.ChangedData(s));
+            var palette = _layerStyleManager.GetPalette<ISingleHuePalette>(LayerType.GroundStation);
+
+            var list = ps.GroundStations.Select(s => new GroundStationViewModel(s)).ToList();
+
+            foreach (var item in list)
+            {
+                item.Palette = palette;
+                item.UpdateObservable.Subscribe(s => _provider?.ChangedData(s));
+            }
+
+            _groundStation.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(list);
+            });
         }
-
-        _groundStation.Edit(innerList =>
-        {
-            innerList.Clear();
-            innerList.AddRange(list);
-        });
     }
 
     public ReadOnlyObservableCollection<GroundStationViewModel> Items => _items;

@@ -18,10 +18,6 @@ public class DevWorkDataFactory : IDataFactory
         var footprintsKey = DbKeys.Footprints.ToString();
         var footprintSource = new DatabaseSource(footprintsKey, connectionString, "Footprints");
 
-        // groundStations
-        var groundStationsKey = DbKeys.GroundStations.ToString();
-        var groundStationsSource = new DatabaseSource(groundStationsKey, connectionString, "GroundStations");
-
         // userGeometries
         var userGeometriesKey = DbKeys.UserGeometries.ToString();
         var userGeometriesSource = new EditableDatabaseSource(userGeometriesKey, connectionString, "UserGeometries");
@@ -58,7 +54,6 @@ public class DevWorkDataFactory : IDataFactory
         var sources = new Dictionary<string, IList<ISource>>()
         {
             { footprintsKey, new[] { footprintSource } },
-            { groundStationsKey, new[] { groundStationsSource } },
             { userGeometriesKey, new[] { userGeometriesSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },

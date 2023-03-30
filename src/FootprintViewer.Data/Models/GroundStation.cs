@@ -7,7 +7,7 @@ namespace FootprintViewer.Data.Models;
 public class GroundStation
 {
     [JsonProperty("Name")]
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [JsonProperty("Center")]
     public Point Center { get; set; } = new Point(0, 0);

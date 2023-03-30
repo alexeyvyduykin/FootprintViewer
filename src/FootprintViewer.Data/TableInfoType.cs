@@ -3,6 +3,5 @@
 public enum TableInfoType
 {
     Footprint,
-    GroundStation,
     UserGeometry
 };

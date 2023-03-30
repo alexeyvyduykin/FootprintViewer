@@ -30,6 +30,7 @@ public static class PlannedScheduleBuilder
             DateTime = DateTime.Now,
             Satellites = satellites.ToList(),
             GroundTargets = groundTargets.ToList(),
+            GroundStations = groundStations.ToList(),
             Tasks = tasks,
             TaskAvailabilities = observationWindows.Concat(communicationWindows).ToList(),
             PlannedSchedules = observationTasks.Concat(communicationTasks).ToList()
@@ -53,6 +54,7 @@ public static class PlannedScheduleBuilder
             Satellites = satellites.ToList(),
             Tasks = tasks,
             GroundTargets = groundTargets.ToList(),
+            GroundStations = groundStations.ToList(),
             // TaskAvailabilities = observationWindows.Concat(communicationWindows).ToList(),
             TaskAvailabilities = observationWindows.ToList(),
             //  PlannedSchedules = observationTasks.Concat(communicationTasks).ToList()
@@ -95,8 +97,9 @@ public static class PlannedScheduleBuilder
         var satellites = SatelliteBuilder.Create(1);
         var footprints = FootprintBuilder.Create(satellites, count);
         var gts = GroundTargetBuilder.Create(footprints, count);
+        var gss = GroundStationBuilder.CreateDefault();
 
-        var tasks = TaskBuilder.Create(gts, new List<GroundStation>());
+        var tasks = TaskBuilder.Create(gts, gss);
         var observationTasks = TaskResultBuilder.CreateObservations(tasks, footprints);
         var windows = TaskAvailabilityBuilder.CreateObservations(footprints, satellites, tasks);
 
@@ -106,6 +109,7 @@ public static class PlannedScheduleBuilder
             DateTime = DateTime.Now,
             Satellites = satellites.ToList(),
             GroundTargets = gts.ToList(),
+            GroundStations = gss.ToList(),
             Tasks = tasks,
             TaskAvailabilities = windows,
             PlannedSchedules = observationTasks
