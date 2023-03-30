@@ -1,9 +1,11 @@
 ﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
@@ -14,6 +16,9 @@ public static class FootprintBuilder
     private static readonly double _r = Math.Sqrt(_size * _size / 2.0);
     private static readonly int _durationMin = 10;
     private static readonly int _durationMax = 30;
+
+    public static async Task<IList<Footprint>> CreateAsync(IList<Satellite> satellites, int count)
+        => await Observable.Start(() => Create(satellites, count), RxApp.TaskpoolScheduler);
 
     public static IList<Footprint> Create(IList<Satellite> satellites, int footprintCount)
     {
@@ -89,6 +94,20 @@ public static class FootprintBuilder
         }
 
         return footprints;
+    }
+
+    public static Footprint CreateRandom()
+    {
+        return new Footprint()
+        {
+            Name = $"Footprint{_random.Next(1, 101):000}",
+            SatelliteName = $"Satellite{_random.Next(1, 10):00}",
+            Center = new Point(_random.Next(-180, 180), _random.Next(-90, 90)),
+            Begin = DateTime.Now,
+            Duration = _random.Next(20, 40),
+            Node = _random.Next(1, 16),
+            Direction = (Models.SwathDirection)_random.Next(0, 2),
+        };
     }
 
     private static double GetRandomAngle(double a1, double a2)
@@ -243,4 +262,37 @@ public static class FootprintBuilder
 
         return (t, (lonDeg * SpaceMath.DegreesToRadians, latDeg * SpaceMath.DegreesToRadians));
     }
+
+    public static LineString CreateFootprintBorder(double lonDeg, double latDeg)
+    {
+        double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
+
+        var (dlon1, dlat1) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon2, dlat2) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon3, dlat3) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon4, dlat4) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        var border = new[]
+        {
+            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1),
+            (LonConverters.Default(lonDeg + dlon2), latDeg + dlat2),
+            (LonConverters.Default(lonDeg + dlon3), latDeg + dlat3),
+            (LonConverters.Default(lonDeg + dlon4), latDeg + dlat4),
+            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1)
+        };
+
+        var coords = border.Select(s => new Coordinate(s.Item1, s.Item2)).ToArray();
+
+        return new LineString(coords);
+    }
+
 }

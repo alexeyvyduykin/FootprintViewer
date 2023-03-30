@@ -40,8 +40,7 @@ internal class Sample4 : BaseSample
         //var targets = new List<(double,double,string)>() { (-18.23, 0.72, "") };
         //var targets = new List<(double,double,string)>() { (-18.28, 0.94, "") };
 
-        var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNodes(orbit, fromNode, toNode, gam1Deg, gam2Deg, targets);
+        var res = SpaceMethods.ObservationGroundTargets(orbit, fromNode, toNode, gam1Deg, gam2Deg, targets);
 
         var features = targets.Select(s => (s.Item1, s.Item2)).ToList().ToPointsFeatures();
 

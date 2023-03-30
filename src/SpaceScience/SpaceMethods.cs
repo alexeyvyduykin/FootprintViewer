@@ -1,7 +1,20 @@
-﻿namespace SpaceScience;
+﻿using SpaceScience.Methods;
+using SpaceScience.Model;
+
+namespace SpaceScience;
 
 public static class SpaceMethods
 {
+    public static IList<TimeWindowResult> ObservationGroundTargets(Orbit orbit, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string name)> targets)
+    {
+        return ObservationGroundTargets(orbit, node, node, angle1Deg, angle2Deg, targets);
+    }
+
+    public static IList<TimeWindowResult> ObservationGroundTargets(Orbit orbit, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string name)> targets)
+    {
+        return TimeWindowMethod.BuildOnNodes(orbit, fromNode, toNode, angle1Deg, angle2Deg, targets);
+    }
+
     public static double CreateCentralAngle((double lonDeg, double latDeg) trackPoint, (double lonDeg, double latDeg) target)
     {
         //(X, Y, D) - Координаты подспутниковой точки

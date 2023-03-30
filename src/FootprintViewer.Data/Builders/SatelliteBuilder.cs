@@ -1,20 +1,27 @@
 ﻿using FootprintViewer.Data.Models;
+using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Model;
+using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
 
-internal static class DefaultSatelliteBuilder
+public static class SatelliteBuilder
 {
-    public static IList<Satellite> Create(int num)
+    private static readonly Random _random = new();
+
+    public static async Task<IList<Satellite>> CreateAsync(int count)
+        => await Observable.Start(() => Create(count), RxApp.TaskpoolScheduler);
+
+    public static IList<Satellite> Create(int count)
     {
         return Enumerable
-            .Range(0, num)
-            .Select(index => CreateSatellite(index))
+            .Range(0, count)
+            .Select(index => CreateOnIndex(index))
             .ToList();
     }
 
-    private static Satellite CreateSatellite(int index)
+    private static Satellite CreateOnIndex(int index)
     {
         var dt = Convert.ToDateTime("1 Jul 2007 12:00:00.000");
 
@@ -43,5 +50,23 @@ internal static class DefaultSatelliteBuilder
         double S = jd.ToGmst();
         //double S = orbitState.SiderealTime();       
         return (tAN * Constants.Omega + S) * SpaceMath.RadiansToDegrees + lonAN;
+    }
+
+    public static Satellite CreateRandom()
+    {
+        return new Satellite()
+        {
+            Name = $"Satellite{_random.Next(1, 10):00}",
+            Semiaxis = 6945.03,
+            Eccentricity = 0.0,
+            InclinationDeg = 97.65,
+            ArgumentOfPerigeeDeg = 0.0,
+            LongitudeAscendingNodeDeg = 0.0,
+            RightAscensionAscendingNodeDeg = 0.0,
+            Period = 5760.0,
+            Epoch = DateTime.Now,
+            LookAngleDeg = 40, // gam1 = 32, gam2 = 48
+            RadarAngleDeg = 16
+        };
     }
 }

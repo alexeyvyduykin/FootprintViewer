@@ -35,8 +35,7 @@ internal class Sample3 : BaseSample
 
         var targets = CreateTargets(300);
 
-        var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNode(orbit, node, gam1Deg, gam2Deg, targets);
+        var res = SpaceMethods.ObservationGroundTargets(orbit, node, gam1Deg, gam2Deg, targets);
 
         var features = targets.Select(s => (s.Item1, s.Item2)).ToList().ToPointsFeatures();
 

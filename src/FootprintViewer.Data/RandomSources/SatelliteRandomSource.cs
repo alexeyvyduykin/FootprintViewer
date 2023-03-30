@@ -19,6 +19,6 @@ public class SatelliteRandomSource : BaseRandomSource
 
     private static IList<Satellite> BuildSatellites(int generateCount)
     {
-        return new List<Satellite>(DefaultSatelliteBuilder.Create(generateCount));
+        return new List<Satellite>(SatelliteBuilder.Create(generateCount));
     }
 }

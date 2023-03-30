@@ -215,15 +215,15 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         return tasks.Select(s => s.Result).ToList();
     }
 
-    private static List<Satellite> BuildSatellites() => Build(5, RandomModelBuilder.BuildSatellite);
+    private static List<Satellite> BuildSatellites() => Build(5, SatelliteBuilder.CreateRandom);
 
-    private static List<Footprint> BuildFootprints() => Build(10, RandomModelBuilder.BuildFootprint);
+    private static List<Footprint> BuildFootprints() => Build(10, FootprintBuilder.CreateRandom);
 
-    private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, RandomModelBuilder.BuildPlannedSchedule);
+    private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, PlannedScheduleBuilder.CreateRandom);
 
-    private static List<GroundTarget> BuildGroundTargets() => Build(10, RandomModelBuilder.BuildGroundTarget);
+    private static List<GroundTarget> BuildGroundTargets() => Build(10, GroundTargetBuilder.CreateRandom);
 
-    private static List<UserGeometry> BuildUserGeometries() => Build(10, RandomModelBuilder.BuildUserGeometry);
+    private static List<UserGeometry> BuildUserGeometries() => Build(10, UserGeometryBuilder.CreateRandom);
 
     private static List<GroundStation> BuildGroundStations() =>
         new()
@@ -244,7 +244,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
                 new MapResource("OAM-World-1-10-J70", "")
         };
 
-    private static List<FootprintPreview> BuildFootprintPreviews() => Build(8, RandomModelBuilder.BuildFootprintPreview);
+    private static List<FootprintPreview> BuildFootprintPreviews() => Build(8, FootprintPreviewBuilder.CreateRandom);
 
     private static List<FootprintPreviewGeometry> BuildFootprintPreviewGeometries() =>
         new()

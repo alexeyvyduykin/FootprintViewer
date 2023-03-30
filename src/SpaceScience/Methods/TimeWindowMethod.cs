@@ -1,47 +1,16 @@
 ﻿using SpaceScience.Extensions;
 using SpaceScience.Model;
 
-namespace SpaceScience;
+namespace SpaceScience.Methods;
 
-public class TimeWindowResult
+internal static class TimeWindowMethod
 {
-    public string Name { get; set; } = null!;
-
-    public double Lat { get; set; }
-
-    public double Lon { get; set; }
-
-    public int Node { get; set; }
-
-    public bool IsLeftSwath { get; set; }
-
-    public double NadirTime { get; set; }
-
-    public double BeginTime { get; set; }
-
-    public double EndTime { get; set; }
-
-    public double NadirU { get; set; }
-
-    public double BeginU { get; set; }
-
-    public double EndU { get; set; }
-
-    public double MinAngle { get; set; }
-
-    public List<List<(double lonDeg, double latDeg)>> Interval { get; set; } = new();
-
-    public List<List<(double lonDeg, double latDeg)>> Direction { get; set; } = new();
-}
-
-public class TimeWindowBuilder
-{
-    public IList<TimeWindowResult> BuildOnNode(Orbit orbit, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
+    public static IList<TimeWindowResult> BuildOnNode(Orbit orbit, int node, double angle1Deg, double angle2Deg, List<(double lon, double lat, string name)> targets)
     {
         return BuildOnNodes(orbit, node, node, angle1Deg, angle2Deg, targets);
     }
 
-    public IList<TimeWindowResult> BuildOnNodes(Orbit orbit, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string obj_name)> targets)
+    public static IList<TimeWindowResult> BuildOnNodes(Orbit orbit, int fromNode, int toNode, double angle1Deg, double angle2Deg, List<(double lon, double lat, string name)> targets)
     {
         var (centralAngleMinDeg, centralAngleMaxDeg) = orbit.GetValidRange(angle1Deg, angle2Deg);
 
@@ -61,7 +30,7 @@ public class TimeWindowBuilder
         nearTrack.CalculateTrack(dt);
         farTrack.CalculateTrack(dt);
 
-        foreach (var (lonTargetDeg, latTargetDeg, OBJ_N) in targets)
+        foreach (var (lonTargetDeg, latTargetDeg, name) in targets)
         {
             (double lon, double lat) leftSaveDeg = (0.0, 0.0);
             (double lon, double lat) rightSaveDeg = (0.0, 0.0);
@@ -160,7 +129,7 @@ public class TimeWindowBuilder
 
                             list.Add(new()
                             {
-                                Name = OBJ_N,
+                                Name = name,
                                 Lat = latTargetDeg,
                                 Lon = lonTargetDeg,
                                 Node = node,
@@ -200,7 +169,7 @@ public class TimeWindowBuilder
 
                     list.Add(new()
                     {
-                        Name = OBJ_N,
+                        Name = name,
                         Lat = latTargetDeg,
                         Lon = lonTargetDeg,
                         Node = toNode,

@@ -57,34 +57,34 @@ public static class DesignData
 
     public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver) { IsActive = true };
 
-    public static FootprintPreviewViewModel FootprintPreview => new(RandomModelBuilder.BuildFootprintPreview());
+    public static FootprintPreviewViewModel FootprintPreview => new(FootprintPreviewBuilder.CreateRandom());
 
-    public static FootprintViewModel Footprint => new(RandomModelBuilder.BuildFootprint()) { IsShowInfo = true };
+    public static FootprintViewModel Footprint => new(FootprintBuilder.CreateRandom()) { IsShowInfo = true };
 
     public static TaskResultViewModel TaskResult =>
-        new(ModelFactory.CreateObservationTaskResult("ObservationTask0063", RandomModelBuilder.BuildFootprint()));
+        new(TaskResultBuilder.CreateObservation("ObservationTask0063", FootprintBuilder.CreateRandom()));
 
-    public static GroundStationViewModel GroundStation => new(RandomModelBuilder.BuildGroundStation()) { IsShow = true };
+    public static GroundStationViewModel GroundStation => new(GroundStationBuilder.CreateRandom()) { IsShow = true };
 
-    public static GroundTargetViewModel GroundTarget => new(RandomModelBuilder.BuildGroundTarget());
+    public static GroundTargetViewModel GroundTarget => new(GroundTargetBuilder.CreateRandom());
 
-    public static SatelliteViewModel Satellite => new(RandomModelBuilder.BuildSatellite()) { IsShow = true, IsShowInfo = true };
+    public static SatelliteViewModel Satellite => new(SatelliteBuilder.CreateRandom()) { IsShow = true, IsShowInfo = true };
 
-    public static UserGeometryViewModel UserGeometry => new(RandomModelBuilder.BuildUserGeometry());
+    public static UserGeometryViewModel UserGeometry => new(UserGeometryBuilder.CreateRandom());
 
     public static TimelinesViewModel Timelines => new(_resolver);
 
     public static TimelinesOldViewModel TimelinesOld => new(_resolver);
 
-    public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(RandomModelBuilder.BuildFootprint()));
+    public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(FootprintBuilder.CreateRandom()));
 
-    public static GroundTargetClickInfoPanel GroundTargetClickInfoPanel => new(new GroundTargetViewModel(RandomModelBuilder.BuildGroundTarget()));
+    public static GroundTargetClickInfoPanel GroundTargetClickInfoPanel => new(new GroundTargetViewModel(GroundTargetBuilder.CreateRandom()));
 
     public static RouteInfoPanel RouteInfoPanel => new() { Text = "Description" };
 
     public static AOIInfoPanel AOIInfoPanel => new() { Text = "Description" };
 
-    public static UserGeometryClickInfoPanel UserGeometryClickInfoPanel => new(new UserGeometryViewModel(RandomModelBuilder.BuildUserGeometry()));
+    public static UserGeometryClickInfoPanel UserGeometryClickInfoPanel => new(new UserGeometryViewModel(UserGeometryBuilder.CreateRandom()));
 
     public static InfoPanel InfoPanel => CreateInfoPanel();
 

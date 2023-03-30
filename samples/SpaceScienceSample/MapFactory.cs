@@ -82,8 +82,7 @@ internal class MapFactory
 
         var watch = Stopwatch.StartNew();
 
-        var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNode(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
+        var res = SpaceMethods.ObservationGroundTargets(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;
@@ -106,8 +105,7 @@ internal class MapFactory
 
         var watch = Stopwatch.StartNew();
 
-        var builder = new TimeWindowBuilder();
-        var res = builder.BuildOnNode(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
+        var res = SpaceMethods.ObservationGroundTargets(orbit, node, gam1Deg, gam2Deg, new() { (targetLonDeg, targetLatDeg, "1") });
 
         watch.Stop();
         var elapsedMs = watch.ElapsedMilliseconds;

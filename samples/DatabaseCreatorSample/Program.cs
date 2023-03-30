@@ -15,12 +15,16 @@ class Program
         var connectionString1 = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
         var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
 
-        var satellites = await RandomModelBuilder.CreateSatellitesAsync(5);
-        var gss = await ModelFactory.CreateDefaultGroundStationsAsync();
-        var footprints = await RandomModelBuilder.CreateFootprintsAsync(satellites, 2000);
-        var gts = await RandomModelBuilder.CreateGroundTargetsAsync(footprints, 5000);
+        var gts = await GroundTargetBuilder.CreateAsync(5000);
+        var satellites = await SatelliteBuilder.CreateAsync(5);
+        var gss = await GroundStationBuilder.CreateDefaultAsync();
 
-        var plannedSchedule = await RandomModelBuilder.CreatePlannedScheduleAsync(satellites, gts, gss, footprints);
+        // sats = 5, gts = 5000, res = 22880 [17 min]
+        //var res = await ModelFactory.CreateTimeWindowsAsync(satellites, gts);
+
+        //var footprints = await RandomModelBuilder.CreateFootprintsAsync(satellites, 2000);
+
+        var plannedSchedule = await PlannedScheduleBuilder.CreateAsync(satellites, gts, gss);
 
         Console.WriteLine("Model load");
 
@@ -29,11 +33,11 @@ class Program
 
         var dbs = new DbContext[] { db1, db2 };
 
-        CreateDb(dbs);
+        //CreateDb(dbs);
 
         db1.Satellites.AddRange(satellites);
         db1.GroundTargets.AddRange(gts);
-        db1.Footprints.AddRange(footprints);
+        //db1.Footprints.AddRange(footprints);
         db1.GroundStations.AddRange(gss);
 
         db2.Satellites.AddRange(satellites);
@@ -41,7 +45,7 @@ class Program
         db2.GroundStations.AddRange(gss);
         db2.PlannedSchedules.Add(plannedSchedule);
 
-        SaveDb(dbs);
+        //SaveDb(dbs);
 
         Console.WriteLine("Database build");
     }
