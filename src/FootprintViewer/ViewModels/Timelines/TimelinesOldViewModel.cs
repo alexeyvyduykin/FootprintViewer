@@ -2,6 +2,7 @@
 using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.ViewModels.Dialogs;
 using ReactiveUI;
@@ -60,7 +61,19 @@ public class TimelinesOldViewModel : DialogViewModelBase<object>
 
     private async Task<PlotModel> CreatePlotModel()
     {
-        var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+
+        if (ps == null)
+        {
+            throw new Exception();
+        }
+
+        var footprints = ps.PlannedSchedules
+            .Where(s => s is ObservationTaskResult)
+            .Cast<ObservationTaskResult>()
+            .Select(s => s.ToFootprint())
+            .ToList();
+
         var list = footprints.ToList();
         var min = list.Select(s => s.Begin).Min();
         var max = list.Select(s => s.Begin).Max();

@@ -69,7 +69,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
             .ToProperty(this, x => x.IsLoading);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 

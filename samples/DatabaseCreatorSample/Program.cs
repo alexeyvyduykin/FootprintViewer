@@ -13,8 +13,7 @@ class Program
 {
     static async Task Main(string[] _)
     {
-        var connectionString1 = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
-        var connectionString2 = DbHelper.ToConnectionString("localhost", 5432, "PlannedScheduleDatabase", "postgres", "user");
+        var connectionString = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
 
         var gts = await GroundTargetBuilder.CreateAsync(300);
         var satellites = await SatelliteBuilder.CreateAsync(5);
@@ -29,24 +28,17 @@ class Program
 
         Console.WriteLine("Model load");
 
-        using var db1 = new FootprintViewerDatabase(GetOptions<FootprintViewerDatabase>(connectionString1));
-        using var db2 = new PlannedScheduleDatabase(GetOptions<PlannedScheduleDatabase>(connectionString2));
+        using var db = new FootprintViewerDatabase(GetOptions<FootprintViewerDatabase>(connectionString));
 
-        var dbs = new DbContext[] { db1, db2 };
+        var tempUserGeometry = db.UserGeometries.ToList();
 
-        var tempUserGeometry1 = db1.UserGeometries.ToList();
-        var tempUserGeometry2 = db2.UserGeometries.ToList();
+        CreateDb(new[] { db });
 
-        CreateDb(dbs);
+        db.PlannedSchedules.Add(plannedSchedule);
 
-        //db1.Footprints.AddRange(footprints);
+        SaveDb(new[] { db });
 
-        db2.PlannedSchedules.Add(plannedSchedule);
-
-        SaveDb(dbs);
-
-        db1.UserGeometries.AddRange(tempUserGeometry1);
-        db2.UserGeometries.AddRange(tempUserGeometry2);
+        db.UserGeometries.AddRange(tempUserGeometry);
 
         Console.WriteLine("Database build");
     }

@@ -2,6 +2,5 @@
 
 public enum TableInfoType
 {
-    Footprint,
     UserGeometry
 };

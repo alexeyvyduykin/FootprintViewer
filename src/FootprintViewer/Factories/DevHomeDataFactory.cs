@@ -12,9 +12,9 @@ public class DevHomeDataFactory : IDataFactory
     public IDataManager CreateDataManager()
     {
         // footprints
-        var footprintsKey = DbKeys.Footprints.ToString();
-        var footprintPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/Footprints.json");
-        var footprintSource = new JsonSource(footprintsKey, footprintPath);
+        //var footprintsKey = DbKeys.Footprints.ToString();
+        //var footprintPath = System.IO.Path.Combine(new SolutionFolder("src").FolderDirectory, "FootprintViewer.Avalonia/Assets/Footprints.json");
+        //var footprintSource = new JsonSource(footprintsKey, footprintPath);
 
         // TODO: Set empty plannedSchedule.json for deliviry ground targets
 
@@ -64,7 +64,6 @@ public class DevHomeDataFactory : IDataFactory
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
-            { footprintsKey, new[] { footprintSource } },
             { mapsKey, new[] { mapSource1, mapSource2 } },
             { footprintPreviewsKey, new[] { mapSource3, mapSource4 } },
             { footprintPreviewGeometriesKey, new[] { mapSource5 } }

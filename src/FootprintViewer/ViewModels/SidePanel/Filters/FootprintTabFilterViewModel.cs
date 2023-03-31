@@ -44,7 +44,7 @@ public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintVi
             .Subscribe();
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
 
@@ -140,21 +140,21 @@ public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintVi
 
     private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        var satellites = res
-            .Where(s => string.IsNullOrEmpty(s.SatelliteName) == false)
-            .Select(s => s.SatelliteName!)
-            .Distinct()
-            .OrderBy(s => s)
-            .Select(s => new SatelliteItemViewModel() { Name = s })
-            .ToList();
-
-        _satellites.Edit(innerList =>
+        if (ps != null)
         {
-            innerList.Clear();
-            innerList.AddRange(satellites);
-        });
+            var satellites = ps.Satellites
+                .OrderBy(s => s.Name)
+                .Select(s => new SatelliteItemViewModel() { Name = s.Name })
+                .ToList();
+
+            _satellites.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(satellites);
+            });
+        }
     }
 
     [Reactive]

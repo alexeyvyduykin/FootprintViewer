@@ -2,6 +2,7 @@
 using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Layers.Providers;
@@ -104,7 +105,7 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .ToProperty(this, x => x.IsLoading);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -165,13 +166,21 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .Return(Unit.Default)
             .Delay(TimeSpan.FromSeconds(1));
 
-        var res = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        _footprints.Edit(innerList =>
+        if (ps != null)
         {
-            innerList.Clear();
-            innerList.AddRange(res);
-        });
+            var footprints = ps
+                .GetObservations()
+                .Select(s => s.ToFootprint())
+                .ToList();
+
+            _footprints.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(footprints);
+            });
+        }
     }
 
     private void EnterImpl(FootprintViewModel footprint)

@@ -290,12 +290,12 @@ public sealed partial class MainViewModel : ViewModelBase
 
         InfoPanelItem? panel = layer?.Name switch
         {
-            nameof(LayerType.Footprint) =>
-                (await _dataManager.GetDataAsync<Footprint>(nameof(DbKeys.Footprints)))
-                    .Where(s => Equals(s.Name, feature?["Name"]))
-                    .Select(s => new FootprintViewModel(s))
-                    .Select(s => new FootprintClickInfoPanel(s))
-                    .FirstOrDefault(),
+            //nameof(LayerType.Footprint) =>
+            //    (await _dataManager.GetDataAsync<Footprint>(nameof(DbKeys.Footprints)))
+            //        .Where(s => Equals(s.Name, feature?["Name"]))
+            //        .Select(s => new FootprintViewModel(s))
+            //        .Select(s => new FootprintClickInfoPanel(s))
+            //        .FirstOrDefault(),
             nameof(LayerType.GroundTarget) =>
                 (await _dataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))

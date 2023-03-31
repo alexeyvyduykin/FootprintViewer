@@ -25,16 +25,10 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 
         int counter = 0;
 
-        var footprintsSources = _dataManager.GetSources(DbKeys.Footprints.ToString());
         var userGeometriesSources = _dataManager.GetSources(DbKeys.UserGeometries.ToString());
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(this, DbKeys.Footprints.ToString(), dependencyResolver)
-            {
-                Header = DbKeys.Footprints.ToString(),
-                Sources = footprintsSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" }).ToList<ISourceViewModel>(),
-            },
             new SourceContainerViewModel(this, DbKeys.UserGeometries.ToString(), dependencyResolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),

@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Styles;
@@ -43,7 +44,7 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Footprints.ToString()))
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -64,9 +65,17 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
 
     private async Task UpdateImpl()
     {
-        var footprints = await _dataManager.GetDataAsync<Footprint>(DbKeys.Footprints.ToString());
+        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-        UpdateData(footprints);
+        if (ps != null)
+        {
+            var footprints = ps
+                .GetObservations()
+                .Select(s => s.ToFootprint())
+                .ToList();
+
+            UpdateData(footprints);
+        }
     }
 
     public void UpdateData(IList<Footprint> footprints)

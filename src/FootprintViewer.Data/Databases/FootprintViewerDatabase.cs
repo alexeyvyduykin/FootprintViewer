@@ -6,9 +6,9 @@ namespace FootprintViewer.Data.Databases;
 
 public class FootprintViewerDatabase : DbContext
 {
-    public DbSet<Footprint> Footprints => Set<Footprint>();
-
     public DbSet<UserGeometry> UserGeometries => Set<UserGeometry>();
+
+    public DbSet<PlannedScheduleResult> PlannedSchedules => Set<PlannedScheduleResult>();
 
     public FootprintViewerDatabase(DbContextOptions<FootprintViewerDatabase> options) : base(options) { }
 
@@ -16,10 +16,10 @@ public class FootprintViewerDatabase : DbContext
     {
         modelBuilder.HasPostgresExtension("postgis");
 
-        // Footprints
-        modelBuilder.Entity<Footprint>(FootprintDbContext.Configure);
-
         // UserGeometries
         modelBuilder.Entity<UserGeometry>(UserGeometryDbContext.Configure);
+
+        // PlannedSchedules
+        modelBuilder.Entity<PlannedScheduleResult>(PlannedScheduleDbContext.Configure);
     }
 }

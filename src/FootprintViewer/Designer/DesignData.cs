@@ -101,11 +101,11 @@ public static class DesignData
         return panel;
     }
 
-    public static TableInfoViewModel TableInfo => TableInfoViewModel.Build(TableInfoType.Footprint);
+    public static TableInfoViewModel TableInfo => TableInfoViewModel.Build(TableInfoType.UserGeometry);
 
     public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
 
-    public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.Footprints.ToString())
+    public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries.ToString())
     {
         Host = "localhost",
         Port = 5432,
@@ -115,15 +115,13 @@ public static class DesignData
         IsActive = true
     };
 
-    public static JsonBuilderViewModel JsonBuilder => new(DbKeys.Footprints.ToString())
+    public static JsonBuilderViewModel JsonBuilder => new(DbKeys.UserGeometries.ToString())
     {
         Directory = GetFullPathToAssets(),
         IsActive = true
     };
 
     public static ConnectionViewModel Connection => CreateConnection();
-
-    public static SourceContainerViewModel SourceContainer => CreateSourceContainer();
 
     private static string GetFullPathToAssets()
     {
@@ -136,22 +134,12 @@ public static class DesignData
     {
         var connection = new ConnectionViewModel(_resolver);
 
-        var source = _resolver.GetService<IDataManager>()?.GetSources(DbKeys.Footprints.ToString())[0];
+        var source = _resolver.GetService<IDataManager>()?.GetSources(DbKeys.UserGeometries.ToString())[0];
 
         if (source is not null)
         {
             connection.SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(connection, DbKeys.Footprints.ToString(), _resolver)
-            {
-                Header = DbKeys.Footprints.ToString(),
-                Sources = new List<ISourceViewModel>()
-                {
-                    new SourceViewModel(source) { Name = "Source1" },
-                    new SourceViewModel(source) { Name = "Source2" },
-                    new SourceViewModel(source) { Name = "Source3" },
-                },
-            },
             new SourceContainerViewModel(connection, DbKeys.UserGeometries.ToString(), _resolver)
             {
                 Header = DbKeys.UserGeometries.ToString(),
@@ -168,28 +156,6 @@ public static class DesignData
         connection.IsActive = true;
 
         return connection;
-    }
-
-    private static SourceContainerViewModel CreateSourceContainer()
-    {
-        var container = new SourceContainerViewModel(Connection, DbKeys.Footprints.ToString(), _resolver)
-        {
-            Header = DbKeys.Footprints.ToString()
-        };
-
-        var source = _resolver.GetService<IDataManager>()?.GetSources(DbKeys.Footprints.ToString())[0];
-
-        if (source is not null)
-        {
-            container.Sources = new List<ISourceViewModel>()
-            {
-                new SourceViewModel(source) { Name = "Source1" },
-                new SourceViewModel(source) { Name = "Source2" },
-                new SourceViewModel(source) { Name = "Source3" },
-            };
-        }
-
-        return container;
     }
 
     public static SidePanelViewModel SidePanel => CreateSidePanel();

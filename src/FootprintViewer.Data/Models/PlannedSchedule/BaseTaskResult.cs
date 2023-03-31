@@ -5,6 +5,9 @@ namespace FootprintViewer.Data.Models;
 [JsonObject]
 public abstract class BaseTaskResult : ITaskResult
 {
+    [JsonProperty("Name")]
+    public string Name { get; set; } = null!;
+
     [JsonProperty("TaskName")]
     public string TaskName { get; set; } = null!;
 

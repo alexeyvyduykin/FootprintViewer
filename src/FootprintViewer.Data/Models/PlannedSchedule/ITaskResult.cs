@@ -37,11 +37,11 @@ public class TaskResultConverter : JsonConverter
 
         ITaskResult? taskResult;
 
-        if (jsonObject.ContainsKey("Footprint"))
+        if (jsonObject.ContainsKey(nameof(ObservationTaskResult.Geometry)))
         {
             taskResult = new ObservationTaskResult();
         }
-        else if (jsonObject.ContainsKey("Type"))
+        else if (jsonObject.ContainsKey(nameof(CommunicationTaskResult.Type)))
         {
             taskResult = new CommunicationTaskResult();
         }

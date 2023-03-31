@@ -25,6 +25,8 @@ public static class TaskResultBuilder
 
         var listTaskResults = new List<ITaskResult>();
 
+        int index = 0;
+
         foreach (var task in tasks.Where(s => s is ObservationTask).Cast<ObservationTask>())
         {
             var taskName = task.Name;
@@ -56,9 +58,16 @@ public static class TaskResultBuilder
             var lonDeg = selectRes.Lon;
             var latDeg = selectRes.Lat;
 
+            var node = selectRes.Node;
+            var dicrection = (selectRes.IsLeftSwath == true) ? Models.SwathDirection.Left : Models.SwathDirection.Right;
+
             var taskResult = new ObservationTaskResult()
             {
+                Name = $"Observation{++index:0000}",
+                TargetName = gtName,
                 TaskName = taskName,
+                Node = node,
+                Direction = dicrection,
                 SatelliteName = satName,
                 Interval = new Interval
                 {
@@ -98,6 +107,8 @@ public static class TaskResultBuilder
 
         var taskResult = new ObservationTaskResult()
         {
+            Name = footprint.Name,
+            TargetName = footprint.TargetName,
             TaskName = taskName,
             SatelliteName = footprint.SatelliteName ?? "SatelliteDefault",
             Interval = new Interval { Begin = begin, Duration = duration },
@@ -125,6 +136,8 @@ public static class TaskResultBuilder
                 indexDownlink++;
             }
 
+            int index = 0;
+
             for (int i = 0; i < count; i++)
             {
                 var ival = item.Windows[i];
@@ -138,6 +151,7 @@ public static class TaskResultBuilder
 
                     var taskResult = new CommunicationTaskResult()
                     {
+                        Name = $"Communication{+index:0000}",
                         TaskName = item.TaskName,
                         SatelliteName = item.SatelliteName,
                         Interval = new() { Begin = begin.AddSeconds(start), Duration = newDuration },
@@ -156,6 +170,7 @@ public static class TaskResultBuilder
 
                     var taskResult = new CommunicationTaskResult()
                     {
+                        Name = $"Communication{+index:0000}",
                         TaskName = item.TaskName,
                         SatelliteName = item.SatelliteName,
                         Interval = new() { Begin = begin.AddSeconds(start), Duration = newDuration },

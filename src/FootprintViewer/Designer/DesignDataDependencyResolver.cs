@@ -177,7 +177,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
 
     private static DataManager CreateDataManager()
     {
-        var source1 = new LocalSource<Footprint>(BuildFootprints);
         var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
         var source6 = new LocalSource<MapResource>(BuildMapResources);
         var source7 = new LocalSource<FootprintPreview>(BuildFootprintPreviews);
@@ -186,7 +185,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
-            { DbKeys.Footprints.ToString(), new[] { source1 } },
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
             { DbKeys.Maps.ToString(), new[] { source6 } },
             { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
@@ -207,8 +205,6 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
 
         return tasks.Select(s => s.Result).ToList();
     }
-
-    private static List<Footprint> BuildFootprints() => Build(10, FootprintBuilder.CreateRandom);
 
     private static List<PlannedScheduleResult> BuildPlannedSchedule() => Build(1, PlannedScheduleBuilder.CreateRandom);
 

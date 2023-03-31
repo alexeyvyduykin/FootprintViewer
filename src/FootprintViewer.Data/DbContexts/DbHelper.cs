@@ -86,7 +86,6 @@ public static class DbHelper
         Enum.TryParse<DbKeys>(key, true, out var result);
         return result switch
         {
-            DbKeys.Footprints => s => new FootprintDbContext(tableName, s),
             DbKeys.UserGeometries => s => new UserGeometryDbContext(tableName, s),
             DbKeys.PlannedSchedules => s => new PlannedScheduleDbContext(tableName, s),
             _ => throw new Exception($"DBContext for key={key} not register."),
@@ -143,7 +142,6 @@ public static class DbHelper
         Enum.TryParse<DbKeys>(key, true, out var result);
         return result switch
         {
-            DbKeys.Footprints => TableInfoType.Footprint,
             DbKeys.UserGeometries => TableInfoType.UserGeometry,
             _ => throw new Exception($"Table info for key={key} not register."),
         };
@@ -154,7 +152,6 @@ public static class DbHelper
         Enum.TryParse<DbKeys>(key, true, out var result);
         return result switch
         {
-            DbKeys.Footprints => typeof(Footprint),
             DbKeys.UserGeometries => typeof(UserGeometry),
             DbKeys.PlannedSchedules => typeof(PlannedScheduleResult),
             _ => throw new Exception(),
@@ -166,7 +163,6 @@ public static class DbHelper
         Enum.TryParse<DbKeys>(key, true, out var result);
         return result switch
         {
-            DbKeys.Footprints => s => GetValues<Footprint>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
             _ => throw new Exception($"DbHelper key={key} not register."),
         };
@@ -177,7 +173,6 @@ public static class DbHelper
         Enum.TryParse<DbKeys>(key, true, out var result);
         return result switch
         {
-            DbKeys.Footprints => s => GetValues<Footprint>(s),
             DbKeys.UserGeometries => s => GetValues<UserGeometry>(s),
             _ => throw new Exception($"DbHelper key={key} not register."),
         };
@@ -223,7 +218,6 @@ public static class DbHelper
 
             return result switch
             {
-                DbKeys.Footprints => JsonValidation<List<Footprint>>(path),
                 DbKeys.UserGeometries => JsonValidation<List<UserGeometry>>(path),
                 _ => throw new Exception($"DbHelper key={key} not register.")
             };

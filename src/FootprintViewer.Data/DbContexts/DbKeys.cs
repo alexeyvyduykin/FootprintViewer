@@ -4,8 +4,6 @@ namespace FootprintViewer.Data.DbContexts;
 
 public enum DbKeys
 {
-    [EnumMember(Value = "footprints")]
-    Footprints,
     [EnumMember(Value = "userGeometries")]
     UserGeometries,
     [EnumMember(Value = "maps")]
