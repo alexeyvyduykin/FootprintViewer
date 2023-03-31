@@ -33,18 +33,13 @@ public static class TaskAvailabilityBuilder
                 var sat = satellites.Where(s => Equals(s.Name, satName)).Single();
 
                 var epoch = sat.Epoch;
+                var period = sat.Period;
 
                 var taskAvailability = new TaskAvailability()
                 {
                     TaskName = taskName,
-                    SatelliteName = satName!,
-                    Windows = windowResults
-                    .Select(s =>
-                    new Interval()
-                    {
-                        Begin = epoch.AddSeconds(s.BeginTime),
-                        Duration = s.EndTime - s.BeginTime
-                    }).ToList()
+                    SatelliteName = satName,
+                    Windows = windowResults.Select(s => CreateInterval(s, epoch, period)).ToList()
                 };
 
                 list.Add(taskAvailability);
@@ -52,6 +47,19 @@ public static class TaskAvailabilityBuilder
         }
 
         return list;
+
+        static Interval CreateInterval(TimeWindowResult window, DateTime epoch, double period)
+        {
+            var duration = (window.BeginNode == window.EndNode)
+                ? window.EndTime - window.BeginTime
+                : period - window.BeginTime + window.EndTime;
+
+            return new Interval()
+            {
+                Begin = epoch.AddSeconds(window.BeginTime + window.BeginNode * period),
+                Duration = duration
+            };
+        }
     }
 
     public static List<TaskAvailability> CreateCommunications(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)

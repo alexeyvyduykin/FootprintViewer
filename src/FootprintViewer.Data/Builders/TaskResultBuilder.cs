@@ -47,6 +47,8 @@ public static class TaskResultBuilder
 
             var sat = satellites.Where(s => Equals(s.Name, satName)).Single();
 
+            var period = sat.Period;
+
             var epoch = sat.Epoch;
 
             var selectRes = res[i].windows[j];
@@ -71,7 +73,7 @@ public static class TaskResultBuilder
                 SatelliteName = satName,
                 Interval = new Interval
                 {
-                    Begin = epoch.AddSeconds(begin),
+                    Begin = epoch.AddSeconds(begin + node * period),
                     Duration = duration
                 },
                 Geometry = new FootprintGeometry

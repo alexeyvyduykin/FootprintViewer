@@ -10,6 +10,10 @@ public class TimeWindowResult
 
     public int Node { get; set; }
 
+    public int BeginNode { get; set; }
+
+    public int EndNode { get; set; }
+
     public bool IsLeftSwath { get; set; }
 
     public double NadirTime { get; set; }

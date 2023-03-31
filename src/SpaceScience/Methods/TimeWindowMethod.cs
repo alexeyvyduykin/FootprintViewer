@@ -38,6 +38,7 @@ internal static class TimeWindowMethod
             double latSaveDeg = 0.0;
             double tVis = double.NaN;
             double uVis = double.NaN;
+            int nodeVis = int.MinValue;
 
             double minCenterlAngleDeg = double.MaxValue;
 
@@ -50,6 +51,8 @@ internal static class TimeWindowMethod
             double tBeginVisible = double.MinValue;
             double uEndVisible = double.MaxValue;
             double tEndVisible = double.MaxValue;
+            int nodeBegin = int.MinValue;
+            int nodeEnd = int.MinValue;
 
             for (int node = fromNode; node <= toNode; node++)
             {
@@ -97,6 +100,7 @@ internal static class TimeWindowMethod
                             rightSaveDeg = farTrack.GetTrackOfIndex(i, node, LonConverters.Default);
                             tVis = t;
                             uVis = u;
+                            nodeVis = node;
                             lonSaveDeg = lonDeg;
                             latSaveDeg = latDeg;
                         }
@@ -105,10 +109,12 @@ internal static class TimeWindowMethod
                         {
                             tBeginVisible = t;
                             uBeginVisible = u;
+                            nodeBegin = node;
                         }
 
                         tEndVisible = t;
                         uEndVisible = u;
+                        nodeEnd = node;
                     }
 
                     if (isVisible == false && isTemp == true)
@@ -130,9 +136,15 @@ internal static class TimeWindowMethod
                             list.Add(new()
                             {
                                 Name = name,
+                                BeginTime = tBeginVisible,
+                                EndTime = tEndVisible,
+                                BeginU = uBeginVisible,
+                                EndU = uEndVisible,
                                 Lat = latTargetDeg,
                                 Lon = lonTargetDeg,
-                                Node = node,
+                                Node = nodeVis,
+                                BeginNode = nodeBegin,
+                                EndNode = nodeEnd,
                                 IsLeftSwath = isLeftSwath,
                                 NadirTime = tVis,
                                 NadirU = uVis,
@@ -170,9 +182,15 @@ internal static class TimeWindowMethod
                     list.Add(new()
                     {
                         Name = name,
+                        BeginTime = tBeginVisible,
+                        EndTime = tEndVisible,
+                        BeginU = uBeginVisible,
+                        EndU = uEndVisible,
                         Lat = latTargetDeg,
                         Lon = lonTargetDeg,
-                        Node = toNode,
+                        Node = nodeVis,
+                        BeginNode = nodeBegin,
+                        EndNode = nodeEnd,
                         IsLeftSwath = isLeftSwath,
                         NadirTime = tVis,
                         NadirU = uVis,
