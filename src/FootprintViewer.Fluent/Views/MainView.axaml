@@ -21,11 +21,6 @@
              x:Class="FootprintViewer.Fluent.Views.MainView"
 			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
-	<UserControl.Resources>
-		<!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
-		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-	</UserControl.Resources>
-
 	<Grid ColumnDefinitions="*,Auto"
 		  RowDefinitions="*,Auto">
 

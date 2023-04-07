@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.Timelines"
 			 xmlns:selectors="clr-namespace:TimeDataViewer.Selectors;assembly=TimeDataViewer"
-			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
 			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 mc:Ignorable="d"
@@ -29,7 +29,7 @@
 		</selectors:TrackerTemplateSelector>
 	</UserControl.Resources>
 
-	<controls:ContentArea EnableCancel="False"
+	<c:ContentArea EnableCancel="False"
 						  EnableNext="True"
 						  NextContent="OK">
 		<timelines:TimelineControl Margin="8"
@@ -41,6 +41,6 @@
 								   SelectedInterval="{Binding $parent[UserControl].DataContext.SelectedInterval}"
 								   x:CompileBindings="False">
 		</timelines:TimelineControl>
-	</controls:ContentArea>
+	</c:ContentArea>
 
 </UserControl>

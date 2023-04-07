@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
 			 xmlns:vmd="using:FootprintViewer.Fluent.Designer"
 			 xmlns:builders="using:FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders"
@@ -27,7 +27,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<controls:ContentArea x:Name="MainContentArea"
+	<c:ContentArea x:Name="MainContentArea"
 						  EnableCancel="True"
 						  CancelContent="Cancel"
 						  EnableNext="True"
@@ -84,6 +84,6 @@
 						  Grid.Column="2" Grid.Row="4" HorizontalAlignment="Stretch"/>
 			</Grid>
 		</StackPanel>
-	</controls:ContentArea>
+	</c:ContentArea>
 
 </UserControl>

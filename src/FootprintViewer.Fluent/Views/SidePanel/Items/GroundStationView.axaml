@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:icons="using:Material.Icons.Avalonia"
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
@@ -21,7 +21,7 @@
 		<conv:FullCoordinateConverter x:Key="CoordinateConv"/>
 	</UserControl.Resources>
 
-	<styles:ColorZone Padding="8,8,16,8">
+	<c:ColorZone Padding="8,8,16,8">
 
 		<Grid RowDefinitions="Auto,Auto">
 
@@ -50,7 +50,7 @@
 						   HorizontalAlignment="Right"/>
 			</DockPanel>
 
-			<styles:Card Margin="0,8,0,0"
+			<c:Card Margin="0,8,0,0"
 						 Grid.Row="1"
 						 IsVisible="{Binding #ShowToggleSwitch.IsChecked}">
 				<StackPanel>
@@ -120,10 +120,10 @@
 					</ItemsControl>
 
 				</StackPanel>
-			</styles:Card>
+			</c:Card>
 
 		</Grid>
 
-	</styles:ColorZone>
+	</c:ColorZone>
 
 </UserControl>

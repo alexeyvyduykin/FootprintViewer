@@ -4,11 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.FootprintPreviewFilterView"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
+             xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              x:DataType="filters:FootprintPreviewTabFilterViewModel"
@@ -32,7 +31,7 @@
 		<conv:DateTimeOffsetConverter x:Key="DateTimeOffsetConv"/>
 	</UserControl.Resources>
 
-	<styles:ColorZone Padding="20">
+	<c:ColorZone Padding="20">
 		<StackPanel>
 
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -123,6 +122,6 @@
 			</StackPanel>
 
 		</StackPanel>
-	</styles:ColorZone>
+	</c:ColorZone>
 
 </UserControl>

@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="using:FootprintViewer.Fluent.Controls"
+             xmlns:c="using:FootprintViewer.Fluent.Controls"
 	         xmlns:converters="using:FootprintViewer.Fluent.Converters"
 			 xmlns:timeline="clr-namespace:TimeDataViewerLite.Controls;assembly=TimeDataViewerLite"
 			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
@@ -25,7 +25,7 @@
 		</DataTemplate>
 	</UserControl.Resources>
 
-	<controls:ContentArea x:Name="ContentArea"
+	<c:ContentArea x:Name="ContentArea"
 						  EnableCancel="False"
 						  EnableNext="True"
 						  NextContent="OK">
@@ -35,6 +35,6 @@
 								  CategoryListBoxItemTemplate="{StaticResource TaskContentTemplate}">
 		</timeline:TimelineControl>
 
-	</controls:ContentArea>
+	</c:ContentArea>
 
 </UserControl>

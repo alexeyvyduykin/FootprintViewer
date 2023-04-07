@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
 			 xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              mc:Ignorable="d"
@@ -38,7 +38,7 @@
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
-	<styles:Card x:Name="MainCard">
+	<c:Card x:Name="MainCard">
 		<Grid ColumnDefinitions="Auto,*,Auto">
 
 			<Grid Width="32" Height="32">
@@ -58,6 +58,6 @@
 				</Viewbox>
 			</Button>
 		</Grid>
-	</styles:Card>
+	</c:Card>
 
 </UserControl>

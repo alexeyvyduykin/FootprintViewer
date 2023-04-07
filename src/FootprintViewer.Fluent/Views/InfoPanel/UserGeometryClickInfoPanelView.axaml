@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="450"
@@ -12,7 +12,7 @@
 
 	<Panel VerticalAlignment="Center"
 		   HorizontalAlignment="Center">
-		<styles:Card Opacity="0.85">
+		<c:Card Opacity="0.85">
 			<StackPanel Margin="4" Spacing="4">
 
 				<TextBlock Text="{Binding UserGeometryViewModel.Name}" Classes="Headline6"/>
@@ -23,7 +23,7 @@
 				</StackPanel>
 
 			</StackPanel>
-		</styles:Card>
+		</c:Card>
 	</Panel>
 
 </UserControl>

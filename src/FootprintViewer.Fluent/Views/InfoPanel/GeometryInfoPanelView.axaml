@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
@@ -39,9 +39,9 @@
 	</UserControl.Resources>
 
 	<Panel>
-		<styles:Card Width="400"
-					 Height="52"
-					 Opacity="0.85">
+		<c:Card Width="400"							 
+				Height="52"					 
+				Opacity="0.85">
 			<Grid ColumnDefinitions="Auto,*,Auto">
 
 				<Grid Width="34" Height="34">
@@ -75,7 +75,7 @@
 				</Button>
 
 			</Grid>
-		</styles:Card>
+		</c:Card>
 	</Panel>
 
 </UserControl>

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="using:FootprintViewer.Fluent.Designer"
-			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
 	         xmlns:vm="using:FootprintViewer.Fluent.ViewModels.Settings"
 	         x:DataType="vm:ConnectionViewModel"
@@ -23,7 +23,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<controls:ContentArea x:Name="ContentArea"
+	<c:ContentArea x:Name="ContentArea"
 						  EnableCancel="False"
 						  EnableNext="True"
 						  NextContent="OK"
@@ -47,7 +47,7 @@
 			</TabControl.ContentTemplate>
 		</TabControl>
 
-	</controls:ContentArea>
+	</c:ContentArea>
 
 
 </UserControl>

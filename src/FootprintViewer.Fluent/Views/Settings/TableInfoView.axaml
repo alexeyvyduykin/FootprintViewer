@@ -3,9 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:controls="using:FootprintViewer.Fluent.Controls"
+             xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:settings="clr-namespace:FootprintViewer.Fluent.ViewModels.Settings"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:dialogHost="clr-namespace:DialogHost;assembly=DialogHost.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Fluent.Views.Settings"
              xmlns:sys="using:System"
@@ -39,7 +38,7 @@
 
 	</UserControl.Resources>
 
-	<controls:ContentArea EnableNext="True"
+	<c:ContentArea EnableNext="True"
 						  NextContent="OK">
 
 		<DataGrid x:Name="DataGrid"
@@ -104,6 +103,6 @@
 			</DataGrid.Columns>
 		</DataGrid>
 
-	</controls:ContentArea>
+	</c:ContentArea>
 
 </UserControl>

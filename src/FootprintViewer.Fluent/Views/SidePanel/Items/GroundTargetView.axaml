@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              mc:Ignorable="d"
@@ -32,7 +32,7 @@
 	</UserControl.Resources>
 
 
-	<styles:Card x:Name="MainCard">
+	<c:Card x:Name="MainCard">
 		<Grid ColumnDefinitions="Auto,*">
 			<Grid Width="32" Height="32">
 				<ContentControl Content="{Binding}"
@@ -44,6 +44,6 @@
 					   Grid.Column="1"
 					   Classes="Headline6"/>
 		</Grid>
-	</styles:Card>
+	</c:Card>
 
 </UserControl>

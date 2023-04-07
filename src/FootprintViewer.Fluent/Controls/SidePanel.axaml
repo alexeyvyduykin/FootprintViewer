@@ -1,8 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple"
-        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
-        xmlns:controls="using:FootprintViewer.Fluent.Controls">
+        xmlns:c="using:FootprintViewer.Fluent.Controls">
 
 	<Design.PreviewWith>
 		<Border Padding="20" Height="420">
@@ -12,7 +10,7 @@
 				<PathIcon x:Key="PathIconCircle" Data="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
 			</Border.Resources>
 			<Border.Styles>
-				<Style Selector="controls|SidePanelItem">
+				<Style Selector="c|SidePanelItem">
 					<Setter Property="DockPanel.Dock" Value="Top"/>
 					<Setter Property="VerticalAlignment" Value="Top"/>
 					<Setter Property="Width" Value="50"/>
@@ -23,26 +21,26 @@
 					<Setter Property="VerticalAlignment" Value="Bottom"/>
 				</Style>-->
 			</Border.Styles>
-			<controls:SidePanel x:Name="SidePanel"
+			<c:SidePanel x:Name="SidePanel"
 								PaneWidth="280">
-				<controls:SidePanel.ItemsPanel>
+				<c:SidePanel.ItemsPanel>
 					<ItemsPanelTemplate>
 						<DockPanel/>
 					</ItemsPanelTemplate>
-				</controls:SidePanel.ItemsPanel>
-				<controls:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
+				</c:SidePanel.ItemsPanel>
+				<c:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
 					<Panel>
 						<Border Height="200" Background="Red" />
 						<Border Width="20" Background="Green" HorizontalAlignment="Left" />
 					</Panel>
-				</controls:SidePanelItem>
-				<controls:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
+				</c:SidePanelItem>
+				<c:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
 					<Border Margin="20" Background="Green" />
-				</controls:SidePanelItem>
-				<controls:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
+				</c:SidePanelItem>
+				<c:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
 					<Border Margin="20" Background="Blue" />
-				</controls:SidePanelItem>
-			</controls:SidePanel>
+				</c:SidePanelItem>
+			</c:SidePanel>
 		</Border>
 	</Design.PreviewWith>
 
@@ -83,7 +81,7 @@
 		<Setter Property="Cursor" Value="Hand"/>
 		<Setter Property="Template">
 			<ControlTemplate>
-				<ripple:RippleEffect RippleFill="{Binding Path=(assists:TabControlAssist.TabHeaderHighlightBrush)}">
+				<!--<ripple:RippleEffect RippleFill="{Binding Path=(assists:TabControlAssist.TabHeaderHighlightBrush)}">-->
 					<Panel Background="{TemplateBinding Background}">
 						<Path Name="PART_ExpandIcon"
 							Margin="14"
@@ -94,7 +92,7 @@
 							Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
 
 					</Panel>
-				</ripple:RippleEffect>
+				<!--</ripple:RippleEffect>-->
 			</ControlTemplate>
 		</Setter>
 	</Style>
@@ -131,7 +129,7 @@
 	</Style>
 
 	<!--SidePanel-->
-	<Style Selector="controls|SidePanel">
+	<Style Selector="c|SidePanel">
 		<Setter Property="TitleBackground" Value="{DynamicResource PrimaryHueMidBrush}"/>
 		<Setter Property="PaneBackground" Value="{DynamicResource MaterialDesignPaper}"/>
 		<Setter Property="ContentBackground" Value="Transparent"/>
@@ -196,15 +194,15 @@
 		</Setter>
 	</Style>
 
-	<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">
+	<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
 		<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
 	</Style>
 
-	<Style Selector="controls|SidePanel[IsExpanded=false] /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
+	<Style Selector="c|SidePanel[IsExpanded=false] /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
 		<Setter Property="RenderTransform" Value="rotate(180deg)"/>
 	</Style>
 
-	<Style Selector="controls|SidePanel /template/ ToggleButton#PART_toggle /template/ Path">
+	<Style Selector="c|SidePanel /template/ ToggleButton#PART_toggle /template/ Path">
 		<Setter Property="Transitions">
 			<Transitions>
 				<TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>

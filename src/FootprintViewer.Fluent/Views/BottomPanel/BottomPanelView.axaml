@@ -10,20 +10,16 @@
              x:Class="FootprintViewer.Fluent.Views.BottomPanel.BottomPanelView"
 			 d:DataContext="{x:Static vmd:DesignData.BottomPanel}">
 
-	<UserControl.Resources>
-		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
-	</UserControl.Resources>
-
 	<UserControl.Styles>
 		<Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
 			<Setter Property="Opacity" Value="0.65"/>
 		</Style>
 	</UserControl.Styles>
 
-	<controls:BottomPanel Background="{StaticResource MainBrush}">
+	<controls:BottomPanel Background="{DynamicResource MainBrush}">
 		<Grid>
 			<Border Opacity="0.65"
-					Background="{StaticResource MainBrush}"/>
+					Background="{DynamicResource MainBrush}"/>
 			<panels:SnapshotMakerView Padding="8"
 									  DataContext="{Binding SnapshotMaker}"/>
 		</Grid>

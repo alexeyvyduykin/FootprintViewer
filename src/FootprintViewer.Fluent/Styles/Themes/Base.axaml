@@ -1,0 +1,53 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" Width="200" Height="1000">
+			<Border.Styles>
+				<Style Selector="Border">
+					<Setter Property="Width" Value="100"/>
+					<Setter Property="Height" Value="10"/>
+				</Style>
+			</Border.Styles>
+			<StackPanel Spacing="10">
+				<Border Background="{StaticResource MainBrush}"/>
+				<Border Background="{StaticResource DialogOverlayColor}"/>
+				<Border Background="{StaticResource TipBrush}"/>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Styles.Resources>
+		
+		<Color x:Key="AcrylicTrimBackground">#A0202020</Color>		
+		<Color x:Key="TileBorderColor">#66757575</Color>				
+		<Color x:Key="RegionColor">#191D24</Color>			
+		<Color x:Key="SystemAltHighColor">#FF000000</Color>
+
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>				
+		<SolidColorBrush x:Key="DialogOverlayColor" Color="#7F2E2E2E"/>
+		<SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FF424242"/>
+		<SolidColorBrush x:Key="MaterialDesignPaper" Color="#FF303030"/>
+		<SolidColorBrush x:Key="MaterialDesignBody" Color="#DDFFFFFF"/>		
+		<SolidColorBrush x:Key="MaterialDesignLightBackground" Color="#FFFAFAFA"/>
+		<SolidColorBrush x:Key="MaterialDesignLightForeground" Color="#DD000000"/>
+		<SolidColorBrush x:Key="MaterialDesignDarkBackground" Color="#FF303030"/>
+		<SolidColorBrush x:Key="MaterialDesignDarkForeground" Color="#FFFAFAFA"/>
+		
+		<SolidColorBrush x:Key="PrimaryHueLightBrush" Color="Blue"/>
+		<SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="White"/>
+		<SolidColorBrush x:Key="PrimaryHueMidBrush" Color="Blue"/>
+		<SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="White"/>
+		<SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="Blue"/>
+		<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="White"/>
+		<SolidColorBrush x:Key="SecondaryHueMidBrush" Color="Blue"/>
+		<SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="White"/>
+		
+		<SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>
+		
+		<BoxShadows x:Key="DialogBoxShadow">4 11 30 1 #3F000000</BoxShadows>
+
+	</Styles.Resources>
+	
+	<StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentDark.xaml" />
+
+</Styles>

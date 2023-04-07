@@ -4,14 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Fluent.Views.DialogsView"
-			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
 			 x:DataType="vm:MainViewModel">
-
-	<UserControl.Resources>
-		<Color x:Key="RegionColor">#191D24</Color>
-		<Color x:Key="SystemAltHighColor">#FF000000</Color>
-	</UserControl.Resources>
 
 	<Panel>
 		<ExperimentalAcrylicBorder x:Name="OobeBackground"
@@ -27,7 +22,7 @@
 
 		</ExperimentalAcrylicBorder>
 
-		<controls:Dialog DataContext="{Binding FullScreen}"
+		<c:Dialog DataContext="{Binding FullScreen}"
 						 IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
 						 IsActive="{Binding CurrentPage.IsActive}"
 						 IsBackEnabled="{Binding CurrentPage.EnableBack, FallbackValue=False}"
@@ -46,9 +41,9 @@
 				</Style>
 			</controls:Dialog.Styles>-->
 			<ContentControl Content="{Binding CurrentPage}" />
-		</controls:Dialog>
+		</c:Dialog>
 
-		<controls:Dialog DataContext="{Binding DialogScreen}"
+		<c:Dialog DataContext="{Binding DialogScreen}"
 						 IsDialogOpen="{Binding IsDialogOpen, Mode=TwoWay}"
 						 IsActive="{Binding CurrentPage.IsActive}"
 						 IsBackEnabled="{Binding CurrentPage.EnableBack, FallbackValue=False}"
@@ -58,7 +53,7 @@
 						 HorizontalContentAlignment="Center"
 						 VerticalContentAlignment="Center">
 			<ContentControl Content="{Binding CurrentPage}" />
-		</controls:Dialog>
+		</c:Dialog>
 
 	</Panel>
 

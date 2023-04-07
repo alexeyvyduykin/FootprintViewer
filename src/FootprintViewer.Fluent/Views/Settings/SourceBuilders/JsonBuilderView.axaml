@@ -2,9 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="using:FootprintViewer.Fluent.Controls"
-	         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-			 xmlns:materialIcons="using:Material.Icons.Avalonia"
+             xmlns:c="using:FootprintViewer.Fluent.Controls"
+	         xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:builders="using:FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders"
 			 xmlns:vmd="using:FootprintViewer.Fluent.Designer"
 			 x:DataType="builders:JsonBuilderViewModel"
@@ -24,7 +23,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<controls:ContentArea EnableCancel="True"
+	<c:ContentArea EnableCancel="True"
 						  CancelContent="Cancel"
 						  EnableNext="True"
 						  NextContent="Add"
@@ -134,6 +133,6 @@
 
 		</Grid>
 
-	</controls:ContentArea>
+	</c:ContentArea>
 
 </UserControl>

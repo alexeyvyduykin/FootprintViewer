@@ -11,7 +11,7 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:views="clr-namespace:FootprintViewer.Fluent.Views"
              xmlns:toolBarView="clr-namespace:FootprintViewer.Fluent.Views.ToolBar"
-             xmlns:controls="clr-namespace:FootprintViewer.Fluent.Controls"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="540"
 			 x:DataType="toolBar:ToolBarViewModel"

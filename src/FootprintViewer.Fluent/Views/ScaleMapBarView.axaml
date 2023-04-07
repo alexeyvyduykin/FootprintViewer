@@ -3,17 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
-			 x:DataType="vm:ScaleMapBar"
+             x:DataType="vm:ScaleMapBar"
              mc:Ignorable="d"
 			 d:DesignWidth="580" d:DesignHeight="250"
              x:Class="FootprintViewer.Fluent.Views.ScaleMapBarView"
 			 d:DataContext="{x:Static vmd:DesignData.ScaleMapBar}">
 
 	<UserControl.Resources>
-		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
 		<conv:MPointConverter x:Key="MPointConv"/>
 	</UserControl.Resources>
 

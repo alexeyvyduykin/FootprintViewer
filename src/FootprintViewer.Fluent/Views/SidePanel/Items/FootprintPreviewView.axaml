@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:icons="using:Material.Icons.Avalonia"
              xmlns:conv="using:FootprintViewer.Fluent.Converters"
 			 x:DataType="items:FootprintPreviewViewModel"
@@ -17,7 +17,7 @@
 		<conv:ImageConverter x:Key="ImageConv"/>
 	</UserControl.Resources>
 
-	<styles:Card Padding="10">
+	<c:Card Padding="10">
 		<Grid ColumnDefinitions="Auto,*">
 
 			<Border x:Name="FootprintImageBorder">
@@ -80,6 +80,6 @@
 			</Border>
 
 		</Grid>
-	</styles:Card>
+	</c:Card>
 
 </UserControl>
