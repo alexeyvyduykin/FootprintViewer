@@ -1,0 +1,202 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.SatelliteView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+			 x:DataType="items:SatelliteViewModel"
+			 mc:Ignorable="d"
+			 d:DesignWidth="380"
+			 d:DataContext="{x:Static vmd:DesignData.Satellite}">
+
+	<UserControl.Resources>
+		<conv:SolidColorBrushConverter x:Key="BrushConv"/>
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
+
+	<styles:ColorZone Padding="8,8,16,8">
+
+		<Grid RowDefinitions="Auto,8,Auto,8,Auto">
+
+			<DockPanel>
+
+				<Border Background="{Binding Color, Converter={StaticResource BrushConv}}"
+						VerticalAlignment="Stretch"
+						Margin="0,4,8,4"
+						Width="10"/>
+
+				<TextBlock Text="{Binding Name}"
+						   VerticalAlignment="Center"
+						   Classes="Headline6"/>
+				<ToggleButton x:Name="ShowInfoToggleButton"
+							  IsChecked="{Binding IsShowInfo}"
+							  Classes="Icon NoFeedback">
+					<materialIcons:MaterialIcon Kind="InfoCircle" Width="20" Height="20"/>
+				</ToggleButton>
+				<ToggleSwitch x:Name="ShowToggleSwitch"
+							  IsChecked="{Binding IsShow}"
+							  DockPanel.Dock="Right"
+							  Cursor="Hand"
+							  VerticalAlignment="Center"/>
+				<TextBlock Text="{x:Static prop:Resources.ShowHide}"
+						   Classes="Subtitle2"
+						   Margin="0,0,4,0"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Right"/>
+			</DockPanel>
+
+			<styles:Card Grid.Row="2"
+						 IsVisible="{Binding #ShowToggleSwitch.IsChecked}">
+				<StackPanel>
+
+					<Grid ColumnDefinitions="*,24">
+						<Slider x:Name="Slider"
+								Margin="8,0,16,0"
+								Minimum="{Binding MinNode}"
+								Maximum="{Binding MaxNode}"
+								Value="{Binding CurrentNode}"
+								Classes="Modern Discrete Ticks"
+								IsSnapToTickEnabled="True"
+								TickFrequency="1" />
+						<TextBox Text="{Binding #Slider.Value}"
+								 IsEnabled="False"
+								 TextAlignment="Center"
+								 Grid.Column="1"/>
+					</Grid>
+
+					<DockPanel>
+						<CheckBox IsChecked="{Binding IsTrack}"
+								  Cursor="Hand"
+								  DockPanel.Dock="Right"/>
+						<TextBlock Text="{x:Static prop:Resources.SatelliteTrack}"
+								   Margin="0,0,4,0"
+								   Classes="Subtitle2"
+								   HorizontalAlignment="Right"
+								   VerticalAlignment="Center"/>
+					</DockPanel>
+					<DockPanel>
+						<CheckBox IsChecked="{Binding IsLeftSwath}"
+								  Cursor="Hand"
+								  DockPanel.Dock="Right"/>
+						<TextBlock Text="{x:Static prop:Resources.SatelliteLeftSwath}"
+								   Margin="0,0,4,0"
+								   Classes="Subtitle2"
+								   VerticalAlignment="Center"
+								   HorizontalAlignment="Right"/>
+					</DockPanel>
+					<DockPanel>
+						<CheckBox IsChecked="{Binding IsRightSwath}"
+								  Cursor="Hand"
+								  DockPanel.Dock="Right"/>
+						<TextBlock Text="{x:Static prop:Resources.SatelliteRightSwath}"
+								   Margin="0,0,4,0"
+								   Classes="Subtitle2"
+								   VerticalAlignment="Center"
+								   HorizontalAlignment="Right"/>
+					</DockPanel>
+				</StackPanel>
+			</styles:Card>
+
+			<Panel IsVisible="{Binding #ShowInfoToggleButton.IsChecked}"
+				   Grid.Row="4">
+
+				<styles:Card>
+					<StackPanel Spacing="4">
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteSemiaxis}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.Semiaxis, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteEccentricity}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.Eccentricity, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteInclination}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.InclinationDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteArgOfPerigee}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.ArgumentOfPerigeeDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteRAAN}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.RightAscensionAscendingNodeDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteLonAN}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.LongitudeAscendingNodeDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatellitePeriod}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.Period, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+
+						<Separator/>
+
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteEpoch}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.Epoch}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+
+						<Separator/>
+
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteLookAngle}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.LookAngleDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+
+						<DockPanel>
+							<TextBlock Text="{x:Static prop:Resources.SatelliteRadarAngle}"
+									   Classes="Caption"/>
+							<TextBlock Text="{Binding Satellite.RadarAngleDeg, StringFormat={}{0:0.##}}"
+									   Classes="Subtitle1"
+									   HorizontalAlignment="Right"/>
+						</DockPanel>
+
+					</StackPanel>
+				</styles:Card>
+
+			</Panel>
+
+		</Grid>
+
+	</styles:ColorZone>
+
+</UserControl>

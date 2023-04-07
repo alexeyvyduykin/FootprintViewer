@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="using:FootprintViewer.Designer"
+			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
+	         xmlns:vm="using:FootprintViewer.ViewModels.Settings"
+	         x:DataType="vm:ConnectionViewModel"
+			 x:CompileBindings="True"
+			 mc:Ignorable="d"
+			 d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FootprintViewer.Fluent.Views.Settings.ConnectionView"
+			 d:DataContext="{x:Static vmd:DesignData.Connection}">
+
+	<UserControl.Styles>
+		<Style Selector="TabControl[TabStripPlacement=Left] > TabItem /template/ LayoutTransformControl#LayoutTransform">
+			<Setter Property="LayoutTransform">
+				<Setter.Value>
+					<RotateTransform Angle="0" />
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
+
+	<controls:ContentArea x:Name="ContentArea"
+						  EnableCancel="False"
+						  EnableNext="True"
+						  NextContent="OK"
+						  Width="800"
+						  Height="450">
+
+		<TabControl TabStripPlacement="Left"
+					Items="{Binding SourceContainers}"
+					SelectedItem="{Binding SelectedSourceContainer}">
+			<TabControl.ItemTemplate>
+				<DataTemplate x:DataType="vm:SourceContainerViewModel">
+					<TextBlock Text="{Binding Header}" FontSize="14"/>
+				</DataTemplate>
+			</TabControl.ItemTemplate>
+
+			<TabControl.ContentTemplate>
+				<DataTemplate x:DataType="vm:SourceContainerViewModel">
+					<views:SourceContainerView Margin="24,16"
+											   DataContext="{Binding}"/>
+				</DataTemplate>
+			</TabControl.ContentTemplate>
+		</TabControl>
+
+	</controls:ContentArea>
+
+
+</UserControl>

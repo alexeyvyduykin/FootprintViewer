@@ -13,8 +13,8 @@
 		<StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml" />
 		<FluentTheme Mode="Dark"/>
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/Dialog.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Avalonia/Controls/ContentArea.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
 		
 	</Application.Styles>
 

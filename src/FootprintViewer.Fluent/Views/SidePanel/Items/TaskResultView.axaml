@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
+             xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
+			 xmlns:dataModels="clr-namespace:FootprintViewer.Data.Models;assembly=FootprintViewer.Data"
+			 x:DataType="items:TaskResultViewModel"
+             mc:Ignorable="d"
+			 d:DesignWidth="280"
+			 d:DataContext="{x:Static vmd:DesignData.TaskResult}"
+             x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.TaskResultView">
+
+	<UserControl.Resources>
+		<conv:CoordinateConverter x:Key="CoordinateConv"/>
+	</UserControl.Resources>
+
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="{x:Type dataModels:CommunicationTaskResult}">
+			<StackPanel>
+				<TextBlock Text="dfgfdfdf"/>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type dataModels:ObservationTaskResult}">
+			<Grid ColumnDefinitions="Auto,*">
+				<StackPanel Spacing="2">
+					<TextBlock Text="Footprint:"/>
+					<TextBlock Text="{Binding Footprint.Center.Coordinate, Converter={StaticResource CoordinateConv}}"/>
+				</StackPanel>
+
+				<Button Classes="Flat"
+						HorizontalAlignment="Right"
+						Command="{Binding $parent[ListBox].DataContext.TargetToMap}"
+						CommandParameter="{Binding}"
+						Padding="4"
+						Grid.Column="1">
+					<Viewbox Width="24" Height="24">
+						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+													Kind="MapSearch" />
+					</Viewbox>
+				</Button>
+
+			</Grid>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="TextBlock.right">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+		</Style>
+	</UserControl.Styles>
+
+	<styles:Card>
+		<StackPanel Spacing="4">
+			<TextBlock Text="{Binding TaskName}" Classes="Headline6"/>
+			<TextBlock Text="{Binding SatelliteName}" Classes="Headline8"/>
+			<TextBlock Text="{Binding Begin}" Classes="Subtitle2 right"/>
+			<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}" Classes="Subtitle2 right"/>
+			<Separator/>
+			<ContentControl Content="{Binding Model}"/>
+		</StackPanel>
+	</styles:Card>
+
+</UserControl>

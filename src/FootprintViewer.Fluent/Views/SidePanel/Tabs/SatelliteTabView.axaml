@@ -1,0 +1,37 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Tabs.SatelliteTabView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
+			 xmlns:reactiveUi="http://reactiveui.net"
+             mc:Ignorable="d"
+			 d:DesignWidth="380" d:DesignHeight="450"
+			 d:DataContext="{x:Static vmd:DesignData.SatelliteTab}">
+
+	<Panel>
+
+		<ProgressBar x:Name="ProgressBar"
+			 IsVisible="{Binding IsLoading}"
+			 Classes="Circle"
+			 VerticalAlignment="Center"
+			 HorizontalAlignment="Center"
+			 IsIndeterminate="True"/>
+
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
+			<ItemsControl Items="{Binding Items}"
+						  IsVisible="{Binding !IsLoading}"
+						  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<itemsView:SatelliteView DataContext="{Binding}"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+	</Panel>
+
+</UserControl>

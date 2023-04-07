@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 mc:Ignorable="d"
+             d:DesignHeight="250" d:DesignWidth="450"
+             x:Class="FootprintViewer.Fluent.Views.InfoPanel.GeometryInfoPanelView"
+			 d:DataContext="{x:Static vmd:DesignData.RouteInfoPanel}">
+
+	<UserControl.Resources>
+		<selectors:DataTemplateSelector x:Key="InfoPanelIconDataSelector">
+			<DataTemplate x:Key="Route">
+				<Panel>
+					<Viewbox>
+						<materialIcons:MaterialIcon Kind="CircleOutline"/>
+					</Viewbox>
+					<Viewbox Margin="6">
+						<materialIcons:MaterialIcon Kind="SetSquare"/>
+					</Viewbox>
+				</Panel>
+			</DataTemplate>
+			<DataTemplate x:Key="AOI">
+				<Panel>
+					<Viewbox>
+						<materialIcons:MaterialIcon Kind="CircleOutline"/>
+					</Viewbox>
+					<Viewbox Margin="8">
+						<materialIcons:MaterialIcon Kind="VectorSquare"/>
+					</Viewbox>
+				</Panel>
+			</DataTemplate>
+		</selectors:DataTemplateSelector>
+	</UserControl.Resources>
+
+	<Panel>
+		<styles:Card Width="400"
+					 Height="52"
+					 Opacity="0.85">
+			<Grid ColumnDefinitions="Auto,*,Auto">
+
+				<Grid Width="34" Height="34">
+					<ContentControl Content="{Binding}"
+									ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
+				</Grid>
+
+				<TextBlock x:Name="TextBlock"
+						   Text="{Binding Text}"
+						   Grid.Column="1"
+						   Classes="Body2"
+						   VerticalAlignment="Center"
+						   Margin="15,0,15,0"/>
+
+				<Button HorizontalAlignment="Right"
+						Grid.Column="2"
+						Width="29"
+						Height="29"
+						Padding="0"
+						Cursor="Hand"
+						Classes="Flat"
+						ToolTip.ShowDelay="0"
+						Command="{Binding Close}">
+					<ToolTip.Tip>
+						<ToolTip Content="{x:Static prop:Resources.Close}" Classes="FastTooltip"/>
+					</ToolTip.Tip>
+					<Viewbox Margin="4">
+						<materialIcons:MaterialIcon Foreground="{Binding #TextBlock.Foreground}"
+													Kind="CloseThick" />
+					</Viewbox>
+				</Button>
+
+			</Grid>
+		</styles:Card>
+	</Panel>
+
+</UserControl>

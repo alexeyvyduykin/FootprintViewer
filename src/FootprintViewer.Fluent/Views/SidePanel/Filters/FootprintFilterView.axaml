@@ -1,0 +1,123 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.FootprintFilterView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:items="clr-namespace:FootprintViewer.ViewModels.SidePanel.Items;assembly=FootprintViewer"
+             xmlns:filters="clr-namespace:FootprintViewer.ViewModels.SidePanel.Filters;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 mc:Ignorable="d"
+             MinWidth="400"
+             d:DesignWidth="400" d:DesignHeight="520"
+			 d:DataContext="{x:Static vmd:DesignData.FootprintFilter}">
+
+	<UserControl.Styles>
+		<Style Selector="CheckBox">
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<TextBlock Text="{Binding}" Classes="Body2"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
+
+	<styles:ColorZone Padding="20">
+		<StackPanel>
+
+			<Grid Margin="0,0,0,20"
+				  RowDefinitions="Auto,Auto">
+				<Grid ColumnDefinitions="*,24"
+					  HorizontalAlignment="Left">
+					<TextBlock Text="{x:Static prop:Resources.FilterFromNode}"
+							   VerticalAlignment="Center"
+							   Classes="Body2"/>
+					<TextBlock Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextAlignment="Center"
+							   Classes="Body2"
+							   Text="{Binding #Slider1.Value}"/>
+				</Grid>
+				<Slider x:Name="Slider1"
+						Classes="Modern Discrete Ticks"
+						Grid.Row="1"
+						Minimum="1"
+						Maximum="15"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding FromNode}"/>
+			</Grid>
+
+			<Grid Margin="0,0,0,20"
+				  RowDefinitions="Auto,Auto">
+
+				<Grid ColumnDefinitions="*,24"
+					  HorizontalAlignment="Left">
+					<TextBlock Text="{x:Static prop:Resources.FilterToNode}"
+							   VerticalAlignment="Center"
+							   Classes="Body2"/>
+					<TextBlock Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextAlignment="Center"
+							   Classes="Body2"
+							   Text="{Binding #Slider2.Value}"/>
+				</Grid>
+
+				<Slider x:Name="Slider2"
+						Classes="Modern Discrete Ticks"
+						Grid.Row="1"
+						Minimum="1"
+						Maximum="15"
+						TickFrequency="1"
+						IsSnapToTickEnabled="True"
+						Value="{Binding ToNode}"/>
+
+			</Grid>
+
+			<CheckBox IsChecked="{Binding IsLeftSwath}"
+					  Margin="0,0,0,4"
+					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"/>
+
+			<CheckBox IsChecked="{Binding IsRightSwath}"
+					  Margin="0,4,0,20"
+					  Content="{x:Static prop:Resources.SatelliteRightSwath}"/>
+
+			<DockPanel LastChildFill="True"
+					   Margin="0,0,0,10">
+				<Viewbox Width="20" Height="20"
+						 VerticalAlignment="Center">
+					<PathIcon Foreground="{StaticResource IconAccentBrush}"
+							  Data="{DynamicResource IconSatellite}"/>
+				</Viewbox>
+				<TextBlock Text="{x:Static prop:Resources.FilterSatellites}"
+						   Classes="Body2"
+						   VerticalAlignment="Center"
+						   Margin="8,0,32,0"/>
+				<CheckBox IsChecked="{Binding IsAllSatellites}"
+						  VerticalAlignment="Center"/>
+			</DockPanel>
+
+			<ItemsControl Margin="0,0,0,10" Items="{Binding Satellites}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="filters:SatelliteItemViewModel">
+						<Border Padding="16,8">
+							<CheckBox IsChecked="{Binding IsActive}"
+									  Content="{Binding Name}"/>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<StackPanel IsVisible="{Binding IsAOIActive}">
+				<Separator Margin="0,0,0,18"/>
+				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
+						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
+			</StackPanel>
+
+		</StackPanel>
+	</styles:ColorZone>
+
+</UserControl>

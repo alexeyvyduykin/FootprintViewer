@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:filters="clr-namespace:FootprintViewer.ViewModels.SidePanel.Filters;assembly=FootprintViewer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 mc:Ignorable="d"
+			 MinWidth="400"
+             d:DesignWidth="400" d:DesignHeight="500"
+             x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.GroundTargetFilterView"
+			 d:DataContext="{x:Static vmd:DesignData.GroundTargetFilter}">
+
+	<styles:ColorZone Padding="20">
+		<StackPanel>
+
+			<DockPanel LastChildFill="True"
+					   Margin="0,0,0,10">
+				<materialIcons:MaterialIcon Width="20" Height="20"
+											Kind="Shape"
+											VerticalAlignment="Center"
+											Foreground="{StaticResource IconAccentBrush}"/>
+				<TextBlock Classes="Body2"
+						   VerticalAlignment="Center"
+						   Margin="4,0,32,0"
+						   Text="Types"/>
+
+				<CheckBox IsChecked="{Binding IsAllTypes}"
+						  VerticalAlignment="Center"/>
+			</DockPanel>
+
+			<StackPanel Margin="16,8,0,16" Spacing="8">
+				<CheckBox IsChecked="{Binding IsArea}"
+						  Content="Area"/>
+				<CheckBox IsChecked="{Binding IsRoute}"
+						  Content="Route"/>
+				<CheckBox IsChecked="{Binding IsPoint}"
+						  Content="Point"/>
+			</StackPanel>
+
+			<StackPanel IsVisible="{Binding IsAOIActive}">
+				<Separator Margin="0,0,0,16"/>
+				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
+						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
+			</StackPanel>
+
+		</StackPanel>
+	</styles:ColorZone>
+
+</UserControl>

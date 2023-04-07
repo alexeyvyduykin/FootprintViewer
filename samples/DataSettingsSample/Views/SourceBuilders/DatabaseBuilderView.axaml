@@ -6,7 +6,7 @@
              xmlns:builders="using:DataSettingsSample.ViewModels.SourceBuilders"
 			 xmlns:vmd="using:DataSettingsSample.Designer"
              xmlns:views="using:DataSettingsSample.Views"
-			 xmlns:controls="clr-namespace:FootprintViewer.Avalonia.Controls;assembly=FootprintViewer.Avalonia"
+			 xmlns:controls="clr-namespace:FootprintViewer.Fluent.Controls;assembly=FootprintViewer.Fluent"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              x:DataType="builders:DatabaseBuilderViewModel"

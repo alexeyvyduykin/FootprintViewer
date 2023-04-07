@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
+			 xmlns:vm="using:FootprintViewer.ViewModels"
+			 xmlns:vmd="using:FootprintViewer.Designer"
+			 xmlns:builders="using:FootprintViewer.ViewModels.Settings.SourceBuilders"
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 x:DataType="builders:DatabaseBuilderViewModel"
+             mc:Ignorable="d"
+			 d:DesignWidth="360" d:DesignHeight="300"
+             x:Class="FootprintViewer.Fluent.Views.Settings.SourceBuilders.DatabaseBuilderView"
+			 d:DataContext="{x:Static vmd:DesignData.DatabaseBuilder}">
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock.t1">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Green"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=false]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Red"/>
+		</Style>
+	</UserControl.Styles>
+
+	<controls:ContentArea x:Name="MainContentArea"
+						  EnableCancel="True"
+						  CancelContent="Cancel"
+						  EnableNext="True"
+						  NextContent="Add">
+		<StackPanel>
+			<Grid ColumnDefinitions="Auto,8,*"
+				  RowDefinitions="40,40,40,40,40">
+
+				<TextBlock Text="Host" Grid.Row="0" Classes="t1"/>
+				<TextBlock Text="Database" Grid.Row="1" Classes="t1"/>
+				<TextBlock Text="Username" Grid.Row="2" Classes="t1"/>
+				<TextBlock Text="Password" Grid.Row="3" Classes="t1"/>
+				<StackPanel Grid.Row="4" Orientation="Horizontal">
+					<TextBlock Text="Table" Classes="t1"/>
+					<Button Height="20"
+							Background="Transparent"
+							Padding="0"
+							Command="{Binding ShowTableInfo}"
+							Margin="8,0,0,0">
+						<Viewbox>
+							<materialIcons:MaterialIcon Foreground="Aqua" Kind="InfoCircle"/>
+						</Viewbox>
+					</Button>
+					<Viewbox Height="20" Margin="8,0,0,0">
+						<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}"
+													Classes="verified"/>
+					</Viewbox>
+				</StackPanel>
+
+				<TextBox x:Name="HostTextBox"
+						 Text="{Binding Host}"
+						 Margin="0"
+						 VerticalAlignment="Center"
+						 Grid.Column="2" Grid.Row="0"/>
+				<TextBox x:Name="DatabaseTextBox"
+						 Text="{Binding Database}"
+						 VerticalAlignment="Center"
+						 Margin="0"
+						 Grid.Column="2" Grid.Row="1"/>
+				<TextBox x:Name="UsernameTextBox"
+						 Text="{Binding Username}"
+						 VerticalAlignment="Center"
+						 Margin="0"
+						 Grid.Column="2" Grid.Row="2"/>
+				<TextBox x:Name="PasswordTextBox"
+						 Text="{Binding Password}"
+						 VerticalAlignment="Center"
+						 Margin="0"
+						 Grid.Column="2" Grid.Row="3"/>
+				<ComboBox Margin="0"
+						  VerticalAlignment="Stretch"
+						  Items="{Binding AvailableTables}"
+						  SelectedItem="{Binding SelectedTable}"
+						  Grid.Column="2" Grid.Row="4" HorizontalAlignment="Stretch"/>
+			</Grid>
+		</StackPanel>
+	</controls:ContentArea>
+
+</UserControl>

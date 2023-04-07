@@ -1,0 +1,101 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.SidePanelView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:FootprintViewer.Fluent.Controls"
+             xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels.SidePanel;assembly=FootprintViewer"
+			 x:DataType="vm:SidePanelViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="550"
+			 d:DataContext="{x:Static vmd:DesignData.SidePanel}">
+
+	<UserControl.Resources>
+		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
+
+		<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
+			<DataTemplate x:Key="FootprintPreviewTabViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="Image"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="SatelliteTabViewModel">
+				<Grid>
+					<Viewbox Margin="8">
+						<PathIcon Data="{DynamicResource fg-satellite}"/>
+					</Viewbox>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="GroundTargetTabViewModel">
+				<Grid>
+					<Viewbox Margin="8">
+						<PathIcon Data="{DynamicResource fg-pois}"/>
+					</Viewbox>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="FootprintTabViewModel">
+				<Grid>
+					<Viewbox Margin="8">
+						<PathIcon Data="{DynamicResource fg-satellite-earth}"/>
+					</Viewbox>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="UserGeometryTabViewModel">
+				<Grid>
+					<Viewbox Margin="8">
+						<PathIcon Data="{DynamicResource fg-map-user}"/>
+					</Viewbox>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate x:Key="GroundStationTabViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="PlannedScheduleTabViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="ChartTimeline"/>
+				</Viewbox>
+			</DataTemplate>
+		</selectors:DataTemplateSelector>
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector="controls|SidePanelItem">
+			<!--<Setter Property="Title" Value="{Binding Title, Converter={StaticResource sidePanelTitleConv}, StringFormat={}-{0}}"/>-->
+			<Setter Property="IsSelected" Value="{Binding IsActive}"/>
+		</Style>
+		<Style Selector="controls|SidePanelItem">
+			<Setter Property="DockPanel.Dock" Value="Top"/>
+			<Setter Property="VerticalAlignment" Value="Top"/>
+		</Style>
+		<!--<Style Selector="controls|SidePanelItem:nth-last-child(1)">
+			<Setter Property="DockPanel.Dock" Value="Bottom"/>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+		</Style>-->
+		<Style Selector="controls|SidePanel /template/ TextBlock#PART_title">
+			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue='', Converter={StaticResource sidePanelTitleConv}}"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Panel>
+		<controls:SidePanel Items="{Binding Tabs}"
+							PaneWidth="500"
+							IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+							ItemTemplate="{DynamicResource SidePanelIconSelector}"
+							SelectedItem="{Binding SelectedTab}">
+			<controls:SidePanel.ItemsPanel>
+				<ItemsPanelTemplate>
+					<DockPanel/>
+				</ItemsPanelTemplate>
+			</controls:SidePanel.ItemsPanel>
+
+		</controls:SidePanel>
+	</Panel>
+
+</UserControl>

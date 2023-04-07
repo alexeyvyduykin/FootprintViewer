@@ -1,0 +1,49 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialIcons="using:Material.Icons.Avalonia"
+        xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+
+	<Styles.Resources>
+		<selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
+
+			<DataTemplate x:Key="AddRectangle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+			<DataTemplate x:Key="AddPolygon">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+			<DataTemplate x:Key="AddCircle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+			<DataTemplate x:Key="Point">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="6.5" Width="23" Height="23" Data="{DynamicResource fg-poi}"/>
+				</Viewbox>
+			</DataTemplate>
+
+			<DataTemplate x:Key="Rectangle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeRectangleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+			<DataTemplate x:Key="Circle">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapeCircleAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+			<DataTemplate x:Key="Polygon">
+				<materialIcons:MaterialIcon Width="24" Height="24" Kind="ShapePolygonAdd" Foreground="#d6d9dd"/>
+			</DataTemplate>
+
+		</selectors:DataTemplateSelector>
+	</Styles.Resources>
+
+</Styles>

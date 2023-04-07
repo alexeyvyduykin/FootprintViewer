@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:FootprintViewer.Fluent.Views"
+             xmlns:sidePanel="clr-namespace:FootprintViewer.Fluent.Views.SidePanel"
+             xmlns:settings="clr-namespace:FootprintViewer.Fluent.Views.Settings"
+             xmlns:panels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
+             xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.Views.ToolBar"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
+             xmlns:bottomPanel="clr-namespace:FootprintViewer.Fluent.Views.BottomPanel"
+             xmlns:local="clr-namespace:FootprintViewer.Fluent"
+             xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:tips="clr-namespace:FootprintViewer.ViewModels.Tips;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:MainViewModel"
+			 x:CompileBindings="True"
+             x:Class="FootprintViewer.Fluent.Views.MainView"
+			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
+
+	<UserControl.Resources>
+		<!--<Color x:Key="MainColor" R="23" G="30" B="38" A="255"/>-->
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+	</UserControl.Resources>
+
+	<Grid ColumnDefinitions="*,Auto"
+		  RowDefinitions="*,Auto">
+
+		<Panel>
+
+			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
+								  MapNavigator="{Binding MapNavigator}"
+								  HorizontalAlignment="Stretch"
+								  VerticalAlignment="Stretch">
+				<inter:Interaction.Behavior>
+					<inter:InteractivityBehavior Map="{Binding Map}"
+												 Interactive="{Binding Interactive}"
+												 State="{Binding State}"/>
+				</inter:Interaction.Behavior>
+				<i:Interaction.Behaviors>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding Leave}" x:CompileBindings="False"/>
+					<behaviors:PointerMovedEventBehavior Command="{Binding Moved}" x:CompileBindings="False"/>
+				</i:Interaction.Behaviors>
+
+				<Canvas IsHitTestVisible="False"
+						IsVisible="{Binding Tip, Converter={x:Static ObjectConverters.IsNotNull}}"
+						Background="Transparent">
+
+					<ContentControl x:DataType="tips:Tip"
+									DataContext="{Binding Tip}"
+									Content="{Binding Content}"
+									IsVisible="{Binding IsVisible}"
+								    Canvas.Left="{Binding X}"
+								    Canvas.Top="{Binding Y}"/>
+				</Canvas>
+
+			</local:UserMapControl>
+
+			<toolBar:ToolBarView DataContext="{Binding ToolBar}"
+								 VerticalAlignment="Center"
+								 HorizontalAlignment="Left"
+								 Margin="8"/>
+
+			<panels:InfoPanelView DataContext="{Binding InfoPanel}"
+								  VerticalAlignment="Bottom"
+								  HorizontalAlignment="Center"
+								  Margin="0,0,0,60"/>
+
+			<panels:InfoPanelView DataContext="{Binding ClickInfoPanel}"
+								  VerticalAlignment="Bottom"
+								  HorizontalAlignment="Right"
+								  Margin="0,0,15,30"/>
+
+			<Grid VerticalAlignment="Bottom"
+				  HorizontalAlignment="Stretch"
+				  RowDefinitions="Auto,Auto">
+				<bottomPanel:BottomPanelView Grid.Row="0"
+											 DataContext="{Binding BottomPanel}"/>
+				<!--<views:ScaleMapBarView Grid.Row="1"
+									   DataContext="{Binding ScaleMapBar}"/>-->
+			</Grid>
+		</Panel>
+
+		<sidePanel:SidePanelView Grid.Column="1"
+								 Grid.RowSpan="3"
+								 DataContext="{Binding SidePanel}"/>
+
+		<views:ScaleMapBarView Grid.Row="1"
+							   DataContext="{Binding ScaleMapBar}"/>
+
+	</Grid>
+
+</UserControl>

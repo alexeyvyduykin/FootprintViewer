@@ -1,0 +1,122 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:FootprintViewer.Fluent.Controls">
+
+  <Design.PreviewWith>
+    <Border Margin="20" Height="220" Width="480"
+            Background="WhiteSmoke">
+      <controls:BottomPanel IsExpanded="True" Background="Gray">
+        <controls:BottomPanel.Styles>
+          <Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
+            <Setter Property="Opacity" Value="0.65"/>
+          </Style>
+        </controls:BottomPanel.Styles>
+        <Grid>
+          <Border Background="Gray"
+                  Opacity="0.65"/>
+          <StackPanel Orientation="Horizontal">
+            <Button Margin="8" Content="Button1"/>
+            <Button Content="Button2"/>
+            <TextBlock Text="Text"/>
+            <Grid Margin="2" ColumnDefinitions="*,80">
+              <Button Content="Snapshot"/>
+              <ComboBox Grid.Column="1"
+                        SelectedIndex="0">
+                <TextBlock>*.png</TextBlock>
+                <TextBlock>*.jprg</TextBlock>
+                <TextBlock>*.pdf</TextBlock>
+              </ComboBox>
+            </Grid>
+            <Button Margin="8">Button3</Button>
+          </StackPanel>
+        </Grid>
+      </controls:BottomPanel>
+    </Border>
+  </Design.PreviewWith>
+
+  <!-- Add Styles Here -->
+
+  <!--BottomPanel-->
+  <Style Selector="controls|BottomPanel">
+    <Setter Property="ClipToBounds" Value="False"/>
+    <Setter Property="VerticalAlignment" Value="Bottom"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="ContentTransition">
+      <Setter.Value>
+        <CrossFade Duration="0.25" />
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|BottomPanel[ExpandDirection=Down]">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid RowDefinitions="Auto, *"
+              Background="Transparent">
+          <Grid Grid.Row="0"
+                ColumnDefinitions="22,66">
+            <ToggleButton Name="PART_toggle"
+                          Grid.Column="1"
+                          Background="{TemplateBinding Background}"
+                          Classes="ConstantForeground"
+                          Foreground="{DynamicResource MaterialDesignBody}"
+                          IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                          HorizontalContentAlignment="Left" />
+          </Grid>
+
+          <ContentPresenter Name="PART_ContentPresenter"
+                            Grid.Row="1"
+                            IsVisible="{TemplateBinding IsExpanded}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Content="{TemplateBinding Content}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Padding="{TemplateBinding Padding}" />
+
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Background="{TemplateBinding Background}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                CornerRadius="16,16,0,0"
+                MinHeight="22"
+                Padding="0">
+          <Path Name="PART_ExpandIcon"
+                    Width="24"
+                    Height="24"
+                    Fill="{TemplateBinding Foreground}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|BottomPanel /template/ ToggleButton#PART_toggle[IsChecked=false]">
+    <Setter Property="Background" Value="{TemplateBinding Background}"/>
+  </Style>
+
+  <Style Selector="controls|BottomPanel:not(.notransitions) /template/ ToggleButton#PART_toggle /template/ Path">
+    <Setter Property="Transitions">
+      <Transitions>
+        <TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="controls|BottomPanel:down /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
+    <Setter Property="RenderTransform" Value="rotate(-90deg)"/>
+  </Style>
+
+  <Style Selector="controls|BottomPanel:down:expanded /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
+    <Setter Property="RenderTransform" Value="rotate(90deg)"/>
+  </Style>
+
+</Styles>

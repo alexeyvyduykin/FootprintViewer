@@ -1,0 +1,49 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.GroundTargetView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             mc:Ignorable="d"
+			 d:DesignWidth="280"
+			 d:DataContext="{x:Static vmd:DesignData.GroundTarget}">
+
+	<UserControl.Resources>
+		<selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">
+			<DataTemplate x:Key="Point">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-poi}"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="Route">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-route}"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="Area">
+				<Viewbox Width="36" Height="36">
+					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-regular-shape-o}"/>
+				</Viewbox>
+			</DataTemplate>
+		</selectors:DataTemplateSelector>
+	</UserControl.Resources>
+
+
+	<styles:Card x:Name="MainCard">
+		<Grid ColumnDefinitions="Auto,*">
+			<Grid Width="32" Height="32">
+				<ContentControl Content="{Binding}"
+								ContentTemplate="{StaticResource GroundTargetInfoIconSelector}"/>
+			</Grid>
+			<TextBlock Text="{Binding Name}"
+					   Margin="8,0,0,0"
+					   VerticalAlignment="Center"
+					   Grid.Column="1"
+					   Classes="Headline6"/>
+		</Grid>
+	</styles:Card>
+
+</UserControl>

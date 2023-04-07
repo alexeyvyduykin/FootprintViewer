@@ -37,7 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\FootprintViewer.Avalonia\FootprintViewer.Avalonia.csproj" />
+	  <ProjectReference Include="..\..\src\FootprintViewer.Fluent\FootprintViewer.Fluent.csproj" />
 	  <ProjectReference Include="..\..\src\FootprintViewer\FootprintViewer.csproj" />
 	</ItemGroup>
 

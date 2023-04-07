@@ -1,0 +1,65 @@
+<UserControl x:Class="FootprintViewer.Fluent.Views.InfoPanel.InfoPanelView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="using:Avalonia.Xaml.Interactivity"
+             xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+             xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"
+             xmlns:local="clr-namespace:FootprintViewer.Fluent"
+             xmlns:reactiveUi="http://reactiveui.net"
+             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:panels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
+             x:DataType="vm:InfoPanel"
+			 mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="450"
+			 d:DataContext="{x:Static vmd:DesignData.InfoPanel}">
+
+	<UserControl.Styles>
+
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="0,0,0,21"/>
+		</Style>
+
+		<Style Selector="ItemsControl > ContentPresenter:nth-last-child(1)">
+			<Setter Property="Margin" Value="0,0,0,0"/>
+		</Style>
+
+		<Style Selector="ItemsControl">
+			<Setter Property="ItemsPanel">
+				<Setter.Value>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Vertical"/>
+					</ItemsPanelTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+	</UserControl.Styles>
+
+	<Grid>
+		<ItemsControl Items="{Binding Panels}">
+			<ItemsControl.DataTemplates>
+
+				<DataTemplate DataType="vm:FootprintClickInfoPanel">
+					<panels:FootprintClickInfoPanelView DataContext="{Binding}"/>
+				</DataTemplate>
+
+				<DataTemplate DataType="vm:GroundTargetClickInfoPanel">
+					<panels:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
+				</DataTemplate>
+
+				<DataTemplate DataType="vm:UserGeometryClickInfoPanel">
+					<panels:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
+				</DataTemplate>
+
+				<DataTemplate>
+					<panels:GeometryInfoPanelView DataContext="{Binding}"/>
+				</DataTemplate>
+
+			</ItemsControl.DataTemplates>
+		</ItemsControl>
+	</Grid>
+
+</UserControl>
