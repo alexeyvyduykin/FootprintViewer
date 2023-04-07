@@ -3,7 +3,7 @@ using Avalonia.Platform;
 using DataSettingsSample.Data;
 using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.ViewModels.Dialogs;
+using FootprintViewer.Fluent.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;

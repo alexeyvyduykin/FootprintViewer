@@ -1,5 +1,4 @@
 ﻿using Mapsui;
-using System;
 using System.Collections.Generic;
 
 namespace FootprintViewer
@@ -60,15 +59,15 @@ namespace FootprintViewer
             }
 
             double total = 0;
-             
+
             MPoint prevPoint = path[0];
-      
+
             foreach (var point in path)
             {
                 double dist = GetDistance(prevPoint, point);
 
                 total += dist;
-                prevPoint = point;              
+                prevPoint = point;
             }
 
             return total;

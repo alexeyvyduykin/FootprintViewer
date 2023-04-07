@@ -16,11 +16,11 @@ internal class Program
         var groundStationPath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "GroundStations.json"));
         var plannedSchedulePath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "PlannedSchedule.json"));
 
-        var satellites = await RandomModelBuilder.CreateSatellitesAsync(5);
-        var gss = await ModelFactory.CreateDefaultGroundStationsAsync();
-        var footprints = await RandomModelBuilder.CreateFootprintsAsync(satellites, 2000);
-        var gts = await RandomModelBuilder.CreateGroundTargetsAsync(footprints, 5000);
-        var plannedSchedule = await RandomModelBuilder.CreatePlannedScheduleAsync(satellites, gts, gss, footprints);
+        var satellites = await SatelliteBuilder.CreateAsync(5);
+        var gss = await GroundStationBuilder.CreateDefaultAsync();
+        var footprints = await FootprintBuilder.CreateAsync(satellites, 2000);
+        var gts = await GroundTargetBuilder.CreateAsync(footprints, 5000);
+        var plannedSchedule = await PlannedScheduleBuilder.CreateAsync(satellites, gts, gss, footprints);
 
         //    JsonHelper.SerializeToFile(footprintPath, footprints);
         var footprintSuccess = JsonHelper.Verified<IList<Footprint>>(footprintPath);

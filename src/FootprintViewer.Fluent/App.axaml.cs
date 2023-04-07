@@ -5,10 +5,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
 using FootprintViewer.Data;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Fluent.ViewModels;
 using ReactiveUI;
 using Splat;
-using System;
 using System.Text;
 
 namespace FootprintViewer.Fluent;

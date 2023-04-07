@@ -8,7 +8,6 @@ using Mapsui.Tiling.Layers;
 using Mapsui.UI;
 using NetTopologySuite.Geometries;
 using SQLite;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

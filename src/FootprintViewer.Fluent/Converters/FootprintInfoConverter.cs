@@ -1,6 +1,6 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
-using FootprintViewer.ViewModels.SidePanel.Items;
+using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using System.Globalization;
 
 namespace FootprintViewer.Fluent.Converters;

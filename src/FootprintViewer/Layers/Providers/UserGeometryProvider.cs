@@ -9,7 +9,6 @@ using Mapsui.Providers;
 using Mapsui.Styles;
 using ReactiveUI;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

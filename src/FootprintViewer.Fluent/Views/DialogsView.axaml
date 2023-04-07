@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Fluent.Views.DialogsView"
 			 xmlns:controls="using:FootprintViewer.Fluent.Controls"
-			 xmlns:vm="using:FootprintViewer.ViewModels"
+			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
 			 x:DataType="vm:MainViewModel">
 
 	<UserControl.Resources>

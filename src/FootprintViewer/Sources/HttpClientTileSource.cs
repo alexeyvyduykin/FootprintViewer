@@ -1,10 +1,4 @@
-﻿using BruTile;
-using BruTile.Web;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-
-namespace FootprintViewer
+﻿namespace FootprintViewer
 {
     //public class HttpClientTileSource : ITileSource
     //{

@@ -3,14 +3,12 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,12 +63,12 @@ public class GroundStationProvider : IProvider, IDynamic
         }
     }
 
-    public void ChangedData(GroundStationViewModel groundStation)
+    // TODO: isShow refactoring
+    public void ChangedData(GroundStation groundStation, double innerAngle, double[] arrAngles, bool isShow)
     {
         var name = groundStation.Name;
-        var center = new NetTopologySuite.Geometries.Point(groundStation.Center);
-        var angles = groundStation.GetAngles();
-        var isShow = groundStation.IsShow;
+        var center = groundStation.Center;
+        var angles = GetAngles(innerAngle, arrAngles);
 
         if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
         {
@@ -95,6 +93,18 @@ public class GroundStationProvider : IProvider, IDynamic
             features.ForEach(s => _featureCache.Add(s));
 
             DataHasChanged();
+        }
+
+        static double[] GetAngles(double innerAngle, double[] angles)
+        {
+            var list = new List<double>
+            {
+                innerAngle
+            };
+
+            list.AddRange(angles);
+
+            return list.ToArray();
         }
     }
 

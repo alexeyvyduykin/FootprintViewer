@@ -3,7 +3,6 @@ using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;
-using System;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Layers

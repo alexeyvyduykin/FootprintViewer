@@ -1,5 +1,5 @@
 ﻿using Avalonia.Data.Converters;
-using FootprintViewer.ViewModels.Tips;
+using FootprintViewer.Fluent.ViewModels.Tips;
 using System.Globalization;
 
 namespace FootprintViewer.Fluent.Converters;

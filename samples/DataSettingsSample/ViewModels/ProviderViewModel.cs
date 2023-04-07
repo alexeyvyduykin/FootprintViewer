@@ -1,7 +1,7 @@
 ﻿using DataSettingsSample.Data;
 using DataSettingsSample.ViewModels.Interfaces;
 using DataSettingsSample.ViewModels.SourceBuilders;
-using FootprintViewer.ViewModels.Dialogs;
+using FootprintViewer.Fluent.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:icons="using:Material.Icons.Avalonia"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 mc:Ignorable="d"
              d:DesignHeight="250"

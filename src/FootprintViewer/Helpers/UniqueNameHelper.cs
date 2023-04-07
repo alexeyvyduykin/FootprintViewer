@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FootprintViewer.Helpers
+﻿namespace FootprintViewer.Helpers
 {
     public static class UniqueNameHelper
     {

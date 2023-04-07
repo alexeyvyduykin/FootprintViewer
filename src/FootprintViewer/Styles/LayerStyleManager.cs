@@ -6,7 +6,6 @@ using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

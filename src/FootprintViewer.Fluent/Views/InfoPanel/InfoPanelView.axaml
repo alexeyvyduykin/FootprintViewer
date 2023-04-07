@@ -8,10 +8,10 @@
              xmlns:iac="using:Avalonia.Xaml.Interactions.Custom"
              xmlns:local="clr-namespace:FootprintViewer.Fluent"
              xmlns:reactiveUi="http://reactiveui.net"
-             xmlns:vm="clr-namespace:FootprintViewer.ViewModels;assembly=FootprintViewer"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
-             xmlns:panels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
-             x:DataType="vm:InfoPanel"
+             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"
+             xmlns:infoPanels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
+             x:DataType="vm:InfoPanelViewModel"
 			 mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="450"
 			 d:DataContext="{x:Static vmd:DesignData.InfoPanel}">
@@ -43,19 +43,19 @@
 			<ItemsControl.DataTemplates>
 
 				<DataTemplate DataType="vm:FootprintClickInfoPanel">
-					<panels:FootprintClickInfoPanelView DataContext="{Binding}"/>
+					<infoPanels:FootprintClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
 				<DataTemplate DataType="vm:GroundTargetClickInfoPanel">
-					<panels:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
+					<infoPanels:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
 				<DataTemplate DataType="vm:UserGeometryClickInfoPanel">
-					<panels:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
+					<infoPanels:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
 				<DataTemplate>
-					<panels:GeometryInfoPanelView DataContext="{Binding}"/>
+					<infoPanels:GeometryInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
 			</ItemsControl.DataTemplates>

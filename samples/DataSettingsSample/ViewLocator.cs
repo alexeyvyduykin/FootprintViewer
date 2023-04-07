@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Fluent.ViewModels;
 using System;
 
 namespace DataSettingsSample

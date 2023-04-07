@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Fluent.ViewModels.SidePanel;
 using System.Collections.Generic;
 
 namespace FootprintViewer.Fluent.Selectors;

@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Input;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Fluent.ViewModels;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 using System.Reactive.Linq;

@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using FootprintViewer.ViewModels;
+using FootprintViewer.Fluent.ViewModels;
 
 namespace FootprintViewer.Fluent;
 
@@ -9,7 +9,7 @@ public class ViewLocator : IDataTemplate
     public IControl Build(object data)
     {
         var name = data.GetType().FullName!.Replace("ViewModel", "View");
-        name = name.Replace("FootprintViewer", "FootprintViewer.Fluent");
+        //name = name.Replace("FootprintViewer", "FootprintViewer.Fluent");
         var type = Type.GetType(name);
 
         if (type != null)

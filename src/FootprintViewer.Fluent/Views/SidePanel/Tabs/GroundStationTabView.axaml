@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
              xmlns:reactiveUi="http://reactiveui.net"
-             xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              mc:Ignorable="d"
 			 d:DesignWidth="380" d:DesignHeight="450"
 			 d:DataContext="{x:Static vmd:DesignData.GroundStationTab}">

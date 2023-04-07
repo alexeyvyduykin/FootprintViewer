@@ -4,7 +4,6 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Extensions;
-using FootprintViewer.ViewModels.SidePanel.Items;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -12,7 +11,6 @@ using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -66,12 +64,13 @@ public class TrackProvider : IProvider, IDynamic
         }
     }
 
-    public void ChangedData(SatelliteViewModel satellite)
+    // TODO: node/isShow refactoring
+    public void ChangedData(Satellite satellite, int node, bool isShow)
     {
         var name = satellite.Name;
         // TODO: node value refactoring
-        var node = satellite.CurrentNode - 1;
-        var isShow = satellite.IsShow && satellite.IsTrack;
+        //var node = satellite.CurrentNode - 1;
+        //var isShow = satellite.IsShow && satellite.IsTrack;
 
         if (string.IsNullOrEmpty(name) == false && _cache.ContainsKey(name) == true)
         {

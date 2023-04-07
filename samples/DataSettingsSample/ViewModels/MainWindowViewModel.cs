@@ -1,9 +1,9 @@
 ﻿using DataSettingsSample.Data;
 using DataSettingsSample.Models;
 using FDataSettingsSample.Models;
-using FootprintViewer.ViewModels;
-using FootprintViewer.ViewModels.Dialogs;
-using FootprintViewer.ViewModels.Navigation;
+using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.Fluent.ViewModels.Dialogs;
+using FootprintViewer.Fluent.ViewModels.Navigation;
 using ReactiveUI;
 using Splat;
 using System;

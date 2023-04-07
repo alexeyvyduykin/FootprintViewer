@@ -5,7 +5,7 @@
              xmlns:controls="using:FootprintViewer.Fluent.Controls"
 	         xmlns:converters="using:FootprintViewer.Fluent.Converters"
 			 xmlns:timeline="clr-namespace:TimeDataViewerLite.Controls;assembly=TimeDataViewerLite"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Designer;assembly=FootprintViewer"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Fluent.Views.Timelines.TimelinesView"

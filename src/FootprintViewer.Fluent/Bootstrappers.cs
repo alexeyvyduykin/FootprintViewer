@@ -1,14 +1,14 @@
 ﻿using FootprintViewer.Configurations;
 using FootprintViewer.Data;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.Fluent.ViewModels.SidePanel;
+using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
+using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
-using FootprintViewer.ViewModels;
-using FootprintViewer.ViewModels.SidePanel;
-using FootprintViewer.ViewModels.SidePanel.Tabs;
-using FootprintViewer.ViewModels.ToolBar;
 using Mapsui;
 using Microsoft.Extensions.Configuration;
 using ReactiveUI;
@@ -105,7 +105,7 @@ public static class Bootstrapper
         services.RegisterConstant(new UserGeometryProvider(resolver), typeof(UserGeometryProvider));
 
         services.RegisterConstant(mapFactory.CreateMap(), typeof(IMap));
-        services.RegisterConstant(factory.CreateMapNavigator((Map)resolver.GetExistingService<IMap>()), typeof(IMapNavigator));
+        services.RegisterConstant(new MapNavigator((Map)resolver.GetExistingService<IMap>()), typeof(IMapNavigator));
         services.RegisterConstant(new AreaOfInterest((Map)resolver.GetExistingService<IMap>()), typeof(AreaOfInterest));
 
         services.RegisterLazySingleton<SatelliteTabViewModel>(() => new SatelliteTabViewModel(resolver));

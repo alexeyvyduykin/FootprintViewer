@@ -11,7 +11,6 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

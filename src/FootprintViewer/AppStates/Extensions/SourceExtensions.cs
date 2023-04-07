@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Sources;
-using System;
 
 namespace FootprintViewer.AppStates.Extensions;
 

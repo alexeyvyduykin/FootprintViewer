@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FootprintViewer.AppStates;
+﻿namespace FootprintViewer.AppStates;
 
 public interface ISourceState : IEquatable<ISourceState>
 {

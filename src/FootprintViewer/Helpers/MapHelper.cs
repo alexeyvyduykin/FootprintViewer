@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FootprintViewer
+﻿namespace FootprintViewer
 {
     public static class MapHelper
-    {       
+    {
         //Earth radius in meters.
         private const double EarthRadius = 6378137;
 

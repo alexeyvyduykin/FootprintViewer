@@ -1,5 +1,4 @@
 ﻿using Mapsui.Styles;
-using System;
 
 namespace FootprintViewer.Styles;
 

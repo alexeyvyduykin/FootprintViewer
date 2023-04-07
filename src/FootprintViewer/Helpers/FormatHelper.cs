@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FootprintViewer
+﻿namespace FootprintViewer
 {
     public static class FormatHelper
     {

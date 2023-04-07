@@ -4,7 +4,6 @@ using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using SpaceScience;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
