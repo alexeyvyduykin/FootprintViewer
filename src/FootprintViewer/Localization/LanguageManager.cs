@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Configurations;
+using FootprintViewer.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

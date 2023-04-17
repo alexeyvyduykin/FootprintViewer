@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "FootprintViewer.Avalonia": {
+    "FootprintViewer.Fluent": {
       "commandName": "Project",
       "commandLineArgs": "devwork"
     }

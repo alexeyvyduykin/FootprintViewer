@@ -5,7 +5,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
 using FootprintViewer.Data;
-using FootprintViewer.Fluent.ViewModels;
 using ReactiveUI;
 using Splat;
 using System.Text;
@@ -14,7 +13,7 @@ namespace FootprintViewer.Fluent;
 
 public class App : Application
 {
-    private static Views.MainWindow? _mainWindow;
+    private ApplicationStateManager? _applicationStateManager;
 
     public override void Initialize()
     {
@@ -33,17 +32,9 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
-            var mainViewModel = GetExistingService<MainViewModel>();
+            _applicationStateManager = new ApplicationStateManager(desktopLifetime);
 
-            if (mainViewModel != null)
-            {
-                _mainWindow = new Views.MainWindow()
-                {
-                    DataContext = mainViewModel
-                };
-
-                desktopLifetime.MainWindow = _mainWindow;
-            }
+            DataContext = _applicationStateManager.ApplicationViewModel;
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime)
         {
@@ -80,6 +71,4 @@ public class App : Application
 
         Locator.CurrentMutable.RegisterConstant(mainState, typeof(MainState));
     }
-
-    public static Views.MainWindow GetMainWindow() => _mainWindow ?? throw new Exception();
 }

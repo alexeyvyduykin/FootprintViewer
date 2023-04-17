@@ -1,6 +1,8 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:FootprintViewer.Fluent"        
+             xmlns:local="using:FootprintViewer.Fluent"
+             xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
+			 x:DataType="vm:ApplicationViewModel"
              x:Class="FootprintViewer.Fluent.App">
 
 	<Application.DataTemplates>
@@ -8,9 +10,9 @@
 	</Application.DataTemplates>
 
 	<Application.Styles>
-		
+
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/Base.axaml"/>
-		
+
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
 		<!--<StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml" />-->
 
@@ -18,7 +20,7 @@
 
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ColorZone.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Card.axaml"/>
-		
+
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
 

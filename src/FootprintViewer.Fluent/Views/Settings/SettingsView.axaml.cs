@@ -8,15 +8,5 @@ namespace FootprintViewer.Fluent.Views.Settings
         {
             InitializeComponent();
         }
-
-        private static void UpdateMainWindow()
-        {
-            if (Design.IsDesignMode == true)
-            {
-                return;
-            }
-
-            App.GetMainWindow().UpdateComponent();
-        }
     }
 }
