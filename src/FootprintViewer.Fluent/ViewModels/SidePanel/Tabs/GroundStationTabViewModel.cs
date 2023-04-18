@@ -7,7 +7,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using ReactiveUI;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -25,11 +24,11 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly GroundStationProvider? _provider;
 
-    public GroundStationTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public GroundStationTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        _provider = dependencyResolver.GetExistingService<GroundStationProvider>();
-        _layerStyleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+        _dataManager = Services.DataManager;
+        _provider = Services.GroundStationProvider;
+        _layerStyleManager = Services.LayerStyleManager;
 
         Title = "Просмотр наземных станций";
 

@@ -7,7 +7,6 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -23,9 +22,9 @@ public class TimelinesOldViewModel : DialogViewModelBase<object>
     private readonly IDataManager _dataManager;
     private readonly DateTime _timeOrigin = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
 
-    public TimelinesOldViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public TimelinesOldViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = Services.DataManager;
 
         SelectedInterval = ReactiveCommand.Create<object?>(SelectedIntervalImpl, outputScheduler: RxApp.MainThreadScheduler);
 

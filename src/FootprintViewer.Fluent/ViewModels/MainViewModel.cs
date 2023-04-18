@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
@@ -13,7 +12,6 @@ using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -26,7 +24,7 @@ using Mapsui.Projections;
 using Nito.Disposables.Internals;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -36,26 +34,17 @@ namespace FootprintViewer.Fluent.ViewModels;
 
 public sealed partial class MainViewModel : ViewModelBase
 {
-    private readonly IReadonlyDependencyResolver _dependencyResolver;
-    private readonly Map _map;
     private readonly StateMachines.MapState _mapState;
     private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanelViewModel _infoPanel;
     private readonly InfoPanelViewModel _clickInfoPanel;
-    private readonly SidePanelViewModel _sidePanel;
     private readonly BottomPanel _bottomPanel;
-    private readonly ToolBarViewModel _toolBar;
-    private readonly FootprintTabViewModel _footprintTab;
-    private readonly GroundTargetTabViewModel _groundTargetTab;
-    private readonly UserGeometryTabViewModel _userGeometryTab;
     private readonly ScaleMapBar _scaleMapBar;
     private ISelector? _selector;
-    private readonly IDataManager _dataManager;
-    private readonly FeatureManager _featureManager;
     private double _lastScreenPointX = 0;
     private double _lastScreenPointY = 0;
 
-    public MainViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public MainViewModel()
     {
         DialogScreen = new DialogScreenViewModel();
 
@@ -65,36 +54,23 @@ public sealed partial class MainViewModel : ViewModelBase
 
         NavigationState.Register(MainScreen, DialogScreen, FullScreen);
 
-        _dependencyResolver = dependencyResolver;
-        var factory = dependencyResolver.GetExistingService<ProjectFactory>();
-        // TODO: make _map as IMap
-        _map = (Map)dependencyResolver.GetExistingService<IMap>();
-        _mapState = dependencyResolver.GetExistingService<StateMachines.MapState>();
+        _mapState = Services.MapState;
 
-        MapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
-        _areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
-        _sidePanel = dependencyResolver.GetExistingService<SidePanelViewModel>();
-        _toolBar = dependencyResolver.GetExistingService<ToolBarViewModel>();
-        _footprintTab = dependencyResolver.GetExistingService<FootprintTabViewModel>();
-        _groundTargetTab = dependencyResolver.GetExistingService<GroundTargetTabViewModel>();
-        _userGeometryTab = dependencyResolver.GetExistingService<UserGeometryTabViewModel>();
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
+        MapNavigator = Services.MapNavigator;
+
+        _areaOfInterest = Services.AreaOfInterest;
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);
 
-        _infoPanel = new InfoPanelViewModel();//factory.CreateInfoPanel();
+        _infoPanel = new InfoPanelViewModel();
 
-        _clickInfoPanel = new InfoPanelViewModel();// factory.CreateInfoPanel();
+        _clickInfoPanel = new InfoPanelViewModel();
 
-        _scaleMapBar = new ScaleMapBar();// factory.CreateScaleMapBar();
+        _scaleMapBar = new ScaleMapBar();
 
-        _bottomPanel = new BottomPanel(_dependencyResolver);// factory.CreateBottomPanel();
-
-        _toolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        _toolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+        _bottomPanel = new BottomPanel();
 
         _mapState.ResetObservable.Subscribe(_ => ResetCommand());
         _mapState.RectAOIObservable.Subscribe(_ => RectangleCommand());
@@ -135,7 +111,14 @@ public sealed partial class MainViewModel : ViewModelBase
 
         TimelinesOld = ReactiveCommand.CreateFromTask(TimelinesOldImpl);
 
-        Observable.StartAsync(InitAsync, RxApp.MainThreadScheduler);
+        RegisterViewModels();
+    }
+
+    public static MainViewModel Instance { get; } = new();
+
+    public void Initialize()
+    {
+
     }
 
     public TargettedNavigationStack MainScreen { get; }
@@ -156,38 +139,62 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, Unit> TimelinesOld { get; }
 
+    private void RegisterViewModels()
+    {
+        var satelliteTabViewModel = new SatelliteTabViewModel();
+        var groundTargetTabViewModel = new GroundTargetTabViewModel();
+        var footprintTabViewModel = new FootprintTabViewModel();
+        var userGeometryTabViewModel = new UserGeometryTabViewModel();
+        var groundStationTabViewModel = new GroundStationTabViewModel();
+        var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
+
+        ToolBar = new ToolBarViewModel();
+
+        ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+
+        SidePanel = new SidePanelViewModel()
+        {
+            Tabs = new List<SidePanelTabViewModel>(new SidePanelTabViewModel[]
+            {
+                satelliteTabViewModel,
+                groundStationTabViewModel,
+                groundTargetTabViewModel,
+                footprintTabViewModel,
+                userGeometryTabViewModel,
+                plannedScheduleTabViewModel,
+            })
+        };
+    }
+
     private async Task ConnectionImpl()
     {
-        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
-
-        var connectionDialog = new ConnectionViewModel(_dependencyResolver);
+        var connectionDialog = new ConnectionViewModel();
 
         _ = await DialogScreen.NavigateDialogAsync(connectionDialog);
 
-        dataManager.UpdateData();
+        Services.DataManager.UpdateData();
     }
 
     private async Task SettingsImpl()
     {
-        var dataManager = _dependencyResolver.GetExistingService<IDataManager>();
-
-        var settingsDialog = new SettingsViewModel(_dependencyResolver);
+        var settingsDialog = new SettingsViewModel();
 
         _ = await DialogScreen.NavigateDialogAsync(settingsDialog);
 
-        dataManager.UpdateData();
+        Services.DataManager.UpdateData();
     }
 
     private async Task TimelinesImpl()
     {
-        var timelinesDialog = new TimelinesViewModel(_dependencyResolver);
+        var timelinesDialog = new TimelinesViewModel();
 
         _ = await FullScreen.NavigateDialogAsync(timelinesDialog);
     }
 
     private async Task TimelinesOldImpl()
     {
-        var timelinesOldDialog = new TimelinesOldViewModel(_dependencyResolver);
+        var timelinesOldDialog = new TimelinesOldViewModel();
 
         _ = await FullScreen.NavigateDialogAsync(timelinesOldDialog);
     }
@@ -238,16 +245,16 @@ public sealed partial class MainViewModel : ViewModelBase
         Tip = null;
     }
 
-    private async Task InitAsync()
+    public async Task InitAsync()
     {
-        var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        var maps = await Services.DataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
         var item = maps.FirstOrDefault();
         if (item != null)
         {
-            _map.SetWorldMapLayer(item);
+            Services.Map.SetWorldMapLayer(item);
         }
 
-        _map.Layers
+        Services.Map.Layers
             .ToList()
             .Where(s => s is DynamicLayer dynamicLayer && dynamicLayer.DataSource is IDynamic)
             .Select(s => (IDynamic)((DynamicLayer)s).DataSource!)
@@ -257,28 +264,28 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private void EnterFeature(ISelector selector)
     {
-        _featureManager
+        Services.FeatureManager
             .OnLayer(selector.PointeroverLayer)
             .Enter(selector.HoveringFeature);
     }
 
     private void LeaveFeature(ISelector selector)
     {
-        _featureManager
+        Services.FeatureManager
             .OnLayer(selector.PointeroverLayer)
             .Leave();
     }
 
     private void SelectFeature(ISelector selector)
     {
-        _featureManager
+        Services.FeatureManager
             .OnLayer(selector.SelectedLayer)
             .Select(selector.SelectedFeature);
     }
 
     private void UnselectFeature(ISelector selector)
     {
-        _featureManager
+        Services.FeatureManager
             .OnLayer(selector.SelectedLayer)
             .Unselect();
     }
@@ -297,13 +304,13 @@ public sealed partial class MainViewModel : ViewModelBase
             //        .Select(s => new FootprintClickInfoPanel(s))
             //        .FirstOrDefault(),
             nameof(LayerType.GroundTarget) =>
-                (await _dataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
+                (await Services.DataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new GroundTargetViewModel(s))
                     .Select(s => new GroundTargetClickInfoPanel(s))
                     .FirstOrDefault() ?? null,
             nameof(LayerType.User) =>
-                (await _dataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
+                (await Services.DataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new UserGeometryViewModel(s))
                     .Select(s => new UserGeometryClickInfoPanel(s))
@@ -352,9 +359,9 @@ public sealed partial class MainViewModel : ViewModelBase
 
                     var key = DbKeys.UserGeometries.ToString();
 
-                    await _dataManager.TryEditAsync(key, name, model);
+                    await Services.DataManager.TryEditAsync(key, name, model);
 
-                    _dataManager.ForceUpdateData(key);
+                    Services.DataManager.ForceUpdateData(key);
                 }
             },
             RxApp.TaskpoolScheduler);
@@ -380,9 +387,9 @@ public sealed partial class MainViewModel : ViewModelBase
 
                 var key = DbKeys.UserGeometries.ToString();
 
-                await _dataManager.TryAddAsync(key, model);
+                await Services.DataManager.TryAddAsync(key, model);
 
-                _dataManager.ForceUpdateData(key);
+                Services.DataManager.ForceUpdateData(key);
             },
             RxApp.TaskpoolScheduler);
         }
@@ -430,7 +437,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         panel.Close.Subscribe(_ =>
         {
-            var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+            var layer = Services.Map.GetLayer<EditLayer>(LayerType.Edit);
 
             layer?.ClearRoute();
 
@@ -444,7 +451,7 @@ public sealed partial class MainViewModel : ViewModelBase
         return panel;
     }
 
-    public Map Map => _map;
+    public Map Map => Services.Map;
 
     [Reactive]
     public IInteractive? Interactive { get; set; }
@@ -452,7 +459,7 @@ public sealed partial class MainViewModel : ViewModelBase
     [Reactive]
     public string State { get; set; } = States.Default;
 
-    public SidePanelViewModel SidePanel => _sidePanel;
+    public SidePanelViewModel SidePanel { get; private set; }// => _sidePanel;
 
     public InfoPanelViewModel InfoPanel => _infoPanel;
 
@@ -460,7 +467,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public InfoPanelViewModel ClickInfoPanel => _clickInfoPanel;
 
-    public ToolBarViewModel ToolBar => _toolBar;
+    public ToolBarViewModel ToolBar { get; private set; }//=> _toolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
 

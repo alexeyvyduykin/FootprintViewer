@@ -3,7 +3,7 @@ using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace FootprintViewer.Fluent.Services;
+namespace FootprintViewer.Fluent.Services2;
 
 public static class CursorService
 {

@@ -3,11 +3,8 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.StateMachines;
-using Mapsui;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
@@ -23,11 +20,11 @@ public sealed class ToolBarViewModel : ViewModelBase
     private readonly SourceList<MapResource> _mapResources = new();
     private readonly ReadOnlyObservableCollection<MenuItemViewModel> _mapItems;
 
-    public ToolBarViewModel(IReadonlyDependencyResolver dependencyResolver) : base()
+    public ToolBarViewModel() : base()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var map = (Map)dependencyResolver.GetExistingService<IMap>();
-        var mapState = dependencyResolver.GetExistingService<MapState>();
+        _dataManager = Services.DataManager;
+        var map = Services.Map;
+        var mapState = Services.MapState;
 
         ZoomIn = new ToolClick()
         {
@@ -89,7 +86,7 @@ public sealed class ToolBarViewModel : ViewModelBase
         this.WhenAnyValue(s => s.IsLayerContainerOpen)
             .ObserveOn(RxApp.MainThreadScheduler)
             .WhereTrue()
-            .Subscribe(_ => LayerContainer = new LayerContainerViewModel(dependencyResolver));
+            .Subscribe(_ => LayerContainer = new LayerContainerViewModel());
     }
 
     private static ToolCheck CreateToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator, string? tag)

@@ -7,7 +7,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -27,9 +26,9 @@ public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintVi
     private const int FromNodeDefault = 1;
     private const int ToNodeDefault = 15;
 
-    public FootprintTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public FootprintTabFilterViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = Services.DataManager;
 
         IsLeftSwath = true;
         IsRightSwath = true;

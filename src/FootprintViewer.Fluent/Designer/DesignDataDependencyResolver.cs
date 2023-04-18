@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Configurations;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
@@ -15,7 +14,6 @@ using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
-using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -23,12 +21,11 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.Designer;
 
-internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
+internal sealed class DesignDataDependencyResolver
 {
     private Map? _map;
     private IMapNavigator? _mapNavigator;
     private AreaOfInterest? _areaOfInterest;
-    private ProjectFactory? _projectFactory;
     private GroundTargetProvider? _groundTargetProvider;
     private TrackProvider? _trackProvider;
     private SensorProvider? _sensorProvider;
@@ -51,13 +48,14 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
     private LayerStyleManager? _layerStyleManager;
     private MapState? _mapState;
 
-    public object? GetService(Type? serviceType, string? contract = null)
+    public T GetService<T>()
     {
-        if (serviceType == typeof(ProjectFactory))
-        {
-            return _projectFactory ??= new ProjectFactory(this);
-        }
-        else if (serviceType == typeof(IMap))
+        return (T)GetService(typeof(T))!;
+    }
+
+    public object? GetService(Type? serviceType)
+    {
+        if (serviceType == typeof(IMap))
         {
             return _map ??= CreateMap();
         }
@@ -79,59 +77,59 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         }
         else if (serviceType == typeof(GroundTargetProvider))
         {
-            return _groundTargetProvider ??= new GroundTargetProvider(this);
+            return _groundTargetProvider ??= new GroundTargetProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(TrackProvider))
         {
-            return _trackProvider ??= new TrackProvider(this);
+            return _trackProvider ??= new TrackProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(SensorProvider))
         {
-            return _sensorProvider ??= new SensorProvider(this);
+            return _sensorProvider ??= new SensorProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(GroundStationProvider))
         {
-            return _groundStationProvider ??= new GroundStationProvider(this);
+            return _groundStationProvider ??= new GroundStationProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(FootprintProvider))
         {
-            return _footprintProvider ??= new FootprintProvider(this);
+            return _footprintProvider ??= new FootprintProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(UserGeometryProvider))
         {
-            return _userGeometryProvider ??= new UserGeometryProvider(this);
+            return _userGeometryProvider ??= new UserGeometryProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {
-            return _satelliteTab ??= new SatelliteTabViewModel(this);
+            return _satelliteTab ??= new SatelliteTabViewModel();
         }
         else if (serviceType == typeof(GroundStationTabViewModel))
         {
-            return _groundStationTab ??= new GroundStationTabViewModel(this);
+            return _groundStationTab ??= new GroundStationTabViewModel();
         }
         else if (serviceType == typeof(FootprintTabViewModel))
         {
-            return _footprintTab ??= new FootprintTabViewModel(this);
+            return _footprintTab ??= new FootprintTabViewModel();
         }
         else if (serviceType == typeof(PlannedScheduleTabViewModel))
         {
-            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel(this);
+            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel();
         }
         else if (serviceType == typeof(GroundTargetTabViewModel))
         {
-            return _groundTargetTab ??= new GroundTargetTabViewModel(this);
+            return _groundTargetTab ??= new GroundTargetTabViewModel();
         }
         else if (serviceType == typeof(FootprintPreviewTabViewModel))
         {
-            return _footprintPreviewTab ??= new FootprintPreviewTabViewModel(this);
+            return _footprintPreviewTab ??= new FootprintPreviewTabViewModel();
         }
         else if (serviceType == typeof(UserGeometryTabViewModel))
         {
-            return _userGeometryTab ??= new UserGeometryTabViewModel(this);
+            return _userGeometryTab ??= new UserGeometryTabViewModel();
         }
         else if (serviceType == typeof(ToolBarViewModel))
         {
-            return _toolBar ??= new ToolBarViewModel(this);
+            return _toolBar ??= new ToolBarViewModel();
         }
         else if (serviceType == typeof(SidePanelViewModel))
         {
@@ -139,7 +137,7 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         }
         else if (serviceType == typeof(MainViewModel))
         {
-            return _mainViewModel ??= new MainViewModel(this);
+            return _mainViewModel ??= new MainViewModel();
         }
         else if (serviceType == typeof(MapState))
         {
@@ -151,13 +149,8 @@ internal sealed class DesignDataDependencyResolver : IReadonlyDependencyResolver
         }
         else if (serviceType == typeof(ILanguageManager))
         {
-            return _languageManager ??= new LanguageManager(new LanguagesConfiguration() { AvailableLocales = new[] { "en", "ru" } });
+            return _languageManager ??= new LanguageManager(new[] { "en", "ru" });
         }
-        throw new Exception();
-    }
-
-    public IEnumerable<object> GetServices(Type? serviceType, string? contract = null)
-    {
         throw new Exception();
     }
 

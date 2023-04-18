@@ -10,7 +10,6 @@ using Mapsui.Layers;
 using Mapsui.Nts;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -30,14 +29,14 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
     private readonly ReadOnlyObservableCollection<FootprintPreviewGeometry> _geometryItems;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
-    public FootprintPreviewTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public FootprintPreviewTabViewModel()
     {
-        _map = (Map)dependencyResolver.GetExistingService<IMap>();
-        _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
+        _map = Services.Map;
+        _mapNavigator = Services.MapNavigator;
+        _dataManager = Services.DataManager;
+        var areaOfInterest = Services.AreaOfInterest;
 
-        Filter = new FootprintPreviewTabFilterViewModel(dependencyResolver);
+        Filter = new FootprintPreviewTabFilterViewModel();
 
         Title = "Поиск сцены";
 

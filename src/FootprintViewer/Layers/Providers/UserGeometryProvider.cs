@@ -2,13 +2,13 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using ReactiveUI;
-using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,9 +24,9 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
     private readonly SourceList<UserGeometry> _userGeometries = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public UserGeometryProvider(IReadonlyDependencyResolver dependencyResolver)
+    public UserGeometryProvider(IDataManager dataManager, LayerStyleManager styleManager)
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = dataManager;
 
         _userGeometries
             .Connect()

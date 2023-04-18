@@ -6,7 +6,6 @@ using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SkiaSharp;
-using Splat;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,10 +22,10 @@ public sealed class SnapshotMaker : ViewModelBase
     private readonly ReactiveCommand<Unit, Unit> _openFolder;
     private readonly SolutionFolder _solutionFolder;
 
-    public SnapshotMaker(IReadonlyDependencyResolver dependencyResolver)
+    public SnapshotMaker()
     {
-        var map = (Map)dependencyResolver.GetExistingService<IMap>();
-        var mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
+        var map = Services.Map;
+        var mapNavigator = Services.MapNavigator;
 
         _solutionFolder = new SolutionFolder("snapshots");
 

@@ -9,11 +9,9 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
-using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -34,17 +32,17 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
     private readonly ILayer? _layer;
     private readonly FootprintProvider _layerProvider;
 
-    public FootprintTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public FootprintTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
-        var map = dependencyResolver.GetExistingService<IMap>();
+        _dataManager = Services.DataManager;
+        _mapNavigator = Services.MapNavigator;
+        var map = Services.Map;
         _layer = map.GetLayer(LayerType.Footprint);
-        _layerProvider = dependencyResolver.GetExistingService<FootprintProvider>();
-        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
-        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
+        _layerProvider = Services.FootprintProvider;
+        _featureManager = Services.FeatureManager;
+        var areaOfInterest = Services.AreaOfInterest;
 
-        Filter = new FootprintTabFilterViewModel(dependencyResolver);
+        Filter = new FootprintTabFilterViewModel();
 
         Title = "Просмотр рабочей программы";
 

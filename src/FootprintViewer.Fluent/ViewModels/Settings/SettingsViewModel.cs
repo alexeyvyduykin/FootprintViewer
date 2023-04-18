@@ -1,10 +1,7 @@
-﻿using FootprintViewer.AppStates;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
-using FootprintViewer.Localization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -14,20 +11,20 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 
-    public SettingsViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public SettingsViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var languageManager = dependencyResolver.GetExistingService<ILanguageManager>();
+        _dataManager = Services.DataManager;
+        var languageManager = Services.LanguageManager;
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var mainState = dependencyResolver.GetExistingService<MainState>();
+            var mainState = Services.MainState;
 
             await Observable
                 .Return(Unit.Default)
                 .Delay(TimeSpan.FromSeconds(0.1));
 
-            mainState.SaveData(_dataManager);
+            mainState?.SaveData(_dataManager);
 
             Close(DialogResultKind.Normal);
         });

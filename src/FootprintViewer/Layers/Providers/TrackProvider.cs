@@ -4,13 +4,13 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Extensions;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
-using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -26,9 +26,9 @@ public class TrackProvider : IProvider, IDynamic
     private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public TrackProvider(IReadonlyDependencyResolver dependencyResolver)
+    public TrackProvider(IDataManager dataManager, LayerStyleManager styleManager)
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = dataManager;
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 

@@ -8,11 +8,9 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
-using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -32,18 +30,18 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
     private readonly ILayer? _layer;
     private readonly GroundTargetProvider _layerProvider;
 
-    public GroundTargetTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public GroundTargetTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var map = dependencyResolver.GetExistingService<IMap>();
+        _dataManager = Services.DataManager;
+        var map = Services.Map;
         _layer = map.GetLayer(LayerType.GroundTarget);
-        _layerProvider = dependencyResolver.GetExistingService<GroundTargetProvider>();
-        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
-        var areaOfInterest = dependencyResolver.GetExistingService<AreaOfInterest>();
+        _layerProvider = Services.GroundTargetProvider;
+        _featureManager = Services.FeatureManager;
+        var areaOfInterest = Services.AreaOfInterest;
 
         Title = "Просмотр наземных целей";
 
-        Filter = new GroundTargetTabFilterViewModel(dependencyResolver);
+        Filter = new GroundTargetTabFilterViewModel();
 
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;

@@ -1,11 +1,8 @@
-﻿using FootprintViewer.AppStates;
-using FootprintViewer.Data;
+﻿using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
-using FootprintViewer.Localization;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -17,10 +14,10 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 
-    public ConnectionViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public ConnectionViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var languageManager = dependencyResolver.GetExistingService<ILanguageManager>();
+        _dataManager = Services.DataManager;
+        var languageManager = Services.LanguageManager;
 
         int counter = 0;
 
@@ -28,7 +25,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(this, DbKeys.UserGeometries.ToString(), dependencyResolver)
+            new SourceContainerViewModel(this, DbKeys.UserGeometries.ToString())
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = userGeometriesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
@@ -37,7 +34,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var mainState = dependencyResolver.GetExistingService<MainState>();
+            var mainState = Services.MainState;
 
             await Observable
                 .Return(Unit.Default)
@@ -62,7 +59,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
                 }
             }
 
-            mainState.SaveData(_dataManager);
+            mainState?.SaveData(_dataManager);
 
             Close(DialogResultKind.Normal);
         });

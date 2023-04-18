@@ -7,11 +7,9 @@ using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
-using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -31,13 +29,13 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
     private readonly FootprintProvider _layerProvider;
     private readonly ILayer? _layer;
 
-    public PlannedScheduleTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public PlannedScheduleTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        _layerProvider = dependencyResolver.GetExistingService<FootprintProvider>();
-        _featureManager = dependencyResolver.GetExistingService<FeatureManager>();
-        _mapNavigator = dependencyResolver.GetExistingService<IMapNavigator>();
-        _layer = dependencyResolver.GetExistingService<IMap>().GetLayer(LayerType.Footprint);
+        _dataManager = Services.DataManager;
+        _layerProvider = Services.FootprintProvider;
+        _featureManager = Services.FeatureManager;
+        _mapNavigator = Services.MapNavigator;
+        _layer = Services.Map.GetLayer(LayerType.Footprint);
 
         Title = "Просмотр рабочей программы";
 

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.Views;
-using Splat;
 
 namespace FootprintViewer.Fluent;
 
@@ -29,8 +28,7 @@ public class ApplicationStateManager : IMainWindowService
 
         var mainWindow = new MainWindow
         {
-            //DataContext = MainViewModel.Instance
-            DataContext = Locator.Current.GetExistingService<MainViewModel>()
+            DataContext = MainViewModel.Instance
         };
 
         _lifetime.MainWindow = mainWindow;

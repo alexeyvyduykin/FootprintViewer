@@ -122,7 +122,7 @@ public class UserMapControl : MapControl
         {
             CursorType.Default => new Cursor(StandardCursorType.Arrow),
             CursorType.Hand => new Cursor(StandardCursorType.Hand),
-            CursorType.HandGrab => (_grabHandCursor ??= Services.CursorService.GetGrabHandCursor()),
+            CursorType.HandGrab => (_grabHandCursor ??= Services2.CursorService.GetGrabHandCursor()),
             CursorType.Cross => new Cursor(StandardCursorType.Cross),
             _ => throw new Exception(),
         };

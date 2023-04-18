@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
+using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Helpers;
 using FootprintViewer.Logging;
 using System.IO;
@@ -9,6 +10,8 @@ namespace FootprintViewer.Fluent;
 
 public static class Program
 {
+    private static Global? Global;
+
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
@@ -30,14 +33,32 @@ public static class Program
             }
         }
 
-        RegisterBootstrapper(mode);
+        var config = LoadOrCreateConfigs(dataDir);
 
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        Global = CreateGlobal(config, mode);
+
+        Services.Initialize(Global);
+
+        AppBuilder
+            .Configure(() => new App(async () => await Global.InitializeAsync()))
+            .UseReactiveUI()
+            .SetupAppBuilder()
+            .StartWithClassicDesktopLifetime(args);
     }
 
-    public static void RegisterBootstrapper(AppMode mode)
+    private static Config LoadOrCreateConfigs(string dataDir)
     {
-        Bootstrapper.Register(Splat.Locator.CurrentMutable, Splat.Locator.Current, mode);
+        Directory.CreateDirectory(dataDir);
+
+        Config config = new(Path.Combine(dataDir, "Config.json"));
+        config.LoadFile(createIfMissing: true);
+
+        return config;
+    }
+
+    private static Global CreateGlobal(Config config, AppMode mode)
+    {
+        return new Global(config, mode);
     }
 
     private static void SetupLogger(string dataDir)
@@ -45,14 +66,5 @@ public static class Program
         LogLevel? logLevel = null;
 
         Logger.InitializeDefaults(Path.Combine(dataDir, "Logs.txt"), logLevel);
-    }
-
-    // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
-    {
-        return AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .LogToTrace()
-            .UseReactiveUI();
     }
 }

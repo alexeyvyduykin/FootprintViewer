@@ -4,16 +4,28 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using FootprintViewer.AppStates;
-using FootprintViewer.Data;
+using FootprintViewer.Fluent.ViewModels;
 using ReactiveUI;
-using Splat;
+using System.Reactive.Concurrency;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent;
 
 public class App : Application
 {
+    private readonly Func<Task>? _backendInitialiseAsync;
     private ApplicationStateManager? _applicationStateManager;
+
+    public App()
+    {
+        Name = "FootprintViewer";
+    }
+
+    public App(Func<Task> backendInitialiseAsync) : this()
+    {
+        _backendInitialiseAsync = backendInitialiseAsync;
+    }
 
     public override void Initialize()
     {
@@ -26,8 +38,6 @@ public class App : Application
         }
     }
 
-    private static T GetExistingService<T>() => Locator.Current.GetExistingService<T>();
-
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
@@ -35,6 +45,16 @@ public class App : Application
             _applicationStateManager = new ApplicationStateManager(desktopLifetime);
 
             DataContext = _applicationStateManager.ApplicationViewModel;
+
+            RxApp.MainThreadScheduler.Schedule(
+                async () =>
+                {
+                    await _backendInitialiseAsync!(); // Guaranteed not to be null when not in designer.
+
+                    MainViewModel.Instance.Initialize();
+
+                    await MainViewModel.Instance.InitAsync();
+                });
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime)
         {
@@ -58,17 +78,7 @@ public class App : Application
     private static void LoadSettings()
     {
         var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
-        //var settings = GetExistingService<SettingsViewModel>(); 
-        var dataManager = GetExistingService<IDataManager>();
 
-        //settings.LanguageSettings?.LoadState(mainState.LocalizationState);
-
-        mainState.InitDefaultData(dataManager);
-
-        mainState.LoadData(dataManager);
-
-        dataManager.UpdateData();
-
-        Locator.CurrentMutable.RegisterConstant(mainState, typeof(MainState));
+        Services.MainState = mainState;
     }
 }

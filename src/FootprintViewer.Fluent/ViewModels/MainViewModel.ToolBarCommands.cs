@@ -140,7 +140,7 @@ public partial class MainViewModel
             .AttachTo(Map)
             .Build();
 
-        var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+        var layer = Map.GetLayer<EditLayer>(LayerType.Edit);
 
         designer.BeginCreating
             .Select(s => FormatHelper.ToDistance(s.Distance()))
@@ -220,7 +220,7 @@ public partial class MainViewModel
 
     private void ScaleCommand()
     {
-        var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+        var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
         if (userLayer == null)
         {
@@ -258,7 +258,7 @@ public partial class MainViewModel
 
     private void TranslateCommand()
     {
-        var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+        var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
         if (userLayer == null)
         {
@@ -296,7 +296,7 @@ public partial class MainViewModel
 
     private void RotateCommand()
     {
-        var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+        var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
         if (userLayer == null)
         {
@@ -331,7 +331,7 @@ public partial class MainViewModel
 
     private void EditCommand()
     {
-        var userLayer = _map.GetLayer<ILayer>(LayerType.User);
+        var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
         if (userLayer == null)
         {

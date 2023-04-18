@@ -7,7 +7,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -30,9 +29,9 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
     private static readonly DateTime FromDateDefault = DateTime.Today.AddDays(-1);
     private static readonly DateTime ToDateDefault = DateTime.Today.AddDays(1);
 
-    public FootprintPreviewTabFilterViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public FootprintPreviewTabFilterViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = Services.DataManager;
 
         _sensors
             .Connect()

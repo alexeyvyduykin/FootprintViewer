@@ -3,12 +3,12 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
-using Splat;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +24,9 @@ public class GroundStationProvider : IProvider, IDynamic
     private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public GroundStationProvider(IReadonlyDependencyResolver dependencyResolver)
+    public GroundStationProvider(IDataManager dataManager, LayerStyleManager styleManager)
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = dataManager;
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 

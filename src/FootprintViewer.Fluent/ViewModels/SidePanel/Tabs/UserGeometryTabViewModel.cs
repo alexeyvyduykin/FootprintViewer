@@ -4,7 +4,6 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using ReactiveUI;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -20,9 +19,9 @@ public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
     private readonly ReadOnlyObservableCollection<UserGeometryViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
-    public UserGeometryTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public UserGeometryTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = Services.DataManager;
 
         Title = "Пользовательская геометрия";
 

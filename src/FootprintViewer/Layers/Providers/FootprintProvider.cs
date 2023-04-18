@@ -10,7 +10,6 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
-using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,10 +25,9 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public FootprintProvider(IReadonlyDependencyResolver dependencyResolver)
+    public FootprintProvider(IDataManager dataManager, LayerStyleManager styleManager)
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+        _dataManager = dataManager;
 
         MaxVisible = styleManager.MaxVisibleFootprintStyle;
 

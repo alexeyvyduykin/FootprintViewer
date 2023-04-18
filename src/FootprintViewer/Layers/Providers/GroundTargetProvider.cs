@@ -9,7 +9,6 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
-using Splat;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,10 +24,9 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public GroundTargetProvider(IReadonlyDependencyResolver dependencyResolver)
+    public GroundTargetProvider(IDataManager dataManager, LayerStyleManager styleManager)
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        var styleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+        _dataManager = dataManager;
 
         MaxVisible = styleManager.MaxVisibleTargetStyle;
 

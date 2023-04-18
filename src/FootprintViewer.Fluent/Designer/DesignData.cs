@@ -13,7 +13,6 @@ using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using Mapsui;
-using Splat;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -22,41 +21,41 @@ namespace FootprintViewer.Fluent.Designer;
 
 public static class DesignData
 {
-    private static readonly IReadonlyDependencyResolver _resolver = new DesignDataDependencyResolver();
+    private static readonly DesignDataDependencyResolver _resolver = new();
 
-    public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new(_resolver);
+    public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new();
 
-    public static FootprintTabFilterViewModel FootprintFilter => new(_resolver);
+    public static FootprintTabFilterViewModel FootprintFilter => new();
 
-    public static GroundTargetTabFilterViewModel GroundTargetFilter => new(_resolver);
+    public static GroundTargetTabFilterViewModel GroundTargetFilter => new();
 
-    public static BottomPanel BottomPanel => new(_resolver);
+    public static BottomPanel BottomPanel => new();
 
-    public static SnapshotMaker SnapshotMaker => new(_resolver);
+    public static SnapshotMaker SnapshotMaker => new();
 
-    public static ToolBarViewModel ToolBar => new(_resolver);
+    public static ToolBarViewModel ToolBar => new();
 
-    public static LayerContainerViewModel LayerContainer => new(_resolver);
+    public static LayerContainerViewModel LayerContainer => new();
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.BeginCreating(TipTarget.Rectangle, 34545.432);
 
-    public static FootprintPreviewTabViewModel FootprintPreviewTab => new(_resolver) { IsActive = true };
+    public static FootprintPreviewTabViewModel FootprintPreviewTab => new() { IsActive = true };
 
-    public static FootprintTabViewModel FootprintTab => new(_resolver)
+    public static FootprintTabViewModel FootprintTab => new()
     {
         SearchString = "footprint",
         IsActive = true,
     };
 
-    public static GroundStationTabViewModel GroundStationTab => new(_resolver) { IsActive = true };
+    public static GroundStationTabViewModel GroundStationTab => new() { IsActive = true };
 
-    public static GroundTargetTabViewModel GroundTargetTab => new(_resolver) { IsActive = true };
+    public static GroundTargetTabViewModel GroundTargetTab => new() { IsActive = true };
 
-    public static SatelliteTabViewModel SatelliteTab => new(_resolver) { IsActive = true };
+    public static SatelliteTabViewModel SatelliteTab => new() { IsActive = true };
 
-    public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
+    public static UserGeometryTabViewModel UserGeometryTab => new() { IsActive = true };
 
-    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver) { IsActive = true };
+    public static PlannedScheduleTabViewModel PlannedScheduleTab => new() { IsActive = true };
 
     public static FootprintPreviewViewModel FootprintPreview => new(FootprintPreviewBuilder.CreateRandom());
 
@@ -73,9 +72,9 @@ public static class DesignData
 
     public static UserGeometryViewModel UserGeometry => new(UserGeometryBuilder.CreateRandom());
 
-    public static TimelinesViewModel Timelines => new(_resolver);
+    public static TimelinesViewModel Timelines => new();
 
-    public static TimelinesOldViewModel TimelinesOld => new(_resolver);
+    public static TimelinesOldViewModel TimelinesOld => new();
 
     public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(FootprintBuilder.CreateRandom()));
 
@@ -104,7 +103,7 @@ public static class DesignData
 
     public static TableInfoViewModel TableInfo => TableInfoViewModel.Build(TableInfoType.UserGeometry);
 
-    public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
+    public static SettingsViewModel Settings => new() { IsActive = true };
 
     public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries.ToString())
     {
@@ -133,7 +132,7 @@ public static class DesignData
 
     private static ConnectionViewModel CreateConnection()
     {
-        var connection = new ConnectionViewModel(_resolver);
+        var connection = new ConnectionViewModel();
 
         var source = _resolver.GetService<IDataManager>()?.GetSources(DbKeys.UserGeometries.ToString())[0];
 
@@ -141,7 +140,7 @@ public static class DesignData
         {
             connection.SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(connection, DbKeys.UserGeometries.ToString(), _resolver)
+            new SourceContainerViewModel(connection, DbKeys.UserGeometries.ToString())
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -186,12 +185,12 @@ public static class DesignData
 
         var tabs = new SidePanelTabViewModel[]
         {
-            new FootprintPreviewTabViewModel(_resolver),
-            new SatelliteTabViewModel(_resolver),
-            new GroundStationTabViewModel(_resolver),
-            new GroundTargetTabViewModel(_resolver),
-            new FootprintTabViewModel(_resolver),
-            new UserGeometryTabViewModel(_resolver),
+            new FootprintPreviewTabViewModel(),
+            new SatelliteTabViewModel(),
+            new GroundStationTabViewModel(),
+            new GroundTargetTabViewModel(),
+            new FootprintTabViewModel(),
+            new UserGeometryTabViewModel(),
         };
 
         sidePanel.Tabs.AddRange(tabs);
@@ -201,16 +200,16 @@ public static class DesignData
 
     private static MainViewModel CreateMainViewModel()
     {
-        var mainViewModel = new MainViewModel(_resolver);
+        var mainViewModel = new MainViewModel();
 
         var tabs = new SidePanelTabViewModel[]
         {
-            new FootprintPreviewTabViewModel(_resolver),
-            new SatelliteTabViewModel(_resolver),
-            new GroundStationTabViewModel(_resolver),
-            new GroundTargetTabViewModel(_resolver),
-            new FootprintTabViewModel(_resolver),
-            new UserGeometryTabViewModel(_resolver),
+            new FootprintPreviewTabViewModel(),
+            new SatelliteTabViewModel(),
+            new GroundStationTabViewModel(),
+            new GroundTargetTabViewModel(),
+            new FootprintTabViewModel(),
+            new UserGeometryTabViewModel(),
         };
 
         mainViewModel.SidePanel.Tabs.AddRange(tabs);

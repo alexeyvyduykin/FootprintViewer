@@ -6,7 +6,6 @@ using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -16,7 +15,7 @@ namespace FootprintViewer.Fluent.ViewModels.Settings;
 
 public sealed class SourceContainerViewModel : ViewModelBase
 {
-    public SourceContainerViewModel(DialogViewModelBase<object> dialog, string key, IReadonlyDependencyResolver dependencyResolver)
+    public SourceContainerViewModel(DialogViewModelBase<object> dialog, string key)
     {
         Sources = new List<ISourceViewModel>();
 
@@ -24,7 +23,7 @@ public sealed class SourceContainerViewModel : ViewModelBase
 
         DatabaseBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var mainState = dependencyResolver.GetExistingService<MainState>();
+            var mainState = Services.MainState;
             var state = mainState.LastOpenDatabase;
 
             var databaseBuilderDialog = new DatabaseBuilderViewModel(key)
@@ -53,7 +52,7 @@ public sealed class SourceContainerViewModel : ViewModelBase
 
         JsonBuilderCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var mainState = dependencyResolver.GetExistingService<MainState>();
+            var mainState = Services.MainState;
 
             var jsonBuilderDialog = new JsonBuilderViewModel(key)
             {

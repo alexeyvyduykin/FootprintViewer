@@ -1,12 +1,9 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Styles;
-using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,15 +14,13 @@ namespace FootprintViewer.Fluent.ViewModels.ToolBar;
 
 public sealed class LayerContainerViewModel : ViewModelBase
 {
-    private readonly IReadonlyDependencyResolver _dependencyResolver;
     private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<ILayer> _layers = new();
     private readonly ReadOnlyObservableCollection<LayerItemViewModel> _layerItems;
 
-    public LayerContainerViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public LayerContainerViewModel()
     {
-        _dependencyResolver = dependencyResolver;
-        _layerStyleManager = _dependencyResolver.GetExistingService<LayerStyleManager>();
+        _layerStyleManager = Services.LayerStyleManager;
 
         _layers
            .Connect()
@@ -53,7 +48,7 @@ public sealed class LayerContainerViewModel : ViewModelBase
 
     private void UpdateLayers()
     {
-        var map = (Map)_dependencyResolver.GetExistingService<IMap>();
+        var map = Services.Map;
 
         _layers.Edit(innerList =>
         {

@@ -5,7 +5,6 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -21,9 +20,9 @@ public class TimelinesViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
 
-    public TimelinesViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public TimelinesViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
+        _dataManager = Services.DataManager;
 
         Init = ReactiveCommand.CreateFromTask(UpdateAsyncImpl, outputScheduler: RxApp.MainThreadScheduler);
 

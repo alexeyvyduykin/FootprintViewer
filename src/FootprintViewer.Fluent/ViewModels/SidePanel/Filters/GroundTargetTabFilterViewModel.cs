@@ -3,7 +3,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -15,7 +14,7 @@ public sealed class GroundTargetTabFilterViewModel : AOIFilterViewModel<GroundTa
     private const bool IsRouteDefault = true;
     private const bool IsPointDefault = true;
 
-    public GroundTargetTabFilterViewModel(IReadonlyDependencyResolver _)
+    public GroundTargetTabFilterViewModel()
     {
         IsArea = true;
         IsRoute = true;

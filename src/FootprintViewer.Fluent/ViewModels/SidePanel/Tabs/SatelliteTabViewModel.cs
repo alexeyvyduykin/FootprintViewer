@@ -7,7 +7,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
 using ReactiveUI;
-using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -26,12 +25,12 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
     private readonly IDataManager _dataManager;
     private readonly LayerStyleManager _layerStyleManager;
 
-    public SatelliteTabViewModel(IReadonlyDependencyResolver dependencyResolver)
+    public SatelliteTabViewModel()
     {
-        _dataManager = dependencyResolver.GetExistingService<IDataManager>();
-        _trackProvider = dependencyResolver.GetExistingService<TrackProvider>();
-        _sensorProvider = dependencyResolver.GetExistingService<SensorProvider>();
-        _layerStyleManager = dependencyResolver.GetExistingService<LayerStyleManager>();
+        _dataManager = Services.DataManager;
+        _trackProvider = Services.TrackProvider;
+        _sensorProvider = Services.SensorProvider;
+        _layerStyleManager = Services.LayerStyleManager;
 
         Title = "Просмотр спутников";
 
@@ -92,8 +91,8 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
 
             foreach (var item in list)
             {
-                item.TrackObservable.Subscribe(s => _trackProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
-                item.SwathsObservable.Subscribe(s => _sensorProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
+                item.TrackObservable.Subscribe(s => Services.TrackProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
+                item.SwathsObservable.Subscribe(s => Services.SensorProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
                 item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
             }
 
