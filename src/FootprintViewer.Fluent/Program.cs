@@ -23,19 +23,9 @@ public static class Program
 
         Logger.LogDebug($"FootprintViewer was started with these argument(s): {(args.Any() ? string.Join(" ", args) : "none")}.");
 
-        AppMode mode = AppMode.Release;// AppMode.DevWork;
-
-        if (args.Length != 0)
-        {
-            if (Enum.TryParse(typeof(AppMode), args[0], true, out var res) == true)
-            {
-                mode = (AppMode)res!;
-            }
-        }
-
         var config = LoadOrCreateConfigs(dataDir);
 
-        Global = CreateGlobal(config, mode);
+        Global = CreateGlobal(config);
 
         Services.Initialize(Global);
 
@@ -56,9 +46,9 @@ public static class Program
         return config;
     }
 
-    private static Global CreateGlobal(Config config, AppMode mode)
+    private static Global CreateGlobal(Config config)
     {
-        return new Global(config, mode);
+        return new Global(config);
     }
 
     private static void SetupLogger(string dataDir)

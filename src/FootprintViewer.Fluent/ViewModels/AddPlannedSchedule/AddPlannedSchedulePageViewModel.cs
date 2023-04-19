@@ -36,7 +36,7 @@ public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
 
     private void OnConnectDatabase()
     {
-        //Navigate().To(new WalletNamePageViewModel(WalletCreationOption.ConnectToHardwareWallet));
+        Navigate().To(new ConnectDatabasePageViewModel());
     }
 
     private async Task OnImportAsync()

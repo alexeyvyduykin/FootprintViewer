@@ -6,11 +6,13 @@
 			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
 	         xmlns:vm="using:FootprintViewer.Fluent.ViewModels.Settings"
+	         xmlns:items="using:FootprintViewer.Fluent.ViewModels.Settings.Items"
 			 xmlns:vm2="clr-namespace:FootprintViewer.Fluent.ViewModels"
 			 xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
 			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"             
 			 x:DataType="vm:SettingsViewModel"
-			 x:CompileBindings="True"
+			 x:CompileBindings="False"
              mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="550"
              x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView"
@@ -44,6 +46,46 @@
 		</Style>
 	</UserControl.Styles>
 
+	<UserControl.Styles>
+
+		<Style Selector="MenuItem">
+			<Setter Property="Header" Value="{Binding Header}"/>
+			<Setter Property="Items" Value="{Binding Items}"/>
+			<Setter Property="Command" Value="{Binding Command}"/>
+			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+		</Style>
+
+		<Style Selector="Button.rmvBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="Button.addBtn">
+			<Setter Property="Width" Value="20"></Setter>
+			<Setter Property="Height" Value="20"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
+		</Style>
+
+		<Style Selector="TextBlock.tbItem">
+			<Setter Property="Margin" Value="8,0,0,0"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="Padding" Value="0"></Setter>
+		</Style>
+
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Margin" Value="0,2,0,0"></Setter>
+		</Style>
+
+		<Style Selector="FlyoutPresenter">
+			<Setter Property="Margin" Value="8,0,0,0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+	</UserControl.Styles>
+
 	<c:ContentArea x:Name="ContentArea"
 				   Title="{Binding Title}"
 				   EnableCancel="{Binding EnableCancel}"
@@ -53,31 +95,49 @@
 				   Width="800"
 				   Height="500">
 
-		<TabControl TabStripPlacement="Left">
+		<TabControl>
 
-			<TabItem Header="Languages">
+			<TabItem Header="Map">
 
-				<ItemsControl Items="{Binding LanguageSettings.Languages}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate x:DataType="vm2:LanguageViewModel">
-							<RadioButton IsChecked="{Binding IsChecked}"
-										 Classes="t1">
+				<StackPanel>
+					
+					<TextBlock Text="Backgrounds:"/>
+					
+					<ItemsControl Items="{Binding MapBackgrounds}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="items:MapBackgroundItemViewModel">
 								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{Binding, Converter={StaticResource LanguageConv}}"
-											   Classes="Body1"
-											   VerticalAlignment="Center"/>
-									<ContentControl Content="{Binding}"
-													ContentTemplate="{StaticResource languageTemplate}"/>
+									<Button Classes="rmvBtn"
+											IsEnabled="{Binding IsRemovable}"
+											Command="{Binding $parent[UserControl].DataContext.RemoveMapBackground}"
+											CommandParameter="{Binding}">
+										<Viewbox Margin="2">
+											<materialIcons:MaterialIcon Kind="Minus"/>
+										</Viewbox>
+									</Button>
+									<TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
+																			
+									<materialIcons:MaterialIcon Kind="InfoCircle" 
+																Width="20" Height="20"
+																IsVisible="{Binding IsRemovable}"
+																ToolTip.Tip="{Binding FullPath}"/>
 								</StackPanel>
-							</RadioButton>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
+					<Button Margin="0,2,0,0"
+							Command="{Binding $parent[UserControl].DataContext.AddMapBackground}"							
+							Classes="addBtn">
+						<Viewbox Margin="2">
+							<materialIcons:MaterialIcon Kind="Plus"/>
+						</Viewbox>
+					</Button>
+
+				</StackPanel>
+				
 			</TabItem>
-
-			<TabItem Header="Others"/>
-
+		
 		</TabControl>
 
 	</c:ContentArea>

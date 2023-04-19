@@ -174,21 +174,12 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private async Task ConnectionImpl()
     {
-        var connectionDialog = new ConnectionViewModel();
-
-        _ = await DialogScreen.NavigateDialogAsync(connectionDialog);
-
-        Services.DataManager.UpdateData();
+        await DialogScreen.NavigateDialogAsync(new AddPlannedSchedulePageViewModel());
     }
 
     private async Task SettingsImpl()
     {
-        //var settingsDialog = new SettingsViewModel();
-        var page = new AddPlannedSchedulePageViewModel();
-
-        await DialogScreen.NavigateDialogAsync(page);
-
-        //Services.DataManager.UpdateData();
+        await DialogScreen.NavigateDialogAsync(new SettingsViewModel());
     }
 
     private async Task TimelinesImpl()

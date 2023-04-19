@@ -56,6 +56,9 @@ public class Config : ConfigBase
     [JsonProperty(PropertyName = "LastOpenDatabase")]
     public DatabaseConnection? LastOpenDatabase { get; internal set; }
 
+    [JsonProperty(PropertyName = "")]
+    public string[] MapBackgroundFiles { get; internal set; } = Array.Empty<string>();
+
     //[DataMember]
     //private DataState<ISourceState> DataState { get; set; } = new();
 }

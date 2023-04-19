@@ -12,8 +12,6 @@ namespace FootprintViewer.Fluent;
 
 public static class Services
 {
-    public static IDataFactory DataFactory { get; private set; } = null!;
-
     public static MapFactory MapFactory { get; private set; } = null!;
 
     public static ILanguageManager LanguageManager { get; private set; } = null!;
@@ -46,10 +44,10 @@ public static class Services
 
     public static AreaOfInterest AreaOfInterest { get; private set; } = null!;
 
+    public static Config Config { get; private set; } = null!;
+
     public static void Initialize(Global global)
     {
-        DataFactory = global.DataFactory;
-
         MapFactory = global.MapFactory;
 
         LanguageManager = global.LanguageManager!;
@@ -79,5 +77,7 @@ public static class Services
         MapNavigator = global.MapNavigator!;
 
         AreaOfInterest = global.AreaOfInterest!;
+
+        Config = global.Config;
     }
 }

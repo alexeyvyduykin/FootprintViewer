@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Factories;
-using FootprintViewer.Fluent.ViewModels.Navigation;
+﻿using FootprintViewer.Fluent.ViewModels.Navigation;
 using ReactiveUI;
 
 namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
@@ -18,9 +17,7 @@ public class DemoPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        var factory = new DevWorkDataFactory();
-
-        var data = factory.CreateDataManager();
+        var data = Global.CreateDemoDataManager();
 
         foreach (var (key, sources) in data.GetSources())
         {

@@ -9,7 +9,7 @@
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="builders:DatabaseBuilderViewModel"
              mc:Ignorable="d"
-			 d:DesignWidth="360" d:DesignHeight="300"
+			 d:DesignWidth="460" d:DesignHeight="400"
              x:Class="FootprintViewer.Fluent.Views.Settings.SourceBuilders.DatabaseBuilderView"
 			 d:DataContext="{x:Static vmd:DesignData.DatabaseBuilder}">
 

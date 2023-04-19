@@ -103,7 +103,7 @@ public static class DesignData
 
     public static TableInfoViewModel TableInfo => TableInfoViewModel.Build(TableInfoType.UserGeometry);
 
-    public static SettingsViewModel Settings => new() { IsActive = true };
+    public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
 
     public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries.ToString())
     {

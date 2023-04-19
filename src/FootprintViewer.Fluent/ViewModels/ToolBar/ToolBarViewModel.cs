@@ -7,6 +7,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -80,6 +81,11 @@ public sealed class ToolBarViewModel : ViewModelBase
             })
             .Bind(out _mapItems)
             .Subscribe();
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.Maps.ToString()))
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
 
         Observable.StartAsync(UpdateMapsAsync, RxApp.MainThreadScheduler).Subscribe();
 

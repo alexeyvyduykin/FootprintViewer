@@ -2,6 +2,7 @@
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Data.Sources;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
@@ -15,13 +16,14 @@ using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.Designer;
 
-internal sealed class DesignDataDependencyResolver
+public sealed class DesignDataDependencyResolver
 {
     private Map? _map;
     private IMapNavigator? _mapNavigator;
@@ -175,10 +177,17 @@ internal sealed class DesignDataDependencyResolver
         var source8 = new LocalSource<FootprintPreviewGeometry>(BuildFootprintPreviewGeometries);
         var source9 = new LocalSource<PlannedScheduleResult>(BuildPlannedSchedule);
 
+        var dir = Directory.GetCurrentDirectory();
+
+        var filesource1 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "map_topo_4343.mbtiles") });
+        var filesource2 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "world.mbtiles") });
+        var filesource3 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "WorlMapWithCountryBorders.mbtiles") });
+        var filesource4 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "MapBackground_Mercator.mbtiles") });
+
         var sources = new Dictionary<string, IList<ISource>>()
         {
             { DbKeys.UserGeometries.ToString(), new[] { source5 } },
-            { DbKeys.Maps.ToString(), new[] { source6 } },
+            { DbKeys.Maps.ToString(), new[] { filesource1, filesource2, filesource3, filesource4 } },
             { DbKeys.FootprintPreviews.ToString(), new[] { source7 } },
             { DbKeys.FootprintPreviewGeometries.ToString(), new[] { source8 } },
             { DbKeys.PlannedSchedules.ToString(), new[] { source9 } }
