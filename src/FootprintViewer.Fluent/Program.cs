@@ -23,7 +23,7 @@ public static class Program
 
         Logger.LogDebug($"FootprintViewer was started with these argument(s): {(args.Any() ? string.Join(" ", args) : "none")}.");
 
-        AppMode mode = AppMode.DevWork;// Release;
+        AppMode mode = AppMode.Release;// AppMode.DevWork;
 
         if (args.Length != 0)
         {
@@ -67,4 +67,10 @@ public static class Program
 
         Logger.InitializeDefaults(Path.Combine(dataDir, "Logs.txt"), logLevel);
     }
+
+    private static AppBuilder BuildAvaloniaApp()
+        => AppBuilder
+        .Configure(() => new App())
+        .UseReactiveUI()
+        .SetupAppBuilder();
 }

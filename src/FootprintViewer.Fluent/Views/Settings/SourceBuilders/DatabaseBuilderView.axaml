@@ -28,10 +28,12 @@
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="MainContentArea"
-						  EnableCancel="True"
-						  CancelContent="Cancel"
-						  EnableNext="True"
-						  NextContent="Add">
+				   Title="{Binding Title}"			
+				   EnableCancel="{Binding EnableCancel}"
+                   EnableBack="{Binding EnableBack}"
+				   CancelContent="Cancel"
+				   EnableNext="True"
+				   NextContent="Add">
 		<StackPanel>
 			<Grid ColumnDefinitions="Auto,8,*"
 				  RowDefinitions="40,40,40,40,40">

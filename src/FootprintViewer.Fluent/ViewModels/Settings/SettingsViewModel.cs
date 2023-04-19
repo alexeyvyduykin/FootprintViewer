@@ -34,6 +34,8 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         LanguageSettings.Activate();
     }
 
+    public override string Title { get => "Settings"; protected set { } }
+
     [Reactive]
     public LanguageSettingsViewModel LanguageSettings { get; set; }
 }

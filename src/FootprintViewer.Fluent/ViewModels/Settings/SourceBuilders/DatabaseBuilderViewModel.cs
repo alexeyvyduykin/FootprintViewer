@@ -65,6 +65,8 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
         });
     }
 
+    public override string Title { get => "Connect to database"; protected set { } }
+
     private ISource CreateSource()
     {
         var str = DbHelper.ToConnectionString(Host!, Port, Database!, Username!, Password!);

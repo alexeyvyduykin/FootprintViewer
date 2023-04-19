@@ -1,20 +1,23 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:controls="using:FootprintViewer.Fluent.Controls">
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
+		xmlns:c="using:FootprintViewer.Fluent.Controls">
 
 	<Design.PreviewWith>
 		<Panel Background="Black">
-			<controls:ContentArea Width="500" Height="400"
+			<c:ContentArea Title="Title"
+						   Width="500" Height="400"
 						   EnableBack="True"
 						   EnableCancel="True" CancelContent="Cancel"
 						   EnableNext="True" NextContent="Continue">
 				<StackPanel>
 					<TextBlock FontSize="28"
-							   Text="Add a Wallet"/>
+							   Text="Add a Planned Schedule"/>
 					<TextBlock FontSize="18"
 							   TextWrapping="Wrap"
 							   Opacity="0.6"
-							   Text="Type in your Wallet's name and select an option below:"/>
+							   Text="Description:"/>
 					<TextBlock>
 						This is the content.
 						f
@@ -30,78 +33,131 @@
 						gfhghg
 					</TextBlock>
 				</StackPanel>
-			</controls:ContentArea>
+			</c:ContentArea>
 		</Panel>
 	</Design.PreviewWith>
 
 	<Styles.Resources>
 	</Styles.Resources>
 
-	<Style Selector="controls|ContentArea">
+	<Style Selector="c|ContentArea">
 		<Setter Property="IsHitTestVisible" Value="{Binding IsActive}" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
 					<Panel IsHitTestVisible="False" Background="{TemplateBinding Background}" />
-					<DockPanel Name="MainDockPanel">
+					<ProgressBar Name="LoadingRing"
+							     IsIndeterminate="True"
+					             IsVisible="{TemplateBinding IsBusy}" />
+					<DockPanel Name="MainDockPanel" IsVisible="{Binding !#LoadingRing.IsVisible}">
 
 						<Panel DockPanel.Dock="Bottom" x:Name="PART_ButtonArea">
 							<Button Name="PART_CancelButton"
-									MinWidth="80"
+									Classes="invisible"
 									IsVisible="{TemplateBinding EnableCancel}"
 									Content="{TemplateBinding CancelContent}"
 									HorizontalAlignment="Left" Command="{Binding CancelCommand}">
+								<i:Interaction.Behaviors>
+									<behaviors:FocusOnAttachedBehavior
+									  IsEnabled="{Binding FocusCancel, RelativeSource={RelativeSource TemplatedParent}}" />
+								</i:Interaction.Behaviors>
 							</Button>
-							<StackPanel HorizontalAlignment="Right">
-								<Button Name="PART_NextButton"
-										MinWidth="80"
+							<StackPanel Orientation="Horizontal" Spacing="30" HorizontalAlignment="Right">
+								<Button Name="PART_SkipButton"
+										IsVisible="{TemplateBinding EnableSkip}"
+										Content="{TemplateBinding SkipContent}"
+										Command="{Binding SkipCommand}"
+										Classes="activeHyperLink skip"
+										VerticalAlignment="Center" />
+								<Button Name="PART_NextButton" Classes="action"
 										IsVisible="{TemplateBinding EnableNext}"
 										Content="{TemplateBinding NextContent}"
 										Command="{Binding NextCommand}"
-										IsDefault="{Binding IsActive}"/>
-							</StackPanel>
-						</Panel>
-
-						<Panel DockPanel.Dock="Top">
-							<Panel IsHitTestVisible="False"/>
-							<StackPanel Name="PART_Header">
-								<Button Name="PART_BackButton"
-										Margin="-31,0,0,0"
-										HorizontalAlignment="Left"
-										Command="{Binding BackCommand}"
-										IsVisible="{TemplateBinding EnableBack}">
-									"back"
-									<!--<PathIcon Data="{StaticResource arrow_left_regular}" Width="16" />-->
+										IsDefault="{Binding IsActive}">
+									<i:Interaction.Behaviors>
+										<behaviors:FocusOnAttachedBehavior
+										  IsEnabled="{Binding FocusNext, RelativeSource={RelativeSource TemplatedParent}}" />
+									</i:Interaction.Behaviors>
 								</Button>
 							</StackPanel>
 						</Panel>
 
-						<ContentControl Name="PART_ContentPresenter"
-										ClipToBounds="{TemplateBinding ClipToBounds}"
-										BorderBrush="{TemplateBinding BorderBrush}"
-										BorderThickness="{TemplateBinding BorderThickness}"
-										ContentTemplate="{TemplateBinding ContentTemplate}"
-										Content="{TemplateBinding Content}"
-										Padding="{TemplateBinding Padding}"
-										VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-										HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+						<Panel DockPanel.Dock="Top">
+							<Panel IsHitTestVisible="False" Background="{TemplateBinding HeaderBackground}" />
+							<StackPanel Name="PART_Header" Spacing="10">
+								<DockPanel>
+									<Button Name="PART_BackButton"
+											Margin="-31,0,0,0"
+											Classes="plain"
+											Command="{Binding BackCommand}"
+											IsVisible="{TemplateBinding EnableBack}">
+										<i:Interaction.Behaviors>
+											<behaviors:ButtonExecuteCommandOnKeyDownBehavior IsEnabled="{Binding IsActive}" Key="Back" />
+										</i:Interaction.Behaviors>
+										<PathIcon Data="{StaticResource arrow_left_regular}" Width="16" />
+									</Button>
+									<ContentPresenter Name="PART_TitlePresenter" Content="{TemplateBinding Title}" />
+								</DockPanel>
+								<ContentPresenter Name="PART_CaptionPresenter" Content="{TemplateBinding Caption}" />
+								<Panel Height="6" IsVisible="{Binding !EnableBack}" />
+							</StackPanel>
+						</Panel>
 
+						<ScrollViewer x:Name="PART_ScrollViewer" ClipToBounds="{TemplateBinding ClipToBounds}"
+									  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+									  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+							<ScrollViewer.Styles>
+								<Style Selector="ScrollViewer /template/ ScrollContentPresenter">
+									<Setter Property="ClipToBounds" Value="{Binding $parent[ScrollViewer].ClipToBounds}" />
+								</Style>
+							</ScrollViewer.Styles>
+							<ContentControl Name="PART_ContentPresenter"
+											ClipToBounds="{TemplateBinding ClipToBounds}"
+											BorderBrush="{TemplateBinding BorderBrush}"
+											BorderThickness="{TemplateBinding BorderThickness}"
+											ContentTemplate="{TemplateBinding ContentTemplate}"
+											Content="{TemplateBinding Content}"
+											Padding="{TemplateBinding Padding}"
+											VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" />
+						</ScrollViewer>
 					</DockPanel>
 				</Panel>
 			</ControlTemplate>
 		</Setter>
 	</Style>
 
-	<Style Selector="controls|ContentArea /template/ StackPanel#PART_Header">
+	<Style Selector="c|ContentArea /template/ StackPanel#PART_Header">
 		<Setter Property="Margin" Value="31 0 31 0" />
 	</Style>
 
-	<Style Selector="controls|ContentArea /template/ ContentControl#PART_ContentPresenter">
+	<Style Selector="c|ContentArea /template/ ScrollViewer#PART_ScrollViewer">
 		<Setter Property="Margin" Value="31 11 31 21" />
 	</Style>
 
-	<Style Selector="controls|ContentArea /template/ Panel#PART_ButtonArea">
+	<Style Selector="c|ContentArea /template/ Panel#PART_ButtonArea">
 		<Setter Property="Margin" Value="31,10" />
+	</Style>
+
+	<Style Selector="c|ContentArea /template/ ContentPresenter#PART_TitlePresenter">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextControlForeground}" />
+		<Setter Property="TextBlock.FontSize" Value="{DynamicResource FontSizeH3}" />
+	</Style>
+
+	<Style Selector="c|ContentArea :is(Control).title TextBlock, c|ContentArea :is(TextBlock).title">
+		<Setter Property="TextWrapping" Value="Wrap" />
+	</Style>
+
+	<Style Selector="c|ContentArea :is(Control).caption TextBlock, c|ContentArea :is(TextBlock).caption">
+		<Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH7}" />
+		<Setter Property="TextWrapping" Value="Wrap" />
+		<Setter Property="Opacity" Value="0.6" />
+	</Style>
+
+	<Style Selector="c|ContentArea /template/ ProgressBar#LoadingRing">
+		<Setter Property="Width" Value="100" />
+		<Setter Property="Height" Value="100" />
 	</Style>
 
 </Styles>

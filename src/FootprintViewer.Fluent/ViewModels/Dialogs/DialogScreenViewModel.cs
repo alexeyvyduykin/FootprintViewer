@@ -12,6 +12,9 @@ public class DialogScreenViewModel : TargettedNavigationStack
     [Reactive]
     public bool IsDialogOpen { get; set; }
 
+    [Reactive]
+    public bool ShowAlert { get; set; }
+
     public DialogScreenViewModel(NavigationTarget navigationTarget = NavigationTarget.DialogScreen) : base(navigationTarget)
     {
         this.WhenAnyValue(x => x.IsDialogOpen)

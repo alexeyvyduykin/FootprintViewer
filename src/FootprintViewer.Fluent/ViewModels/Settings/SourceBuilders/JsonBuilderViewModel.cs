@@ -54,6 +54,8 @@ public sealed class JsonBuilderViewModel : DialogViewModelBase<ISource>
         CancelCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
     }
 
+    public override string Title { get => "Add json files"; protected set { } }
+
     private ISource CreateSource()
     {
         return new JsonSource(_key, TargetFiles.Where(s => !string.IsNullOrEmpty(s.Path)).Select(s => s.Path!).ToList());

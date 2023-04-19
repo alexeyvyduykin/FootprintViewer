@@ -29,9 +29,11 @@
 		</selectors:TrackerTemplateSelector>
 	</UserControl.Resources>
 
-	<c:ContentArea EnableCancel="False"
-						  EnableNext="True"
-						  NextContent="OK">
+	<c:ContentArea Title="{Binding Title}"
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   EnableNext="True"
+				   NextContent="OK">
 		<timelines:TimelineControl Margin="8"
 								   DataContext="{Binding PlotModel}"
 								   SeriesBrushes="{Binding $parent[UserControl].DataContext.SeriesBrushes}"

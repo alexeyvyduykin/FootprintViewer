@@ -5,11 +5,13 @@ public class NavigationState
     private NavigationState(
         INavigationStack<RoutableViewModel> homeScreenNavigation,
         INavigationStack<RoutableViewModel> dialogScreenNavigation,
-        INavigationStack<RoutableViewModel> fullScreenNavigation)
+        INavigationStack<RoutableViewModel> fullScreenNavigation,
+        INavigationStack<RoutableViewModel> compactDialogScreenNavigation)
     {
         HomeScreenNavigation = homeScreenNavigation;
         DialogScreenNavigation = dialogScreenNavigation;
         FullScreenNavigation = fullScreenNavigation;
+        CompactDialogScreenNavigation = compactDialogScreenNavigation;
     }
 
     public static NavigationState Instance { get; private set; } = null!;
@@ -20,14 +22,18 @@ public class NavigationState
 
     public INavigationStack<RoutableViewModel> FullScreenNavigation { get; }
 
+    public INavigationStack<RoutableViewModel> CompactDialogScreenNavigation { get; }
+
     public static void Register(
         INavigationStack<RoutableViewModel> homeScreenNavigation,
         INavigationStack<RoutableViewModel> dialogScreenNavigation,
-        INavigationStack<RoutableViewModel> fullScreenNavigation)
+        INavigationStack<RoutableViewModel> fullScreenNavigation,
+        INavigationStack<RoutableViewModel> compactDialogScreenNavigation)
     {
         Instance = new NavigationState(
             homeScreenNavigation,
             dialogScreenNavigation,
-            fullScreenNavigation);
+            fullScreenNavigation,
+            compactDialogScreenNavigation);
     }
 }

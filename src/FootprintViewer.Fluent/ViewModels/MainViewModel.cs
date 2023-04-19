@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
 using FootprintViewer.Fluent.ViewModels.Navigation;
@@ -52,7 +53,9 @@ public sealed partial class MainViewModel : ViewModelBase
 
         MainScreen = new TargettedNavigationStack(NavigationTarget.HomeScreen);
 
-        NavigationState.Register(MainScreen, DialogScreen, FullScreen);
+        CompactDialogScreen = new DialogScreenViewModel(NavigationTarget.CompactDialogScreen);
+
+        NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
         _mapState = Services.MapState;
 
@@ -127,6 +130,8 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private DialogScreenViewModel FullScreen { get; set; }
 
+    private DialogScreenViewModel CompactDialogScreen { get; set; }
+
     public ReactiveCommand<(double, double), Unit> Moved { get; }
 
     public ReactiveCommand<Unit, Unit> Leave { get; }
@@ -178,11 +183,12 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private async Task SettingsImpl()
     {
-        var settingsDialog = new SettingsViewModel();
+        //var settingsDialog = new SettingsViewModel();
+        var page = new AddPlannedSchedulePageViewModel();
 
-        _ = await DialogScreen.NavigateDialogAsync(settingsDialog);
+        await DialogScreen.NavigateDialogAsync(page);
 
-        Services.DataManager.UpdateData();
+        //Services.DataManager.UpdateData();
     }
 
     private async Task TimelinesImpl()

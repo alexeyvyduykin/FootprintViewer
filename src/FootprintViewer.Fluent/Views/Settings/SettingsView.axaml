@@ -45,11 +45,13 @@
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="ContentArea"
-						  EnableCancel="False"
-						  EnableNext="True"
-						  NextContent="OK"
-						  Width="800"
-						  Height="500">
+				   Title="{Binding Title}"
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   EnableNext="True"
+				   NextContent="OK"
+				   Width="800"
+				   Height="500">
 
 		<TabControl TabStripPlacement="Left">
 

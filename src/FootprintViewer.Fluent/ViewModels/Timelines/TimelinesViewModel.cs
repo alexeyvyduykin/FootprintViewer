@@ -33,6 +33,8 @@ public class TimelinesViewModel : DialogViewModelBase<object>
         Observable.StartAsync(UpdateAsyncImpl, RxApp.MainThreadScheduler);
     }
 
+    public override string Title { get => "Planned Schedule timeline"; protected set { } }
+
     private ReactiveCommand<Unit, Unit> Init { get; }
 
     [Reactive]

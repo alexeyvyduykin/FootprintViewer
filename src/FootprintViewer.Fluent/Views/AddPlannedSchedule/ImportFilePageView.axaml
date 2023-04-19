@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="using:FootprintViewer.Fluent.Controls"
+			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:ImportFilePageViewModel"
+			 x:CompileBindings="True"
+             x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ImportFilePageView">
+
+	<c:ContentArea Title="{Binding Title}"
+			   EnableCancel="{Binding EnableCancel}"
+			   EnableBack="{Binding EnableBack}"
+			   IsBusy="{Binding IsBusy}"
+			   EnableNext="True"
+			   NextContent="Ok">
+		<Panel>
+			<TextBlock Text="Import planned schedule from file?"
+					   FontSize="20"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+		</Panel>
+	</c:ContentArea>
+
+</UserControl>

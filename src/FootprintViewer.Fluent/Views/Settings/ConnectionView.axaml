@@ -24,11 +24,13 @@
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="ContentArea"
-						  EnableCancel="False"
-						  EnableNext="True"
-						  NextContent="OK"
-						  Width="800"
-						  Height="450">
+				   Title="{Binding Title}"
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   EnableNext="True"
+				   NextContent="OK"
+				   Width="800"
+				   Height="450">
 
 		<TabControl TabStripPlacement="Left"
 					Items="{Binding SourceContainers}"

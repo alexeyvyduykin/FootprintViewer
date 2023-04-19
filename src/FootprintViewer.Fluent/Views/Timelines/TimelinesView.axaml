@@ -26,9 +26,11 @@
 	</UserControl.Resources>
 
 	<c:ContentArea x:Name="ContentArea"
-						  EnableCancel="False"
-						  EnableNext="True"
-						  NextContent="OK">
+				   Title="{Binding Title}"
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   EnableNext="True"
+				   NextContent="OK">
 
 		<timeline:TimelineControl Margin="8"
 								  PlotModel="{Binding PlotModel}"

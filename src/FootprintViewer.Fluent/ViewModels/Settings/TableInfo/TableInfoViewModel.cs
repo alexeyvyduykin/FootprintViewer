@@ -13,6 +13,8 @@ public sealed class TableInfoViewModel : DialogViewModelBase<object>
         NextCommand = ReactiveCommand.Create(() => Close(DialogResultKind.Back));
     }
 
+    public override string Title { get => "Table info"; protected set { } }
+
     public TableInfoType Type { get; set; }
 
     public IList<TableColumnViewModel>? Fields { get; set; }

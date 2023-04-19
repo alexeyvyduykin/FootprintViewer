@@ -65,6 +65,8 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
         });
     }
 
+    public override string Title { get => "Connection"; protected set { } }
+
     [Reactive]
     public IList<SourceContainerViewModel> SourceContainers { get; set; }
 

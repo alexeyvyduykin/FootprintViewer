@@ -3,6 +3,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.FileSystem;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace FootprintViewer.Factories;
@@ -23,21 +24,21 @@ public class DevWorkDataFactory : IDataFactory
 
         // maps
         var mapsKey = DbKeys.Maps.ToString();
-        var directory1 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
-        var directory2 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
+        var directory1 = Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
+        var directory2 = Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
 
-        var paths1 = System.IO.Directory.GetFiles(directory1, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
-        var paths2 = System.IO.Directory.GetFiles(directory2, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var paths1 = Directory.GetFiles(directory1, "*.mbtiles").Select(Path.GetFullPath).ToList();
+        var paths2 = Directory.GetFiles(directory2, "*.mbtiles").Select(Path.GetFullPath).ToList();
         var mapSource1 = new FileSource(mapsKey, paths1);
         var mapSource2 = new FileSource(mapsKey, paths2);
 
         // footprintPreviews
         var footprintPreviewsKey = DbKeys.FootprintPreviews.ToString();
-        var directory3 = System.IO.Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
-        var directory4 = System.IO.Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
+        var directory3 = Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
+        var directory4 = Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
 
-        var paths3 = System.IO.Directory.GetFiles(directory3, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
-        var paths4 = System.IO.Directory.GetFiles(directory4, "*.mbtiles").Select(System.IO.Path.GetFullPath).ToList();
+        var paths3 = Directory.GetFiles(directory3, "*.mbtiles").Select(Path.GetFullPath).ToList();
+        var paths4 = Directory.GetFiles(directory4, "*.mbtiles").Select(Path.GetFullPath).ToList();
         var mapSource3 = new FileSource(footprintPreviewsKey, paths3);
         var mapSource4 = new FileSource(footprintPreviewsKey, paths4);
 

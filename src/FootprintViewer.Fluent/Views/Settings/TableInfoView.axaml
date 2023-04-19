@@ -38,8 +38,11 @@
 
 	</UserControl.Resources>
 
-	<c:ContentArea EnableNext="True"
-						  NextContent="OK">
+	<c:ContentArea Title="{Binding Title}"
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   EnableNext="True"
+				   NextContent="OK">
 
 		<DataGrid x:Name="DataGrid"
 					  x:DataType="settings:TableColumnViewModel"

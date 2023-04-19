@@ -23,12 +23,14 @@
 		</Style>
 	</UserControl.Styles>
 
-	<c:ContentArea EnableCancel="True"
-						  CancelContent="Cancel"
-						  EnableNext="True"
-						  NextContent="Add"
-						  Width="480"
-						  Height="340">
+	<c:ContentArea Title="{Binding Title}"				 			  			  
+				   EnableCancel="{Binding EnableCancel}"
+				   EnableBack="{Binding EnableBack}"
+				   CancelContent="Cancel"
+				   EnableNext="True"
+				   NextContent="Add"
+				   Width="480"
+				   Height="340">
 
 		<Grid RowDefinitions="Auto,*">
 
