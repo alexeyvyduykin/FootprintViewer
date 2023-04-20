@@ -1,6 +1,8 @@
 ﻿using FootprintViewer.AppStates;
 using FootprintViewer.Localization;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
 
 namespace FootprintViewer.Fluent;
 
@@ -61,6 +63,31 @@ public class Config : ConfigBase
 
     //[DataMember]
     //private DataState<ISourceState> DataState { get; set; } = new();
+
+    public void ValidatePaths()
+    {
+        bool isAllExists = true;
+
+        List<string> list = new();
+
+        foreach (var item in MapBackgroundFiles)
+        {
+            if (File.Exists(item) == false)
+            {
+                isAllExists = false;
+                continue;
+            }
+
+            list.Add(item);
+        }
+
+        if (isAllExists == false)
+        {
+            MapBackgroundFiles = list.ToArray();
+
+            ToFile();
+        }
+    }
 }
 
 [JsonObject]

@@ -15,6 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Remove="Assets\world.mbtiles" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
@@ -95,6 +99,9 @@
 	<ItemGroup>
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\world.mbtiles">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

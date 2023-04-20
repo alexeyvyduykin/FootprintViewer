@@ -4,6 +4,7 @@ using FootprintViewer.Data.Sources;
 using FootprintViewer.Factories;
 using FootprintViewer.FileSystem;
 using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
 using FootprintViewer.StateMachines;
@@ -32,10 +33,6 @@ public class Global
         {
             DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(DbKeys.Maps.ToString(), new[] { item }));
         }
-
-        //var uri = new Uri("avares://FootprintViewer.Fluent/Assets/world.mbtiles");
-
-        //DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(DbKeys.Maps.ToString(), new[] { uri.AbsolutePath }));
 
         // LanguageManager
         LanguageManager = new LanguageManager(config.AvailableLocales);
@@ -128,35 +125,17 @@ public class Global
 
         // maps
         var mapsKey = DbKeys.Maps.ToString();
-        var directory1 = Path.Combine(new SolutionFolder("data").FolderDirectory, "world");
-        var directory2 = Path.Combine(new SolutionFolder("userData").FolderDirectory, "world");
 
-        var paths1 = Directory.GetFiles(directory1, "*.mbtiles").Select(Path.GetFullPath).ToList();
-        var paths2 = Directory.GetFiles(directory2, "*.mbtiles").Select(Path.GetFullPath).ToList();
-        var mapSource1 = new FileSource(mapsKey, paths1);
-        var mapSource2 = new FileSource(mapsKey, paths2);
+        string EmbeddedFilePath = Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
 
-        // footprintPreviews
-        var footprintPreviewsKey = DbKeys.FootprintPreviews.ToString();
-        var directory3 = Path.Combine(new SolutionFolder("data").FolderDirectory, "footprints");
-        var directory4 = Path.Combine(new SolutionFolder("userData").FolderDirectory, "footprints");
-
-        var paths3 = Directory.GetFiles(directory3, "*.mbtiles").Select(Path.GetFullPath).ToList();
-        var paths4 = Directory.GetFiles(directory4, "*.mbtiles").Select(Path.GetFullPath).ToList();
-        var mapSource3 = new FileSource(footprintPreviewsKey, paths3);
-        var mapSource4 = new FileSource(footprintPreviewsKey, paths4);
-
-        // footprintPreviewGeometries
-        var footprintPreviewGeometriesKey = DbKeys.FootprintPreviewGeometries.ToString();
-        var path5 = new SolutionFolder("data").GetPath("mosaic-tiff-ruonly.shp", "mosaics-geotiff") ?? string.Empty;
-        var mapSource5 = new FileSource(footprintPreviewGeometriesKey, new List<string>() { path5 });
+        var mapSource = new FileSource(mapsKey, new[] { EmbeddedFilePath });
 
         var sources = new Dictionary<string, IList<ISource>>()
         {
             //{ userGeometriesKey, new[] { userGeometriesSource } },
-            { mapsKey, new[] { mapSource1, mapSource2 } },
-            //{ footprintPreviewsKey, new[] { mapSource3, mapSource4 } },
-            //{ footprintPreviewGeometriesKey, new[] { mapSource5 } },
+
+            { mapsKey, new[] { mapSource } },
+
             //{ plannedSchedulesKey, new[] { plannedSchedulesSource } }
         };
 

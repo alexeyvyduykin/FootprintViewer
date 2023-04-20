@@ -43,6 +43,8 @@ public static class Program
         Config config = new(Path.Combine(dataDir, "Config.json"));
         config.LoadFile(createIfMissing: true);
 
+        config.ValidatePaths();
+
         return config;
     }
 

@@ -22,6 +22,7 @@ public sealed class SnapshotMaker : ViewModelBase
     private readonly ReactiveCommand<Unit, Unit> _openFolder;
     private readonly SolutionFolder _solutionFolder;
 
+    // TODO: make snapshots to AppData 
     public SnapshotMaker()
     {
         var map = Services.Map;

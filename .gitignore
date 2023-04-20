@@ -333,9 +333,6 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-# Large data
-userData/
-
 # Snapshots
 snapshots/
 
