@@ -7,8 +7,11 @@ public class MapResource
         Name = name;
         Path = path;
     }
-    public static Func<IList<string>, IList<object>> Builder =>
-        paths => paths.Select(path => new MapResource(System.IO.Path.GetFileNameWithoutExtension(path), path)).ToList<object>();
+
+    public static MapResource Build(string path)
+    {
+        return new MapResource(System.IO.Path.GetFileNameWithoutExtension(path), path);
+    }
 
     public string Name { get; private set; }
 

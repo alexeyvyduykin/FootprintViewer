@@ -179,10 +179,10 @@ public sealed class DesignDataDependencyResolver
 
         var dir = Directory.GetCurrentDirectory();
 
-        var filesource1 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "map_topo_4343.mbtiles") });
-        var filesource2 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "world.mbtiles") });
-        var filesource3 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "WorlMapWithCountryBorders.mbtiles") });
-        var filesource4 = new FileSource(DbKeys.Maps.ToString(), new[] { Path.Combine(dir, "MapBackground_Mercator.mbtiles") });
+        var filesource1 = new FileSource(new[] { Path.Combine(dir, "map_topo_4343.mbtiles") }, MapResource.Build);
+        var filesource2 = new FileSource(new[] { Path.Combine(dir, "world.mbtiles") }, MapResource.Build);
+        var filesource3 = new FileSource(new[] { Path.Combine(dir, "WorlMapWithCountryBorders.mbtiles") }, MapResource.Build);
+        var filesource4 = new FileSource(new[] { Path.Combine(dir, "MapBackground_Mercator.mbtiles") }, MapResource.Build);
 
         var sources = new Dictionary<string, IList<ISource>>()
         {

@@ -2,7 +2,9 @@
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
+using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Fluent.ViewModels.Settings;
 using FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
@@ -15,6 +17,7 @@ using FootprintViewer.Fluent.ViewModels.ToolBar;
 using Mapsui;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace FootprintViewer.Fluent.Designer;
@@ -105,7 +108,7 @@ public static class DesignData
 
     public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
 
-    public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries.ToString())
+    public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries, new DbFactory())
     {
         Host = "localhost",
         Port = 5432,
@@ -115,7 +118,7 @@ public static class DesignData
         IsActive = true
     };
 
-    public static JsonBuilderViewModel JsonBuilder => new(DbKeys.UserGeometries.ToString())
+    public static JsonBuilderViewModel JsonBuilder => new(DbKeys.UserGeometries)
     {
         Directory = GetFullPathToAssets(),
         IsActive = true
@@ -140,7 +143,7 @@ public static class DesignData
         {
             connection.SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(connection, DbKeys.UserGeometries.ToString())
+            new SourceContainerViewModel(connection, DbKeys.UserGeometries)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = new List<ISourceViewModel>()
@@ -216,4 +219,30 @@ public static class DesignData
 
         return mainViewModel;
     }
+}
+
+public class SelectRecordPageDesignViewModel : RoutableViewModel
+{
+    public SelectRecordPageDesignViewModel()
+    {
+        EnableBack = true;
+        EnableCancel = true;
+
+        Items = new()
+        {
+            new PlannedScheduleItemViewModel("PlannedSchedule1", new DateTime(2023, 4, 20, 12, 32, 43)),
+            new PlannedScheduleItemViewModel("PlannedSchedule2", new DateTime(2023, 3, 23, 22, 54, 11)),
+            new PlannedScheduleItemViewModel("PlannedSchedule3", new DateTime(2023, 4, 25, 03, 02, 54)),
+            new PlannedScheduleItemViewModel("PlannedSchedule4", new DateTime(2023, 4, 21, 11, 11, 44)),
+            new PlannedScheduleItemViewModel("PlannedSchedule5", new DateTime(2023, 4, 18, 19, 22, 42)),
+        };
+
+        SelectedItem = Items.FirstOrDefault();
+    }
+
+    public override string Title { get => "Select planned schedule"; protected set { } }
+
+    public List<PlannedScheduleItemViewModel> Items { get; set; }
+
+    public PlannedScheduleItemViewModel? SelectedItem { get; set; }
 }

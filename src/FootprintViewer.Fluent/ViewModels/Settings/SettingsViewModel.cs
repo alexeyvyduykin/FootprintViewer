@@ -2,6 +2,7 @@
 using DynamicData.Alias;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Helpers;
@@ -42,7 +43,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
                 .Return(Unit.Default)
                 .Delay(TimeSpan.FromSeconds(0.1));
 
-            mainState?.SaveData(_dataManager);
+            //mainState?.SaveData(_dataManager);
 
             Close(DialogResultKind.Normal);
         });
@@ -179,7 +180,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
                 innerList.Add(filePath);
             });
 
-            Services.DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(DbKeys.Maps.ToString(), new[] { filePath }));
+            Services.DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
 
             Services.DataManager.UpdateData();
 

@@ -1,24 +1,20 @@
-﻿using FootprintViewer.Data.DbContexts;
-
-namespace FootprintViewer.Data.Sources;
+﻿namespace FootprintViewer.Data.Sources;
 
 public class FileSource : BaseSource
 {
-    private readonly string _key;
     private readonly IList<string> _paths;
+    private readonly Func<string, object> _builder;
 
-    public FileSource(string key, IList<string> paths)
+    public FileSource(IList<string> paths, Func<string, object> builder)
     {
-        _key = key;
-        _paths = paths;
+        _paths = new List<string>(paths);
+        _builder = builder;
     }
-
-    public string Key => _key;
 
     public IList<string> Paths => _paths;
 
     public override async Task<IList<object>> GetValuesAsync()
     {
-        return await Task.Run(() => DbHelper.Loader(_key).Invoke(_paths) ?? new List<object>());
+        return await Task.Run(() => _paths.Select(path => _builder.Invoke(path)).ToList());
     }
 }

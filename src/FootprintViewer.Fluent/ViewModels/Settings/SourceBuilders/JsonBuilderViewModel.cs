@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data;
+using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using ReactiveUI;
@@ -16,13 +17,13 @@ namespace FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders;
 
 public sealed class JsonBuilderViewModel : DialogViewModelBase<ISource>
 {
-    private readonly string _key;
+    private readonly DbKeys _key;
     private readonly SourceList<FileViewModel> _targetList = new();
     private readonly SourceList<FileViewModel> _availableList = new();
     private readonly ReadOnlyObservableCollection<FileViewModel> _targetFiles;
     private readonly ReadOnlyObservableCollection<FileViewModel> _availableFiles;
 
-    public JsonBuilderViewModel(string key)
+    public JsonBuilderViewModel(DbKeys key)
     {
         _key = key;
 
@@ -58,7 +59,7 @@ public sealed class JsonBuilderViewModel : DialogViewModelBase<ISource>
 
     private ISource CreateSource()
     {
-        return new JsonSource(_key, TargetFiles.Where(s => !string.IsNullOrEmpty(s.Path)).Select(s => s.Path!).ToList());
+        return null;// new JsonSource(TargetFiles.Where(s => !string.IsNullOrEmpty(s.Path)).Select(s => s.Path!).ToList(), path => DbHelpers.DeserializeFromFile(path));
     }
 
     protected void AddToAvailableList(IList<FileViewModel> list)

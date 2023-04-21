@@ -25,7 +25,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
 
         SourceContainers = new List<SourceContainerViewModel>()
         {
-            new SourceContainerViewModel(this, DbKeys.UserGeometries.ToString())
+            new SourceContainerViewModel(this, DbKeys.UserGeometries)
             {
                 Header = DbKeys.UserGeometries.ToString(),
                 Sources = userGeometriesSources.Select(s => new SourceViewModel(s) { Name = $"Source{++counter}" } ).ToList<ISourceViewModel>(),
@@ -59,7 +59,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
                 }
             }
 
-            mainState?.SaveData(_dataManager);
+            //mainState?.SaveData(_dataManager);
 
             Close(DialogResultKind.Normal);
         });

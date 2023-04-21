@@ -19,7 +19,7 @@ public class FileViewModel : ReactiveObject
     {
         _path = path;
 
-        Command = ReactiveCommand.CreateFromTask<string, bool>(GetModelAsync, outputScheduler: RxApp.MainThreadScheduler);
+        Command = ReactiveCommand.CreateFromTask<DbKeys, bool>(GetModelAsync, outputScheduler: RxApp.MainThreadScheduler);
 
         _isVerified = Command
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -30,9 +30,9 @@ public class FileViewModel : ReactiveObject
             .ToProperty(this, x => x.IsLoading);
     }
 
-    private ReactiveCommand<string, bool> Command { get; }
+    private ReactiveCommand<DbKeys, bool> Command { get; }
 
-    private async Task<bool> GetModelAsync(string key)
+    private async Task<bool> GetModelAsync(DbKeys key)
     {
         if (_path == null)
         {
@@ -43,10 +43,10 @@ public class FileViewModel : ReactiveObject
             .Return(Unit.Default)
             .Delay(TimeSpan.FromSeconds(1));
 
-        return await DbHelper.JsonValidationAsync(key, _path);
+        return await DbHelpers.JsonValidationAsync(key, _path);
     }
 
-    public void Verified(string key)
+    public void Verified(DbKeys key)
     {
         if (_dirty == true)
         {

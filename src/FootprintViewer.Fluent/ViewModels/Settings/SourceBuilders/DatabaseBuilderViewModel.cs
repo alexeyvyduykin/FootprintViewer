@@ -20,11 +20,14 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
     private readonly ObservableAsPropertyHelper<bool> _isVerified;
     private readonly ReadOnlyObservableCollection<string> _availableTables;
     private readonly SourceList<string> _availableList = new();
-    private readonly string _key;
+    private readonly DbKeys _key;
+    private readonly IDbFactory _factory;
 
-    public DatabaseBuilderViewModel(string key)
+    public DatabaseBuilderViewModel(DbKeys key, IDbFactory factory)
     {
         _key = key;
+
+        _factory = factory;
 
         Update = ReactiveCommand.Create<List<string>>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
 
@@ -59,9 +62,9 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
 
         ShowTableInfo = ReactiveCommand.CreateFromTask(async () =>
         {
-            var tableInfoDialog = TableInfoViewModel.Build(DbHelper.GetTableType(key));
+           // var tableInfoDialog = TableInfoViewModel.Build(DbHelper.GetTableType(key));
 
-            _ = await NavigateDialogAsync(tableInfoDialog);
+           // _ = await NavigateDialogAsync(tableInfoDialog);
         });
     }
 
@@ -69,8 +72,14 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
 
     private ISource CreateSource()
     {
-        var str = DbHelper.ToConnectionString(Host!, Port, Database!, Username!, Password!);
-        return new DatabaseSource(_key, str, SelectedTable!);
+        var str = ConnectionString.Build(Host!, Port, Database!, Username!, Password!).ToString();
+
+        return _factory.CreateSource(_key, str, SelectedTable!);
+
+        //var creator = () => DbHelper.CreateDatabaseSource(_key, SelectedTable!).Invoke(str);
+
+        //return new DatabaseSource(_key, str, SelectedTable!);
+        //return new DatabaseSource(creator);
     }
 
     private void UpdateImpl(List<string> list)
@@ -82,7 +91,7 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
         });
     }
 
-    private static IEnumerable<string> GetTablesNames(string key, string connectionString)
+    private IEnumerable<string> GetTablesNames(DbKeys key, string connectionString)
     {
         using var connection = new NpgsqlConnection(connectionString);
         connection.Open();
@@ -92,7 +101,7 @@ public sealed class DatabaseBuilderViewModel : DialogViewModelBase<ISource>
         {
             var tableName = reader.GetString(0);
 
-            if (DbHelper.TryValidateContext(key, connectionString, tableName) == true)
+            if (DbHelpers.TryValidateContext(key, () => _factory.CreateContext(key, connectionString, tableName)) == true)
             {
                 yield return tableName;
             }

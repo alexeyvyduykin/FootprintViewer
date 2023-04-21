@@ -31,11 +31,6 @@ public abstract class DbCustomContext : DbContext
     private readonly string _tableName;
     private readonly string _connectionString;
 
-    //public DbCustomContext(string tableName, DbContextOptions options) : base(options)
-    //{
-    //    _tableName = tableName;
-    //}
-
     public DbCustomContext(string tableName, string connectionString) : base()
     {
         _tableName = tableName;
@@ -71,6 +66,11 @@ public abstract class DbCustomContext : DbContext
     }
 
     public abstract IQueryable<object> GetTable();
+
+    public virtual async Task<IList<object>> GetValuesAsync()
+    {
+        return await GetTable().ToListAsync();
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -120,4 +120,6 @@ public abstract class DbCustomContext : DbContext
     }
 
     public string TableName => _tableName;
+
+    public string ConnectionString => _connectionString;
 }

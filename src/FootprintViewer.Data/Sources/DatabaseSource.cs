@@ -1,31 +1,20 @@
 ﻿using FootprintViewer.Data.DbContexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace FootprintViewer.Data.Sources;
 
 public class DatabaseSource : BaseSource
 {
-    private readonly string _key;
-    private readonly string _connectionString;
-    private readonly string _tableName;
+    private readonly Func<DbCustomContext> _creator;
 
-    public DatabaseSource(string key, string connectionString, string tableName)
+    public DatabaseSource(Func<DbCustomContext> creator)
     {
-        _key = key;
-        _connectionString = connectionString;
-        _tableName = tableName;
+        _creator = creator;
     }
-
-    public string Key => _key;
-
-    public string ConnectionString => _connectionString;
-
-    public string TableName => _tableName;
 
     public override async Task<IList<object>> GetValuesAsync()
     {
-        await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);
+        await using var context = _creator.Invoke();
 
-        return await context.GetTable().ToListAsync();
+        return await context.GetValuesAsync();
     }
 }

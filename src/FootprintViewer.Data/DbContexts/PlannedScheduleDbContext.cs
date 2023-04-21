@@ -8,11 +8,6 @@ public class PlannedScheduleDbContext : DbCustomContext
 {
     public DbSet<PlannedScheduleResult> PlannedSchedules => Set<PlannedScheduleResult>();
 
-    //public PlannedScheduleDbContext(string tableName, DbContextOptions<PlannedScheduleDbContext> options) : base(tableName, options)
-    //{
-
-    //}
-
     public PlannedScheduleDbContext(string tableName, string connectionString) : base(tableName, connectionString)
     {
 

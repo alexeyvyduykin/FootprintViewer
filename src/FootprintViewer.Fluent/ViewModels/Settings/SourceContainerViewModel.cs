@@ -15,7 +15,7 @@ namespace FootprintViewer.Fluent.ViewModels.Settings;
 
 public sealed class SourceContainerViewModel : ViewModelBase
 {
-    public SourceContainerViewModel(DialogViewModelBase<object> dialog, string key)
+    public SourceContainerViewModel(DialogViewModelBase<object> dialog, DbKeys key)
     {
         Sources = new List<ISourceViewModel>();
 
@@ -26,7 +26,7 @@ public sealed class SourceContainerViewModel : ViewModelBase
             var mainState = Services.MainState;
             var state = mainState.LastOpenDatabase;
 
-            var databaseBuilderDialog = new DatabaseBuilderViewModel(key)
+            var databaseBuilderDialog = new DatabaseBuilderViewModel(key, new DbFactory())
             {
                 Host = state?.Host ?? "localhost",
                 Database = state?.Database ?? "FootprintViewerDatabase",
@@ -69,7 +69,7 @@ public sealed class SourceContainerViewModel : ViewModelBase
             }
         });
 
-        if (DbHelper.IsKeyEquals(key, DbKeys.UserGeometries) == true)
+        if (DbHelpers.IsKeyEquals(key, DbKeys.UserGeometries) == true)
         {
             MenuItems = new[]
             {

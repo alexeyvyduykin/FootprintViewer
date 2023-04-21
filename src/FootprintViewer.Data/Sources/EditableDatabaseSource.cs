@@ -1,40 +1,28 @@
 ﻿using FootprintViewer.Data.DbContexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace FootprintViewer.Data.Sources;
 
 public class EditableDatabaseSource : BaseEditableSource
 {
-    private readonly string _key;
-    private readonly string _connectionString;
-    private readonly string _tableName;
+    private readonly Func<DbCustomContext> _creator;
+    private readonly Func<DbCustomContext, string, object, Task> _editor;
 
-    public EditableDatabaseSource(string key, string connectionString, string tableName)
+    public EditableDatabaseSource(Func<DbCustomContext> creator, Func<DbCustomContext, string, object, Task> editor)
     {
-        _key = key;
-        _connectionString = connectionString;
-        _tableName = tableName;
+        _creator = creator;
+        _editor = editor;
     }
-
-    public string Key => _key;
-
-    public string ConnectionString => _connectionString;
-
-    public string TableName => _tableName;
 
     public override async Task<IList<object>> GetValuesAsync()
     {
-        await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);
+        await using var context = _creator.Invoke();
 
-        return await context.GetTable().ToListAsync();
+        return await context.GetValuesAsync();
     }
 
     public override async Task AddAsync(string key, object value)
     {
-        //var options = extns2.BuildDbContextOptions<UserGeometryDbContext>(source);
-        //using var context = new UserGeometryDbContext(source.Table, options);
-
-        await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);
+        await using var context = _creator.Invoke();
 
         await context.AddAsync(value);
 
@@ -43,10 +31,7 @@ public class EditableDatabaseSource : BaseEditableSource
 
     public override async Task RemoveAsync(string key, object value)
     {
-        //var options = extns2.BuildDbContextOptions<UserGeometryDbContext>(source);
-        //using var context = new UserGeometryDbContext(source.Table, options);
-
-        await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);
+        await using var context = _creator.Invoke();
 
         context.Remove(value);
 
@@ -55,10 +40,8 @@ public class EditableDatabaseSource : BaseEditableSource
 
     public override async Task EditAsync(string key, string id, object newValue)
     {
-        //var options = extns2.BuildDbContextOptions<UserGeometryDbContext>(source);
-        //using var context = new UserGeometryDbContext(source.Table, options);
-        await using var context = DbHelper.CreateDatabaseSource(_key, _tableName).Invoke(_connectionString);
+        await using var context = _creator.Invoke();
 
-        await DbHelper.EditAsync(_key, _connectionString, _tableName, id, newValue);
+        await _editor.Invoke(context, id, newValue);
     }
 }

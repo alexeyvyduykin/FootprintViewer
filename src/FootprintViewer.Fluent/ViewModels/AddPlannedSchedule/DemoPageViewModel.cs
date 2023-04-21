@@ -1,5 +1,8 @@
-﻿using FootprintViewer.Fluent.ViewModels.Navigation;
+﻿using FootprintViewer.Fluent.Models;
+using FootprintViewer.Fluent.ViewModels.Navigation;
+using FootprintViewer.Logging;
 using ReactiveUI;
+using System.Reactive.Concurrency;
 
 namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 
@@ -13,22 +16,44 @@ public class DemoPageViewModel : RoutableViewModel
         NextCommand = ReactiveCommand.Create(OnNext);
     }
 
+    public override string Title { get => "Add demo Planned Schedule"; protected set { } }
+
     private void OnNext()
     {
         Navigate().Clear();
 
-        var data = Global.CreateDemoDataManager();
-
-        foreach (var (key, sources) in data.GetSources())
+        foreach (var (key, source) in Global.CreateDemoSources())
         {
-            foreach (var source in sources)
-            {
-                Services.DataManager.RegisterSource(key, source);
-            }
+            Services.DataManager.RegisterSource(key, source);
         }
 
         Services.DataManager.UpdateData();
+
+        Save();
     }
 
-    public override string Title { get => "Add demo Planned Schedule"; protected set { } }
+    private void Save()
+    {
+        var config = new Config(Services.Config.FilePath);
+
+        RxApp.MainThreadScheduler.Schedule(
+            () =>
+            {
+                try
+                {
+                    config.LoadFile();
+                    EditConfigOnSave(config);
+                    config.ToFile();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogDebug(ex);
+                }
+            });
+    }
+
+    private void EditConfigOnSave(Config config)
+    {
+        config.PlannedScheduleState = PlannedScheduleState.Demo;
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.AppStates;
+using FootprintViewer.Fluent.Models;
 using FootprintViewer.Localization;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -55,11 +56,14 @@ public class Config : ConfigBase
     [JsonProperty(PropertyName = "LastOpenDirectory")]
     public string? LastOpenDirectory { get; internal set; }
 
-    [JsonProperty(PropertyName = "LastOpenDatabase")]
-    public DatabaseConnection? LastOpenDatabase { get; internal set; }
-
-    [JsonProperty(PropertyName = "")]
+    [JsonProperty(PropertyName = "MapBackgroundFiles")]
     public string[] MapBackgroundFiles { get; internal set; } = Array.Empty<string>();
+
+    [JsonProperty(PropertyName = "PlannedScheduleState")]
+    public PlannedScheduleState PlannedScheduleState { get; internal set; } = PlannedScheduleState.None;
+
+    [JsonProperty(PropertyName = "LastPlannedScheduleConnection")]
+    public DatabaseConnection? LastPlannedScheduleConnection { get; internal set; }
 
     //[DataMember]
     //private DataState<ISourceState> DataState { get; set; } = new();
@@ -88,20 +92,4 @@ public class Config : ConfigBase
             ToFile();
         }
     }
-}
-
-[JsonObject]
-public class DatabaseConnection
-{
-    [JsonProperty(PropertyName = "Host")]
-    public string? Host { get; set; }
-
-    [JsonProperty(PropertyName = "Database")]
-    public string? Database { get; set; }
-
-    [JsonProperty(PropertyName = "Username")]
-    public string? Username { get; set; }
-
-    [JsonProperty(PropertyName = "Password")]
-    public string? Password { get; set; }
 }
