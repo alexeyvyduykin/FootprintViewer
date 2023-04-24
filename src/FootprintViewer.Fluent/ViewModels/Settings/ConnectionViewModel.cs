@@ -17,7 +17,7 @@ public sealed class ConnectionViewModel : DialogViewModelBase<object>
     public ConnectionViewModel()
     {
         _dataManager = Services.DataManager;
-        var languageManager = Services.LanguageManager;
+        //var languageManager = Services.LanguageManager;
 
         int counter = 0;
 

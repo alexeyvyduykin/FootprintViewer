@@ -3,7 +3,6 @@ using FootprintViewer.Data;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Layers.Providers;
-using FootprintViewer.Localization;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -13,8 +12,6 @@ namespace FootprintViewer.Fluent;
 public static class Services
 {
     public static MapFactory MapFactory { get; private set; } = null!;
-
-    public static ILanguageManager LanguageManager { get; private set; } = null!;
 
     public static IDataManager DataManager { get; private set; } = null!;
 
@@ -49,8 +46,6 @@ public static class Services
     public static void Initialize(Global global)
     {
         MapFactory = global.MapFactory;
-
-        LanguageManager = global.LanguageManager!;
 
         DataManager = global.DataManager!;
 

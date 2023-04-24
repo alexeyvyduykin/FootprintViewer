@@ -11,7 +11,6 @@ using FootprintViewer.Fluent.ViewModels.Settings.Items;
 using FootprintViewer.Localization;
 using FootprintViewer.Logging;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -33,7 +32,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         ConfigOnOpen.LoadFile();
 
         _dataManager = Services.DataManager;
-        var languageManager = Services.LanguageManager;
+        //var languageManager = Services.LanguageManager;
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -48,9 +47,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
             Close(DialogResultKind.Normal);
         });
 
-        LanguageSettings = new LanguageSettingsViewModel(languageManager);
+        //LanguageSettings = new LanguageSettingsViewModel(languageManager);
 
-        LanguageSettings.Activate();
+        //LanguageSettings.Activate();
 
         var sources = _dataManager.GetSources(DbKeys.Maps);
 
@@ -92,9 +91,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
             Close(DialogResultKind.Normal);
         });
 
-        LanguageSettings = new LanguageSettingsViewModel(languageManager);
+        //LanguageSettings = new LanguageSettingsViewModel(languageManager);
 
-        LanguageSettings.Activate();
+        //LanguageSettings.Activate();
 
         var sources = _dataManager.GetSources(DbKeys.Maps);
 
@@ -217,8 +216,8 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
 
     public ReactiveCommand<MapBackgroundItemViewModel, Unit> RemoveMapBackground { get; set; }
 
-    [Reactive]
-    public LanguageSettingsViewModel LanguageSettings { get; set; }
+    //[Reactive]
+    //public LanguageSettingsViewModel LanguageSettings { get; set; }
 
     public ReadOnlyObservableCollection<MapBackgroundItemViewModel> MapBackgrounds => _items;
 }

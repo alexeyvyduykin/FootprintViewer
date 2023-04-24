@@ -6,7 +6,6 @@ using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
-using FootprintViewer.Localization;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -35,7 +34,7 @@ public class Global
         AddLastPlannedSchedule(Config, DataManager);
 
         // LanguageManager
-        LanguageManager = new LanguageManager(config.AvailableLocales);
+        //LanguageManager = new LanguageManager(new[] { "en" }/*config.AvailableLocales*/);
 
         LayerStyleManager = new LayerStyleManager();
 
@@ -72,8 +71,6 @@ public class Global
     public Config Config { get; }
 
     public MapFactory MapFactory { get; }
-
-    public ILanguageManager? LanguageManager { get; private set; }
 
     public IDataManager? DataManager { get; private set; }
 
