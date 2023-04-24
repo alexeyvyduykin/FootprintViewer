@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data;
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;

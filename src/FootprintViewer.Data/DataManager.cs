@@ -67,6 +67,20 @@ public class DataManager : IDataManager
         _sourceCache.Clear(key, new[] { source });
     }
 
+    public void UnregisterSources(string key)
+    {
+        if (_sources.ContainsKey(key) == true)
+        {
+            _dirtyKeys.Add(key);
+
+            _sources[key].Clear();
+
+            _sources.Remove(key);
+        }
+
+        _sourceCache.Clear(key);
+    }
+
     public void UpdateData()
     {
         ((ReactiveCommand<string[], string[]>)DataChanged)

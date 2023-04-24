@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Helpers;
@@ -46,9 +45,12 @@ public class ImportFilePageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        var source = new JsonSource(_filePath, path => JsonHelpers.DeserializeFromFile<PlannedScheduleResult>(path)!);
+        Services.DataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
-        Services.DataManager.RegisterSource(DbKeys.PlannedSchedules.ToString(), source);
+        foreach (var (key, source) in Global.CreateSources(_filePath))
+        {
+            Services.DataManager.RegisterSource(key, source);
+        }
 
         Services.DataManager.UpdateData();
 

@@ -52,6 +52,16 @@ public class Cache<TKey, TSubKey>
         }
     }
 
+    public void Clear(TKey key)
+    {
+        if (ContainsKey(key) == true)
+        {
+            _cache[key].Clear();
+
+            _cache.Remove(key);
+        }
+    }
+
     public void Caching(TKey key, TSubKey subKey, IList<object> values)
     {
         try

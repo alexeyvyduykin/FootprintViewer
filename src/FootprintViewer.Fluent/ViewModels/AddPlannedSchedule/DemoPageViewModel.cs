@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Fluent.Models;
+﻿using FootprintViewer.Data.DbContexts;
+using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Logging;
 using ReactiveUI;
@@ -21,6 +22,8 @@ public class DemoPageViewModel : RoutableViewModel
     private void OnNext()
     {
         Navigate().Clear();
+
+        Services.DataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateDemoSources())
         {

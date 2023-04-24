@@ -66,6 +66,8 @@ public class SelectRecordPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
+        Services.DataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
+
         foreach (var (key, source) in Global.CreateSources(_contextCreator))
         {
             Services.DataManager.RegisterSource(key, source);

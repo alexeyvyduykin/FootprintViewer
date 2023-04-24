@@ -12,7 +12,6 @@ using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Providers;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent;
@@ -32,6 +31,8 @@ public class Global
         {
             DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { item }, MapResource.Build));
         }
+
+        AddLastPlannedSchedule(Config, DataManager);
 
         // LanguageManager
         LanguageManager = new LanguageManager(config.AvailableLocales);
@@ -127,7 +128,7 @@ public class Global
         // maps
         var mapsKey = DbKeys.Maps;
 
-        string embeddedFilePath = Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
+        string embeddedFilePath = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
 
         var mapSource = new FileSource(new[] { embeddedFilePath }, MapResource.Build);
 
@@ -145,7 +146,7 @@ public class Global
 
     public static IList<(string, ISource)> CreateDemoSources()
     {
-        string embeddedFilePath = Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "PlannedSchedule.json");
+        string embeddedFilePath = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "PlannedSchedule.json");
 
         //var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
 
@@ -157,9 +158,7 @@ public class Global
 
         // plannedSchedules
         var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
-        //var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, connectionString, "PlannedSchedules");
-
-        var plannedSchedulesSource = new JsonSource(embeddedFilePath, path => JsonHelpers.DeserializeFromFile<PlannedScheduleResult>(path)!);
+        var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, embeddedFilePath);
 
         return new List<(string, ISource)>()
         {
@@ -188,5 +187,69 @@ public class Global
             (userGeometriesKey, userGeometriesSource),
             (plannedSchedulesKey, plannedSchedulesSource)
         };
+    }
+
+    public static IList<(string, ISource)> CreateSources(string filePath)
+    {
+        // userGeometries
+        //var userGeometriesKey = DbKeys.UserGeometries.ToString();
+        //var userGeometriesSource = dbFactory.CreateSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
+
+        // plannedSchedules
+        var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
+        var plannedSchedulesSource = new JsonSource(filePath, path => JsonHelpers.DeserializeFromFile<PlannedScheduleResult>(path)!);
+
+        return new List<(string, ISource)>()
+        {
+            //(userGeometriesKey, userGeometriesSource),
+            (plannedSchedulesKey, plannedSchedulesSource)
+        };
+    }
+
+    private void AddLastPlannedSchedule(Config config, IDataManager dataManager)
+    {
+        switch (config.PlannedScheduleState)
+        {
+            case Models.PlannedScheduleState.None:
+                break;
+            case Models.PlannedScheduleState.Demo:
+                {
+                    foreach (var (key, source) in CreateDemoSources())
+                    {
+                        dataManager.RegisterSource(key, source);
+                    }
+                }
+                break;
+            case Models.PlannedScheduleState.JsonFile:
+                {
+                    var path = config.LastPlannedScheduleJsonFile;
+
+                    // TODO: verify path
+                    if (System.IO.Path.Exists(path) == true)
+                    {
+                        foreach (var (key, source) in CreateSources(path))
+                        {
+                            dataManager.RegisterSource(key, source);
+                        }
+                    }
+                }
+                break;
+            case Models.PlannedScheduleState.Database:
+                {
+                    var connection = config.LastPlannedScheduleConnection;
+
+                    // TODO: verify connection
+                    if (connection is { })
+                    {
+                        foreach (var (key, source) in CreateSources(() => new(connection.TableName, connection.ConnectionString)))
+                        {
+                            dataManager.RegisterSource(key, source);
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

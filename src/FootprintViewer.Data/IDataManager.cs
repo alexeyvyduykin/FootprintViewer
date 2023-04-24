@@ -6,6 +6,8 @@ public interface IDataManager
 
     void UnregisterSource(string key, ISource source);
 
+    void UnregisterSources(string key);
+
     IReadOnlyList<ISource> GetSources(string key);
 
     IReadOnlyDictionary<string, IReadOnlyList<ISource>> GetSources();
