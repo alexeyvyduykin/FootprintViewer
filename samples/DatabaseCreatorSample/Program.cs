@@ -13,7 +13,7 @@ class Program
 {
     static async Task Main(string[] _)
     {
-        var connectionString = DbHelper.ToConnectionString("localhost", 5432, "FootprintViewerDatabase", "postgres", "user");
+        var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
 
         var gts = await GroundTargetBuilder.CreateAsync(300);
         var satellites = await SatelliteBuilder.CreateAsync(5);

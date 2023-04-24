@@ -145,21 +145,25 @@ public class Global
 
     public static IList<(string, ISource)> CreateDemoSources()
     {
-        var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
+        string embeddedFilePath = Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "PlannedSchedule.json");
+
+        //var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
 
         var dbFactory = new DbFactory();
 
         // userGeometries
         var userGeometriesKey = DbKeys.UserGeometries.ToString();
-        var userGeometriesSource = dbFactory.CreateSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
+        //var userGeometriesSource = dbFactory.CreateSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
 
         // plannedSchedules
         var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
-        var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, connectionString, "PlannedSchedules");
+        //var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, connectionString, "PlannedSchedules");
+
+        var plannedSchedulesSource = new JsonSource(embeddedFilePath, path => JsonHelpers.DeserializeFromFile<PlannedScheduleResult>(path)!);
 
         return new List<(string, ISource)>()
         {
-            (userGeometriesKey, userGeometriesSource),
+            //(userGeometriesKey, userGeometriesSource),
             (plannedSchedulesKey, plannedSchedulesSource)
         };
     }

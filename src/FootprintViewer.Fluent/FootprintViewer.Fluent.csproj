@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Remove="Assets\PlannedSchedule.json" />
 	  <AvaloniaResource Remove="Assets\world.mbtiles" />
 	</ItemGroup>
 
@@ -99,6 +100,9 @@
 	<ItemGroup>
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\PlannedSchedule.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="Assets\world.mbtiles">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -6,7 +6,30 @@ namespace JsonDataBuilderSample;
 
 internal class Program
 {
-    static async Task Main(string[] _)
+    static async Task Main(string[] _) => await Sample1();
+
+    static async Task Sample1()
+    {
+        var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+
+        var dataDir = Path.Combine(root, @"..\..\..\Output");
+
+        Directory.CreateDirectory(dataDir);
+
+        var plannedSchedulePath = Path.GetFullPath(Path.Combine(dataDir, "PlannedSchedule.json"));
+
+        var gts = await GroundTargetBuilder.CreateAsync(2000/*300*/);
+        var satellites = await SatelliteBuilder.CreateAsync(5);
+        var gss = await GroundStationBuilder.CreateDefaultAsync();
+
+        var plannedSchedule = await PlannedScheduleBuilder.CreateAsync(satellites, gts, gss);
+
+        JsonHelper.SerializeToFile(plannedSchedulePath, plannedSchedule);
+        var plannedScheduleSuccess = JsonHelper.Verified<PlannedScheduleResult>(plannedSchedulePath);
+        Console.WriteLine($"File {Path.GetFileName(plannedSchedulePath)} is build and verified = {plannedScheduleSuccess}.");
+    }
+
+    static async Task Sample2()
     {
         var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
