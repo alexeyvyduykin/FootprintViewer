@@ -126,7 +126,7 @@ public class GroundTrack
         {
             var (lonDeg, latDeg) = ContinuousTrack(u);
 
-            _cache.Add((lonDeg, latDeg, u, double.NaN));
+            _cache.Add((lonDeg, latDeg, u, u * _period / (2 * Math.PI)));
         }
 
         return;

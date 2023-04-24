@@ -46,7 +46,7 @@ public static class FootprintBuilder
 
             var uDelta = 360.0 / countPerNode;
 
-            for (int i = 0; i < nodes; i++)
+            for (int node = 0; node < nodes; node++)
             {
                 double uLast = 0.0;
                 for (int j = 0; j < countPerNode; j++)
@@ -72,7 +72,7 @@ public static class FootprintBuilder
                         sensorIndex = (Models.SwathDirection)_random.Next(0, 1 + 1);
                     }
 
-                    var (t, center, border) = GetRandomFootprint(orbit, bands[(int)sensorIndex], i, u);
+                    var (t, center, border) = GetRandomFootprint(orbit, bands[(int)sensorIndex], node + 1, u);
 
                     footprints.Add(new Footprint()
                     {
@@ -83,7 +83,7 @@ public static class FootprintBuilder
                         Border = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
                         Begin = epoch.AddSeconds(t - duration / 2.0),
                         Duration = duration,
-                        Node = i + 1,
+                        Node = node + 1,
                         Direction = sensorIndex,
                     });
 
@@ -229,7 +229,7 @@ public static class FootprintBuilder
 
         var factor = new FactorShiftTrack(orbit, a1, a2, mode);
         var track = new GroundTrack(orbit, factor, angle, dir);
-
+  
         var (t, p) = GetGroundPoint(node, u, track);
 
         return (t, p);

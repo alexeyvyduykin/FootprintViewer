@@ -10,11 +10,15 @@ internal class Program
     {
         var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-        var footprintPath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "Footprints.json"));
-        var satellitePath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "Satellites.json"));
-        var groundTargetPath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "GroundTargets.json"));
-        var groundStationPath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "GroundStations.json"));
-        var plannedSchedulePath = Path.GetFullPath(Path.Combine(root, @"..\..\..\Output", "PlannedSchedule.json"));
+        var dataDir = Path.Combine(root, @"..\..\..\Output");
+
+        Directory.CreateDirectory(dataDir);
+
+        var footprintPath = Path.GetFullPath(Path.Combine(dataDir, "Footprints.json"));
+        var satellitePath = Path.GetFullPath(Path.Combine(dataDir, "Satellites.json"));
+        var groundTargetPath = Path.GetFullPath(Path.Combine(dataDir, "GroundTargets.json"));
+        var groundStationPath = Path.GetFullPath(Path.Combine(dataDir, "GroundStations.json"));
+        var plannedSchedulePath = Path.GetFullPath(Path.Combine(dataDir, "PlannedSchedule.json"));
 
         var satellites = await SatelliteBuilder.CreateAsync(5);
         var gss = await GroundStationBuilder.CreateDefaultAsync();

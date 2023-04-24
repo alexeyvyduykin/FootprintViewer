@@ -5,7 +5,7 @@ namespace JsonDataBuilderSample;
 public static class JsonHelper
 {
     public static void SerializeToFile(string path, object? value, JsonSerializerSettings? settings = null)
-    {
+    {                
         using StreamWriter file = File.CreateText(path);
 
         // file with GeoJSON
