@@ -2,6 +2,7 @@
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Logging;
 using ReactiveUI;
+using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,8 +11,12 @@ namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 
 public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
 {
+    private static string? _lastOpenDirectory;
+
     public AddPlannedSchedulePageViewModel()
     {
+        _lastOpenDirectory = Services.Config.LastPlannedScheduleJsonFile;
+
         EnableCancel = true;
 
         CreateDemoCommand = ReactiveCommand.Create(OnCreateDemo);
@@ -43,12 +48,14 @@ public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
     {
         try
         {
-            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "json" });
+            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "json" }, _lastOpenDirectory);
 
             if (filePath is null)
             {
                 return;
             }
+
+            _lastOpenDirectory = Path.GetDirectoryName(filePath);
 
             Navigate().To(new ImportFilePageViewModel(filePath));
         }

@@ -4,10 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:ImportFilePageViewModel"
-			 x:CompileBindings="True"
+			 x:CompileBindings="False"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ImportFilePageView">
+
+	<UserControl.Styles>
+		<Style Selector="TextBlock.t1">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="20"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon">
+			<Setter Property="Height" Value="30"/>
+			<Setter Property="Width" Value="30"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Green"/>
+		</Style>
+		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=false]">
+			<Setter Property="Kind" Value="Verified"/>
+			<Setter Property="Foreground" Value="Red"/>
+		</Style>
+	</UserControl.Styles>
 
 	<c:ContentArea Title="{Binding Title}"
 			   EnableCancel="{Binding EnableCancel}"
@@ -16,10 +37,44 @@
 			   EnableNext="True"
 			   NextContent="Ok">
 		<Panel>
-			<TextBlock Text="Import planned schedule from file?"
-					   FontSize="20"
-					   VerticalAlignment="Center"
-					   HorizontalAlignment="Center"/>
+			<Panel VerticalAlignment="Center"
+				   IsVisible="{Binding IsChecked}">
+				<StackPanel>
+					<TextBlock Text="Checking file..." Classes="t1"/>
+					<ProgressBar IsIndeterminate="True"
+								 Width="250"
+								 Height="20"/>
+				</StackPanel>
+			</Panel>
+
+			<Panel VerticalAlignment="Center"
+				   IsVisible="{Binding !IsChecked}">
+
+				<StackPanel IsVisible="{Binding IsVerified}"
+							HorizontalAlignment="Center">
+
+					<StackPanel Orientation="Horizontal"
+								HorizontalAlignment="Center">
+						<materialIcons:MaterialIcon Kind="Verified"
+													Foreground="Green"/>
+						<TextBlock Text="File is correct" Classes="t1"/>
+					</StackPanel>
+
+					<TextBlock Text="Import planned schedule from file?"
+							   Classes="t1"/>
+
+				</StackPanel>
+
+				<StackPanel IsVisible="{Binding !IsVerified}"
+							Orientation="Horizontal"
+							HorizontalAlignment="Center">
+
+					<materialIcons:MaterialIcon Kind="Verified"
+												Foreground="Red"/>
+					<TextBlock Text="File is not correct" Classes="t1"/>
+
+				</StackPanel>
+			</Panel>
 		</Panel>
 	</c:ContentArea>
 

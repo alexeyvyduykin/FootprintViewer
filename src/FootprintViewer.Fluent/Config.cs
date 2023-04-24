@@ -65,8 +65,8 @@ public class Config : ConfigBase
     [JsonProperty(PropertyName = "LastPlannedScheduleConnection")]
     public DatabaseConnection? LastPlannedScheduleConnection { get; internal set; }
 
-    //[DataMember]
-    //private DataState<ISourceState> DataState { get; set; } = new();
+    [JsonProperty(PropertyName = "LastPlannedScheduleJsonFile")]
+    public string? LastPlannedScheduleJsonFile { get; internal set; }
 
     public void ValidatePaths()
     {
