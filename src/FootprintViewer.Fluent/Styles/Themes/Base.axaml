@@ -1,38 +1,228 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
-		<Border Padding="20" Width="200" Height="1000">
+		<Border Padding="20" Width="440" Height="1000">
 			<Border.Styles>
 				<Style Selector="Border">
-					<Setter Property="Width" Value="100"/>
-					<Setter Property="Height" Value="10"/>
+					<Setter Property="Width" Value="70"/>
+					<Setter Property="Height" Value="20"/>
+					<Setter Property="Margin" Value="2,0,2,0"/>
 				</Style>
 			</Border.Styles>
 			<StackPanel Spacing="10">
-				<Border Background="{StaticResource MainBrush}"/>
-				<Border Background="{StaticResource DialogOverlayColor}"/>
-				<Border Background="{StaticResource TipBrush}"/>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray0}"/>
+					<Border Background="{StaticResource Red0}"/>
+					<Border Background="{StaticResource Blue0}"/>
+					<Border Background="{StaticResource Green0}"/>
+					<Border Background="{StaticResource Yellow0}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray1}"/>
+					<Border Background="{StaticResource Red1}"/>
+					<Border Background="{StaticResource Blue1}"/>
+					<Border Background="{StaticResource Green1}"/>
+					<Border Background="{StaticResource Yellow1}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray2}"/>
+					<Border Background="{StaticResource Red2}"/>
+					<Border Background="{StaticResource Blue2}"/>
+					<Border Background="{StaticResource Green2}"/>
+					<Border Background="{StaticResource Yellow2}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray3}"/>
+					<Border Background="{StaticResource Red3}"/>
+					<Border Background="{StaticResource Blue3}"/>
+					<Border Background="{StaticResource Green3}"/>
+					<Border Background="{StaticResource Yellow3}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray4}"/>
+					<Border Background="{StaticResource Red4}"/>
+					<Border Background="{StaticResource Blue4}"/>
+					<Border Background="{StaticResource Green4}"/>
+					<Border Background="{StaticResource Yellow4}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray5}"/>
+					<Border Background="{StaticResource Red5}"/>
+					<Border Background="{StaticResource Blue5}"/>
+					<Border Background="{StaticResource Green5}"/>
+					<Border Background="{StaticResource Yellow5}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray6}"/>
+					<Border Background="{StaticResource Red6}"/>
+					<Border Background="{StaticResource Blue6}"/>
+					<Border Background="{StaticResource Green6}"/>
+					<Border Background="{StaticResource Yellow6}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray7}"/>
+					<Border Background="{StaticResource Red7}"/>
+					<Border Background="{StaticResource Blue7}"/>
+					<Border Background="{StaticResource Green7}"/>
+					<Border Background="{StaticResource Yellow7}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray8}"/>
+					<Border Background="{StaticResource Red8}"/>
+					<Border Background="{StaticResource Blue8}"/>
+					<Border Background="{StaticResource Green8}"/>
+					<Border Background="{StaticResource Yellow8}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource Gray9}"/>
+					<Border Background="{StaticResource Red9}"/>
+					<Border Background="{StaticResource Blue9}"/>
+					<Border Background="{StaticResource Green9}"/>
+					<Border Background="{StaticResource Yellow9}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray50}"/>
+					<Border Background="{StaticResource CoolGray50}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray100}"/>
+					<Border Background="{StaticResource CoolGray100}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray200}"/>
+					<Border Background="{StaticResource CoolGray200}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray300}"/>
+					<Border Background="{StaticResource CoolGray300}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray400}"/>
+					<Border Background="{StaticResource CoolGray400}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray500}"/>
+					<Border Background="{StaticResource CoolGray500}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray600}"/>
+					<Border Background="{StaticResource CoolGray600}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray700}"/>
+					<Border Background="{StaticResource CoolGray700}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray800}"/>
+					<Border Background="{StaticResource CoolGray800}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<Border Background="{StaticResource BlueGray900}"/>
+					<Border Background="{StaticResource CoolGray900}"/>
+				</WrapPanel>
+
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 
 	<Styles.Resources>
-		
-		<Color x:Key="AcrylicTrimBackground">#A0202020</Color>		
-		<Color x:Key="TileBorderColor">#66757575</Color>				
-		<Color x:Key="RegionColor">#191D24</Color>			
+
+		<!--https://yeun.github.io/open-color/-->
+
+		<Color x:Key="Gray0">#f8f9fa</Color>
+		<Color x:Key="Gray1">#f1f3f5</Color>
+		<Color x:Key="Gray2">#e9ecef</Color>
+		<Color x:Key="Gray3">#dee2e6</Color>
+		<Color x:Key="Gray4">#ced4da</Color>
+		<Color x:Key="Gray5">#adb5bd</Color>
+		<Color x:Key="Gray6">#868e96</Color>
+		<Color x:Key="Gray7">#495057</Color>
+		<Color x:Key="Gray8">#343a40</Color>
+		<Color x:Key="Gray9">#212529</Color>
+
+		<Color x:Key="Red0">#fff5f5</Color>
+		<Color x:Key="Red1">#ffe3e3</Color>
+		<Color x:Key="Red2">#ffc9c9</Color>
+		<Color x:Key="Red3">#ffa8a8</Color>
+		<Color x:Key="Red4">#ff8787</Color>
+		<Color x:Key="Red5">#ff6b6b</Color>
+		<Color x:Key="Red6">#fa5252</Color>
+		<Color x:Key="Red7">#f03e3e</Color>
+		<Color x:Key="Red8">#e03131</Color>
+		<Color x:Key="Red9">#c92a2a</Color>
+
+		<Color x:Key="Blue0">#e7f5ff</Color>
+		<Color x:Key="Blue1">#d0ebff</Color>
+		<Color x:Key="Blue2">#a5d8ff</Color>
+		<Color x:Key="Blue3">#74c0fc</Color>
+		<Color x:Key="Blue4">#4dabf7</Color>
+		<Color x:Key="Blue5">#339af0</Color>
+		<Color x:Key="Blue6">#228be6</Color>
+		<Color x:Key="Blue7">#1c7ed6</Color>
+		<Color x:Key="Blue8">#1971c2</Color>
+		<Color x:Key="Blue9">#1864ab</Color>
+
+		<Color x:Key="Green0">#ebfbee</Color>
+		<Color x:Key="Green1">#d3f9d8</Color>
+		<Color x:Key="Green2">#b2f2bb</Color>
+		<Color x:Key="Green3">#8ce99a</Color>
+		<Color x:Key="Green4">#69db7c</Color>
+		<Color x:Key="Green5">#51cf66</Color>
+		<Color x:Key="Green6">#40c057</Color>
+		<Color x:Key="Green7">#37b24d</Color>
+		<Color x:Key="Green8">#2f9e44</Color>
+		<Color x:Key="Green9">#2b8a3e</Color>
+
+		<Color x:Key="Yellow0">#fff9db</Color>
+		<Color x:Key="Yellow1">#fff3bf</Color>
+		<Color x:Key="Yellow2">#ffec99</Color>
+		<Color x:Key="Yellow3">#ffe066</Color>
+		<Color x:Key="Yellow4">#ffd43b</Color>
+		<Color x:Key="Yellow5">#fcc419</Color>
+		<Color x:Key="Yellow6">#fab005</Color>
+		<Color x:Key="Yellow7">#f59f00</Color>
+		<Color x:Key="Yellow8">#f08c00</Color>
+		<Color x:Key="Yellow9">#e67700</Color>
+
+		<!--Blue Gray accent -->
+		<Color x:Key="BlueGray50">#f0f4f8</Color>
+		<Color x:Key="BlueGray100">#d9e2ec</Color>
+		<Color x:Key="BlueGray200">#bcccdc</Color>
+		<Color x:Key="BlueGray300">#9fb3c8</Color>
+		<Color x:Key="BlueGray400">#829ab1</Color>
+		<Color x:Key="BlueGray500">#627d98</Color>
+		<Color x:Key="BlueGray600">#486581</Color>
+		<Color x:Key="BlueGray700">#334e68</Color>
+		<Color x:Key="BlueGray800">#243b53</Color>
+		<Color x:Key="BlueGray900">#102a43</Color>
+
+		<!--Cool Gray accent-->
+		<Color x:Key="CoolGray50">#f5f7fa</Color>
+		<Color x:Key="CoolGray100">#e4e7eb</Color>
+		<Color x:Key="CoolGray200">#cbd2d9</Color>
+		<Color x:Key="CoolGray300">#9aa5b1</Color>
+		<Color x:Key="CoolGray400">#7b8794</Color>
+		<Color x:Key="CoolGray500">#616e7c</Color>
+		<Color x:Key="CoolGray600">#52606d</Color>
+		<Color x:Key="CoolGray700">#3e4c59</Color>
+		<Color x:Key="CoolGray800">#323f4b</Color>
+		<Color x:Key="CoolGray900">#1f2933</Color>
+
+		<Color x:Key="AcrylicTrimBackground">#A0202020</Color>
+		<Color x:Key="TileBorderColor">#66757575</Color>
+		<Color x:Key="RegionColor">#191D24</Color>
 		<Color x:Key="SystemAltHighColor">#FF000000</Color>
 
-		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>				
+		<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
 		<SolidColorBrush x:Key="DialogOverlayColor" Color="#7F2E2E2E"/>
 		<SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FF424242"/>
 		<SolidColorBrush x:Key="MaterialDesignPaper" Color="#FF303030"/>
-		<SolidColorBrush x:Key="MaterialDesignBody" Color="#DDFFFFFF"/>		
+		<SolidColorBrush x:Key="MaterialDesignBody" Color="#DDFFFFFF"/>
 		<SolidColorBrush x:Key="MaterialDesignLightBackground" Color="#FFFAFAFA"/>
 		<SolidColorBrush x:Key="MaterialDesignLightForeground" Color="#DD000000"/>
 		<SolidColorBrush x:Key="MaterialDesignDarkBackground" Color="#FF303030"/>
 		<SolidColorBrush x:Key="MaterialDesignDarkForeground" Color="#FFFAFAFA"/>
-		
+
 		<SolidColorBrush x:Key="PrimaryHueLightBrush" Color="Blue"/>
 		<SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="White"/>
 		<SolidColorBrush x:Key="PrimaryHueMidBrush" Color="Blue"/>
@@ -41,20 +231,20 @@
 		<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="White"/>
 		<SolidColorBrush x:Key="SecondaryHueMidBrush" Color="Blue"/>
 		<SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="White"/>
-		
+
 		<SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>
-		
+
 		<BoxShadows x:Key="EmptyBoxShadow">0 0 0 0 #000000</BoxShadows>
 		<BoxShadows x:Key="DialogBoxShadow">4 11 30 1 #3F000000</BoxShadows>
 		<BoxShadows x:Key="DialogAlertStartBoxShadow">0 0 10 5 #FF5E96ED</BoxShadows>
 		<BoxShadows x:Key="DialogAlertEndBoxShadow">0 0 10 1 #FF5E96ED</BoxShadows>
-		
+
 		<Easing x:Key="FluentEasing">0.4,0,0.6,1</Easing>
 
 		<StreamGeometry x:Key="arrow_left_regular">M12.7347,4.20949 C13.0332,3.92233 13.508,3.93153 13.7952,4.23005 C14.0823,4.52857 14.0731,5.00335 13.7746,5.29051 L5.50039,13.25 L24.2532,13.25 C24.6674,13.25 25.0032,13.5858 25.0032,13.9999982 C25.0032,14.4142 24.6674,14.75 24.2532,14.75 L5.50137,14.75 L13.7746,22.7085 C14.0731,22.9957 14.0823,23.4705 13.7952,23.769 C13.508,24.0675 13.0332,24.0767 12.7347,23.7896 L3.30673,14.7202 C2.89776,14.3268 2.89776,13.6723 3.30673,13.2788 L12.7347,4.20949 Z</StreamGeometry>
 
 	</Styles.Resources>
-	
+
 	<StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentDark.xaml" />
 
 </Styles>

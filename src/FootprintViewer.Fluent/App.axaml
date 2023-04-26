@@ -12,6 +12,7 @@
 	<Application.Styles>
 
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/Base.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/BaseDark.axaml"/>
 
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
 		<!--<StyleInclude Source="avares://Material.Avalonia/Material.Avalonia.Templates.xaml" />-->
@@ -30,6 +31,7 @@
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanel.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/BottomPanel.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/FilterToggleButton.axaml"/>
 
 		<StyleInclude Source="avares://TimeDataViewer/Styles/Default.axaml"/>
 		<StyleInclude Source="avares://TimeDataViewer/Styles/TimelineControl.axaml"/>

@@ -1,0 +1,22 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
+
+	<Styles.Resources>
+
+		<SolidColorBrush x:Key="IconForeground" Color="{DynamicResource Gray3}"/>
+		<SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource Red8}"/>
+
+		<SolidColorBrush x:Key="AccentDarkBrush" Color="{DynamicResource BlueGray900}"/>
+
+		<SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource Blue8}"/>
+
+		<SolidColorBrush x:Key="TextForegroundBrush" Color="{DynamicResource Gray4}"/>
+
+	</Styles.Resources>
+
+</Styles>
