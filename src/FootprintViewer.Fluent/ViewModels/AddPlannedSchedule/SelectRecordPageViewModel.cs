@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Alias;
+using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Models;
@@ -30,7 +31,8 @@ public class SelectRecordPageViewModel : RoutableViewModel
 
         _sourceList
             .Connect()
-            .Select(s => new PlannedScheduleItemViewModel(s.Name, s.DateTime))
+            .Transform(s => new PlannedScheduleItemViewModel(s.Name, s.DateTime))
+            .Sort(SortExpressionComparer<PlannedScheduleItemViewModel>.Ascending(t => t.DateTime))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _items)
             .Subscribe();

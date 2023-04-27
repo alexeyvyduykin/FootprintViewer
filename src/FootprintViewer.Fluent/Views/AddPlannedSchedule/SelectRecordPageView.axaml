@@ -3,18 +3,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"			
+			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
 			 xmlns:vmd="using:FootprintViewer.Fluent.Designer"
-			 xmlns:items="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items"			 
-			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
-			 x:DataType="vm:SelectRecordPageViewModel"			
+			 xmlns:items="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="380"
+			 x:DataType="vm:SelectRecordPageViewModel"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.SelectRecordPageView">
 
 	<Design.DataContext>
 		<vmd:SelectRecordPageDesignViewModel />
 	</Design.DataContext>
-		
+
+	<UserControl.Styles>
+		<Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
+			<Setter Property="Cursor" Value="Hand"/>
+		</Style>
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}"/>
+		</Style>
+	</UserControl.Styles>
+
 	<c:ContentArea Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
 				   IsBusy="{Binding IsBusy}"
@@ -24,22 +35,24 @@
 		<Panel>
 
 			<ListBox Items="{Binding Items}"
+					 Background="Transparent"
 					 SelectedItem="{Binding SelectedItem}"
 					 VerticalAlignment="Stretch"
 					 ScrollViewer.VerticalScrollBarVisibility="Visible">
 				<ListBox.DataTemplates>
 					<DataTemplate x:DataType="items:PlannedScheduleItemViewModel">
-						<StackPanel Margin="8">
-						<TextBlock Text="{Binding Name}" FontSize="16"/>
-						<TextBlock Text="{Binding DateTime}" FontSize="12"/>
-						</StackPanel>
+						<Border Margin="4">
+							<StackPanel Spacing="2">
+								<TextBlock Text="{Binding Name}" Classes="h5 medium"/>
+								<TextBlock Text="{Binding DateTime}" Classes="h1 low"/>
+							</StackPanel>
+						</Border>
 					</DataTemplate>
 				</ListBox.DataTemplates>
-				
-				
+
 			</ListBox>
-						
+
 		</Panel>
 	</c:ContentArea>
-	
+
 </UserControl>

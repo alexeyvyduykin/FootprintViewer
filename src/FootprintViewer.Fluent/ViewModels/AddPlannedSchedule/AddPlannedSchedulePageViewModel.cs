@@ -15,8 +15,6 @@ public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
 
     public AddPlannedSchedulePageViewModel()
     {
-        _lastOpenDirectory = Services.Config.LastPlannedScheduleJsonFile;
-
         EnableCancel = true;
 
         CreateDemoCommand = ReactiveCommand.Create(OnCreateDemo);
@@ -48,7 +46,9 @@ public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
     {
         try
         {
-            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "json" }, _lastOpenDirectory);
+            var lastDirectory = _lastOpenDirectory ?? Services.Config.LastPlannedScheduleJsonFile;
+
+            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "json" }, lastDirectory);
 
             if (filePath is null)
             {

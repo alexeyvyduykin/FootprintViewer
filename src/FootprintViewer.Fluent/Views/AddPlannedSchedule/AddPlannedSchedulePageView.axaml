@@ -7,16 +7,24 @@
              xmlns:icons="using:Material.Icons.Avalonia"
 			 xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
              xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+			 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
 			 x:DataType="vm:AddPlannedSchedulePageViewModel"
              x:CompileBindings="True"
+			 d:DataContext="{x:Static vmd:DesignData.AddPlannedSchedulePage}"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.AddPlannedSchedulePageView">
 
 	<UserControl.Styles>
 		<Style Selector="Button.tile">
+			<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}"/>
 			<Setter Property="Width" Value="120"/>
 			<Setter Property="Height" Value="140"/>
 			<Setter Property="Margin" Value="10"/>
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="Cursor" Value="Hand"/>
+		</Style>
+		<Style Selector="Button.tile:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
 		</Style>
 		<Style Selector="TextBlock.t1">
 			<Setter Property="HorizontalAlignment" Value="Center"/>
@@ -32,6 +40,7 @@
 	</UserControl.Styles>
 
 	<c:ContentArea Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
 				   IsBusy="{Binding IsBusy}"
@@ -43,26 +52,29 @@
 						Classes="tile">
 					<Panel>
 						<TextBlock Text="Create demo"
-								   Classes="t1"/>
-						<icons:MaterialIcon Kind="Plus"/>
+								   Classes="t1 medium h2"/>
+						<icons:MaterialIcon Kind="Plus"
+											Classes="medium"/>
 					</Panel>
 				</Button>
-				
+
 				<Button Command="{Binding ImportCommand}"
 						Classes="tile">
 					<Panel>
 						<TextBlock Text="Import from .json file"
-								   Classes="t1"/>
-						<icons:MaterialIcon Kind="FileFind"/>
+								   Classes="t1 medium h2"/>
+						<icons:MaterialIcon Kind="FileFind"
+											Classes="medium"/>
 					</Panel>
 				</Button>
-				
+
 				<Button Command="{Binding ConnectDatabaseCommand}"
 						Classes="tile">
 					<Panel>
 						<TextBlock Text="Connect to database"
-								   Classes="t1"/>
-						<icons:MaterialIcon Kind="DatabaseAdd"/>
+								   Classes="t1 medium h2"/>
+						<icons:MaterialIcon Kind="DatabaseAdd"
+											Classes="medium"/>
 					</Panel>
 				</Button>
 

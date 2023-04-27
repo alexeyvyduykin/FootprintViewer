@@ -25,6 +25,9 @@ public class ConnectDatabasePageViewModel : RoutableViewModel
 
     public ConnectDatabasePageViewModel()
     {
+        EnableBack = true;
+        EnableCancel = true;
+
         Update = ReactiveCommand.Create<List<string>>(UpdateImpl, outputScheduler: RxApp.MainThreadScheduler);
 
         _availableList.Connect()
@@ -57,9 +60,6 @@ public class ConnectDatabasePageViewModel : RoutableViewModel
             .ToProperty(this, x => x.IsVerified);
 
         var nextCommandCanExecute = this.WhenAnyValue(s => s.SelectedTable, (t) => !string.IsNullOrEmpty(t));
-
-        EnableBack = true;
-        EnableCancel = true;
 
         NextCommand = ReactiveCommand.Create(OnNext, nextCommandCanExecute);
     }

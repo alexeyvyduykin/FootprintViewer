@@ -8,14 +8,21 @@
 
 	<Styles.Resources>
 
-		<SolidColorBrush x:Key="IconForeground" Color="{DynamicResource Gray3}"/>
+		<SolidColorBrush x:Key="BackgroundBrush" Color="#191D24"/>
+
+		<SolidColorBrush x:Key="IconForegroundBrush" Color="{DynamicResource Gray3}"/>
 		<SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource Red8}"/>
+		<SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource Green8}"/>
 
 		<SolidColorBrush x:Key="AccentDarkBrush" Color="{DynamicResource BlueGray900}"/>
+		<SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource BlueGray800}"/>
+		<SolidColorBrush x:Key="AccentLightBrush" Color="{DynamicResource BlueGray700}"/>
 
 		<SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource Blue8}"/>
 
-		<SolidColorBrush x:Key="TextForegroundBrush" Color="{DynamicResource Gray4}"/>
+		<SolidColorBrush x:Key="TextHighBrush" Color="{DynamicResource Gray3}"/>
+		<SolidColorBrush x:Key="TextMediumBrush" Color="{DynamicResource Gray5}"/>
+		<SolidColorBrush x:Key="TextLowBrush" Color="{DynamicResource Gray6}"/>
 
 	</Styles.Resources>
 

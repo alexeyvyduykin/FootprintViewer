@@ -1,0 +1,72 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:sys="using:System">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<StackPanel>
+				<TextBlock Text="This is a short text" Classes="h7 high"/>
+				<TextBlock Text="This is a short text" Classes="h7 medium"/>
+				<TextBlock Text="This is a short text" Classes="h7 low"/>
+
+				<TextBlock Text="This is a short text" Classes="h7"/>
+				<TextBlock Text="This is a short text" Classes="h6"/>
+				<TextBlock Text="This is a short text" Classes="h5"/>
+				<TextBlock Text="This is a short text" Classes="h4"/>
+				<TextBlock Text="This is a short text" Classes="h3"/>
+				<TextBlock Text="This is a short text" Classes="h2"/>
+				<TextBlock Text="This is a short text" Classes="h1"/>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Styles.Resources>
+		<sys:Double x:Key="FontSizeH1">12</sys:Double>
+		<sys:Double x:Key="FontSizeH2">14</sys:Double>
+		<sys:Double x:Key="FontSizeH3">16</sys:Double>
+		<sys:Double x:Key="FontSizeH4">18</sys:Double>
+		<sys:Double x:Key="FontSizeH5">20</sys:Double>
+		<sys:Double x:Key="FontSizeH6">24</sys:Double>
+		<sys:Double x:Key="FontSizeH7">28</sys:Double>
+	</Styles.Resources>
+
+	<Style Selector=":is(Control).h7">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH7}" />
+	</Style>
+
+	<Style Selector=":is(Control).h6">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH6}" />
+	</Style>
+
+	<Style Selector=":is(Control).h5">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH5}" />
+	</Style>
+
+	<Style Selector=":is(Control).h4">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH4}" />
+	</Style>
+
+	<Style Selector=":is(Control).h3">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH3}" />
+	</Style>
+
+	<Style Selector=":is(Control).h2">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH2}" />
+	</Style>
+
+	<Style Selector=":is(Control).h1">
+		<Setter Property="TextBlock.FontSize" Value="{StaticResource FontSizeH1}" />
+	</Style>
+
+	<Style Selector=":is(Control).high">
+		<Setter Property="TextBlock.Foreground" Value="{StaticResource TextHighBrush}" />
+	</Style>
+
+	<Style Selector=":is(Control).medium">
+		<Setter Property="TextBlock.Foreground" Value="{StaticResource TextMediumBrush}" />
+	</Style>
+
+	<Style Selector=":is(Control).low">
+		<Setter Property="TextBlock.Foreground" Value="{StaticResource TextLowBrush}" />
+	</Style>
+
+</Styles>

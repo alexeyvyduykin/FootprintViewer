@@ -3,11 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:materialIcons="using:Material.Icons.Avalonia"			 
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
 			 x:DataType="vm:ConnectDatabasePageViewModel"
 			 x:CompileBindings="True"
+			 d:DataContext="{x:Static vmd:DesignData.ConnectDatabasePage}"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ConnectDatabasePageView">
 
 	<UserControl.Styles>
@@ -16,16 +18,26 @@
 		</Style>
 		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=true]">
 			<Setter Property="Kind" Value="Verified"/>
-			<Setter Property="Foreground" Value="Green"/>
+			<Setter Property="Foreground" Value="{DynamicResource SuccessBrush}"/>
 		</Style>
 		<Style Selector="materialIcons|MaterialIcon.verified[IsEnabled=false]">
 			<Setter Property="Kind" Value="Verified"/>
-			<Setter Property="Foreground" Value="Red"/>
+			<Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
+		</Style>
+		<Style Selector="TextBox.t1">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0"/>
+		</Style>
+		<Style Selector="ComboBox.t1">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Margin" Value="0"/>
 		</Style>
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="MainContentArea"
 				   Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
                    EnableBack="{Binding EnableBack}"
 				   IsBusy="{Binding IsBusy}"
@@ -36,12 +48,12 @@
 			<Grid ColumnDefinitions="Auto,8,*"
 				  RowDefinitions="40,40,40,40,40">
 
-				<TextBlock Text="Host" Grid.Row="0" Classes="t1"/>
-				<TextBlock Text="Database" Grid.Row="1" Classes="t1"/>
-				<TextBlock Text="Username" Grid.Row="2" Classes="t1"/>
-				<TextBlock Text="Password" Grid.Row="3" Classes="t1"/>
+				<TextBlock Text="Host" Grid.Row="0" Classes="t1 medium"/>
+				<TextBlock Text="Database" Grid.Row="1" Classes="t1 medium"/>
+				<TextBlock Text="Username" Grid.Row="2" Classes="t1 medium"/>
+				<TextBlock Text="Password" Grid.Row="3" Classes="t1 medium"/>
 				<StackPanel Grid.Row="4" Orientation="Horizontal">
-					<TextBlock Text="Table" Classes="t1"/>
+					<TextBlock Text="Table" Classes="t1 medium"/>
 					<Viewbox Height="20" Margin="8,0,0,0">
 						<materialIcons:MaterialIcon IsEnabled="{Binding IsVerified}"
 													Classes="verified"/>
@@ -50,32 +62,26 @@
 
 				<TextBox x:Name="HostTextBox"
 						 Text="{Binding Host}"
-						 Margin="0"
-						 VerticalAlignment="Center"
+						 Classes="t1 high"
 						 Grid.Column="2" Grid.Row="0"/>
 				<TextBox x:Name="DatabaseTextBox"
 						 Text="{Binding Database}"
-						 VerticalAlignment="Center"
-						 Margin="0"
+						 Classes="t1 high"
 						 Grid.Column="2" Grid.Row="1"/>
 				<TextBox x:Name="UsernameTextBox"
 						 Text="{Binding Username}"
-						 VerticalAlignment="Center"
-						 Margin="0"
+						 Classes="t1 high"
 						 Grid.Column="2" Grid.Row="2"/>
 				<TextBox x:Name="PasswordTextBox"
 						 Text="{Binding Password}"
-						 VerticalAlignment="Center"
-						 Margin="0"
+						 Classes="t1 high"
 						 Grid.Column="2" Grid.Row="3"/>
-				<ComboBox Margin="0"
-						  VerticalAlignment="Stretch"
+				<ComboBox Classes="t1 high"
 						  Items="{Binding AvailableTables}"
 						  SelectedItem="{Binding SelectedTable}"
-						  Grid.Column="2" Grid.Row="4" HorizontalAlignment="Stretch"/>
+						  Grid.Column="2" Grid.Row="4"/>
 			</Grid>
 		</StackPanel>
 	</c:ContentArea>
-
 
 </UserControl>

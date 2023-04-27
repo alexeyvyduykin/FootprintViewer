@@ -83,26 +83,32 @@
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray50}"/>
 					<Border Background="{StaticResource CoolGray50}"/>
+					<Border Background="{StaticResource DarkBlue1}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray100}"/>
 					<Border Background="{StaticResource CoolGray100}"/>
+					<Border Background="{StaticResource DarkBlue2}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray200}"/>
 					<Border Background="{StaticResource CoolGray200}"/>
+					<Border Background="{StaticResource DarkBlue3}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray300}"/>
 					<Border Background="{StaticResource CoolGray300}"/>
+					<Border Background="{StaticResource DarkBlue4}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray400}"/>
 					<Border Background="{StaticResource CoolGray400}"/>
+					<Border Background="{StaticResource DarkBlue5}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray500}"/>
 					<Border Background="{StaticResource CoolGray500}"/>
+					<Border Background="{StaticResource DarkBlue6}"/>
 				</WrapPanel>
 				<WrapPanel>
 					<Border Background="{StaticResource BlueGray600}"/>
@@ -207,6 +213,13 @@
 		<Color x:Key="CoolGray700">#3e4c59</Color>
 		<Color x:Key="CoolGray800">#323f4b</Color>
 		<Color x:Key="CoolGray900">#1f2933</Color>
+
+		<Color x:Key="DarkBlue1">#bcbfc6</Color>
+		<Color x:Key="DarkBlue2">#787d80</Color>
+		<Color x:Key="DarkBlue3">#5a6988</Color>
+		<Color x:Key="DarkBlue4">#333743</Color>
+		<Color x:Key="DarkBlue5">#4b5264</Color>
+		<Color x:Key="DarkBlue6">#111e2f</Color>
 
 		<Color x:Key="AcrylicTrimBackground">#A0202020</Color>
 		<Color x:Key="TileBorderColor">#66757575</Color>

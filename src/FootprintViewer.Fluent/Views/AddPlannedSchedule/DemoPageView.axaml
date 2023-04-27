@@ -4,12 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="vm:DemoPageViewModel"    
-			 x:CompileBindings="True"          
+			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+			 mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="350"
+             x:DataType="vm:DemoPageViewModel"
+			 x:CompileBindings="True"
+			 d:DataContext="{x:Static vmd:DesignData.DemoPage}"
 			 x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.DemoPageView">
 
 	<c:ContentArea Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
 				   IsBusy="{Binding IsBusy}"
@@ -17,7 +20,7 @@
 				   NextContent="Ok">
 		<Panel>
 			<TextBlock Text="Create planned schedule demo?"
-					   FontSize="20"
+					   Classes="h5 medium"
 					   VerticalAlignment="Center"
 					   HorizontalAlignment="Center"/>
 		</Panel>

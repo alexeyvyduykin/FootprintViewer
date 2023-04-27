@@ -3,6 +3,7 @@ using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
 using FootprintViewer.Fluent.ViewModels.Navigation;
@@ -91,6 +92,15 @@ public static class DesignData
     public static UserGeometryClickInfoPanel UserGeometryClickInfoPanel => new(new UserGeometryViewModel(UserGeometryBuilder.CreateRandom()));
 
     public static InfoPanelViewModel InfoPanel => CreateInfoPanel();
+
+    // Dialogs
+    public static AddPlannedSchedulePageViewModel AddPlannedSchedulePage => new() { IsActive = true };
+
+    public static DemoPageViewModel DemoPage => new() { IsActive = true };
+
+    public static ConnectDatabasePageViewModel ConnectDatabasePage => new() { IsActive = true };
+
+    public static ImportFilePageViewModel ImportFilePage => new(string.Empty) { IsActive = true };
 
     private static InfoPanelViewModel CreateInfoPanel()
     {
@@ -239,6 +249,8 @@ public class SelectRecordPageDesignViewModel : RoutableViewModel
         };
 
         SelectedItem = Items.FirstOrDefault();
+
+        IsActive = true;
     }
 
     public override string Title { get => "Select planned schedule"; protected set { } }
