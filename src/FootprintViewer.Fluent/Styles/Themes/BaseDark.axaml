@@ -24,6 +24,16 @@
 		<SolidColorBrush x:Key="TextMediumBrush" Color="{DynamicResource Gray5}"/>
 		<SolidColorBrush x:Key="TextLowBrush" Color="{DynamicResource Gray6}"/>
 
+		<SolidColorBrush x:Key="ActionButtonForegroundColor" Color="{DynamicResource Gray9}" />
+		<SolidColorBrush x:Key="ActionButtonBackgroundColor" Color="{DynamicResource Green8}" />
+		<SolidColorBrush x:Key="ActionButtonPressedBackgroundColor" Color="{DynamicResource Green7}" />
+		<SolidColorBrush x:Key="ActionButtonPointerOverBackgroundColor" Color="{DynamicResource Green7}" />
+		<SolidColorBrush x:Key="ActionButtonDisabledBackgroundColor" Color="{DynamicResource SystemChromeDisabledLowColor}" />
+
+		<SolidColorBrush x:Key="InvisibleButtonBackgroundColor" Color="Transparent" />
+		<SolidColorBrush x:Key="InvisibleButtonPointerOverBackgroundColor" Color="{DynamicResource Gray6}" />
+		<SolidColorBrush x:Key="InvisibleButtonPressedBackgroundColor" Color="{DynamicResource Gray6}" />
+
 	</Styles.Resources>
 
 </Styles>

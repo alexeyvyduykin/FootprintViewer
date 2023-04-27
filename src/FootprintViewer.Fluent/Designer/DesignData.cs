@@ -17,6 +17,7 @@ using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using Mapsui;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -94,6 +95,8 @@ public static class DesignData
     public static InfoPanelViewModel InfoPanel => CreateInfoPanel();
 
     // Dialogs
+    public static RoutableViewModel ContentArea => new ContentAreaDesign() { IsActive = true };
+
     public static AddPlannedSchedulePageViewModel AddPlannedSchedulePage => new() { IsActive = true };
 
     public static DemoPageViewModel DemoPage => new() { IsActive = true };
@@ -258,4 +261,19 @@ public class SelectRecordPageDesignViewModel : RoutableViewModel
     public List<PlannedScheduleItemViewModel> Items { get; set; }
 
     public PlannedScheduleItemViewModel? SelectedItem { get; set; }
+}
+
+public class ContentAreaDesign : RoutableViewModel
+{
+    public ContentAreaDesign()
+    {
+        EnableBack = true;
+        EnableCancel = true;
+        IsActive = true;
+
+        SkipCommand = ReactiveCommand.Create(() => { });
+        NextCommand = ReactiveCommand.Create(() => { });
+    }
+
+    public override string Title { get => "This is a title"; protected set { } }
 }

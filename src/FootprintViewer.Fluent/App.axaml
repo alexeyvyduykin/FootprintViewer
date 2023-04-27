@@ -20,6 +20,7 @@
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Card.axaml"/>
 
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FontSizes.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Button.axaml"/>
 		
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>

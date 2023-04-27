@@ -2,16 +2,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
-		xmlns:c="using:FootprintViewer.Fluent.Controls">
+		xmlns:materialIcons="using:Material.Icons.Avalonia"
+		xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+	    xmlns:c="using:FootprintViewer.Fluent.Controls">
 
 	<Design.PreviewWith>
-		<Panel Background="{DynamicResource BackgroundBrush}">
+		<Panel Background="{DynamicResource BackgroundBrush}"
+			   DataContext="{x:Static vmd:DesignData.ContentArea}">
 			<c:ContentArea Title="Title"
 						   Caption="Description:"
 						   Width="500"
-						   EnableBack="True"
-						   EnableCancel="True" CancelContent="Cancel"
-						   EnableNext="True" NextContent="Continue">
+						   EnableBack="True" EnableCancel="True" EnableSkip="True" EnableNext="True"
+						   CancelContent="Cancel"
+						   SkipContent="Skip"
+						   NextContent="Continue">
 				<StackPanel>
 					<TextBlock Classes="h6 medium"
 							   Text="Add a Planned Schedule"/>
@@ -37,6 +41,13 @@
 	<Styles.Resources>
 	</Styles.Resources>
 
+	<Style Selector="materialIcons|MaterialIcon.left">
+		<Setter Property="Kind" Value="ArrowLeft"/>
+		<Setter Property="Width" Value="22"/>
+		<Setter Property="Height" Value="22"/>
+		<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"/>
+	</Style>
+
 	<Style Selector="c|ContentArea">
 		<Setter Property="IsHitTestVisible" Value="{Binding IsActive}" />
 		<Setter Property="Template">
@@ -50,9 +61,11 @@
 
 						<Panel DockPanel.Dock="Bottom" x:Name="PART_ButtonArea">
 							<Button Name="PART_CancelButton"
-									Classes="invisible"
+									MinWidth="95"
+									Classes="invisible h3"
 									IsVisible="{TemplateBinding EnableCancel}"
 									Content="{TemplateBinding CancelContent}"
+									HorizontalContentAlignment="Center"
 									HorizontalAlignment="Left" Command="{Binding CancelCommand}">
 								<i:Interaction.Behaviors>
 									<behaviors:FocusOnAttachedBehavior
@@ -64,9 +77,12 @@
 										IsVisible="{TemplateBinding EnableSkip}"
 										Content="{TemplateBinding SkipContent}"
 										Command="{Binding SkipCommand}"
-										Classes="activeHyperLink skip"
+										Classes="activeHyperLink"
 										VerticalAlignment="Center" />
-								<Button Name="PART_NextButton" Classes="action"
+								<Button Name="PART_NextButton"
+										MinWidth="95"
+										Classes="action h3"
+										HorizontalContentAlignment="Center"
 										IsVisible="{TemplateBinding EnableNext}"
 										Content="{TemplateBinding NextContent}"
 										Command="{Binding NextCommand}"
@@ -92,7 +108,7 @@
 										<i:Interaction.Behaviors>
 											<behaviors:ButtonExecuteCommandOnKeyDownBehavior IsEnabled="{Binding IsActive}" Key="Back" />
 										</i:Interaction.Behaviors>
-										<PathIcon Data="{StaticResource arrow_left_regular}" Width="16" />
+										<materialIcons:MaterialIcon Classes="left"/>
 									</Button>
 									<ContentPresenter Name="PART_TitlePresenter"
 													  Classes="h6 high"
