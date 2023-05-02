@@ -9,44 +9,45 @@
 			 xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 mc:Ignorable="d"
 			 MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="500"
+             d:DesignWidth="400" d:DesignHeight="320"
              x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.GroundTargetFilterView"
 			 d:DataContext="{x:Static vmd:DesignData.GroundTargetFilter}">
 
-	<c:ColorZone Padding="20">
-		<StackPanel>
+	<Border Padding="20"
+			Background="{DynamicResource BackgroundBrush}">
+		<StackPanel Spacing="10">
 
-			<DockPanel LastChildFill="True"
-					   Margin="0,0,0,10">
+			<Grid ColumnDefinitions="Auto,*">
 				<materialIcons:MaterialIcon Width="20" Height="20"
 											Kind="Shape"
 											VerticalAlignment="Center"
 											Foreground="{StaticResource IconAccentBrush}"/>
-				<TextBlock Classes="Body2"
-						   VerticalAlignment="Center"
-						   Margin="4,0,32,0"
-						   Text="Types"/>
-
 				<CheckBox IsChecked="{Binding IsAllTypes}"
+						  Content="Types"
+						  Margin="8,0,0,0"
+						  Grid.Column="1"
+						  Classes="h3 option"
 						  VerticalAlignment="Center"/>
-			</DockPanel>
+			</Grid>
 
-			<StackPanel Margin="16,8,0,16" Spacing="8">
+			<StackPanel Margin="28,0,0,0">
 				<CheckBox IsChecked="{Binding IsArea}"
+						  Classes="h3 option"
 						  Content="Area"/>
 				<CheckBox IsChecked="{Binding IsRoute}"
+						  Classes="h3 option"
 						  Content="Route"/>
 				<CheckBox IsChecked="{Binding IsPoint}"
+						  Classes="h3 option"
 						  Content="Point"/>
 			</StackPanel>
 
-			<StackPanel IsVisible="{Binding IsAOIActive}">
-				<Separator Margin="0,0,0,16"/>
-				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
-						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
-			</StackPanel>
-
+			<ToggleSwitch IsChecked="{Binding IsFullCoverAOI}"
+						  IsEnabled="{Binding IsAOIActive}"
+						  OnContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  OffContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  Classes="h3 option"/>
 		</StackPanel>
-	</c:ColorZone>
+	</Border>
 
 </UserControl>
