@@ -21,10 +21,13 @@
 
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FontSizes.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Button.axaml"/>
-		
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/CheckBox.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToggleSwitch.axaml"/>
+
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>
-
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/RangeSlider.axaml"/>
+	
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Icons.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FastToolTip.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToolBarIconSelector.axaml"/>

@@ -23,6 +23,7 @@
 		<SolidColorBrush x:Key="TextHighBrush" Color="{DynamicResource Gray3}"/>
 		<SolidColorBrush x:Key="TextMediumBrush" Color="{DynamicResource Gray5}"/>
 		<SolidColorBrush x:Key="TextLowBrush" Color="{DynamicResource Gray6}"/>
+		<SolidColorBrush x:Key="TextDisableBrush" Color="{DynamicResource Gray7}"/>
 
 		<SolidColorBrush x:Key="ActionButtonForegroundColor" Color="{DynamicResource Gray9}" />
 		<SolidColorBrush x:Key="ActionButtonBackgroundColor" Color="{DynamicResource Green8}" />
