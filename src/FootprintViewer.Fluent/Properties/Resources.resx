@@ -144,11 +144,11 @@
   <data name="FilterDate" xml:space="preserve">
     <value>Date</value>
   </data>
-  <data name="FilterFromNode" xml:space="preserve">
-    <value>From node:</value>
-  </data>
   <data name="FilterFullCoverAOI" xml:space="preserve">
     <value>Full cover AOI</value>
+  </data>
+  <data name="FilterNodeRange" xml:space="preserve">
+    <value>Node range</value>
   </data>
   <data name="FilterOptions" xml:space="preserve">
     <value>Filter options</value>
@@ -161,9 +161,6 @@
   </data>
   <data name="FilterSunElevation" xml:space="preserve">
     <value>Sun elevation</value>
-  </data>
-  <data name="FilterToNode" xml:space="preserve">
-    <value>To node:</value>
   </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Scene search</value>

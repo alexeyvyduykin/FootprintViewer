@@ -3,6 +3,7 @@ using DynamicData.Binding;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 
-public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
+public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();
@@ -171,4 +172,57 @@ public sealed class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintVi
 
     [Reactive]
     public bool? IsAllSatellites { get; set; }
+}
+
+public partial class FootprintTabFilterViewModel
+{
+    public FootprintTabFilterViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+
+        IsLeftSwath = true;
+        IsRightSwath = true;
+        FromNode = 1;
+        ToNode = 15;
+
+        _satellites
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
+
+        var _activeChanged = _satellites
+            .Connect()
+            .WhenValueChanged(p => p.IsActive);
+
+        var observable1 = this.WhenAnyValue(s => s.FromNode, s => s.ToNode, s => s.IsLeftSwath, s => s.IsRightSwath)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(_ => this);
+
+        var observable2 = _activeChanged
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(_ => this);
+
+        SetMergeObservables(new[] { observable1, observable2 });
+        SetDirtyMergeObservables(new[] { observable1, observable2 });
+
+        _items
+            .ToObservableChangeSet()
+            .WhenPropertyChanged(p => p.IsActive)
+            .Select(_ => Satellites.AllPropertyCheck(p => p.IsActive))
+            .Subscribe(s => IsAllSatellites = s);
+
+        this.WhenAnyValue(s => s.IsAllSatellites)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(value => Satellites.SetValue(s => s.IsActive = value));
+
+        Observable.StartAsync(UpdateImpl, RxApp.MainThreadScheduler);
+    }
 }

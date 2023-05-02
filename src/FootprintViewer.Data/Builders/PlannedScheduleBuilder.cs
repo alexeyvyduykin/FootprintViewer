@@ -94,7 +94,7 @@ public static class PlannedScheduleBuilder
     {
         var count = 10;
 
-        var satellites = SatelliteBuilder.Create(1);
+        var satellites = SatelliteBuilder.Create(5);
         var footprints = FootprintBuilder.Create(satellites, count);
         var gts = GroundTargetBuilder.Create(footprints, count);
         var gss = GroundStationBuilder.CreateDefault();

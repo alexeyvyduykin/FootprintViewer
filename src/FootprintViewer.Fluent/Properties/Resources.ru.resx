@@ -144,11 +144,11 @@
   <data name="FilterDate" xml:space="preserve">
     <value>Дата</value>
   </data>
-  <data name="FilterFromNode" xml:space="preserve">
-    <value>От витка:</value>
-  </data>
   <data name="FilterFullCoverAOI" xml:space="preserve">
     <value>Полное перекрытие AOI</value>
+  </data>
+  <data name="FilterNodeRange" xml:space="preserve">
+    <value>Диапазон витков</value>
   </data>
   <data name="FilterOptions" xml:space="preserve">
     <value>Настройки поиска</value>
@@ -161,9 +161,6 @@
   </data>
   <data name="FilterSunElevation" xml:space="preserve">
     <value>Угол падения солнечных лучей</value>
-  </data>
-  <data name="FilterToNode" xml:space="preserve">
-    <value>До витка:</value>
   </data>
   <data name="FootprintPreviewTabTitle" xml:space="preserve">
     <value>Поиск сцены</value>

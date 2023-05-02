@@ -5,10 +5,12 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
+using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -21,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class FootprintTabViewModel : SidePanelTabViewModel
+public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly IMapNavigator _mapNavigator;
@@ -253,4 +255,95 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilteringActive { get; set; }
+}
+
+public partial class FootprintTabViewModel
+{
+    public FootprintTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+        _mapNavigator = resolver.GetService<IMapNavigator>();
+        var map = (Map)resolver.GetService<IMap>();
+        _layer = map.GetLayer(LayerType.Footprint);
+        _layerProvider = resolver.GetService<FootprintProvider>();
+        _featureManager = resolver.GetService<FeatureManager>();
+        var areaOfInterest = resolver.GetService<AreaOfInterest>();
+
+        Filter = new FootprintTabFilterViewModel(resolver);
+
+        Title = "Просмотр рабочей программы";
+
+        var filter1 = Filter.AOIFilterObservable;
+        var filter2 = Filter.FilterObservable;
+
+        var filter3 = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
+
+        _footprints
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _footprints.Count);
+
+        _footprints
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new FootprintViewModel(s))
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
+            .Sort(SortExpressionComparer<FootprintViewModel>.Ascending(s => s.Begin))
+            .Bind(out _items)
+            .DisposeMany()
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
+
+        this.WhenAnyValue(s => s.IsFilterOnMap)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => IsFilterOnMapChanged());
+
+        _footprints
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new FootprintViewModel(s))
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
+            .ToCollection()
+            .Subscribe(UpdateProvider);
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        Enter = ReactiveCommand.Create<FootprintViewModel>(EnterImpl);
+
+        Leave = ReactiveCommand.Create(LeaveImpl);
+
+        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
+
+        _isLoading = Update.IsExecuting
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .ToProperty(this, x => x.IsLoading);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel>(s => TargetToMapImpl(s), outputScheduler: RxApp.MainThreadScheduler);
+
+        areaOfInterest.AOIChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => Filter.AOI = s);
+    }
 }

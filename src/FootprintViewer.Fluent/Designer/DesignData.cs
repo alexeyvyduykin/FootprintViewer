@@ -29,9 +29,10 @@ public static class DesignData
 {
     private static readonly DesignDataDependencyResolver _resolver = new();
 
+    // Side panel filters
     public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new();
 
-    public static FootprintTabFilterViewModel FootprintFilter => new();
+    public static FootprintTabFilterViewModel FootprintFilter => new(_resolver);
 
     public static GroundTargetTabFilterViewModel GroundTargetFilter => new();
 
@@ -45,9 +46,10 @@ public static class DesignData
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.BeginCreating(TipTarget.Rectangle, 34545.432);
 
+    // Side panel tabs
     public static FootprintPreviewTabViewModel FootprintPreviewTab => new() { IsActive = true };
 
-    public static FootprintTabViewModel FootprintTab => new()
+    public static FootprintTabViewModel FootprintTab => new(_resolver)
     {
         SearchString = "footprint",
         IsActive = true,

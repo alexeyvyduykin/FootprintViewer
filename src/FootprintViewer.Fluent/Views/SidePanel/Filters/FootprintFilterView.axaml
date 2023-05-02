@@ -10,114 +10,82 @@
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 mc:Ignorable="d"
              MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="520"
+             d:DesignWidth="400" d:DesignHeight="480"
 			 d:DataContext="{x:Static vmd:DesignData.FootprintFilter}">
 
 	<UserControl.Styles>
-		<Style Selector="CheckBox">
-			<Setter Property="ContentTemplate">
-				<Setter.Value>
-					<DataTemplate>
-						<TextBlock Text="{Binding}" Classes="Body2"/>
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+
 	</UserControl.Styles>
 
-	<c:ColorZone Padding="20">
-		<StackPanel>
+	<Border Padding="20"
+			Background="{DynamicResource BackgroundBrush}">
+		<StackPanel Spacing="10">
 
-			<Grid Margin="0,0,0,20"
-				  RowDefinitions="Auto,Auto">
-				<Grid ColumnDefinitions="*,24"
-					  HorizontalAlignment="Left">
-					<TextBlock Text="{x:Static prop:Resources.FilterFromNode}"
-							   VerticalAlignment="Center"
-							   Classes="Body2"/>
+			<StackPanel>
+				<Grid ColumnDefinitions="*,16,Auto,16">
+					<TextBlock Text="{x:Static prop:Resources.FilterNodeRange}"
+							   Classes="h3 medium"/>
+
 					<TextBlock Grid.Column="1"
-							   VerticalAlignment="Center"
 							   TextAlignment="Center"
-							   Classes="Body2"
-							   Text="{Binding #Slider1.Value}"/>
-				</Grid>
-				<Slider x:Name="Slider1"
-						Classes="Modern Discrete Ticks"
-						Grid.Row="1"
-						Minimum="1"
-						Maximum="15"
-						TickFrequency="1"
-						IsSnapToTickEnabled="True"
-						Value="{Binding FromNode}"/>
-			</Grid>
-
-			<Grid Margin="0,0,0,20"
-				  RowDefinitions="Auto,Auto">
-
-				<Grid ColumnDefinitions="*,24"
-					  HorizontalAlignment="Left">
-					<TextBlock Text="{x:Static prop:Resources.FilterToNode}"
-							   VerticalAlignment="Center"
-							   Classes="Body2"/>
-					<TextBlock Grid.Column="1"
-							   VerticalAlignment="Center"
+							   Classes="h3 medium"
+							   Text="{Binding FromNode}"/>
+					<TextBlock Grid.Column="2"
+							   Text="-"
+							   Classes="h3 medium"/>
+					<TextBlock Grid.Column="3"
 							   TextAlignment="Center"
-							   Classes="Body2"
-							   Text="{Binding #Slider2.Value}"/>
+							   Classes="h3 medium"
+							   Text="{Binding ToNode}"/>
 				</Grid>
 
-				<Slider x:Name="Slider2"
-						Classes="Modern Discrete Ticks"
-						Grid.Row="1"
-						Minimum="1"
-						Maximum="15"
-						TickFrequency="1"
-						IsSnapToTickEnabled="True"
-						Value="{Binding ToNode}"/>
-
-			</Grid>
+				<c:RangeSlider Minimum="1" Maximum="15"
+							   TickFrequency="1"
+							   IsThumbOverlap="True"
+							   IsSnapToTickEnabled="True"
+							   TickPlacement="BottomRight"
+							   LowerSelectedValue="{Binding FromNode}"
+							   UpperSelectedValue="{Binding ToNode}"/>
+			</StackPanel>
 
 			<CheckBox IsChecked="{Binding IsLeftSwath}"
-					  Margin="0,0,0,4"
-					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"/>
+					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"
+					  Classes="h3 option"/>
 
 			<CheckBox IsChecked="{Binding IsRightSwath}"
-					  Margin="0,4,0,20"
-					  Content="{x:Static prop:Resources.SatelliteRightSwath}"/>
+					  Content="{x:Static prop:Resources.SatelliteRightSwath}"
+					  Classes="h3 option"/>
 
-			<DockPanel LastChildFill="True"
-					   Margin="0,0,0,10">
-				<Viewbox Width="20" Height="20"
-						 VerticalAlignment="Center">
+			<Grid ColumnDefinitions="Auto,*">
+				<Viewbox Width="20" Height="20">
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{DynamicResource IconSatellite}"/>
 				</Viewbox>
-				<TextBlock Text="{x:Static prop:Resources.FilterSatellites}"
-						   Classes="Body2"
-						   VerticalAlignment="Center"
-						   Margin="8,0,32,0"/>
-				<CheckBox IsChecked="{Binding IsAllSatellites}"
-						  VerticalAlignment="Center"/>
-			</DockPanel>
+				<CheckBox Grid.Column="1"
+						  Margin="8,0,0,0"
+						  Content="{x:Static prop:Resources.FilterSatellites}"
+						  Classes="h3 option"
+						  IsChecked="{Binding IsAllSatellites}"/>
+			</Grid>
 
-			<ItemsControl Margin="0,0,0,10" Items="{Binding Satellites}">
+			<ItemsControl Items="{Binding Satellites}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate DataType="filters:SatelliteItemViewModel">
-						<Border Padding="16,8">
+						<Border Padding="28,0,0,0">
 							<CheckBox IsChecked="{Binding IsActive}"
-									  Content="{Binding Name}"/>
+									  Content="{Binding Name}"
+									  Classes="h2 low option"/>
 						</Border>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 
-			<StackPanel IsVisible="{Binding IsAOIActive}">
-				<Separator Margin="0,0,0,18"/>
-				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
-						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
-			</StackPanel>
-
+			<ToggleSwitch IsChecked="{Binding IsFullCoverAOI}"
+						  IsEnabled="{Binding IsAOIActive}"
+						  OnContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  OffContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  Classes="h3 option"/>
 		</StackPanel>
-	</c:ColorZone>
+	</Border>
 
 </UserControl>

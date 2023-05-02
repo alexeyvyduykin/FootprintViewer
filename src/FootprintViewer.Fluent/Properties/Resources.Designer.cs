@@ -142,20 +142,20 @@ namespace FootprintViewer.Fluent.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на From node:.
-        /// </summary>
-        public static string FilterFromNode {
-            get {
-                return ResourceManager.GetString("FilterFromNode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Full cover AOI.
         /// </summary>
         public static string FilterFullCoverAOI {
             get {
                 return ResourceManager.GetString("FilterFullCoverAOI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Node range.
+        /// </summary>
+        public static string FilterNodeRange {
+            get {
+                return ResourceManager.GetString("FilterNodeRange", resourceCulture);
             }
         }
         
@@ -192,15 +192,6 @@ namespace FootprintViewer.Fluent.Properties {
         public static string FilterSunElevation {
             get {
                 return ResourceManager.GetString("FilterSunElevation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на To node:.
-        /// </summary>
-        public static string FilterToNode {
-            get {
-                return ResourceManager.GetString("FilterToNode", resourceCulture);
             }
         }
         
