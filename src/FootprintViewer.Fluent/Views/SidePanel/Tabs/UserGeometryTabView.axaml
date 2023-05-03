@@ -30,15 +30,7 @@
 				 IsVisible="{Binding !IsLoading}">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="items:UserGeometryViewModel">
-					<itemsView:UserGeometryView x:Name="userGeometryItem"
-												DataContext="{Binding}">
-						<i:Interaction.Behaviors>
-							<ia:EventTriggerBehavior EventName="RemoveClick" SourceObject="{Binding #userGeometryItem}">
-								<ia:InvokeCommandAction Command="{Binding #UserGeometryName.DataContext.Remove}"
-														CommandParameter="{Binding #userGeometryItem.DataContext}" />
-							</ia:EventTriggerBehavior>
-						</i:Interaction.Behaviors>
-					</itemsView:UserGeometryView>
+					<itemsView:UserGeometryView DataContext="{Binding}"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>

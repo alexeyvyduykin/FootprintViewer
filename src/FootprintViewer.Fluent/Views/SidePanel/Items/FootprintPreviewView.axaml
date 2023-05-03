@@ -17,7 +17,7 @@
 		<conv:ImageConverter x:Key="ImageConv"/>
 	</UserControl.Resources>
 
-	<c:Card Padding="10">
+	<Border Classes="item">
 		<Grid ColumnDefinitions="Auto,*">
 
 			<Border x:Name="FootprintImageBorder">
@@ -78,8 +78,7 @@
 					</StackPanel>
 				</Panel>
 			</Border>
-
 		</Grid>
-	</c:Card>
+	</Border>
 
 </UserControl>

@@ -1,0 +1,32 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<StackPanel Spacing="10">
+				<ToggleButton Classes="invisible"
+							  Content="Invisible Button"
+							  IsChecked="True"/>
+				<ToggleButton Classes="invisible"
+							  Content="Invisible Button" />
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="ToggleButton.invisible">
+		<Setter Property="Padding" Value="{StaticResource InvisibleButtonPadding}" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="ToggleButton.invisible /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource InvisibleButtonBackgroundColor}" />
+	</Style>
+	<Style Selector="ToggleButton.invisible:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource InvisibleButtonPointerOverBackgroundColor}" />
+	</Style>
+	<Style Selector="ToggleButton.invisible:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource InvisibleButtonPressedBackgroundColor}" />
+	</Style>
+	<Style Selector="ToggleButton.invisible:checked /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource InvisibleButtonPressedBackgroundColor}" />
+	</Style>
+
+</Styles>

@@ -28,18 +28,19 @@
 		<DataTemplate DataType="{x:Type dataModels:ObservationTaskResult}">
 			<Grid ColumnDefinitions="Auto,*">
 				<StackPanel Spacing="2">
-					<TextBlock Text="Footprint:"/>
-					<TextBlock Text="{Binding Footprint.Center.Coordinate, Converter={StaticResource CoordinateConv}}"/>
+					<TextBlock Text="Footprint:" Classes="h3 medium"/>
+					<TextBlock Text="{Binding Footprint.Center.Coordinate, Converter={StaticResource CoordinateConv}}"
+							   Classes="h3 medium"/>
 				</StackPanel>
 
-				<Button Classes="Flat"
+				<Button Classes="invisible"
 						HorizontalAlignment="Right"
 						Command="{Binding $parent[ListBox].DataContext.TargetToMap}"
 						CommandParameter="{Binding}"
 						Padding="4"
 						Grid.Column="1">
 					<Viewbox Width="24" Height="24">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
 													Kind="MapSearch" />
 					</Viewbox>
 				</Button>
@@ -57,15 +58,15 @@
 		</Style>
 	</UserControl.Styles>
 
-	<c:Card>
+	<Border Classes="item">
 		<StackPanel Spacing="4">
-			<TextBlock Text="{Binding TaskName}" Classes="Headline6"/>
-			<TextBlock Text="{Binding SatelliteName}" Classes="Headline8"/>
-			<TextBlock Text="{Binding Begin}" Classes="Subtitle2 right"/>
-			<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}" Classes="Subtitle2 right"/>
+			<TextBlock Text="{Binding TaskName}" Classes="h4 high"/>
+			<TextBlock Text="{Binding SatelliteName}" Classes="h3 medium"/>
+			<TextBlock Text="{Binding Begin}" Classes="h3 medium right"/>
+			<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}" Classes="h3 medium right"/>
 			<Separator/>
 			<ContentControl Content="{Binding Model}"/>
 		</StackPanel>
-	</c:Card>
+	</Border>
 
 </UserControl>

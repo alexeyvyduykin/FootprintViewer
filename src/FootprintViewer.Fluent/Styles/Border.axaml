@@ -1,0 +1,19 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Classes="item" Width="200" Height="100">
+			<TextBlock Text="Content" Classes="h3 medium"/>
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+
+	<Style Selector="Border.item">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Padding" Value="8" />
+	</Style>
+
+</Styles>

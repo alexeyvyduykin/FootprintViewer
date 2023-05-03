@@ -59,6 +59,9 @@
 		<Compile Update="Controls\ColorZone.axaml.cs">
 		  <DependentUpon>ColorZone.axaml</DependentUpon>
 		</Compile>
+		<Compile Update="Controls\TextValue.axaml.cs">
+		  <DependentUpon>TextValue.axaml</DependentUpon>
+		</Compile>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>

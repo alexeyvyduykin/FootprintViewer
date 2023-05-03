@@ -1,0 +1,109 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" Width="240"
+				Background="{DynamicResource BackgroundBrush}">
+			<StackPanel Spacing="10">
+				<ComboBox PlaceholderText="Select an item" HorizontalAlignment="Stretch">
+					<ComboBoxItem>Item 1</ComboBoxItem>
+					<ComboBoxItem>Item 2</ComboBoxItem>
+				</ComboBox>
+				<ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
+					<ComboBoxItem>Item 1</ComboBoxItem>
+					<ComboBoxItem>Item 2</ComboBoxItem>
+				</ComboBox>
+				<ComboBox IsEnabled="False"
+						  HorizontalAlignment="Stretch"
+						  SelectedIndex="1"
+						  HorizontalContentAlignment="Center">
+					<ComboBoxItem>Item 1</ComboBoxItem>
+					<ComboBoxItem>Item 2</ComboBoxItem>
+				</ComboBox>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="ComboBox">
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="CornerRadius" Value="0" />
+		<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}" />
+		<Setter Property="PlaceholderForeground" Value="{DynamicResource TextMediumBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+	</Style>
+
+	<!--  NormalState  -->
+	<Style Selector="ComboBox /template/ Path#DropDownGlyph">
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}" />
+	</Style>
+
+	<!--  PointerOver State  -->
+	<Style Selector="ComboBox:pointerover /template/ Border#Background">
+		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+	</Style>
+
+	<!--  Pressed State  -->
+	<Style Selector="ComboBox:pressed /template/ Border#Background">
+		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+	</Style>
+
+	<!--  Disabled State  -->
+	<Style Selector="ComboBox:disabled /template/ Border#Background">
+		<Setter Property="Background" Value="{DynamicResource TextDisableBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource TextDisableBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:disabled /template/ ContentPresenter#HeaderContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextDisableBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:disabled /template/ ContentControl#ContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextLowBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:disabled /template/ TextBlock#PlaceholderTextBlock">
+		<Setter Property="Foreground" Value="{DynamicResource TextLowBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:disabled /template/ Path#DropDownGlyph">
+		<Setter Property="Fill" Value="{DynamicResource TextLowBrush}" />
+	</Style>
+
+	<!--  Focused State  -->
+	<Style Selector="ComboBox:focus-visible /template/ Border#HighlightBackground">
+		<Setter Property="IsVisible" Value="True" />
+		<Setter Property="BorderBrush" Value="{DynamicResource TextHighBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:focus-visible /template/ ContentControl#ContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextHighBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:focus-visible /template/ TextBlock#PlaceholderTextBlock">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextHighBrush}" />
+	</Style>
+
+	<Style Selector="ComboBox:focus-visible /template/ Path#DropDownGlyph">
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}" />
+	</Style>
+
+	<!--  Focus Pressed State  -->
+	<Style Selector="ComboBox:focused:pressed /template/ ContentControl#ContentPresenter">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ComboBoxForegroundFocusedPressed}" />
+	</Style>
+
+	<Style Selector="ComboBox:focused:pressed /template/ TextBlock#PlaceholderTextBlock">
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ComboBoxPlaceHolderForegroundFocusedPressed}" />
+	</Style>
+
+	<Style Selector="ComboBox:focused:pressed /template/ Path#DropDownGlyph">
+		<Setter Property="Fill" Value="{DynamicResource ComboBoxDropDownGlyphForegroundFocusedPressed}" />
+	</Style>
+
+	<!-- Error State -->
+	<Style Selector="ComboBox:error /template/ Border#Background">
+		<Setter Property="BorderBrush" Value="{DynamicResource TextWarningBrush}"/>
+	</Style>
+</Styles>

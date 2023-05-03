@@ -1,0 +1,50 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:c="using:FootprintViewer.Fluent.Controls">
+
+	<Design.PreviewWith>
+		<Border Padding="40" Width="300">
+			<StackPanel Spacing="4">
+				<c:TextValue Text="Semiaxis" Content="5763.0"/>
+				<c:TextValue Text="Semiaxis" Content="5763.0" Classes="h4 low"/>
+				<c:TextValue Text="Semiaxis">
+					<TextBlock Text="fdsfdsfsdfs"/>
+				</c:TextValue>
+				<c:TextValue Text="Semiaxis">
+					<Border Height="50" Background="Red">
+						<TextBlock Text="fsfsfsfsdf" VerticalAlignment="Center"/>
+					</Border>
+				</c:TextValue>
+				<c:TextValue Text="Semiaxis" Content="5763.0" Classes="h4 low"/>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="c|TextValue">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid ColumnDefinitions="*,Auto">
+					<TextBlock x:Name="PART_Text"
+							   VerticalAlignment="{TemplateBinding VerticalAlignment}"
+							   Foreground="{TemplateBinding Foreground}"
+							   FontSize="{TemplateBinding FontSize}"
+							   Text="{TemplateBinding Text}"/>
+					<ContentPresenter x:Name="PART_Value"
+									  Grid.Column="1"
+									  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+									  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+									  Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="c|TextValue">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH3}"/>
+	</Style>
+
+</Styles>

@@ -15,35 +15,38 @@
 		<selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">
 			<DataTemplate x:Key="Point">
 				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-poi}"/>
+					<PathIcon Margin="8.5" Width="19" Height="19"
+							  Foreground="{DynamicResource TextHighBrush}"
+							  Data="{DynamicResource fg-poi}"/>
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="Route">
 				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-route}"/>
+					<PathIcon Margin="8.5" Width="19" Height="19"
+							  Foreground="{DynamicResource TextHighBrush}"
+							  Data="{DynamicResource fg-route}"/>
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="Area">
 				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19" Data="{DynamicResource fg-regular-shape-o}"/>
+					<PathIcon Margin="8.5" Width="19" Height="19"
+							  Foreground="{DynamicResource TextHighBrush}"
+							  Data="{DynamicResource fg-regular-shape-o}"/>
 				</Viewbox>
 			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
-
-	<c:Card x:Name="MainCard">
+	<Border Classes="item">
 		<Grid ColumnDefinitions="Auto,*">
-			<Grid Width="32" Height="32">
-				<ContentControl Content="{Binding}"
-								ContentTemplate="{StaticResource GroundTargetInfoIconSelector}"/>
-			</Grid>
+			<ContentPresenter Content="{Binding}"
+							  ContentTemplate="{StaticResource GroundTargetInfoIconSelector}"/>
 			<TextBlock Text="{Binding Name}"
 					   Margin="8,0,0,0"
 					   VerticalAlignment="Center"
 					   Grid.Column="1"
-					   Classes="Headline6"/>
+					   Classes="h4 high"/>
 		</Grid>
-	</c:Card>
+	</Border>
 
 </UserControl>

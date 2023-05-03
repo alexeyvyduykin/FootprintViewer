@@ -21,7 +21,7 @@
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="Rectangle">
-				<Viewbox Margin="2">
+				<Viewbox Width="28" Height="28">
 					<materialIcons:MaterialIcon Kind="RectangleOutline"/>
 				</Viewbox>
 			</DataTemplate>
@@ -31,33 +31,39 @@
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="Circle">
-				<Viewbox Margin="2">
+				<Viewbox Width="24" Height="24">
 					<materialIcons:MaterialIcon Kind="CircleOutline"/>
 				</Viewbox>
 			</DataTemplate>
 		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
-	<c:Card x:Name="MainCard">
+	<UserControl.Styles>
+		<Style Selector="Button.t1:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource WarningBrush}" />
+		</Style>
+	</UserControl.Styles>
+
+	<Border Classes="item">
 		<Grid ColumnDefinitions="Auto,*,Auto">
-
-			<Grid Width="32" Height="32">
-				<ContentControl Content="{Binding}"
-								ContentTemplate="{StaticResource UserGeometryInfoIconSelector}"/>
-			</Grid>
-
-			<StackPanel Grid.Column="1" Margin="4,0,0,0">
-				<TextBlock Text="{Binding Type}" Classes="Headline6"/>
-				<TextBlock Text="{Binding Name}" Classes="Body2"/>
-			</StackPanel>
-			<Button x:Name="RemoveButton"
-					Classes="Flat"
+			<ContentPresenter Content="{Binding}"
+							  ContentTemplate="{StaticResource UserGeometryInfoIconSelector}"/>
+			<TextBlock Text="{Binding Name}"
+					   Grid.Column="1"
+					   Margin="4,0,0,0"
+					   VerticalAlignment="Center"
+					   Classes="h4 high"/>
+			<Button Command="{Binding $parent[ListBox].DataContext.Remove}"
+					CommandParameter="{Binding}"
+					Classes="invisible t1"
+					Padding="4"
 					Grid.Column="2">
-				<Viewbox Width="20" Height="20">
-					<materialIcons:MaterialIcon Foreground="Red" Kind="CloseThick" />
+				<Viewbox Width="24" Height="24">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
+												Kind="CloseThick" />
 				</Viewbox>
 			</Button>
 		</Grid>
-	</c:Card>
+	</Border>
 
 </UserControl>

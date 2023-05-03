@@ -21,16 +21,10 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:FootprintViewModel">
-			<itemsView:FootprintView Name="FootprintItem"
-									 DataContext="{Binding}">
+			<itemsView:FootprintView DataContext="{Binding}">
 				<i:Interaction.Behaviors>
 					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
 					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
-
-					<ia:EventTriggerBehavior EventName="TargetToMapClick" SourceObject="{Binding #FootprintItem}">
-						<ia:InvokeCommandAction Command="{Binding $parent[UserControl].DataContext.TargetToMap}"
-												CommandParameter="{Binding}"/>
-					</ia:EventTriggerBehavior>
 				</i:Interaction.Behaviors>
 			</itemsView:FootprintView>
 		</DataTemplate>
