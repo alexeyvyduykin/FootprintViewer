@@ -10,27 +10,34 @@
 			 d:DesignWidth="380" d:DesignHeight="450"
 			 d:DataContext="{x:Static vmd:DesignData.GroundStationTab}">
 
-	<Panel>
+	<Border Classes="back">
+		<Panel>
 
-		<ProgressBar IsVisible="{Binding IsLoading}"
-					 Classes="Circle"
-					 VerticalAlignment="Center"
-					 HorizontalAlignment="Center"
-					 IsIndeterminate="True"/>
+			<ProgressBar IsVisible="{Binding IsLoading}"
+						 Classes="Circle"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Center"
+						 IsIndeterminate="True"/>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<ItemsControl Items="{Binding Items}"
-						  IsVisible="{Binding !IsLoading}"
-						  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-						  ScrollViewer.VerticalScrollBarVisibility="Auto">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<itemsView:GroundStationView DataContext="{Binding}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
+			<ScrollViewer VerticalScrollBarVisibility="Auto"
+						  AllowAutoHide="True">
+				<ItemsControl Items="{Binding Items}"
+							  Margin="4"
+							  IsVisible="{Binding !IsLoading}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="4"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<itemsView:GroundStationView DataContext="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
 
-	</Panel>
+		</Panel>
+	</Border>
 
 </UserControl>

@@ -4,9 +4,11 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
+using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -18,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
+public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<ITaskResult> _plannedSchedules = new();
@@ -128,4 +130,56 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilteringActive { get; set; }
+}
+
+public partial class PlannedScheduleTabViewModel
+{
+    public PlannedScheduleTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+        _layerProvider = resolver.GetService<FootprintProvider>();
+        _featureManager = resolver.GetService<FeatureManager>();
+        _mapNavigator = resolver.GetService<IMapNavigator>();
+        _layer = resolver.GetService<IMap>().GetLayer(LayerType.Footprint);
+
+        Title = "Просмотр рабочей программы";
+
+        _plannedSchedules
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _plannedSchedules.Count);
+
+        _plannedSchedules
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new TaskResultViewModel(s))
+            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
+            .Bind(out _items)
+            .DisposeMany()
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        TargetToMap = ReactiveCommand.CreateFromTask<ObservationTaskResult>(s => TargetToMapImpl(s), outputScheduler: RxApp.MainThreadScheduler);
+
+        _isLoading = Update.IsExecuting
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .ToProperty(this, x => x.IsLoading);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+    }
 }

@@ -4,10 +4,12 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
+using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -20,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
+public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<GroundTarget> _groundTargets = new();
@@ -98,8 +100,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
         Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);
-
-        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
@@ -224,8 +224,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
     [Reactive]
     public string? SearchString { get; set; }
 
-    public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
-
     [Reactive]
     public GroundTargetViewModel? SelectedItem { get; set; }
 
@@ -237,4 +235,91 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilteringActive { get; set; }
+}
+
+public partial class GroundTargetTabViewModel
+{
+    public GroundTargetTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+        _layer = resolver.GetService<IMap>().GetLayer(LayerType.GroundTarget);
+        _layerProvider = resolver.GetService<GroundTargetProvider>();
+        _featureManager = resolver.GetService<FeatureManager>();
+        var areaOfInterest = resolver.GetService<AreaOfInterest>();
+
+        Title = "Просмотр наземных целей";
+
+        Filter = new GroundTargetTabFilterViewModel();
+
+        var filter1 = Filter.AOIFilterObservable;
+        var filter2 = Filter.FilterObservable;
+
+        var filter3 = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
+
+        _groundTargets
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => ItemCount = _groundTargets.Count);
+
+        _groundTargets
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new GroundTargetViewModel(s))
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
+            .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
+            .Bind(out _items)
+            .Subscribe(_ => FilteringItemCount = _items.Count);
+
+        this.WhenAnyValue(s => s.FilteringItemCount)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => IsFilteringActive = s != ItemCount);
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        this.WhenAnyValue(s => s.IsFilterOnMap)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => IsFilterOnMapChanged());
+
+        _groundTargets
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new GroundTargetViewModel(s))
+            .Filter(filter1)
+            .Filter(filter2)
+            .Filter(filter3)
+            .ToCollection()
+            .Subscribe(UpdateProvider);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        this.WhenAnyValue(s => s.SelectedItem)
+            .InvokeCommand(ReactiveCommand.Create<GroundTargetViewModel?>(SelectImpl));
+
+        Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
+
+        Leave = ReactiveCommand.Create(LeaveImpl);
+
+        _isLoading = Update.IsExecuting
+                          .ObserveOn(RxApp.MainThreadScheduler)
+                          .ToProperty(this, x => x.IsLoading);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        areaOfInterest.AOIChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(s => Filter.AOI = s);
+    }
 }

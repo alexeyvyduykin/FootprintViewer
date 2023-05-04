@@ -27,44 +27,23 @@
 	</UserControl.Resources>
 
 	<UserControl.Styles>
-
 		<Style Selector="FlyoutPresenter">
 			<Setter Property="Padding" Value="0,0,0,0"/>
 		</Style>
-
-		<Style Selector="ListBoxItem">
-			<Setter Property="Padding" Value="12,4"/>
-		</Style>
-
-		<Style Selector="ToggleButton.search">
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-			<Setter Property="Padding" Value="0" />
-		</Style>
-
-		<Style Selector="ToggleButton.search /template/ Border">
-			<Setter Property="CornerRadius" Value="0" />
-		</Style>
-
-		<Style Selector="ToggleButton.search:checked">
-			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-		</Style>
-
 		<Style Selector="materialIcons|MaterialIcon.a1">
 			<Setter Property="Kind" Value="Tune"></Setter>
 			<Setter Property="Width" Value="22"></Setter>
 			<Setter Property="Height" Value="22"></Setter>
 		</Style>
-
 		<Style Selector="materialIcons|MaterialIcon.a2">
 			<Setter Property="Kind" Value="Close"></Setter>
 			<Setter Property="Width" Value="26"></Setter>
 			<Setter Property="Height" Value="26"></Setter>
 		</Style>
-
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="*,50">
+	<Grid RowDefinitions="*,50"
+		  Background="{DynamicResource AccentDarkBrush}">
 
 		<Grid Margin="0,8">
 
@@ -76,6 +55,7 @@
 
 			<ListBox IsVisible="{Binding !IsLoading}"
 					 Items="{Binding Items}"
+					 Classes="sidePanel"
 					 ItemTemplate="{StaticResource FootprintItemTemplate}"
 					 VirtualizationMode="Simple"/>
 		</Grid>
@@ -84,10 +64,10 @@
 					Margin="16,8"
 					Spacing="4">
 			<TextBlock Text="{Binding ItemCount, StringFormat={}Item count:  {0}}"
-					   Classes="Caption"/>
+					   Classes="h2 medium"/>
 			<TextBlock Text="{Binding FilteringItemCount, StringFormat={}Filtering item count:  {0}}"
 					   IsVisible="{Binding IsFilteringActive}"
-					   Classes="Caption"/>
+					   Classes="h2 medium"/>
 		</StackPanel>
 	</Grid>
 

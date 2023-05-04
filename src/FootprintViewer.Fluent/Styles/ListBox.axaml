@@ -1,0 +1,56 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:c="using:FootprintViewer.Fluent.Controls"
+		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+		xmlns:sys="using:System">
+	<Design.PreviewWith>
+		<Border Padding="20" Height="360" Background="{DynamicResource AccentBrush}">
+			<Border.Resources>
+				<DataTemplate x:Key="ItemTemplate">
+					<Border Classes="itemExtrude"
+							Classes.itemSelect="{Binding $parent[ListBoxItem].IsSelected}"
+							Classes.itemHover="{Binding $parent[ListBoxItem].IsPointerOver}">
+						<TextBlock Text="{Binding}" Width="100" Height="50"/>
+					</Border>
+				</DataTemplate>
+			</Border.Resources>
+			<StackPanel>
+				<ListBox ItemTemplate="{StaticResource ItemTemplate}"
+						 Classes="sidePanel">
+					<ListBox.Items>
+						<generic:List x:TypeArguments="sys:String">
+							<sys:String>Item1</sys:String>
+							<sys:String>Item2</sys:String>
+							<sys:String>Item3</sys:String>
+							<sys:String>Item4</sys:String>
+							<sys:String>Item5</sys:String>
+							<sys:String>Item6</sys:String>
+							<sys:String>Item7</sys:String>
+						</generic:List>
+					</ListBox.Items>
+				</ListBox>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="StackPanel.scroll">
+		<Setter Property="Margin" Value="0,0,16,0"/>
+	</Style>
+
+	<Style Selector="ListBox.sidePanel">
+		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+	</Style>
+
+	<Style Selector="ListBox.sidePanel > ListBoxItem">
+		<Setter Property="Padding" Value="12,4"/>
+	</Style>
+
+	<Style Selector="ListBox.sidePanel > ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+
+	<Style Selector="ListBox.sidePanel > ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+
+</Styles>

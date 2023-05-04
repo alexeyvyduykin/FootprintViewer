@@ -56,7 +56,9 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Border Classes="item">
+	<Border Classes="itemExtrude"
+			Classes.itemSelect="{Binding $parent[ListBoxItem].IsSelected}"
+			Classes.itemHover="{Binding $parent[ListBoxItem].IsPointerOver}">
 		<StackPanel Spacing="8">
 			<Grid ColumnDefinitions="*,8,Auto">
 				<TextBlock Text="{Binding Name}"

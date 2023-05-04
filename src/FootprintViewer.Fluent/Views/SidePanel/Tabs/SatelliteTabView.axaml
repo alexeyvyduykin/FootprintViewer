@@ -10,28 +10,36 @@
 			 d:DesignWidth="380" d:DesignHeight="450"
 			 d:DataContext="{x:Static vmd:DesignData.SatelliteTab}">
 
-	<Panel>
+	<Border Classes="back">
+		<Panel>
+			<ProgressBar x:Name="ProgressBar"
+						 IsVisible="{Binding IsLoading}"
+						 Classes="Circle"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Center"
+						 IsIndeterminate="True"/>
 
-		<ProgressBar x:Name="ProgressBar"
-			 IsVisible="{Binding IsLoading}"
-			 Classes="Circle"
-			 VerticalAlignment="Center"
-			 HorizontalAlignment="Center"
-			 IsIndeterminate="True"/>
+			<ScrollViewer x:Name="ScrollViewer1"
+						  VerticalScrollBarVisibility="Auto"
+						  AllowAutoHide="True">
+				<ItemsControl Items="{Binding Items}"
+							  Margin="4"
+							  IsVisible="{Binding !IsLoading}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="4"
+										Classes.scroll="{Binding #ScrollViewer1.IsExpanded}"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<ItemsControl Items="{Binding Items}"
-						  IsVisible="{Binding !IsLoading}"
-						  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-						  ScrollViewer.VerticalScrollBarVisibility="Auto">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<itemsView:SatelliteView DataContext="{Binding}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</ScrollViewer>
-
-	</Panel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<itemsView:SatelliteView DataContext="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+		</Panel>
+	</Border>
 
 </UserControl>

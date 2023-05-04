@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class GroundStationTabViewModel : SidePanelTabViewModel
+public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly LayerStyleManager _layerStyleManager;
@@ -102,4 +103,44 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
     }
 
     public ReadOnlyObservableCollection<GroundStationViewModel> Items => _items;
+}
+
+public partial class GroundStationTabViewModel
+{
+    public GroundStationTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+        _provider = resolver.GetService<GroundStationProvider>();
+        _layerStyleManager = resolver.GetService<LayerStyleManager>();
+
+        Title = "Просмотр наземных станций";
+
+        _groundStation
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        _isLoading = Update.IsExecuting
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .ToProperty(this, x => x.IsLoading);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        _layerStyleManager.Selected
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(UpdatePaletteImpl);
+    }
 }

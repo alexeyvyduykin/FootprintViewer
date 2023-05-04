@@ -1,12 +1,35 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
 	<Design.PreviewWith>
-		<Border Classes="item" Width="200" Height="100">
-			<TextBlock Text="Content" Classes="h3 medium"/>
+		<Border Padding="20" Classes="back">
+			<StackPanel Spacing="8">
+
+				<Border Classes="item" Width="200" Height="100">
+					<TextBlock Text="Content" Classes="h3 medium"/>
+				</Border>
+
+				<Border Classes="itemExtrude" Width="200" Height="100">
+					<TextBlock Text="Content" Classes="h3 medium"/>
+				</Border>
+
+				<Border Classes="itemHover" Width="200" Height="100">
+					<TextBlock Text="Content" Classes="h3 medium"/>
+				</Border>
+
+				<Border Classes="itemSelect" Width="200" Height="100">
+					<TextBlock Text="Content" Classes="h3 medium"/>
+				</Border>
+
+			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 
 	<!-- Add Styles Here -->
+
+	<Style Selector="Border.back">
+		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
+	</Style>
 
 	<Style Selector="Border.item">
 		<Setter Property="CornerRadius" Value="4"/>
@@ -14,6 +37,36 @@
 		<Setter Property="ClipToBounds" Value="False" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Padding" Value="8" />
+	</Style>
+
+	<Style Selector="Border.itemExtrude">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="BorderThickness" Value="2" />
+	</Style>
+
+	<Style Selector="Border.itemHover">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="BorderThickness" Value="2" />
+	</Style>
+
+	<Style Selector="Border.itemSelect">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Padding" Value="8" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentLightBrush}" />
+		<Setter Property="BorderThickness" Value="2" />
 	</Style>
 
 </Styles>

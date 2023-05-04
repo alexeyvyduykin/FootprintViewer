@@ -55,15 +55,15 @@ public static class DesignData
         IsActive = true,
     };
 
-    public static GroundStationTabViewModel GroundStationTab => new() { IsActive = true };
+    public static GroundStationTabViewModel GroundStationTab => new(_resolver) { IsActive = true };
 
-    public static GroundTargetTabViewModel GroundTargetTab => new() { IsActive = true };
+    public static GroundTargetTabViewModel GroundTargetTab => new(_resolver) { IsActive = true };
 
-    public static SatelliteTabViewModel SatelliteTab => new() { IsActive = true };
+    public static SatelliteTabViewModel SatelliteTab => new(_resolver) { IsActive = true };
 
-    public static UserGeometryTabViewModel UserGeometryTab => new() { IsActive = true };
+    public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
 
-    public static PlannedScheduleTabViewModel PlannedScheduleTab => new() { IsActive = true };
+    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver) { IsActive = true };
 
     public static FootprintPreviewViewModel FootprintPreview => new(FootprintPreviewBuilder.CreateRandom());
 

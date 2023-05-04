@@ -92,7 +92,7 @@ public static class PlannedScheduleBuilder
 
     public static PlannedScheduleResult CreateRandom()
     {
-        var count = 10;
+        var count = 100;
 
         var satellites = SatelliteBuilder.Create(5);
         var footprints = FootprintBuilder.Create(satellites, count);

@@ -2,6 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
+public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<UserGeometry> _userGeometries = new();
@@ -81,4 +82,41 @@ public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
     }
 
     public ReadOnlyObservableCollection<UserGeometryViewModel> Items => _items;
+}
+
+public partial class UserGeometryTabViewModel
+{
+    public UserGeometryTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+
+        Title = "Пользовательская геометрия";
+
+        _userGeometries
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new UserGeometryViewModel(s))
+            .Bind(out _items)
+            .Subscribe();
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        Remove = ReactiveCommand.CreateFromTask<UserGeometryViewModel?>(RemoveAsync);
+
+        _isLoading = Update.IsExecuting
+              .ObserveOn(RxApp.MainThreadScheduler)
+              .ToProperty(this, x => x.IsLoading);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+    }
 }

@@ -79,27 +79,27 @@ public sealed class DesignDataDependencyResolver
         }
         else if (serviceType == typeof(GroundTargetProvider))
         {
-            return _groundTargetProvider ??= new GroundTargetProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _groundTargetProvider ??= new GroundTargetProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(TrackProvider))
         {
-            return _trackProvider ??= new TrackProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _trackProvider ??= new TrackProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(SensorProvider))
         {
-            return _sensorProvider ??= new SensorProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _sensorProvider ??= new SensorProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(GroundStationProvider))
         {
-            return _groundStationProvider ??= new GroundStationProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _groundStationProvider ??= new GroundStationProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(FootprintProvider))
         {
-            return _footprintProvider ??= new FootprintProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _footprintProvider ??= new FootprintProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(UserGeometryProvider))
         {
-            return _userGeometryProvider ??= new UserGeometryProvider((DataManager)GetService(typeof(DataManager)), (LayerStyleManager)GetService(typeof(LayerStyleManager)));
+            return _userGeometryProvider ??= new UserGeometryProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {

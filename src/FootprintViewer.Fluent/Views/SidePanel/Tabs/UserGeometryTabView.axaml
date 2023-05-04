@@ -13,12 +13,6 @@
              d:DesignWidth="380" d:DesignHeight="450"
 			 d:DataContext="{x:Static vmd:DesignData.UserGeometryTab}">
 
-	<UserControl.Styles>
-		<Style Selector="ListBoxItem">
-			<Setter Property="Padding" Value="12,4"/>
-		</Style>
-	</UserControl.Styles>
-
 	<Panel>
 		<ProgressBar IsVisible="{Binding IsLoading}"
 					 Classes="Circle"
@@ -27,7 +21,8 @@
 					 IsIndeterminate="True"/>
 
 		<ListBox Items="{Binding Items}"
-				 IsVisible="{Binding !IsLoading}">
+				 IsVisible="{Binding !IsLoading}"
+				 Classes="sidePanel">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="items:UserGeometryViewModel">
 					<itemsView:UserGeometryView DataContext="{Binding}"/>

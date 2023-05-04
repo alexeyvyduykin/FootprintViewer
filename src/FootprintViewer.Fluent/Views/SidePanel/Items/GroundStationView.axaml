@@ -38,7 +38,7 @@
 	</UserControl.Styles>
 
 	<Border Classes="item">
-		<Grid RowDefinitions="Auto,8,Auto">
+		<Grid RowDefinitions="Auto,Auto">
 
 			<Grid ColumnDefinitions="*,Auto">
 				<StackPanel>
@@ -60,8 +60,9 @@
 			</Grid>
 
 			<Border Classes="item"
+					Margin="0,8,0,0"
 					Background="{DynamicResource AccentDarkBrush}"
-					Grid.Row="2"
+					Grid.Row="1"
 					IsVisible="{Binding #ShowToggleButton.IsChecked}">
 				<StackPanel Spacing="8">
 

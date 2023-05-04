@@ -97,8 +97,6 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 
         Leave = ReactiveCommand.Create(LeaveImpl);
 
-        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
-
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
@@ -242,8 +240,6 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
     [Reactive]
     public string? SearchString { get; set; }
 
-    public ReactiveCommand<Unit, Unit> EmptySearchString { get; }
-
     [Reactive]
     public bool IsFilterOnMap { get; set; }
 
@@ -321,8 +317,6 @@ public partial class FootprintTabViewModel
         Enter = ReactiveCommand.Create<FootprintViewModel>(EnterImpl);
 
         Leave = ReactiveCommand.Create(LeaveImpl);
-
-        EmptySearchString = ReactiveCommand.Create(() => { SearchString = string.Empty; }, outputScheduler: RxApp.MainThreadScheduler);
 
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)

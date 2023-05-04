@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Styles;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed class SatelliteTabViewModel : SidePanelTabViewModel
+public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 {
     private readonly TrackProvider? _trackProvider;
     private readonly SensorProvider? _sensorProvider;
@@ -105,4 +106,45 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
     }
 
     public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;
+}
+
+public partial class SatelliteTabViewModel
+{
+    public SatelliteTabViewModel(DesignDataDependencyResolver resolver)
+    {
+        _dataManager = resolver.GetService<IDataManager>();
+        _trackProvider = resolver.GetService<TrackProvider>();
+        _sensorProvider = resolver.GetService<SensorProvider>();
+        _layerStyleManager = resolver.GetService<LayerStyleManager>();
+
+        Title = "Просмотр спутников";
+
+        _satellites
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
+
+        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+
+        _dataManager.DataChanged
+            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        _isLoading = Update.IsExecuting
+              .ObserveOn(RxApp.MainThreadScheduler)
+              .ToProperty(this, x => x.IsLoading);
+
+        this.WhenAnyValue(s => s.IsActive)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .WhereTrue()
+            .Take(1)
+            .ToSignal()
+            .InvokeCommand(Update);
+
+        _layerStyleManager.Selected
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(UpdateColorImpl);
+    }
 }

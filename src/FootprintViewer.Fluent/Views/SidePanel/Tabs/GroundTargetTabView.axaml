@@ -32,7 +32,7 @@
 					Cursor="Help"
 					ToolTip.Tip="Area of Interest(AOI) active">
 				<Viewbox Width="24" Height="24">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+					<materialIcons:MaterialIcon Foreground="{DynamicResource TextMediumBrush}"
 												Kind="Group"/>
 				</Viewbox>
 			</Border>
@@ -41,7 +41,7 @@
 			<Border Background="Transparent" Cursor="Help"
 					ToolTip.Tip="Set filter to map">
 				<Viewbox Width="24" Height="24">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
+					<materialIcons:MaterialIcon Foreground="{DynamicResource TextMediumBrush}"
 												Kind="MapSearch"/>
 				</Viewbox>
 			</Border>
@@ -55,20 +55,6 @@
 		<Style Selector="FlyoutPresenter">
 			<Setter Property="Padding" Value="0,0,0,0"/>
 		</Style>
-		<Style Selector="ListBoxItem">
-			<Setter Property="Padding" Value="12,4"/>
-		</Style>
-		<Style Selector="ToggleButton.search">
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-			<Setter Property="Padding" Value="0" />
-		</Style>
-		<Style Selector="ToggleButton.search /template/ Border">
-			<Setter Property="CornerRadius" Value="0" />
-		</Style>
-		<Style Selector="ToggleButton.search:checked">
-			<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-		</Style>
 		<Style Selector="materialIcons|MaterialIcon.a1">
 			<Setter Property="Kind" Value="Tune"></Setter>
 			<Setter Property="Width" Value="22"></Setter>
@@ -81,7 +67,8 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="Auto,Auto,*,50">
+	<Grid RowDefinitions="Auto,Auto,*,50"
+		  Background="{DynamicResource AccentDarkBrush}">
 
 		<c:FilterToggleButton Title="{x:Static prop:Resources.FilterOptions}"
 							  Filter="{StaticResource Filter}"
@@ -96,38 +83,28 @@
 			<DockPanel>
 				<ContentPresenter ContentTemplate="{StaticResource GroupTemplate}"/>
 				<ToggleSwitch IsChecked="{Binding Filter.IsAOIActive}"
-							  Cursor="Hand" VerticalAlignment="Center"
+							  Cursor="Hand"
+							  OnContent=""
+							  OffContent=""
+							  VerticalAlignment="Center"
 							  Margin="8,0,0,0"/>
 			</DockPanel>
 
 			<DockPanel Grid.Column="1" Margin="32,0,0,0">
 				<ContentPresenter ContentTemplate="{StaticResource MapSearchTemplate}"/>
 				<ToggleSwitch IsChecked="{Binding IsFilterOnMap}"
-							  Cursor="Hand" VerticalAlignment="Center"
+							  Cursor="Hand"
+							  OnContent=""
+							  OffContent=""
+							  VerticalAlignment="Center"
 							  Margin="8,0,0,0"/>
 			</DockPanel>
 
 			<TextBox Margin="0,8,0,0"
 					 Grid.Row="1"
+					 Classes="clearButton search"
 					 Text="{Binding SearchString}"
-					 BorderThickness="0"
-					 Grid.ColumnSpan="2">
-				<TextBox.InnerLeftContent>
-					<Viewbox Width="24" Height="24" Margin="0,0,4,0">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
-													Kind="Search" />
-					</Viewbox>
-				</TextBox.InnerLeftContent>
-				<TextBox.InnerRightContent>
-					<Button Background="Transparent"
-							Command="{Binding EmptySearchString}"
-							Classes="Flat">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeAccentBrush}"
-													Kind="Remove" />
-					</Button>
-				</TextBox.InnerRightContent>
-			</TextBox>
-
+					 Grid.ColumnSpan="2"/>
 		</Grid>
 
 		<Grid Grid.Row="2">
@@ -138,18 +115,19 @@
 						 IsIndeterminate="True"/>
 			<ListBox IsVisible="{Binding !IsLoading}"
 					 Items="{Binding Items}"
+					 Classes="sidePanel"
 					 SelectedItem="{Binding SelectedItem}"
 					 ItemTemplate="{StaticResource GroundTargetItemTemplate}"/>
 		</Grid>
 
 		<StackPanel Grid.Row="3"
-			Margin="16,8"
-			Spacing="4">
+					Margin="16,8"
+					Spacing="4">
 			<TextBlock Text="{Binding ItemCount, StringFormat={}Item count:  {0}}"
-					   Classes="Caption"/>
+					   Classes="h2 medium"/>
 			<TextBlock Text="{Binding FilteringItemCount, StringFormat={}Filtering item count:  {0}}"
 					   IsVisible="{Binding IsFilteringActive}"
-					   Classes="Caption"/>
+					   Classes="h2 medium"/>
 		</StackPanel>
 	</Grid>
 
