@@ -103,23 +103,23 @@ public sealed class DesignDataDependencyResolver
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {
-            return _satelliteTab ??= new SatelliteTabViewModel();
+            return _satelliteTab ??= new SatelliteTabViewModel(this);
         }
         else if (serviceType == typeof(GroundStationTabViewModel))
         {
-            return _groundStationTab ??= new GroundStationTabViewModel();
+            return _groundStationTab ??= new GroundStationTabViewModel(this);
         }
         else if (serviceType == typeof(FootprintTabViewModel))
         {
-            return _footprintTab ??= new FootprintTabViewModel();
+            return _footprintTab ??= new FootprintTabViewModel(this);
         }
         else if (serviceType == typeof(PlannedScheduleTabViewModel))
         {
-            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel();
+            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel(this);
         }
         else if (serviceType == typeof(GroundTargetTabViewModel))
         {
-            return _groundTargetTab ??= new GroundTargetTabViewModel();
+            return _groundTargetTab ??= new GroundTargetTabViewModel(this);
         }
         else if (serviceType == typeof(FootprintPreviewTabViewModel))
         {
@@ -127,11 +127,11 @@ public sealed class DesignDataDependencyResolver
         }
         else if (serviceType == typeof(UserGeometryTabViewModel))
         {
-            return _userGeometryTab ??= new UserGeometryTabViewModel();
+            return _userGeometryTab ??= new UserGeometryTabViewModel(this);
         }
         else if (serviceType == typeof(ToolBarViewModel))
         {
-            return _toolBar ??= new ToolBarViewModel();
+            return _toolBar ??= new ToolBarViewModel(this);
         }
         else if (serviceType == typeof(SidePanelViewModel))
         {
@@ -139,7 +139,7 @@ public sealed class DesignDataDependencyResolver
         }
         else if (serviceType == typeof(MainViewModel))
         {
-            return _mainViewModel ??= new MainViewModel();
+            return _mainViewModel ??= new MainViewModel(this);
         }
         else if (serviceType == typeof(MapState))
         {

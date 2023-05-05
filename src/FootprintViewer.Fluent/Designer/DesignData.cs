@@ -36,11 +36,11 @@ public static class DesignData
 
     public static GroundTargetTabFilterViewModel GroundTargetFilter => new();
 
-    public static BottomPanel BottomPanel => new();
+    public static BottomPanel BottomPanel => new(_resolver);
 
-    public static SnapshotMaker SnapshotMaker => new();
+    public static SnapshotMaker SnapshotMaker => new(_resolver);
 
-    public static ToolBarViewModel ToolBar => new();
+    public static ToolBarViewModel ToolBar => new(_resolver);
 
     public static LayerContainerViewModel LayerContainer => new();
 
@@ -140,7 +140,7 @@ public static class DesignData
         IsActive = true
     };
 
-    public static ConnectionViewModel Connection => CreateConnection();
+    public static ConnectionViewModel Connection => CreateConnection(_resolver);
 
     private static string GetFullPathToAssets()
     {
@@ -149,11 +149,11 @@ public static class DesignData
         return path;
     }
 
-    private static ConnectionViewModel CreateConnection()
+    private static ConnectionViewModel CreateConnection(DesignDataDependencyResolver resolver)
     {
-        var connection = new ConnectionViewModel();
+        var connection = new ConnectionViewModel(resolver);
 
-        var source = _resolver.GetService<IDataManager>()?.GetSources(DbKeys.UserGeometries.ToString())[0];
+        var source = resolver.GetService<IDataManager>()?.GetSources(DbKeys.UserGeometries.ToString())[0];
 
         if (source is not null)
         {
@@ -181,7 +181,7 @@ public static class DesignData
 
     public static ScaleMapBar ScaleMapBar => CreateScaleMapBar();
 
-    public static MainViewModel MainViewModel => CreateMainViewModel();
+    public static MainViewModel MainViewModel => new(_resolver);// CreateMainViewModel();
 
     private static ScaleMapBar CreateScaleMapBar()
     {
@@ -226,11 +226,11 @@ public static class DesignData
 
     private static MainViewModel CreateMainViewModel()
     {
-        var mainViewModel = new MainViewModel();
+        var mainViewModel = new MainViewModel(_resolver);
 
         var tabs = new SidePanelTabViewModel[]
         {
-            new FootprintPreviewTabViewModel(),
+            //new FootprintPreviewTabViewModel(),
             new SatelliteTabViewModel(),
             new GroundStationTabViewModel(),
             new GroundTargetTabViewModel(),
@@ -238,7 +238,8 @@ public static class DesignData
             new UserGeometryTabViewModel(),
         };
 
-        mainViewModel.SidePanel.Tabs.AddRange(tabs);
+        // mainViewModel.SidePanel.Tabs.Clear();
+        // mainViewModel.SidePanel.Tabs.AddRange(tabs);
 
         return mainViewModel;
     }

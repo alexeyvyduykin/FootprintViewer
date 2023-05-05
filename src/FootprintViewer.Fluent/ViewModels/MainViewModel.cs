@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
@@ -171,12 +172,11 @@ public sealed partial class MainViewModel : ViewModelBase
             }),
             ActionTabs = new()
             {
-                new(nameof(ConnectionViewModel), ReactiveCommand.CreateFromTask(ConnectionImpl)),
-                new(nameof(SettingsViewModel), ReactiveCommand.CreateFromTask(SettingsImpl)),
+                new(nameof(ConnectionViewModel), Connection),
+                new(nameof(SettingsViewModel), Settings),
             }
         };
     }
-
 
     private async Task ConnectionImpl()
     {
@@ -481,4 +481,79 @@ public sealed partial class MainViewModel : ViewModelBase
     public ITip? Tip { get; set; }
 
     public IObservable<bool> IsMainContentEnabled { get; }
+}
+
+public partial class MainViewModel
+{
+    public MainViewModel(DesignDataDependencyResolver resolver)
+    {
+        DialogScreen = new DialogScreenViewModel();
+
+        FullScreen = new DialogScreenViewModel(NavigationTarget.FullScreen);
+
+        MainScreen = new TargettedNavigationStack(NavigationTarget.HomeScreen);
+
+        CompactDialogScreen = new DialogScreenViewModel(NavigationTarget.CompactDialogScreen);
+
+        NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
+
+        _mapState = resolver.GetService<StateMachines.MapState>();
+
+        MapNavigator = resolver.GetService<IMapNavigator>();
+
+        _areaOfInterest = resolver.GetService<AreaOfInterest>();
+
+        Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
+
+        Leave = ReactiveCommand.Create(LeaveImpl);
+
+        _infoPanel = new InfoPanelViewModel();
+
+        _clickInfoPanel = new InfoPanelViewModel();
+
+        _scaleMapBar = new ScaleMapBar();
+
+        _bottomPanel = new BottomPanel(resolver);
+
+        IsMainContentEnabled = this.WhenAnyValue(
+            s => s.DialogScreen.IsDialogOpen,
+            s => s.FullScreen.IsDialogOpen,
+            (dialogIsOpen, fullScreenIsOpen) => !(dialogIsOpen || fullScreenIsOpen))
+            .ObserveOn(RxApp.MainThreadScheduler);
+
+        Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);
+
+        TimelinesOld = ReactiveCommand.CreateFromTask(TimelinesOldImpl);
+
+        RegisterViewModels(resolver);
+    }
+
+    private void RegisterViewModels(DesignDataDependencyResolver resolver)
+    {
+        var tabs = new SidePanelTabViewModel[]
+        {
+            new SatelliteTabViewModel(resolver),
+            new GroundTargetTabViewModel(resolver),
+            new FootprintTabViewModel(resolver),
+            new UserGeometryTabViewModel(resolver),
+            new GroundStationTabViewModel(resolver),
+            new PlannedScheduleTabViewModel(resolver)
+        };
+
+        var actionTabs = new SidePanelActionTabViewModel[]
+        {
+            new(nameof(ConnectionViewModel)),
+            new(nameof(SettingsViewModel))
+        };
+
+        ToolBar = new ToolBarViewModel(resolver);
+
+        ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+
+        SidePanel = new SidePanelViewModel();
+
+        SidePanel.Tabs.AddRange(tabs);
+        SidePanel.ActionTabs.AddRange(actionTabs);
+    }
 }

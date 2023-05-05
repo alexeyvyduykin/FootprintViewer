@@ -1,5 +1,6 @@
 ﻿using CliWrap;
 using FootprintViewer.FileSystem;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Helpers;
 using Mapsui;
 using Mapsui.Layers;
@@ -15,7 +16,7 @@ using System.Windows.Input;
 
 namespace FootprintViewer.Fluent.ViewModels;
 
-public sealed class SnapshotMaker : ViewModelBase
+public sealed partial class SnapshotMaker : ViewModelBase
 {
     private readonly List<string> _extensions;
     private readonly ReactiveCommand<Unit, Unit> _create;
@@ -106,4 +107,33 @@ public sealed class SnapshotMaker : ViewModelBase
     //    Process = Process.Start(ProcessInfo);
     //    Process?.WaitForExit();
     //}
+}
+
+public partial class SnapshotMaker
+{
+    public SnapshotMaker(DesignDataDependencyResolver resolver)
+    {
+        var map = resolver.GetService<IMap>();
+        var mapNavigator = resolver.GetService<IMapNavigator>();
+
+        _solutionFolder = new SolutionFolder("snapshots");
+
+        _extensions = ValidExtensions();
+
+        SelectedExtension = Extensions.FirstOrDefault() ?? ToExt(SKEncodedImageFormat.Png);
+
+        _create = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
+        Observable.Start(() =>
+        {
+            Save(mapNavigator.Viewport, map.Layers);
+        }).Delay(TimeSpan.FromSeconds(1)));
+
+        _openFolder = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
+        Observable.Start(() =>
+        {
+            var path = _solutionFolder.FolderDirectory;
+            Cli.Wrap("cmd").WithArguments($"/K start {path} && exit").ExecuteAsync();
+        }));
+    }
+
 }

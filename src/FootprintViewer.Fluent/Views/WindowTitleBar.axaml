@@ -59,37 +59,9 @@
 					</Grid>
 				</Button>
 			</StackPanel>
+
 			<StackPanel HorizontalAlignment="Right"
 						Orientation="Horizontal">
-
-				<Button IsEnabled="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}"
-					    Margin="0,4,8,4"
-						Padding="2,4,8,4"
-						Command="{Binding Connection}"
-						Classes="Outline">
-					<Grid ColumnDefinitions="Auto,*">
-						<materialIcons:MaterialIcon Width="20"
-													Height="20"
-													Foreground="{DynamicResource ThemeAccentBrush}"
-													Kind="PowerPlug"/>
-
-						<TextBlock Grid.Column="1"
-								   VerticalAlignment="Center"
-								   Text="Connection"/>
-					</Grid>
-				</Button>
-
-				<Button IsEnabled="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}"
-						Margin="0,4,8,4"
-						Padding="4"
-						Command="{Binding Settings}"
-						Classes="Outline">
-					<materialIcons:MaterialIcon Width="20"
-												Height="20"
-												Foreground="{DynamicResource ThemeAccentBrush}"
-												Kind="AccountCog"/>
-				</Button>
-
 				<Button Width="46"
 						Click="OnMinimizeButtonClick"
 						Cursor="Arrow"
@@ -115,7 +87,6 @@
 					</Button.Styles>
 					<materialIcons:MaterialIcon Kind="WindowClose"/>
 				</Button>
-
 			</StackPanel>
 		</DockPanel>
 	</Panel>
