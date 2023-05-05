@@ -1,13 +1,18 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="using:FootprintViewer.Fluent.Controls">
+        xmlns:c="using:FootprintViewer.Fluent.Controls"
+		xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+		xmlns:materialIcons="using:Material.Icons.Avalonia"
+		xmlns:sys="using:System"
+		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+		xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel">
 
 	<Design.PreviewWith>
 		<Border Padding="20" Height="420">
 			<Border.Resources>
-				<PathIcon x:Key="PathIconRectangle" Data="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
-				<PathIcon x:Key="PathIconPolygon" Data="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z"/>
-				<PathIcon x:Key="PathIconCircle" Data="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
+				<PathIcon x:Key="PathIconRectangle" Classes="high" Data="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
+				<PathIcon x:Key="PathIconPolygon" Classes="high" Data="M17,15.7V13H19V17L10,21L3,14L7,5H11V7H8.3L5.4,13.6L10.4,18.6L17,15.7M22,5V7H19V10H17V7H14V5H17V2H19V5H22Z"/>
+				<PathIcon x:Key="PathIconCircle" Classes="high" Data="M11,19A6,6 0 0,0 17,13H19A8,8 0 0,1 11,21A8,8 0 0,1 3,13A8,8 0 0,1 11,5V7A6,6 0 0,0 5,13A6,6 0 0,0 11,19M19,5H22V7H19V10H17V7H14V5H17V2H19V5Z" />
 			</Border.Resources>
 			<Border.Styles>
 				<Style Selector="c|SidePanelItem">
@@ -21,25 +26,49 @@
 					<Setter Property="VerticalAlignment" Value="Bottom"/>
 				</Style>-->
 			</Border.Styles>
+
 			<c:SidePanel x:Name="SidePanel"
-								PaneWidth="280">
-				<c:SidePanel.ItemsPanel>
-					<ItemsPanelTemplate>
-						<DockPanel/>
-					</ItemsPanelTemplate>
-				</c:SidePanel.ItemsPanel>
-				<c:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
-					<Panel>
-						<Border Height="200" Background="Red" />
-						<Border Width="20" Background="Green" HorizontalAlignment="Left" />
-					</Panel>
-				</c:SidePanelItem>
-				<c:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
-					<Border Margin="20" Background="Green" />
-				</c:SidePanelItem>
-				<c:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
-					<Border Margin="20" Background="Blue" />
-				</c:SidePanelItem>
+						 ActionTabs="{DynamicResource actionTabs}"
+						 PaneWidth="280">
+				<c:SidePanel.Resources>
+					<generic:List x:Key="actionTabs" x:TypeArguments="vm:SidePanelActionTabViewModel">
+						<vm:SidePanelActionTabViewModel Key="Key1"/>
+						<vm:SidePanelActionTabViewModel Key="Key2"/>
+						<vm:SidePanelActionTabViewModel Key="Key3"/>
+					</generic:List>
+					<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
+						<DataTemplate x:Key="Key1">
+							<Viewbox Margin="4">
+								<materialIcons:MaterialIcon Kind="ChartTimeline" Classes="high"/>
+							</Viewbox>
+						</DataTemplate>
+						<DataTemplate x:Key="Key2">
+							<Viewbox Margin="4">
+								<materialIcons:MaterialIcon Kind="PowerPlug" Classes="high"/>
+							</Viewbox>
+						</DataTemplate>
+						<DataTemplate x:Key="Key3">
+							<Viewbox Margin="4">
+								<materialIcons:MaterialIcon Kind="AccountCog" Classes="high"/>
+							</Viewbox>
+						</DataTemplate>
+					</selectors:DataTemplateSelector>
+
+				</c:SidePanel.Resources>
+				<c:SidePanel.Items>
+					<c:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
+						<Panel>
+							<Border Height="200" Background="Red" />
+							<Border Width="20" Background="Green" HorizontalAlignment="Left" />
+						</Panel>
+					</c:SidePanelItem>
+					<c:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
+						<Border Margin="20" Background="Green" />
+					</c:SidePanelItem>
+					<c:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
+						<Border Margin="20" Background="Blue" />
+					</c:SidePanelItem>
+				</c:SidePanel.Items>
 			</c:SidePanel>
 		</Border>
 	</Design.PreviewWith>
@@ -68,37 +97,6 @@
 				</DockPanel>
 			</ControlTemplate>
 		</Setter>
-	</Style>
-
-	<Style Selector="ToggleButton.t2">
-		<Setter Property="Border.BorderThickness" Value="0"/>
-		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
-		<Setter Property="VerticalAlignment" Value="Stretch"/>
-		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-		<Setter Property="HorizontalAlignment" Value="Stretch"/>
-		<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}"/>
-		<Setter Property="CornerRadius" Value="0"/>
-		<Setter Property="Cursor" Value="Hand"/>
-		<Setter Property="Template">
-			<ControlTemplate>
-				<!--<ripple:RippleEffect RippleFill="{Binding Path=(assists:TabControlAssist.TabHeaderHighlightBrush)}">-->
-					<Panel Background="{TemplateBinding Background}">
-						<Path Name="PART_ExpandIcon"
-							Margin="14"
-							Stretch="Uniform"
-							Fill="{TemplateBinding Foreground}"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-
-					</Panel>
-				<!--</ripple:RippleEffect>-->
-			</ControlTemplate>
-		</Setter>
-	</Style>
-
-	<Style Selector="ToggleButton.t2[IsChecked=false]">
-		<Setter Property="Background" Value="{DynamicResource PrimaryHueMidBrush}"/>
 	</Style>
 
 	<Style Selector="Expander.t3">
@@ -130,8 +128,8 @@
 
 	<!--SidePanel-->
 	<Style Selector="c|SidePanel">
-		<Setter Property="TitleBackground" Value="{DynamicResource PrimaryHueMidBrush}"/>
-		<Setter Property="PaneBackground" Value="{DynamicResource MaterialDesignPaper}"/>
+		<Setter Property="TitleBackground" Value="{DynamicResource AccentBrush}"/>
+		<Setter Property="PaneBackground" Value="{DynamicResource AccentBrush}"/>
 		<Setter Property="ContentBackground" Value="Transparent"/>
 		<Setter Property="HorizontalAlignment" Value="Right"/>
 		<Setter Property="Template">
@@ -146,11 +144,11 @@
 							   OpenPaneLength="{TemplateBinding PaneTitleHeight}">
 
 						<SplitView.Pane>
-							<Grid RowDefinitions="Auto,*">
+							<Grid RowDefinitions="Auto,*,*">
 								<ToggleButton x:Name="PART_toggle"
 											  Width="{TemplateBinding PaneTitleHeight}"
 											  Height="{TemplateBinding PaneTitleHeight}"
-											  Classes="t2"
+											  Classes="expand"
 											  Background="{TemplateBinding TitleBackground}"
 											  IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
 
@@ -162,6 +160,11 @@
 												Items="{TemplateBinding Items}">
 								</ItemsPresenter>
 
+								<ItemsControl Name="PART_ItemsControlBottom"
+											  VerticalAlignment="Bottom"
+											  Grid.Row="2"
+											  Items="{TemplateBinding ActionTabs}">
+								</ItemsControl>
 							</Grid>
 						</SplitView.Pane>
 						<SplitView.Content>
@@ -194,20 +197,40 @@
 		</Setter>
 	</Style>
 
-	<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
-		<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
-	</Style>
-
-	<Style Selector="c|SidePanel[IsExpanded=false] /template/ ToggleButton#PART_toggle /template/ Path#PART_ExpandIcon">
-		<Setter Property="RenderTransform" Value="rotate(180deg)"/>
-	</Style>
-
-	<Style Selector="c|SidePanel /template/ ToggleButton#PART_toggle /template/ Path">
-		<Setter Property="Transitions">
-			<Transitions>
-				<TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>
-			</Transitions>
+	<Style Selector="c|SidePanel /template/ ItemsPresenter#PART_ItemsPresenter">
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<DockPanel />
+				</ItemsPanelTemplate>
+			</Setter.Value>
 		</Setter>
 	</Style>
 
+	<Style Selector="c|SidePanel /template/ ItemsControl#PART_ItemsControlBottom">
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Vertical"/>
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ItemTemplate">
+			<Setter.Value>
+				<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
+					<Button Command="{Binding Command}"
+							Width="50"
+							Height="50"
+							Classes="invisible icon">
+						<TextBlock Text="{Binding Key}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</Button>
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
+		<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
+	</Style>
+	
 </Styles>

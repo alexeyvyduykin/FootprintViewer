@@ -1,10 +1,12 @@
 ﻿using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Generators;
 using Avalonia.Controls.Templates;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Reactive;
+using System.Collections;
 
 namespace FootprintViewer.Fluent.Controls;
 
@@ -72,6 +74,17 @@ public class SidePanel : TabControl
     {
         get => GetValue(PaneWidthProperty);
         set => SetValue(PaneWidthProperty, value);
+    }
+
+    private IEnumerable _actionTabs = new AvaloniaList<object>();
+
+    public static readonly DirectProperty<SidePanel, IEnumerable> ActionTabsProperty =
+        AvaloniaProperty.RegisterDirect<SidePanel, IEnumerable>(nameof(ActionTabs), o => o.ActionTabs, (o, v) => o.ActionTabs = v);
+
+    public IEnumerable ActionTabs
+    {
+        get { return _actionTabs; }
+        set { SetAndRaise(ActionTabsProperty, ref _actionTabs, value); }
     }
 
     private class SidePanelItemContainerGenerator : ItemContainerGenerator<SidePanelItem>

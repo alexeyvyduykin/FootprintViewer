@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -12,8 +11,6 @@ public sealed class SidePanelViewModel : ViewModelBase
 {
     public SidePanelViewModel()
     {
-        Tabs = new List<SidePanelTabViewModel>();
-
         this.WhenAnyValue(s => s.SelectedTab).Subscribe(tab =>
         {
             if (tab != null)
@@ -52,7 +49,9 @@ public sealed class SidePanelViewModel : ViewModelBase
     [Reactive]
     public bool IsExpanded { get; set; }
 
-    public List<SidePanelTabViewModel> Tabs { get; set; }
+    public List<SidePanelTabViewModel> Tabs { get; set; } = new();
+
+    public List<SidePanelActionTabViewModel> ActionTabs { get; set; } = new();
 
     [Reactive]
     public SidePanelTabViewModel? SelectedTab { get; set; }

@@ -8,6 +8,7 @@
 							  IsChecked="True"/>
 				<ToggleButton Classes="invisible"
 							  Content="Invisible Button" />
+				<ToggleButton Classes="expand"/>
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
@@ -27,6 +28,55 @@
 	</Style>
 	<Style Selector="ToggleButton.invisible:checked /template/ ContentPresenter">
 		<Setter Property="Background" Value="{DynamicResource InvisibleButtonPressedBackgroundColor}" />
+	</Style>
+
+	<Style Selector="ToggleButton.expand">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel Background="{TemplateBinding Background}">
+					<Path Name="PART_ExpandIcon"
+						  Fill="{TemplateBinding Foreground}"/>
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ToggleButton.expand">
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource TextHighBrush}"/>
+		<Setter Property="Height" Value="50"/>
+		<Setter Property="Width" Value="50"/>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Border.BorderThickness" Value="0"/>
+		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+	</Style>
+
+	<Style Selector="ToggleButton.expand /template/ Path#PART_ExpandIcon">
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="14"/>
+		<Setter Property="Stretch" Value="Uniform"/>
+		<Setter Property="Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+	</Style>
+
+	<Style Selector="ToggleButton.expand[IsChecked=true] /template/ Path#PART_ExpandIcon">
+		<Setter Property="RenderTransform" Value="rotate(180deg)"/>
+	</Style>
+
+	<Style Selector="ToggleButton.expand /template/ Path">
+		<Setter Property="Transitions">
+			<Transitions>
+				<TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>
+			</Transitions>
+		</Setter>
+	</Style>
+
+	<Style Selector="ToggleButton.expand:pointerover">
+		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
 	</Style>
 
 </Styles>

@@ -168,9 +168,15 @@ public sealed partial class MainViewModel : ViewModelBase
                 footprintTabViewModel,
                 userGeometryTabViewModel,
                 plannedScheduleTabViewModel,
-            })
+            }),
+            ActionTabs = new()
+            {
+                new(nameof(ConnectionViewModel), ReactiveCommand.CreateFromTask(ConnectionImpl)),
+                new(nameof(SettingsViewModel), ReactiveCommand.CreateFromTask(SettingsImpl)),
+            }
         };
     }
+
 
     private async Task ConnectionImpl()
     {

@@ -13,18 +13,28 @@ public class DataTemplateSelector : IDataTemplate
 
     public IControl Build(object param)
     {
-        var key = ((ISelectorItem)param).GetKey();
+        string? key = null;
 
-        if (key != null)
+        if (param is string str)
+        {
+            key = str;
+
+        }
+        else if (param is ISelectorItem selectorItem)
+        {
+            key = selectorItem.GetKey();
+        }
+
+        if (key is not null)
         {
             return Templates[key].Build(param);
         }
 
-        throw new Exception();
+        throw new Exception("Key not register in DataTemplateSelector");
     }
 
     public bool Match(object data)
     {
-        return data is ISelectorItem;
+        return data is ISelectorItem || data is string;
     }
 }

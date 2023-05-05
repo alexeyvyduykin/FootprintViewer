@@ -17,49 +17,50 @@
 
 	<UserControl.Resources>
 		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
-
 		<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
 			<DataTemplate x:Key="FootprintPreviewTabViewModel">
 				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="Image"/>
+					<materialIcons:MaterialIcon Kind="Image" Classes="high"/>
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="SatelliteTabViewModel">
-				<Grid>
-					<Viewbox Margin="8">
-						<PathIcon Data="{DynamicResource fg-satellite}"/>
-					</Viewbox>
-				</Grid>
+				<Viewbox Margin="8">
+					<PathIcon Data="{DynamicResource fg-satellite}" Classes="high"/>
+				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="GroundTargetTabViewModel">
-				<Grid>
-					<Viewbox Margin="8">
-						<PathIcon Data="{DynamicResource fg-pois}"/>
-					</Viewbox>
-				</Grid>
+				<Viewbox Margin="8">
+					<PathIcon Data="{DynamicResource fg-pois}" Classes="high"/>
+				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="FootprintTabViewModel">
-				<Grid>
-					<Viewbox Margin="8">
-						<PathIcon Data="{DynamicResource fg-satellite-earth}"/>
-					</Viewbox>
-				</Grid>
+				<Viewbox Margin="8">
+					<PathIcon Data="{DynamicResource fg-satellite-earth}" Classes="high"/>
+				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="UserGeometryTabViewModel">
-				<Grid>
-					<Viewbox Margin="8">
-						<PathIcon Data="{DynamicResource fg-map-user}"/>
-					</Viewbox>
-				</Grid>
+				<Viewbox Margin="8">
+					<PathIcon Data="{DynamicResource fg-map-user}" Classes="high"/>
+				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="GroundStationTabViewModel">
 				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="SatelliteUplink"/>
+					<materialIcons:MaterialIcon Kind="SatelliteUplink" Classes="high"/>
 				</Viewbox>
 			</DataTemplate>
 			<DataTemplate x:Key="PlannedScheduleTabViewModel">
 				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="ChartTimeline"/>
+					<materialIcons:MaterialIcon Kind="ChartTimeline" Classes="high"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="ConnectionViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="PowerPlug" Classes="high"/>
+				</Viewbox>
+			</DataTemplate>
+			<DataTemplate x:Key="SettingsViewModel">
+				<Viewbox Margin="4">
+					<materialIcons:MaterialIcon Kind="AccountCog" Classes="high"/>
 				</Viewbox>
 			</DataTemplate>
 		</selectors:DataTemplateSelector>
@@ -81,21 +82,31 @@
 		<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
 			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue='', Converter={StaticResource sidePanelTitleConv}}"/>
 		</Style>
+
+		<Style Selector="c|SidePanel /template/ ItemsControl#PART_ItemsControlBottom">
+
+			<Setter Property="ItemTemplate">
+				<Setter.Value>
+					<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
+						<Button Command="{Binding Command}"
+								Classes="invisible icon">
+							<ContentControl Content="{Binding Key}"
+											ContentTemplate="{DynamicResource SidePanelIconSelector}"/>
+						</Button>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
 	</UserControl.Styles>
 
 	<Panel>
 		<c:SidePanel Items="{Binding Tabs}"
-							PaneWidth="500"
-							IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-							ItemTemplate="{DynamicResource SidePanelIconSelector}"
-							SelectedItem="{Binding SelectedTab}">
-			<c:SidePanel.ItemsPanel>
-				<ItemsPanelTemplate>
-					<DockPanel/>
-				</ItemsPanelTemplate>
-			</c:SidePanel.ItemsPanel>
-
-		</c:SidePanel>
+					 ActionTabs="{Binding ActionTabs}"
+					 PaneWidth="500"
+					 IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+					 ItemTemplate="{DynamicResource SidePanelIconSelector}"
+					 SelectedItem="{Binding SelectedTab}"/>
 	</Panel>
 
 </UserControl>

@@ -177,7 +177,7 @@ public static class DesignData
         return connection;
     }
 
-    public static SidePanelViewModel SidePanel => CreateSidePanel();
+    public static SidePanelViewModel SidePanel => CreateSidePanel(_resolver);
 
     public static ScaleMapBar ScaleMapBar => CreateScaleMapBar();
 
@@ -198,21 +198,28 @@ public static class DesignData
         return scaleMapBar;
     }
 
-    private static SidePanelViewModel CreateSidePanel()
+    private static SidePanelViewModel CreateSidePanel(DesignDataDependencyResolver resolver)
     {
         var sidePanel = new SidePanelViewModel();
 
         var tabs = new SidePanelTabViewModel[]
         {
-            new FootprintPreviewTabViewModel(),
-            new SatelliteTabViewModel(),
-            new GroundStationTabViewModel(),
-            new GroundTargetTabViewModel(),
-            new FootprintTabViewModel(),
-            new UserGeometryTabViewModel(),
+            new SatelliteTabViewModel(resolver),
+            new GroundStationTabViewModel(resolver),
+            new GroundTargetTabViewModel(resolver),
+            new FootprintTabViewModel(resolver),
+          //  new UserGeometryTabViewModel(resolver),          
+            new PlannedScheduleTabViewModel(resolver)
+        };
+
+        var actiontabs = new SidePanelActionTabViewModel[]
+        {
+            new(nameof(ConnectionViewModel)),
+            new(nameof(SettingsViewModel)),
         };
 
         sidePanel.Tabs.AddRange(tabs);
+        sidePanel.ActionTabs.AddRange(actiontabs);
 
         return sidePanel;
     }
