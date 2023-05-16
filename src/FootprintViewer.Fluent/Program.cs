@@ -25,7 +25,7 @@ public static class Program
 
         var config = LoadOrCreateConfigs(dataDir);
 
-        Global = CreateGlobal(config);
+        Global = CreateGlobal(dataDir, config);
 
         Services.Initialize(Global);
 
@@ -48,9 +48,9 @@ public static class Program
         return config;
     }
 
-    private static Global CreateGlobal(Config config)
+    private static Global CreateGlobal(string dataDir, Config config)
     {
-        return new Global(config);
+        return new Global(dataDir, config);
     }
 
     private static void SetupLogger(string dataDir)

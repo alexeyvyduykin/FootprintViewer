@@ -36,10 +36,6 @@ public static class DesignData
 
     public static GroundTargetTabFilterViewModel GroundTargetFilter => new();
 
-    public static BottomPanel BottomPanel => new(_resolver);
-
-    public static SnapshotMaker SnapshotMaker => new(_resolver);
-
     public static ToolBarViewModel ToolBar => new(_resolver);
 
     public static LayerContainerViewModel LayerContainer => new();
@@ -141,6 +137,10 @@ public static class DesignData
     };
 
     public static ConnectionViewModel Connection => CreateConnection(_resolver);
+
+
+    // Tool bar
+    public static MapToolsViewModel MapTools => new(_resolver);
 
     private static string GetFullPathToAssets()
     {

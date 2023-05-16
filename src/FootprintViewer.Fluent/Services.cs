@@ -11,6 +11,10 @@ namespace FootprintViewer.Fluent;
 
 public static class Services
 {
+    public static string DataDir { get; private set; } = null!;
+
+    public static string MapSnapshotDir { get; private set; } = null!;
+
     public static MapFactory MapFactory { get; private set; } = null!;
 
     public static IDataManager DataManager { get; private set; } = null!;
@@ -45,6 +49,10 @@ public static class Services
 
     public static void Initialize(Global global)
     {
+        DataDir = global.DataDir;
+
+        MapSnapshotDir = global.MapSnapshotDir;
+
         MapFactory = global.MapFactory;
 
         DataManager = global.DataManager!;

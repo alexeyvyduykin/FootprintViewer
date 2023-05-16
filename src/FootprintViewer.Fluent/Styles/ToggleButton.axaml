@@ -1,5 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:materialIcons="using:Material.Icons.Avalonia">
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<StackPanel Spacing="10">
@@ -9,6 +10,22 @@
 				<ToggleButton Classes="invisible"
 							  Content="Invisible Button" />
 				<ToggleButton Classes="expand"/>
+
+				<Border Padding="8">
+					<StackPanel Orientation="Horizontal" Spacing="4">
+						<ToggleButton IsChecked="False" Classes="mapInvert">
+							<materialIcons:MaterialIcon Width="48"
+														Height="48"
+														Kind="Menu"/>
+						</ToggleButton>
+						<ToggleButton IsChecked="True" Classes="mapInvert">
+							<materialIcons:MaterialIcon Width="48"
+														Height="48"
+														Kind="Menu"/>
+						</ToggleButton>
+					</StackPanel>
+				</Border>
+
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
@@ -77,6 +94,29 @@
 
 	<Style Selector="ToggleButton.expand:pointerover">
 		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
+	</Style>
+
+	<Style Selector="ToggleButton.mapInvert">
+		<Setter Property="Opacity" Value="0.85" />
+	</Style>
+	<Style Selector="ToggleButton.mapInvert /template/ ContentPresenter">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="TextBox.Foreground" Value="{DynamicResource AccentBrush}" />
+	</Style>
+	<Style Selector="ToggleButton.mapInvert:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource TextLowBrush}" />
+		<Setter Property="TextBox.Foreground" Value="{DynamicResource AccentBrush}" />
+	</Style>
+	<Style Selector="ToggleButton.mapInvert:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource TextLowBrush}" />
+		<Setter Property="TextBox.Foreground" Value="{DynamicResource AccentBrush}" />
+	</Style>
+	<Style Selector="ToggleButton.mapInvert:checked /template/ ContentPresenter">
+		<Setter Property="TextBox.Foreground" Value="{DynamicResource AccentDarkBrush}" />
+	</Style>
+	<Style Selector="ToggleButton.mapInvert:checked:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource TextLowBrush}" />
+		<Setter Property="TextBox.Foreground" Value="{DynamicResource AccentDarkBrush}" />
 	</Style>
 
 </Styles>

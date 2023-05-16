@@ -34,6 +34,9 @@ public class Config : ConfigBase
     [JsonProperty(PropertyName = "LastPlannedScheduleJsonFile")]
     public string? LastPlannedScheduleJsonFile { get; internal set; }
 
+    [JsonProperty(PropertyName = "SelectedMapSnapshotExtension")]
+    public string SelectedMapSnapshotExtension { get; internal set; } = "*.png";
+
     public void ValidatePaths()
     {
         bool isAllExists = true;

@@ -10,7 +10,7 @@
 			 xmlns:vm2="clr-namespace:FootprintViewer.Fluent.ViewModels"
 			 xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
 			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
-			 xmlns:materialIcons="using:Material.Icons.Avalonia"             
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="False"
              mc:Ignorable="d"
@@ -84,6 +84,32 @@
 			<Setter Property="Background" Value="Transparent"/>
 		</Style>
 
+		<Style Selector="materialIcons|MaterialIcon.t1">
+			<Setter Property="Foreground" Value="{DynamicResource TextLightBrush}"></Setter>
+			<Setter Property="Width" Value="22"></Setter>
+			<Setter Property="Height" Value="22"></Setter>
+		</Style>
+
+		<Style Selector="Button.t1">
+			<Setter Property="Padding" Value="4"></Setter>
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<materialIcons:MaterialIcon Classes="t1" Kind="Folder"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style Selector="Button.t1:pointerover">
+			<Setter Property="ContentTemplate">
+				<Setter.Value>
+					<DataTemplate>
+						<materialIcons:MaterialIcon Classes="t1" Kind="FolderOpen"/>
+					</DataTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="ContentArea"
@@ -96,48 +122,71 @@
 				   Height="500">
 
 		<TabControl>
+			<TabItem Header="General"
+					 Foreground="{DynamicResource TextHighBrush}">
 
-			<TabItem Header="Map">
+				<StackPanel Spacing="8">
 
-				<StackPanel>
-					
-					<TextBlock Text="Backgrounds:"/>
-					
-					<ItemsControl Items="{Binding MapBackgrounds}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="items:MapBackgroundItemViewModel">
-								<StackPanel Orientation="Horizontal">
-									<Button Classes="rmvBtn"
-											IsEnabled="{Binding IsRemovable}"
-											Command="{Binding $parent[UserControl].DataContext.RemoveMapBackground}"
-											CommandParameter="{Binding}">
-										<Viewbox Margin="2">
-											<materialIcons:MaterialIcon Kind="Minus"/>
-										</Viewbox>
-									</Button>
-									<TextBlock Text="{Binding Name}" Classes="Caption tbItem"/>
-																			
-									<materialIcons:MaterialIcon Kind="InfoCircle" 
-																Width="20" Height="20"
-																IsVisible="{Binding IsRemovable}"
-																ToolTip.Tip="{Binding FullPath}"/>
-								</StackPanel>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+					<TextBlock Text="Map backgrounds:"
+							   Classes="h3 medium"/>
 
-					<Button Margin="0,2,0,0"
-							Command="{Binding $parent[UserControl].DataContext.AddMapBackground}"							
+					<StackPanel Spacing="2">
+						<ItemsControl Items="{Binding MapBackgrounds}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="items:MapBackgroundItemViewModel">
+									<StackPanel Orientation="Horizontal">
+										<Button Classes="rmvBtn"
+												IsEnabled="{Binding IsRemovable}"
+												Command="{Binding $parent[UserControl].DataContext.RemoveMapBackground}"
+												CommandParameter="{Binding}">
+											<Viewbox Margin="2">
+												<materialIcons:MaterialIcon Kind="Minus"/>
+											</Viewbox>
+										</Button>
+										<TextBlock Text="{Binding Name}"
+												   Classes="tbItem h2 medium"/>
+
+										<materialIcons:MaterialIcon Kind="InfoCircle"
+																	Foreground="{DynamicResource TextHighBrush}"
+																	Width="20"
+																	Height="20"
+																	Margin="4,0,0,0"
+																	IsVisible="{Binding IsRemovable}"
+																	ToolTip.Tip="{Binding FullPath}"/>
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+						<Button Command="{Binding $parent[UserControl].DataContext.AddMapBackground}"
 							Classes="addBtn">
-						<Viewbox Margin="2">
-							<materialIcons:MaterialIcon Kind="Plus"/>
-						</Viewbox>
-					</Button>
+							<Viewbox Margin="2">
+								<materialIcons:MaterialIcon Kind="Plus"/>
+							</Viewbox>
+						</Button>
+					</StackPanel>
 
+					<TextBlock Text="Snapshots directory:"
+							   Classes="h3 medium"/>
+
+					<Grid ColumnDefinitions="Auto,4,*">
+						<Button Classes="t1 invisible"
+								Command="{Binding OpenSnapshotDirectory}"/>
+						<TextBox Grid.Column="2"
+								 IsReadOnly="True"
+								 Text="{Binding SnapshotDirectory}"/>
+
+					</Grid>
+
+					<TextBlock Text="Snapshots extension:"
+							   Classes="h3 medium"/>
+
+					<ComboBox x:Name="ComboBox"
+							  Items="{Binding SnapshotExtensions}"
+							  SelectedItem="{Binding SelectedSnapshotExtension}"/>
 				</StackPanel>
-				
+
 			</TabItem>
-		
+
 		</TabControl>
 
 	</c:ContentArea>

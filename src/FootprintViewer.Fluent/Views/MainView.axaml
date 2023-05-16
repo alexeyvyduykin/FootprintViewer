@@ -69,14 +69,10 @@
 								  HorizontalAlignment="Right"
 								  Margin="0,0,15,30"/>
 
-			<Grid VerticalAlignment="Bottom"
-				  HorizontalAlignment="Stretch"
-				  RowDefinitions="Auto,Auto">
-				<bottomPanel:BottomPanelView Grid.Row="0"
-											 DataContext="{Binding BottomPanel}"/>
-				<!--<views:ScaleMapBarView Grid.Row="1"
-									   DataContext="{Binding ScaleMapBar}"/>-->
-			</Grid>
+			<toolBar:MapToolsView DataContext="{Binding MapTools}"
+								  VerticalAlignment="Bottom"
+								  HorizontalAlignment="Left"/>
+
 		</Panel>
 
 		<sidePanel:SidePanelView Grid.Column="1"

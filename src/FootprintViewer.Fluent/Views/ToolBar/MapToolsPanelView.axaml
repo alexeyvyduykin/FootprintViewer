@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 MinHeight="250"
+			 mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
+             x:Class="FootprintViewer.Fluent.Views.ToolBar.MapToolsPanelView"
+			 d:DataContext="{x:Static vmd:DesignData.MapTools}">
+
+	<UserControl.Styles>
+		<Style Selector="materialIcons|MaterialIcon.t1">
+			<Setter Property="Width" Value="64"/>
+			<Setter Property="Height" Value="64"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Border Padding="20" Classes="back" CornerRadius="8">
+
+		<StackPanel Spacing="4">
+
+			<TextBlock Text="Map services" Classes="h2 medium"/>
+
+			<StackPanel Orientation="Horizontal"
+						Spacing="4">
+
+				<Button Command="{Binding Snapshot}"
+						Classes="invisible light"
+						Padding="4"
+						ToolTip.Tip="Make map snapshot">
+					<materialIcons:MaterialIcon Kind="PhotoCamera"
+												Classes="t1"/>
+				</Button>
+
+				<Button Classes="invisible light"
+						Padding="4"
+						ToolTip.Tip="Calculate length between points">
+					<materialIcons:MaterialIcon Kind="MeasuringTape"
+												Classes="t1"/>
+				</Button>
+
+			</StackPanel>
+
+			<TextBlock Text="Charts" Classes="h2 medium"/>
+
+			<StackPanel Orientation="Horizontal" Spacing="4">
+				<Button Command="{Binding Timelines}"
+						Classes="invisible light"
+						Padding="4"
+						
+						ToolTip.Tip="Show planned schecule timelines">
+					<materialIcons:MaterialIcon Kind="ChartGantt"
+												Classes="t1"/>
+				</Button>
+				<Button Command="{Binding TimelinesOld}"
+						Classes="invisible light"
+						Padding="4"
+						ToolTip.Tip="Show planned schedule old chart">
+					<materialIcons:MaterialIcon Kind="ChartTimeline"
+												Classes="t1"/>
+				</Button>
+			</StackPanel>
+
+		</StackPanel>
+
+	</Border>
+
+</UserControl>

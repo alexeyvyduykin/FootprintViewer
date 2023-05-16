@@ -1,4 +1,5 @@
-﻿using DynamicData;
+﻿using CliWrap;
+using DynamicData;
 using DynamicData.Alias;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
@@ -8,9 +9,11 @@ using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Helpers;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.Settings.Items;
-using FootprintViewer.Localization;
 using FootprintViewer.Logging;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using SkiaSharp;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -20,19 +23,21 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.Settings;
 
-public sealed class SettingsViewModel : DialogViewModelBase<object>
+public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 {
     private readonly IDataManager _dataManager;
     private readonly SourceList<string> _mapBackgroundPaths = new();
     private readonly ReadOnlyObservableCollection<MapBackgroundItemViewModel> _items;
+    private readonly List<string> _snapshotExtensions;
 
     public SettingsViewModel()
     {
         ConfigOnOpen = new Config(Services.Config.FilePath);
         ConfigOnOpen.LoadFile();
 
+        SnapshotDirectory = Services.MapSnapshotDir;
+
         _dataManager = Services.DataManager;
-        //var languageManager = Services.LanguageManager;
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -47,9 +52,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
             Close(DialogResultKind.Normal);
         });
 
-        //LanguageSettings = new LanguageSettingsViewModel(languageManager);
+        _snapshotExtensions = AvailableExtensions();
 
-        //LanguageSettings.Activate();
+        SelectedSnapshotExtension = ConfigOnOpen.SelectedMapSnapshotExtension;
 
         var sources = _dataManager.GetSources(DbKeys.Maps);
 
@@ -75,47 +80,40 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         AddMapBackground = ReactiveCommand.CreateFromTask(AddAsyncImpl);
 
         RemoveMapBackground = ReactiveCommand.Create<MapBackgroundItemViewModel>(RemoveImpl);
+
+        OpenSnapshotDirectory = ReactiveCommand.CreateFromTask(OpenSnapshotDirectoryImpl);
+
+        this.WhenAnyValue(s => s.SelectedSnapshotExtension)
+            .ObserveOn(RxApp.TaskpoolScheduler)
+            .Skip(1)
+            .Subscribe(_ =>
+            {
+                Services.Config.SelectedMapSnapshotExtension = SelectedSnapshotExtension;
+                Save();
+            });
     }
 
-    public SettingsViewModel(DesignDataDependencyResolver resolver)
+    private async Task OpenSnapshotDirectoryImpl()
     {
-        _dataManager = resolver.GetService<IDataManager>();
-        var languageManager = resolver.GetService<ILanguageManager>();
+        await Cli.Wrap("cmd").WithArguments($"/K start {SnapshotDirectory} && exit").ExecuteAsync();
+        //await FileDialogHelper.ShowOpenFileDialogAsync("Snapshots", SnapshotExtensions.ToArray(), SnapshotDirectory);
+    }
 
-        NextCommand = ReactiveCommand.CreateFromTask(async () =>
+    private static List<string> AvailableExtensions()
+    {
+        return new[]
         {
-            await Observable
-                .Return(Unit.Default)
-                .Delay(TimeSpan.FromSeconds(0.1));
+            SKEncodedImageFormat.Png,
+            SKEncodedImageFormat.Jpeg,
+            SKEncodedImageFormat.Webp
+        }
+        .Select(ToStringExtension)
+        .ToList();
+    }
 
-            Close(DialogResultKind.Normal);
-        });
-
-        //LanguageSettings = new LanguageSettingsViewModel(languageManager);
-
-        //LanguageSettings.Activate();
-
-        var sources = _dataManager.GetSources(DbKeys.Maps);
-
-        var paths = sources
-            .Where(s => s is FileSource)
-            .Cast<FileSource>()
-            .SelectMany(s => s.Paths).ToList();
-
-        _mapBackgroundPaths
-            .Connect()
-            .Select(s => new MapBackgroundItemViewModel(s))
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Bind(out _items)
-            .Subscribe();
-
-        _mapBackgroundPaths.Edit(innerList =>
-        {
-            innerList.Clear();
-            innerList.AddRange(paths);
-        });
-        AddMapBackground = ReactiveCommand.CreateFromTask(AddAsyncImpl);
-        RemoveMapBackground = ReactiveCommand.Create<MapBackgroundItemViewModel>(RemoveImpl);
+    private static string ToStringExtension(SKEncodedImageFormat type)
+    {
+        return $"*.{Enum.GetName(type)!.ToLower()}";
     }
 
     public static Config? ConfigOnOpen { get; set; }
@@ -161,6 +159,8 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
             .Select(s => s.FullPath);
 
         config.MapBackgroundFiles = paths.ToArray();
+
+        config.SelectedMapSnapshotExtension = SelectedSnapshotExtension;
     }
 
     private async Task AddAsyncImpl()
@@ -212,12 +212,72 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         Save();
     }
 
+    public ReactiveCommand<Unit, Unit> OpenSnapshotDirectory { get; set; }
+
     public ReactiveCommand<Unit, Unit> AddMapBackground { get; set; }
 
     public ReactiveCommand<MapBackgroundItemViewModel, Unit> RemoveMapBackground { get; set; }
 
-    //[Reactive]
-    //public LanguageSettingsViewModel LanguageSettings { get; set; }
+    public string SnapshotDirectory { get; set; }
+
+    [Reactive]
+    public string SelectedSnapshotExtension { get; set; }
+
+    public List<string> SnapshotExtensions => _snapshotExtensions;
 
     public ReadOnlyObservableCollection<MapBackgroundItemViewModel> MapBackgrounds => _items;
+}
+
+public partial class SettingsViewModel
+{
+    public SettingsViewModel(DesignDataDependencyResolver resolver)
+    {
+        SnapshotDirectory = "C:\\Users\\User\\AppData\\Roaming\\FootprintViewer\\Client\\Snapshots";
+
+        _dataManager = resolver.GetService<IDataManager>();
+
+        NextCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await Observable
+                .Return(Unit.Default)
+                .Delay(TimeSpan.FromSeconds(0.1));
+
+            Close(DialogResultKind.Normal);
+        });
+
+        _snapshotExtensions = AvailableExtensions();
+
+        SelectedSnapshotExtension = _snapshotExtensions.First();
+
+        var sources = _dataManager.GetSources(DbKeys.Maps);
+
+        var paths = sources
+            .Where(s => s is FileSource)
+            .Cast<FileSource>()
+            .SelectMany(s => s.Paths).ToList();
+
+        _mapBackgroundPaths
+            .Connect()
+            .Select(s => new MapBackgroundItemViewModel(s))
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Bind(out _items)
+            .Subscribe();
+
+        _mapBackgroundPaths.Edit(innerList =>
+        {
+            innerList.Clear();
+            innerList.AddRange(paths);
+        });
+
+        AddMapBackground = ReactiveCommand.CreateFromTask(AddAsyncImpl);
+
+        RemoveMapBackground = ReactiveCommand.Create<MapBackgroundItemViewModel>(RemoveImpl);
+
+        OpenSnapshotDirectory = ReactiveCommand.CreateFromTask(OpenSnapshotDirectoryImpl);
+
+        this.WhenAnyValue(s => s.SelectedSnapshotExtension)
+            .ObserveOn(RxApp.TaskpoolScheduler)
+            .Skip(1)
+            .Subscribe(_ => Save());
+    }
 }

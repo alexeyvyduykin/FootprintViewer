@@ -10,7 +10,6 @@ using FootprintViewer.Fluent.ViewModels.Settings;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
-using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers;
@@ -40,8 +39,8 @@ public sealed partial class MainViewModel : ViewModelBase
     private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanelViewModel _infoPanel;
     private readonly InfoPanelViewModel _clickInfoPanel;
-    private readonly BottomPanel _bottomPanel;
     private readonly ScaleMapBar _scaleMapBar;
+    private readonly MapToolsViewModel _mapTools;
     private ISelector? _selector;
     private double _lastScreenPointX = 0;
     private double _lastScreenPointY = 0;
@@ -74,7 +73,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         _scaleMapBar = new ScaleMapBar();
 
-        _bottomPanel = new BottomPanel();
+        _mapTools = new MapToolsViewModel();
 
         _mapState.ResetObservable.Subscribe(_ => ResetCommand());
         _mapState.RectAOIObservable.Subscribe(_ => RectangleCommand());
@@ -111,10 +110,6 @@ public sealed partial class MainViewModel : ViewModelBase
 
         Settings = ReactiveCommand.CreateFromTask(SettingsImpl);
 
-        Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);
-
-        TimelinesOld = ReactiveCommand.CreateFromTask(TimelinesOldImpl);
-
         RegisterViewModels();
     }
 
@@ -129,7 +124,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private DialogScreenViewModel DialogScreen { get; set; }
 
-    private DialogScreenViewModel FullScreen { get; set; }
+    public DialogScreenViewModel FullScreen { get; set; }
 
     private DialogScreenViewModel CompactDialogScreen { get; set; }
 
@@ -140,10 +135,6 @@ public sealed partial class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> Connection { get; }
 
     public ReactiveCommand<Unit, Unit> Settings { get; }
-
-    public ReactiveCommand<Unit, Unit> Timelines { get; }
-
-    public ReactiveCommand<Unit, Unit> TimelinesOld { get; }
 
     private void RegisterViewModels()
     {
@@ -186,20 +177,6 @@ public sealed partial class MainViewModel : ViewModelBase
     private async Task SettingsImpl()
     {
         await DialogScreen.NavigateDialogAsync(new SettingsViewModel());
-    }
-
-    private async Task TimelinesImpl()
-    {
-        var timelinesDialog = new TimelinesViewModel();
-
-        _ = await FullScreen.NavigateDialogAsync(timelinesDialog);
-    }
-
-    private async Task TimelinesOldImpl()
-    {
-        var timelinesOldDialog = new TimelinesOldViewModel();
-
-        _ = await FullScreen.NavigateDialogAsync(timelinesOldDialog);
     }
 
     private void MovedImpl((double, double) screenPosition)
@@ -466,13 +443,13 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public InfoPanelViewModel InfoPanel => _infoPanel;
 
-    public BottomPanel BottomPanel => _bottomPanel;
-
     public InfoPanelViewModel ClickInfoPanel => _clickInfoPanel;
 
     public ToolBarViewModel ToolBar { get; private set; }//=> _toolBar;
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
+
+    public MapToolsViewModel MapTools => _mapTools;
 
     [Reactive]
     public IMapNavigator MapNavigator { get; set; }
@@ -513,17 +490,13 @@ public partial class MainViewModel
 
         _scaleMapBar = new ScaleMapBar();
 
-        _bottomPanel = new BottomPanel(resolver);
+        _mapTools = new MapToolsViewModel(resolver);
 
         IsMainContentEnabled = this.WhenAnyValue(
             s => s.DialogScreen.IsDialogOpen,
             s => s.FullScreen.IsDialogOpen,
             (dialogIsOpen, fullScreenIsOpen) => !(dialogIsOpen || fullScreenIsOpen))
             .ObserveOn(RxApp.MainThreadScheduler);
-
-        Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);
-
-        TimelinesOld = ReactiveCommand.CreateFromTask(TimelinesOldImpl);
 
         RegisterViewModels(resolver);
     }

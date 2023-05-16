@@ -11,14 +11,17 @@ using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Providers;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent;
 
 public class Global
 {
-    public Global(Config config)
+    public Global(string dataDir, Config config)
     {
+        DataDir = dataDir;
+
         Config = config;
 
         MapFactory = new MapFactory();
@@ -35,6 +38,10 @@ public class Global
 
         // LanguageManager
         //LanguageManager = new LanguageManager(new[] { "en" }/*config.AvailableLocales*/);
+
+        MapSnapshotDir = Path.Combine(DataDir, "Snapshots");
+
+        Directory.CreateDirectory(MapSnapshotDir);
 
         LayerStyleManager = new LayerStyleManager();
 
@@ -67,6 +74,10 @@ public class Global
 
         AreaOfInterest = new AreaOfInterest((Map)Map);
     }
+
+    public string DataDir { get; }
+
+    public string MapSnapshotDir { get; }
 
     public Config Config { get; }
 
