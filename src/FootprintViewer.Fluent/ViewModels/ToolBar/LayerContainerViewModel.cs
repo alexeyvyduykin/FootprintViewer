@@ -1,6 +1,8 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Styles;
+using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.ToolBar;
 
-public sealed class LayerContainerViewModel : ViewModelBase
+public sealed partial class LayerContainerViewModel : ViewModelBase
 {
     private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<ILayer> _layers = new();
@@ -21,6 +23,7 @@ public sealed class LayerContainerViewModel : ViewModelBase
     public LayerContainerViewModel()
     {
         _layerStyleManager = Services.LayerStyleManager;
+        var map = Services.Map;
 
         _layers
            .Connect()
@@ -41,24 +44,55 @@ public sealed class LayerContainerViewModel : ViewModelBase
             .Select(s => (bool)s!)
             .Subscribe(value => LayerItems.SetValue(s => s.IsVisible = value));
 
-        Observable.StartAsync(UpdateLayersAsync, RxApp.MainThreadScheduler);
+        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
     }
 
-    private async Task UpdateLayersAsync() => await Observable.Start(() => UpdateLayers(), RxApp.TaskpoolScheduler);
+    private async Task UpdateLayersAsync(IMap? map) => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
 
-    private void UpdateLayers()
+    private void UpdateLayers(IMap? map)
     {
-        var map = Services.Map;
-
-        _layers.Edit(innerList =>
+        if (map is { })
         {
-            innerList.Clear();
-            innerList.AddRange(map.Layers);
-        });
+            _layers.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(map.Layers);
+            });
+        }
     }
 
     [Reactive]
     public bool? IsAllVisible { get; set; }
 
     public IReadOnlyList<LayerItemViewModel> LayerItems => _layerItems;
+}
+
+public partial class LayerContainerViewModel
+{
+    public LayerContainerViewModel(DesignDataDependencyResolver resolver)
+    {
+        _layerStyleManager = resolver.GetService<LayerStyleManager>();
+        var map = resolver.GetService<IMap>();
+
+        _layers
+           .Connect()
+           .ObserveOn(RxApp.MainThreadScheduler)
+           .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
+           .Bind(out _layerItems)
+           .Subscribe();
+
+        _layerItems
+            .ToObservableChangeSet()
+            .WhenPropertyChanged(p => p.IsVisible)
+            .Select(_ => LayerItems.AllPropertyCheck(p => p.IsVisible))
+            .Subscribe(s => IsAllVisible = s);
+
+        this.WhenAnyValue(s => s.IsAllVisible)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Where(s => s != null)
+            .Select(s => (bool)s!)
+            .Subscribe(value => LayerItems.SetValue(s => s.IsVisible = value));
+
+        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
+    }
 }

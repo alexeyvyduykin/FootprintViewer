@@ -160,11 +160,15 @@ public sealed class DesignDataDependencyResolver
     {
         var map = new Map();
         map.AddLayer(new Layer(), LayerType.WorldMap);
-        map.AddLayer(new Layer(), LayerType.Footprint);
-        map.AddLayer(new Layer(), LayerType.GroundTarget);
+        map.AddLayer(new Layer(), LayerType.FootprintImage); 
         map.AddLayer(new Layer(), LayerType.GroundStation);
-        map.AddLayer(new Layer(), LayerType.Track);
+        map.AddLayer(new Layer(), LayerType.GroundTarget);
         map.AddLayer(new Layer(), LayerType.Sensor);
+        map.AddLayer(new Layer(), LayerType.Track);
+        map.AddLayer(new Layer(), LayerType.Footprint);
+        map.AddLayer(new Layer(), LayerType.FootprintImageBorder);
+        map.AddLayer(new Layer(), LayerType.Edit);
+        map.AddLayer(new Layer(), LayerType.Vertex);
         map.AddLayer(new Layer(), LayerType.User);
         return map;
     }

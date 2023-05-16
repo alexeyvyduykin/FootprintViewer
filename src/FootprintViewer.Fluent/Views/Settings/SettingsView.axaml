@@ -6,7 +6,9 @@
 			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
 	         xmlns:vm="using:FootprintViewer.Fluent.ViewModels.Settings"
-	         xmlns:items="using:FootprintViewer.Fluent.ViewModels.Settings.Items"
+			 xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
+	         xmlns:styles="clr-namespace:FootprintViewer.Styles;assembly=FootprintViewer"
+			 xmlns:items="using:FootprintViewer.Fluent.ViewModels.Settings.Items"
 			 xmlns:vm2="clr-namespace:FootprintViewer.Fluent.ViewModels"
 			 xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
 			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
@@ -14,7 +16,6 @@
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="False"
              mc:Ignorable="d"
-			 d:DesignWidth="800" d:DesignHeight="550"
              x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView"
 			 d:DataContext="{x:Static vmd:DesignData.Settings}">
 
@@ -113,6 +114,7 @@
 	</UserControl.Styles>
 
 	<c:ContentArea x:Name="ContentArea"
+				   Background="{DynamicResource BackgroundBrush}"
 				   Title="{Binding Title}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
@@ -122,8 +124,7 @@
 				   Height="500">
 
 		<TabControl>
-			<TabItem Header="General"
-					 Foreground="{DynamicResource TextHighBrush}">
+			<TabItem Header="General">
 
 				<StackPanel Spacing="8">
 
@@ -187,6 +188,38 @@
 
 			</TabItem>
 
+			<TabItem Header="Styles">
+
+				<ItemsControl Items="{Binding LayerItems}"
+							  HorizontalAlignment="Left"
+							  Width="360">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="0"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate x:DataType="toolBar:LayerItemViewModel">
+							<Grid ColumnDefinitions="160,*">
+								<TextBlock Text="{Binding Name}"
+										   Classes="h2 medium"
+										   VerticalAlignment="Center"/>
+								<ComboBox Grid.Column="1"
+										  HorizontalAlignment="Stretch"
+										  Items="{Binding Styles}"
+										  SelectedItem="{Binding SelectedStyle}">
+									<ComboBox.ItemTemplate>
+										<DataTemplate x:DataType="styles:LayerStyleViewModel">
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</Grid>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+			</TabItem>
 		</TabControl>
 
 	</c:ContentArea>

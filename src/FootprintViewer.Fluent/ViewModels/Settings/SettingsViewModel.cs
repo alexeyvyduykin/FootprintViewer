@@ -9,7 +9,11 @@ using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Helpers;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.Settings.Items;
+using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Logging;
+using FootprintViewer.Styles;
+using Mapsui;
+using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SkiaSharp;
@@ -29,11 +33,18 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
     private readonly SourceList<string> _mapBackgroundPaths = new();
     private readonly ReadOnlyObservableCollection<MapBackgroundItemViewModel> _items;
     private readonly List<string> _snapshotExtensions;
+    private readonly LayerStyleManager _layerStyleManager;
+    private readonly SourceList<ILayer> _layers = new();
+    private readonly ReadOnlyObservableCollection<LayerItemViewModel> _layerItems;
 
     public SettingsViewModel()
     {
         ConfigOnOpen = new Config(Services.Config.FilePath);
         ConfigOnOpen.LoadFile();
+
+        _layerStyleManager = Services.LayerStyleManager;
+
+        var map = Services.Map;
 
         SnapshotDirectory = Services.MapSnapshotDir;
 
@@ -91,6 +102,35 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
                 Services.Config.SelectedMapSnapshotExtension = SelectedSnapshotExtension;
                 Save();
             });
+
+        _layers
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Where(s => IsStyle(s, _layerStyleManager))
+            .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
+            .Bind(out _layerItems)
+            .Subscribe();
+
+        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
+    }
+
+    private async Task UpdateLayersAsync(IMap? map) => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
+
+    private static bool IsStyle(ILayer layer, LayerStyleManager styleManager)
+    {
+        return styleManager.GetStyle(layer.Name) is not null;
+    }
+
+    private void UpdateLayers(IMap? map)
+    {
+        if (map is { })
+        {
+            _layers.Edit(innerList =>
+            {
+                innerList.Clear();
+                innerList.AddRange(map.Layers);
+            });
+        }
     }
 
     private async Task OpenSnapshotDirectoryImpl()
@@ -226,6 +266,8 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
     public List<string> SnapshotExtensions => _snapshotExtensions;
 
     public ReadOnlyObservableCollection<MapBackgroundItemViewModel> MapBackgrounds => _items;
+
+    public IReadOnlyList<LayerItemViewModel> LayerItems => _layerItems;
 }
 
 public partial class SettingsViewModel
@@ -279,5 +321,18 @@ public partial class SettingsViewModel
             .ObserveOn(RxApp.TaskpoolScheduler)
             .Skip(1)
             .Subscribe(_ => Save());
+
+        _layerStyleManager = resolver.GetService<LayerStyleManager>();
+        var map = resolver.GetService<IMap>();
+
+        _layers
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Where(s => IsStyle(s, _layerStyleManager))
+            .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
+            .Bind(out _layerItems)
+            .Subscribe();
+
+        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
     }
 }

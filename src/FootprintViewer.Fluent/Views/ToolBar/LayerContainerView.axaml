@@ -17,7 +17,8 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Panel Background="{DynamicResource ThemeBackgroundBrush}">
+	<Border Padding="8" 
+			Classes="back">
 		<Grid Margin="8"
 			  ShowGridLines="False"
 			  ColumnDefinitions="120,8,48,8,120"
@@ -47,11 +48,11 @@
 					  Padding="0"
 					  IsChecked="{Binding IsAllVisible}"/>
 
-			<ComboBox Grid.Row="2"
+			<!--<ComboBox Grid.Row="2"
 					  Grid.Column="5"
 					  Padding="0"
 					  Items="{Binding Styles}"
-					  SelectedItem="{Binding SelectedStyle}"/>
+				  SelectedItem="{Binding SelectedStyle}"/>-->
 
 			<Separator Grid.Row="3" Grid.ColumnSpan="5"/>
 
@@ -88,6 +89,6 @@
 			</ItemsControl>
 
 		</Grid>
-	</Panel>
+	</Border>
 
 </UserControl>
