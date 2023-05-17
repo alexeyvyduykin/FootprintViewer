@@ -10,7 +10,7 @@
 	</Application.DataTemplates>
 
 	<Application.Styles>
-		
+
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/Base.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/BaseDark.axaml"/>
 
@@ -34,10 +34,9 @@
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/RangeSlider.axaml"/>
-	
+
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Icons.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FastToolTip.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToolBarIconSelector.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanel.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/BottomPanel.axaml"/>
