@@ -6,53 +6,69 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:MainViewModel"
-			 mc:Ignorable="d" d:DesignWidth="660"
+			 mc:Ignorable="d" d:DesignWidth="360"
              x:Class="FootprintViewer.Fluent.Views.WindowTitleBar"
 			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
 
+	<UserControl.Styles>
+		<Style Selector="materialIcons|MaterialIcon">
+			<Setter Property="Foreground" Value="{DynamicResource TextLightBrush}"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="Button.t1">
+			<Setter Property="Width" Value="46"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+			<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+		<Style Selector="Button.t2">
+			<Setter Property="Width" Value="46"/>
+			<Setter Property="Cursor" Value="Arrow"/>
+			<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+		<Style Selector="Button.t1:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
+		</Style>
+		<Style Selector="Button.t1:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
+		</Style>
+		<Style Selector="Button.t2:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource WarningBrush}"/>
+		</Style>
+		<Style Selector="Button.t2:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource WarningBrush}"/>
+		</Style>
+	</UserControl.Styles>
+
 	<Panel>
-		<DockPanel Background="{DynamicResource MaterialDesignPaper}"
+		<DockPanel Background="{DynamicResource BackgroundBrush}"
 				   IsHitTestVisible="False"/>
 		<DockPanel>
-			<StackPanel Orientation="Horizontal"
-						DockPanel.Dock="Left">
-				<Image Source="/Assets/app-logo.ico"
+			<Grid ColumnDefinitions="5,Auto,5,*"
+				  VerticalAlignment="Center"
+				  DockPanel.Dock="Left">
+				<Image Grid.Column="1"
+					   Source="/Assets/app-logo.ico"
 					   Height="32"
-					   Width="32"
-					   VerticalAlignment="Center"
-					   Margin="5,0,5,0"/>
+					   Width="32"/>
 				<TextBlock Text="FootprintViewer"
-						   Classes="Subtitle1"
-						   Foreground="White"
-						   VerticalAlignment="Center"
+						   Grid.Column="3"
+						   Classes="h2 high"
 						   IsHitTestVisible="False"/>
-			</StackPanel>
+			</Grid>
 
 			<StackPanel HorizontalAlignment="Right"
 						Orientation="Horizontal">
-				<Button Width="46"
-						Click="OnMinimizeButtonClick"
-						Cursor="Arrow"
-						Classes="Flat">
+				<Button Click="OnMinimizeButtonClick" Classes="t1">
 					<materialIcons:MaterialIcon Kind="WindowMinimize"/>
 				</Button>
 
-				<Button Width="46"
-						Click="OnMaximizeButtonClick"
-						Cursor="Arrow"
-						Classes="Flat">
+				<Button Click="OnMaximizeButtonClick" Classes="t1">
 					<materialIcons:MaterialIcon Kind="WindowMaximize"/>
 				</Button>
 
-				<Button Width="46"
-						Click="OnCloseButtonClick"
-						Cursor="Arrow"
-						Classes="Flat">
-					<Button.Styles>
-						<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-							<Setter Property="Background" Value="Red"/>
-						</Style>
-					</Button.Styles>
+				<Button Click="OnCloseButtonClick" Classes="t2">
 					<materialIcons:MaterialIcon Kind="WindowClose"/>
 				</Button>
 			</StackPanel>
