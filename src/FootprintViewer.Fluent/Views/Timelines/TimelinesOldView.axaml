@@ -8,6 +8,7 @@
 			 xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
 			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 mc:Ignorable="d"
+			 x:CompileBindings="True"
 			 d:DesignWidth="800" d:DesignHeight="450"
 		     x:DataType="vm:TimelinesOldViewModel"
              x:Class="FootprintViewer.Fluent.Views.Timelines.TimelinesOldView"
@@ -21,7 +22,8 @@
 			<DataTemplate x:Key="Satellite34">
 				<Border Width="70" Height="70" Background="Green"/>
 			</DataTemplate>
-			<DataTemplate x:Key="Default">
+			<DataTemplate x:Key="Default"
+						  x:CompileBindings="False">
 				<TextBlock Text="{Binding Text}"
                            Foreground="Black"
                            Margin="7"/>
@@ -30,12 +32,13 @@
 	</UserControl.Resources>
 
 	<c:ContentArea Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
 				   EnableNext="True"
-				   NextContent="OK">
-		<timelines:TimelineControl Margin="8"
-								   DataContext="{Binding PlotModel}"
+				   NextContent="OK"
+				   IsBusy="{Binding IsBusy}">
+		<timelines:TimelineControl DataContext="{Binding PlotModel}"
 								   SeriesBrushes="{Binding $parent[UserControl].DataContext.SeriesBrushes}"
 								   Begin="{Binding $parent[UserControl].DataContext.Begin}"
 								   Duration="{Binding $parent[UserControl].DataContext.Duration}"

@@ -27,13 +27,14 @@
 
 	<c:ContentArea x:Name="ContentArea"
 				   Title="{Binding Title}"
+				   Background="{DynamicResource BackgroundBrush}"
 				   EnableCancel="{Binding EnableCancel}"
 				   EnableBack="{Binding EnableBack}"
 				   EnableNext="True"
-				   NextContent="OK">
+				   NextContent="OK"
+				   IsBusy="{Binding IsBusy}">
 
-		<timeline:TimelineControl Margin="8"
-								  PlotModel="{Binding PlotModel}"
+		<timeline:TimelineControl PlotModel="{Binding PlotModel}"
 								  CategoryListBoxItemTemplate="{StaticResource TaskContentTemplate}">
 		</timeline:TimelineControl>
 
