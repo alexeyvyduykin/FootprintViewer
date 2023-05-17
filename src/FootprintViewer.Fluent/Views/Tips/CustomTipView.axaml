@@ -11,28 +11,24 @@
              x:Class="FootprintViewer.Fluent.Views.Tips.CustomTipView"
 			 d:DataContext="{x:Static vmd:DesignData.CustomTip}">
 
-	<UserControl.Resources>	
+	<UserControl.Resources>
 		<conv:TipTitleConverter1 x:Key="TipTitleConv"/>
 		<conv:TipTextConverter1 x:Key="TipTextConv"/>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
-		<Style Selector="Border">
-			<Setter Property="Background" Value="{StaticResource TipBrush}"/>
-			<Setter Property="Padding" Value="8,4,8,4" />
-			<Setter Property="CornerRadius" Value="3" />
-		</Style>
 		<Style Selector="TextBlock[Text='']">
 			<Setter Property="IsVisible" Value="False"></Setter>
 		</Style>
 	</UserControl.Styles>
 
-	<Border>
+	<Border Padding="8,4,8,4"
+			Background="{DynamicResource AccentBrush}">
 		<StackPanel>
-			<TextBlock Classes="Subtitle1"
+			<TextBlock Classes="h2 medium"
 					   Text="{Binding ValueObservable^, Converter={StaticResource TipTitleConv}}"/>
 
-			<TextBlock Classes="Caption"
+			<TextBlock Classes="h1 medium"
 					   Text="{Binding ValueObservable^, Converter={StaticResource TipTextConv}}"/>
 		</StackPanel>
 	</Border>

@@ -84,14 +84,6 @@
 			<Setter Property="BorderThickness" Value="0"/>
 		</Style>
 
-		<Style Selector="ToolTip">
-			<Setter Property="Placement" Value="Top"></Setter>
-			<Setter Property="VerticalOffset" Value="-4"></Setter>
-			<Setter Property="Background" Value="Black"/>
-			<Setter Property="Foreground" Value="WhiteSmoke"/>
-			<Setter Property="Padding" Value="8,4,8,4"/>
-		</Style>
-
 		<Style Selector="Button.map" x:DataType="toolBar:ToolClick">
 			<Setter Property="Width" Value="36"></Setter>
 			<Setter Property="Height" Value="36"></Setter>
@@ -205,13 +197,15 @@
 
 			<!-- LayerItems -->
 			<ToggleButton x:Name="MapLayerSelectorButton"
-						  IsChecked="{Binding IsLayerContainerOpen}"
+						  x:CompileBindings="False"
+						  DataContext="{Binding MapLayers}"
+						  IsChecked="{Binding $parent[UserControl].DataContext.IsLayerContainerOpen}"
 						  Classes="map">
 				<ToggleButton.Flyout>
 					<Flyout x:CompileBindings="False"
 							Placement="RightEdgeAlignedTop"
 							ShowMode="TransientWithDismissOnPointerMoveAway">
-						<toolBarView:LayerContainerView DataContext="{Binding LayerContainer}"/>
+						<toolBarView:LayerContainerView DataContext="{Binding $parent[UserControl].DataContext.LayerContainer}"/>
 					</Flyout>
 				</ToggleButton.Flyout>
 				<Viewbox Classes="t1">

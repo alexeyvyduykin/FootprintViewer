@@ -36,7 +36,7 @@
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/RangeSlider.axaml"/>
 
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Icons.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FastToolTip.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToolTip.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanel.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/BottomPanel.axaml"/>

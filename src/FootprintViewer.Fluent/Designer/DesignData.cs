@@ -40,7 +40,7 @@ public static class DesignData
 
     public static LayerContainerViewModel LayerContainer => new(_resolver);
 
-    public static CustomTipViewModel CustomTip => CustomTipViewModel.BeginCreating(TipTarget.Rectangle, 34545.432);
+    public static CustomTipViewModel CustomTip => CustomTipViewModel.HoverCreating(TipTarget.Rectangle, 34545.432);
 
     // Side panel tabs
     public static FootprintPreviewTabViewModel FootprintPreviewTab => new() { IsActive = true };
