@@ -12,7 +12,6 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
              xmlns:filtersView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Filters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 x:DataType="tabs:GroundTargetTabViewModel"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450"
@@ -70,7 +69,7 @@
 	<Grid RowDefinitions="Auto,Auto,*,50"
 		  Background="{DynamicResource AccentDarkBrush}">
 
-		<c:FilterToggleButton Title="{x:Static prop:Resources.FilterOptions}"
+		<c:FilterToggleButton Title="Filter options"
 							  Filter="{StaticResource Filter}"
 							  IsDirty="{Binding Filter.IsDirty}"
 							  ResetCommand="{Binding Filter.Reset}"/>

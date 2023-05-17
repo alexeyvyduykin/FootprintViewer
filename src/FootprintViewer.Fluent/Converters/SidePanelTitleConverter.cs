@@ -13,19 +13,19 @@ public class SidePanelTitleConverter : IValueConverter
             switch (title)
             {
                 case "Просмотр рабочей программы":
-                    return Properties.Resources.FootprintTabTitle;
+                    return "Footprint viewer";
                 case "Поиск сцены":
-                    return Properties.Resources.FootprintPreviewTabTitle;
+                    return "Scene search";
                 case "Просмотр наземных целей":
-                    return Properties.Resources.GroundTargetTabTitle;
+                    return "Ground target viewer";
                 case "Просмотр наземных станций":
-                    return Properties.Resources.GroundStationTabTtile;
+                    return "Ground station viewer";
                 case "Просмотр спутников":
-                    return Properties.Resources.SatelliteTabTitle;
+                    return "Satellite viewer";
                 case "Пользовательские настройки":
-                    return Properties.Resources.UserSettingsTabTitle;
+                    return "User settings";
                 case "Пользовательская геометрия":
-                    return Properties.Resources.UserGeometryTabTitle;
+                    return "User geometry";
                 default:
                     break;
             }

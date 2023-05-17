@@ -7,8 +7,7 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
-			 mc:Ignorable="d"
+             mc:Ignorable="d"
              d:DesignHeight="250" d:DesignWidth="450"
              x:Class="FootprintViewer.Fluent.Views.InfoPanel.GeometryInfoPanelView"
 			 d:DataContext="{x:Static vmd:DesignData.RouteInfoPanel}">
@@ -68,11 +67,8 @@
 						Cursor="Hand"
 						Classes="invisible"
 						ToolTip.ShowDelay="0"
-						Command="{Binding Close}">
-					<ToolTip.Tip>
-						<ToolTip Content="{x:Static prop:Resources.Close}"
-								 Classes="FastTooltip"/>
-					</ToolTip.Tip>
+						Command="{Binding Close}"
+						ToolTip.Tip="Close">
 					<Viewbox Margin="4">
 						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
 													Kind="CloseThick" />

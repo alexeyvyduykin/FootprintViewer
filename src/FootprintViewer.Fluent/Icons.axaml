@@ -1,7 +1,6 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:materialIcons="using:Material.Icons.Avalonia"
-		xmlns:prop="using:FootprintViewer.Fluent.Properties">
+		xmlns:materialIcons="using:Material.Icons.Avalonia">
 
 	<Design.PreviewWith>
 		<Border Padding="20" Width="400">
@@ -86,7 +85,7 @@
 		<DataTemplate x:Key="IconCenterKey">
 			<Border Cursor="Help"
 					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelCenter}">
+					ToolTip.Tip="Center">
 				<Viewbox Width="20" Height="20">
 					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
 												Kind="MapMarker" />
@@ -96,7 +95,7 @@
 		<DataTemplate x:Key="IconSatelliteKey">
 			<Border Cursor="Help"
 					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelSatellite}">
+					ToolTip.Tip="Satellite (Node - Swath)">
 				<Viewbox Width="20" Height="20">
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{StaticResource IconSatellite}"/>
@@ -106,7 +105,7 @@
 		<DataTemplate x:Key="IconBeginKey">
 			<Border Cursor="Help"
 					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelBegin}">
+					ToolTip.Tip="Begin (Duration)">
 				<Viewbox Width="20" Height="20">
 					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
 												Kind="ClockStart" />
@@ -116,7 +115,7 @@
 		<DataTemplate x:Key="IconShapeKey">
 			<Border Cursor="Help"
 					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelType}">
+					ToolTip.Tip="Type shape">
 				<Viewbox Width="20" Height="20">
 					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
 												Kind="Shape" />

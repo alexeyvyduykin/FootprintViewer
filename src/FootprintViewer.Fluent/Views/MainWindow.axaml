@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FootprintViewer.Fluent.Views"
 	    xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-        xmlns:reactiveUi="http://reactiveui.net"
         xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
         mc:Ignorable="d"
 		WindowStartupLocation="CenterScreen"

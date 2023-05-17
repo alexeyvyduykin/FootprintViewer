@@ -6,7 +6,6 @@
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:prop="using:FootprintViewer.Fluent.Properties"
 			 mc:Ignorable="d"
 			 MinWidth="400"
              d:DesignWidth="400" d:DesignHeight="320"
@@ -44,8 +43,8 @@
 
 			<ToggleSwitch IsChecked="{Binding IsFullCoverAOI}"
 						  IsEnabled="{Binding IsAOIActive}"
-						  OnContent="{x:Static prop:Resources.FilterFullCoverAOI}"
-						  OffContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  OnContent="Full cover AOI"
+						  OffContent="Full cover AOI"
 						  Classes="h3 option"/>
 		</StackPanel>
 	</Border>

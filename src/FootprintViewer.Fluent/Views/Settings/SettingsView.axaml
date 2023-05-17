@@ -19,19 +19,6 @@
              x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView"
 			 d:DataContext="{x:Static vmd:DesignData.Settings}">
 
-	<UserControl.Resources>
-		<DataTemplate x:Key="languageTemplate" DataType="vm2:LanguageViewModel">
-			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="{Binding NativeName, StringFormat={} ({0}}"
-						   Classes="Caption" VerticalAlignment="Center"/>
-				<TextBlock Text="{Binding Code, StringFormat={}\, {0})}"
-						   Classes="Caption" VerticalAlignment="Center"/>
-			</StackPanel>
-		</DataTemplate>
-
-		<conv:LanguageConverter x:Key="LanguageConv"/>
-	</UserControl.Resources>
-
 	<UserControl.Styles>
 		<Style Selector="RadioButton.t1">
 			<Setter Property="GroupName" Value="a1"></Setter>

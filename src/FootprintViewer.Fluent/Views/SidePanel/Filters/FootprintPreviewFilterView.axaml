@@ -6,7 +6,6 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
@@ -36,7 +35,7 @@
 
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 				<materialIcons:MaterialIcon Kind="DateRange"/>
-				<TextBlock Text="{x:Static prop:Resources.FilterDate}"
+				<TextBlock Text="Date"
 						   Classes="Body2" Margin="8,0,0,0"
 						   VerticalAlignment="Center"/>
 			</StackPanel>
@@ -53,7 +52,7 @@
 						<PathIcon Foreground="{StaticResource IconAccentBrush}"
 								  Data="{DynamicResource IconCloudy}"/>
 					</Viewbox>
-					<TextBlock Text="{x:Static prop:Resources.FilterCloudiness}" Classes="Body2" Margin="8,0,0,0"></TextBlock>
+					<TextBlock Text="Cloudiness" Classes="Body2" Margin="8,0,0,0"></TextBlock>
 					<TextBlock HorizontalAlignment="Right" Classes="Body2"
 							   Text="{Binding Value, StringFormat={}≤ {0} %, ElementName=CloudinessSlider}">
 					</TextBlock>
@@ -74,7 +73,7 @@
 						<PathIcon Foreground="{StaticResource IconAccentBrush}"
 								  Data="{DynamicResource IconSunElevation}"/>
 					</Viewbox>
-					<TextBlock Text="{x:Static prop:Resources.FilterSunElevation}"
+					<TextBlock Text="Sun elevation"
 							   VerticalAlignment="Center"
 							   Classes="Body2" Margin="8,0,0,0"></TextBlock>
 					<TextBlock HorizontalAlignment="Right" Classes="Body2"
@@ -96,7 +95,7 @@
 					<PathIcon Foreground="{StaticResource IconAccentBrush}"
 							  Data="{DynamicResource IconSatellite}"/>
 				</Viewbox>
-				<TextBlock Text="{x:Static prop:Resources.FilterSensors}"
+				<TextBlock Text="Sensors"
 						   VerticalAlignment="Center"
 						   Classes="Body2"
 						   Margin="8,0,32,0"/>
@@ -118,7 +117,7 @@
 			<StackPanel IsVisible="{Binding IsAOIActive}">
 				<Separator Margin="0,0,0,18"/>
 				<CheckBox IsChecked="{Binding IsFullCoverAOI}"
-						  Content="{x:Static prop:Resources.FilterFullCoverAOI}"/>
+						  Content="Full cover AOI"/>
 			</StackPanel>
 
 		</StackPanel>

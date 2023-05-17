@@ -13,39 +13,39 @@ public class ToolBarToolTipConverter : IValueConverter
             switch (tag)
             {
                 case "ZoomIn":
-                    return Properties.Resources.ToolBarZoomIn;
+                    return "Zoom in";
                 case "ZoomOut":
-                    return Properties.Resources.ToolBarZoomOut;
+                    return "Zoom out";
                 case "AddRectangle":
-                    return Properties.Resources.ToolBarAddRectangle;
+                    return "Draw rectangle AOI";
                 case "AddPolygon":
-                    return Properties.Resources.ToolBarAddPolygon;
+                    return "Draw polygon AOI";
                 case "AddCircle":
-                    return Properties.Resources.ToolBarAddCircle;
+                    return "Draw circle AOI";
                 case "Route":
-                    return Properties.Resources.ToolBarRoute;
+                    return "Measure route";
                 case "MapBackgrounds":
-                    return Properties.Resources.ToolBarMapBackgrounds;
+                    return "List map backgrounds";
                 case "MapLayers":
-                    return Properties.Resources.ToolBarMapLayers;
+                    return "List map layers";
                 case "Select":
-                    return Properties.Resources.ToolBarSelect;
+                    return "Select geometry";
                 case "Point":
-                    return Properties.Resources.ToolBarPoint;
+                    return "Draw point";
                 case "Rectangle":
-                    return Properties.Resources.ToolBarRectangle;
+                    return "Draw rectangle";
                 case "Circle":
-                    return Properties.Resources.ToolBarCircle;
+                    return "Draw circle";
                 case "Polygon":
-                    return Properties.Resources.ToolBarPolygon;
+                    return "Draw polygon";
                 case "Translate":
-                    return Properties.Resources.ToolBarTranslate;
+                    return "Translate geometry";
                 case "Rotate":
-                    return Properties.Resources.ToolBarRotate;
+                    return "Rotate geometry";
                 case "Scale":
-                    return Properties.Resources.ToolBarScale;
+                    return "Scale geometry";
                 case "Edit":
-                    return Properties.Resources.ToolBarEdit;
+                    return "Edit geometry";
                 default:
                     break;
             }

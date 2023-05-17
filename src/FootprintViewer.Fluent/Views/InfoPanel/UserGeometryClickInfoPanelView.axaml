@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
-			 MinWidth="240"
+             MinWidth="240"
 			 mc:Ignorable="d"
              x:Class="FootprintViewer.Fluent.Views.InfoPanel.UserGeometryClickInfoPanelView"
 			 d:DataContext="{x:Static vmd:DesignData.UserGeometryClickInfoPanel}">

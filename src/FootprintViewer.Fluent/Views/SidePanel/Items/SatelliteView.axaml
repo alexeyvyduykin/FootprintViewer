@@ -7,8 +7,7 @@
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
-			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
 			 x:DataType="items:SatelliteViewModel"
 			 mc:Ignorable="d"
 			 d:DesignWidth="380"
@@ -96,17 +95,17 @@
 
 					<CheckBox IsChecked="{Binding IsTrack}"
 							  Cursor="Hand"
-							  Content="{x:Static prop:Resources.SatelliteTrack}"
+							  Content="Track"
 							  Classes="option"
 							  DockPanel.Dock="Right"/>
 					<CheckBox IsChecked="{Binding IsLeftSwath}"
 							  Cursor="Hand"
-							  Content="{x:Static prop:Resources.SatelliteLeftSwath}"
+							  Content="Left swath"
 							  Classes="option"
 							  DockPanel.Dock="Right"/>
 					<CheckBox IsChecked="{Binding IsRightSwath}"
 							  Cursor="Hand"
-							  Content="{x:Static prop:Resources.SatelliteRightSwath}"
+							  Content="Right swath"
 							  Classes="option"
 							  DockPanel.Dock="Right"/>
 				</StackPanel>
@@ -118,34 +117,34 @@
 					Background="{DynamicResource AccentDarkBrush}"
 					IsVisible="{Binding #ShowInfoToggleButton.IsChecked}">
 				<StackPanel Spacing="4">
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteSemiaxis}"
+					<c:TextValue Text="Semiaxis"
 								 Content="{Binding Satellite.Semiaxis, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteEccentricity}"
+					<c:TextValue Text="Eccentricity"
 								 Content="{Binding Satellite.Eccentricity, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteInclination}"
+					<c:TextValue Text="Inclination"
 								 Content="{Binding Satellite.InclinationDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteArgOfPerigee}"
+					<c:TextValue Text="Argument of perigee"
 								 Content="{Binding Satellite.ArgumentOfPerigeeDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteRAAN}"
+					<c:TextValue Text="RAAN"
 								 Content="{Binding Satellite.RightAscensionAscendingNodeDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteLonAN}"
+					<c:TextValue Text="Longitude of the ascending node"
 								 Content="{Binding Satellite.LongitudeAscendingNodeDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatellitePeriod}"
+					<c:TextValue Text="Period"
 								 Content="{Binding Satellite.Period, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteEpoch}"
+					<c:TextValue Text="Epoch"
 								 Content="{Binding Satellite.Epoch}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteLookAngle}"
+					<c:TextValue Text="Look angle"
 								 Content="{Binding Satellite.LookAngleDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
-					<c:TextValue Text="{x:Static prop:Resources.SatelliteRadarAngle}"
+					<c:TextValue Text="Radar angle"
 								 Content="{Binding Satellite.RadarAngleDeg, StringFormat={}{0:0.##}}"
 								 Classes="h2"/>
 				</StackPanel>

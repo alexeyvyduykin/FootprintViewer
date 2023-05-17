@@ -6,7 +6,6 @@
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
              xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
-             xmlns:reactiveUi="http://reactiveui.net"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel"

@@ -26,18 +26,18 @@ public class TipTitleConverter1 : IValueConverter
             {
                 if (target is TipTarget.Rectangle || target is TipTarget.Circle)
                 {
-                    return $"{Properties.Resources.Area}: {value2}";
+                    return $"Area: {value2}";
                 }
                 else if (target is TipTarget.Route)
                 {
-                    return $"{Properties.Resources.Distance}: {value2}";
+                    return $"Distance: {value2}";
                 }
             }
             else if (mode is TipMode.Creating)
             {
                 if (target is TipTarget.Polygon)
                 {
-                    return $"{Properties.Resources.Area}: {value2}";
+                    return $"Area: {value2}";
                 }
             }
         }

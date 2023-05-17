@@ -7,8 +7,7 @@
              xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
-			 mc:Ignorable="d"
+             mc:Ignorable="d"
              MinWidth="400"
              d:DesignWidth="400" d:DesignHeight="480"
 			 d:DataContext="{x:Static vmd:DesignData.FootprintFilter}">
@@ -23,7 +22,7 @@
 
 			<StackPanel>
 				<Grid ColumnDefinitions="*,16,Auto,16">
-					<TextBlock Text="{x:Static prop:Resources.FilterNodeRange}"
+					<TextBlock Text="Node range"
 							   Classes="h3 medium"/>
 
 					<TextBlock Grid.Column="1"
@@ -49,11 +48,11 @@
 			</StackPanel>
 
 			<CheckBox IsChecked="{Binding IsLeftSwath}"
-					  Content="{x:Static prop:Resources.SatelliteLeftSwath}"
+					  Content="Left swath"
 					  Classes="h3 option"/>
 
 			<CheckBox IsChecked="{Binding IsRightSwath}"
-					  Content="{x:Static prop:Resources.SatelliteRightSwath}"
+					  Content="Right swath"
 					  Classes="h3 option"/>
 
 			<Grid ColumnDefinitions="Auto,*">
@@ -63,7 +62,7 @@
 				</Viewbox>
 				<CheckBox Grid.Column="1"
 						  Margin="8,0,0,0"
-						  Content="{x:Static prop:Resources.FilterSatellites}"
+						  Content="Satellites"
 						  Classes="h3 option"
 						  IsChecked="{Binding IsAllSatellites}"/>
 			</Grid>
@@ -82,8 +81,8 @@
 
 			<ToggleSwitch IsChecked="{Binding IsFullCoverAOI}"
 						  IsEnabled="{Binding IsAOIActive}"
-						  OnContent="{x:Static prop:Resources.FilterFullCoverAOI}"
-						  OffContent="{x:Static prop:Resources.FilterFullCoverAOI}"
+						  OnContent="Full cover AOI"
+						  OffContent="Full cover AOI"
 						  Classes="h3 option"/>
 		</StackPanel>
 	</Border>

@@ -13,8 +13,7 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:filtersView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Filters"
-             xmlns:prop="using:FootprintViewer.Fluent.Properties"
-			 x:DataType="tabs:FootprintPreviewTabViewModel"
+             x:DataType="tabs:FootprintPreviewTabViewModel"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="850"
 			 d:DataContext="{x:Static vmd:DesignData.FootprintPreviewTab}">
@@ -104,7 +103,7 @@
 				<TextBlock Classes="Subtitle1"
 						   Grid.Column="2"
 						   VerticalAlignment="Center"
-						   Text="{x:Static prop:Resources.FilterOptions}"/>
+						   Text="Filter options"/>
 
 				<Button Grid.Column="3"
 						IsVisible="{Binding Filter.IsDirty}"

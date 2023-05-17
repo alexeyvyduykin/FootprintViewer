@@ -17,41 +17,41 @@ public class TipTextConverter1 : IValueConverter
             {
                 if (target is TipTarget.Point)
                 {
-                    return Properties.Resources.TipInitPoint;
+                    return "Click to draw a point";
                 }
                 else if (target is TipTarget.Route)
                 {
-                    return Properties.Resources.TipInitRoute;
+                    return "Click to start measurement";
                 }
                 else if (target is TipTarget.Rectangle)
                 {
-                    return Properties.Resources.TipInitRectangle;
+                    return "Click and drag to draw a rectangle";
                 }
                 else if (target is TipTarget.Circle)
                 {
-                    return Properties.Resources.TipInitCircle;
+                    return "Click and drag to draw a circle";
                 }
                 else if (target is TipTarget.Polygon)
                 {
-                    return Properties.Resources.TipInitPolygon;
+                    return "Click and drag to draw a polygon";
                 }
             }
             else if (mode is TipMode.BeginCreating)
             {
                 if (target is TipTarget.Polygon)
                 {
-                    return Properties.Resources.TipBeginCreatingPolygon;
+                    return "Click to continue drawing the shape";
                 }
             }
             else if (mode is TipMode.HoverCreating)
             {
                 if (target is TipTarget.Rectangle)
                 {
-                    return Properties.Resources.TipBeginCreatingRectangle;
+                    return "Click to finish drawing";
                 }
                 else if (target is TipTarget.Circle)
                 {
-                    return Properties.Resources.TipBeginCreatingCircle;
+                    return "Click to finish drawing";
                 }
                 else if (target is TipTarget.Route)
                 {
@@ -62,7 +62,7 @@ public class TipTextConverter1 : IValueConverter
             {
                 if (target is TipTarget.Polygon)
                 {
-                    return Properties.Resources.TipCreatingPolygon;
+                    return "Click on the first point to close this shape";
                 }
             }
         }
