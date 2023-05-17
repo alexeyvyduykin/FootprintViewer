@@ -5,25 +5,37 @@
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:prop="using:FootprintViewer.Fluent.Properties"
+			 MinWidth="240"
 			 mc:Ignorable="d"
-			 d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.Fluent.Views.InfoPanel.UserGeometryClickInfoPanelView"
 			 d:DataContext="{x:Static vmd:DesignData.UserGeometryClickInfoPanel}">
 
-	<Panel VerticalAlignment="Center"
-		   HorizontalAlignment="Center">
-		<c:Card Opacity="0.85">
-			<StackPanel Margin="4" Spacing="4">
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
 
-				<TextBlock Text="{Binding UserGeometryViewModel.Name}" Classes="Headline6"/>
+	<Panel>
+		<Border Opacity="0.9"
+				Padding="8"
+				Background="{DynamicResource AccentBrush}"
+				CornerRadius="4">
+			<StackPanel Spacing="4">
 
-				<StackPanel>
-					<TextBlock Text="{x:Static prop:Resources.InfoPanelType}" Classes="Overline"/>
-					<TextBlock Text="{Binding UserGeometryViewModel.Type}" Classes="Subtitle1"/>
-				</StackPanel>
+				<TextBlock Text="{Binding UserGeometryViewModel.Name}"
+						   Classes="h4 medium"/>
+
+				<Grid ColumnDefinitions="*,8,Auto">
+					<TextBlock Text="{Binding UserGeometryViewModel.Type}"
+							   Classes="h2 medium"/>
+					<ContentPresenter Grid.Column="2"
+									  ContentTemplate="{StaticResource IconShapeKey}"/>
+				</Grid>
 
 			</StackPanel>
-		</c:Card>
+		</Border>
 	</Panel>
 
 </UserControl>

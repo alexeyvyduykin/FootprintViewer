@@ -18,20 +18,24 @@
 			<DataTemplate x:Key="Route">
 				<Panel>
 					<Viewbox>
-						<materialIcons:MaterialIcon Kind="CircleOutline"/>
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
+													Kind="CircleOutline"/>
 					</Viewbox>
 					<Viewbox Margin="6">
-						<materialIcons:MaterialIcon Kind="SetSquare"/>
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
+													Kind="SetSquare"/>
 					</Viewbox>
 				</Panel>
 			</DataTemplate>
 			<DataTemplate x:Key="AOI">
 				<Panel>
 					<Viewbox>
-						<materialIcons:MaterialIcon Kind="CircleOutline"/>
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
+													Kind="CircleOutline"/>
 					</Viewbox>
 					<Viewbox Margin="8">
-						<materialIcons:MaterialIcon Kind="VectorSquare"/>
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
+													Kind="VectorSquare"/>
 					</Viewbox>
 				</Panel>
 			</DataTemplate>
@@ -39,43 +43,44 @@
 	</UserControl.Resources>
 
 	<Panel>
-		<c:Card Width="400"							 
-				Height="52"					 
-				Opacity="0.85">
-			<Grid ColumnDefinitions="Auto,*,Auto">
+		<Border Width="400"
+				Height="52"
+				Opacity="0.9"
+				Padding="8"
+				Background="{DynamicResource AccentBrush}"
+				CornerRadius="4">
+			<Grid ColumnDefinitions="Auto,15,*,15,Auto">
 
-				<Grid Width="34" Height="34">
+				<Panel Width="34" Height="34">
 					<ContentControl Content="{Binding}"
 									ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
-				</Grid>
+				</Panel>
 
-				<TextBlock x:Name="TextBlock"
-						   Text="{Binding Text}"
-						   Grid.Column="1"
-						   Classes="Body2"
-						   VerticalAlignment="Center"
-						   Margin="15,0,15,0"/>
+				<TextBlock Text="{Binding Text}"
+						   Grid.Column="2"
+						   Classes="h2 medium"
+						   VerticalAlignment="Center"/>
 
-				<Button HorizontalAlignment="Right"
-						Grid.Column="2"
+				<Button Grid.Column="4"
 						Width="29"
 						Height="29"
 						Padding="0"
 						Cursor="Hand"
-						Classes="Flat"
+						Classes="invisible"
 						ToolTip.ShowDelay="0"
 						Command="{Binding Close}">
 					<ToolTip.Tip>
-						<ToolTip Content="{x:Static prop:Resources.Close}" Classes="FastTooltip"/>
+						<ToolTip Content="{x:Static prop:Resources.Close}"
+								 Classes="FastTooltip"/>
 					</ToolTip.Tip>
 					<Viewbox Margin="4">
-						<materialIcons:MaterialIcon Foreground="{Binding #TextBlock.Foreground}"
+						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
 													Kind="CloseThick" />
 					</Viewbox>
 				</Button>
 
 			</Grid>
-		</c:Card>
+		</Border>
 	</Panel>
 
 </UserControl>

@@ -18,36 +18,6 @@
 		<conv:CoordinateConverter x:Key="CoordinateConv"/>
 		<conv:FootprintInfoNameConverter x:Key="NameConv"/>
 		<conv:FootprintInfoTimeConverter x:Key="TimeConv"/>
-		<DataTemplate x:Key="IconCenterKey">
-			<Border Cursor="Help"
-					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelCenter}">
-				<Viewbox Width="20" Height="20">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
-												Kind="MapMarker" />
-				</Viewbox>
-			</Border>
-		</DataTemplate>
-		<DataTemplate x:Key="IconSatelliteKey">
-			<Border Cursor="Help"
-					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelSatellite}">
-				<Viewbox Width="20" Height="20">
-					<PathIcon Foreground="{StaticResource IconAccentBrush}"
-							  Data="{StaticResource IconSatellite}"/>
-				</Viewbox>
-			</Border>
-		</DataTemplate>
-		<DataTemplate x:Key="IconBeginKey">
-			<Border Cursor="Help"
-					Background="Transparent"
-					ToolTip.Tip="{x:Static prop:Resources.InfoPanelBegin}">
-				<Viewbox Width="20" Height="20">
-					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
-												Kind="ClockStart" />
-				</Viewbox>
-			</Border>
-		</DataTemplate>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
