@@ -163,7 +163,7 @@ public sealed partial class MainViewModel : ViewModelBase
             }),
             ActionTabs = new()
             {
-                new(nameof(ConnectionViewModel), Connection),
+                new(nameof(AddPlannedSchedulePageViewModel), Connection),
                 new(nameof(SettingsViewModel), Settings),
             }
         };
@@ -515,7 +515,7 @@ public partial class MainViewModel
 
         var actionTabs = new SidePanelActionTabViewModel[]
         {
-            new(nameof(ConnectionViewModel)),
+            new(nameof(AddPlannedSchedulePageViewModel)),
             new(nameof(SettingsViewModel))
         };
 

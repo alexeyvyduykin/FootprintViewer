@@ -53,7 +53,7 @@
 					<materialIcons:MaterialIcon Kind="ChartTimeline" Classes="high"/>
 				</Viewbox>
 			</DataTemplate>
-			<DataTemplate x:Key="ConnectionViewModel">
+			<DataTemplate x:Key="AddPlannedSchedulePageViewModel">
 				<Viewbox Margin="4">
 					<materialIcons:MaterialIcon Kind="PowerPlug" Classes="high"/>
 				</Viewbox>

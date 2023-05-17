@@ -16,9 +16,6 @@
 
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>
 
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ColorZone.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Card.axaml"/>
-
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FontSizes.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Border.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/TextBox.axaml"/>
@@ -39,7 +36,6 @@
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToolTip.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanel.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/BottomPanel.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/FilterToggleButton.axaml"/>
 
 		<StyleInclude Source="avares://TimeDataViewer/Styles/Default.axaml"/>

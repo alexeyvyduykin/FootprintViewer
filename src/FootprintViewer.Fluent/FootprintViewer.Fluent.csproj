@@ -53,40 +53,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Controls\Card.axaml.cs">
-		  <DependentUpon>Card.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Controls\ColorZone.axaml.cs">
-		  <DependentUpon>ColorZone.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Controls\TextValue.axaml.cs">
-		  <DependentUpon>TextValue.axaml</DependentUpon>
-		</Compile>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\FootprintPreviewView.axaml.cs">
-			<DependentUpon>FootprintPreviewView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\FootprintView.axaml.cs">
-			<DependentUpon>FootprintView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\GroundStationView.axaml.cs">
-			<DependentUpon>GroundStationView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\GroundTargetView.axaml.cs">
-			<DependentUpon>GroundTargetView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\SatelliteView.axaml.cs">
-			<DependentUpon>SatelliteView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\SidePanel\Items\UserGeometryView.axaml.cs">
-			<DependentUpon>UserGeometryView.axaml</DependentUpon>
-		</Compile>
-		<Compile Update="Views\ToolBar\ToolBarView.axaml.cs">
-		  <DependentUpon>ToolBarView.axaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
@@ -101,19 +71,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="appsettings.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="Assets\PlannedSchedule.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="Assets\world.mbtiles">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Remove="Controls\ContentArea.axaml" />
 	</ItemGroup>
 
 </Project>

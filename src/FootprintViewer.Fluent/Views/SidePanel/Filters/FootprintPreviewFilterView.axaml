@@ -31,7 +31,7 @@
 		<conv:DateTimeOffsetConverter x:Key="DateTimeOffsetConv"/>
 	</UserControl.Resources>
 
-	<c:ColorZone Padding="20">
+	<Border Padding="20">
 		<StackPanel>
 
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -122,6 +122,6 @@
 			</StackPanel>
 
 		</StackPanel>
-	</c:ColorZone>
+	</Border>
 
 </UserControl>

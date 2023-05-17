@@ -1,14 +1,10 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.Builders;
-using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Factories;
+﻿using FootprintViewer.Data.Builders;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Fluent.ViewModels.Settings;
-using FootprintViewer.Fluent.ViewModels.Settings.SourceBuilders;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
@@ -116,28 +112,7 @@ public static class DesignData
         return panel;
     }
 
-    public static TableInfoViewModel TableInfo => TableInfoViewModel.Build(TableInfoType.UserGeometry);
-
     public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
-
-    public static DatabaseBuilderViewModel DatabaseBuilder => new(DbKeys.UserGeometries, new DbFactory())
-    {
-        Host = "localhost",
-        Port = 5432,
-        Database = "DataSettingsSampleDatabase1",
-        Username = "postgres",
-        Password = "user",
-        IsActive = true
-    };
-
-    public static JsonBuilderViewModel JsonBuilder => new(DbKeys.UserGeometries)
-    {
-        Directory = GetFullPathToAssets(),
-        IsActive = true
-    };
-
-    public static ConnectionViewModel Connection => CreateConnection(_resolver);
-
 
     // Tool bar
     public static MapToolsViewModel MapTools => new(_resolver);
@@ -147,34 +122,6 @@ public static class DesignData
         var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
         var path = Path.GetFullPath(Path.Combine(root, @"..\..\..\Assets"));
         return path;
-    }
-
-    private static ConnectionViewModel CreateConnection(DesignDataDependencyResolver resolver)
-    {
-        var connection = new ConnectionViewModel(resolver);
-
-        var source = resolver.GetService<IDataManager>()?.GetSources(DbKeys.UserGeometries.ToString())[0];
-
-        if (source is not null)
-        {
-            connection.SourceContainers = new List<SourceContainerViewModel>()
-        {
-            new SourceContainerViewModel(connection, DbKeys.UserGeometries)
-            {
-                Header = DbKeys.UserGeometries.ToString(),
-                Sources = new List<ISourceViewModel>()
-                {
-                    new SourceViewModel(source) { Name = "Source13" },
-                    new SourceViewModel(source) { Name = "Source14" },
-                    new SourceViewModel(source) { Name = "Source15" },
-                },
-            },
-        };
-        }
-
-        connection.IsActive = true;
-
-        return connection;
     }
 
     public static SidePanelViewModel SidePanel => CreateSidePanel(_resolver);
@@ -214,7 +161,7 @@ public static class DesignData
 
         var actiontabs = new SidePanelActionTabViewModel[]
         {
-            new(nameof(ConnectionViewModel)),
+            new(nameof(AddPlannedSchedulePageViewModel)),
             new(nameof(SettingsViewModel)),
         };
 
