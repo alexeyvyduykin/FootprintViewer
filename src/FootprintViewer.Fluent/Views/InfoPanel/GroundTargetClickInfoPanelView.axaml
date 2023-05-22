@@ -2,13 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             mc:Ignorable="d"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"
+			 mc:Ignorable="d"
 			 MinWidth="240"
              x:Class="FootprintViewer.Fluent.Views.InfoPanel.GroundTargetClickInfoPanelView"
-			 d:DataContext="{x:Static vmd:DesignData.GroundTargetClickInfoPanel}">
+			 x:DataType="vm:GroundTargetInfoPanelItemViewModel">
 
+	<Design.DataContext>
+		<vm:GroundTargetInfoPanelItemViewModel>
+			<vm:GroundTargetInfoPanelItemViewModel.Text>GroundTarget081</vm:GroundTargetInfoPanelItemViewModel.Text>
+			<vm:GroundTargetInfoPanelItemViewModel.TypeInfo>Route</vm:GroundTargetInfoPanelItemViewModel.TypeInfo>
+		</vm:GroundTargetInfoPanelItemViewModel>
+	</Design.DataContext>
+	
 	<UserControl.Styles>
 		<Style Selector="TextBlock">
 			<Setter Property="HorizontalAlignment" Value="Right"/>
@@ -23,12 +29,10 @@
 				CornerRadius="4">
 			<StackPanel Spacing="4">
 
-				<TextBlock Text="{Binding GroundTargetViewModel.Name}"
-						   Classes="h4 medium"/>
+				<TextBlock Text="{Binding Text}" Classes="h4 medium"/>
 
 				<Grid ColumnDefinitions="*,8,Auto">
-					<TextBlock Text="{Binding GroundTargetViewModel.Type}"
-							   Classes="h2 medium"/>
+					<TextBlock Text="{Binding TypeInfo}" Classes="h2 medium"/>
 					<ContentPresenter Grid.Column="2"
 									  ContentTemplate="{StaticResource IconShapeKey}"/>
 				</Grid>

@@ -48,6 +48,8 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 
         Title = "Просмотр рабочей программы";
 
+        Key = nameof(FootprintTabViewModel);
+
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;
 
@@ -268,6 +270,7 @@ public partial class FootprintTabViewModel
         Filter = new FootprintTabFilterViewModel(resolver);
 
         Title = "Просмотр рабочей программы";
+        Key = nameof(FootprintTabViewModel);
 
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;

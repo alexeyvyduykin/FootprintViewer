@@ -32,6 +32,7 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
         _layerStyleManager = Services.LayerStyleManager;
 
         Title = "Просмотр наземных станций";
+        Key = nameof(GroundStationTabViewModel);
 
         _groundStation
             .Connect()
@@ -114,7 +115,7 @@ public partial class GroundStationTabViewModel
         _layerStyleManager = resolver.GetService<LayerStyleManager>();
 
         Title = "Просмотр наземных станций";
-
+        Key = nameof(GroundStationTabViewModel);
         _groundStation
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)

@@ -38,6 +38,8 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
         Filter = new FootprintPreviewTabFilterViewModel();
 
+        Key = nameof(FootprintPreviewTabViewModel);
+
         Title = "Поиск сцены";
 
         var filter1 = Filter.AOIFilterObservable;

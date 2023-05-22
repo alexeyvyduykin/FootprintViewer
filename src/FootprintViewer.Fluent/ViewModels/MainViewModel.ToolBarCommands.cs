@@ -167,7 +167,7 @@ public partial class MainViewModel
 
         layer?.ClearRoute();
 
-        InfoPanel.CloseAll(typeof(RouteInfoPanel));
+        InfoPanel.CloseAll("Route");
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Route));
 

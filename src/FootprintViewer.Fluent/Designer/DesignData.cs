@@ -76,16 +76,6 @@ public static class DesignData
 
     public static TimelinesOldViewModel TimelinesOld => new();
 
-    public static FootprintClickInfoPanel FootprintClickInfoPanel => new(new FootprintViewModel(FootprintBuilder.CreateRandom()));
-
-    public static GroundTargetClickInfoPanel GroundTargetClickInfoPanel => new(new GroundTargetViewModel(GroundTargetBuilder.CreateRandom()));
-
-    public static RouteInfoPanel RouteInfoPanel => new() { Text = "Description" };
-
-    public static AOIInfoPanel AOIInfoPanel => new() { Text = "Description" };
-
-    public static UserGeometryClickInfoPanel UserGeometryClickInfoPanel => new(new UserGeometryViewModel(UserGeometryBuilder.CreateRandom()));
-
     public static InfoPanelViewModel InfoPanel => CreateInfoPanel();
 
     // Dialogs
@@ -103,11 +93,11 @@ public static class DesignData
     {
         var panel = new InfoPanelViewModel();
 
-        panel.Show(RouteInfoPanel);
-        panel.Show(AOIInfoPanel);
-        panel.Show(FootprintClickInfoPanel);
-        panel.Show(GroundTargetClickInfoPanel);
-        panel.Show(UserGeometryClickInfoPanel);
+        panel.Show(InfoPanelItemViewModel.Create("Route", "Route description"));
+        panel.Show(InfoPanelItemViewModel.Create("AOI", "AOI description"));
+        panel.Show(FootprintInfoPanelItemViewModel.Create(new(FootprintBuilder.CreateRandom())));
+        panel.Show(GroundTargetInfoPanelItemViewModel.Create(new(GroundTargetBuilder.CreateRandom())));
+        panel.Show(UserGeometryInfoPanelItemViewModel.Create(new(UserGeometryBuilder.CreateRandom())));
 
         return panel;
     }

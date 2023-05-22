@@ -2,5 +2,5 @@
 
 public interface ISelectorItem
 {
-    string GetKey();
+    string? Key { get; set; }
 }

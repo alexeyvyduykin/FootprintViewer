@@ -34,7 +34,7 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
         _layerStyleManager = Services.LayerStyleManager;
 
         Title = "Просмотр спутников";
-
+        Key = nameof(SatelliteTabViewModel);
         _satellites
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -118,6 +118,7 @@ public partial class SatelliteTabViewModel
         _layerStyleManager = resolver.GetService<LayerStyleManager>();
 
         Title = "Просмотр спутников";
+        Key = nameof(SatelliteTabViewModel);
 
         _satellites
             .Connect()

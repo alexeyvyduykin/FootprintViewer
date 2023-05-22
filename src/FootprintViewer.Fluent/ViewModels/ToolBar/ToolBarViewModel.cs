@@ -39,13 +39,13 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             Tag = "ZoomOut",
         };
 
-        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle");
-        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon");
-        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle");
+        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle", "AddRectangle");
+        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon", "AddPolygon");
+        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle", "AddCircle");
 
         AOICollection = CreateToolCollection(new[] { AddRectangle, AddPolygon, AddCircle });
 
-        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route");
+        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route", "Route");
 
         MapBackgrounds = new ToolCheck()
         {
@@ -57,18 +57,18 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             Tag = "MapLayers",
         };
 
-        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select");
-        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "Point");
-        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "Rectangle");
-        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "Circle");
-        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "Polygon");
+        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select", "Select");
+        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "AddPoint", "Point");
+        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "AddRectangle", "Rectangle");
+        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "AddCircle", "Circle");
+        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "AddPolygon", "Polygon");
 
         GeometryCollection = CreateToolCollection(new[] { Point, Rectangle, Circle, Polygon });
 
-        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate");
-        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate");
-        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale");
-        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit");
+        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate", "Translate");
+        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate", "Rotate");
+        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale", "Scale");
+        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit", "Edit");
 
         SetMapCommand = ReactiveCommand.Create<MapResource>(s => map.SetWorldMapLayer(s));
 
@@ -97,9 +97,13 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             .Subscribe(_ => LayerContainer = new LayerContainerViewModel());
     }
 
-    private static ToolCheck CreateToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator, string? tag)
+    private static ToolCheck CreateToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator, string? key, string? tag)
     {
-        return new ToolCheck(update, selector, validator) { Tag = tag };
+        return new ToolCheck(update, selector, validator) 
+        {
+            Key = key,
+            Tag = tag
+        };
     }
 
     private static IToolCollection CreateToolCollection(IToolCheck[] toolChecks)
@@ -192,13 +196,13 @@ public partial class ToolBarViewModel
             Tag = "ZoomOut",
         };
 
-        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle");
-        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon");
-        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle");
+        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle", "AddRectangle");
+        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon", "AddPolygon");
+        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle", "AddCircle");
 
         AOICollection = CreateToolCollection(new[] { AddRectangle, AddPolygon, AddCircle });
 
-        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route");
+        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route", "Route");
 
         MapBackgrounds = new ToolCheck()
         {
@@ -210,18 +214,18 @@ public partial class ToolBarViewModel
             Tag = "MapLayers",
         };
 
-        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select");
-        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "Point");
-        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "Rectangle");
-        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "Circle");
-        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "Polygon");
+        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select", "Select");
+        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "AddPoint", "Point");
+        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "AddRectangle", "Rectangle");
+        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "AddCircle", "Circle");
+        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "AddPolygon", "Polygon");
 
         GeometryCollection = CreateToolCollection(new[] { Point, Rectangle, Circle, Polygon });
 
-        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate");
-        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate");
-        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale");
-        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit");
+        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate", "Translate");
+        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate", "Rotate");
+        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale", "Scale");
+        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit", "Edit");
 
         SetMapCommand = ReactiveCommand.Create<MapResource>(s => map.SetWorldMapLayer(s));
 

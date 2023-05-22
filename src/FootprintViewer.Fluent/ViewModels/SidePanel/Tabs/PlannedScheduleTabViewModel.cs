@@ -40,6 +40,7 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
         _layer = Services.Map.GetLayer(LayerType.Footprint);
 
         Title = "Просмотр рабочей программы";
+        Key = nameof(PlannedScheduleTabViewModel);
 
         _plannedSchedules
             .Connect()
@@ -143,7 +144,7 @@ public partial class PlannedScheduleTabViewModel
         _layer = resolver.GetService<IMap>().GetLayer(LayerType.Footprint);
 
         Title = "Просмотр рабочей программы";
-
+        Key = nameof(PlannedScheduleTabViewModel);
         _plannedSchedules
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)

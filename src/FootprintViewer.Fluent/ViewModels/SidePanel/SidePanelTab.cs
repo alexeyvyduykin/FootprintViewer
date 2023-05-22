@@ -5,7 +5,8 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel;
 
 public abstract class SidePanelTabViewModel : ViewModelBase, ISelectorItem
 {
-    public string GetKey() => GetType().Name;
+    public string? Key { get; set; }
+    //() => GetType().Name;
 
     [Reactive]
     public string? Title { get; set; }

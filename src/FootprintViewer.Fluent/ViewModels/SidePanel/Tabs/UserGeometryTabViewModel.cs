@@ -25,6 +25,7 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
         _dataManager = Services.DataManager;
 
         Title = "Пользовательская геометрия";
+        Key = nameof(UserGeometryTabViewModel);
 
         _userGeometries
             .Connect()
@@ -91,7 +92,7 @@ public partial class UserGeometryTabViewModel
         _dataManager = resolver.GetService<IDataManager>();
 
         Title = "Пользовательская геометрия";
-
+        Key = nameof(UserGeometryTabViewModel);
         _userGeometries
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)

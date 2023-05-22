@@ -2,44 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
+             xmlns:converters="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             mc:Ignorable="d"
-             d:DesignHeight="250" d:DesignWidth="450"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"
+             mc:Ignorable="d" d:DesignHeight="250" d:DesignWidth="450"
              x:Class="FootprintViewer.Fluent.Views.InfoPanel.GeometryInfoPanelView"
-			 d:DataContext="{x:Static vmd:DesignData.RouteInfoPanel}">
+			 x:DataType="vm:InfoPanelItemViewModel">
 
-	<UserControl.Resources>
-		<selectors:DataTemplateSelector x:Key="InfoPanelIconDataSelector">
-			<DataTemplate x:Key="Route">
-				<Panel>
-					<Viewbox>
-						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
-													Kind="CircleOutline"/>
-					</Viewbox>
-					<Viewbox Margin="6">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
-													Kind="SetSquare"/>
-					</Viewbox>
-				</Panel>
-			</DataTemplate>
-			<DataTemplate x:Key="AOI">
-				<Panel>
-					<Viewbox>
-						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
-													Kind="CircleOutline"/>
-					</Viewbox>
-					<Viewbox Margin="8">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
-													Kind="VectorSquare"/>
-					</Viewbox>
-				</Panel>
-			</DataTemplate>
-		</selectors:DataTemplateSelector>
-	</UserControl.Resources>
+	<Design.DataContext>
+		<vm:InfoPanelItemViewModel>
+			<vm:InfoPanelItemViewModel.Key>Route</vm:InfoPanelItemViewModel.Key>				
+			<vm:InfoPanelItemViewModel.Text>Description</vm:InfoPanelItemViewModel.Text>
+		</vm:InfoPanelItemViewModel>
+	</Design.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="materialIcons|MaterialIcon.t1">
+			<Setter Property="Foreground" Value="{DynamicResource TextHighBrush}"/>
+			<Setter Property="Kind" Value="CircleOutline"/>
+		</Style>
+	</UserControl.Styles>
 
 	<Panel>
 		<Border Width="400"
@@ -49,10 +31,10 @@
 				Background="{DynamicResource AccentBrush}"
 				CornerRadius="4">
 			<Grid ColumnDefinitions="Auto,15,*,15,Auto">
-
-				<Panel Width="34" Height="34">
-					<ContentControl Content="{Binding}"
-									ContentTemplate="{StaticResource InfoPanelIconDataSelector}"/>
+				<Panel>
+					<materialIcons:MaterialIcon Width="34" Height="34" Classes="t1"/>
+					<materialIcons:MaterialIcon Width="18" Height="18" Classes="t1"
+												Kind="{Binding Key, Converter={x:Static converters:MaterialIconConverter.Instance}}"/>
 				</Panel>
 
 				<TextBlock Text="{Binding Text}"
@@ -70,8 +52,7 @@
 						Command="{Binding Close}"
 						ToolTip.Tip="Close">
 					<Viewbox Margin="4">
-						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
-													Kind="CloseThick" />
+						<materialIcons:MaterialIcon Classes="t1" Kind="CloseThick"/>
 					</Viewbox>
 				</Button>
 

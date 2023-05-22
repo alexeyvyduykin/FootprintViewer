@@ -6,6 +6,7 @@
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
 			 xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+			 xmlns:converters="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:local="clr-namespace:FootprintViewer.Fluent"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
@@ -22,39 +23,6 @@
 
 	<UserControl.Resources>
 		<conv:ToolBarToolTipConverter x:Key="ToolTipConv"/>
-		<selectors:DataTemplateSelector x:Key="ToolIconDataSelector">
-
-			<DataTemplate x:Key="AddRectangle">
-				<materialIcons:MaterialIcon Kind="ShapeRectangleAdd" Classes="t1"/>
-			</DataTemplate>
-
-			<DataTemplate x:Key="AddPolygon">
-				<materialIcons:MaterialIcon Kind="ShapePolygonAdd" Classes="t1"/>
-			</DataTemplate>
-
-			<DataTemplate x:Key="AddCircle">
-				<materialIcons:MaterialIcon Kind="ShapeCircleAdd" Classes="t1"/>
-			</DataTemplate>
-
-			<DataTemplate x:Key="Point">
-				<Viewbox Classes="t1">
-					<PathIcon Margin="6.5" Data="{DynamicResource fg-poi}" Classes="t1"/>
-				</Viewbox>
-			</DataTemplate>
-
-			<DataTemplate x:Key="Rectangle">
-				<materialIcons:MaterialIcon Kind="ShapeRectangleAdd" Classes="t1"/>
-			</DataTemplate>
-
-			<DataTemplate x:Key="Circle">
-				<materialIcons:MaterialIcon Kind="ShapeCircleAdd" Classes="t1"/>
-			</DataTemplate>
-
-			<DataTemplate x:Key="Polygon">
-				<materialIcons:MaterialIcon Kind="ShapePolygonAdd" Classes="t1"/>
-			</DataTemplate>
-
-		</selectors:DataTemplateSelector>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -95,8 +63,7 @@
 		<Style Selector="ToggleButton.map" x:DataType="toolBar:ToolCheck">
 			<Setter Property="Width" Value="36"></Setter>
 			<Setter Property="Height" Value="36"></Setter>
-			<Setter Property="IsChecked" Value="{Binding IsCheck, Mode=TwoWay}"></Setter>
-			<Setter Property="Content" Value="{Binding}"></Setter>
+			<Setter Property="IsChecked" Value="{Binding IsCheck, Mode=TwoWay}"></Setter>		
 			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
 			<Setter Property="ToolTip.Tip" Value="{Binding Tag, Converter={StaticResource ToolTipConv}}"></Setter>
 		</Style>
@@ -136,10 +103,13 @@
 			</Setter>
 			<Setter Property="ItemTemplate">
 				<Setter.Value>
-					<DataTemplate>
-						<ToggleButton DataContext="{TemplateBinding}"
-									  ContentTemplate="{DynamicResource ToolIconDataSelector}"
-									  Classes="map"/>
+					<DataTemplate DataType="toolBar:ToolCheck">
+						<ToggleButton x:CompileBindings="False" 
+									  DataContext="{TemplateBinding}"
+									  Classes="map">
+							<materialIcons:MaterialIcon Kind="{Binding Key, Converter={x:Static converters:MaterialIconConverter.Instance}}" 
+														Classes="t1"/>
+						</ToggleButton>
 					</DataTemplate>
 				</Setter.Value>
 			</Setter>

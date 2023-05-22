@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"
-             xmlns:infoPanels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
+             xmlns:views="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
              x:DataType="vm:InfoPanelViewModel"
 			 mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="450"
@@ -37,20 +37,20 @@
 		<ItemsControl Items="{Binding Panels}">
 			<ItemsControl.DataTemplates>
 
-				<DataTemplate DataType="vm:FootprintClickInfoPanel">
-					<infoPanels:FootprintClickInfoPanelView DataContext="{Binding}"/>
+				<DataTemplate DataType="vm:FootprintInfoPanelItemViewModel">
+					<views:FootprintClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
-				<DataTemplate DataType="vm:GroundTargetClickInfoPanel">
-					<infoPanels:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
+				<DataTemplate DataType="vm:GroundTargetInfoPanelItemViewModel">
+					<views:GroundTargetClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
-				<DataTemplate DataType="vm:UserGeometryClickInfoPanel">
-					<infoPanels:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
+				<DataTemplate DataType="vm:UserGeometryInfoPanelItemViewModel">
+					<views:UserGeometryClickInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
-				<DataTemplate>
-					<infoPanels:GeometryInfoPanelView DataContext="{Binding}"/>
+				<DataTemplate DataType="vm:InfoPanelItemViewModel">
+					<views:GeometryInfoPanelView DataContext="{Binding}"/>
 				</DataTemplate>
 
 			</ItemsControl.DataTemplates>

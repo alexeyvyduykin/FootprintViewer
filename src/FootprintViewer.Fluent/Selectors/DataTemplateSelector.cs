@@ -15,14 +15,17 @@ public class DataTemplateSelector : IDataTemplate
     {
         string? key = null;
 
-        if (param is string str)
+        if (param is SidePanelTabViewModel tab)
         {
-            key = str;
-
+            key = tab.Key;
         }
         else if (param is ISelectorItem selectorItem)
         {
-            key = selectorItem.GetKey();
+            key = selectorItem.Key;
+        }
+        else if (param is string str)
+        {
+            key = str;
         }
 
         if (key is not null)
@@ -30,7 +33,7 @@ public class DataTemplateSelector : IDataTemplate
             return Templates[key].Build(param);
         }
 
-        throw new Exception("Key not register in DataTemplateSelector");
+        return new TextBlock() {Text = "error" };// throw new Exception("Key not register in DataTemplateSelector");
     }
 
     public bool Match(object data)

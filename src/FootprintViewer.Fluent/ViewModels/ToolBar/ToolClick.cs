@@ -17,10 +17,11 @@ public class ToolClick : ViewModelBase, IToolClick
 
     public void SubscribeAsync(Action click)
     {
-        _click = async () => await Observable.Start(click, RxApp.TaskpoolScheduler);
+        _click = async () => await Observable.Start(click, RxApp.TaskpoolScheduler); 
+        Key = (string?)Tag ?? string.Empty;
     }
 
-    public string GetKey() => (string?)Tag ?? string.Empty;
+    public string? Key { get; set; }// GetKey() => (string?)Tag ?? string.Empty;
 
     public object? Tag { get; set; }
 

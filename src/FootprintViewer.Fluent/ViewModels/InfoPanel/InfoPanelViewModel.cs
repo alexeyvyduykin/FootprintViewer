@@ -7,8 +7,8 @@ namespace FootprintViewer.Fluent.ViewModels.InfoPanel;
 
 public sealed class InfoPanelViewModel : ViewModelBase
 {
-    private readonly SourceList<InfoPanelItem> _panels = new();
-    private readonly ReadOnlyObservableCollection<InfoPanelItem> _items;
+    private readonly SourceList<InfoPanelItemViewModel> _panels = new();
+    private readonly ReadOnlyObservableCollection<InfoPanelItemViewModel> _items;
 
     public InfoPanelViewModel()
     {
@@ -20,13 +20,13 @@ public sealed class InfoPanelViewModel : ViewModelBase
             .Subscribe();
     }
 
-    public ReadOnlyObservableCollection<InfoPanelItem> Panels => _items;
+    public ReadOnlyObservableCollection<InfoPanelItemViewModel> Panels => _items;
 
-    public void Show(InfoPanelItem panel)
+    public void Show(InfoPanelItemViewModel panel)
     {
         panel.Close.Subscribe(remove);
 
-        void remove(InfoPanelItem panel)
+        void remove(InfoPanelItemViewModel panel)
         {
             _panels.Edit(innerList => innerList.Remove(panel));
         }
@@ -35,7 +35,7 @@ public sealed class InfoPanelViewModel : ViewModelBase
         {
             for (int i = innerList.Count - 1; i >= 0; i--)
             {
-                if (innerList[i].GetType() == panel.GetType())
+                if (string.Equals(innerList[i].Key, panel.Key))
                 {
                     innerList.RemoveAt(i);
                 }
@@ -45,13 +45,13 @@ public sealed class InfoPanelViewModel : ViewModelBase
         });
     }
 
-    public void CloseAll(Type type)
+    public void CloseAll(string key)
     {
         _panels.Edit(innerList =>
         {
             for (int i = innerList.Count - 1; i >= 0; i--)
             {
-                if (innerList[i].GetType() == type)
+                if (string.Equals(innerList[i].Key, key))
                 {
                     innerList.RemoveAt(i);
                 }

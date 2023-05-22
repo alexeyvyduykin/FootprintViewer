@@ -1,18 +1,24 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"         
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"              
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:conv="using:FootprintViewer.Fluent.Converters"
 			 MinWidth="240"
 			 mc:Ignorable="d"
-			 x:DataType="vm:FootprintClickInfoPanel"
-             x:Class="FootprintViewer.Fluent.Views.InfoPanel.FootprintClickInfoPanelView"
-			 d:DataContext="{x:Static vmd:DesignData.FootprintClickInfoPanel}">
+			 x:DataType="vm:FootprintInfoPanelItemViewModel"
+             x:Class="FootprintViewer.Fluent.Views.InfoPanel.FootprintClickInfoPanelView">
 
+	<Design.DataContext>
+		<vm:FootprintInfoPanelItemViewModel>						
+			<vm:FootprintInfoPanelItemViewModel.Text>Footprint0531</vm:FootprintInfoPanelItemViewModel.Text>
+			<vm:FootprintInfoPanelItemViewModel.CenterInfo>61,00° 68,00°</vm:FootprintInfoPanelItemViewModel.CenterInfo>
+			<vm:FootprintInfoPanelItemViewModel.SatelliteInfo>Satellite07 (5 - Right)</vm:FootprintInfoPanelItemViewModel.SatelliteInfo>
+			<vm:FootprintInfoPanelItemViewModel.TimeInfo>22.05.2023 14:19:42 (29 sec)</vm:FootprintInfoPanelItemViewModel.TimeInfo>
+		</vm:FootprintInfoPanelItemViewModel>
+	</Design.DataContext>
+	
 	<UserControl.Resources>
 		<conv:CoordinateConverter x:Key="CoordinateConv"/>
 		<conv:FootprintInfoNameConverter x:Key="NameConv"/>
@@ -33,26 +39,22 @@
 				CornerRadius="4">
 			<StackPanel Spacing="4">
 
-				<TextBlock Text="{Binding FootprintViewModel.Name}"
-						   Classes="h4 medium"/>
+				<TextBlock Text="{Binding Text}" Classes="h4 medium"/>
 
 				<Grid ColumnDefinitions="*,8,Auto">
-					<TextBlock Text="{Binding FootprintViewModel.Center, Converter={StaticResource CoordinateConv}}"
-							   Classes="h2 medium"/>
+					<TextBlock Text="{Binding CenterInfo}" Classes="h2 medium"/>				
 					<ContentPresenter Grid.Column="2"
 									  ContentTemplate="{StaticResource IconCenterKey}"/>
 				</Grid>
 
 				<Grid ColumnDefinitions="*,8,Auto">
-					<TextBlock Text="{Binding FootprintViewModel, Converter={StaticResource NameConv}}"
-							   Classes="h2 medium"/>
+					<TextBlock Text="{Binding SatelliteInfo}" Classes="h2 medium"/>
 					<ContentPresenter Grid.Column="2"
 									  ContentTemplate="{StaticResource IconSatelliteKey}"/>
 				</Grid>
 
 				<Grid ColumnDefinitions="*,8,Auto">
-					<TextBlock Text="{Binding FootprintViewModel, Converter={StaticResource TimeConv}}"
-							   Classes="h2 medium"/>
+					<TextBlock Text="{Binding TimeInfo}" Classes="h2 medium"/>
 					<ContentPresenter Grid.Column="2"
 									  ContentTemplate="{StaticResource IconBeginKey}"/>
 				</Grid>

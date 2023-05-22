@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:converters="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
@@ -89,6 +90,8 @@
 					<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
 						<Button Command="{Binding Command}"
 								Classes="invisible icon">
+
+							
 							<ContentControl Content="{Binding Key}"
 											ContentTemplate="{DynamicResource SidePanelIconSelector}"/>
 						</Button>
@@ -104,7 +107,7 @@
 					 ActionTabs="{Binding ActionTabs}"
 					 PaneWidth="500"
 					 IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-					 ItemTemplate="{DynamicResource SidePanelIconSelector}"
+					 ItemTemplate="{StaticResource SidePanelIconSelector}"
 					 SelectedItem="{Binding SelectedTab}"/>
 	</Panel>
 

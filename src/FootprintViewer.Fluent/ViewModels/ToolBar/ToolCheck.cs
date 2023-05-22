@@ -40,7 +40,7 @@ public class ToolCheck : ViewModelBase, IToolCheck
         .Where(s => s == false)
         .Select(_ => Unit.Default);
 
-    public string GetKey() => Tag is string tag ? tag : string.Empty;
+    public string? Key { get; set; }// GetKey() => Tag is string tag ? tag : string.Empty;
 
     [Reactive]
     public bool IsCheck { get; set; } = false;

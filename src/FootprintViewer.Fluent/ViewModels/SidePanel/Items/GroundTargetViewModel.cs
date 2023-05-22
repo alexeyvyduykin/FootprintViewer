@@ -18,7 +18,8 @@ public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewe
         _groundTarget = groundTarget;
         _type = groundTarget.Type;
         _name = groundTarget.Name!;
-        _geometry = CreateGeometry(groundTarget.Type, groundTarget.Points);
+        _geometry = CreateGeometry(groundTarget.Type, groundTarget.Points); 
+        Key = _type.ToString();
     }
 
     private static Geometry? CreateGeometry(GroundTargetType type, Geometry? geometry)
@@ -38,7 +39,7 @@ public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewe
         };
     }
 
-    public string GetKey() => _type.ToString();
+    public string? Key { get; set; }// GetKey() => _type.ToString();
 
     public GroundTarget GroundTarget => _groundTarget;
 

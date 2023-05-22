@@ -42,6 +42,7 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
         var areaOfInterest = Services.AreaOfInterest;
 
         Title = "Просмотр наземных целей";
+        Key = nameof(GroundTargetTabViewModel);
 
         Filter = new GroundTargetTabFilterViewModel();
 
@@ -248,7 +249,7 @@ public partial class GroundTargetTabViewModel
         var areaOfInterest = resolver.GetService<AreaOfInterest>();
 
         Title = "Просмотр наземных целей";
-
+        Key = nameof(GroundTargetTabViewModel);
         Filter = new GroundTargetTabFilterViewModel();
 
         var filter1 = Filter.AOIFilterObservable;

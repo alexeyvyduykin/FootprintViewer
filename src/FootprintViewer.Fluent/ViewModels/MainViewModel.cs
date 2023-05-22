@@ -275,10 +275,10 @@ public sealed partial class MainViewModel : ViewModelBase
         var feature = selector.SelectedFeature;
         var layer = selector.SelectedLayer;
 
-        InfoPanelItem? panel = layer?.Name switch
+        InfoPanelItemViewModel? panel = layer?.Name switch
         {
             //nameof(LayerType.Footprint) =>
-            //    (await _dataManager.GetDataAsync<Footprint>(nameof(DbKeys.Footprints)))
+            //    (await Services.DataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.
             //        .Where(s => Equals(s.Name, feature?["Name"]))
             //        .Select(s => new FootprintViewModel(s))
             //        .Select(s => new FootprintClickInfoPanel(s))
@@ -287,13 +287,13 @@ public sealed partial class MainViewModel : ViewModelBase
                 (await Services.DataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new GroundTargetViewModel(s))
-                    .Select(s => new GroundTargetClickInfoPanel(s))
+                    .Select(s => GroundTargetInfoPanelItemViewModel.Create(s))
                     .FirstOrDefault() ?? null,
             nameof(LayerType.User) =>
                 (await Services.DataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new UserGeometryViewModel(s))
-                    .Select(s => new UserGeometryClickInfoPanel(s))
+                    .Select(s => UserGeometryInfoPanelItemViewModel.Create(s))
                     .FirstOrDefault(),
             _ => null
         };
@@ -306,17 +306,17 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private void CloseInfoPanel(ISelector selector)
     {
-        Type? type = selector.SelectedLayer?.Name switch
+        string? key = selector.SelectedLayer?.Name switch
         {
-            nameof(LayerType.Footprint) => typeof(FootprintClickInfoPanel),
-            nameof(LayerType.GroundTarget) => typeof(GroundTargetClickInfoPanel),
-            nameof(LayerType.User) => typeof(UserGeometryClickInfoPanel),
+            nameof(LayerType.Footprint) => "Footprint",
+            nameof(LayerType.GroundTarget) => "GroundTarget",
+            nameof(LayerType.User) => "UserGeometry",
             _ => null
         };
 
-        if (type != null)
+        if (key != null)
         {
-            ClickInfoPanel.CloseAll(type);
+            ClickInfoPanel.CloseAll(key);
         }
     }
 
@@ -380,17 +380,14 @@ public sealed partial class MainViewModel : ViewModelBase
         }
     }
 
-    private InfoPanelItem CreateAOIPanel(IDesigner designer)
+    private InfoPanelItemViewModel CreateAOIPanel(IDesigner designer)
     {
         var center = SphericalMercator.ToLonLat(designer.Feature.Geometry!.Centroid.ToMPoint());
         var area = designer.Area();
 
         var descr = $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(center.X, center.Y)}";
 
-        var panel = new AOIInfoPanel()
-        {
-            Text = descr,
-        };
+        var panel = InfoPanelItemViewModel.Create("AOI", descr);
 
         panel.Close.Subscribe(_ =>
         {
@@ -406,14 +403,11 @@ public sealed partial class MainViewModel : ViewModelBase
         return panel;
     }
 
-    private InfoPanelItem CreateRoutePanel(IDesigner designer)
+    private InfoPanelItemViewModel CreateRoutePanel(IDesigner designer)
     {
         var distance = designer.Distance();
 
-        var panel = new RouteInfoPanel()
-        {
-            Text = FormatHelper.ToDistance(distance),
-        };
+        var panel = InfoPanelItemViewModel.Create("Route", FormatHelper.ToDistance(distance));
 
         panel.Close.Subscribe(_ =>
         {
