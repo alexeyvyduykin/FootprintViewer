@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
@@ -13,6 +14,8 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers;
+using FootprintViewer.StateMachines;
+using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -57,11 +60,11 @@ public sealed partial class MainViewModel : ViewModelBase
 
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
-        _mapState = Services.MapState;
+        _mapState = Services.Locator.GetRequiredService<MapState>();
 
-        MapNavigator = Services.MapNavigator;
+        MapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
 
-        _areaOfInterest = Services.AreaOfInterest;
+        _areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -227,14 +230,14 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public async Task InitAsync()
     {
-        var maps = await Services.DataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        var maps = await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<MapResource>(DbKeys.Maps.ToString());
         var item = maps.FirstOrDefault();
         if (item != null)
         {
-            Services.Map.SetWorldMapLayer(item);
+            Services.Locator.GetRequiredService<Map>().SetWorldMapLayer(item);
         }
 
-        Services.Map.Layers
+        Services.Locator.GetRequiredService<Map>().Layers
             .ToList()
             .Where(s => s is DynamicLayer dynamicLayer && dynamicLayer.DataSource is IDynamic)
             .Select(s => (IDynamic)((DynamicLayer)s).DataSource!)
@@ -244,28 +247,28 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private void EnterFeature(ISelector selector)
     {
-        Services.FeatureManager
+        Services.Locator.GetRequiredService<FeatureManager>()
             .OnLayer(selector.PointeroverLayer)
             .Enter(selector.HoveringFeature);
     }
 
     private void LeaveFeature(ISelector selector)
     {
-        Services.FeatureManager
+        Services.Locator.GetRequiredService<FeatureManager>()
             .OnLayer(selector.PointeroverLayer)
             .Leave();
     }
 
     private void SelectFeature(ISelector selector)
     {
-        Services.FeatureManager
+        Services.Locator.GetRequiredService<FeatureManager>()
             .OnLayer(selector.SelectedLayer)
             .Select(selector.SelectedFeature);
     }
 
     private void UnselectFeature(ISelector selector)
     {
-        Services.FeatureManager
+        Services.Locator.GetRequiredService<FeatureManager>()
             .OnLayer(selector.SelectedLayer)
             .Unselect();
     }
@@ -284,20 +287,20 @@ public sealed partial class MainViewModel : ViewModelBase
             //        .Select(s => new FootprintClickInfoPanel(s))
             //        .FirstOrDefault(),
             nameof(LayerType.GroundTarget) =>
-                (await Services.DataManager.GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
+                (await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new GroundTargetViewModel(s))
                     .Select(s => GroundTargetInfoPanelItemViewModel.Create(s))
                     .FirstOrDefault() ?? null,
             nameof(LayerType.User) =>
-                (await Services.DataManager.GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
+                (await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new UserGeometryViewModel(s))
                     .Select(s => UserGeometryInfoPanelItemViewModel.Create(s))
                     .FirstOrDefault(),
             _ => null
         };
-
+   
         if (panel != null)
         {
             ClickInfoPanel.Show(panel);
@@ -339,9 +342,9 @@ public sealed partial class MainViewModel : ViewModelBase
 
                     var key = DbKeys.UserGeometries.ToString();
 
-                    await Services.DataManager.TryEditAsync(key, name, model);
+                    await Services.Locator.GetRequiredService<IDataManager>().TryEditAsync(key, name, model);
 
-                    Services.DataManager.ForceUpdateData(key);
+                    Services.Locator.GetRequiredService<IDataManager>().ForceUpdateData(key);
                 }
             },
             RxApp.TaskpoolScheduler);
@@ -367,9 +370,9 @@ public sealed partial class MainViewModel : ViewModelBase
 
                 var key = DbKeys.UserGeometries.ToString();
 
-                await Services.DataManager.TryAddAsync(key, model);
+                await Services.Locator.GetRequiredService<IDataManager>().TryAddAsync(key, model);
 
-                Services.DataManager.ForceUpdateData(key);
+                Services.Locator.GetRequiredService<IDataManager>().ForceUpdateData(key);
             },
             RxApp.TaskpoolScheduler);
         }
@@ -411,7 +414,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         panel.Close.Subscribe(_ =>
         {
-            var layer = Services.Map.GetLayer<EditLayer>(LayerType.Edit);
+            var layer = Services.Locator.GetRequiredService<Map>().GetLayer<EditLayer>(LayerType.Edit);
 
             layer?.ClearRoute();
 
@@ -425,13 +428,13 @@ public sealed partial class MainViewModel : ViewModelBase
         return panel;
     }
 
-    public Map Map => Services.Map;
+    public Map Map => Services.Locator.GetRequiredService<Map>();
 
     [Reactive]
     public IInteractive? Interactive { get; set; }
 
     [Reactive]
-    public string State { get; set; } = States.Default;
+    public string State { get; set; } = Mapsui.Interactivity.UI.States.Default;
 
     public SidePanelViewModel SidePanel { get; private set; }// => _sidePanel;
 
@@ -499,7 +502,8 @@ public partial class MainViewModel
     {
         var tabs = new SidePanelTabViewModel[]
         {
-            new SatelliteTabViewModel(resolver),
+            new SatelliteTabViewModel(),
+           // new SatelliteTabViewModel(resolver),
             new GroundTargetTabViewModel(resolver),
             new FootprintTabViewModel(resolver),
             new UserGeometryTabViewModel(resolver),

@@ -28,10 +28,10 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
     public SatelliteTabViewModel()
     {
-        _dataManager = Services.DataManager;
-        _trackProvider = Services.TrackProvider;
-        _sensorProvider = Services.SensorProvider;
-        _layerStyleManager = Services.LayerStyleManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _trackProvider = Services.Locator.GetRequiredService<TrackProvider>();
+        _sensorProvider = Services.Locator.GetRequiredService<SensorProvider>();
+        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
 
         Title = "Просмотр спутников";
         Key = nameof(SatelliteTabViewModel);
@@ -92,8 +92,8 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
             foreach (var item in list)
             {
-                item.TrackObservable.Subscribe(s => Services.TrackProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
-                item.SwathsObservable.Subscribe(s => Services.SensorProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
+                item.TrackObservable.Subscribe(s => Services.Locator.GetRequiredService<TrackProvider>()?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
+                item.SwathsObservable.Subscribe(s => Services.Locator.GetRequiredService<SensorProvider>()?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
                 item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
             }
 
@@ -108,44 +108,44 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
     public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;
 }
 
-public partial class SatelliteTabViewModel
-{
-    public SatelliteTabViewModel(DesignDataDependencyResolver resolver)
-    {
-        _dataManager = resolver.GetService<IDataManager>();
-        _trackProvider = resolver.GetService<TrackProvider>();
-        _sensorProvider = resolver.GetService<SensorProvider>();
-        _layerStyleManager = resolver.GetService<LayerStyleManager>();
+//public partial class SatelliteTabViewModel
+//{
+//    public SatelliteTabViewModel(DesignDataDependencyResolver resolver)
+//    {
+//        _dataManager = resolver.GetService<IDataManager>();
+//        _trackProvider = resolver.GetService<TrackProvider>();
+//        _sensorProvider = resolver.GetService<SensorProvider>();
+//        _layerStyleManager = resolver.GetService<LayerStyleManager>();
 
-        Title = "Просмотр спутников";
-        Key = nameof(SatelliteTabViewModel);
+//        Title = "Просмотр спутников";
+//        Key = nameof(SatelliteTabViewModel);
 
-        _satellites
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Bind(out _items)
-            .Subscribe();
+//        _satellites
+//            .Connect()
+//            .ObserveOn(RxApp.MainThreadScheduler)
+//            .Bind(out _items)
+//            .Subscribe();
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+//        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
+//        _dataManager.DataChanged
+//            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+//            .ToSignal()
+//            .InvokeCommand(Update);
 
-        _isLoading = Update.IsExecuting
-              .ObserveOn(RxApp.MainThreadScheduler)
-              .ToProperty(this, x => x.IsLoading);
+//        _isLoading = Update.IsExecuting
+//              .ObserveOn(RxApp.MainThreadScheduler)
+//              .ToProperty(this, x => x.IsLoading);
 
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Update);
+//        this.WhenAnyValue(s => s.IsActive)
+//            .ObserveOn(RxApp.MainThreadScheduler)
+//            .WhereTrue()
+//            .Take(1)
+//            .ToSignal()
+//            .InvokeCommand(Update);
 
-        _layerStyleManager.Selected
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(UpdateColorImpl);
-    }
-}
+//        _layerStyleManager.Selected
+//            .ObserveOn(RxApp.MainThreadScheduler)
+//            .Subscribe(UpdateColorImpl);
+//    }
+//}

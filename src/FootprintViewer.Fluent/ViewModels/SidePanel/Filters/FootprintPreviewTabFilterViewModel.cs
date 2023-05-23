@@ -31,7 +31,7 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
 
     public FootprintPreviewTabFilterViewModel()
     {
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         _sensors
             .Connect()

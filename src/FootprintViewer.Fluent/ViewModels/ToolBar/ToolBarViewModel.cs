@@ -25,9 +25,9 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     public ToolBarViewModel() : base()
     {
-        _dataManager = Services.DataManager;
-        var map = Services.Map;
-        var mapState = Services.MapState;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        var map = Services.Locator.GetRequiredService<Map>();
+        var mapState = Services.Locator.GetRequiredService<MapState>();
 
         ZoomIn = new ToolClick()
         {

@@ -24,7 +24,7 @@ public class TimelinesOldViewModel : DialogViewModelBase<object>
 
     public TimelinesOldViewModel()
     {
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         SelectedInterval = ReactiveCommand.Create<object?>(SelectedIntervalImpl, outputScheduler: RxApp.MainThreadScheduler);
 

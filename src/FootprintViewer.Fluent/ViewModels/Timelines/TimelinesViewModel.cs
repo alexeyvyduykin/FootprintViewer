@@ -22,7 +22,7 @@ public class TimelinesViewModel : DialogViewModelBase<object>
 
     public TimelinesViewModel()
     {
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         Init = ReactiveCommand.CreateFromTask(UpdateAsyncImpl, outputScheduler: RxApp.MainThreadScheduler);
 

@@ -15,8 +15,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaResource Remove="Assets\PlannedSchedule.json" />
-	  <AvaloniaResource Remove="Assets\world.mbtiles" />
+		<AvaloniaResource Remove="Assets\PlannedSchedule.json" />
+		<AvaloniaResource Remove="Assets\world.mbtiles" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,6 +45,8 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -54,10 +56,10 @@
 
 	<ItemGroup>
 		<None Update="Assets\PlannedSchedule.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 		<None Update="Assets\world.mbtiles">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

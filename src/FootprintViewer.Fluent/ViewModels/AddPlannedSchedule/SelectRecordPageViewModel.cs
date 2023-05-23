@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Alias;
 using DynamicData.Binding;
+using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Models;
@@ -68,14 +69,14 @@ public class SelectRecordPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        Services.DataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
+        Services.Locator.GetRequiredService<IDataManager>().UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateSources(_contextCreator))
         {
-            Services.DataManager.RegisterSource(key, source);
+            Services.Locator.GetRequiredService<IDataManager>().RegisterSource(key, source);
         }
 
-        Services.DataManager.UpdateData();
+        Services.Locator.GetRequiredService<IDataManager>().UpdateData();
 
         Save();
     }

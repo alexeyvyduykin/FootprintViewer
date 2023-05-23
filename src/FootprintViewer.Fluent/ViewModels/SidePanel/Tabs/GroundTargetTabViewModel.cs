@@ -34,12 +34,12 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
     public GroundTargetTabViewModel()
     {
-        _dataManager = Services.DataManager;
-        var map = Services.Map;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        var map = Services.Locator.GetRequiredService<Map>();
         _layer = map.GetLayer(LayerType.GroundTarget);
-        _layerProvider = Services.GroundTargetProvider;
-        _featureManager = Services.FeatureManager;
-        var areaOfInterest = Services.AreaOfInterest;
+        _layerProvider = Services.Locator.GetRequiredService<GroundTargetProvider>();
+        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
+        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Title = "Просмотр наземных целей";
         Key = nameof(GroundTargetTabViewModel);

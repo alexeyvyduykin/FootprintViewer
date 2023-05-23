@@ -22,8 +22,8 @@ public sealed partial class LayerContainerViewModel : ViewModelBase
 
     public LayerContainerViewModel()
     {
-        _layerStyleManager = Services.LayerStyleManager;
-        var map = Services.Map;
+        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
+        var map = Services.Locator.GetRequiredService<Map>();
 
         _layers
            .Connect()

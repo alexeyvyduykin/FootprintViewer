@@ -36,13 +36,13 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 
     public FootprintTabViewModel()
     {
-        _dataManager = Services.DataManager;
-        _mapNavigator = Services.MapNavigator;
-        var map = Services.Map;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
+        var map = Services.Locator.GetRequiredService<Map>();
         _layer = map.GetLayer(LayerType.Footprint);
-        _layerProvider = Services.FootprintProvider;
-        _featureManager = Services.FeatureManager;
-        var areaOfInterest = Services.AreaOfInterest;
+        _layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
+        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
+        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintTabFilterViewModel();
 

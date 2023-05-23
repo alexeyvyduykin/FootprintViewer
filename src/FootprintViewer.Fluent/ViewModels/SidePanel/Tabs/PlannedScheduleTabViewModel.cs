@@ -33,11 +33,11 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
     public PlannedScheduleTabViewModel()
     {
-        _dataManager = Services.DataManager;
-        _layerProvider = Services.FootprintProvider;
-        _featureManager = Services.FeatureManager;
-        _mapNavigator = Services.MapNavigator;
-        _layer = Services.Map.GetLayer(LayerType.Footprint);
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
+        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
+        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
+        _layer = Services.Locator.GetRequiredService<Map>().GetLayer(LayerType.Footprint);
 
         Title = "Просмотр рабочей программы";
         Key = nameof(PlannedScheduleTabViewModel);

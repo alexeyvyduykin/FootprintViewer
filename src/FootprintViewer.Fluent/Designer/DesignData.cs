@@ -51,7 +51,7 @@ public static class DesignData
 
     public static GroundTargetTabViewModel GroundTargetTab => new(_resolver) { IsActive = true };
 
-    public static SatelliteTabViewModel SatelliteTab => new(_resolver) { IsActive = true };
+    public static SatelliteTabViewModel SatelliteTab => new() { IsActive = true }; //new (_resolver) { IsActive = true };
 
     public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
 
@@ -141,7 +141,8 @@ public static class DesignData
 
         var tabs = new SidePanelTabViewModel[]
         {
-            new SatelliteTabViewModel(resolver),
+            new SatelliteTabViewModel(),
+           // new SatelliteTabViewModel(resolver),
             new GroundStationTabViewModel(resolver),
             new GroundTargetTabViewModel(resolver),
             new FootprintTabViewModel(resolver),

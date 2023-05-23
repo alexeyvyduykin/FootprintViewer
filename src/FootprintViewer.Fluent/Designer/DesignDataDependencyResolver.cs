@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.Designer;
 
-public sealed class DesignDataDependencyResolver
+public sealed class DesignDataDependencyResolver : IServiceProvider
 {
     private Map? _map;
     private IMapNavigator? _mapNavigator;
@@ -103,7 +103,7 @@ public sealed class DesignDataDependencyResolver
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {
-            return _satelliteTab ??= new SatelliteTabViewModel(this);
+            return _satelliteTab ??= new SatelliteTabViewModel();// new SatelliteTabViewModel(this);
         }
         else if (serviceType == typeof(GroundStationTabViewModel))
         {

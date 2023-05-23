@@ -30,7 +30,8 @@ public static class Program
         Services.Initialize(Global);
 
         AppBuilder
-            .Configure(() => new App(async () => await Global.InitializeAsync()))
+            .Configure<App>()
+            .AfterSetup(_ => App.ConfigureServices(config))
             .UseReactiveUI()
             .SetupAppBuilder()
             .StartWithClassicDesktopLifetime(args);

@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data;
+using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Logging;
@@ -23,14 +24,16 @@ public class DemoPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        Services.DataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
+        var dataManager = Services.Locator.GetRequiredService<IDataManager>();
+
+        dataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateDemoSources())
         {
-            Services.DataManager.RegisterSource(key, source);
+            dataManager.RegisterSource(key, source);
         }
 
-        Services.DataManager.UpdateData();
+        dataManager.UpdateData();
 
         Save();
     }

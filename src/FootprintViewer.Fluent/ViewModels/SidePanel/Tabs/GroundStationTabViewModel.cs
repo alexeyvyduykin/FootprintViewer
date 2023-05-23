@@ -27,9 +27,9 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 
     public GroundStationTabViewModel()
     {
-        _dataManager = Services.DataManager;
-        _provider = Services.GroundStationProvider;
-        _layerStyleManager = Services.LayerStyleManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _provider = Services.Locator.GetRequiredService<GroundStationProvider>();
+        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
 
         Title = "Просмотр наземных станций";
         Key = nameof(GroundStationTabViewModel);

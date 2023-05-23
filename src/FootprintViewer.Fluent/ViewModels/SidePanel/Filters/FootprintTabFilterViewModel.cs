@@ -29,7 +29,7 @@ public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<Foo
 
     public FootprintTabFilterViewModel()
     {
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         IsLeftSwath = true;
         IsRightSwath = true;

@@ -22,7 +22,7 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 
     public UserGeometryTabViewModel()
     {
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         Title = "Пользовательская геометрия";
         Key = nameof(UserGeometryTabViewModel);

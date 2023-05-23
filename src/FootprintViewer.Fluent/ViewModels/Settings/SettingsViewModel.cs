@@ -42,17 +42,17 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
         ConfigOnOpen = new Config(Services.Config.FilePath);
         ConfigOnOpen.LoadFile();
 
-        _layerStyleManager = Services.LayerStyleManager;
+        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
 
-        var map = Services.Map;
+        var map = Services.Locator.GetRequiredService<Map>();
 
         SnapshotDirectory = Services.MapSnapshotDir;
 
-        _dataManager = Services.DataManager;
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var mainState = Services.MainState;
+           // var mainState = Services.MainState;
 
             await Observable
                 .Return(Unit.Default)
@@ -219,9 +219,9 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
                 innerList.Add(filePath);
             });
 
-            Services.DataManager.RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
+            Services.Locator.GetRequiredService<IDataManager>().RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
 
-            Services.DataManager.UpdateData();
+            Services.Locator.GetRequiredService<IDataManager>().UpdateData();
 
             Save();
         }
@@ -238,16 +238,16 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
             innerList.Remove(item.FullPath);
         });
 
-        var source = Services.DataManager
+        var source = Services.Locator.GetRequiredService<IDataManager>()
             .GetSources(DbKeys.Maps)
             .Where(s => s is FileSource)
             .Cast<FileSource>()
             .Where(s => s.Paths.Contains(item.FullPath))
             .Single();
 
-        Services.DataManager.UnregisterSource(DbKeys.Maps.ToString(), source);
+        Services.Locator.GetRequiredService<IDataManager>().UnregisterSource(DbKeys.Maps.ToString(), source);
 
-        Services.DataManager.UpdateData();
+        Services.Locator.GetRequiredService<IDataManager>().UpdateData();
 
         Save();
     }

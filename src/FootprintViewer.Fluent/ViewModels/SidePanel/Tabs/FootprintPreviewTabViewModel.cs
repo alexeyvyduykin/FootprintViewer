@@ -31,10 +31,10 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     public FootprintPreviewTabViewModel()
     {
-        _map = Services.Map;
-        _mapNavigator = Services.MapNavigator;
-        _dataManager = Services.DataManager;
-        var areaOfInterest = Services.AreaOfInterest;
+        _map = Services.Locator.GetRequiredService<Map>();
+        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
+        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel();
 
