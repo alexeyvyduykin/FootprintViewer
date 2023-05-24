@@ -1,5 +1,4 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
@@ -32,16 +31,15 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     public FootprintPreviewTabViewModel()
     {
+        Title = "Scene search";
+        Key = nameof(FootprintPreviewTabViewModel);
+
         _map = Services.Locator.GetRequiredService<Map>();
         _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel();
-
-        Key = nameof(FootprintPreviewTabViewModel);
-
-        Title = "Поиск сцены";
 
         var filter1 = Filter.AOIFilterObservable;
         var filter2 = Filter.FilterObservable;

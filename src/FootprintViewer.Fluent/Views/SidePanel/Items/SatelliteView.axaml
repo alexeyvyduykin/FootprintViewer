@@ -4,14 +4,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
-			 x:DataType="items:SatelliteViewModel"
-			 mc:Ignorable="d"
-			 d:DesignWidth="380"
-			 d:DataContext="{x:Static vmd:DesignData.Satellite}">
+			 x:DataType="vm:SatelliteViewModel"
+			 mc:Ignorable="d" d:DesignWidth="380">
+
+	<Design.DataContext>
+		<vm:SatelliteViewModel>
+			<vm:SatelliteViewModel.IsShow>True</vm:SatelliteViewModel.IsShow>
+			<vm:SatelliteViewModel.IsShowInfo>True</vm:SatelliteViewModel.IsShowInfo>
+		</vm:SatelliteViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<conv:SolidColorBrushConverter x:Key="BrushConv"/>

@@ -1,9 +1,7 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -17,27 +15,30 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
+public sealed class GroundStationTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
     private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<GroundStationViewModel> _groundStation = new();
     private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly GroundStationProvider? _provider;
+    private readonly GroundStationProvider? _layerProvider;
 
     public GroundStationTabViewModel()
     {
-        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        _provider = Services.Locator.GetRequiredService<GroundStationProvider>();
-        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
+        Title = "Ground stations viewer";
 
-        Title = "Просмотр наземных станций";
         Key = nameof(GroundStationTabViewModel);
 
-        _groundStation
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+        _layerProvider = Services.Locator.GetRequiredService<GroundStationProvider>();
+        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
+
+        var mainObservable = _groundStation
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler);
+
+        mainObservable
             .Bind(out _items)
             .Subscribe();
 
@@ -47,6 +48,12 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
+
+        var layerObservable = mainObservable
+            .Transform(s => s.GroundStation)
+            .ToCollection();
+
+        _layerProvider.SetObservable(layerObservable);
 
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -93,7 +100,8 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
             foreach (var item in list)
             {
                 item.Palette = palette;
-                item.UpdateObservable.Subscribe(s => _provider?.ChangedData(s.GroundStation, s.InnerAngle, s.AreaItems.Select(s => s.Angle).ToArray(), s.IsShow));
+                item.UpdateObservable
+                    .Subscribe(s => _layerProvider?.ChangedData(s.GroundStation, s.InnerAngle, s.AreaItems.Select(s => s.Angle).ToArray(), s.IsShow));
             }
 
             _groundStation.Edit(innerList =>
@@ -105,44 +113,4 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
     }
 
     public ReadOnlyObservableCollection<GroundStationViewModel> Items => _items;
-}
-
-public partial class GroundStationTabViewModel
-{
-    public GroundStationTabViewModel(DesignDataDependencyResolver resolver)
-    {
-        _localStorage = resolver.GetService<ILocalStorageService>();
-        _provider = resolver.GetService<GroundStationProvider>();
-        _layerStyleManager = resolver.GetService<LayerStyleManager>();
-
-        Title = "Просмотр наземных станций";
-        Key = nameof(GroundStationTabViewModel);
-        _groundStation
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Bind(out _items)
-            .Subscribe();
-
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        _localStorage.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        _isLoading = Update.IsExecuting
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .ToProperty(this, x => x.IsLoading);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        _layerStyleManager.Selected
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(UpdatePaletteImpl);
-    }
 }

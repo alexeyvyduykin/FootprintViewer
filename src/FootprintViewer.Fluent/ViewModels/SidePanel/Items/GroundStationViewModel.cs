@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Styles;
 using NetTopologySuite.Geometries;
@@ -22,6 +23,8 @@ public sealed class GroundStationViewModel : ViewModelBase, IViewerItem
     private readonly IList<string> _availableCountModes = new[] { "None", "Equal", "Geometric" };
     private readonly IList<int> _availableAreaCounts = new int[] { 1, 2, 3, 4, 5 };
     private readonly GroundStation _groundStation;
+
+    public GroundStationViewModel() : this(GroundStationBuilder.CreateRandom()) { }
 
     public GroundStationViewModel(GroundStation groundStation)
     {

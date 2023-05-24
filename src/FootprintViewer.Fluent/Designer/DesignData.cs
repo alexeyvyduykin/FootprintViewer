@@ -6,8 +6,6 @@ using FootprintViewer.Fluent.ViewModels.InfoPanel;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Fluent.ViewModels.Settings;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
@@ -25,52 +23,11 @@ public static class DesignData
 {
     private static readonly DesignDataDependencyResolver _resolver = new();
 
-    // Side panel filters
-    public static FootprintPreviewTabFilterViewModel FootprintPreviewFilter => new();
-
-    public static FootprintTabFilterViewModel FootprintFilter => new(_resolver);
-
-    public static GroundTargetTabFilterViewModel GroundTargetFilter => new();
-
     public static ToolBarViewModel ToolBar => new(_resolver);
 
     public static LayerContainerViewModel LayerContainer => new(_resolver);
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.HoverCreating(TipTarget.Rectangle, 34545.432);
-
-    // Side panel tabs
-    public static FootprintPreviewTabViewModel FootprintPreviewTab => new() { IsActive = true };
-
-    public static FootprintTabViewModel FootprintTab => new(_resolver)
-    {
-        SearchString = "footprint",
-        IsActive = true,
-    };
-
-    public static GroundStationTabViewModel GroundStationTab => new(_resolver) { IsActive = true };
-
-    public static GroundTargetTabViewModel GroundTargetTab => new() { IsActive = true };// new (_resolver) { IsActive = true };
-
-    public static SatelliteTabViewModel SatelliteTab => new() { IsActive = true }; //new (_resolver) { IsActive = true };
-
-    public static UserGeometryTabViewModel UserGeometryTab => new(_resolver) { IsActive = true };
-
-    public static PlannedScheduleTabViewModel PlannedScheduleTab => new(_resolver) { IsActive = true };
-
-    public static FootprintPreviewViewModel FootprintPreview => new(FootprintPreviewBuilder.CreateRandom());
-
-    public static FootprintViewModel Footprint => new(FootprintBuilder.CreateRandom()) { IsShowInfo = true };
-
-    public static TaskResultViewModel TaskResult =>
-        new(TaskResultBuilder.CreateObservation("ObservationTask0063", FootprintBuilder.CreateRandom()));
-
-    public static GroundStationViewModel GroundStation => new(GroundStationBuilder.CreateRandom()) { IsShow = true };
-
-    public static GroundTargetViewModel GroundTarget => new(GroundTargetBuilder.CreateRandom());
-
-    public static SatelliteViewModel Satellite => new(SatelliteBuilder.CreateRandom()) { IsShow = true, IsShowInfo = true };
-
-    public static UserGeometryViewModel UserGeometry => new(UserGeometryBuilder.CreateRandom());
 
     public static TimelinesViewModel Timelines => new();
 
@@ -114,7 +71,7 @@ public static class DesignData
         return path;
     }
 
-    public static SidePanelViewModel SidePanel => CreateSidePanel(_resolver);
+    public static SidePanelViewModel SidePanel => CreateSidePanel();
 
     public static ScaleMapBar ScaleMapBar => CreateScaleMapBar();
 
@@ -135,19 +92,18 @@ public static class DesignData
         return scaleMapBar;
     }
 
-    private static SidePanelViewModel CreateSidePanel(DesignDataDependencyResolver resolver)
+    private static SidePanelViewModel CreateSidePanel()
     {
         var sidePanel = new SidePanelViewModel();
 
         var tabs = new SidePanelTabViewModel[]
         {
             new SatelliteTabViewModel(),
-           // new SatelliteTabViewModel(resolver),
-            new GroundStationTabViewModel(resolver),
-           // new GroundTargetTabViewModel(resolver),
-            new FootprintTabViewModel(resolver),
-          //  new UserGeometryTabViewModel(resolver),          
-            new PlannedScheduleTabViewModel(resolver)
+            new GroundStationTabViewModel(),
+            new GroundTargetTabViewModel(),
+            new FootprintTabViewModel(),
+            new UserGeometryTabViewModel(),
+            new PlannedScheduleTabViewModel()
         };
 
         var actiontabs = new SidePanelActionTabViewModel[]

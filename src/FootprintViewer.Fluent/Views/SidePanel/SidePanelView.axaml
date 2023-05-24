@@ -6,17 +6,30 @@
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
              xmlns:converters="clr-namespace:FootprintViewer.Fluent.Converters"
-             xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel"
+             xmlns:tabs="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
 			 x:DataType="vm:SidePanelViewModel"
-             mc:Ignorable="d"
-             d:DesignHeight="550"
-			 d:DataContext="{x:Static vmd:DesignData.SidePanel}">
+             mc:Ignorable="d" d:DesignHeight="550">
+
+	<Design.DataContext>
+		<vm:SidePanelViewModel>
+			<vm:SidePanelViewModel.Tabs>
+				<tabs:SatelliteTabViewModel></tabs:SatelliteTabViewModel>
+				<tabs:GroundStationTabViewModel></tabs:GroundStationTabViewModel>
+				<tabs:GroundTargetTabViewModel></tabs:GroundTargetTabViewModel>
+				<tabs:FootprintTabViewModel></tabs:FootprintTabViewModel>
+				<tabs:UserGeometryTabViewModel></tabs:UserGeometryTabViewModel>
+				<tabs:PlannedScheduleTabViewModel></tabs:PlannedScheduleTabViewModel>
+			</vm:SidePanelViewModel.Tabs>
+			<vm:SidePanelViewModel.ActionTabs>
+				<vm:SidePanelActionTabViewModel Key="AddPlannedSchedulePageViewModel"/>
+				<vm:SidePanelActionTabViewModel Key="SettingsViewModel"/>
+			</vm:SidePanelViewModel.ActionTabs>
+		</vm:SidePanelViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
-		<conv:SidePanelTitleConverter x:Key="sidePanelTitleConv"/>
 		<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
 			<DataTemplate x:Key="FootprintPreviewTabViewModel">
 				<Viewbox Margin="4">
@@ -80,7 +93,7 @@
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
 		</Style>-->
 		<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
-			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue='', Converter={StaticResource sidePanelTitleConv}}"/>
+			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
 		</Style>
 
 		<Style Selector="c|SidePanel /template/ ItemsControl#PART_ItemsControlBottom">
@@ -91,7 +104,7 @@
 						<Button Command="{Binding Command}"
 								Classes="invisible icon">
 
-							
+
 							<ContentControl Content="{Binding Key}"
 											ContentTemplate="{DynamicResource SidePanelIconSelector}"/>
 						</Button>

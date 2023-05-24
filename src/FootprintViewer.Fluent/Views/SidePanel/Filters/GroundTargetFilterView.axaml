@@ -2,15 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 mc:Ignorable="d"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="320"
 			 MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="320"
              x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.GroundTargetFilterView"
-			 d:DataContext="{x:Static vmd:DesignData.GroundTargetFilter}">
+			 x:DataType="vm:GroundTargetTabFilterViewModel">
+
+	<Design.DataContext>
+		<vm:GroundTargetTabFilterViewModel></vm:GroundTargetTabFilterViewModel>
+	</Design.DataContext>
 
 	<Border Padding="20"
 			Background="{DynamicResource BackgroundBrush}">

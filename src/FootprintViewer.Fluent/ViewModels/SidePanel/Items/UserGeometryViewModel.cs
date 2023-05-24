@@ -1,4 +1,4 @@
-﻿using Avalonia.Input;
+﻿using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Models;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
@@ -6,6 +6,8 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 public sealed class UserGeometryViewModel : ViewModelBase, IViewerItem, ISelectorItem
 {
     private readonly UserGeometry _model;
+
+    public UserGeometryViewModel() : this(UserGeometryBuilder.CreateRandom()) { }
 
     public UserGeometryViewModel(UserGeometry model)
     {

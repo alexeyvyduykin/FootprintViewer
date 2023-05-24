@@ -1,10 +1,12 @@
-﻿using FootprintViewer.Data.Models;
-using System;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Models;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 
 public sealed class TaskResultViewModel : ViewModelBase
 {
+    public TaskResultViewModel() : this(TaskResultBuilder.CreateObservation("ObservationTask0063", FootprintBuilder.CreateRandom())) { }
+
     public TaskResultViewModel(ITaskResult taskResult)
     {
         Model = taskResult;

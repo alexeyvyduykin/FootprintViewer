@@ -1,10 +1,13 @@
-﻿using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Models;
 using SkiaSharp;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 
 public sealed class FootprintPreviewViewModel : ViewModelBase, IViewerItem
 {
+    public FootprintPreviewViewModel() : this(FootprintPreviewBuilder.CreateRandom()) { }
+
     public FootprintPreviewViewModel(FootprintPreview model)
     {
         Name = model.Name!;

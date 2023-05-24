@@ -8,15 +8,20 @@
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:tabs="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+			 xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
              xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
 			 xmlns:filtersView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Filters"
-             x:DataType="tabs:FootprintTabViewModel"
+             x:DataType="vm:FootprintTabViewModel"
              mc:Ignorable="d"
-             d:DesignWidth="380" d:DesignHeight="550"
-			 d:DataContext="{x:Static vmd:DesignData.FootprintTab}">
+             d:DesignWidth="380" d:DesignHeight="550">
+
+	<Design.DataContext>
+		<vm:FootprintTabViewModel>
+			<vm:FootprintTabViewModel.IsActive>True</vm:FootprintTabViewModel.IsActive>
+			<vm:FootprintTabViewModel.SearchString>0022</vm:FootprintTabViewModel.SearchString>
+		</vm:FootprintTabViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintItemTemplate"

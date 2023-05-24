@@ -1,8 +1,8 @@
-﻿using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Models;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Linq;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
@@ -18,6 +18,8 @@ public sealed class FootprintViewModel : ViewModelBase, IViewerItem
     private readonly double _duration;
     private readonly int _node;
     private readonly SwathDirection _direction;
+
+    public FootprintViewModel() : this(FootprintBuilder.CreateRandom()) { }
 
     public FootprintViewModel(Footprint footprint)
     {
@@ -53,6 +55,7 @@ public sealed class FootprintViewModel : ViewModelBase, IViewerItem
         return null;
     }
 
+    // TODO: make not nullable
     public Footprint? Footprint => _footprint;
 
     public string Name => _name;

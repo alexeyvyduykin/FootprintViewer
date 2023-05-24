@@ -2,16 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-			 xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
+			 xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             mc:Ignorable="d"
-			 d:DesignWidth="380"
-			 x:DataType="items:UserGeometryViewModel"
-             x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.UserGeometryView"
-			 d:DataContext="{x:Static vmd:DesignData.UserGeometry}">
+             mc:Ignorable="d" d:DesignWidth="380"
+			 x:DataType="vm:UserGeometryViewModel"
+             x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.UserGeometryView">
+
+	<Design.DataContext>
+		<vm:UserGeometryViewModel></vm:UserGeometryViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<selectors:DataTemplateSelector x:Key="UserGeometryInfoIconSelector">

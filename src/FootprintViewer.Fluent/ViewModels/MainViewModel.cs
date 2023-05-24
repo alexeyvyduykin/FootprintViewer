@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
@@ -21,7 +20,6 @@ using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
 using Mapsui.Interactivity.Extensions;
-using Mapsui.Interactivity.UI;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
@@ -142,12 +140,12 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private void RegisterViewModels()
     {
-     //   var satelliteTabViewModel = new SatelliteTabViewModel();
+        var satelliteTabViewModel = new SatelliteTabViewModel();
         var groundTargetTabViewModel = new GroundTargetTabViewModel();
-     //   var footprintTabViewModel = new FootprintTabViewModel();
-     //   var userGeometryTabViewModel = new UserGeometryTabViewModel();
-    //    var groundStationTabViewModel = new GroundStationTabViewModel();
-    //   var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
+        var footprintTabViewModel = new FootprintTabViewModel();
+        var userGeometryTabViewModel = new UserGeometryTabViewModel();
+        var groundStationTabViewModel = new GroundStationTabViewModel();
+        var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
 
         ToolBar = new ToolBarViewModel();
 
@@ -158,12 +156,12 @@ public sealed partial class MainViewModel : ViewModelBase
         {
             Tabs = new List<SidePanelTabViewModel>(new SidePanelTabViewModel[]
             {
-            //    satelliteTabViewModel,
-           //     groundStationTabViewModel,
+                satelliteTabViewModel,
+                groundStationTabViewModel,
                 groundTargetTabViewModel,
-            //    footprintTabViewModel,
-            //    userGeometryTabViewModel,
-            //    plannedScheduleTabViewModel,
+                footprintTabViewModel,
+                userGeometryTabViewModel,
+                plannedScheduleTabViewModel,
             }),
             ActionTabs = new()
             {
@@ -304,7 +302,7 @@ public sealed partial class MainViewModel : ViewModelBase
                     .FirstOrDefault(),
             _ => null
         };
-   
+
         if (panel != null)
         {
             ClickInfoPanel.Show(panel);
@@ -511,12 +509,11 @@ public partial class MainViewModel
         var tabs = new SidePanelTabViewModel[]
         {
             new SatelliteTabViewModel(),
-           // new SatelliteTabViewModel(resolver),
-           // new GroundTargetTabViewModel(resolver),
-            new FootprintTabViewModel(resolver),
-            new UserGeometryTabViewModel(resolver),
-            new GroundStationTabViewModel(resolver),
-            new PlannedScheduleTabViewModel(resolver)
+            new GroundTargetTabViewModel(),
+            new FootprintTabViewModel(),
+            new UserGeometryTabViewModel(),
+            new GroundStationTabViewModel(),
+            new PlannedScheduleTabViewModel()
         };
 
         var actionTabs = new SidePanelActionTabViewModel[]

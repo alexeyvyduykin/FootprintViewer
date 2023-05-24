@@ -1,10 +1,10 @@
-﻿using FootprintViewer.Data.Extensions;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using Mapsui.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SpaceScience.Extensions;
-using System;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
@@ -17,6 +17,8 @@ public sealed class SatelliteViewModel : ViewModelBase, IViewerItem
     private readonly int _maxNode;
     private readonly IObservable<SatelliteViewModel> _trackObservable;
     private readonly IObservable<SatelliteViewModel> _swathsObservable;
+
+    public SatelliteViewModel() : this(SatelliteBuilder.CreateRandom()) { }
 
     public SatelliteViewModel(Satellite satellite)
     {

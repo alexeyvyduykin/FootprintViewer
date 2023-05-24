@@ -3,15 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
 			 xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
-			 x:DataType="items:FootprintViewModel"
-			 mc:Ignorable="d"
-			 d:DesignWidth="320"
-			 d:DataContext="{x:Static vmd:DesignData.Footprint}">
+			 x:DataType="vm:FootprintViewModel"
+			 mc:Ignorable="d" d:DesignWidth="320">
+
+	<Design.DataContext>
+		<vm:FootprintViewModel></vm:FootprintViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<conv:CoordinateConverter x:Key="CoordinateConv"/>

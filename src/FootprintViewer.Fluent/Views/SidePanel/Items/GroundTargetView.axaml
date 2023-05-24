@@ -5,11 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             mc:Ignorable="d"
-			 d:DesignWidth="280"
-			 d:DataContext="{x:Static vmd:DesignData.GroundTarget}">
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
+             mc:Ignorable="d" d:DesignWidth="280"
+			 x:DataType="vm:GroundTargetViewModel">
+
+	<Design.DataContext>
+		<vm:GroundTargetViewModel></vm:GroundTargetViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">

@@ -1,9 +1,8 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
+public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
     private readonly SourceList<UserGeometry> _userGeometries = new();
@@ -23,17 +22,26 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 
     public UserGeometryTabViewModel()
     {
-        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+        Title = "User geometries";
 
-        Title = "Пользовательская геометрия";
         Key = nameof(UserGeometryTabViewModel);
 
-        _userGeometries
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+        var layerProvider = Services.Locator.GetRequiredService<UserGeometryProvider>();
+
+        var mainObservable = _userGeometries
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler);
+
+        mainObservable
             .Transform(s => new UserGeometryViewModel(s))
             .Bind(out _items)
             .Subscribe();
+
+        var layerObservable = mainObservable
+            .ToCollection();
+
+        layerProvider.SetObservable(layerObservable);
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
@@ -84,41 +92,4 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
     }
 
     public ReadOnlyObservableCollection<UserGeometryViewModel> Items => _items;
-}
-
-public partial class UserGeometryTabViewModel
-{
-    public UserGeometryTabViewModel(DesignDataDependencyResolver resolver)
-    {
-        _localStorage = resolver.GetService<ILocalStorageService>();
-
-        Title = "Пользовательская геометрия";
-        Key = nameof(UserGeometryTabViewModel);
-        _userGeometries
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new UserGeometryViewModel(s))
-            .Bind(out _items)
-            .Subscribe();
-
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        _localStorage.DataChanged
-            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        Remove = ReactiveCommand.CreateFromTask<UserGeometryViewModel?>(RemoveAsync);
-
-        _isLoading = Update.IsExecuting
-              .ObserveOn(RxApp.MainThreadScheduler)
-              .ToProperty(this, x => x.IsLoading);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Update);
-    }
 }

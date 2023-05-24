@@ -4,17 +4,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             mc:Ignorable="d"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="480"
              MinWidth="400"
-             d:DesignWidth="400" d:DesignHeight="480"
-			 d:DataContext="{x:Static vmd:DesignData.FootprintFilter}">
+			 x:DataType="vm:FootprintTabFilterViewModel">
 
-	<UserControl.Styles>
-
-	</UserControl.Styles>
+	<Design.DataContext>
+		<vm:FootprintTabFilterViewModel></vm:FootprintTabFilterViewModel>
+	</Design.DataContext>
 
 	<Border Padding="20"
 			Background="{DynamicResource BackgroundBrush}">
@@ -69,7 +67,7 @@
 
 			<ItemsControl Items="{Binding Satellites}">
 				<ItemsControl.ItemTemplate>
-					<DataTemplate DataType="filters:SatelliteItemViewModel">
+					<DataTemplate DataType="vm:SatelliteItemViewModel">
 						<Border Padding="28,0,0,0">
 							<CheckBox IsChecked="{Binding IsActive}"
 									  Content="{Binding Name}"

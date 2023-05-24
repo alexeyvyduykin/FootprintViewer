@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             mc:Ignorable="d"
-			 d:DesignWidth="380" d:DesignHeight="450"
-			 d:DataContext="{x:Static vmd:DesignData.GroundStationTab}">
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
+			 x:DataType="vm:GroundStationTabViewModel">
+
+	<Design.DataContext>
+		<vm:GroundStationTabViewModel>
+			<vm:GroundStationTabViewModel.IsActive>True</vm:GroundStationTabViewModel.IsActive>
+		</vm:GroundStationTabViewModel>
+	</Design.DataContext>
 
 	<Border Classes="back">
 		<Panel>

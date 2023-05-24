@@ -5,14 +5,15 @@
              x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.FootprintPreviewFilterView"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:filters="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             x:DataType="filters:FootprintPreviewTabFilterViewModel"
-			 mc:Ignorable="d"
-			 d:DesignWidth="400" d:DesignHeight="440"
-			 d:DataContext="{x:Static vmd:DesignData.FootprintPreviewFilter}">
+             x:DataType="vm:FootprintPreviewTabFilterViewModel"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="440">
+
+	<Design.DataContext>
+		<vm:FootprintPreviewTabFilterViewModel></vm:FootprintPreviewTabFilterViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="CheckBox">
@@ -105,7 +106,7 @@
 
 			<ItemsControl Margin="0,0,0,10" Items="{Binding Sensors}">
 				<ItemsControl.ItemTemplate>
-					<DataTemplate DataType="filters:SensorItemViewModel">
+					<DataTemplate DataType="vm:SensorItemViewModel">
 						<Border Padding="16,8">
 							<CheckBox IsChecked="{Binding IsActive}"
 									  Content="{Binding Name}"/>

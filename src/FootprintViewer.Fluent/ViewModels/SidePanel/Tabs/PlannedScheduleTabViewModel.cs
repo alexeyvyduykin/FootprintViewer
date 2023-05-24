@@ -1,16 +1,10 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
-using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
-using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -21,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
+public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
     private readonly SourceList<ITaskResult> _plannedSchedules = new();
@@ -29,19 +23,20 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly IMapNavigator _mapNavigator;
     private readonly FeatureManager _featureManager;
-    private readonly FootprintProvider _layerProvider;
-    private readonly ILayer? _layer;
+    //private readonly FootprintProvider _layerProvider;
+    //private readonly ILayer? _layer;
 
     public PlannedScheduleTabViewModel()
     {
+        Title = "Planned schedule viewer";
+
+        Key = nameof(PlannedScheduleTabViewModel);
+
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        _layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
+        //_layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
         _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
-        _layer = Services.Locator.GetRequiredService<Map>().GetLayer(LayerType.Footprint);
-
-        Title = "Просмотр рабочей программы";
-        Key = nameof(PlannedScheduleTabViewModel);
+        //_layer = Services.Locator.GetRequiredService<Map>().GetLayer(LayerType.Footprint);
 
         _plannedSchedules
             .Connect()
@@ -116,7 +111,7 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
             //_featureManager
             //    .OnLayer(_layer)
-            //    .Select(_layerProvider.Find(vm.Name, "Name"));            
+            //    .Select(_layerProvider.Find(vm.Name, "Name"));
         }
     }
 
@@ -132,56 +127,4 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilteringActive { get; set; }
-}
-
-public partial class PlannedScheduleTabViewModel
-{
-    public PlannedScheduleTabViewModel(DesignDataDependencyResolver resolver)
-    {
-        _localStorage = resolver.GetService<ILocalStorageService>();
-        _layerProvider = resolver.GetService<FootprintProvider>();
-        _featureManager = resolver.GetService<FeatureManager>();
-        _mapNavigator = resolver.GetService<IMapNavigator>();
-        _layer = resolver.GetService<IMap>().GetLayer(LayerType.Footprint);
-
-        Title = "Просмотр рабочей программы";
-        Key = nameof(PlannedScheduleTabViewModel);
-        _plannedSchedules
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => ItemCount = _plannedSchedules.Count);
-
-        _plannedSchedules
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new TaskResultViewModel(s))
-            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
-            .Bind(out _items)
-            .DisposeMany()
-            .Subscribe(_ => FilteringItemCount = _items.Count);
-
-        this.WhenAnyValue(s => s.FilteringItemCount)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => IsFilteringActive = s != ItemCount);
-
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        TargetToMap = ReactiveCommand.CreateFromTask<ObservationTaskResult>(s => TargetToMapImpl(s), outputScheduler: RxApp.MainThreadScheduler);
-
-        _isLoading = Update.IsExecuting
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .ToProperty(this, x => x.IsLoading);
-
-        _localStorage.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Update);
-    }
 }

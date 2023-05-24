@@ -8,15 +8,18 @@
 			 xmlns:iac="clr-namespace:Avalonia.Xaml.Interactions.Custom;assembly=Avalonia.Xaml.Interactions"
 			 xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:tabs="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
+			 xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
 			 xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
              xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:filtersView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Filters"
-             x:DataType="tabs:FootprintPreviewTabViewModel"
-             mc:Ignorable="d"
-             d:DesignWidth="380" d:DesignHeight="850"
-			 d:DataContext="{x:Static vmd:DesignData.FootprintPreviewTab}">
+             x:DataType="vm:FootprintPreviewTabViewModel"
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="850">
+
+	<Design.DataContext>
+		<vm:FootprintPreviewTabViewModel>
+			<vm:FootprintPreviewTabViewModel.IsActive>True</vm:FootprintPreviewTabViewModel.IsActive>
+		</vm:FootprintPreviewTabViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">

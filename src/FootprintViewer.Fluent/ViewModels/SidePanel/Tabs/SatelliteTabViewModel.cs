@@ -1,9 +1,7 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -17,10 +15,10 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
+public sealed class SatelliteTabViewModel : SidePanelTabViewModel
 {
-    private readonly TrackProvider? _trackProvider;
-    private readonly SensorProvider? _sensorProvider;
+    private readonly TrackProvider _trackProvider;
+    private readonly SensorProvider _sensorProvider;
     private readonly SourceList<SatelliteViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -29,16 +27,20 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
     public SatelliteTabViewModel()
     {
+        Title = "Satellites viewer";
+
+        Key = nameof(SatelliteTabViewModel);
+
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _trackProvider = Services.Locator.GetRequiredService<TrackProvider>();
         _sensorProvider = Services.Locator.GetRequiredService<SensorProvider>();
         _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
 
-        Title = "Просмотр спутников";
-        Key = nameof(SatelliteTabViewModel);
-        _satellites
+        var mainObservable = _satellites
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler);
+
+        mainObservable
             .Bind(out _items)
             .Subscribe();
 
@@ -48,6 +50,13 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
+
+        var layerObservable = mainObservable
+            .Transform(s => s.Satellite)
+            .ToCollection();
+
+        _trackProvider.SetObservable(layerObservable);
+        _sensorProvider.SetObservable(layerObservable);
 
         _isLoading = Update.IsExecuting
               .ObserveOn(RxApp.MainThreadScheduler)
@@ -93,8 +102,10 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
             foreach (var item in list)
             {
-                item.TrackObservable.Subscribe(s => Services.Locator.GetRequiredService<TrackProvider>()?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
-                item.SwathsObservable.Subscribe(s => Services.Locator.GetRequiredService<SensorProvider>()?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
+                item.TrackObservable
+                    .Subscribe(s => _trackProvider.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
+                item.SwathsObservable
+                    .Subscribe(s => _sensorProvider.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
                 item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
             }
 
@@ -108,45 +119,3 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
     public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;
 }
-
-//public partial class SatelliteTabViewModel
-//{
-//    public SatelliteTabViewModel(DesignDataDependencyResolver resolver)
-//    {
-//        _dataManager = resolver.GetService<IDataManager>();
-//        _trackProvider = resolver.GetService<TrackProvider>();
-//        _sensorProvider = resolver.GetService<SensorProvider>();
-//        _layerStyleManager = resolver.GetService<LayerStyleManager>();
-
-//        Title = "Просмотр спутников";
-//        Key = nameof(SatelliteTabViewModel);
-
-//        _satellites
-//            .Connect()
-//            .ObserveOn(RxApp.MainThreadScheduler)
-//            .Bind(out _items)
-//            .Subscribe();
-
-//        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-//        _dataManager.DataChanged
-//            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-//            .ToSignal()
-//            .InvokeCommand(Update);
-
-//        _isLoading = Update.IsExecuting
-//              .ObserveOn(RxApp.MainThreadScheduler)
-//              .ToProperty(this, x => x.IsLoading);
-
-//        this.WhenAnyValue(s => s.IsActive)
-//            .ObserveOn(RxApp.MainThreadScheduler)
-//            .WhereTrue()
-//            .Take(1)
-//            .ToSignal()
-//            .InvokeCommand(Update);
-
-//        _layerStyleManager.Selected
-//            .ObserveOn(RxApp.MainThreadScheduler)
-//            .Subscribe(UpdateColorImpl);
-//    }
-//}

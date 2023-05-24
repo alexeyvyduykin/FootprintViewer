@@ -1,4 +1,5 @@
-﻿using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Data.Builders;
+using FootprintViewer.Data.Models;
 using Mapsui.Interactivity;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -13,12 +14,14 @@ public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewe
     private readonly string _name;
     private readonly Geometry? _geometry;
 
+    public GroundTargetViewModel() : this(GroundTargetBuilder.CreateRandom()) { }
+
     public GroundTargetViewModel(GroundTarget groundTarget)
     {
         _groundTarget = groundTarget;
         _type = groundTarget.Type;
         _name = groundTarget.Name!;
-        _geometry = CreateGeometry(groundTarget.Type, groundTarget.Points); 
+        _geometry = CreateGeometry(groundTarget.Type, groundTarget.Points);
         Key = _type.ToString();
     }
 

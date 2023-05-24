@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
-public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
+public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
     private readonly SourceList<GroundTarget> _groundTargets = new();
@@ -32,15 +32,16 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
     public GroundTargetTabViewModel()
     {
+        Title = "Ground targets viewer";
+
+        Key = nameof(GroundTargetTabViewModel);
+
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var map = Services.Locator.GetRequiredService<Map>();
         _layer = map.GetLayer(LayerType.GroundTarget);
         _layerProvider = Services.Locator.GetRequiredService<GroundTargetProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
-
-        Title = "Просмотр наземных целей";
-        Key = nameof(GroundTargetTabViewModel);
 
         Filter = new GroundTargetTabFilterViewModel();
 
@@ -108,6 +109,8 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
         areaOfInterest.AOIChanged
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(s => Filter.AOI = s);
+
+        Observable.StartAsync(UpdateImpl);
     }
 
     public IAOIFilter<GroundTargetViewModel> Filter { get; }

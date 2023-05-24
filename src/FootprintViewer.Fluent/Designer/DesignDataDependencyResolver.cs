@@ -62,6 +62,10 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         {
             return _map ??= CreateMap();
         }
+        if (serviceType == typeof(Map))
+        {
+            return _map ??= CreateMap();
+        }
         else if (serviceType == typeof(LayerStyleManager))
         {
             return _layerStyleManager ??= new LayerStyleManager();
@@ -74,13 +78,17 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         {
             return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
         }
+        else if (serviceType == typeof(MapNavigator))
+        {
+            return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
+        }
         else if (serviceType == typeof(FeatureManager))
         {
             return _featureManager ??= new FeatureManager();
         }
         else if (serviceType == typeof(GroundTargetProvider))
         {
-            return _groundTargetProvider ??= null;// new GroundTargetProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _groundTargetProvider ??= new GroundTargetProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(TrackProvider))
         {
@@ -104,23 +112,23 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {
-            return _satelliteTab ??= new SatelliteTabViewModel();// new SatelliteTabViewModel(this);
+            return _satelliteTab ??= new SatelliteTabViewModel();
         }
         else if (serviceType == typeof(GroundStationTabViewModel))
         {
-            return _groundStationTab ??= new GroundStationTabViewModel(this);
+            return _groundStationTab ??= new GroundStationTabViewModel();
         }
         else if (serviceType == typeof(FootprintTabViewModel))
         {
-            return _footprintTab ??= new FootprintTabViewModel(this);
+            return _footprintTab ??= new FootprintTabViewModel();
         }
         else if (serviceType == typeof(PlannedScheduleTabViewModel))
         {
-            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel(this);
+            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel();
         }
         else if (serviceType == typeof(GroundTargetTabViewModel))
         {
-            return _groundTargetTab ??= new GroundTargetTabViewModel(/*this*/);
+            return _groundTargetTab ??= new GroundTargetTabViewModel();
         }
         else if (serviceType == typeof(FootprintPreviewTabViewModel))
         {
@@ -128,7 +136,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         }
         else if (serviceType == typeof(UserGeometryTabViewModel))
         {
-            return _userGeometryTab ??= new UserGeometryTabViewModel(this);
+            return _userGeometryTab ??= new UserGeometryTabViewModel();
         }
         else if (serviceType == typeof(ToolBarViewModel))
         {
@@ -161,7 +169,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
     {
         var map = new Map();
         map.AddLayer(new Layer(), LayerType.WorldMap);
-        map.AddLayer(new Layer(), LayerType.FootprintImage); 
+        map.AddLayer(new Layer(), LayerType.FootprintImage);
         map.AddLayer(new Layer(), LayerType.GroundStation);
         map.AddLayer(new Layer(), LayerType.GroundTarget);
         map.AddLayer(new Layer(), LayerType.Sensor);
@@ -198,7 +206,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
             { DbKeys.PlannedSchedules.ToString(), new[] { source9 } }
         };
 
-        var  localStorage = new LocalStorageService();
+        var localStorage = new LocalStorageService();
 
         localStorage.RegisterSources(sources);
 
