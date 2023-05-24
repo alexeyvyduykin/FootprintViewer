@@ -10,6 +10,7 @@ using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,14 +22,11 @@ namespace FootprintViewer.Layers.Providers;
 
 public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
 {
-    private readonly IDataManager _dataManager;
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public FootprintProvider(IDataManager dataManager, LayerStyleManager styleManager)
+    public FootprintProvider(LayerStyleManager styleManager)
     {
-        _dataManager = dataManager;
-
         MaxVisible = styleManager.MaxVisibleFootprintStyle;
 
         _footprints
@@ -38,14 +36,14 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+      //  Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
+        //_dataManager.DataChanged
+        //    .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+        //    .ToSignal()
+        //    .InvokeCommand(Update);
 
-        Observable.StartAsync(UpdateImpl);
+      //  Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
@@ -56,26 +54,31 @@ public class FootprintProvider : IProvider, IDynamic, IFeatureProvider
 
     public ReadOnlyObservableCollection<IFeature> Features => _features;
 
-    public ReactiveCommand<Unit, Unit> Update { get; }
+   // public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
-    private async Task UpdateImpl()
+    public void SetObservable(IObservable<IReadOnlyCollection<Footprint>> observable)
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-        if (ps != null)
-        {
-            var footprints = ps
-                .GetObservations()
-                .Select(s => s.ToFootprint())
-                .ToList();
-
-            UpdateData(footprints);
-        }
+        observable.Subscribe(UpdateData);
     }
 
-    public void UpdateData(IList<Footprint> footprints)
+    //private async Task UpdateImpl()
+    //{
+    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+
+    //    if (ps != null)
+    //    {
+    //        var footprints = ps
+    //            .GetObservations()
+    //            .Select(s => s.ToFootprint())
+    //            .ToList();
+
+    //        UpdateData(footprints);
+    //    }
+    //}
+
+    public void UpdateData(IReadOnlyCollection<Footprint> footprints)
     {
         _footprints.Edit(innerList =>
         {

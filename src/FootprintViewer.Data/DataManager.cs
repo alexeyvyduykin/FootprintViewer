@@ -13,11 +13,10 @@ public class DataManager : IDataManager
     private readonly AsyncLock _mutex = new();
     private readonly Cache<string, ISource> _sourceCache = new();
     private readonly IDictionary<string, IList<ISource>> _sources = new Dictionary<string, IList<ISource>>();
-    private readonly HashSet<string> _dirtyKeys = new();
 
     public DataManager()
     {
-        DataChanged = ReactiveCommand.Create<string[], string[]>(s => s, outputScheduler: RxApp.MainThreadScheduler);
+
     }
 
     public DataManager(IDictionary<string, IList<ISource>> dict) : this()
@@ -30,15 +29,8 @@ public class DataManager : IDataManager
         }
     }
 
-    public IObservable<string[]> DataChanged { get; }
-
-    public void RegisterSource(string key, ISource source, bool dirty = true)
+    public void RegisterSource(string key, ISource source)
     {
-        if (dirty == true)
-        {
-            _dirtyKeys.Add(key);
-        }
-
         if (_sources.ContainsKey(key) == true)
         {
             _sources[key].Add(source);
@@ -54,8 +46,6 @@ public class DataManager : IDataManager
     {
         if (_sources.ContainsKey(key) == true)
         {
-            _dirtyKeys.Add(key);
-
             _sources[key].Remove(source);
 
             if (_sources[key].Count == 0)
@@ -71,30 +61,12 @@ public class DataManager : IDataManager
     {
         if (_sources.ContainsKey(key) == true)
         {
-            _dirtyKeys.Add(key);
-
             _sources[key].Clear();
 
             _sources.Remove(key);
         }
 
         _sourceCache.Clear(key);
-    }
-
-    public void UpdateData()
-    {
-        ((ReactiveCommand<string[], string[]>)DataChanged)
-            .Execute(_dirtyKeys.ToArray())
-            .Subscribe();
-
-        _dirtyKeys.Clear();
-    }
-
-    public void ForceUpdateData(string key)
-    {
-        ((ReactiveCommand<string[], string[]>)DataChanged)
-            .Execute(new[] { key })
-            .Subscribe();
     }
 
     public IReadOnlyList<ISource> GetSources(string key)
@@ -105,6 +77,11 @@ public class DataManager : IDataManager
         }
 
         return new List<ISource>().ToImmutableList();
+    }
+
+    public IReadOnlyList<string> GetKeys()
+    {
+        return _sources.Keys.ToImmutableList();
     }
 
     public IReadOnlyDictionary<string, IReadOnlyList<ISource>> GetSources()
@@ -183,8 +160,6 @@ public class DataManager : IDataManager
 
                             await editableSource.AddAsync(key, value);
 
-                            ForceUpdateData(key);
-
                             return true;
                         }
                     }
@@ -214,8 +189,6 @@ public class DataManager : IDataManager
 
                             await editableSource.RemoveAsync(key, value);
 
-                            ForceUpdateData(key);
-
                             return true;
                         }
                     }
@@ -244,8 +217,6 @@ public class DataManager : IDataManager
                             }
 
                             await editableSource.EditAsync(key, id, newValue);
-
-                            ForceUpdateData(key);
 
                             return true;
                         }

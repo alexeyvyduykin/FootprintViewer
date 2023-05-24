@@ -3,6 +3,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Logging;
+using FootprintViewer.Services;
 using ReactiveUI;
 using System.Reactive.Concurrency;
 
@@ -24,16 +25,16 @@ public class DemoPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        var dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-        dataManager.UnregisterSources(DbKeys.PlannedSchedules.ToString());
+        localStorage.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateDemoSources())
         {
-            dataManager.RegisterSource(key, source);
+            localStorage.RegisterSource(key, source);
         }
 
-        dataManager.UpdateData();
+        localStorage.UpdateData_Test_Remove_After();
 
         Save();
     }

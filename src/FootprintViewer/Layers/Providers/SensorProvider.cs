@@ -11,6 +11,7 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -24,45 +25,51 @@ public class SensorProvider : IProvider, IDynamic
     private Dictionary<string, Dictionary<int, List<IFeature>>> _dictLeft = new();
     private Dictionary<string, Dictionary<int, List<IFeature>>> _dictRight = new();
     private Dictionary<string, List<IFeature>> _cache = new();
-    private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public SensorProvider(IDataManager dataManager, LayerStyleManager styleManager)
+    public SensorProvider(LayerStyleManager styleManager)
     {
-        _dataManager = dataManager;
+       // Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        Observable.StartAsync(UpdateImpl);
+        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public IEnumerable<IFeature> Features => _featureCache;
 
-    public ReactiveCommand<Unit, Unit> Update { get; }
+    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
-    private async Task UpdateImpl()
+    public void SetObservable(IObservable<IReadOnlyCollection<Satellite>> observable)
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        observable.Subscribe(async s => await UpdateData(s));
+    }
 
-        if (ps != null)
-        {
-            var satellites = ps.Satellites;
+    //private async Task UpdateImpl()
+    //{
+    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
-            (_dictLeft, _dictRight) = await CreateDataAsync(satellites);
+    //    if (ps != null)
+    //    {
+    //        var satellites = ps.Satellites;
 
-            _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+    //        (_dictLeft, _dictRight) = await CreateDataAsync(satellites);
 
-            _featureCache.Clear();
-        }
+    //        _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+
+    //        _featureCache.Clear();
+    //    }
+    //}
+
+    private async Task UpdateData(IReadOnlyCollection<Satellite> satellites)
+    {
+        (_dictLeft, _dictRight) = await CreateDataAsync(satellites.ToList());
+
+        _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
+
+        _featureCache.Clear();
     }
 
     // TODO: node/isShow refactoring

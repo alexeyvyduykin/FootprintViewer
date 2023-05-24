@@ -1,6 +1,4 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Styles;
@@ -12,7 +10,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -20,14 +17,11 @@ namespace FootprintViewer.Layers.Providers;
 
 public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
 {
-    private readonly IDataManager _dataManager;
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public GroundTargetProvider(IDataManager dataManager, LayerStyleManager styleManager)
+    public GroundTargetProvider(LayerStyleManager styleManager)
     {
-        _dataManager = dataManager;
-
         MaxVisible = styleManager.MaxVisibleTargetStyle;
 
         _groundTargets
@@ -36,15 +30,11 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
             .Transform(s => FeatureBuilder.Build(s))
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
+    }
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        Observable.StartAsync(UpdateImpl);
+    public void SetObservable(IObservable<IReadOnlyCollection<GroundTarget>> observable)
+    {
+        observable.Subscribe(UpdateData);
     }
 
     public string? CRS { get; set; }
@@ -55,21 +45,10 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
 
     public ReadOnlyObservableCollection<IFeature> Features => _features;
 
-    public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
-    private async Task UpdateImpl()
-    {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-        if (ps != null)
-        {
-            UpdateData(ps.GroundTargets);
-        }
-    }
-
-    public void UpdateData(IList<GroundTarget> groundTargets)
+    private void UpdateData(IReadOnlyCollection<GroundTarget> groundTargets)
     {
         _groundTargets.Edit(innerList =>
         {

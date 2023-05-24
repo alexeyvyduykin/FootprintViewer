@@ -4,6 +4,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.Services;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,14 +16,14 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly SourceList<UserGeometry> _userGeometries = new();
     private readonly ReadOnlyObservableCollection<UserGeometryViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
 
     public UserGeometryTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         Title = "Пользовательская геометрия";
         Key = nameof(UserGeometryTabViewModel);
@@ -36,7 +37,7 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
@@ -63,7 +64,7 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
+        var res = await _localStorage.GetValuesAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
 
         _userGeometries.Edit(innerList =>
         {
@@ -76,9 +77,9 @@ public sealed partial class UserGeometryTabViewModel : SidePanelTabViewModel
     {
         if (value != null)
         {
-            await _dataManager.TryRemoveAsync(DbKeys.UserGeometries.ToString(), value.Model);
+            await _localStorage.TryRemoveAsync_Test(DbKeys.UserGeometries.ToString(), value.Model);
 
-            _dataManager.ForceUpdateData(DbKeys.UserGeometries.ToString());
+            _localStorage.ForceUpdateData_Test(DbKeys.UserGeometries.ToString());
         }
     }
 
@@ -89,7 +90,7 @@ public partial class UserGeometryTabViewModel
 {
     public UserGeometryTabViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+        _localStorage = resolver.GetService<ILocalStorageService>();
 
         Title = "Пользовательская геометрия";
         Key = nameof(UserGeometryTabViewModel);
@@ -102,7 +103,7 @@ public partial class UserGeometryTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
             .ToSignal()
             .InvokeCommand(Update);

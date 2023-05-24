@@ -6,6 +6,7 @@ using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -23,12 +24,12 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
     private readonly SourceList<SatelliteViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly LayerStyleManager _layerStyleManager;
 
     public SatelliteTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _trackProvider = Services.Locator.GetRequiredService<TrackProvider>();
         _sensorProvider = Services.Locator.GetRequiredService<SensorProvider>();
         _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
@@ -43,7 +44,7 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
@@ -82,7 +83,7 @@ public sealed partial class SatelliteTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var ps = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps != null)
         {

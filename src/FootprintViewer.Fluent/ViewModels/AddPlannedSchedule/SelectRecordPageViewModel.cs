@@ -8,6 +8,7 @@ using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Logging;
+using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -69,14 +70,16 @@ public class SelectRecordPageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        Services.Locator.GetRequiredService<IDataManager>().UnregisterSources(DbKeys.PlannedSchedules.ToString());
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+
+        localStorage.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateSources(_contextCreator))
         {
-            Services.Locator.GetRequiredService<IDataManager>().RegisterSource(key, source);
+            localStorage.RegisterSource(key, source);
         }
 
-        Services.Locator.GetRequiredService<IDataManager>().UpdateData();
+        localStorage.UpdateData_Test_Remove_After();
 
         Save();
     }

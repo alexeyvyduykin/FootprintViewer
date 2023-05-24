@@ -1,6 +1,4 @@
 ﻿using ConcurrentCollections;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Styles;
@@ -21,47 +19,61 @@ namespace FootprintViewer.Layers.Providers;
 public class GroundStationProvider : IProvider, IDynamic
 {
     private ConcurrentDictionary<string, List<IFeature>> _cache = new();
-    private readonly IDataManager _dataManager;
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public GroundStationProvider(IDataManager dataManager, LayerStyleManager styleManager)
+    public GroundStationProvider(LayerStyleManager styleManager)
     {
-        _dataManager = dataManager;
+        //Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+        //_dataManager.DataChanged
+        //    .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+        //    .ToSignal()
+        //    .InvokeCommand(Update);
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        Observable.StartAsync(UpdateImpl);
+        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public IEnumerable<IFeature> Features => _featureCache;
 
-    public ReactiveCommand<Unit, Unit> Update { get; }
+    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
-    private async Task UpdateImpl()
+    public void SetObservable(IObservable<IReadOnlyCollection<GroundStation>> observable)
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-        if (ps != null)
-        {
-            _cache.Clear();
-
-            foreach (var item in ps.GroundStations)
-            {
-                _cache.TryAdd(item.Name, new List<IFeature>());
-            }
-
-            _featureCache.Clear();
-        }
+        observable.Subscribe(UpdateData);
     }
+
+    private void UpdateData(IReadOnlyCollection<GroundStation> groundStations)
+    {
+        _cache.Clear();
+
+        foreach (var item in groundStations)
+        {
+            _cache.TryAdd(item.Name, new List<IFeature>());
+        }
+
+        _featureCache.Clear();
+    }
+
+    //private async Task UpdateImpl()
+    //{
+    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+
+    //    if (ps != null)
+    //    {
+    //        _cache.Clear();
+
+    //        foreach (var item in ps.GroundStations)
+    //        {
+    //            _cache.TryAdd(item.Name, new List<IFeature>());
+    //        }
+
+    //        _featureCache.Clear();
+    //    }
+    //}
 
     // TODO: isShow refactoring
     public void ChangedData(GroundStation groundStation, double innerAngle, double[] arrAngles, bool isShow)

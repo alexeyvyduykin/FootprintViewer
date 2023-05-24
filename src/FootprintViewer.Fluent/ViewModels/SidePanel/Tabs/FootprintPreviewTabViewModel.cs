@@ -5,6 +5,7 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.Services;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
@@ -20,7 +21,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly Map _map;
     private readonly IMapNavigator _mapNavigator;
     private readonly SourceList<FootprintPreview> _footprintPreviews = new();
@@ -33,7 +34,7 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
     {
         _map = Services.Locator.GetRequiredService<Map>();
         _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel();
@@ -81,7 +82,7 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => new[] { DbKeys.FootprintPreviews.ToString(), DbKeys.FootprintPreviewGeometries.ToString() }.Any(key => s.Contains(key)))
             .ToSignal()
             .InvokeCommand(Update);
@@ -118,8 +119,8 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var footprintPreviews = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
-        var geometries = await _dataManager.GetDataAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
+        var footprintPreviews = await _localStorage.GetValuesAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
+        var geometries = await _localStorage.GetValuesAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
 
         _footprintPreviews.Edit(innerList =>
         {

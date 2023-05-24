@@ -6,6 +6,7 @@ using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -18,7 +19,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<GroundStationViewModel> _groundStation = new();
     private readonly ReadOnlyObservableCollection<GroundStationViewModel> _items;
@@ -27,7 +28,7 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 
     public GroundStationTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _provider = Services.Locator.GetRequiredService<GroundStationProvider>();
         _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
 
@@ -42,7 +43,7 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
@@ -81,7 +82,7 @@ public sealed partial class GroundStationTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var ps = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps != null)
         {
@@ -110,7 +111,7 @@ public partial class GroundStationTabViewModel
 {
     public GroundStationTabViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+        _localStorage = resolver.GetService<ILocalStorageService>();
         _provider = resolver.GetService<GroundStationProvider>();
         _layerStyleManager = resolver.GetService<LayerStyleManager>();
 
@@ -124,7 +125,7 @@ public partial class GroundStationTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);

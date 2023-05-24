@@ -28,38 +28,38 @@ public class Global
 
     public Config Config { get; }
 
-    public static IDataManager CreateDataManager()
-    {
-        //     var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
+    //public static IDataManager CreateDataManager()
+    //{
+    //    //     var connectionString = ConnectionString.Build("localhost", 5432, "FootprintViewerDatabase", "postgres", "user").ToString();
 
-        //  var dbFactory = new DbFactory();
+    //    //  var dbFactory = new DbFactory();
 
-        // userGeometries
-        //    var userGeometriesKey = DbKeys.UserGeometries.ToString();
-        //    var userGeometriesSource = dbFactory.CreateSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
+    //    // userGeometries
+    //    //    var userGeometriesKey = DbKeys.UserGeometries.ToString();
+    //    //    var userGeometriesSource = dbFactory.CreateSource(DbKeys.UserGeometries, connectionString, "UserGeometries");
 
-        // plannedSchedules
-        //    var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
-        //    var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, connectionString, "PlannedSchedules");
+    //    // plannedSchedules
+    //    //    var plannedSchedulesKey = DbKeys.PlannedSchedules.ToString();
+    //    //    var plannedSchedulesSource = dbFactory.CreateSource(DbKeys.PlannedSchedules, connectionString, "PlannedSchedules");
 
-        // maps
-        var mapsKey = DbKeys.Maps;
+    //    // maps
+    //    var mapsKey = DbKeys.Maps;
 
-        string embeddedFilePath = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
+    //    string embeddedFilePath = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
 
-        var mapSource = new FileSource(new[] { embeddedFilePath }, MapResource.Build);
+    //    var mapSource = new FileSource(new[] { embeddedFilePath }, MapResource.Build);
 
-        var sources = new Dictionary<string, IList<ISource>>()
-        {
-            //{ userGeometriesKey, new[] { userGeometriesSource } },
+    //    var sources = new Dictionary<string, IList<ISource>>()
+    //    {
+    //        //{ userGeometriesKey, new[] { userGeometriesSource } },
 
-            { mapsKey.ToString(), new[] { mapSource } },
+    //        { mapsKey.ToString(), new[] { mapSource } },
 
-            //{ plannedSchedulesKey, new[] { plannedSchedulesSource } }
-        };
+    //        //{ plannedSchedulesKey, new[] { plannedSchedulesSource } }
+    //    };
 
-        return new DataManager(sources);
-    }
+    //    return new DataManager(sources);
+    //}
 
     public static IList<(string, ISource)> CreateDemoSources()
     {
@@ -123,20 +123,61 @@ public class Global
         };
     }
 
-    public static void AddLastPlannedSchedule(Config config, IDataManager dataManager)
+    //public static void AddLastPlannedSchedule(Config config, IDataManager dataManager)
+    //{
+    //    switch (config.PlannedScheduleState)
+    //    {
+    //        case Models.PlannedScheduleState.None:
+    //            break;
+    //        case Models.PlannedScheduleState.Demo:
+    //            {
+    //                foreach (var (key, source) in CreateDemoSources())
+    //                {
+    //                    dataManager.RegisterSource(key, source);
+    //                }
+    //            }
+    //            break;
+    //        case Models.PlannedScheduleState.JsonFile:
+    //            {
+    //                var path = config.LastPlannedScheduleJsonFile;
+
+    //                // TODO: verify path
+    //                if (System.IO.Path.Exists(path) == true)
+    //                {
+    //                    foreach (var (key, source) in CreateSources(path))
+    //                    {
+    //                        dataManager.RegisterSource(key, source);
+    //                    }
+    //                }
+    //            }
+    //            break;
+    //        case Models.PlannedScheduleState.Database:
+    //            {
+    //                var connection = config.LastPlannedScheduleConnection;
+
+    //                // TODO: verify connection
+    //                if (connection is { })
+    //                {
+    //                    foreach (var (key, source) in CreateSources(() => new(connection.TableName, connection.ConnectionString)))
+    //                    {
+    //                        dataManager.RegisterSource(key, source);
+    //                    }
+    //                }
+    //            }
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //}
+
+    public static IList<(string key, ISource source)> GetSources(Config config)
     {
         switch (config.PlannedScheduleState)
         {
             case Models.PlannedScheduleState.None:
                 break;
-            case Models.PlannedScheduleState.Demo:
-                {
-                    foreach (var (key, source) in CreateDemoSources())
-                    {
-                        dataManager.RegisterSource(key, source);
-                    }
-                }
-                break;
+            case Models.PlannedScheduleState.Demo:                
+                return CreateDemoSources();
             case Models.PlannedScheduleState.JsonFile:
                 {
                     var path = config.LastPlannedScheduleJsonFile;
@@ -144,10 +185,7 @@ public class Global
                     // TODO: verify path
                     if (System.IO.Path.Exists(path) == true)
                     {
-                        foreach (var (key, source) in CreateSources(path))
-                        {
-                            dataManager.RegisterSource(key, source);
-                        }
+                        return CreateSources(path);
                     }
                 }
                 break;
@@ -158,15 +196,14 @@ public class Global
                     // TODO: verify connection
                     if (connection is { })
                     {
-                        foreach (var (key, source) in CreateSources(() => new(connection.TableName, connection.ConnectionString)))
-                        {
-                            dataManager.RegisterSource(key, source);
-                        }
+                        return CreateSources(() => new(connection.TableName, connection.ConnectionString));
                     }
                 }
                 break;
             default:
                 break;
         }
+
+        return new List<(string, ISource)>();
     }
 }

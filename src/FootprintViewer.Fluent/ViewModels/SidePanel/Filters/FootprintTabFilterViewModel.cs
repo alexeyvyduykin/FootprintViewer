@@ -5,6 +5,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.Services;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -18,7 +19,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 
 public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<FootprintViewModel>
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly SourceList<SatelliteItemViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteItemViewModel> _items;
 
@@ -29,7 +30,7 @@ public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<Foo
 
     public FootprintTabFilterViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         IsLeftSwath = true;
         IsRightSwath = true;
@@ -42,7 +43,7 @@ public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<Foo
             .Bind(out _items)
             .Subscribe();
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
@@ -139,7 +140,7 @@ public sealed partial class FootprintTabFilterViewModel : AOIFilterViewModel<Foo
 
     private async Task UpdateImpl()
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var ps = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps != null)
         {
@@ -178,7 +179,7 @@ public partial class FootprintTabFilterViewModel
 {
     public FootprintTabFilterViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+        _localStorage = resolver.GetService<ILocalStorageService>();
 
         IsLeftSwath = true;
         IsRightSwath = true;
@@ -191,7 +192,7 @@ public partial class FootprintTabFilterViewModel
             .Bind(out _items)
             .Subscribe();
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));

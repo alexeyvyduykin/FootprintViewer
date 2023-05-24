@@ -14,6 +14,7 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers;
+using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -141,12 +142,12 @@ public sealed partial class MainViewModel : ViewModelBase
 
     private void RegisterViewModels()
     {
-        var satelliteTabViewModel = new SatelliteTabViewModel();
+     //   var satelliteTabViewModel = new SatelliteTabViewModel();
         var groundTargetTabViewModel = new GroundTargetTabViewModel();
-        var footprintTabViewModel = new FootprintTabViewModel();
-        var userGeometryTabViewModel = new UserGeometryTabViewModel();
-        var groundStationTabViewModel = new GroundStationTabViewModel();
-        var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
+     //   var footprintTabViewModel = new FootprintTabViewModel();
+     //   var userGeometryTabViewModel = new UserGeometryTabViewModel();
+    //    var groundStationTabViewModel = new GroundStationTabViewModel();
+    //   var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
 
         ToolBar = new ToolBarViewModel();
 
@@ -157,12 +158,12 @@ public sealed partial class MainViewModel : ViewModelBase
         {
             Tabs = new List<SidePanelTabViewModel>(new SidePanelTabViewModel[]
             {
-                satelliteTabViewModel,
-                groundStationTabViewModel,
+            //    satelliteTabViewModel,
+           //     groundStationTabViewModel,
                 groundTargetTabViewModel,
-                footprintTabViewModel,
-                userGeometryTabViewModel,
-                plannedScheduleTabViewModel,
+            //    footprintTabViewModel,
+            //    userGeometryTabViewModel,
+            //    plannedScheduleTabViewModel,
             }),
             ActionTabs = new()
             {
@@ -230,7 +231,8 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public async Task InitAsync()
     {
-        var maps = await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        //var maps = await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        var maps = await Services.Locator.GetRequiredService<ILocalStorageService>().GetValuesAsync<MapResource>(DbKeys.Maps.ToString());
         var item = maps.FirstOrDefault();
         if (item != null)
         {
@@ -277,6 +279,8 @@ public sealed partial class MainViewModel : ViewModelBase
     {
         var feature = selector.SelectedFeature;
         var layer = selector.SelectedLayer;
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+
 
         InfoPanelItemViewModel? panel = layer?.Name switch
         {
@@ -287,13 +291,13 @@ public sealed partial class MainViewModel : ViewModelBase
             //        .Select(s => new FootprintClickInfoPanel(s))
             //        .FirstOrDefault(),
             nameof(LayerType.GroundTarget) =>
-                (await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
+                (await localStorage.GetValuesAsync<PlannedScheduleResult>(nameof(DbKeys.PlannedSchedules))).FirstOrDefault()?.GroundTargets
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new GroundTargetViewModel(s))
                     .Select(s => GroundTargetInfoPanelItemViewModel.Create(s))
                     .FirstOrDefault() ?? null,
             nameof(LayerType.User) =>
-                (await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
+                (await localStorage.GetValuesAsync<UserGeometry>(nameof(DbKeys.UserGeometries)))
                     .Where(s => Equals(s.Name, feature?["Name"]))
                     .Select(s => new UserGeometryViewModel(s))
                     .Select(s => UserGeometryInfoPanelItemViewModel.Create(s))
@@ -342,9 +346,11 @@ public sealed partial class MainViewModel : ViewModelBase
 
                     var key = DbKeys.UserGeometries.ToString();
 
-                    await Services.Locator.GetRequiredService<IDataManager>().TryEditAsync(key, name, model);
+                    var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-                    Services.Locator.GetRequiredService<IDataManager>().ForceUpdateData(key);
+                    await localStorage.TryEditAsync_Test(key, name, model);
+
+                    localStorage.ForceUpdateData_Test(key);
                 }
             },
             RxApp.TaskpoolScheduler);
@@ -370,9 +376,11 @@ public sealed partial class MainViewModel : ViewModelBase
 
                 var key = DbKeys.UserGeometries.ToString();
 
-                await Services.Locator.GetRequiredService<IDataManager>().TryAddAsync(key, model);
+                var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-                Services.Locator.GetRequiredService<IDataManager>().ForceUpdateData(key);
+                await localStorage.TryAddAsync_Test(key, model);
+
+                localStorage.ForceUpdateData_Test(key);
             },
             RxApp.TaskpoolScheduler);
         }
@@ -504,7 +512,7 @@ public partial class MainViewModel
         {
             new SatelliteTabViewModel(),
            // new SatelliteTabViewModel(resolver),
-            new GroundTargetTabViewModel(resolver),
+           // new GroundTargetTabViewModel(resolver),
             new FootprintTabViewModel(resolver),
             new UserGeometryTabViewModel(resolver),
             new GroundStationTabViewModel(resolver),

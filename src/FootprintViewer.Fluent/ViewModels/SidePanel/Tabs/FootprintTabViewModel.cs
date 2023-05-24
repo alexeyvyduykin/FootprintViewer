@@ -9,6 +9,7 @@ using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
@@ -25,7 +26,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly IMapNavigator _mapNavigator;
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
@@ -36,7 +37,7 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
 
     public FootprintTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
         var map = Services.Locator.GetRequiredService<Map>();
         _layer = map.GetLayer(LayerType.Footprint);
@@ -103,7 +104,7 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
@@ -165,7 +166,7 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
             .Return(Unit.Default)
             .Delay(TimeSpan.FromSeconds(1));
 
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var ps = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps != null)
         {
@@ -226,7 +227,7 @@ public sealed partial class FootprintTabViewModel : SidePanelTabViewModel
         }
         else
         {
-            _layerProvider.Update.Execute().Subscribe();
+           // _layerProvider.Update.Execute().Subscribe();
         }
     }
 
@@ -259,7 +260,7 @@ public partial class FootprintTabViewModel
 {
     public FootprintTabViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+        _localStorage = resolver.GetService<ILocalStorageService>();
         _mapNavigator = resolver.GetService<IMapNavigator>();
         var map = (Map)resolver.GetService<IMap>();
         _layer = map.GetLayer(LayerType.Footprint);
@@ -325,7 +326,7 @@ public partial class FootprintTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);

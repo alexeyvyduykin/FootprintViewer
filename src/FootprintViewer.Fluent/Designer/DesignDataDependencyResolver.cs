@@ -10,6 +10,7 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Localization;
+using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -44,7 +45,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
     private ToolBarViewModel? _toolBar;
-    private IDataManager? _dataManager;
+    private ILocalStorageService? _localStorage;
     private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
     private LayerStyleManager? _layerStyleManager;
@@ -79,27 +80,27 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         }
         else if (serviceType == typeof(GroundTargetProvider))
         {
-            return _groundTargetProvider ??= new GroundTargetProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _groundTargetProvider ??= null;// new GroundTargetProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(TrackProvider))
         {
-            return _trackProvider ??= new TrackProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _trackProvider ??= new TrackProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(SensorProvider))
         {
-            return _sensorProvider ??= new SensorProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _sensorProvider ??= new SensorProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(GroundStationProvider))
         {
-            return _groundStationProvider ??= new GroundStationProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _groundStationProvider ??= new GroundStationProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(FootprintProvider))
         {
-            return _footprintProvider ??= new FootprintProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _footprintProvider ??= new FootprintProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(UserGeometryProvider))
         {
-            return _userGeometryProvider ??= new UserGeometryProvider(GetService<IDataManager>(), GetService<LayerStyleManager>());
+            return _userGeometryProvider ??= new UserGeometryProvider(GetService<LayerStyleManager>());
         }
         else if (serviceType == typeof(SatelliteTabViewModel))
         {
@@ -119,7 +120,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         }
         else if (serviceType == typeof(GroundTargetTabViewModel))
         {
-            return _groundTargetTab ??= new GroundTargetTabViewModel(this);
+            return _groundTargetTab ??= new GroundTargetTabViewModel(/*this*/);
         }
         else if (serviceType == typeof(FootprintPreviewTabViewModel))
         {
@@ -145,9 +146,9 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         {
             return _mapState ??= new MapState();
         }
-        else if (serviceType == typeof(IDataManager))
+        else if (serviceType == typeof(ILocalStorageService))
         {
-            return _dataManager ??= CreateDataManager();
+            return _localStorage ??= CreateLocalStorage();
         }
         else if (serviceType == typeof(ILanguageManager))
         {
@@ -173,7 +174,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         return map;
     }
 
-    private static DataManager CreateDataManager()
+    private static ILocalStorageService CreateLocalStorage()
     {
         var source5 = new LocalSource<UserGeometry>(BuildUserGeometries);
         var source6 = new LocalSource<MapResource>(BuildMapResources);
@@ -197,7 +198,11 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
             { DbKeys.PlannedSchedules.ToString(), new[] { source9 } }
         };
 
-        return new DataManager(sources);
+        var  localStorage = new LocalStorageService();
+
+        localStorage.RegisterSources(sources);
+
+        return localStorage;
     }
 
     private static List<T> Build<T>(int count, Func<T> func)

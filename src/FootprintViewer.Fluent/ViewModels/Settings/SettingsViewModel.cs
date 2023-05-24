@@ -5,12 +5,14 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
+using FootprintViewer.Extensions;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Helpers;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.Settings.Items;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Logging;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
@@ -29,7 +31,7 @@ namespace FootprintViewer.Fluent.ViewModels.Settings;
 
 public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 {
-    private readonly IDataManager _dataManager;
+    //  private readonly IDataManager _dataManager;
     private readonly SourceList<string> _mapBackgroundPaths = new();
     private readonly ReadOnlyObservableCollection<MapBackgroundItemViewModel> _items;
     private readonly List<string> _snapshotExtensions;
@@ -48,11 +50,12 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 
         SnapshotDirectory = Services.MapSnapshotDir;
 
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        // _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-           // var mainState = Services.MainState;
+            // var mainState = Services.MainState;
 
             await Observable
                 .Return(Unit.Default)
@@ -67,7 +70,7 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 
         SelectedSnapshotExtension = ConfigOnOpen.SelectedMapSnapshotExtension;
 
-        var sources = _dataManager.GetSources(DbKeys.Maps);
+        var sources = localStorage.GetSources(DbKeys.Maps);
 
         var paths = sources
             .Where(s => s is FileSource)
@@ -219,9 +222,11 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
                 innerList.Add(filePath);
             });
 
-            Services.Locator.GetRequiredService<IDataManager>().RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
+            var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-            Services.Locator.GetRequiredService<IDataManager>().UpdateData();
+            localStorage.RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
+
+            localStorage.UpdateData_Test_Remove_After();
 
             Save();
         }
@@ -238,16 +243,18 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
             innerList.Remove(item.FullPath);
         });
 
-        var source = Services.Locator.GetRequiredService<IDataManager>()
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+
+        var source = localStorage
             .GetSources(DbKeys.Maps)
             .Where(s => s is FileSource)
             .Cast<FileSource>()
             .Where(s => s.Paths.Contains(item.FullPath))
             .Single();
 
-        Services.Locator.GetRequiredService<IDataManager>().UnregisterSource(DbKeys.Maps.ToString(), source);
+        localStorage.UnregisterSource(DbKeys.Maps.ToString(), source);
 
-        Services.Locator.GetRequiredService<IDataManager>().UpdateData();
+        localStorage.UpdateData_Test_Remove_After();
 
         Save();
     }
@@ -276,7 +283,7 @@ public partial class SettingsViewModel
     {
         SnapshotDirectory = "C:\\Users\\User\\AppData\\Roaming\\FootprintViewer\\Client\\Snapshots";
 
-        _dataManager = resolver.GetService<IDataManager>();
+        var localStorage = resolver.GetService<ILocalStorageService>();
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -291,7 +298,7 @@ public partial class SettingsViewModel
 
         SelectedSnapshotExtension = _snapshotExtensions.First();
 
-        var sources = _dataManager.GetSources(DbKeys.Maps);
+        var sources = localStorage.GetSources(DbKeys.Maps);
 
         var paths = sources
             .Where(s => s is FileSource)

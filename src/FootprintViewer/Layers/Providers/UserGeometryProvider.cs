@@ -1,6 +1,4 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -12,7 +10,6 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -20,14 +17,11 @@ namespace FootprintViewer.Layers.Providers;
 
 public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
 {
-    private readonly IDataManager _dataManager;
     private readonly SourceList<UserGeometry> _userGeometries = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public UserGeometryProvider(IDataManager dataManager, LayerStyleManager styleManager)
+    public UserGeometryProvider(LayerStyleManager styleManager)
     {
-        _dataManager = dataManager;
-
         _userGeometries
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -35,28 +29,31 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
 
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+        //Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
+        //_dataManager.DataChanged
+        //    .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
+        //    .ToSignal()
+        //    .InvokeCommand(Update);
 
-        Observable.StartAsync(UpdateImpl);
+        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public ReadOnlyObservableCollection<IFeature> Features => _features;
 
-    public ReactiveCommand<Unit, Unit> Update { get; }
+    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
-    private async Task UpdateImpl()
+    public void SetObservable(IObservable<IReadOnlyCollection<UserGeometry>> observable)
     {
-        var userGeometries = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
+        observable.Subscribe(UpdateData);
+    }
 
+    private void UpdateData(IReadOnlyCollection<UserGeometry> userGeometries)
+    {
         var list = userGeometries
             .Where(s => s.Geometry != null && string.IsNullOrEmpty(s.Name) == false)
             .ToList();
@@ -67,6 +64,21 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
             innerList.AddRange(list);
         });
     }
+
+    //private async Task UpdateImpl()
+    //{
+    //    var userGeometries = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
+
+    //    var list = userGeometries
+    //        .Where(s => s.Geometry != null && string.IsNullOrEmpty(s.Name) == false)
+    //        .ToList();
+
+    //    _userGeometries.Edit(innerList =>
+    //    {
+    //        innerList.Clear();
+    //        innerList.AddRange(list);
+    //    });
+    //}
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)
     {

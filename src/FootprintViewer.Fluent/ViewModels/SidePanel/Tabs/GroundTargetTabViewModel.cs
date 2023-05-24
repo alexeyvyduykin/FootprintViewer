@@ -1,19 +1,17 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -24,7 +22,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -34,7 +32,7 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
     public GroundTargetTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var map = Services.Locator.GetRequiredService<Map>();
         _layer = map.GetLayer(LayerType.GroundTarget);
         _layerProvider = Services.Locator.GetRequiredService<GroundTargetProvider>();
@@ -59,13 +57,15 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(_ => ItemCount = _groundTargets.Count);
 
-        _groundTargets
+        var filterObservable = _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
             .Filter(filter2)
-            .Filter(filter3)
+            .Filter(filter3);
+
+        filterObservable
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
             .Bind(out _items)
             .Subscribe(_ => FilteringItemCount = _items.Count);
@@ -76,22 +76,14 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        this.WhenAnyValue(s => s.IsFilterOnMap)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => IsFilterOnMapChanged());
+        var layerObservable = filterObservable
+            .Transform(s => s.GroundTarget)
+            .ToCollection();
 
-        _groundTargets
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new GroundTargetViewModel(s))
-            .Filter(filter1)
-            .Filter(filter2)
-            .Filter(filter3)
-            .ToCollection()
-            .Subscribe(UpdateProvider);
+        _layerProvider.SetObservable(layerObservable);
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
+        _localStorage
+            .PlannedScheduleObservable
             .ToSignal()
             .InvokeCommand(Update);
 
@@ -128,7 +120,9 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
     private async Task UpdateImpl()
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var storage = Services.Locator.GetRequiredService<ILocalStorageService>();
+
+        var ps = (await storage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps != null)
         {
@@ -187,34 +181,6 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
         });
     }
 
-    private void IsFilterOnMapChanged()
-    {
-        if (IsFilterOnMap == true)
-        {
-            var res = Items
-                .Select(s => s.GroundTarget)
-                .ToList();
-
-            _layerProvider.UpdateData(res);
-        }
-        else
-        {
-            _layerProvider.Update.Execute().Subscribe();
-        }
-    }
-
-    private void UpdateProvider(IReadOnlyCollection<GroundTargetViewModel> groundTarget)
-    {
-        if (IsFilterOnMap == true)
-        {
-            var res = groundTarget
-                .Select(s => s.GroundTarget)
-                .ToList();
-
-            _layerProvider.UpdateData(res);
-        }
-    }
-
     public bool IsLoading => _isLoading.Value;
 
     public ReadOnlyObservableCollection<GroundTargetViewModel> Items => _items;
@@ -236,91 +202,4 @@ public sealed partial class GroundTargetTabViewModel : SidePanelTabViewModel
 
     [Reactive]
     public bool IsFilteringActive { get; set; }
-}
-
-public partial class GroundTargetTabViewModel
-{
-    public GroundTargetTabViewModel(DesignDataDependencyResolver resolver)
-    {
-        _dataManager = resolver.GetService<IDataManager>();
-        _layer = resolver.GetService<IMap>().GetLayer(LayerType.GroundTarget);
-        _layerProvider = resolver.GetService<GroundTargetProvider>();
-        _featureManager = resolver.GetService<FeatureManager>();
-        var areaOfInterest = resolver.GetService<AreaOfInterest>();
-
-        Title = "Просмотр наземных целей";
-        Key = nameof(GroundTargetTabViewModel);
-        Filter = new GroundTargetTabFilterViewModel();
-
-        var filter1 = Filter.AOIFilterObservable;
-        var filter2 = Filter.FilterObservable;
-
-        var filter3 = this.WhenAnyValue(s => s.SearchString)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Throttle(TimeSpan.FromSeconds(1))
-            .Select(SearchStringPredicate);
-
-        _groundTargets
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => ItemCount = _groundTargets.Count);
-
-        _groundTargets
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new GroundTargetViewModel(s))
-            .Filter(filter1)
-            .Filter(filter2)
-            .Filter(filter3)
-            .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
-            .Bind(out _items)
-            .Subscribe(_ => FilteringItemCount = _items.Count);
-
-        this.WhenAnyValue(s => s.FilteringItemCount)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => IsFilteringActive = s != ItemCount);
-
-        Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        this.WhenAnyValue(s => s.IsFilterOnMap)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(_ => IsFilterOnMapChanged());
-
-        _groundTargets
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new GroundTargetViewModel(s))
-            .Filter(filter1)
-            .Filter(filter2)
-            .Filter(filter3)
-            .ToCollection()
-            .Subscribe(UpdateProvider);
-
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        this.WhenAnyValue(s => s.SelectedItem)
-            .InvokeCommand(ReactiveCommand.Create<GroundTargetViewModel?>(SelectImpl));
-
-        Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
-
-        Leave = ReactiveCommand.Create(LeaveImpl);
-
-        _isLoading = Update.IsExecuting
-                          .ObserveOn(RxApp.MainThreadScheduler)
-                          .ToProperty(this, x => x.IsLoading);
-
-        this.WhenAnyValue(s => s.IsActive)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Take(1)
-            .ToSignal()
-            .InvokeCommand(Update);
-
-        areaOfInterest.AOIChanged
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => Filter.AOI = s);
-    }
 }

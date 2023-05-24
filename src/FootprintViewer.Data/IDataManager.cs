@@ -2,13 +2,15 @@
 
 public interface IDataManager
 {
-    void RegisterSource(string key, ISource source, bool dirty = true);
+    void RegisterSource(string key, ISource source);
 
     void UnregisterSource(string key, ISource source);
 
     void UnregisterSources(string key);
 
     IReadOnlyList<ISource> GetSources(string key);
+
+    IReadOnlyList<string> GetKeys();
 
     IReadOnlyDictionary<string, IReadOnlyList<ISource>> GetSources();
 
@@ -19,10 +21,4 @@ public interface IDataManager
     Task<bool> TryRemoveAsync(string key, object value);
 
     Task<bool> TryEditAsync(string key, string id, object newValue);
-
-    IObservable<string[]> DataChanged { get; }
-
-    void UpdateData();
-
-    void ForceUpdateData(string key);
 }

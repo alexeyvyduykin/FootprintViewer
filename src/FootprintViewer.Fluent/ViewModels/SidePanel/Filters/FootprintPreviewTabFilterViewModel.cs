@@ -1,9 +1,9 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.Services;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -21,7 +21,7 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
     private readonly ReadOnlyObservableCollection<SensorItemViewModel> _items;
     private readonly SourceList<FootprintPreviewGeometry> _geometries = new();
     private readonly ReadOnlyObservableCollection<FootprintPreviewGeometry> _geometryItems;
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
 
     private const double CloudinessDefault = 0.0;
     private const double MinSunElevationDefault = 0.0;
@@ -31,7 +31,7 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
 
     public FootprintPreviewTabFilterViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         _sensors
             .Connect()
@@ -51,7 +51,7 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
         FromDate = DateTime.Today.AddDays(-1);
         ToDate = DateTime.Today.AddDays(1);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => new[] { DbKeys.FootprintPreviews.ToString(), DbKeys.FootprintPreviewGeometries.ToString() }.Any(key => s.Contains(key)))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateImpl));
@@ -88,8 +88,8 @@ public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<Foot
 
     private async Task UpdateImpl()
     {
-        var res = await _dataManager.GetDataAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
-        var geometries = await _dataManager.GetDataAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
+        var res = await _localStorage.GetValuesAsync<FootprintPreview>(DbKeys.FootprintPreviews.ToString());
+        var geometries = await _localStorage.GetValuesAsync<FootprintPreviewGeometry>(DbKeys.FootprintPreviewGeometries.ToString());
 
         var sensors = res
             .Where(s => string.IsNullOrEmpty(s.SatelliteName) == false)

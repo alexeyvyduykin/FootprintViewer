@@ -49,7 +49,7 @@ public static class DesignData
 
     public static GroundStationTabViewModel GroundStationTab => new(_resolver) { IsActive = true };
 
-    public static GroundTargetTabViewModel GroundTargetTab => new(_resolver) { IsActive = true };
+    public static GroundTargetTabViewModel GroundTargetTab => new() { IsActive = true };// new (_resolver) { IsActive = true };
 
     public static SatelliteTabViewModel SatelliteTab => new() { IsActive = true }; //new (_resolver) { IsActive = true };
 
@@ -144,7 +144,7 @@ public static class DesignData
             new SatelliteTabViewModel(),
            // new SatelliteTabViewModel(resolver),
             new GroundStationTabViewModel(resolver),
-            new GroundTargetTabViewModel(resolver),
+           // new GroundTargetTabViewModel(resolver),
             new FootprintTabViewModel(resolver),
           //  new UserGeometryTabViewModel(resolver),          
             new PlannedScheduleTabViewModel(resolver)

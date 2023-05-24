@@ -3,6 +3,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
+using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
@@ -18,11 +19,11 @@ namespace FootprintViewer.Fluent.ViewModels.Timelines;
 
 public class TimelinesViewModel : DialogViewModelBase<object>
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
 
     public TimelinesViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         Init = ReactiveCommand.CreateFromTask(UpdateAsyncImpl, outputScheduler: RxApp.MainThreadScheduler);
 
@@ -42,7 +43,7 @@ public class TimelinesViewModel : DialogViewModelBase<object>
 
     private async Task UpdateAsyncImpl()
     {
-        var plannedSchedules = await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString());
+        var plannedSchedules = await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString());
 
         var ps = plannedSchedules.First();
 

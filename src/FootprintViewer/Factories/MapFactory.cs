@@ -20,15 +20,21 @@ public class MapFactory
 
         map.AddLayer(new Layer(), LayerType.WorldMap);
         map.AddLayer(new WritableLayer(), LayerType.FootprintImage);
-        map.AddLayer(CreateGroundStationLayer(providers[LayerType.GroundStation]), LayerType.GroundStation);
-        map.AddLayer(CreateTargetLayer(providers[LayerType.GroundTarget]), LayerType.GroundTarget);
-        map.AddLayer(CreateSensorLayer(providers[LayerType.Sensor]), LayerType.Sensor);
-        map.AddLayer(CreateTrackLayer(providers[LayerType.Track]), LayerType.Track);
-        map.AddLayer(CreateFootprintLayer(providers[LayerType.Footprint]), LayerType.Footprint);
+        if (providers.ContainsKey(LayerType.GroundStation)) 
+            map.AddLayer(CreateGroundStationLayer(providers[LayerType.GroundStation]), LayerType.GroundStation);
+        if (providers.ContainsKey(LayerType.GroundTarget))
+            map.AddLayer(CreateTargetLayer(providers[LayerType.GroundTarget]), LayerType.GroundTarget);
+        if (providers.ContainsKey(LayerType.Sensor)) 
+            map.AddLayer(CreateSensorLayer(providers[LayerType.Sensor]), LayerType.Sensor);
+        if (providers.ContainsKey(LayerType.Track)) 
+            map.AddLayer(CreateTrackLayer(providers[LayerType.Track]), LayerType.Track);
+        if (providers.ContainsKey(LayerType.Footprint)) 
+            map.AddLayer(CreateFootprintLayer(providers[LayerType.Footprint]), LayerType.Footprint);
         map.AddLayer(CreateFootprintImageBorderLayer(), LayerType.FootprintImageBorder);
         map.AddLayer(CreateEditLayer(), LayerType.Edit);
         map.AddLayer(CreateVertexOnlyLayer(map), LayerType.Vertex);
-        map.AddLayer(CreateUserLayer(providers[LayerType.User]), LayerType.User);
+    if(providers.ContainsKey(LayerType.User)) 
+            map.AddLayer(CreateUserLayer(providers[LayerType.User]), LayerType.User);
 
         foreach (var item in map.Layers)
         {

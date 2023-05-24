@@ -5,6 +5,7 @@ using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Helpers;
 using FootprintViewer.Logging;
+using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Reactive.Concurrency;
@@ -46,14 +47,16 @@ public class ImportFilePageViewModel : RoutableViewModel
     {
         Navigate().Clear();
 
-        Services.Locator.GetRequiredService<IDataManager>().UnregisterSources(DbKeys.PlannedSchedules.ToString());
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+
+        localStorage.UnregisterSources(DbKeys.PlannedSchedules.ToString());
 
         foreach (var (key, source) in Global.CreateSources(_filePath))
         {
-            Services.Locator.GetRequiredService<IDataManager>().RegisterSource(key, source);
+            localStorage.RegisterSource(key, source);
         }
 
-        Services.Locator.GetRequiredService<IDataManager>().UpdateData();
+        localStorage.UpdateData_Test_Remove_After();
 
         Save();
     }

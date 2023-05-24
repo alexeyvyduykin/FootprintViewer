@@ -7,6 +7,7 @@ using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
@@ -22,7 +23,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly SourceList<ITaskResult> _plannedSchedules = new();
     private readonly ReadOnlyObservableCollection<TaskResultViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -33,7 +34,7 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
     public PlannedScheduleTabViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
         _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
@@ -68,7 +69,7 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);
@@ -91,7 +92,7 @@ public sealed partial class PlannedScheduleTabViewModel : SidePanelTabViewModel
             .Return(Unit.Default)
             .Delay(TimeSpan.FromSeconds(1));
 
-        var result = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var result = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (result != null)
         {
@@ -137,7 +138,7 @@ public partial class PlannedScheduleTabViewModel
 {
     public PlannedScheduleTabViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+        _localStorage = resolver.GetService<ILocalStorageService>();
         _layerProvider = resolver.GetService<FootprintProvider>();
         _featureManager = resolver.GetService<FeatureManager>();
         _mapNavigator = resolver.GetService<IMapNavigator>();
@@ -171,7 +172,7 @@ public partial class PlannedScheduleTabViewModel
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
-        _dataManager.DataChanged
+        _localStorage.DataChanged
             .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
             .ToSignal()
             .InvokeCommand(Update);

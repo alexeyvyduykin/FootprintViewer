@@ -5,6 +5,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
+using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
@@ -19,12 +20,12 @@ namespace FootprintViewer.Fluent.ViewModels.Timelines;
 
 public class TimelinesOldViewModel : DialogViewModelBase<object>
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _localStorage;
     private readonly DateTime _timeOrigin = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
 
     public TimelinesOldViewModel()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         SelectedInterval = ReactiveCommand.Create<object?>(SelectedIntervalImpl, outputScheduler: RxApp.MainThreadScheduler);
 
@@ -61,7 +62,7 @@ public class TimelinesOldViewModel : DialogViewModelBase<object>
 
     private async Task<PlotModel> CreatePlotModel()
     {
-        var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
+        var ps = (await _localStorage.GetValuesAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
 
         if (ps == null)
         {

@@ -3,6 +3,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using Mapsui;
 using ReactiveUI;
@@ -19,13 +20,14 @@ namespace FootprintViewer.Fluent.ViewModels.ToolBar;
 
 public sealed partial class ToolBarViewModel : ViewModelBase
 {
-    private readonly IDataManager _dataManager;
+    private readonly ILocalStorageService _storage;
     private readonly SourceList<MapResource> _mapResources = new();
     private readonly ReadOnlyObservableCollection<MenuItemViewModel> _mapItems;
 
     public ToolBarViewModel() : base()
     {
-        _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+       // _dataManager = Services.Locator.GetRequiredService<IDataManager>();
+        _storage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var map = Services.Locator.GetRequiredService<Map>();
         var mapState = Services.Locator.GetRequiredService<MapState>();
 
@@ -84,7 +86,12 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             .Bind(out _mapItems)
             .Subscribe();
 
-        _dataManager.DataChanged
+        //_dataManager.DataChanged
+        //    .Where(s => s.Contains(DbKeys.Maps.ToString()))
+        //    .ToSignal()
+        //    .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
+
+        _storage.DataChanged
             .Where(s => s.Contains(DbKeys.Maps.ToString()))
             .ToSignal()
             .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
@@ -120,7 +127,8 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     private async Task UpdateMapsAsync()
     {
-        var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        //var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
+        var maps = await _storage.GetValuesAsync<MapResource>(DbKeys.Maps.ToString());
 
         _mapResources.Edit(innerList =>
         {
@@ -182,7 +190,7 @@ public partial class ToolBarViewModel
 {
     public ToolBarViewModel(DesignDataDependencyResolver resolver)
     {
-        _dataManager = resolver.GetService<IDataManager>();
+      //  _dataManager = resolver.GetService<IDataManager>();
         var map = (Map)resolver.GetService<IMap>();
         var mapState = resolver.GetService<MapState>();
 
@@ -241,10 +249,10 @@ public partial class ToolBarViewModel
             .Bind(out _mapItems)
             .Subscribe();
 
-        _dataManager.DataChanged
-            .Where(s => s.Contains(DbKeys.Maps.ToString()))
-            .ToSignal()
-            .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
+        //_dataManager.DataChanged
+        //    .Where(s => s.Contains(DbKeys.Maps.ToString()))
+        //    .ToSignal()
+        //    .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
 
         Observable.StartAsync(UpdateMapsAsync, RxApp.MainThreadScheduler).Subscribe();
 
