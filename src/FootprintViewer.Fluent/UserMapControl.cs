@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Input;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
+using Mapsui;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 using System.Reactive.Linq;
@@ -18,6 +20,12 @@ public class UserMapControl : MapControl
         MapNavigatorProperty.Changed.Subscribe(OnMapNavigatorChanged);
 
         EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
+
+        // TODO: hack
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
+        this.Map = (Map)mapService.Map;
+        mapService.SetNavigator(this.Navigator!);
+        mapService.SetViewport(this.Viewport!);
     }
 
     private void UserMapControl_EffectiveViewportChanged(object? sender, global::Avalonia.Layout.EffectiveViewportChangedEventArgs e)

@@ -4,6 +4,7 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
@@ -50,6 +51,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
     private FeatureManager? _featureManager;
     private LayerStyleManager? _layerStyleManager;
     private MapState? _mapState;
+    private IMapService? _mapService;
 
     public T GetService<T>()
     {
@@ -65,6 +67,10 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         if (serviceType == typeof(Map))
         {
             return _map ??= CreateMap();
+        }
+        if (serviceType == typeof(IMapService))
+        {
+            return _mapService ??= new MapService();
         }
         else if (serviceType == typeof(LayerStyleManager))
         {

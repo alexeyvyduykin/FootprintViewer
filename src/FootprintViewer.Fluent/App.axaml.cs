@@ -7,6 +7,7 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
@@ -14,6 +15,7 @@ using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
+using Mapsui.Layers;
 using Mapsui.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
@@ -101,7 +103,17 @@ public class App : Application
 
         var areaOfInterest = new AreaOfInterest((Map)map);
 
+        var mapService = new MapService();
+
+        mapService.AddLayerProvider(LayerType.GroundStation, groundStationProvider);
+        mapService.AddLayerProvider(LayerType.GroundTarget, groundTargetProvider);
+        mapService.AddLayerProvider(LayerType.Sensor, sensorProvider);
+        mapService.AddLayerProvider(LayerType.Track, trackProvider);
+        mapService.AddLayerProvider(LayerType.Footprint, footprintProvider);
+        mapService.AddLayerProvider(LayerType.User, userGeometryProvider);
+
         serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
+        serviceCollection.AddSingleton<IMapService>(_ => mapService);
         serviceCollection.AddSingleton<LayerStyleManager>(_ => layerStyleManager);
         serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
         serviceCollection.AddSingleton<Map>(_ => map);
