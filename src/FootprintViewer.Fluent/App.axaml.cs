@@ -15,11 +15,9 @@ using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
-using Mapsui.Layers;
-using Mapsui.Providers;
+using Mapsui.Interactivity;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using System.Collections.Generic;
 using System.Reactive.Concurrency;
 
 namespace FootprintViewer.Fluent;
@@ -70,63 +68,31 @@ public class App : Application
             localStorage.RegisterSource(key, source);
         }
 
-        var mapFactory = new MapFactory();
-
-        var layerStyleManager = new LayerStyleManager();
-
-        var featureManager = mapFactory.CreateFeatureManager();
+        var featureManager = new FeatureManager()
+                .WithSelect(f => f[InteractiveFields.Select] = true)
+                .WithUnselect(f => f[InteractiveFields.Select] = false)
+                .WithEnter(f => f["Highlight"] = true)
+                .WithLeave(f => f["Highlight"] = false);
 
         // StateMachines
         var mapState = new MapState();
 
-        // Layer providers
-        var groundTargetProvider = new GroundTargetProvider(layerStyleManager);
-        var trackProvider = new TrackProvider(layerStyleManager);
-        var sensorProvider = new SensorProvider(layerStyleManager);
-        var groundStationProvider = new GroundStationProvider(layerStyleManager);
-        var footprintProvider = new FootprintProvider(layerStyleManager);
-        var userGeometryProvider = new UserGeometryProvider(layerStyleManager);
-
-        Dictionary<LayerType, IProvider> providers = new()
-        {
-            { LayerType.GroundStation, groundStationProvider },
-            { LayerType.GroundTarget, groundTargetProvider  },
-            { LayerType.Sensor, sensorProvider  },
-            { LayerType.Track, trackProvider },
-            { LayerType.User, userGeometryProvider },
-            { LayerType.Footprint, footprintProvider }
-        };
-
-        var map = mapFactory.CreateMap(layerStyleManager, providers);
-
-        var mapNavigator = new MapNavigator((Map)map);
-
-        var areaOfInterest = new AreaOfInterest((Map)map);
-
         var mapService = new MapService();
 
-        mapService.AddLayerProvider(LayerType.GroundStation, groundStationProvider);
-        mapService.AddLayerProvider(LayerType.GroundTarget, groundTargetProvider);
-        mapService.AddLayerProvider(LayerType.Sensor, sensorProvider);
-        mapService.AddLayerProvider(LayerType.Track, trackProvider);
-        mapService.AddLayerProvider(LayerType.Footprint, footprintProvider);
-        mapService.AddLayerProvider(LayerType.User, userGeometryProvider);
+        var areaOfInterest = new AreaOfInterest((Map)mapService.Map);
+
+        mapService.AddLayerProvider(LayerType.GroundStation, new GroundStationProvider());
+        mapService.AddLayerProvider(LayerType.GroundTarget, new GroundTargetProvider());
+        mapService.AddLayerProvider(LayerType.Sensor, new SensorProvider());
+        mapService.AddLayerProvider(LayerType.Track, new TrackProvider());
+        mapService.AddLayerProvider(LayerType.Footprint, new FootprintProvider());
+        mapService.AddLayerProvider(LayerType.User, new UserGeometryProvider());
 
         serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
         serviceCollection.AddSingleton<IMapService>(_ => mapService);
-        serviceCollection.AddSingleton<LayerStyleManager>(_ => layerStyleManager);
         serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
-        serviceCollection.AddSingleton<Map>(_ => map);
         serviceCollection.AddSingleton<MapState>(_ => mapState);
-        serviceCollection.AddSingleton<MapNavigator>(_ => mapNavigator);
         serviceCollection.AddSingleton<AreaOfInterest>(_ => areaOfInterest);
-
-        serviceCollection.AddSingleton<FootprintProvider>(_ => footprintProvider);
-        serviceCollection.AddSingleton<GroundStationProvider>(_ => groundStationProvider);
-        serviceCollection.AddSingleton<GroundTargetProvider>(_ => groundTargetProvider);
-        serviceCollection.AddSingleton<TrackProvider>(_ => trackProvider);
-        serviceCollection.AddSingleton<SensorProvider>(_ => sensorProvider);
-        serviceCollection.AddSingleton<UserGeometryProvider>(_ => userGeometryProvider);
 
         Services.Locator.ConfigureServices(serviceCollection.BuildServiceProvider());
     }

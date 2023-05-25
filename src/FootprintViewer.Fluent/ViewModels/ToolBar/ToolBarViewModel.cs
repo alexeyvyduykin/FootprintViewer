@@ -1,8 +1,8 @@
 ﻿using DynamicData;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using Mapsui;
@@ -26,9 +26,8 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     public ToolBarViewModel() : base()
     {
-       // _dataManager = Services.Locator.GetRequiredService<IDataManager>();
         _storage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        var map = Services.Locator.GetRequiredService<Map>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
         var mapState = Services.Locator.GetRequiredService<MapState>();
 
         ZoomIn = new ToolClick()
@@ -72,7 +71,7 @@ public sealed partial class ToolBarViewModel : ViewModelBase
         ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale", "Scale");
         EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit", "Edit");
 
-        SetMapCommand = ReactiveCommand.Create<MapResource>(s => map.SetWorldMapLayer(s));
+        SetMapCommand = ReactiveCommand.Create<MapResource>(s => mapService.Map.SetWorldMapLayer(s));
 
         _mapResources
             .Connect()
@@ -85,11 +84,6 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             })
             .Bind(out _mapItems)
             .Subscribe();
-
-        //_dataManager.DataChanged
-        //    .Where(s => s.Contains(DbKeys.Maps.ToString()))
-        //    .ToSignal()
-        //    .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
 
         _storage.DataChanged
             .Where(s => s.Contains(DbKeys.Maps.ToString()))
@@ -106,7 +100,7 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     private static ToolCheck CreateToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator, string? key, string? tag)
     {
-        return new ToolCheck(update, selector, validator) 
+        return new ToolCheck(update, selector, validator)
         {
             Key = key,
             Tag = tag
@@ -190,7 +184,7 @@ public partial class ToolBarViewModel
 {
     public ToolBarViewModel(DesignDataDependencyResolver resolver)
     {
-      //  _dataManager = resolver.GetService<IDataManager>();
+        //  _dataManager = resolver.GetService<IDataManager>();
         var map = (Map)resolver.GetService<IMap>();
         var mapState = resolver.GetService<MapState>();
 

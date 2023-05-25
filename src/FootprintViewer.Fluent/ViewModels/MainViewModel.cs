@@ -2,6 +2,8 @@
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.InfoPanel;
@@ -37,7 +39,8 @@ namespace FootprintViewer.Fluent.ViewModels;
 
 public sealed partial class MainViewModel : ViewModelBase
 {
-    private readonly StateMachines.MapState _mapState;
+    private readonly IMapService _mapService;
+    private readonly MapState _mapState;
     private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanelViewModel _infoPanel;
     private readonly InfoPanelViewModel _clickInfoPanel;
@@ -61,8 +64,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         _mapState = Services.Locator.GetRequiredService<MapState>();
 
-        MapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
-
+        _mapService = Services.Locator.GetRequiredService<IMapService>();
         _areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
@@ -149,8 +151,8 @@ public sealed partial class MainViewModel : ViewModelBase
 
         ToolBar = new ToolBarViewModel();
 
-        ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+        ToolBar.ZoomIn.SubscribeAsync(_mapService.ZoomIn);
+        ToolBar.ZoomOut.SubscribeAsync(_mapService.ZoomOut);
 
         SidePanel = new SidePanelViewModel()
         {
@@ -229,15 +231,17 @@ public sealed partial class MainViewModel : ViewModelBase
 
     public async Task InitAsync()
     {
-        //var maps = await Services.Locator.GetRequiredService<IDataManager>().GetDataAsync<MapResource>(DbKeys.Maps.ToString());
-        var maps = await Services.Locator.GetRequiredService<ILocalStorageService>().GetValuesAsync<MapResource>(DbKeys.Maps.ToString());
+        var maps = await Services.Locator.GetRequiredService<ILocalStorageService>()
+            .GetValuesAsync<MapResource>(DbKeys.Maps.ToString());
+
         var item = maps.FirstOrDefault();
+
         if (item != null)
         {
-            Services.Locator.GetRequiredService<Map>().SetWorldMapLayer(item);
+            Services.Locator.GetRequiredService<IMapService>().Map.SetWorldMapLayer(item);
         }
 
-        Services.Locator.GetRequiredService<Map>().Layers
+        Services.Locator.GetRequiredService<IMapService>().Map.Layers
             .ToList()
             .Where(s => s is DynamicLayer dynamicLayer && dynamicLayer.DataSource is IDynamic)
             .Select(s => (IDynamic)((DynamicLayer)s).DataSource!)
@@ -434,7 +438,7 @@ public sealed partial class MainViewModel : ViewModelBase
         return panel;
     }
 
-    public Map Map => Services.Locator.GetRequiredService<Map>();
+    public Map Map => Services.Locator.GetRequiredService<IMapService>().Map;
 
     [Reactive]
     public IInteractive? Interactive { get; set; }
@@ -442,20 +446,17 @@ public sealed partial class MainViewModel : ViewModelBase
     [Reactive]
     public string State { get; set; } = Mapsui.Interactivity.UI.States.Default;
 
-    public SidePanelViewModel SidePanel { get; private set; }// => _sidePanel;
+    public SidePanelViewModel SidePanel { get; private set; }
 
     public InfoPanelViewModel InfoPanel => _infoPanel;
 
     public InfoPanelViewModel ClickInfoPanel => _clickInfoPanel;
 
-    public ToolBarViewModel ToolBar { get; private set; }//=> _toolBar;
+    public ToolBarViewModel ToolBar { get; private set; }
 
     public ScaleMapBar ScaleMapBar => _scaleMapBar;
 
     public MapToolsViewModel MapTools => _mapTools;
-
-    [Reactive]
-    public IMapNavigator MapNavigator { get; set; }
 
     [Reactive]
     public ITip? Tip { get; set; }
@@ -478,8 +479,6 @@ public partial class MainViewModel
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
         _mapState = resolver.GetService<StateMachines.MapState>();
-
-        MapNavigator = resolver.GetService<IMapNavigator>();
 
         _areaOfInterest = resolver.GetService<AreaOfInterest>();
 
@@ -524,8 +523,8 @@ public partial class MainViewModel
 
         ToolBar = new ToolBarViewModel(resolver);
 
-        ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
+        //  ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
+        //  ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
 
         SidePanel = new SidePanelViewModel();
 

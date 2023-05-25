@@ -1,7 +1,7 @@
 ﻿using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Fluent.ViewModels.Timelines;
-using Mapsui;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -13,13 +13,12 @@ public partial class MapToolsViewModel : ViewModelBase
 {
     public MapToolsViewModel()
     {
-        var map = Services.Locator.GetRequiredService<Map>();
-        var mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
 
         Snapshot = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
         Observable.Start(() =>
         {
-            MapHelper.CreateSnapshot(mapNavigator.Viewport, map.Layers, Services.MapSnapshotDir, Services.Config.SelectedMapSnapshotExtension);
+            MapHelper.CreateSnapshot(mapService.Viewport, mapService.Map.Layers, Services.MapSnapshotDir, Services.Config.SelectedMapSnapshotExtension);
         }).Delay(TimeSpan.FromSeconds(1)));
 
         Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);

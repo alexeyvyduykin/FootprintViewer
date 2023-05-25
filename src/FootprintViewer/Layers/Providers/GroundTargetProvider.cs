@@ -1,7 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -20,10 +19,8 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public GroundTargetProvider(LayerStyleManager styleManager)
+    public GroundTargetProvider()
     {
-        MaxVisible = styleManager.MaxVisibleTargetStyle;
-
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)

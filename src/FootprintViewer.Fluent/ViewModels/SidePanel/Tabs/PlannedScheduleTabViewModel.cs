@@ -2,6 +2,8 @@
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
@@ -18,13 +20,12 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
+    private readonly IMapService _mapService;
     private readonly SourceList<ITaskResult> _plannedSchedules = new();
     private readonly ReadOnlyObservableCollection<TaskResultViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly IMapNavigator _mapNavigator;
     private readonly FeatureManager _featureManager;
     //private readonly FootprintProvider _layerProvider;
-    //private readonly ILayer? _layer;
 
     public PlannedScheduleTabViewModel()
     {
@@ -33,10 +34,8 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
         Key = nameof(PlannedScheduleTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        //_layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
+        _mapService = Services.Locator.GetRequiredService<IMapService>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
-        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
-        //_layer = Services.Locator.GetRequiredService<Map>().GetLayer(LayerType.Footprint);
 
         _plannedSchedules
             .Connect()
@@ -107,7 +106,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
         void flyTo(ObservationTaskResult result)
         {
-            _mapNavigator.FlyToFootprint(result.Geometry.Center.Coordinate);
+            _mapService.FlyToFootprint(result.Geometry.Center.Coordinate);
 
             //_featureManager
             //    .OnLayer(_layer)

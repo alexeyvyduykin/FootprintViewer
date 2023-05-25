@@ -2,10 +2,11 @@
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Services;
-using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using ReactiveUI;
@@ -21,8 +22,7 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
-    private readonly Map _map;
-    private readonly IMapNavigator _mapNavigator;
+    private readonly IMapService _mapService;
     private readonly SourceList<FootprintPreview> _footprintPreviews = new();
     private readonly SourceList<FootprintPreviewGeometry> _geometries = new();
     private readonly ReadOnlyObservableCollection<FootprintPreviewViewModel> _items;
@@ -34,9 +34,8 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
         Title = "Scene search";
         Key = nameof(FootprintPreviewTabViewModel);
 
-        _map = Services.Locator.GetRequiredService<Map>();
-        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+        _mapService = Services.Locator.GetRequiredService<IMapService>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel();
@@ -142,7 +141,7 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
         if (geometry != null)
         {
-            var layer = _map.GetLayer(LayerType.FootprintImageBorder);
+            var layer = _mapService.Map.GetLayer(LayerType.FootprintImageBorder);
 
             if (layer != null && layer is WritableLayer writableLayer)
             {
@@ -155,7 +154,7 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
     private void LeaveImpl()
     {
-        var layer = _map.GetLayer(LayerType.FootprintImageBorder);
+        var layer = _mapService.Map.GetLayer(LayerType.FootprintImageBorder);
 
         if (layer != null && layer is WritableLayer writableLayer)
         {
@@ -170,14 +169,14 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
         {
             var layer = MapsuiHelper.CreateMbTilesLayer(footprintPreview.Path);
 
-            _map.ReplaceLayer(layer, LayerType.FootprintImage);
+            _mapService.Map.ReplaceLayer(layer, LayerType.FootprintImage);
 
             var geometry = Geometries
                 .Where(s => Equals(s.Name, footprintPreview.Name))
                 .Select(s => s.Geometry)
                 .FirstOrDefault();
 
-            _mapNavigator.FlyToFootprintPreview(geometry);
+            _mapService.FlyToFootprintPreview(geometry);
         }
     }
 

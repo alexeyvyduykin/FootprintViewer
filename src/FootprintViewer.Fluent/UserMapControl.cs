@@ -5,7 +5,6 @@ using FootprintViewer.Fluent.ViewModels;
 using Mapsui;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
-using System.Reactive.Linq;
 
 namespace FootprintViewer.Fluent;
 
@@ -17,9 +16,9 @@ public class UserMapControl : MapControl
 
     public UserMapControl() : base()
     {
-        MapNavigatorProperty.Changed.Subscribe(OnMapNavigatorChanged);
-
         EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
+
+        MouseWheelAnimation.Duration = 850;
 
         // TODO: hack
         var mapService = Services.Locator.GetRequiredService<IMapService>();
@@ -41,31 +40,6 @@ public class UserMapControl : MapControl
 
     public static readonly StyledProperty<ScaleMapBar?> ScaleMapBarProperty =
         AvaloniaProperty.Register<UserMapControl, ScaleMapBar?>(nameof(ScaleMapBar), null);
-
-    public IMapNavigator? MapNavigator
-    {
-        get { return GetValue(MapNavigatorProperty); }
-        set { SetValue(MapNavigatorProperty, value); }
-    }
-
-    public static readonly StyledProperty<IMapNavigator?> MapNavigatorProperty =
-        AvaloniaProperty.Register<UserMapControl, IMapNavigator?>(nameof(MapNavigator), null);
-
-    private static void OnMapNavigatorChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var mapControl = (UserMapControl)e.Sender;
-
-        if (e.NewValue != null && e.NewValue is IMapNavigator mapNavigator)
-        {
-            if (mapControl.Navigator != null)
-            {
-                mapNavigator.Navigator = mapControl.Navigator;
-                mapNavigator.Viewport = mapControl.Viewport;
-
-                mapControl.MouseWheelAnimation.Duration = 850;
-            }
-        }
-    }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {

@@ -27,7 +27,6 @@
 		<Panel>
 
 			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
-								  MapNavigator="{Binding MapNavigator}"
 								  HorizontalAlignment="Stretch"
 								  VerticalAlignment="Stretch">
 				<inter:Interaction.Behavior>

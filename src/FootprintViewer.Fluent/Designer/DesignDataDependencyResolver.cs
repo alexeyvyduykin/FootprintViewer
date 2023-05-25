@@ -3,19 +3,15 @@ using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
-using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
-using FootprintViewer.Layers.Providers;
-using FootprintViewer.Localization;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.IO;
@@ -27,15 +23,7 @@ namespace FootprintViewer.Fluent.Designer;
 
 public sealed class DesignDataDependencyResolver : IServiceProvider
 {
-    private Map? _map;
-    private IMapNavigator? _mapNavigator;
     private AreaOfInterest? _areaOfInterest;
-    private GroundTargetProvider? _groundTargetProvider;
-    private TrackProvider? _trackProvider;
-    private SensorProvider? _sensorProvider;
-    private GroundStationProvider? _groundStationProvider;
-    private FootprintProvider? _footprintProvider;
-    private UserGeometryProvider? _userGeometryProvider;
     private SatelliteTabViewModel? _satelliteTab;
     private FootprintTabViewModel? _footprintTab;
     private PlannedScheduleTabViewModel? _plannedScheduleTab;
@@ -47,9 +35,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
     private SidePanelViewModel? _sidePanel;
     private ToolBarViewModel? _toolBar;
     private ILocalStorageService? _localStorage;
-    private ILanguageManager? _languageManager;
     private FeatureManager? _featureManager;
-    private LayerStyleManager? _layerStyleManager;
     private MapState? _mapState;
     private IMapService? _mapService;
 
@@ -60,89 +46,17 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
 
     public object? GetService(Type? serviceType)
     {
-        if (serviceType == typeof(IMap))
-        {
-            return _map ??= CreateMap();
-        }
-        if (serviceType == typeof(Map))
-        {
-            return _map ??= CreateMap();
-        }
         if (serviceType == typeof(IMapService))
         {
             return _mapService ??= new MapService();
-        }
-        else if (serviceType == typeof(LayerStyleManager))
-        {
-            return _layerStyleManager ??= new LayerStyleManager();
         }
         else if (serviceType == typeof(AreaOfInterest))
         {
             return _areaOfInterest ??= new AreaOfInterest((Map)GetService(typeof(IMap))!);
         }
-        else if (serviceType == typeof(IMapNavigator))
-        {
-            return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
-        }
-        else if (serviceType == typeof(MapNavigator))
-        {
-            return _mapNavigator ??= new MapNavigator((Map)GetService(typeof(IMap))!);
-        }
         else if (serviceType == typeof(FeatureManager))
         {
             return _featureManager ??= new FeatureManager();
-        }
-        else if (serviceType == typeof(GroundTargetProvider))
-        {
-            return _groundTargetProvider ??= new GroundTargetProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(TrackProvider))
-        {
-            return _trackProvider ??= new TrackProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(SensorProvider))
-        {
-            return _sensorProvider ??= new SensorProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(GroundStationProvider))
-        {
-            return _groundStationProvider ??= new GroundStationProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(FootprintProvider))
-        {
-            return _footprintProvider ??= new FootprintProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(UserGeometryProvider))
-        {
-            return _userGeometryProvider ??= new UserGeometryProvider(GetService<LayerStyleManager>());
-        }
-        else if (serviceType == typeof(SatelliteTabViewModel))
-        {
-            return _satelliteTab ??= new SatelliteTabViewModel();
-        }
-        else if (serviceType == typeof(GroundStationTabViewModel))
-        {
-            return _groundStationTab ??= new GroundStationTabViewModel();
-        }
-        else if (serviceType == typeof(FootprintTabViewModel))
-        {
-            return _footprintTab ??= new FootprintTabViewModel();
-        }
-        else if (serviceType == typeof(PlannedScheduleTabViewModel))
-        {
-            return _plannedScheduleTab ??= new PlannedScheduleTabViewModel();
-        }
-        else if (serviceType == typeof(GroundTargetTabViewModel))
-        {
-            return _groundTargetTab ??= new GroundTargetTabViewModel();
-        }
-        else if (serviceType == typeof(FootprintPreviewTabViewModel))
-        {
-            return _footprintPreviewTab ??= new FootprintPreviewTabViewModel();
-        }
-        else if (serviceType == typeof(UserGeometryTabViewModel))
-        {
-            return _userGeometryTab ??= new UserGeometryTabViewModel();
         }
         else if (serviceType == typeof(ToolBarViewModel))
         {
@@ -164,28 +78,7 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         {
             return _localStorage ??= CreateLocalStorage();
         }
-        else if (serviceType == typeof(ILanguageManager))
-        {
-            return _languageManager ??= new LanguageManager(new[] { "en", "ru" });
-        }
         throw new Exception();
-    }
-
-    private static Map CreateMap()
-    {
-        var map = new Map();
-        map.AddLayer(new Layer(), LayerType.WorldMap);
-        map.AddLayer(new Layer(), LayerType.FootprintImage);
-        map.AddLayer(new Layer(), LayerType.GroundStation);
-        map.AddLayer(new Layer(), LayerType.GroundTarget);
-        map.AddLayer(new Layer(), LayerType.Sensor);
-        map.AddLayer(new Layer(), LayerType.Track);
-        map.AddLayer(new Layer(), LayerType.Footprint);
-        map.AddLayer(new Layer(), LayerType.FootprintImageBorder);
-        map.AddLayer(new Layer(), LayerType.Edit);
-        map.AddLayer(new Layer(), LayerType.Vertex);
-        map.AddLayer(new Layer(), LayerType.User);
-        return map;
     }
 
     private static ILocalStorageService CreateLocalStorage()

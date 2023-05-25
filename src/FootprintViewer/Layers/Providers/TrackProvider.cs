@@ -1,20 +1,15 @@
 ﻿using ConcurrentCollections;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Extensions;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -26,23 +21,14 @@ public class TrackProvider : IProvider, IDynamic
     private Dictionary<string, List<IFeature>> _cache = new();
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public TrackProvider(LayerStyleManager styleManager)
+    public TrackProvider()
     {
-        //Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        //_dataManager.DataChanged
-        //    .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-        //    .ToSignal()
-        //    .InvokeCommand(Update);
-
-       //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public IEnumerable<IFeature> Features => _featureCache;
-
-   // public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
@@ -59,22 +45,6 @@ public class TrackProvider : IProvider, IDynamic
 
         _featureCache.Clear();
     }
-
-    //private async Task UpdateImpl()
-    //{
-    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-    //    if (ps != null)
-    //    {
-    //        var satellites = ps.Satellites;
-
-    //        _dict = await CreateDataAsync(satellites);
-
-    //        _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
-
-    //        _featureCache.Clear();
-    //    }
-    //}
 
     // TODO: node/isShow refactoring
     public void ChangedData(Satellite satellite, int node, bool isShow)

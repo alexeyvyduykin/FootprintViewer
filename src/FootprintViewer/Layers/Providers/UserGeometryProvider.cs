@@ -1,6 +1,5 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -20,7 +19,7 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
     private readonly SourceList<UserGeometry> _userGeometries = new();
     private readonly ReadOnlyObservableCollection<IFeature> _features;
 
-    public UserGeometryProvider(LayerStyleManager styleManager)
+    public UserGeometryProvider()
     {
         _userGeometries
             .Connect()
@@ -28,22 +27,11 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
             .Transform(s => (IFeature)s.Geometry!.ToFeature(s.Name!))
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
-
-        //Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-
-        //_dataManager.DataChanged
-        //    .Where(s => s.Contains(DbKeys.UserGeometries.ToString()))
-        //    .ToSignal()
-        //    .InvokeCommand(Update);
-
-        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public ReadOnlyObservableCollection<IFeature> Features => _features;
-
-    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
@@ -64,21 +52,6 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
             innerList.AddRange(list);
         });
     }
-
-    //private async Task UpdateImpl()
-    //{
-    //    var userGeometries = await _dataManager.GetDataAsync<UserGeometry>(DbKeys.UserGeometries.ToString());
-
-    //    var list = userGeometries
-    //        .Where(s => s.Geometry != null && string.IsNullOrEmpty(s.Name) == false)
-    //        .ToList();
-
-    //    _userGeometries.Edit(innerList =>
-    //    {
-    //        innerList.Clear();
-    //        innerList.AddRange(list);
-    //    });
-    //}
 
     public virtual Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)
     {

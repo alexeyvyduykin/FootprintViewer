@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -27,7 +28,8 @@ public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
         Key = nameof(UserGeometryTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        var layerProvider = Services.Locator.GetRequiredService<UserGeometryProvider>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
+        var layerProvider = mapService.GetProvider<UserGeometryProvider>();
 
         var mainObservable = _userGeometries
             .Connect()
@@ -41,7 +43,7 @@ public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
         var layerObservable = mainObservable
             .ToCollection();
 
-        layerProvider.SetObservable(layerObservable);
+        layerProvider?.SetObservable(layerObservable);
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 

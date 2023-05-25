@@ -4,13 +4,13 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
-using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -24,13 +24,12 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 public sealed class FootprintTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
-    private readonly IMapNavigator _mapNavigator;
+    private readonly IMapService _mapService;
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly FeatureManager _featureManager;
-    private readonly ILayer? _layer;
-    private readonly FootprintProvider _layerProvider;
+    private readonly FootprintProvider? _layerProvider;
 
     public FootprintTabViewModel()
     {
@@ -39,10 +38,8 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         Key = nameof(FootprintTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        _mapNavigator = Services.Locator.GetRequiredService<MapNavigator>();
-        var map = Services.Locator.GetRequiredService<Map>();
-        _layer = map.GetLayer(LayerType.Footprint);
-        _layerProvider = Services.Locator.GetRequiredService<FootprintProvider>();
+        _mapService = Services.Locator.GetRequiredService<IMapService>();
+        _layerProvider = _mapService.GetProvider<FootprintProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
@@ -79,7 +76,7 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .Transform(s => s.Footprint!)
             .ToCollection();
 
-        _layerProvider.SetObservable(layerObservable);
+        _layerProvider?.SetObservable(layerObservable);
 
         this.WhenAnyValue(s => s.FilteringItemCount)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -135,11 +132,11 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
         void flyTo(FootprintViewModel vm)
         {
-            _mapNavigator.FlyToFootprint(vm.Center);
+            _mapService.FlyToFootprint(vm.Center);
 
             _featureManager
-                .OnLayer(_layer)
-                .Select(_layerProvider.Find(vm.Name, "Name"));
+                .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
+                .Select(_layerProvider?.Find(vm.Name, "Name"));
         }
     }
 
@@ -183,15 +180,15 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         if (string.IsNullOrEmpty(name) == false)
         {
             _featureManager
-                .OnLayer(_layer)
-                .Enter(_layerProvider.Find(name, "Name"));
+                .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
+                .Enter(_layerProvider?.Find(name, "Name"));
         }
     }
 
     private void LeaveImpl()
     {
         _featureManager
-            .OnLayer(_layer)
+            .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
             .Leave();
     }
 

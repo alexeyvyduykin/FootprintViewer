@@ -2,6 +2,7 @@
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -17,8 +18,8 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 
 public sealed class SatelliteTabViewModel : SidePanelTabViewModel
 {
-    private readonly TrackProvider _trackProvider;
-    private readonly SensorProvider _sensorProvider;
+    private readonly TrackProvider? _trackProvider;
+    private readonly SensorProvider? _sensorProvider;
     private readonly SourceList<SatelliteViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
@@ -32,9 +33,11 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
         Key = nameof(SatelliteTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        _trackProvider = Services.Locator.GetRequiredService<TrackProvider>();
-        _sensorProvider = Services.Locator.GetRequiredService<SensorProvider>();
-        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
+
+        _trackProvider = mapService.GetProvider<TrackProvider>();
+        _sensorProvider = mapService.GetProvider<SensorProvider>();
+        _layerStyleManager = mapService.LayerStyle;
 
         var mainObservable = _satellites
             .Connect()
@@ -55,8 +58,8 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
             .Transform(s => s.Satellite)
             .ToCollection();
 
-        _trackProvider.SetObservable(layerObservable);
-        _sensorProvider.SetObservable(layerObservable);
+        _trackProvider?.SetObservable(layerObservable);
+        _sensorProvider?.SetObservable(layerObservable);
 
         _isLoading = Update.IsExecuting
               .ObserveOn(RxApp.MainThreadScheduler)
@@ -103,9 +106,9 @@ public sealed class SatelliteTabViewModel : SidePanelTabViewModel
             foreach (var item in list)
             {
                 item.TrackObservable
-                    .Subscribe(s => _trackProvider.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
+                    .Subscribe(s => _trackProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow));
                 item.SwathsObservable
-                    .Subscribe(s => _sensorProvider.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
+                    .Subscribe(s => _sensorProvider?.ChangedData(s.Satellite, s.CurrentNode - 1, s.IsShow && s.IsLeftSwath, s.IsShow && s.IsRightSwath));
                 item.Color = palette?.PickColor(item.Name).ToMapsuiColor();
             }
 

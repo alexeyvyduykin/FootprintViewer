@@ -3,13 +3,12 @@ using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
-using Mapsui;
-using Mapsui.Layers;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -23,12 +22,12 @@ namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 {
     private readonly ILocalStorageService _localStorage;
+    private readonly IMapService _mapService;
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private readonly FeatureManager _featureManager;
-    private readonly ILayer? _layer;
-    private readonly GroundTargetProvider _layerProvider;
+    private readonly GroundTargetProvider? _layerProvider;
 
     public GroundTargetTabViewModel()
     {
@@ -37,9 +36,8 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
         Key = nameof(GroundTargetTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        var map = Services.Locator.GetRequiredService<Map>();
-        _layer = map.GetLayer(LayerType.GroundTarget);
-        _layerProvider = Services.Locator.GetRequiredService<GroundTargetProvider>();
+        _mapService = Services.Locator.GetRequiredService<IMapService>();
+        _layerProvider = _mapService.GetProvider<GroundTargetProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
         var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
@@ -81,7 +79,7 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .Transform(s => s.GroundTarget)
             .ToCollection();
 
-        _layerProvider.SetObservable(layerObservable);
+        _layerProvider?.SetObservable(layerObservable);
 
         _localStorage
             .PlannedScheduleObservable
@@ -144,15 +142,15 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
         if (string.IsNullOrEmpty(name) == false)
         {
             _featureManager
-                .OnLayer(_layer)
-                .Enter(_layerProvider.Find(name, "Name"));
+                .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
+                .Enter(_layerProvider?.Find(name, "Name"));
         }
     }
 
     private void LeaveImpl()
     {
         _featureManager
-            .OnLayer(_layer)
+            .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
             .Leave();
     }
 
@@ -165,8 +163,8 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             if (string.IsNullOrEmpty(name) == false)
             {
                 _featureManager
-                    .OnLayer(_layer)
-                    .Select(_layerProvider.Find(name, "Name"));
+                    .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
+                    .Select(_layerProvider?.Find(name, "Name"));
             }
         }
     }

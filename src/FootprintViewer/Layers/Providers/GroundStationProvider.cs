@@ -1,16 +1,13 @@
 ﻿using ConcurrentCollections;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
-using ReactiveUI;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -18,26 +15,17 @@ namespace FootprintViewer.Layers.Providers;
 
 public class GroundStationProvider : IProvider, IDynamic
 {
-    private ConcurrentDictionary<string, List<IFeature>> _cache = new();
+    private readonly ConcurrentDictionary<string, List<IFeature>> _cache = new();
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public GroundStationProvider(LayerStyleManager styleManager)
+    public GroundStationProvider()
     {
-        //Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        //_dataManager.DataChanged
-        //    .Where(s => s.Contains(DbKeys.PlannedSchedules.ToString()))
-        //    .ToSignal()
-        //    .InvokeCommand(Update);
-
-        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public IEnumerable<IFeature> Features => _featureCache;
-
-    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
@@ -57,23 +45,6 @@ public class GroundStationProvider : IProvider, IDynamic
 
         _featureCache.Clear();
     }
-
-    //private async Task UpdateImpl()
-    //{
-    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-    //    if (ps != null)
-    //    {
-    //        _cache.Clear();
-
-    //        foreach (var item in ps.GroundStations)
-    //        {
-    //            _cache.TryAdd(item.Name, new List<IFeature>());
-    //        }
-
-    //        _featureCache.Clear();
-    //    }
-    //}
 
     // TODO: isShow refactoring
     public void ChangedData(GroundStation groundStation, double innerAngle, double[] arrAngles, bool isShow)

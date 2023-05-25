@@ -2,6 +2,7 @@
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -31,8 +32,9 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
         Key = nameof(GroundStationTabViewModel);
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-        _layerProvider = Services.Locator.GetRequiredService<GroundStationProvider>();
-        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
+        _layerProvider = mapService.GetProvider<GroundStationProvider>();
+        _layerStyleManager = mapService.LayerStyle;
 
         var mainObservable = _groundStation
             .Connect()
@@ -53,7 +55,7 @@ public sealed class GroundStationTabViewModel : SidePanelTabViewModel
             .Transform(s => s.GroundStation)
             .ToCollection();
 
-        _layerProvider.SetObservable(layerObservable);
+        _layerProvider?.SetObservable(layerObservable);
 
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)

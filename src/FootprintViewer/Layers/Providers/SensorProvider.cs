@@ -1,20 +1,15 @@
 ﻿using ConcurrentCollections;
-using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Extensions;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using ReactiveUI;
 using SpaceScience.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -27,18 +22,14 @@ public class SensorProvider : IProvider, IDynamic
     private Dictionary<string, List<IFeature>> _cache = new();
     private readonly ConcurrentHashSet<IFeature> _featureCache = new();
 
-    public SensorProvider(LayerStyleManager styleManager)
+    public SensorProvider()
     {
-       // Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        //Observable.StartAsync(UpdateImpl);
     }
 
     public string? CRS { get; set; }
 
     public IEnumerable<IFeature> Features => _featureCache;
-
-    //public ReactiveCommand<Unit, Unit> Update { get; }
 
     public event DataChangedEventHandler? DataChanged;
 
@@ -46,22 +37,6 @@ public class SensorProvider : IProvider, IDynamic
     {
         observable.Subscribe(async s => await UpdateData(s));
     }
-
-    //private async Task UpdateImpl()
-    //{
-    //    var ps = (await _dataManager.GetDataAsync<PlannedScheduleResult>(DbKeys.PlannedSchedules.ToString())).FirstOrDefault();
-
-    //    if (ps != null)
-    //    {
-    //        var satellites = ps.Satellites;
-
-    //        (_dictLeft, _dictRight) = await CreateDataAsync(satellites);
-
-    //        _cache = satellites.ToDictionary(s => s.Name!, _ => new List<IFeature>());
-
-    //        _featureCache.Clear();
-    //    }
-    //}
 
     private async Task UpdateData(IReadOnlyCollection<Satellite> satellites)
     {
