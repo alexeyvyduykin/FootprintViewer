@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
 			 xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
@@ -18,8 +17,11 @@
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="540"
 			 x:DataType="toolBar:ToolBarViewModel"
              x:Class="FootprintViewer.Fluent.Views.ToolBar.ToolBarView"
-			 x:CompileBindings="True"
-			 d:DataContext="{x:Static vmd:DesignData.ToolBar}">
+			 x:CompileBindings="True">
+
+	<Design.DataContext>
+		<toolBar:ToolBarViewModel></toolBar:ToolBarViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<conv:ToolBarToolTipConverter x:Key="ToolTipConv"/>
@@ -63,7 +65,7 @@
 		<Style Selector="ToggleButton.map" x:DataType="toolBar:ToolCheck">
 			<Setter Property="Width" Value="36"></Setter>
 			<Setter Property="Height" Value="36"></Setter>
-			<Setter Property="IsChecked" Value="{Binding IsCheck, Mode=TwoWay}"></Setter>		
+			<Setter Property="IsChecked" Value="{Binding IsCheck, Mode=TwoWay}"></Setter>
 			<Setter Property="HorizontalAlignment" Value="Left"></Setter>
 			<Setter Property="ToolTip.Tip" Value="{Binding Tag, Converter={StaticResource ToolTipConv}}"></Setter>
 		</Style>
@@ -104,10 +106,10 @@
 			<Setter Property="ItemTemplate">
 				<Setter.Value>
 					<DataTemplate DataType="toolBar:ToolCheck">
-						<ToggleButton x:CompileBindings="False" 
+						<ToggleButton x:CompileBindings="False"
 									  DataContext="{TemplateBinding}"
 									  Classes="map">
-							<materialIcons:MaterialIcon Kind="{Binding Key, Converter={x:Static converters:MaterialIconConverter.Instance}}" 
+							<materialIcons:MaterialIcon Kind="{Binding Key, Converter={x:Static converters:MaterialIconConverter.Instance}}"
 														Classes="t1"/>
 						</ToggleButton>
 					</DataTemplate>

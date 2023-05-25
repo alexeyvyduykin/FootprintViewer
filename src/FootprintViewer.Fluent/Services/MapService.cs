@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Factories;
 using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
@@ -12,6 +13,7 @@ namespace FootprintViewer.Fluent.Services2;
 public class MapService : IMapService
 {
     private readonly Map _map;
+    private readonly MapState _state;
     public INavigator? _navigator;
     public IReadOnlyViewport? _viewport;
     private readonly LayerStyleManager _styleManager = new();
@@ -19,6 +21,8 @@ public class MapService : IMapService
 
     public MapService()
     {
+        _state = new MapState();
+
         _map = new Map()
         {
             CRS = "EPSG:3857",
@@ -153,6 +157,8 @@ public class MapService : IMapService
     }
 
     public Map Map => _map;
+
+    public MapState State => _state;
 
     public INavigator? Navigator => _navigator;
 

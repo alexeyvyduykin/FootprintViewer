@@ -9,7 +9,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.Timelines;
 using FootprintViewer.Fluent.ViewModels.Tips;
-using FootprintViewer.Fluent.ViewModels.ToolBar;
 using Mapsui;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -22,10 +21,6 @@ namespace FootprintViewer.Fluent.Designer;
 public static class DesignData
 {
     private static readonly DesignDataDependencyResolver _resolver = new();
-
-    public static ToolBarViewModel ToolBar => new(_resolver);
-
-    public static LayerContainerViewModel LayerContainer => new(_resolver);
 
     public static CustomTipViewModel CustomTip => CustomTipViewModel.HoverCreating(TipTarget.Rectangle, 34545.432);
 
@@ -60,9 +55,6 @@ public static class DesignData
     }
 
     public static SettingsViewModel Settings => new(_resolver) { IsActive = true };
-
-    // Tool bar
-    public static MapToolsViewModel MapTools => new(_resolver);
 
     private static string GetFullPathToAssets()
     {

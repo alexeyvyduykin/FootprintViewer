@@ -12,7 +12,6 @@ using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
-using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Interactivity;
@@ -74,9 +73,6 @@ public class App : Application
                 .WithEnter(f => f["Highlight"] = true)
                 .WithLeave(f => f["Highlight"] = false);
 
-        // StateMachines
-        var mapState = new MapState();
-
         var mapService = new MapService();
 
         var areaOfInterest = new AreaOfInterest((Map)mapService.Map);
@@ -91,7 +87,6 @@ public class App : Application
         serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
         serviceCollection.AddSingleton<IMapService>(_ => mapService);
         serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
-        serviceCollection.AddSingleton<MapState>(_ => mapState);
         serviceCollection.AddSingleton<AreaOfInterest>(_ => areaOfInterest);
 
         Services.Locator.ConfigureServices(serviceCollection.BuildServiceProvider());

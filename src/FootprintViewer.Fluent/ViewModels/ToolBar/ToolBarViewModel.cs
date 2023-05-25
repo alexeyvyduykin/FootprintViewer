@@ -1,11 +1,10 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.Designer;
+using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
-using Mapsui;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ using System.Windows.Input;
 
 namespace FootprintViewer.Fluent.ViewModels.ToolBar;
 
-public sealed partial class ToolBarViewModel : ViewModelBase
+public sealed class ToolBarViewModel : ViewModelBase
 {
     private readonly ILocalStorageService _storage;
     private readonly SourceList<MapResource> _mapResources = new();
@@ -28,7 +27,7 @@ public sealed partial class ToolBarViewModel : ViewModelBase
     {
         _storage = Services.Locator.GetRequiredService<ILocalStorageService>();
         var mapService = Services.Locator.GetRequiredService<IMapService>();
-        var mapState = Services.Locator.GetRequiredService<MapState>();
+        var state = mapService.State;
 
         ZoomIn = new ToolClick()
         {
@@ -40,13 +39,16 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             Tag = "ZoomOut",
         };
 
-        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle", "AddRectangle");
-        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon", "AddPolygon");
-        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle", "AddCircle");
+        ZoomIn.SubscribeAsync(mapService.ZoomIn);
+        ZoomOut.SubscribeAsync(mapService.ZoomOut);
+
+        AddRectangle = CreateToolCheck(state.Callback, state.RectAOI, () => state.IsInState(States.DrawRectangleAoI), "AddRectangle", "AddRectangle");
+        AddPolygon = CreateToolCheck(state.Callback, state.PolygonAOI, () => state.IsInState(States.DrawPolygonAoI), "AddPolygon", "AddPolygon");
+        AddCircle = CreateToolCheck(state.Callback, state.CircleAOI, () => state.IsInState(States.DrawCircleAoI), "AddCircle", "AddCircle");
 
         AOICollection = CreateToolCollection(new[] { AddRectangle, AddPolygon, AddCircle });
 
-        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route", "Route");
+        RouteDistance = CreateToolCheck(state.Callback, state.Route, () => state.IsInState(States.DrawRoute), "Route", "Route");
 
         MapBackgrounds = new ToolCheck()
         {
@@ -58,20 +60,20 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             Tag = "MapLayers",
         };
 
-        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select", "Select");
-        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "AddPoint", "Point");
-        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "AddRectangle", "Rectangle");
-        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "AddCircle", "Circle");
-        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "AddPolygon", "Polygon");
+        SelectGeometry = CreateToolCheck(state.Callback, state.Select, () => state.IsInState(States.Select), "Select", "Select");
+        Point = CreateToolCheck(state.Callback, state.Point, () => state.IsInState(States.DrawPoint), "AddPoint", "Point");
+        Rectangle = CreateToolCheck(state.Callback, state.Rect, () => state.IsInState(States.DrawRectangle), "AddRectangle", "Rectangle");
+        Circle = CreateToolCheck(state.Callback, state.Circle, () => state.IsInState(States.DrawCircle), "AddCircle", "Circle");
+        Polygon = CreateToolCheck(state.Callback, state.Polygon, () => state.IsInState(States.DrawPolygon), "AddPolygon", "Polygon");
 
         GeometryCollection = CreateToolCollection(new[] { Point, Rectangle, Circle, Polygon });
 
-        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate", "Translate");
-        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate", "Rotate");
-        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale", "Scale");
-        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit", "Edit");
+        TranslateGeometry = CreateToolCheck(state.Callback, state.Translate, () => state.IsInState(States.Translate), "Translate", "Translate");
+        RotateGeometry = CreateToolCheck(state.Callback, state.Rotate, () => state.IsInState(States.Rotate), "Rotate", "Rotate");
+        ScaleGeometry = CreateToolCheck(state.Callback, state.Scale, () => state.IsInState(States.Scale), "Scale", "Scale");
+        EditGeometry = CreateToolCheck(state.Callback, state.Edit, () => state.IsInState(States.Edit), "Edit", "Edit");
 
-        SetMapCommand = ReactiveCommand.Create<MapResource>(s => mapService.Map.SetWorldMapLayer(s));
+        SetMapCommand = ReactiveCommand.Create<MapResource>(mapService.Map.SetWorldMapLayer);
 
         _mapResources
             .Connect()
@@ -98,9 +100,9 @@ public sealed partial class ToolBarViewModel : ViewModelBase
             .Subscribe(_ => LayerContainer = new LayerContainerViewModel());
     }
 
-    private static ToolCheck CreateToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator, string? key, string? tag)
+    private static ToolCheck CreateToolCheck(IObservable<Unit> callback, Action? selector, Func<bool>? validator, string? key, string? tag)
     {
-        return new ToolCheck(update, selector, validator)
+        return new ToolCheck(callback, selector, validator)
         {
             Key = key,
             Tag = tag
@@ -121,7 +123,6 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     private async Task UpdateMapsAsync()
     {
-        //var maps = await _dataManager.GetDataAsync<MapResource>(DbKeys.Maps.ToString());
         var maps = await _storage.GetValuesAsync<MapResource>(DbKeys.Maps.ToString());
 
         _mapResources.Edit(innerList =>
@@ -178,82 +179,4 @@ public sealed partial class ToolBarViewModel : ViewModelBase
 
     [Reactive]
     public LayerContainerViewModel? LayerContainer { get; set; }
-}
-
-public partial class ToolBarViewModel
-{
-    public ToolBarViewModel(DesignDataDependencyResolver resolver)
-    {
-        //  _dataManager = resolver.GetService<IDataManager>();
-        var map = (Map)resolver.GetService<IMap>();
-        var mapState = resolver.GetService<MapState>();
-
-        ZoomIn = new ToolClick()
-        {
-            Tag = "ZoomIn",
-        };
-
-        ZoomOut = new ToolClick()
-        {
-            Tag = "ZoomOut",
-        };
-
-        AddRectangle = CreateToolCheck(mapState.Change, () => mapState.RectAOI(), () => mapState.IsInState(States.DrawRectangleAoI), "AddRectangle", "AddRectangle");
-        AddPolygon = CreateToolCheck(mapState.Change, () => mapState.PolygonAOI(), () => mapState.IsInState(States.DrawPolygonAoI), "AddPolygon", "AddPolygon");
-        AddCircle = CreateToolCheck(mapState.Change, () => mapState.CircleAOI(), () => mapState.IsInState(States.DrawCircleAoI), "AddCircle", "AddCircle");
-
-        AOICollection = CreateToolCollection(new[] { AddRectangle, AddPolygon, AddCircle });
-
-        RouteDistance = CreateToolCheck(mapState.Change, () => mapState.Route(), () => mapState.IsInState(States.DrawRoute), "Route", "Route");
-
-        MapBackgrounds = new ToolCheck()
-        {
-            Tag = "MapBackgrounds",
-        };
-
-        MapLayers = new ToolCheck()
-        {
-            Tag = "MapLayers",
-        };
-
-        SelectGeometry = CreateToolCheck(mapState.Change, () => mapState.Select(), () => mapState.IsInState(States.Select), "Select", "Select");
-        Point = CreateToolCheck(mapState.Change, () => mapState.Point(), () => mapState.IsInState(States.DrawPoint), "AddPoint", "Point");
-        Rectangle = CreateToolCheck(mapState.Change, () => mapState.Rect(), () => mapState.IsInState(States.DrawRectangle), "AddRectangle", "Rectangle");
-        Circle = CreateToolCheck(mapState.Change, () => mapState.Circle(), () => mapState.IsInState(States.DrawCircle), "AddCircle", "Circle");
-        Polygon = CreateToolCheck(mapState.Change, () => mapState.Polygon(), () => mapState.IsInState(States.DrawPolygon), "AddPolygon", "Polygon");
-
-        GeometryCollection = CreateToolCollection(new[] { Point, Rectangle, Circle, Polygon });
-
-        TranslateGeometry = CreateToolCheck(mapState.Change, () => mapState.Translate(), () => mapState.IsInState(States.Translate), "Translate", "Translate");
-        RotateGeometry = CreateToolCheck(mapState.Change, () => mapState.Rotate(), () => mapState.IsInState(States.Rotate), "Rotate", "Rotate");
-        ScaleGeometry = CreateToolCheck(mapState.Change, () => mapState.Scale(), () => mapState.IsInState(States.Scale), "Scale", "Scale");
-        EditGeometry = CreateToolCheck(mapState.Change, () => mapState.Edit(), () => mapState.IsInState(States.Edit), "Edit", "Edit");
-
-        SetMapCommand = ReactiveCommand.Create<MapResource>(s => map.SetWorldMapLayer(s));
-
-        _mapResources
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new MenuItemViewModel()
-            {
-                Header = s.Name,
-                Command = SetMapCommand,
-                CommandParameter = s,
-            })
-            .Bind(out _mapItems)
-            .Subscribe();
-
-        //_dataManager.DataChanged
-        //    .Where(s => s.Contains(DbKeys.Maps.ToString()))
-        //    .ToSignal()
-        //    .InvokeCommand(ReactiveCommand.CreateFromTask(UpdateMapsAsync));
-
-        Observable.StartAsync(UpdateMapsAsync, RxApp.MainThreadScheduler).Subscribe();
-
-        this.WhenAnyValue(s => s.IsLayerContainerOpen)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .WhereTrue()
-            .Subscribe(_ => LayerContainer = new LayerContainerViewModel());
-    }
-
 }

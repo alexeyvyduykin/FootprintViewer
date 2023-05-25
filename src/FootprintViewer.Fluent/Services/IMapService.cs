@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Factories;
+using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Providers;
@@ -8,6 +9,8 @@ namespace FootprintViewer.Fluent.Services2;
 public interface IMapService
 {
     Map Map { get; }
+
+    MapState State { get; }
 
     INavigator? Navigator { get; }
 

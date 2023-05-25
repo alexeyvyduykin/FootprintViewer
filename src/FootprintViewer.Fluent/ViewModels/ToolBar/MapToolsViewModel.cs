@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Fluent.Designer;
-using FootprintViewer.Fluent.Services2;
+﻿using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Fluent.ViewModels.Timelines;
 using ReactiveUI;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.ToolBar;
 
-public partial class MapToolsViewModel : ViewModelBase
+public class MapToolsViewModel : ViewModelBase
 {
     public MapToolsViewModel()
     {
@@ -44,15 +43,5 @@ public partial class MapToolsViewModel : ViewModelBase
         var timelinesOldDialog = new TimelinesOldViewModel();
 
         await MainViewModel.Instance.FullScreen.NavigateDialogAsync(timelinesOldDialog);
-    }
-}
-
-public partial class MapToolsViewModel
-{
-    public MapToolsViewModel(DesignDataDependencyResolver _)
-    {
-        Snapshot = ReactiveCommand.CreateFromObservable<Unit, Unit>(s => Observable.Start(() => { }).Delay(TimeSpan.FromSeconds(1)));
-        Timelines = ReactiveCommand.Create(() => { });
-        TimelinesOld = ReactiveCommand.Create(() => { });
     }
 }

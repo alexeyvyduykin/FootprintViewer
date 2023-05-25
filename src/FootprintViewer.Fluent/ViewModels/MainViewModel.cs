@@ -2,7 +2,6 @@
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
 using FootprintViewer.Fluent.Designer;
-using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
@@ -37,10 +36,9 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels;
 
-public sealed partial class MainViewModel : ViewModelBase
+public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 {
     private readonly IMapService _mapService;
-    private readonly MapState _mapState;
     private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanelViewModel _infoPanel;
     private readonly InfoPanelViewModel _clickInfoPanel;
@@ -62,9 +60,8 @@ public sealed partial class MainViewModel : ViewModelBase
 
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
-        _mapState = Services.Locator.GetRequiredService<MapState>();
-
         _mapService = Services.Locator.GetRequiredService<IMapService>();
+
         _areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
@@ -79,20 +76,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         _mapTools = new MapToolsViewModel();
 
-        _mapState.ResetObservable.Subscribe(_ => ResetCommand());
-        _mapState.RectAOIObservable.Subscribe(_ => RectangleCommand());
-        _mapState.PolygonAOIObservable.Subscribe(_ => PolygonCommand());
-        _mapState.CircleAOIObservable.Subscribe(_ => CircleCommand());
-        _mapState.RouteObservable.Subscribe(_ => RouteCommand());
-        _mapState.SelectObservable.Subscribe(_ => SelectCommand());
-        _mapState.TranslateObservable.Subscribe(_ => TranslateCommand());
-        _mapState.RotateObservable.Subscribe(_ => RotateCommand());
-        _mapState.ScaleObservable.Subscribe(_ => ScaleCommand());
-        _mapState.EditObservable.Subscribe(_ => EditCommand());
-        _mapState.PointObservable.Subscribe(_ => DrawingPointCommand());
-        _mapState.RectObservable.Subscribe(_ => DrawingRectangleCommand());
-        _mapState.CircleObservable.Subscribe(_ => DrawingCircleCommand());
-        _mapState.PolygonObservable.Subscribe(_ => DrawingPolygonCommand());
+        _mapService.State.Configure(this);
 
         IsMainContentEnabled = this.WhenAnyValue(
             s => s.DialogScreen.IsDialogOpen,
@@ -150,9 +134,6 @@ public sealed partial class MainViewModel : ViewModelBase
         var plannedScheduleTabViewModel = new PlannedScheduleTabViewModel();
 
         ToolBar = new ToolBarViewModel();
-
-        ToolBar.ZoomIn.SubscribeAsync(_mapService.ZoomIn);
-        ToolBar.ZoomOut.SubscribeAsync(_mapService.ZoomOut);
 
         SidePanel = new SidePanelViewModel()
         {
@@ -410,7 +391,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
             //ToolBar.Uncheck(); 
 
-            _mapState.Reset();
+            _mapService.State.Reset();
         });
 
         return panel;
@@ -424,7 +405,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
         panel.Close.Subscribe(_ =>
         {
-            var layer = Services.Locator.GetRequiredService<Map>().GetLayer<EditLayer>(LayerType.Edit);
+            var layer = Services.Locator.GetRequiredService<IMapService>().Map.GetLayer<EditLayer>(LayerType.Edit);
 
             layer?.ClearRoute();
 
@@ -432,7 +413,7 @@ public sealed partial class MainViewModel : ViewModelBase
 
             //ToolBar.Uncheck(); 
 
-            _mapState.Reset();
+            _mapService.State.Reset();
         });
 
         return panel;
@@ -478,8 +459,6 @@ public partial class MainViewModel
 
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
-        _mapState = resolver.GetService<StateMachines.MapState>();
-
         _areaOfInterest = resolver.GetService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
@@ -492,7 +471,7 @@ public partial class MainViewModel
 
         _scaleMapBar = new ScaleMapBar();
 
-        _mapTools = new MapToolsViewModel(resolver);
+        _mapTools = new MapToolsViewModel();
 
         IsMainContentEnabled = this.WhenAnyValue(
             s => s.DialogScreen.IsDialogOpen,
@@ -521,7 +500,7 @@ public partial class MainViewModel
             new(nameof(SettingsViewModel))
         };
 
-        ToolBar = new ToolBarViewModel(resolver);
+        ToolBar = new ToolBarViewModel();
 
         //  ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
         //  ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);

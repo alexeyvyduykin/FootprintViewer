@@ -2,12 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 MinHeight="250"
 			 mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
-             x:Class="FootprintViewer.Fluent.Views.ToolBar.MapToolsPanelView"
-			 d:DataContext="{x:Static vmd:DesignData.MapTools}">
+             x:Class="FootprintViewer.Fluent.Views.ToolBar.MapToolsPanelView">
+
+	<Design.DataContext>
+		<vm:MapToolsViewModel></vm:MapToolsViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="materialIcons|MaterialIcon.t1">

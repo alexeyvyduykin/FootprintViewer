@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -12,9 +11,9 @@ public class ToolCheck : ViewModelBase, IToolCheck
 
     public ToolCheck() { }
 
-    public ToolCheck(IObservable<Unit> update, Action? selector, Func<bool>? validator)
+    public ToolCheck(IObservable<Unit> callback, Action? selector, Func<bool>? validator)
     {
-        update
+        callback
             .Subscribe(s =>
             {
                 _stop = true;

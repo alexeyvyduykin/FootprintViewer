@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.ViewModels.InfoPanel;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
@@ -20,7 +19,7 @@ namespace FootprintViewer.Fluent.ViewModels;
 
 public partial class MainViewModel
 {
-    private void ResetCommand()
+    public void ResetCommand()
     {
         Interactive?.Cancel();
         Interactive = null;
@@ -32,7 +31,7 @@ public partial class MainViewModel
         HideTip();
     }
 
-    private void RectangleCommand()
+    public void RectangleCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<RectangleDesigner>()
@@ -54,7 +53,7 @@ public partial class MainViewModel
 
                 _areaOfInterest.Update(feature, FeatureType.AOIRectangle);
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
@@ -64,7 +63,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void PolygonCommand()
+    public void PolygonCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<PolygonDesigner>()
@@ -91,7 +90,7 @@ public partial class MainViewModel
 
                 _areaOfInterest.Update(feature, FeatureType.AOIPolygon);
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));
@@ -101,7 +100,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void CircleCommand()
+    public void CircleCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<CircleDesigner>()
@@ -123,7 +122,7 @@ public partial class MainViewModel
 
                 _areaOfInterest.Update(feature, FeatureType.AOICircle);
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
@@ -133,7 +132,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void RouteCommand()
+    public void RouteCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<RouteDesigner>()
@@ -162,7 +161,7 @@ public partial class MainViewModel
 
                 HideTip();
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         layer?.ClearRoute();
@@ -176,7 +175,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void SelectCommand()
+    public void SelectCommand()
     {
         var types = new[] { LayerType.Footprint, LayerType.GroundTarget, LayerType.User };
 
@@ -218,7 +217,7 @@ public partial class MainViewModel
         State = States.Selecting;
     }
 
-    private void ScaleCommand()
+    public void ScaleCommand()
     {
         var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
@@ -256,7 +255,7 @@ public partial class MainViewModel
         State = States.Selecting;
     }
 
-    private void TranslateCommand()
+    public void TranslateCommand()
     {
         var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
@@ -294,7 +293,7 @@ public partial class MainViewModel
         State = States.Selecting;
     }
 
-    private void RotateCommand()
+    public void RotateCommand()
     {
         var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
@@ -329,7 +328,7 @@ public partial class MainViewModel
         State = States.Selecting;
     }
 
-    private void EditCommand()
+    public void EditCommand()
     {
         var userLayer = Map.GetLayer<ILayer>(LayerType.User);
 
@@ -364,7 +363,7 @@ public partial class MainViewModel
         State = States.Selecting;
     }
 
-    private void DrawingPointCommand()
+    public void DrawingPointCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<PointDesigner>()
@@ -377,7 +376,7 @@ public partial class MainViewModel
 
             HideTip();
 
-            _mapState.Reset();
+            _mapService.State.Reset();
         });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Point));
@@ -387,7 +386,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void DrawingRectangleCommand()
+    public void DrawingRectangleCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<RectangleDesigner>()
@@ -405,7 +404,7 @@ public partial class MainViewModel
 
                 HideTip();
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Rectangle));
@@ -415,7 +414,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void DrawingCircleCommand()
+    public void DrawingCircleCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<CircleDesigner>()
@@ -433,7 +432,7 @@ public partial class MainViewModel
 
                 HideTip();
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Circle));
@@ -443,7 +442,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void DrawingRouteCommand()
+    public void DrawingRouteCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<RouteDesigner>()
@@ -459,7 +458,7 @@ public partial class MainViewModel
             {
                 HideTip();
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Route));
@@ -469,7 +468,7 @@ public partial class MainViewModel
         State = States.Drawing;
     }
 
-    private void DrawingPolygonCommand()
+    public void DrawingPolygonCommand()
     {
         var designer = new InteractiveBuilder()
             .SelectDesigner<PolygonDesigner>()
@@ -492,7 +491,7 @@ public partial class MainViewModel
 
                 HideTip();
 
-                _mapState.Reset();
+                _mapService.State.Reset();
             });
 
         ShowTip(CustomTipViewModel.Init(TipTarget.Polygon));

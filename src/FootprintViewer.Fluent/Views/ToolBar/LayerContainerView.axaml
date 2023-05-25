@@ -2,14 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
              xmlns:styles="clr-namespace:FootprintViewer.Styles;assembly=FootprintViewer"
 			 mc:Ignorable="d" d:DesignHeight="440"
-             x:DataType="toolBar:LayerContainerViewModel"
-			 x:Class="FootprintViewer.Fluent.Views.ToolBar.LayerContainerView"
-			 d:DataContext="{x:Static vmd:DesignData.LayerContainer}">
+             x:DataType="vm:LayerContainerViewModel"
+			 x:Class="FootprintViewer.Fluent.Views.ToolBar.LayerContainerView">
+
+	<Design.DataContext>
+		<vm:LayerContainerViewModel></vm:LayerContainerViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="TextBlock">
@@ -47,7 +49,7 @@
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="toolBar:LayerItemViewModel">
+					<DataTemplate x:DataType="vm:LayerItemViewModel">
 						<Grid ColumnDefinitions="*,Auto">
 							<TextBlock Text="{Binding Name}" Classes="h2 medium"/>
 							<ToggleButton x:Name="ShowToggleButton"

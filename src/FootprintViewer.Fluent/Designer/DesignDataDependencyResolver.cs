@@ -6,10 +6,8 @@ using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Services;
-using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
 using ReactiveUI;
@@ -24,19 +22,10 @@ namespace FootprintViewer.Fluent.Designer;
 public sealed class DesignDataDependencyResolver : IServiceProvider
 {
     private AreaOfInterest? _areaOfInterest;
-    private SatelliteTabViewModel? _satelliteTab;
-    private FootprintTabViewModel? _footprintTab;
-    private PlannedScheduleTabViewModel? _plannedScheduleTab;
-    private GroundTargetTabViewModel? _groundTargetTab;
-    private GroundStationTabViewModel? _groundStationTab;
-    private UserGeometryTabViewModel? _userGeometryTab;
-    private FootprintPreviewTabViewModel? _footprintPreviewTab;
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
-    private ToolBarViewModel? _toolBar;
     private ILocalStorageService? _localStorage;
     private FeatureManager? _featureManager;
-    private MapState? _mapState;
     private IMapService? _mapService;
 
     public T GetService<T>()
@@ -58,10 +47,6 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         {
             return _featureManager ??= new FeatureManager();
         }
-        else if (serviceType == typeof(ToolBarViewModel))
-        {
-            return _toolBar ??= new ToolBarViewModel(this);
-        }
         else if (serviceType == typeof(SidePanelViewModel))
         {
             return _sidePanel ??= new SidePanelViewModel();
@@ -69,10 +54,6 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         else if (serviceType == typeof(MainViewModel))
         {
             return _mainViewModel ??= new MainViewModel(this);
-        }
-        else if (serviceType == typeof(MapState))
-        {
-            return _mapState ??= new MapState();
         }
         else if (serviceType == typeof(ILocalStorageService))
         {
