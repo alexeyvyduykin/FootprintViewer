@@ -49,9 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolBarSample", "samples\To
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceScienceSample", "samples\SpaceScienceSample\SpaceScienceSample.csproj", "{9E022310-D034-4B87-A1F3-86D2C100CE08}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.Fluent.Desktop", "src\FootprintViewer.Fluent.Desktop\FootprintViewer.Fluent.Desktop.csproj", "{E399236B-477D-4BC8-A408-E6353DA3EDE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.UI.Desktop", "src\FootprintViewer.Fluent.Desktop\FootprintViewer.UI.Desktop.csproj", "{E399236B-477D-4BC8-A408-E6353DA3EDE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.Fluent", "src\FootprintViewer.Fluent\FootprintViewer.Fluent.csproj", "{86D4F1F9-1127-4F9E-8FEA-3DEAE85CAE8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.UI", "src\FootprintViewer.Fluent\FootprintViewer.UI.csproj", "{86D4F1F9-1127-4F9E-8FEA-3DEAE85CAE8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

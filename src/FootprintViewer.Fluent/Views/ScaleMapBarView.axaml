@@ -3,13 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mapsui="using:Mapsui"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels"
+			 xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
              x:DataType="vm:ScaleMapBar"
              mc:Ignorable="d"
 			 d:DesignWidth="580" d:DesignHeight="250"
-             x:Class="FootprintViewer.Fluent.Views.ScaleMapBarView">
+             x:Class="FootprintViewer.UI.Views.ScaleMapBarView">
 
 	<Design.DataContext>
 		<vm:ScaleMapBar>

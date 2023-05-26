@@ -1,10 +1,10 @@
-<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Tabs.GroundStationTabView"
+<UserControl x:Class="FootprintViewer.UI.Views.SidePanel.Tabs.GroundStationTabView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Tabs"
-             xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Tabs"
+             xmlns:itemsView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Items"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="450"
 			 x:DataType="vm:GroundStationTabViewModel">
 

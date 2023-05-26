@@ -1,12 +1,12 @@
 ﻿using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 public sealed class GroundTargetTabFilterViewModel : AOIFilterViewModel<GroundTargetViewModel>
 {

@@ -1,6 +1,6 @@
 ﻿using ReactiveUI.Fody.Helpers;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 public class SensorItemViewModel : ViewModelBase
 {

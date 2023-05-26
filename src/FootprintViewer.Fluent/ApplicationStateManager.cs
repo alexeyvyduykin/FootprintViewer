@@ -1,8 +1,8 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
-using FootprintViewer.Fluent.ViewModels;
-using FootprintViewer.Fluent.Views;
+using FootprintViewer.UI.ViewModels;
+using FootprintViewer.UI.Views;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public class ApplicationStateManager : IMainWindowService
 {

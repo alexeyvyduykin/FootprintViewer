@@ -7,7 +7,7 @@ using FootprintViewer.Helpers;
 using System.Collections.Generic;
 using System.IO;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public class Global
 {

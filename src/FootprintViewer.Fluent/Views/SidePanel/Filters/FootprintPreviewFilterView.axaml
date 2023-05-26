@@ -2,12 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             x:Class="FootprintViewer.Fluent.Views.SidePanel.Filters.FootprintPreviewFilterView"
+             x:Class="FootprintViewer.UI.Views.SidePanel.Filters.FootprintPreviewFilterView"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:items="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Filters"
-             xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:items="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Filters"
+             xmlns:c="using:FootprintViewer.UI.Controls"
+			 xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
              x:DataType="vm:FootprintPreviewTabFilterViewModel"
 			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="440">
 

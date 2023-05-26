@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 public abstract class BaseFilterViewModel<T> : ViewModelBase, IFilter<T> where T : ViewModelBase
 {

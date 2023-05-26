@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel;
+namespace FootprintViewer.UI.ViewModels.SidePanel;
 
 public abstract class SidePanelTabViewModel : ViewModelBase, ISelectorItem
 {

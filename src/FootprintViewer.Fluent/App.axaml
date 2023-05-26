@@ -1,9 +1,9 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:FootprintViewer.Fluent"
-             xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
+             xmlns:local="using:FootprintViewer.UI"
+             xmlns:vm="using:FootprintViewer.UI.ViewModels"
 			 x:DataType="vm:ApplicationViewModel"
-             x:Class="FootprintViewer.Fluent.App">
+             x:Class="FootprintViewer.UI.App">
 
 	<Application.DataTemplates>
 		<local:ViewLocator/>
@@ -11,32 +11,32 @@
 
 	<Application.Styles>
 
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/Base.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Themes/BaseDark.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Themes/Base.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Themes/BaseDark.axaml"/>
 
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>
 
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/FontSizes.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Border.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/TextBox.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Button.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToggleButton.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/CheckBox.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ComboBox.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToggleSwitch.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/Slider.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ListBox.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/FontSizes.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Border.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/TextBox.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Button.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ToggleButton.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/CheckBox.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ComboBox.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ToggleSwitch.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Slider.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ListBox.axaml"/>
 
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/TextValue.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/ContentArea.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/Dialog.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/RangeSlider.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/TextValue.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/ContentArea.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/Dialog.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/RangeSlider.axaml"/>
 
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Icons.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Styles/ToolTip.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanelItem.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/SidePanel.axaml"/>
-		<StyleInclude Source="avares://FootprintViewer.Fluent/Controls/FilterToggleButton.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Icons.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ToolTip.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/SidePanelItem.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/SidePanel.axaml"/>
+		<StyleInclude Source="avares://FootprintViewer.UI/Controls/FilterToggleButton.axaml"/>
 
 		<StyleInclude Source="avares://TimeDataViewer/Styles/Default.axaml"/>
 		<StyleInclude Source="avares://TimeDataViewer/Styles/TimelineControl.axaml"/>

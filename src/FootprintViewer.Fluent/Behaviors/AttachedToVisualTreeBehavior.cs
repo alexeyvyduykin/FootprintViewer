@@ -1,7 +1,7 @@
 using Avalonia;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public abstract class AttachedToVisualTreeBehavior<T> : DisposingBehavior<T> where T : Visual
 {

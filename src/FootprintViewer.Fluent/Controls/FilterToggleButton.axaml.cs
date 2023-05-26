@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.Controls
+namespace FootprintViewer.UI.Controls
 {
     public partial class FilterToggleButton : ToggleButton
     {

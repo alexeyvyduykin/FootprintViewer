@@ -1,11 +1,11 @@
-﻿using FootprintViewer.Fluent.ViewModels.Navigation;
+﻿using FootprintViewer.UI.ViewModels.Navigation;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.Dialogs;
+namespace FootprintViewer.UI.ViewModels.Dialogs;
 
 public class DialogScreenViewModel : TargettedNavigationStack
 {

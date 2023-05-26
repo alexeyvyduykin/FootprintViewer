@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.Tips
+namespace FootprintViewer.UI.Views.Tips
 {
     public partial class CustomTipView : UserControl
     {

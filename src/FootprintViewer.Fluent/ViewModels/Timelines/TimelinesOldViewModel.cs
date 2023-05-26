@@ -4,7 +4,7 @@ using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.ViewModels.Dialogs;
+using FootprintViewer.UI.ViewModels.Dialogs;
 using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -16,7 +16,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using TimeDataViewer.Core;
 
-namespace FootprintViewer.Fluent.ViewModels.Timelines;
+namespace FootprintViewer.UI.ViewModels.Timelines;
 
 public class TimelinesOldViewModel : DialogViewModelBase<object>
 {

@@ -1,4 +1,4 @@
-﻿using FootprintViewer.Fluent.ViewModels.Dialogs;
+﻿using FootprintViewer.UI.ViewModels.Dialogs;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Reactive.Disposables;
@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.Navigation;
+namespace FootprintViewer.UI.ViewModels.Navigation;
 
 public abstract partial class RoutableViewModel : ViewModelBase, INavigatable
 {

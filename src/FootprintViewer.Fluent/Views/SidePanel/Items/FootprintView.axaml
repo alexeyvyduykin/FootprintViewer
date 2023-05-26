@@ -1,12 +1,12 @@
-<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.FootprintView"
+<UserControl x:Class="FootprintViewer.UI.Views.SidePanel.Items.FootprintView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-			 xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+			 xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
+			 xmlns:conv="using:FootprintViewer.UI.Converters"
 			 x:DataType="vm:FootprintViewModel"
 			 mc:Ignorable="d" d:DesignWidth="320">
 

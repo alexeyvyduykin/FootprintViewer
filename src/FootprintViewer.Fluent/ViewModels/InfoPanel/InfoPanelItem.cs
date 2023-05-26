@@ -1,9 +1,9 @@
-﻿using FootprintViewer.Fluent.ViewModels.SidePanel;
+﻿using FootprintViewer.UI.ViewModels.SidePanel;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.InfoPanel;
+namespace FootprintViewer.UI.ViewModels.InfoPanel;
 
 public class InfoPanelItemViewModel : ViewModelBase, ISelectorItem
 {

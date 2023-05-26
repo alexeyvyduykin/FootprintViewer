@@ -2,7 +2,7 @@
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.Services;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
@@ -13,7 +13,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 public sealed class FootprintPreviewTabFilterViewModel : AOIFilterViewModel<FootprintPreviewViewModel>
 {

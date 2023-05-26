@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Services2;
+using FootprintViewer.UI.Services2;
 using FootprintViewer.Layers.Providers;
 using Mapsui;
 using Mapsui.Interactivity;
@@ -11,7 +11,7 @@ using ReactiveUI;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.Extensions;
+namespace FootprintViewer.UI.Extensions;
 
 public static class MapServiceExtensions
 {

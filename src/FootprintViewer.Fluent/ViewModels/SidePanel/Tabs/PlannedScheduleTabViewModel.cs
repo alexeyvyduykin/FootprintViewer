@@ -2,9 +2,9 @@
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.Extensions;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.Extensions;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -14,7 +14,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Tabs;
 
 public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 {

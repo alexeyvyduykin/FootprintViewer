@@ -1,6 +1,6 @@
-﻿using FootprintViewer.Fluent.ViewModels.SidePanel;
+﻿using FootprintViewer.UI.ViewModels.SidePanel;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public interface ITool : IToolItem, ISelectorItem
 {

@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media;
 using System.Globalization;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class SolidColorBrushConverter : IValueConverter
 {

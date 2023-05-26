@@ -3,7 +3,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Utilities;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 public abstract class RangeBase : TemplatedControl
 {

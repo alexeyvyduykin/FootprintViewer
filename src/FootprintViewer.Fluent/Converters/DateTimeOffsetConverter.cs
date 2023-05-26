@@ -2,7 +2,7 @@
 using Avalonia.Data.Converters;
 using System.Globalization;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class DateTimeOffsetConverter : IValueConverter
 {

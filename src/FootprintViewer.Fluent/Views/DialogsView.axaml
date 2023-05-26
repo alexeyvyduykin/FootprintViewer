@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="FootprintViewer.Fluent.Views.DialogsView"
-			 xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels"
+             x:Class="FootprintViewer.UI.Views.DialogsView"
+			 xmlns:c="using:FootprintViewer.UI.Controls"
+			 xmlns:vm="using:FootprintViewer.UI.ViewModels"
 			 x:DataType="vm:MainViewModel">
 
 	<Panel>

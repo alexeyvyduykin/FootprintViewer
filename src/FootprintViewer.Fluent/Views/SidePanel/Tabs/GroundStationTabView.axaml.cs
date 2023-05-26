@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.SidePanel.Tabs
+namespace FootprintViewer.UI.Views.SidePanel.Tabs
 {
     public partial class GroundStationTabView : UserControl
     {

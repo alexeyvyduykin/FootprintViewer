@@ -1,10 +1,10 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using FootprintViewer.Fluent.ViewModels.SidePanel;
+using FootprintViewer.UI.ViewModels.SidePanel;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Fluent.Selectors;
+namespace FootprintViewer.UI.Selectors;
 
 public class DataTemplateSelector : IDataTemplate
 {

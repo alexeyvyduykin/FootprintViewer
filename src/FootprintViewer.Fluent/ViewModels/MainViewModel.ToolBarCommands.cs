@@ -1,7 +1,7 @@
 ﻿using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Extensions;
-using FootprintViewer.Fluent.ViewModels.Tips;
+using FootprintViewer.UI.Extensions;
+using FootprintViewer.UI.ViewModels.Tips;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -16,7 +16,7 @@ using Splat;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.UI.ViewModels;
 
 public partial class MainViewModel
 {

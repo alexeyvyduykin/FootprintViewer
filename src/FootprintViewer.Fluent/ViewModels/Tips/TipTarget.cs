@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Fluent.ViewModels.Tips;
+﻿namespace FootprintViewer.UI.ViewModels.Tips;
 
 public enum TipTarget
 {

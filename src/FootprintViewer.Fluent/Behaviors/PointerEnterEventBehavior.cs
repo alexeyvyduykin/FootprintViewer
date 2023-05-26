@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public class PointerEnterEventBehavior : Behavior<Interactive>
 {

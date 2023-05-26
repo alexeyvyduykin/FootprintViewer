@@ -1,12 +1,12 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
-using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.UI.Extensions;
 using FootprintViewer.Helpers;
 using FootprintViewer.Logging;
 using System.IO;
 using System.Linq;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public static class Program
 {

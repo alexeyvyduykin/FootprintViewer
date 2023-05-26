@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Controls
+namespace FootprintViewer.UI.Controls
 {
     public class TextValue : ContentControl
     {

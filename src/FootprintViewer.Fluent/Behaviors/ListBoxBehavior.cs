@@ -5,12 +5,12 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.Xaml.Interactivity;
-using FootprintViewer.Fluent.Extensions;
+using FootprintViewer.UI.Extensions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public class ListBoxBehavior : AvaloniaObject
 {

@@ -7,7 +7,7 @@ using ReactiveUI.Fody.Helpers;
 using SpaceScience.Extensions;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public sealed class SatelliteViewModel : ViewModelBase, IViewerItem
 {

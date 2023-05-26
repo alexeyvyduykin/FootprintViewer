@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public class ToolClick : ViewModelBase, IToolClick
 {

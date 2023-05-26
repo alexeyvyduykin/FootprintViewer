@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+﻿namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public interface IToolItem
 {

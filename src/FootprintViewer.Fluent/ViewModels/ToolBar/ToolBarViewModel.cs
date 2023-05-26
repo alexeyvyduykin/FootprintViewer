@@ -1,8 +1,8 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.Extensions;
-using FootprintViewer.Fluent.Services2;
+using FootprintViewer.UI.Extensions;
+using FootprintViewer.UI.Services2;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
 using ReactiveUI;
@@ -15,7 +15,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public sealed class ToolBarViewModel : ViewModelBase
 {

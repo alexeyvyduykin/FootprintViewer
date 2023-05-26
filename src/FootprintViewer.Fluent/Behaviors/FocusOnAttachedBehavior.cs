@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public class FocusOnAttachedBehavior : AttachedToVisualTreeBehavior<Control>
 {

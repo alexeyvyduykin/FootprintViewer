@@ -10,7 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Utilities;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 [PseudoClasses(":vertical", ":horizontal", ":pressed")]
 public class RangeSlider : RangeBase

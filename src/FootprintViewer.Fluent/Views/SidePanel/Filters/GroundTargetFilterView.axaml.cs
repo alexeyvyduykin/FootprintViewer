@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.SidePanel.Filters
+namespace FootprintViewer.UI.Views.SidePanel.Filters
 {
     public partial class GroundTargetFilterView : UserControl
     {

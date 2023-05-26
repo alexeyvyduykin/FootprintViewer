@@ -1,6 +1,6 @@
-﻿using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+﻿using FootprintViewer.UI.ViewModels.SidePanel.Items;
 
-namespace FootprintViewer.Fluent.ViewModels.InfoPanel;
+namespace FootprintViewer.UI.ViewModels.InfoPanel;
 
 public sealed class UserGeometryInfoPanelItemViewModel : InfoPanelItemViewModel
 {

@@ -2,22 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:views="clr-namespace:FootprintViewer.Fluent.Views"
-             xmlns:sidePanel="clr-namespace:FootprintViewer.Fluent.Views.SidePanel"
-             xmlns:settings="clr-namespace:FootprintViewer.Fluent.Views.Settings"
-             xmlns:panels="clr-namespace:FootprintViewer.Fluent.Views.InfoPanel"
-             xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.Views.ToolBar"
+             xmlns:views="clr-namespace:FootprintViewer.UI.Views"
+             xmlns:sidePanel="clr-namespace:FootprintViewer.UI.Views.SidePanel"
+             xmlns:settings="clr-namespace:FootprintViewer.UI.Views.Settings"
+             xmlns:panels="clr-namespace:FootprintViewer.UI.Views.InfoPanel"
+             xmlns:toolBar="clr-namespace:FootprintViewer.UI.Views.ToolBar"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
-             xmlns:bottomPanel="clr-namespace:FootprintViewer.Fluent.Views.BottomPanel"
-             xmlns:local="clr-namespace:FootprintViewer.Fluent"
+             xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
+             xmlns:bottomPanel="clr-namespace:FootprintViewer.UI.Views.BottomPanel"
+             xmlns:local="clr-namespace:FootprintViewer.UI"
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-             xmlns:tips="clr-namespace:FootprintViewer.Fluent.ViewModels.Tips"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels"
+             xmlns:tips="clr-namespace:FootprintViewer.UI.ViewModels.Tips"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
-             x:Class="FootprintViewer.Fluent.Views.MainView">
+             x:Class="FootprintViewer.UI.Views.MainView">
 
 	<Design.DataContext>
 		<vm:MainViewModel></vm:MainViewModel>

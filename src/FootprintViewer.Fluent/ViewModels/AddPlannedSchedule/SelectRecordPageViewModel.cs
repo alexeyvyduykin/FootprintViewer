@@ -3,9 +3,9 @@ using DynamicData.Alias;
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Fluent.Models;
-using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
-using FootprintViewer.Fluent.ViewModels.Navigation;
+using FootprintViewer.UI.Models;
+using FootprintViewer.UI.ViewModels.AddPlannedSchedule.Items;
+using FootprintViewer.UI.ViewModels.Navigation;
 using FootprintViewer.Logging;
 using FootprintViewer.Services;
 using ReactiveUI;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
+namespace FootprintViewer.UI.ViewModels.AddPlannedSchedule;
 
 public class SelectRecordPageViewModel : RoutableViewModel
 {

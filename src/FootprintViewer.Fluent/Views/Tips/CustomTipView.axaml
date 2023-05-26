@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.Tips"
-		     xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.Tips"
+		     xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
 			 x:DataType="vm:CustomTipViewModel"
 			 mc:Ignorable="d"
-             x:Class="FootprintViewer.Fluent.Views.Tips.CustomTipView">
+             x:Class="FootprintViewer.UI.Views.Tips.CustomTipView">
 
 	<Design.DataContext>
 		<vm:CustomTipViewModel>

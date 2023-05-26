@@ -1,8 +1,8 @@
 ﻿using Avalonia.Data.Converters;
-using FootprintViewer.Fluent.ViewModels.Tips;
+using FootprintViewer.UI.ViewModels.Tips;
 using System.Globalization;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class TipTextConverter1 : IValueConverter
 {

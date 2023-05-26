@@ -1,7 +1,7 @@
 ﻿using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.Models;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public sealed class TaskResultViewModel : ViewModelBase
 {

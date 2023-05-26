@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public sealed class GroundStationViewModel : ViewModelBase, IViewerItem
 {

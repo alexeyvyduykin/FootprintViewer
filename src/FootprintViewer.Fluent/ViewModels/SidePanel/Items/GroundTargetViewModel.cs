@@ -5,7 +5,7 @@ using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewerItem
 {

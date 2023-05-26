@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public class LayerItemViewModel : ViewModelBase
 {

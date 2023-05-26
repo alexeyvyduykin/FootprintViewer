@@ -1,12 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Input;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels;
 using Mapsui;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public class UserMapControl : MapControl
 {

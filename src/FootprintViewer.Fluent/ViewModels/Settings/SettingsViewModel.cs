@@ -6,11 +6,11 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Extensions;
-using FootprintViewer.Fluent.Helpers;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.Dialogs;
-using FootprintViewer.Fluent.ViewModels.Settings.Items;
-using FootprintViewer.Fluent.ViewModels.ToolBar;
+using FootprintViewer.UI.Helpers;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.Dialogs;
+using FootprintViewer.UI.ViewModels.Settings.Items;
+using FootprintViewer.UI.ViewModels.ToolBar;
 using FootprintViewer.Logging;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
@@ -27,7 +27,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.Settings;
+namespace FootprintViewer.UI.ViewModels.Settings;
 
 public sealed class SettingsViewModel : DialogViewModelBase<object>
 {

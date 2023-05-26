@@ -3,7 +3,7 @@ using Avalonia.Data.Converters;
 using NetTopologySuite.Geometries;
 using System.Globalization;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class FullCoordinateConverter : IValueConverter
 {

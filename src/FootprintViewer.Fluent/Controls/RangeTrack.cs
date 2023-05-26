@@ -6,7 +6,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Utilities;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 [PseudoClasses(":vertical", ":horizontal")]
 public class RangeTrack : Control

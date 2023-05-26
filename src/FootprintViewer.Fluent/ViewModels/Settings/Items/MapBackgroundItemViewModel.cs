@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FootprintViewer.Fluent.ViewModels.Settings.Items;
+namespace FootprintViewer.UI.ViewModels.Settings.Items;
 
 public class MapBackgroundItemViewModel
 {

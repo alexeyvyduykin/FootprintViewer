@@ -1,12 +1,12 @@
-﻿using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.Navigation;
-using FootprintViewer.Fluent.ViewModels.Timelines;
+﻿using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.Navigation;
+using FootprintViewer.UI.ViewModels.Timelines;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public class MapToolsViewModel : ViewModelBase
 {

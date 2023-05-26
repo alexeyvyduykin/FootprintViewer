@@ -1,6 +1,6 @@
 ﻿using Mapsui.Styles;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public class GroundStationAreaViewModel : ViewModelBase
 {

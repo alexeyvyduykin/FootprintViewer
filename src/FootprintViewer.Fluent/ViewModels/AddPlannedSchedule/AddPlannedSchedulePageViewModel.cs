@@ -1,5 +1,5 @@
-﻿using FootprintViewer.Fluent.Helpers;
-using FootprintViewer.Fluent.ViewModels.Dialogs;
+﻿using FootprintViewer.UI.Helpers;
+using FootprintViewer.UI.ViewModels.Dialogs;
 using FootprintViewer.Logging;
 using ReactiveUI;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
+namespace FootprintViewer.UI.ViewModels.AddPlannedSchedule;
 
 public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
 {

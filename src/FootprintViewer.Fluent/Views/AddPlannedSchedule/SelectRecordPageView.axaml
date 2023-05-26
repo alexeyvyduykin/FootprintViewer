@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="using:FootprintViewer.Fluent.Controls"
-			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 xmlns:vmd="using:FootprintViewer.Fluent.Designer"
-			 xmlns:items="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items"
+             xmlns:c="using:FootprintViewer.UI.Controls"
+			 xmlns:vm="using:FootprintViewer.UI.ViewModels.AddPlannedSchedule"
+			 xmlns:vmd="using:FootprintViewer.UI.Designer"
+			 xmlns:items="using:FootprintViewer.UI.ViewModels.AddPlannedSchedule.Items"
 			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="380"
 			 x:DataType="vm:SelectRecordPageViewModel"
-             x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.SelectRecordPageView">
+             x:Class="FootprintViewer.UI.Views.AddPlannedSchedule.SelectRecordPageView">
 
 	<Design.DataContext>
 		<vmd:SelectRecordPageDesignViewModel>

@@ -3,14 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:icons="using:Material.Icons.Avalonia"
-             xmlns:itemsView="clr-namespace:FootprintViewer.Fluent.Views.SidePanel.Items"
+             xmlns:itemsView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Items"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+             xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
 			 x:DataType="vm:GroundStationViewModel"
              mc:Ignorable="d" d:DesignWidth="380"
-             x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.GroundStationView">
+             x:Class="FootprintViewer.UI.Views.SidePanel.Items.GroundStationView">
 
 	<Design.DataContext>
 		<vm:GroundStationViewModel>

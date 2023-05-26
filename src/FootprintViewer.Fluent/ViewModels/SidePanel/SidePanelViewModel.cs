@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel;
+namespace FootprintViewer.UI.ViewModels.SidePanel;
 
 public sealed class SidePanelViewModel : ViewModelBase
 {

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public static class Services
 {

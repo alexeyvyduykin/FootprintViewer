@@ -1,6 +1,6 @@
 ﻿using ReactiveUI.Fody.Helpers;
 
-namespace FootprintViewer.Fluent.ViewModels.Tips;
+namespace FootprintViewer.UI.ViewModels.Tips;
 
 public class Tip : ViewModelBase, ITip
 {

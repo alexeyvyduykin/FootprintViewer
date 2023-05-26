@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Media;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 public class ContentArea : ContentControl
 {

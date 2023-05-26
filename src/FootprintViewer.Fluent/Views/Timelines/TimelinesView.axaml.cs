@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.Timelines
+namespace FootprintViewer.UI.Views.Timelines
 {
     public partial class TimelinesView : UserControl
     {

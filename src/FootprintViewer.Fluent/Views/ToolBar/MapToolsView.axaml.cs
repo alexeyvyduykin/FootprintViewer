@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.ToolBar
+namespace FootprintViewer.UI.Views.ToolBar
 {
     public partial class MapToolsView : UserControl
     {

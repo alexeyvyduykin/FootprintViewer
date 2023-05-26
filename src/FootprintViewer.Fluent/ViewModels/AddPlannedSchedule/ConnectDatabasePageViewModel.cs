@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Fluent.ViewModels.Navigation;
+using FootprintViewer.UI.ViewModels.Navigation;
 using Npgsql;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
+namespace FootprintViewer.UI.ViewModels.AddPlannedSchedule;
 
 public class ConnectDatabasePageViewModel : RoutableViewModel
 {

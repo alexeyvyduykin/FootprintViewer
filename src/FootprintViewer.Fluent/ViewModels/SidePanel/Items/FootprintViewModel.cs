@@ -5,7 +5,7 @@ using NetTopologySuite.Geometries;
 using ReactiveUI.Fody.Helpers;
 using System.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
 
 public sealed class FootprintViewModel : ViewModelBase, IViewerItem
 {

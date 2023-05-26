@@ -1,9 +1,9 @@
 ﻿using Avalonia.Data;
 using Avalonia.Data.Converters;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using System.Globalization;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class FootprintInfoNameConverter : IValueConverter
 {

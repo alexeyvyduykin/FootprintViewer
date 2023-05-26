@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Layers.Providers;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 //public class GroundTargetNameFilterViewModel : ViewModelBase, IFilter<GroundTargetViewModel>
 //{

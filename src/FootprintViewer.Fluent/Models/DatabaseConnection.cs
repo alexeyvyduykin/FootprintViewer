@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FootprintViewer.Fluent.Models;
+namespace FootprintViewer.UI.Models;
 
 [JsonObject]
 public class DatabaseConnection

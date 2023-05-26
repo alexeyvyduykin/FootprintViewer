@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.ToolBar"
              xmlns:styles="clr-namespace:FootprintViewer.Styles;assembly=FootprintViewer"
 			 mc:Ignorable="d" d:DesignHeight="440"
              x:DataType="vm:LayerContainerViewModel"
-			 x:Class="FootprintViewer.Fluent.Views.ToolBar.LayerContainerView">
+			 x:Class="FootprintViewer.UI.Views.ToolBar.LayerContainerView">
 
 	<Design.DataContext>
 		<vm:LayerContainerViewModel></vm:LayerContainerViewModel>

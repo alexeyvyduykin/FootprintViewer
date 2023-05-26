@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.Helpers;
+namespace FootprintViewer.UI.Helpers;
 
 public static class FileDialogHelper
 {

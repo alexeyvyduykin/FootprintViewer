@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="using:FootprintViewer.Fluent.Controls"
+             xmlns:c="using:FootprintViewer.UI.Controls"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
+			 xmlns:vm="using:FootprintViewer.UI.ViewModels.AddPlannedSchedule"
 			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
 			 x:DataType="vm:ConnectDatabasePageViewModel"
 			 x:CompileBindings="True"
-             x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ConnectDatabasePageView">
+             x:Class="FootprintViewer.UI.Views.AddPlannedSchedule.ConnectDatabasePageView">
 
 	<Design.DataContext>
 		<vm:ConnectDatabasePageViewModel>

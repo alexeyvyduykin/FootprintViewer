@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Dialogs;
 using System.Runtime.InteropServices;
 
-namespace FootprintViewer.Fluent.Extensions;
+namespace FootprintViewer.UI.Extensions;
 
 public static class AppBuilderExtension
 {

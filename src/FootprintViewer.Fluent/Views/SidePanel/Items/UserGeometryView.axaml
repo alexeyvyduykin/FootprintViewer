@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-			 xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:selectors="clr-namespace:FootprintViewer.Fluent.Selectors"
+             xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
+			 xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+             xmlns:selectors="clr-namespace:FootprintViewer.UI.Selectors"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="380"
 			 x:DataType="vm:UserGeometryViewModel"
-             x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.UserGeometryView">
+             x:Class="FootprintViewer.UI.Views.SidePanel.Items.UserGeometryView">
 
 	<Design.DataContext>
 		<vm:UserGeometryViewModel></vm:UserGeometryViewModel>

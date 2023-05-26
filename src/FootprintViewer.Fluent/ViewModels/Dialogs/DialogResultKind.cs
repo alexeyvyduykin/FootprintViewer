@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Fluent.ViewModels.Dialogs;
+﻿namespace FootprintViewer.UI.ViewModels.Dialogs;
 
 public enum DialogResultKind
 {

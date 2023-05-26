@@ -6,7 +6,7 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
 
-namespace FootprintViewer.Fluent.Services2;
+namespace FootprintViewer.UI.Services2;
 
 public interface IMapService
 {

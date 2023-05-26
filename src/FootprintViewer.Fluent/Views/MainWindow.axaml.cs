@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace FootprintViewer.Fluent.Views
+namespace FootprintViewer.UI.Views
 {
     public partial class MainWindow : Window
     {

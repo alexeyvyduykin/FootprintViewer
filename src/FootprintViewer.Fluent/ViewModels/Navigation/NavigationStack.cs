@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.Navigation;
+namespace FootprintViewer.UI.ViewModels.Navigation;
 
 public class NavigationStack<T> : ViewModelBase, INavigationStack<T> where T : class, INavigatable
 {

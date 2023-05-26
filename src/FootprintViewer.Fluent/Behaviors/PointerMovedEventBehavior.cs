@@ -6,7 +6,7 @@ using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public class PointerMovedEventBehavior : Behavior<Interactive>
 {

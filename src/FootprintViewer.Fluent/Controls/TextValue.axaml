@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:c="using:FootprintViewer.Fluent.Controls">
+		xmlns:c="using:FootprintViewer.UI.Controls">
 
 	<Design.PreviewWith>
 		<Border Padding="40" Width="300">

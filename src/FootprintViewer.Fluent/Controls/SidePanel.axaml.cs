@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Avalonia.Reactive;
 using System.Collections;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 public class SidePanel : TabControl
 {

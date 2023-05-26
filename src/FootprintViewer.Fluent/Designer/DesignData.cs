@@ -1,12 +1,12 @@
 ﻿using FootprintViewer.Data.Builders;
-using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
-using FootprintViewer.Fluent.ViewModels.InfoPanel;
-using FootprintViewer.Fluent.ViewModels.Navigation;
+using FootprintViewer.UI.ViewModels.AddPlannedSchedule.Items;
+using FootprintViewer.UI.ViewModels.InfoPanel;
+using FootprintViewer.UI.ViewModels.Navigation;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FootprintViewer.Fluent.Designer;
+namespace FootprintViewer.UI.Designer;
 
 public static class DesignData
 {

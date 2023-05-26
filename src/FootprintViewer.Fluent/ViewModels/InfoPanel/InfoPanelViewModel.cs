@@ -3,7 +3,7 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.InfoPanel;
+namespace FootprintViewer.UI.ViewModels.InfoPanel;
 
 public sealed class InfoPanelViewModel : ViewModelBase
 {

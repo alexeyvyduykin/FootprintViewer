@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
-using FootprintViewer.Fluent.Services2;
+using FootprintViewer.UI.Services2;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public sealed class LayerContainerViewModel : ViewModelBase
 {

@@ -6,7 +6,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Xaml.Interactions.Events;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public class CloseFlyoutAfterLostCapture : PointerCaptureLostEventBehavior
 {

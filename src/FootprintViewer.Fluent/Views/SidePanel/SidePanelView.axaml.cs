@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.SidePanel
+namespace FootprintViewer.UI.Views.SidePanel
 {
     public partial class SidePanelView : UserControl
     {

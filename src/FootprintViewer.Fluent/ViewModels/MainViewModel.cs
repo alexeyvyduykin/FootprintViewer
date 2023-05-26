@@ -1,17 +1,17 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
-using FootprintViewer.Fluent.ViewModels.Dialogs;
-using FootprintViewer.Fluent.ViewModels.InfoPanel;
-using FootprintViewer.Fluent.ViewModels.Navigation;
-using FootprintViewer.Fluent.ViewModels.Settings;
-using FootprintViewer.Fluent.ViewModels.SidePanel;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
-using FootprintViewer.Fluent.ViewModels.Tips;
-using FootprintViewer.Fluent.ViewModels.ToolBar;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.AddPlannedSchedule;
+using FootprintViewer.UI.ViewModels.Dialogs;
+using FootprintViewer.UI.ViewModels.InfoPanel;
+using FootprintViewer.UI.ViewModels.Navigation;
+using FootprintViewer.UI.ViewModels.Settings;
+using FootprintViewer.UI.ViewModels.SidePanel;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.ViewModels.SidePanel.Tabs;
+using FootprintViewer.UI.ViewModels.Tips;
+using FootprintViewer.UI.ViewModels.ToolBar;
 using FootprintViewer.Layers;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
@@ -32,7 +32,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.UI.ViewModels;
 
 public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 {

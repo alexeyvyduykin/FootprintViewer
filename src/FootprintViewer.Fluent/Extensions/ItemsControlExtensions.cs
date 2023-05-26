@@ -6,7 +6,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using System.Linq;
 
-namespace FootprintViewer.Fluent.Extensions;
+namespace FootprintViewer.UI.Extensions;
 
 public static class ItemsControlExtensions
 {

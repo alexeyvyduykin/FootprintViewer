@@ -3,7 +3,7 @@ using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
-using FootprintViewer.Fluent.Services2;
+using FootprintViewer.UI.Services2;
 using FootprintViewer.Services;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.Designer;
+namespace FootprintViewer.UI.Designer;
 
 public sealed class DesignDataDependencyResolver : IServiceProvider
 {

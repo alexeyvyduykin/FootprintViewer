@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel;
+namespace FootprintViewer.UI.ViewModels.SidePanel;
 
 public interface IFilter<T>
 {

@@ -5,7 +5,7 @@ using SkiaSharp;
 using System.Globalization;
 using System.IO;
 
-namespace FootprintViewer.Fluent.Converters;
+namespace FootprintViewer.UI.Converters;
 
 public class ImageConverter : IValueConverter
 {

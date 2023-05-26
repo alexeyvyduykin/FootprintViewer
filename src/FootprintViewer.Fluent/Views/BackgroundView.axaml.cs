@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views
+namespace FootprintViewer.UI.Views
 {
     public partial class BackgroundView : UserControl
     {

@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Fluent.ViewModels.Navigation;
+﻿namespace FootprintViewer.UI.ViewModels.Navigation;
 
 public interface INavigationStack<T> where T : INavigatable
 {

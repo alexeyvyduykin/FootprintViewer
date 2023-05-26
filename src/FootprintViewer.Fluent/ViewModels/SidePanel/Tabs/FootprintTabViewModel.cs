@@ -4,10 +4,10 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Extensions;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.Extensions;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.SidePanel.Filters;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using ReactiveUI;
@@ -18,7 +18,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Tabs;
 
 public sealed class FootprintTabViewModel : SidePanelTabViewModel
 {

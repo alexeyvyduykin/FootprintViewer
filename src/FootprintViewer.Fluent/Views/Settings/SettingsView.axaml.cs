@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.Settings
+namespace FootprintViewer.UI.Views.Settings
 {
     public partial class SettingsView : UserControl
     {

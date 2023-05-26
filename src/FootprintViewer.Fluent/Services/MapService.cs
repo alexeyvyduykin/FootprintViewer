@@ -10,7 +10,7 @@ using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
 
-namespace FootprintViewer.Fluent.Services2;
+namespace FootprintViewer.UI.Services2;
 
 public class MapService : IMapService
 {

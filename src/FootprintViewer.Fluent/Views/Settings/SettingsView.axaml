@@ -2,20 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"			 
-			 xmlns:c="using:FootprintViewer.Fluent.Controls"
-	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
-	         xmlns:vm="using:FootprintViewer.Fluent.ViewModels.Settings"
-			 xmlns:toolBar="clr-namespace:FootprintViewer.Fluent.ViewModels.ToolBar"
+			 xmlns:c="using:FootprintViewer.UI.Controls"
+	         xmlns:views="using:FootprintViewer.UI.Views.Settings"
+	         xmlns:vm="using:FootprintViewer.UI.ViewModels.Settings"
+			 xmlns:toolBar="clr-namespace:FootprintViewer.UI.ViewModels.ToolBar"
 	         xmlns:styles="clr-namespace:FootprintViewer.Styles;assembly=FootprintViewer"
-			 xmlns:items="using:FootprintViewer.Fluent.ViewModels.Settings.Items"
-			 xmlns:vm2="clr-namespace:FootprintViewer.Fluent.ViewModels"
+			 xmlns:items="using:FootprintViewer.UI.ViewModels.Settings.Items"
+			 xmlns:vm2="clr-namespace:FootprintViewer.UI.ViewModels"
 			 xmlns:loc="clr-namespace:FootprintViewer.Localization;assembly=FootprintViewer"
-			 xmlns:conv="using:FootprintViewer.Fluent.Converters"
+			 xmlns:conv="using:FootprintViewer.UI.Converters"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="False"
              mc:Ignorable="d"
-             x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView">
+             x:Class="FootprintViewer.UI.Views.Settings.SettingsView">
 
 	<Design.DataContext>
 		<vm:SettingsViewModel>

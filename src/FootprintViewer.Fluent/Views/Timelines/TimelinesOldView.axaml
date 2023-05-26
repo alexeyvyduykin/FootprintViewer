@@ -2,14 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.Timelines"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.Timelines"
 			 xmlns:selectors="clr-namespace:TimeDataViewer.Selectors;assembly=TimeDataViewer"
-			 xmlns:c="using:FootprintViewer.Fluent.Controls"
+			 xmlns:c="using:FootprintViewer.UI.Controls"
 			 xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:CompileBindings="True"
 		     x:DataType="vm:TimelinesOldViewModel"
-             x:Class="FootprintViewer.Fluent.Views.Timelines.TimelinesOldView">
+             x:Class="FootprintViewer.UI.Views.Timelines.TimelinesOldView">
 
 	<Design.DataContext>
 		<vm:TimelinesOldViewModel></vm:TimelinesOldViewModel>

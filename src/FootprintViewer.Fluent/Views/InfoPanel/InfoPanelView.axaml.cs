@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.InfoPanel
+namespace FootprintViewer.UI.Views.InfoPanel
 {
     public partial class InfoPanelView : UserControl
     {

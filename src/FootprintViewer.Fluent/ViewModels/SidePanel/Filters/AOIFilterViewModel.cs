@@ -3,7 +3,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Filters;
 
 public abstract class AOIFilterViewModel<T> : BaseFilterViewModel<T>, IAOIFilter<T> where T : ViewModelBase
 {

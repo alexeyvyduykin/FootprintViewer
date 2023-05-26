@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.ToolBar;
+namespace FootprintViewer.UI.ViewModels.ToolBar;
 
 public interface IToolClick : ITool
 {

@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
 using System.Windows.Input;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel;
+namespace FootprintViewer.UI.ViewModels.SidePanel;
 
 public class SidePanelActionTabViewModel : ViewModelBase
 {

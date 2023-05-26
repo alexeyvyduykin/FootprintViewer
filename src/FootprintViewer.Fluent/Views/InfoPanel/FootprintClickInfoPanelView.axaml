@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"         
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.InfoPanel"              
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.InfoPanel"              
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:conv="using:FootprintViewer.Fluent.Converters"
+             xmlns:conv="using:FootprintViewer.UI.Converters"
 			 MinWidth="240"
 			 mc:Ignorable="d"
 			 x:DataType="vm:FootprintInfoPanelItemViewModel"
-             x:Class="FootprintViewer.Fluent.Views.InfoPanel.FootprintClickInfoPanelView">
+             x:Class="FootprintViewer.UI.Views.InfoPanel.FootprintClickInfoPanelView">
 
 	<Design.DataContext>
 		<vm:FootprintInfoPanelItemViewModel>						

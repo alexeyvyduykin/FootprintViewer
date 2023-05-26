@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Fluent;
+﻿namespace FootprintViewer.UI;
 
 public interface IMainWindowService
 {

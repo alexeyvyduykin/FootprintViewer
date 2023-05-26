@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule.Items;
+namespace FootprintViewer.UI.ViewModels.AddPlannedSchedule.Items;
 
 public class PlannedScheduleItemViewModel
 {

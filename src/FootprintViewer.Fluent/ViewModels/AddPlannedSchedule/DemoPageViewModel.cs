@@ -1,12 +1,12 @@
 ﻿using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Fluent.Models;
-using FootprintViewer.Fluent.ViewModels.Navigation;
+using FootprintViewer.UI.Models;
+using FootprintViewer.UI.ViewModels.Navigation;
 using FootprintViewer.Logging;
 using FootprintViewer.Services;
 using ReactiveUI;
 using System.Reactive.Concurrency;
 
-namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
+namespace FootprintViewer.UI.ViewModels.AddPlannedSchedule;
 
 public class DemoPageViewModel : RoutableViewModel
 {

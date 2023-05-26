@@ -1,7 +1,7 @@
-﻿using FootprintViewer.Fluent.ViewModels.Dialogs;
+﻿using FootprintViewer.UI.ViewModels.Dialogs;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.Navigation;
+namespace FootprintViewer.UI.ViewModels.Navigation;
 
 public static class NavigationExtensions
 {

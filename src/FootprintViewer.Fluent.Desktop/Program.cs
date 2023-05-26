@@ -1,9 +1,9 @@
-﻿namespace FootprintViewer.Fluent.Desktop;
+﻿namespace FootprintViewer.UI.Desktop;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        Fluent.Program.Main(args);
+        UI.Program.Main(args);
     }
 }

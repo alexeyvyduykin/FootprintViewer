@@ -2,8 +2,8 @@
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
@@ -14,7 +14,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.ViewModels.SidePanel.Tabs;
+namespace FootprintViewer.UI.ViewModels.SidePanel.Tabs;
 
 public sealed class GroundStationTabViewModel : SidePanelTabViewModel
 {

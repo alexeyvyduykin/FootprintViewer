@@ -1,12 +1,12 @@
-<UserControl x:Class="FootprintViewer.Fluent.Views.SidePanel.Items.SatelliteView"
+<UserControl x:Class="FootprintViewer.UI.Views.SidePanel.Items.SatelliteView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.SidePanel.Items"
-             xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
-             xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+             xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+             xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
+             xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
 			 x:DataType="vm:SatelliteViewModel"
 			 mc:Ignorable="d" d:DesignWidth="380">
 

@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.UI.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {

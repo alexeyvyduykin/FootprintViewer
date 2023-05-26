@@ -1,10 +1,10 @@
 ﻿using FootprintViewer.AppStates;
-using FootprintViewer.Fluent.Models;
+using FootprintViewer.UI.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 [JsonObject]
 public class Config : ConfigBase

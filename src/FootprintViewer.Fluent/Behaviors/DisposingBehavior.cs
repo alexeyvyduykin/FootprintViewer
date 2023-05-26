@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Xaml.Interactivity;
 using System.Reactive.Disposables;
 
-namespace FootprintViewer.Fluent.Behaviors;
+namespace FootprintViewer.UI.Behaviors;
 
 public abstract class DisposingBehavior<T> : Behavior<T> where T : class, IAvaloniaObject
 {

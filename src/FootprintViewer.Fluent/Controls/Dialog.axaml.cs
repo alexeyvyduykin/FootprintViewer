@@ -8,7 +8,7 @@ using ReactiveUI;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FootprintViewer.Fluent.Controls;
+namespace FootprintViewer.UI.Controls;
 
 public class Dialog : ContentControl
 {

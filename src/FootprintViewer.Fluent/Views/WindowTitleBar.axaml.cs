@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace FootprintViewer.Fluent.Views;
+namespace FootprintViewer.UI.Views;
 
 public partial class WindowTitleBar : UserControl
 {

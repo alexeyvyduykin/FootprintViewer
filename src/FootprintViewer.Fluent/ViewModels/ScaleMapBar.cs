@@ -6,7 +6,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.UI.ViewModels;
 
 public sealed class ScaleMapBar : ViewModelBase
 {

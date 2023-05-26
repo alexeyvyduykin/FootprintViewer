@@ -6,9 +6,9 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
-using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels;
+using FootprintViewer.UI.Designer;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System.Reactive.Concurrency;
 
-namespace FootprintViewer.Fluent;
+namespace FootprintViewer.UI;
 
 public class App : Application
 {

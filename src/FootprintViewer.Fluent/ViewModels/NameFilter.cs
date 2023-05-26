@@ -1,11 +1,11 @@
-﻿using FootprintViewer.Fluent.ViewModels.SidePanel;
+﻿using FootprintViewer.UI.ViewModels.SidePanel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.UI.ViewModels;
 
 public class NameFilter<T> : ViewModelBase, IFilter<T> where T : IViewerItem
 {

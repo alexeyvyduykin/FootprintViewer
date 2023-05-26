@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace FootprintViewer.Fluent.Views.AddPlannedSchedule
+namespace FootprintViewer.UI.Views.AddPlannedSchedule
 {
     public partial class SelectRecordPageView : UserControl
     {
