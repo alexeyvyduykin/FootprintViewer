@@ -1,7 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Alias;
 using DynamicData.Binding;
-using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Models;
@@ -79,7 +78,7 @@ public class SelectRecordPageViewModel : RoutableViewModel
             localStorage.RegisterSource(key, source);
         }
 
-        localStorage.UpdateData_Test_Remove_After();
+        localStorage.UpdateData();
 
         Save();
     }

@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,10 +7,6 @@ namespace FootprintViewer.Services;
 
 public interface ILocalStorageService
 {
-    void InvalidatePlannedSchedule();
-
-    void UpdateData_Test_Remove_After();
-
     IObservable<string[]> DataChanged { get; }
 
     IObservable<IList<PlannedScheduleResult>> PlannedScheduleObservable { get; }
@@ -24,15 +19,15 @@ public interface ILocalStorageService
 
     void UnregisterSources(string key);
 
+    void UpdateData();
+
     Task<IList<T>> GetValuesAsync<T>(string key);
 
     IReadOnlyList<ISource> GetSources(string key);
 
-    Task<bool> TryAddAsync_Test(string key, object value);
+    Task TryAddAsync(string key, object value);
 
-    Task<bool> TryRemoveAsync_Test(string key, object value);
+    Task TryEditAsync(string key, string id, object newValue);
 
-    Task<bool> TryEditAsync_Test(string key, string id, object newValue);
-
-    void ForceUpdateData_Test(string key);
+    Task TryRemoveAsync(string key, object value);
 }

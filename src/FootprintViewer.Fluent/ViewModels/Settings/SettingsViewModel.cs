@@ -224,7 +224,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
 
             localStorage.RegisterSource(DbKeys.Maps.ToString(), new FileSource(new[] { filePath }, MapResource.Build));
 
-            localStorage.UpdateData_Test_Remove_After();
+            localStorage.UpdateData();
 
             Save();
         }
@@ -252,7 +252,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
 
         localStorage.UnregisterSource(DbKeys.Maps.ToString(), source);
 
-        localStorage.UpdateData_Test_Remove_After();
+        localStorage.UpdateData();
 
         Save();
     }

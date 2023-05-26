@@ -67,7 +67,7 @@ public class ImportFilePageViewModel : RoutableViewModel
             localStorage.RegisterSource(key, source);
         }
 
-        localStorage.UpdateData_Test_Remove_After();
+        localStorage.UpdateData();
 
         Save();
     }

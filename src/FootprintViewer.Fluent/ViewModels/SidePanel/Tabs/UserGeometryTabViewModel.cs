@@ -87,9 +87,7 @@ public sealed class UserGeometryTabViewModel : SidePanelTabViewModel
     {
         if (value != null)
         {
-            await _localStorage.TryRemoveAsync_Test(DbKeys.UserGeometries.ToString(), value.Model);
-
-            _localStorage.ForceUpdateData_Test(DbKeys.UserGeometries.ToString());
+            await _localStorage.TryRemoveAsync(DbKeys.UserGeometries.ToString(), value.Model);
         }
     }
 

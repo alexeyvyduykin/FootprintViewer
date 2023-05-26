@@ -298,9 +298,7 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 
                     var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-                    await localStorage.TryEditAsync_Test(key, name, model);
-
-                    localStorage.ForceUpdateData_Test(key);
+                    await localStorage.TryEditAsync(key, name, model);
                 }
             },
             RxApp.TaskpoolScheduler);
@@ -328,9 +326,7 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 
                 var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
-                await localStorage.TryAddAsync_Test(key, model);
-
-                localStorage.ForceUpdateData_Test(key);
+                await localStorage.TryAddAsync(key, model);
             },
             RxApp.TaskpoolScheduler);
         }

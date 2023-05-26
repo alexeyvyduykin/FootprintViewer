@@ -90,7 +90,7 @@ public class LocalStorageService : ILocalStorageService
         return _dataManager.GetSources(key);
     }
 
-    public async Task<bool> TryAddAsync(string key, object value)
+    public async Task TryAddAsync(string key, object value)
     {
         var res = await _dataManager.TryAddAsync(key, value);
 
@@ -98,11 +98,9 @@ public class LocalStorageService : ILocalStorageService
         {
             ForceUpdateData(key);
         }
-
-        return res;
     }
 
-    public async Task<bool> TryRemoveAsync(string key, object value)
+    public async Task TryRemoveAsync(string key, object value)
     {
         var res = await _dataManager.TryRemoveAsync(key, value);
 
@@ -110,11 +108,9 @@ public class LocalStorageService : ILocalStorageService
         {
             ForceUpdateData(key);
         }
-
-        return res;
     }
 
-    public async Task<bool> TryEditAsync(string key, string id, object newValue)
+    public async Task TryEditAsync(string key, string id, object newValue)
     {
         var res = await _dataManager.TryEditAsync(key, id, newValue);
 
@@ -122,23 +118,6 @@ public class LocalStorageService : ILocalStorageService
         {
             ForceUpdateData(key);
         }
-
-        return res;
-    }
-
-    public async Task<bool> TryAddAsync_Test(string key, object value)
-    {
-        return await _dataManager.TryAddAsync(key, value);
-    }
-
-    public async Task<bool> TryRemoveAsync_Test(string key, object value)
-    {
-        return await _dataManager.TryRemoveAsync(key, value);
-    }
-
-    public async Task<bool> TryEditAsync_Test(string key, string id, object newValue)
-    {
-        return await _dataManager.TryEditAsync(key, id, newValue);
     }
 
     public void UpdateData()
@@ -153,20 +132,7 @@ public class LocalStorageService : ILocalStorageService
         _dirtyKeys.Clear();
     }
 
-    public void InvalidatePlannedSchedule()
-    {
-        _command.Execute(Unit.Default).Subscribe();
-    }
-    public void UpdateData_Test_Remove_After()
-    {
-
-    }
     private void ForceUpdateData(string key)
-    {
-        _changeSubj.OnNext(new[] { key });
-    }
-
-    public void ForceUpdateData_Test(string key)
     {
         _changeSubj.OnNext(new[] { key });
     }

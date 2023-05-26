@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
 using FootprintViewer.Logging;
@@ -34,7 +33,7 @@ public class DemoPageViewModel : RoutableViewModel
             localStorage.RegisterSource(key, source);
         }
 
-        localStorage.UpdateData_Test_Remove_After();
+        localStorage.UpdateData();
 
         Save();
     }
