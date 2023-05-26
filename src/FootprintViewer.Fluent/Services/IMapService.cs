@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Factories;
+using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -16,9 +17,11 @@ public interface IMapService
 
     IReadOnlyViewport? Viewport { get; }
 
-    T? GetProvider<T>() where T : IProvider;
-
     LayerStyleManager LayerStyle { get; }
+
+    AreaOfInterest AOI { get; }
+
+    T? GetProvider<T>() where T : IProvider;
 
     void SetNavigator(INavigator navigator);
 

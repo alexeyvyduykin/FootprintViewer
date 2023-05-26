@@ -39,13 +39,12 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
         _mapService = Services.Locator.GetRequiredService<IMapService>();
         _layerProvider = _mapService.GetProvider<GroundTargetProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
-        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new GroundTargetTabFilterViewModel();
+        Filter.SetAOIObservable(_mapService.AOI.Changed);
 
-        var filter1 = Filter.AOIFilterObservable;
+        var filter1 = Filter.AOIObservable;
         var filter2 = Filter.FilterObservable;
-
         var filter3 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
@@ -58,14 +57,17 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 
         var filterObservable = _groundTargets
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
+        .ObserveOn(RxApp.MainThreadScheduler)
             .Filter(filter2)
+
             .Filter(filter3);
 
         filterObservable
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
+
             .Bind(out _items)
             .Subscribe(_ => FilteringItemCount = _items.Count);
 
@@ -103,10 +105,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
-
-        areaOfInterest.AOIChanged
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => Filter.AOI = s);
 
         Observable.StartAsync(UpdateImpl);
     }

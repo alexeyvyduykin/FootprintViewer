@@ -51,7 +51,7 @@ public partial class MainViewModel
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _areaOfInterest.Update(feature, FeatureType.AOIRectangle);
+                _mapService.AOI.Update(feature, FeatureType.AOIRectangle);
 
                 _mapService.State.Reset();
             });
@@ -88,7 +88,7 @@ public partial class MainViewModel
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _areaOfInterest.Update(feature, FeatureType.AOIPolygon);
+                _mapService.AOI.Update(feature, FeatureType.AOIPolygon);
 
                 _mapService.State.Reset();
             });
@@ -120,7 +120,7 @@ public partial class MainViewModel
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _areaOfInterest.Update(feature, FeatureType.AOICircle);
+                _mapService.AOI.Update(feature, FeatureType.AOICircle);
 
                 _mapService.State.Reset();
             });

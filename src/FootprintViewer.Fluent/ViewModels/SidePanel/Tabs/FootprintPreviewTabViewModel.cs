@@ -36,13 +36,12 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _mapService = Services.Locator.GetRequiredService<IMapService>();
-        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintPreviewTabFilterViewModel();
+        Filter.SetAOIObservable(_mapService.AOI.Changed);
 
-        var filter1 = Filter.AOIFilterObservable;
+        var filter1 = Filter.AOIObservable;
         var filter2 = Filter.FilterObservable;
-
         var filter3 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
@@ -55,9 +54,10 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
 
         _footprintPreviews
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Transform(s => new FootprintPreviewViewModel(s))
             .Filter(filter1)
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Filter(filter2)
             .Filter(filter3)
             .Bind(out _items)
@@ -100,10 +100,6 @@ public sealed class FootprintPreviewTabViewModel : SidePanelTabViewModel
             .Take(1)
             .ToSignal()
             .InvokeCommand(Update);
-
-        areaOfInterest.AOIChanged
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => ((FootprintPreviewTabFilterViewModel)Filter).AOI = s);
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }

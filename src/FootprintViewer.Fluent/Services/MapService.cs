@@ -1,6 +1,7 @@
 ﻿using FootprintViewer.Factories;
 using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -17,6 +18,7 @@ public class MapService : IMapService
     public INavigator? _navigator;
     public IReadOnlyViewport? _viewport;
     private readonly LayerStyleManager _styleManager = new();
+    private readonly AreaOfInterest _aoi;
     private readonly Dictionary<LayerType, IProvider?> _providers = new();
 
     public MapService()
@@ -47,6 +49,8 @@ public class MapService : IMapService
         {
             _styleManager.Select(item);
         }
+
+        _aoi = new AreaOfInterest(_map);
     }
 
     public void AddLayerProvider(LayerType type, IProvider provider)
@@ -165,4 +169,6 @@ public class MapService : IMapService
     public IReadOnlyViewport? Viewport => _viewport;
 
     public LayerStyleManager LayerStyle => _styleManager;
+
+    public AreaOfInterest AOI => _aoi;
 }

@@ -39,7 +39,6 @@ namespace FootprintViewer.Fluent.ViewModels;
 public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 {
     private readonly IMapService _mapService;
-    private readonly AreaOfInterest _areaOfInterest;
     private readonly InfoPanelViewModel _infoPanel;
     private readonly InfoPanelViewModel _clickInfoPanel;
     private readonly ScaleMapBar _scaleMapBar;
@@ -61,8 +60,6 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
         _mapService = Services.Locator.GetRequiredService<IMapService>();
-
-        _areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -385,7 +382,7 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
 
         panel.Close.Subscribe(_ =>
         {
-            _areaOfInterest.Update(null);
+            _mapService.AOI.Reset();
 
             HideTip();
 
@@ -458,8 +455,6 @@ public partial class MainViewModel
         CompactDialogScreen = new DialogScreenViewModel(NavigationTarget.CompactDialogScreen);
 
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
-
-        _areaOfInterest = resolver.GetService<AreaOfInterest>();
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 

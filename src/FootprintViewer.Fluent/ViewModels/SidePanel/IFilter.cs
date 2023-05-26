@@ -1,5 +1,4 @@
 ﻿using NetTopologySuite.Geometries;
-using System;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel;
 
@@ -10,7 +9,7 @@ public interface IFilter<T>
 
 public interface IAOIFilter
 {
-    Geometry? AOI { get; set; }
+    void SetAOIObservable(IObservable<Geometry?> observable);
 
     bool IsFullCoverAOI { get; set; }
 
@@ -19,5 +18,5 @@ public interface IAOIFilter
 
 public interface IAOIFilter<T> : IAOIFilter, IFilter<T>
 {
-    IObservable<Func<T, bool>> AOIFilterObservable { get; }
+    IObservable<Func<T, bool>> AOIObservable { get; }
 }

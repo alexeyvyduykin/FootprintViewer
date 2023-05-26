@@ -1,14 +1,13 @@
 ﻿using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 
 public abstract class AOIFilterViewModel<T> : BaseFilterViewModel<T>, IAOIFilter<T> where T : ViewModelBase
 {
-    private readonly IObservable<Func<T, bool>> _aoiFilterObservable;
+    private readonly IObservable<Func<T, bool>> _aoiObservable;
 
     public AOIFilterViewModel()
     {
@@ -17,18 +16,28 @@ public abstract class AOIFilterViewModel<T> : BaseFilterViewModel<T>, IAOIFilter
 
         var observable1 = this.WhenAnyValue(s => s.IsAOIActive, s => s.IsFullCoverAOI)
             .ObserveOn(RxApp.MainThreadScheduler)
+            // TODO: skip init?
+            //.Skip(2)
             .Throttle(TimeSpan.FromSeconds(1))
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Select(_ => this);
 
         var observable2 = this.WhenAnyValue(s => s.AOI)
-            .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Select(_ => this);
 
         var merged = Observable.Merge(observable1, observable2);
 
-        _aoiFilterObservable = merged
-            .ObserveOn(RxApp.MainThreadScheduler)
+        _aoiObservable = merged
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Select(CreateAOIPredicate);
+    }
+
+    public void SetAOIObservable(IObservable<Geometry?> observable)
+    {
+        observable
+            .ObserveOn(RxApp.TaskpoolScheduler)
+            .Subscribe(s => AOI = s);
     }
 
     private static Func<T, bool> CreateAOIPredicate(AOIFilterViewModel<T> filter)
@@ -38,10 +47,10 @@ public abstract class AOIFilterViewModel<T> : BaseFilterViewModel<T>, IAOIFilter
 
     protected abstract bool AOIFiltering(T viewModel);
 
-    public IObservable<Func<T, bool>> AOIFilterObservable => _aoiFilterObservable;
+    public IObservable<Func<T, bool>> AOIObservable => _aoiObservable;
 
     [Reactive]
-    public Geometry? AOI { get; set; }
+    protected Geometry? AOI { get; set; }
 
     [Reactive]
     public bool IsFullCoverAOI { get; set; }

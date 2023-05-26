@@ -13,7 +13,6 @@ using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
-using Mapsui;
 using Mapsui.Interactivity;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
@@ -47,11 +46,30 @@ public class App : Application
     {
         IServiceCollection serviceCollection = new ServiceCollection();
 
+        var localStorage = CreateLocalStorageService(config);
+
+        var featureManager = new FeatureManager()
+                .WithSelect(f => f[InteractiveFields.Select] = true)
+                .WithUnselect(f => f[InteractiveFields.Select] = false)
+                .WithEnter(f => f["Highlight"] = true)
+                .WithLeave(f => f["Highlight"] = false);
+
+        var mapService = CreateMapService();
+
+        serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
+        serviceCollection.AddSingleton<IMapService>(_ => mapService);
+        serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
+
+        Services.Locator.ConfigureServices(serviceCollection.BuildServiceProvider());
+    }
+
+    public static ILocalStorageService CreateLocalStorageService(Config config)
+    {
+        var localStorage = new LocalStorageService();
+
         string embeddedFilePath = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
 
         var mapSource = new FileSource(new[] { embeddedFilePath }, MapResource.Build);
-
-        var localStorage = new LocalStorageService();
 
         localStorage.RegisterSource(DbKeys.Maps.ToString(), mapSource);
 
@@ -67,15 +85,12 @@ public class App : Application
             localStorage.RegisterSource(key, source);
         }
 
-        var featureManager = new FeatureManager()
-                .WithSelect(f => f[InteractiveFields.Select] = true)
-                .WithUnselect(f => f[InteractiveFields.Select] = false)
-                .WithEnter(f => f["Highlight"] = true)
-                .WithLeave(f => f["Highlight"] = false);
+        return localStorage;
+    }
 
+    public static IMapService CreateMapService()
+    {
         var mapService = new MapService();
-
-        var areaOfInterest = new AreaOfInterest((Map)mapService.Map);
 
         mapService.AddLayerProvider(LayerType.GroundStation, new GroundStationProvider());
         mapService.AddLayerProvider(LayerType.GroundTarget, new GroundTargetProvider());
@@ -84,12 +99,7 @@ public class App : Application
         mapService.AddLayerProvider(LayerType.Footprint, new FootprintProvider());
         mapService.AddLayerProvider(LayerType.User, new UserGeometryProvider());
 
-        serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
-        serviceCollection.AddSingleton<IMapService>(_ => mapService);
-        serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
-        serviceCollection.AddSingleton<AreaOfInterest>(_ => areaOfInterest);
-
-        Services.Locator.ConfigureServices(serviceCollection.BuildServiceProvider());
+        return mapService;
     }
 
     public override void Initialize()

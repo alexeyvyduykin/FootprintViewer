@@ -4,34 +4,26 @@ using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Nts;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
-using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
-namespace FootprintViewer.Fluent.ViewModels;
+namespace FootprintViewer.Models;
 
 public class AreaOfInterest
 {
     private readonly Map _map;
+    private readonly Subject<Geometry?> _callbackSubj = new();
 
     public AreaOfInterest(Map map)
     {
-        AOIChanged = ReactiveCommand.Create<Geometry?, Geometry?>(s => s, outputScheduler: RxApp.MainThreadScheduler);
-
         _map = map;
     }
 
-    public void Update(GeometryFeature? feature, FeatureType? type = null)
+    public IObservable<Geometry?> Changed => _callbackSubj.AsObservable();
+
+    public void Update(GeometryFeature feature, FeatureType type)
     {
         var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
-
-        if (feature == null || type == null)
-        {
-            layer?.ResetAOI();
-
-            AOIChanged.Execute(null).Subscribe();
-
-            return;
-        }
 
         switch (type)
         {
@@ -48,8 +40,17 @@ public class AreaOfInterest
                 throw new Exception();
         }
 
-        AOIChanged.Execute(feature.Geometry).Subscribe();
+        _callbackSubj.OnNext(feature.Geometry);
     }
 
-    public ReactiveCommand<Geometry?, Geometry?> AOIChanged { get; }
+    public void Reset()
+    {
+        var layer = _map.GetLayer<EditLayer>(LayerType.Edit);
+
+        layer?.ResetAOI();
+
+        _callbackSubj.OnNext(null);
+
+        return;
+    }
 }

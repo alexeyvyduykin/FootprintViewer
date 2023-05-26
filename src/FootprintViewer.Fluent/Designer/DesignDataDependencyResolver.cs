@@ -6,10 +6,8 @@ using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Fluent.ViewModels.SidePanel;
-using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
-using Mapsui;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +19,6 @@ namespace FootprintViewer.Fluent.Designer;
 
 public sealed class DesignDataDependencyResolver : IServiceProvider
 {
-    private AreaOfInterest? _areaOfInterest;
     private MainViewModel? _mainViewModel;
     private SidePanelViewModel? _sidePanel;
     private ILocalStorageService? _localStorage;
@@ -38,10 +35,6 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         if (serviceType == typeof(IMapService))
         {
             return _mapService ??= new MapService();
-        }
-        else if (serviceType == typeof(AreaOfInterest))
-        {
-            return _areaOfInterest ??= new AreaOfInterest((Map)GetService(typeof(IMap))!);
         }
         else if (serviceType == typeof(FeatureManager))
         {

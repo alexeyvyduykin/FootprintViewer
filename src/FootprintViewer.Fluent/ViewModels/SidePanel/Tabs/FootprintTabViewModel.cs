@@ -41,13 +41,12 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         _mapService = Services.Locator.GetRequiredService<IMapService>();
         _layerProvider = _mapService.GetProvider<FootprintProvider>();
         _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
-        var areaOfInterest = Services.Locator.GetRequiredService<AreaOfInterest>();
 
         Filter = new FootprintTabFilterViewModel();
+        Filter.SetAOIObservable(_mapService.AOI.Changed);
 
-        var filter1 = Filter.AOIFilterObservable;
+        var filter1 = Filter.AOIObservable;
         var filter2 = Filter.FilterObservable;
-
         var filter3 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
@@ -60,9 +59,10 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
         var filterObservable = _footprints
             .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new FootprintViewModel(s))
+            .ObserveOn(RxApp.TaskpoolScheduler)
             .Filter(filter1)
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Filter(filter2)
             .Filter(filter3);
 
@@ -105,10 +105,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .InvokeCommand(Update);
 
         TargetToMap = ReactiveCommand.CreateFromTask<FootprintViewModel>(s => TargetToMapImpl(s), outputScheduler: RxApp.MainThreadScheduler);
-
-        areaOfInterest.AOIChanged
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(s => Filter.AOI = s);
 
         Observable.StartAsync(UpdateImpl);
     }
