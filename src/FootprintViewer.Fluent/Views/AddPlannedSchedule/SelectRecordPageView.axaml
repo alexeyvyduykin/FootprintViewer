@@ -11,7 +11,9 @@
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.SelectRecordPageView">
 
 	<Design.DataContext>
-		<vmd:SelectRecordPageDesignViewModel />
+		<vmd:SelectRecordPageDesignViewModel>
+			<vmd:SelectRecordPageDesignViewModel.IsActive>True</vmd:SelectRecordPageDesignViewModel.IsActive>
+		</vmd:SelectRecordPageDesignViewModel>
 	</Design.DataContext>
 
 	<UserControl.Styles>

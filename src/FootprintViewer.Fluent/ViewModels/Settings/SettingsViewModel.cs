@@ -6,8 +6,8 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Extensions;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Helpers;
+using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
 using FootprintViewer.Fluent.ViewModels.Settings.Items;
 using FootprintViewer.Fluent.ViewModels.ToolBar;
@@ -29,29 +29,26 @@ using System.Threading.Tasks;
 
 namespace FootprintViewer.Fluent.ViewModels.Settings;
 
-public sealed partial class SettingsViewModel : DialogViewModelBase<object>
+public sealed class SettingsViewModel : DialogViewModelBase<object>
 {
-    //  private readonly IDataManager _dataManager;
     private readonly SourceList<string> _mapBackgroundPaths = new();
     private readonly ReadOnlyObservableCollection<MapBackgroundItemViewModel> _items;
     private readonly List<string> _snapshotExtensions;
-    private readonly LayerStyleManager _layerStyleManager;
     private readonly SourceList<ILayer> _layers = new();
     private readonly ReadOnlyObservableCollection<LayerItemViewModel> _layerItems;
 
     public SettingsViewModel()
     {
-        ConfigOnOpen = new Config(Services.Config.FilePath);
-        ConfigOnOpen.LoadFile();
+        if (string.IsNullOrEmpty(Services.Config.FilePath) == false)
+        {
+            ConfigOnOpen = new Config(Services.Config.FilePath);
+            ConfigOnOpen.LoadFile();
+        }
 
-        _layerStyleManager = Services.Locator.GetRequiredService<LayerStyleManager>();
-
-        var map = Services.Locator.GetRequiredService<Map>();
+        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
+        var mapService = Services.Locator.GetRequiredService<IMapService>();
 
         SnapshotDirectory = Services.MapSnapshotDir;
-
-        // _dataManager = Services.Locator.GetRequiredService<IDataManager>();
-        var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
 
         NextCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -59,7 +56,7 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 
             await Observable
                 .Return(Unit.Default)
-                .Delay(TimeSpan.FromSeconds(0.1));
+                .Delay(TimeSpan.FromSeconds(0.0));
 
             //mainState?.SaveData(_dataManager);
 
@@ -68,7 +65,7 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
 
         _snapshotExtensions = AvailableExtensions();
 
-        SelectedSnapshotExtension = ConfigOnOpen.SelectedMapSnapshotExtension;
+        SelectedSnapshotExtension = ConfigOnOpen?.SelectedMapSnapshotExtension ?? _snapshotExtensions.First();
 
         var sources = localStorage.GetSources(DbKeys.Maps);
 
@@ -109,15 +106,16 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
         _layers
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(s => IsStyle(s, _layerStyleManager))
-            .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
+            .Where(s => IsStyle(s, mapService.LayerStyle))
+            .Transform(s => new LayerItemViewModel(s, mapService.LayerStyle))
             .Bind(out _layerItems)
             .Subscribe();
 
-        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
+        Observable.StartAsync(() => UpdateLayersAsync(mapService.Map), RxApp.MainThreadScheduler);
     }
 
-    private async Task UpdateLayersAsync(IMap? map) => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
+    private async Task UpdateLayersAsync(IMap? map)
+        => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
 
     private static bool IsStyle(ILayer layer, LayerStyleManager styleManager)
     {
@@ -275,71 +273,4 @@ public sealed partial class SettingsViewModel : DialogViewModelBase<object>
     public ReadOnlyObservableCollection<MapBackgroundItemViewModel> MapBackgrounds => _items;
 
     public IReadOnlyList<LayerItemViewModel> LayerItems => _layerItems;
-}
-
-public partial class SettingsViewModel
-{
-    public SettingsViewModel(DesignDataDependencyResolver resolver)
-    {
-        SnapshotDirectory = "C:\\Users\\User\\AppData\\Roaming\\FootprintViewer\\Client\\Snapshots";
-
-        var localStorage = resolver.GetService<ILocalStorageService>();
-
-        NextCommand = ReactiveCommand.CreateFromTask(async () =>
-        {
-            await Observable
-                .Return(Unit.Default)
-                .Delay(TimeSpan.FromSeconds(0.1));
-
-            Close(DialogResultKind.Normal);
-        });
-
-        _snapshotExtensions = AvailableExtensions();
-
-        SelectedSnapshotExtension = _snapshotExtensions.First();
-
-        var sources = localStorage.GetSources(DbKeys.Maps);
-
-        var paths = sources
-            .Where(s => s is FileSource)
-            .Cast<FileSource>()
-            .SelectMany(s => s.Paths).ToList();
-
-        _mapBackgroundPaths
-            .Connect()
-            .Select(s => new MapBackgroundItemViewModel(s))
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Bind(out _items)
-            .Subscribe();
-
-        _mapBackgroundPaths.Edit(innerList =>
-        {
-            innerList.Clear();
-            innerList.AddRange(paths);
-        });
-
-        AddMapBackground = ReactiveCommand.CreateFromTask(AddAsyncImpl);
-
-        RemoveMapBackground = ReactiveCommand.Create<MapBackgroundItemViewModel>(RemoveImpl);
-
-        OpenSnapshotDirectory = ReactiveCommand.CreateFromTask(OpenSnapshotDirectoryImpl);
-
-        this.WhenAnyValue(s => s.SelectedSnapshotExtension)
-            .ObserveOn(RxApp.TaskpoolScheduler)
-            .Skip(1)
-            .Subscribe(_ => Save());
-
-        _layerStyleManager = resolver.GetService<LayerStyleManager>();
-        var map = resolver.GetService<IMap>();
-
-        _layers
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Where(s => IsStyle(s, _layerStyleManager))
-            .Transform(s => new LayerItemViewModel(s, _layerStyleManager))
-            .Bind(out _layerItems)
-            .Subscribe();
-
-        Observable.StartAsync(() => UpdateLayersAsync(map), RxApp.MainThreadScheduler);
-    }
 }

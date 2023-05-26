@@ -8,7 +8,7 @@ public static class Services
 
     public static string MapSnapshotDir { get; private set; } = null!;
 
-    public static Config Config { get; private set; } = null!;
+    public static Config Config { get; private set; } = new();
 
     public static void Initialize(Global global)
     {

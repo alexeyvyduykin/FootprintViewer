@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Data;
-using FootprintViewer.Data.DbContexts;
+﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Fluent.Models;
 using FootprintViewer.Fluent.ViewModels.Navigation;
@@ -15,6 +14,18 @@ namespace FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 public class ImportFilePageViewModel : RoutableViewModel
 {
     private readonly string _filePath;
+
+    public ImportFilePageViewModel()
+    {
+        _filePath = string.Empty;
+
+        EnableBack = true;
+        EnableCancel = true;
+
+        var nextCommandCanExecute = this.WhenAnyValue(s => s.IsVerified);
+
+        NextCommand = ReactiveCommand.Create(OnNext, nextCommandCanExecute);
+    }
 
     public ImportFilePageViewModel(string filePath)
     {

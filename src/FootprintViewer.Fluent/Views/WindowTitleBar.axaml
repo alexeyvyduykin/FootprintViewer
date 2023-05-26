@@ -3,12 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:MainViewModel"
 			 mc:Ignorable="d" d:DesignWidth="360"
-             x:Class="FootprintViewer.Fluent.Views.WindowTitleBar"
-			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
+             x:Class="FootprintViewer.Fluent.Views.WindowTitleBar">
+
+	<Design.DataContext>
+		<vm:MainViewModel></vm:MainViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="materialIcons|MaterialIcon">

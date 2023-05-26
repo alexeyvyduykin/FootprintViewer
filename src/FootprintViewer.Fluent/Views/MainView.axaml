@@ -14,12 +14,14 @@
              xmlns:inter="clr-namespace:Mapsui.Interactivity.UI.Avalonia;assembly=Mapsui.Interactivity.UI.Avalonia"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
              xmlns:tips="clr-namespace:FootprintViewer.Fluent.ViewModels.Tips"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
-             x:Class="FootprintViewer.Fluent.Views.MainView"
-			 d:DataContext="{x:Static vmd:DesignData.MainViewModel}">
+             x:Class="FootprintViewer.Fluent.Views.MainView">
+
+	<Design.DataContext>
+		<vm:MainViewModel></vm:MainViewModel>
+	</Design.DataContext>
 
 	<Grid ColumnDefinitions="*,Auto"
 		  RowDefinitions="*,Auto">

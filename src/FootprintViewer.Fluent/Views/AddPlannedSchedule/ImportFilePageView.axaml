@@ -4,13 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
 			 x:DataType="vm:ImportFilePageViewModel"
 			 x:CompileBindings="False"
-			 d:DataContext="{x:Static vmd:DesignData.ImportFilePage}"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ImportFilePageView">
+
+	<Design.DataContext>
+		<vm:ImportFilePageViewModel>
+			<vm:ImportFilePageViewModel.IsActive>True</vm:ImportFilePageViewModel.IsActive>
+			<vm:ImportFilePageViewModel.IsChecked>True</vm:ImportFilePageViewModel.IsChecked>
+			<vm:ImportFilePageViewModel.IsVerified>True</vm:ImportFilePageViewModel.IsVerified>
+		</vm:ImportFilePageViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="TextBlock.t1">

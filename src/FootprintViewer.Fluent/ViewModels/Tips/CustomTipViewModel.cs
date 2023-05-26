@@ -1,13 +1,12 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Fluent.ViewModels.Tips;
 
 public sealed class CustomTipViewModel : ViewModelBase
 {
-    private CustomTipViewModel()
+    public CustomTipViewModel()
     {
 
     }

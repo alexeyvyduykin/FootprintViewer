@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.Fluent.Designer;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.AddPlannedSchedule;
 using FootprintViewer.Fluent.ViewModels.Dialogs;
@@ -411,69 +410,4 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
     public ITip? Tip { get; set; }
 
     public IObservable<bool> IsMainContentEnabled { get; }
-}
-
-public partial class MainViewModel
-{
-    public MainViewModel(DesignDataDependencyResolver resolver)
-    {
-        DialogScreen = new DialogScreenViewModel();
-
-        FullScreen = new DialogScreenViewModel(NavigationTarget.FullScreen);
-
-        MainScreen = new TargettedNavigationStack(NavigationTarget.HomeScreen);
-
-        CompactDialogScreen = new DialogScreenViewModel(NavigationTarget.CompactDialogScreen);
-
-        NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
-
-        Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
-
-        Leave = ReactiveCommand.Create(LeaveImpl);
-
-        _infoPanel = new InfoPanelViewModel();
-
-        _clickInfoPanel = new InfoPanelViewModel();
-
-        _scaleMapBar = new ScaleMapBar();
-
-        _mapTools = new MapToolsViewModel();
-
-        IsMainContentEnabled = this.WhenAnyValue(
-            s => s.DialogScreen.IsDialogOpen,
-            s => s.FullScreen.IsDialogOpen,
-            (dialogIsOpen, fullScreenIsOpen) => !(dialogIsOpen || fullScreenIsOpen))
-            .ObserveOn(RxApp.MainThreadScheduler);
-
-        RegisterViewModels(resolver);
-    }
-
-    private void RegisterViewModels(DesignDataDependencyResolver resolver)
-    {
-        var tabs = new SidePanelTabViewModel[]
-        {
-            new SatelliteTabViewModel(),
-            new GroundTargetTabViewModel(),
-            new FootprintTabViewModel(),
-            new UserGeometryTabViewModel(),
-            new GroundStationTabViewModel(),
-            new PlannedScheduleTabViewModel()
-        };
-
-        var actionTabs = new SidePanelActionTabViewModel[]
-        {
-            new(nameof(AddPlannedSchedulePageViewModel)),
-            new(nameof(SettingsViewModel))
-        };
-
-        ToolBar = new ToolBarViewModel();
-
-        //  ToolBar.ZoomIn.SubscribeAsync(MapNavigator.ZoomIn);
-        //  ToolBar.ZoomOut.SubscribeAsync(MapNavigator.ZoomOut);
-
-        SidePanel = new SidePanelViewModel();
-
-        SidePanel.Tabs.AddRange(tabs);
-        SidePanel.ActionTabs.AddRange(actionTabs);
-    }
 }

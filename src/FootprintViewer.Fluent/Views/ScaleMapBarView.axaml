@@ -2,15 +2,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
+             xmlns:mapsui="using:Mapsui"
              xmlns:c="clr-namespace:FootprintViewer.Fluent.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
 			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
              x:DataType="vm:ScaleMapBar"
              mc:Ignorable="d"
 			 d:DesignWidth="580" d:DesignHeight="250"
-             x:Class="FootprintViewer.Fluent.Views.ScaleMapBarView"
-			 d:DataContext="{x:Static vmd:DesignData.ScaleMapBar}">
+             x:Class="FootprintViewer.Fluent.Views.ScaleMapBarView">
+
+	<Design.DataContext>
+		<vm:ScaleMapBar>
+			<vm:ScaleMapBar.Position2>
+				<mapsui:MPoint X="34.034322" Y="0.0034"></mapsui:MPoint>
+			</vm:ScaleMapBar.Position2>
+			<vm:ScaleMapBar.Resolution>7559</vm:ScaleMapBar.Resolution>
+			<vm:ScaleMapBar.Scale>100 m</vm:ScaleMapBar.Scale>
+			<vm:ScaleMapBar.ScaleLength>40</vm:ScaleMapBar.ScaleLength>
+		</vm:ScaleMapBar>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<conv:MPointConverter x:Key="MPointConv"/>
@@ -20,7 +30,7 @@
 		<Style Selector="TextBlock.t1">
 			<Setter Property="HorizontalAlignment" Value="Center"></Setter>
 			<Setter Property="VerticalAlignment" Value="Center"></Setter>
-			<Setter Property="FontFamily" Value="Courier"></Setter>		
+			<Setter Property="FontFamily" Value="Courier"></Setter>
 		</Style>
 	</UserControl.Styles>
 

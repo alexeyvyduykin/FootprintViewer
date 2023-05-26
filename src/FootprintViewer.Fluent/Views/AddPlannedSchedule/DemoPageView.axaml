@@ -4,12 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="350"
              x:DataType="vm:DemoPageViewModel"
 			 x:CompileBindings="True"
-			 d:DataContext="{x:Static vmd:DesignData.DemoPage}"
 			 x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.DemoPageView">
+
+	<Design.DataContext>
+		<vm:DemoPageViewModel>
+			<vm:DemoPageViewModel.IsActive>True</vm:DemoPageViewModel.IsActive>
+		</vm:DemoPageViewModel>
+	</Design.DataContext>
 
 	<c:ContentArea Title="{Binding Title}"
 				   Background="{DynamicResource BackgroundBrush}"

@@ -2,14 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels"
-		     xmlns:tips="clr-namespace:FootprintViewer.Fluent.ViewModels.Tips"
-			 xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
-			 x:DataType="tips:CustomTipViewModel"
+             xmlns:vm="clr-namespace:FootprintViewer.Fluent.ViewModels.Tips"
+		     xmlns:conv="clr-namespace:FootprintViewer.Fluent.Converters"
+			 x:DataType="vm:CustomTipViewModel"
 			 mc:Ignorable="d"
-             x:Class="FootprintViewer.Fluent.Views.Tips.CustomTipView"
-			 d:DataContext="{x:Static vmd:DesignData.CustomTip}">
+             x:Class="FootprintViewer.Fluent.Views.Tips.CustomTipView">
+
+	<Design.DataContext>
+		<vm:CustomTipViewModel>
+			<vm:CustomTipViewModel.Mode>HoverCreating</vm:CustomTipViewModel.Mode>
+			<vm:CustomTipViewModel.Target>Rectangle</vm:CustomTipViewModel.Target>
+			<vm:CustomTipViewModel.Value>34545,432</vm:CustomTipViewModel.Value>
+		</vm:CustomTipViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<conv:TipTitleConverter1 x:Key="TipTitleConv"/>

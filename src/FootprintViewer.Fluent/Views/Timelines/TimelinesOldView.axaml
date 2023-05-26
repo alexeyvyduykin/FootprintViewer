@@ -6,13 +6,14 @@
 			 xmlns:selectors="clr-namespace:TimeDataViewer.Selectors;assembly=TimeDataViewer"
 			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
-			 mc:Ignorable="d"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:CompileBindings="True"
-			 d:DesignWidth="800" d:DesignHeight="450"
 		     x:DataType="vm:TimelinesOldViewModel"
-             x:Class="FootprintViewer.Fluent.Views.Timelines.TimelinesOldView"
-			 d:DataContext="{x:Static vmd:DesignData.TimelinesOld}">
+             x:Class="FootprintViewer.Fluent.Views.Timelines.TimelinesOldView">
+
+	<Design.DataContext>
+		<vm:TimelinesOldViewModel></vm:TimelinesOldViewModel>
+	</Design.DataContext>
 
 	<UserControl.Resources>
 		<selectors:TrackerTemplateSelector x:Key="TrackerSelector">

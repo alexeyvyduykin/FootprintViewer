@@ -7,12 +7,16 @@
              xmlns:icons="using:Material.Icons.Avalonia"
 			 xmlns:behaviors="clr-namespace:FootprintViewer.Fluent.Behaviors"
              xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
 			 x:DataType="vm:AddPlannedSchedulePageViewModel"
              x:CompileBindings="True"
-			 d:DataContext="{x:Static vmd:DesignData.AddPlannedSchedulePage}"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.AddPlannedSchedulePageView">
+
+	<Design.DataContext>
+		<vm:AddPlannedSchedulePageViewModel>
+			<vm:AddPlannedSchedulePageViewModel.IsActive>True</vm:AddPlannedSchedulePageViewModel.IsActive>
+		</vm:AddPlannedSchedulePageViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="Button.tile">

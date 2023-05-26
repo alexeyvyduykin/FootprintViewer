@@ -4,7 +4,6 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Fluent.Services2;
-using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Services;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace FootprintViewer.Fluent.Designer;
 
 public sealed class DesignDataDependencyResolver : IServiceProvider
 {
-    private MainViewModel? _mainViewModel;
     private ILocalStorageService? _localStorage;
     private IMapService? _mapService;
 
@@ -31,10 +29,6 @@ public sealed class DesignDataDependencyResolver : IServiceProvider
         if (serviceType == typeof(IMapService))
         {
             return _mapService ??= new MapService();
-        }
-        else if (serviceType == typeof(MainViewModel))
-        {
-            return _mainViewModel ??= new MainViewModel(this);
         }
         else if (serviceType == typeof(ILocalStorageService))
         {

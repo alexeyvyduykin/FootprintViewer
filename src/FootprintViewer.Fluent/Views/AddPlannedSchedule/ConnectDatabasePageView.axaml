@@ -5,12 +5,16 @@
              xmlns:c="using:FootprintViewer.Fluent.Controls"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:vm="using:FootprintViewer.Fluent.ViewModels.AddPlannedSchedule"
-			 xmlns:vmd="clr-namespace:FootprintViewer.Fluent.Designer"
 			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
 			 x:DataType="vm:ConnectDatabasePageViewModel"
 			 x:CompileBindings="True"
-			 d:DataContext="{x:Static vmd:DesignData.ConnectDatabasePage}"
              x:Class="FootprintViewer.Fluent.Views.AddPlannedSchedule.ConnectDatabasePageView">
+
+	<Design.DataContext>
+		<vm:ConnectDatabasePageViewModel>
+			<vm:ConnectDatabasePageViewModel.IsActive>True</vm:ConnectDatabasePageViewModel.IsActive>
+		</vm:ConnectDatabasePageViewModel>
+	</Design.DataContext>
 
 	<UserControl.Styles>
 		<Style Selector="TextBlock.t1">

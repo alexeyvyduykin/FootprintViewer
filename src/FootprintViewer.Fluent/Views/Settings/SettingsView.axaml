@@ -1,8 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vmd="using:FootprintViewer.Fluent.Designer"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"			 
 			 xmlns:c="using:FootprintViewer.Fluent.Controls"
 	         xmlns:views="using:FootprintViewer.Fluent.Views.Settings"
 	         xmlns:vm="using:FootprintViewer.Fluent.ViewModels.Settings"
@@ -16,9 +15,14 @@
 			 x:DataType="vm:SettingsViewModel"
 			 x:CompileBindings="False"
              mc:Ignorable="d"
-             x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView"
-			 d:DataContext="{x:Static vmd:DesignData.Settings}">
+             x:Class="FootprintViewer.Fluent.Views.Settings.SettingsView">
 
+	<Design.DataContext>
+		<vm:SettingsViewModel>
+			<vm:SettingsViewModel.IsActive>True</vm:SettingsViewModel.IsActive>
+		</vm:SettingsViewModel>
+	</Design.DataContext>
+	
 	<UserControl.Styles>
 		<Style Selector="RadioButton.t1">
 			<Setter Property="GroupName" Value="a1"></Setter>
@@ -36,12 +40,12 @@
 
 	<UserControl.Styles>
 
-		<Style Selector="MenuItem">
+		<!--<Style Selector="MenuItem" x:DataType="items:MapBackgroundItemViewModel">
 			<Setter Property="Header" Value="{Binding Header}"/>
 			<Setter Property="Items" Value="{Binding Items}"/>
 			<Setter Property="Command" Value="{Binding Command}"/>
 			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
-		</Style>
+		</Style>-->
 
 		<Style Selector="Button.rmvBtn">
 			<Setter Property="Width" Value="20"></Setter>
