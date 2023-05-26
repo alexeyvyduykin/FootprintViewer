@@ -10,7 +10,6 @@ using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
-using FootprintViewer.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -28,8 +27,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
     private readonly SourceList<Footprint> _footprints = new();
     private readonly ReadOnlyObservableCollection<FootprintViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly FeatureManager _featureManager;
-    private readonly FootprintProvider? _layerProvider;
 
     public FootprintTabViewModel()
     {
@@ -39,8 +36,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _mapService = Services.Locator.GetRequiredService<IMapService>();
-        _layerProvider = _mapService.GetProvider<FootprintProvider>();
-        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
 
         Filter = new FootprintTabFilterViewModel();
         Filter.SetAOIObservable(_mapService.AOI.Changed);
@@ -76,7 +71,8 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
             .Transform(s => s.Footprint!)
             .ToCollection();
 
-        _layerProvider?.SetObservable(layerObservable);
+        var layerProvider = _mapService.GetProvider<FootprintProvider>();
+        layerProvider?.SetObservable(layerObservable);
 
         this.WhenAnyValue(s => s.FilteringItemCount)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -84,9 +80,9 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
-        Enter = ReactiveCommand.Create<FootprintViewModel>(EnterImpl);
+        Enter = ReactiveCommand.Create<FootprintViewModel>(s => _mapService.EnterFeature(s.Name, LayerType.Footprint));
 
-        Leave = ReactiveCommand.Create(LeaveImpl);
+        Leave = ReactiveCommand.Create(() => _mapService.LeaveFeature(LayerType.Footprint));
 
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -129,10 +125,7 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
         void flyTo(FootprintViewModel vm)
         {
             _mapService.FlyToFootprint(vm.Center);
-
-            _featureManager
-                .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
-                .Select(_layerProvider?.Find(vm.Name, "Name"));
+            _mapService.SelectFeature(vm.Name, LayerType.Footprint);
         }
     }
 
@@ -167,25 +160,6 @@ public sealed class FootprintTabViewModel : SidePanelTabViewModel
                 innerList.AddRange(footprints);
             });
         }
-    }
-
-    private void EnterImpl(FootprintViewModel footprint)
-    {
-        var name = footprint.Name;
-
-        if (string.IsNullOrEmpty(name) == false)
-        {
-            _featureManager
-                .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
-                .Enter(_layerProvider?.Find(name, "Name"));
-        }
-    }
-
-    private void LeaveImpl()
-    {
-        _featureManager
-            .OnLayer(_mapService.Map.GetLayer(LayerType.Footprint))
-            .Leave();
     }
 
     public FootprintViewModel? GetFootprintViewModel(string name)

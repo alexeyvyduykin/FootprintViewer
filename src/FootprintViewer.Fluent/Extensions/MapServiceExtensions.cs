@@ -1,5 +1,8 @@
-﻿using FootprintViewer.Fluent.Services2;
+﻿using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Services2;
+using FootprintViewer.Layers.Providers;
 using Mapsui;
+using Mapsui.Interactivity;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using Mapsui.Utilities;
@@ -106,5 +109,111 @@ public static class MapServiceExtensions
         await Task.Delay(TimeSpan.FromMilliseconds(delay));
 
         mapService.Map.ForceUpdate();
+    }
+
+    public static void EnterFeature(this IMapService mapService, ISelector selector)
+    {
+        mapService.EnterFeature(selector.PointeroverLayer, selector.HoveringFeature);
+    }
+
+    public static void LeaveFeature(this IMapService mapService, ISelector selector)
+    {
+        mapService.LeaveFeature(selector.PointeroverLayer);
+    }
+
+    public static void SelectFeature(this IMapService mapService, ISelector selector)
+    {
+        mapService.SelectFeature(selector.SelectedLayer, selector.SelectedFeature);
+    }
+
+    public static void UnselectFeature(this IMapService mapService, ISelector selector)
+    {
+        mapService.UnselectFeature(selector.SelectedLayer);
+    }
+
+    public static void EnterFeature(this IMapService mapService, string name, LayerType type)
+    {
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            switch (type)
+            {
+                case LayerType.GroundTarget:
+                    {
+                        var layerProvider = mapService.GetProvider<GroundTargetProvider>();
+                        var layer = mapService.Map.GetLayer(LayerType.GroundTarget);
+                        var feature = layerProvider?.Find(name, "Name");
+                        mapService.EnterFeature(layer, feature);
+                        break;
+                    }
+                case LayerType.Footprint:
+                    {
+                        var layerProvider = mapService.GetProvider<FootprintProvider>();
+                        var layer = mapService.Map.GetLayer(LayerType.Footprint);
+                        var feature = layerProvider?.Find(name, "Name");
+                        mapService.EnterFeature(layer, feature);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine($"MapService.EnterFeature not have implement for {type} layer.");
+                        break;
+                    }
+            }
+        }
+    }
+
+    public static void LeaveFeature(this IMapService mapService, LayerType type)
+    {
+        switch (type)
+        {
+            case LayerType.GroundTarget:
+                {
+                    var layer = mapService.Map.GetLayer(LayerType.GroundTarget);
+                    mapService.LeaveFeature(layer);
+                    break;
+                }
+            case LayerType.Footprint:
+                {
+                    var layer = mapService.Map.GetLayer(LayerType.Footprint);
+                    mapService.LeaveFeature(layer);
+                    break;
+                }
+            default:
+                {
+                    Console.WriteLine($"MapService.LeaveFeature not have implement for {type} layer.");
+                    break;
+                }
+        }
+    }
+
+    public static void SelectFeature(this IMapService mapService, string name, LayerType type)
+    {
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            switch (type)
+            {
+                case LayerType.GroundTarget:
+                    {
+                        var layerProvider = mapService.GetProvider<GroundTargetProvider>();
+                        var layer = mapService.Map.GetLayer(LayerType.GroundTarget);
+                        var feature = layerProvider?.Find(name, "Name");
+                        mapService.SelectFeature(layer, feature);
+                        break;
+                    }
+                case LayerType.Footprint:
+                    {
+                        var layerProvider = mapService.GetProvider<FootprintProvider>();
+                        var layer = mapService.Map.GetLayer(LayerType.Footprint);
+                        var feature = layerProvider?.Find(name, "Name");
+                        mapService.SelectFeature(layer, feature);
+                        break;
+                    }
+                default:
+                    {
+                        Console.WriteLine($"MapService.SelectFeature not have implement for {type} layer.");
+                        break;
+                    }
+            }
+        }
     }
 }

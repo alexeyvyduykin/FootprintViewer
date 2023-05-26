@@ -16,7 +16,6 @@ using FootprintViewer.Fluent.ViewModels.ToolBar;
 using FootprintViewer.Layers;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -225,34 +224,6 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
             .Select(s => (IDynamic)((DynamicLayer)s).DataSource!)
             .ToList()
             .ForEach(s => s.DataHasChanged());
-    }
-
-    private void EnterFeature(ISelector selector)
-    {
-        Services.Locator.GetRequiredService<FeatureManager>()
-            .OnLayer(selector.PointeroverLayer)
-            .Enter(selector.HoveringFeature);
-    }
-
-    private void LeaveFeature(ISelector selector)
-    {
-        Services.Locator.GetRequiredService<FeatureManager>()
-            .OnLayer(selector.PointeroverLayer)
-            .Leave();
-    }
-
-    private void SelectFeature(ISelector selector)
-    {
-        Services.Locator.GetRequiredService<FeatureManager>()
-            .OnLayer(selector.SelectedLayer)
-            .Select(selector.SelectedFeature);
-    }
-
-    private void UnselectFeature(ISelector selector)
-    {
-        Services.Locator.GetRequiredService<FeatureManager>()
-            .OnLayer(selector.SelectedLayer)
-            .Unselect();
     }
 
     private async Task OpenInfoPanel(ISelector selector)

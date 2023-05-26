@@ -6,7 +6,6 @@ using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Services;
-using FootprintViewer.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -24,8 +23,6 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
     private readonly SourceList<ITaskResult> _plannedSchedules = new();
     private readonly ReadOnlyObservableCollection<TaskResultViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly FeatureManager _featureManager;
-    //private readonly FootprintProvider _layerProvider;
 
     public PlannedScheduleTabViewModel()
     {
@@ -35,7 +32,6 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _mapService = Services.Locator.GetRequiredService<IMapService>();
-        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
 
         _plannedSchedules
             .Connect()
@@ -107,7 +103,7 @@ public sealed class PlannedScheduleTabViewModel : SidePanelTabViewModel
         void flyTo(ObservationTaskResult result)
         {
             _mapService.FlyToFootprint(result.Geometry.Center.Coordinate);
-
+            //_mapService.SelectFeature(result.Name, LayerType.Footprint);
             //_featureManager
             //    .OnLayer(_layer)
             //    .Select(_layerProvider.Find(vm.Name, "Name"));

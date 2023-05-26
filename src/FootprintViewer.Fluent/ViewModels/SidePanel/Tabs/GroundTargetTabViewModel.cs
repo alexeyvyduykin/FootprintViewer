@@ -3,12 +3,12 @@ using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Fluent.Services2;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Filters;
 using FootprintViewer.Fluent.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
-using FootprintViewer.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -26,8 +26,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
     private readonly SourceList<GroundTarget> _groundTargets = new();
     private readonly ReadOnlyObservableCollection<GroundTargetViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly FeatureManager _featureManager;
-    private readonly GroundTargetProvider? _layerProvider;
 
     public GroundTargetTabViewModel()
     {
@@ -37,8 +35,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 
         _localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
         _mapService = Services.Locator.GetRequiredService<IMapService>();
-        _layerProvider = _mapService.GetProvider<GroundTargetProvider>();
-        _featureManager = Services.Locator.GetRequiredService<FeatureManager>();
 
         Filter = new GroundTargetTabFilterViewModel();
         Filter.SetAOIObservable(_mapService.AOI.Changed);
@@ -60,14 +56,12 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .ObserveOn(RxApp.TaskpoolScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
-        .ObserveOn(RxApp.MainThreadScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Filter(filter2)
-
             .Filter(filter3);
 
         filterObservable
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
-
             .Bind(out _items)
             .Subscribe(_ => FilteringItemCount = _items.Count);
 
@@ -81,7 +75,8 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .Transform(s => s.GroundTarget)
             .ToCollection();
 
-        _layerProvider?.SetObservable(layerObservable);
+        var layerProvider = _mapService.GetProvider<GroundTargetProvider>();
+        layerProvider?.SetObservable(layerObservable);
 
         _localStorage
             .PlannedScheduleObservable
@@ -89,11 +84,12 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
             .InvokeCommand(Update);
 
         this.WhenAnyValue(s => s.SelectedItem)
-            .InvokeCommand(ReactiveCommand.Create<GroundTargetViewModel?>(SelectImpl));
+            .WhereNotNull()
+            .Subscribe(s => _mapService.SelectFeature(s.Name, LayerType.GroundTarget));
 
-        Enter = ReactiveCommand.Create<GroundTargetViewModel>(EnterImpl);
+        Enter = ReactiveCommand.Create<GroundTargetViewModel>(s => _mapService.EnterFeature(s.Name, LayerType.GroundTarget));
 
-        Leave = ReactiveCommand.Create(LeaveImpl);
+        Leave = ReactiveCommand.Create(() => _mapService.LeaveFeature(LayerType.GroundTarget));
 
         _isLoading = Update.IsExecuting
                           .ObserveOn(RxApp.MainThreadScheduler)
@@ -130,40 +126,6 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
                 innerList.Clear();
                 innerList.AddRange(ps.GroundTargets);
             });
-        }
-    }
-
-    private void EnterImpl(GroundTargetViewModel groundTarget)
-    {
-        var name = groundTarget.Name;
-
-        if (string.IsNullOrEmpty(name) == false)
-        {
-            _featureManager
-                .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
-                .Enter(_layerProvider?.Find(name, "Name"));
-        }
-    }
-
-    private void LeaveImpl()
-    {
-        _featureManager
-            .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
-            .Leave();
-    }
-
-    private void SelectImpl(GroundTargetViewModel? groundTarget)
-    {
-        if (groundTarget != null)
-        {
-            var name = groundTarget.Name;
-
-            if (string.IsNullOrEmpty(name) == false)
-            {
-                _featureManager
-                    .OnLayer(_mapService.Map.GetLayer(LayerType.GroundTarget))
-                    .Select(_layerProvider?.Find(name, "Name"));
-            }
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Fluent.Extensions;
 using FootprintViewer.Fluent.ViewModels.Tips;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
@@ -195,22 +196,22 @@ public partial class MainViewModel
         _selector.Select
             .Subscribe(async s =>
             {
-                SelectFeature(s);
+                _mapService.SelectFeature(s);
                 await OpenInfoPanel(s);
             });
 
         _selector.Unselect
             .Subscribe(s =>
             {
-                UnselectFeature(s);
+                _mapService.UnselectFeature(s);
                 CloseInfoPanel(s);
             });
 
         _selector.HoverBegin
-            .Subscribe(s => EnterFeature(s));
+            .Subscribe(s => _mapService.EnterFeature(s));
 
         _selector.HoverEnd
-            .Subscribe(s => LeaveFeature(s));
+            .Subscribe(s => _mapService.LeaveFeature(s));
 
         Interactive = _selector;
 

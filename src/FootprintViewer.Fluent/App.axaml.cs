@@ -12,8 +12,6 @@ using FootprintViewer.Fluent.ViewModels;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Services;
-using FootprintViewer.Styles;
-using Mapsui.Interactivity;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System.Reactive.Concurrency;
@@ -47,18 +45,10 @@ public class App : Application
         IServiceCollection serviceCollection = new ServiceCollection();
 
         var localStorage = CreateLocalStorageService(config);
-
-        var featureManager = new FeatureManager()
-                .WithSelect(f => f[InteractiveFields.Select] = true)
-                .WithUnselect(f => f[InteractiveFields.Select] = false)
-                .WithEnter(f => f["Highlight"] = true)
-                .WithLeave(f => f["Highlight"] = false);
-
         var mapService = CreateMapService();
 
         serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
         serviceCollection.AddSingleton<IMapService>(_ => mapService);
-        serviceCollection.AddSingleton<FeatureManager>(_ => featureManager);
 
         Services.Locator.ConfigureServices(serviceCollection.BuildServiceProvider());
     }

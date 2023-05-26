@@ -3,6 +3,7 @@ using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
+using Mapsui.Layers;
 using Mapsui.Providers;
 
 namespace FootprintViewer.Fluent.Services2;
@@ -28,4 +29,12 @@ public interface IMapService
     void SetViewport(IReadOnlyViewport viewport);
 
     void AddLayerProvider(LayerType type, IProvider provider);
+
+    void EnterFeature(ILayer? layer, IFeature? feature);
+
+    void LeaveFeature(ILayer? layer);
+
+    void SelectFeature(ILayer? layer, IFeature? feature);
+
+    void UnselectFeature(ILayer? layer);
 }

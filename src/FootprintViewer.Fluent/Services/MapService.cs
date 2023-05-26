@@ -5,6 +5,7 @@ using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
+using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ public class MapService : IMapService
     private readonly LayerStyleManager _styleManager = new();
     private readonly AreaOfInterest _aoi;
     private readonly Dictionary<LayerType, IProvider?> _providers = new();
+    private readonly FeatureManager _featureManager = new();
 
     public MapService()
     {
@@ -51,6 +53,12 @@ public class MapService : IMapService
         }
 
         _aoi = new AreaOfInterest(_map);
+
+        _featureManager = _featureManager
+            .WithSelect(f => f[InteractiveFields.Select] = true)
+            .WithUnselect(f => f[InteractiveFields.Select] = false)
+            .WithEnter(f => f["Highlight"] = true)
+            .WithLeave(f => f["Highlight"] = false);
     }
 
     public void AddLayerProvider(LayerType type, IProvider provider)
@@ -158,6 +166,34 @@ public class MapService : IMapService
         }
 
         return default;
+    }
+
+    public void EnterFeature(ILayer? layer, IFeature? feature)
+    {
+        _featureManager
+            .OnLayer(layer)
+            .Enter(feature);
+    }
+
+    public void LeaveFeature(ILayer? layer)
+    {
+        _featureManager
+            .OnLayer(layer)
+            .Leave();
+    }
+
+    public void SelectFeature(ILayer? layer, IFeature? feature)
+    {
+        _featureManager
+            .OnLayer(layer)
+            .Select(feature);
+    }
+
+    public void UnselectFeature(ILayer? layer)
+    {
+        _featureManager
+            .OnLayer(layer)
+            .Unselect();
     }
 
     public Map Map => _map;
