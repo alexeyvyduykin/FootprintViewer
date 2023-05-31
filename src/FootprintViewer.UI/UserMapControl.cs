@@ -1,15 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Input;
-using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity.UI;
-using Mapsui.UI.Avalonia;
+using Mapsui.Interactivity.UI.Avalonia;
 
 namespace FootprintViewer.UI;
 
-public class UserMapControl : MapControl
+public class UserMapControl : InteractivityMapView
 {
     private bool _isGrabbing = false;
     private Cursor? _grabHandCursor;
@@ -18,14 +17,6 @@ public class UserMapControl : MapControl
     public UserMapControl() : base()
     {
         EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
-
-        // TODO: hack
-        var mapService = Services.Locator.GetRequiredService<IMapService>();
-        this.Map = mapService.Map;
-        //  mapService.SetNavigator(this.Navigator!);
-        //  mapService.SetViewport(this.Viewport!);
-
-        Map.Navigator.MouseWheelAnimation.Duration = 850;
     }
 
     private void UserMapControl_EffectiveViewportChanged(object? sender, global::Avalonia.Layout.EffectiveViewportChangedEventArgs e)
@@ -94,7 +85,7 @@ public class UserMapControl : MapControl
         ScaleMapBar?.ChangedViewport(Map.Navigator.Viewport);
     }
 
-    public void SetCursor(CursorType cursorType)
+    public override void SetCursor(CursorType cursorType)
     {
         if (_currentCursorType == cursorType)
         {

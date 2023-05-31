@@ -32,6 +32,8 @@ public class MapService : IMapService
             //   Transformation = new MinimalTransformation(),
         };
 
+        _map.Navigator.MouseWheelAnimation.Duration = 850;
+
         var editLayer = new EditLayer() { IsMapInfoLayer = false };
 
         _map.AddLayer(new Layer(), LayerType.WorldMap);

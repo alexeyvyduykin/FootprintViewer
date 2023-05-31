@@ -1,6 +1,9 @@
 ﻿using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Layers;
+using FootprintViewer.Services;
+using FootprintViewer.StateMachines;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.AddPlannedSchedule;
 using FootprintViewer.UI.ViewModels.Dialogs;
@@ -12,9 +15,6 @@ using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.UI.ViewModels.SidePanel.Tabs;
 using FootprintViewer.UI.ViewModels.Tips;
 using FootprintViewer.UI.ViewModels.ToolBar;
-using FootprintViewer.Layers;
-using FootprintViewer.Services;
-using FootprintViewer.StateMachines;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Interactivity;
@@ -58,6 +58,8 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
         NavigationState.Register(MainScreen, DialogScreen, FullScreen, CompactDialogScreen);
 
         _mapService = Services.Locator.GetRequiredService<IMapService>();
+
+        Map = _mapService.Map;
 
         Moved = ReactiveCommand.Create<(double, double)>(MovedImpl);
 
@@ -379,7 +381,7 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
         return panel;
     }
 
-    public Map Map => Services.Locator.GetRequiredService<IMapService>().Map;
+    public Map Map { get; private set; }
 
     [Reactive]
     public IInteractive? Interactive { get; set; }
