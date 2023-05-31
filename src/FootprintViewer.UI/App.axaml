@@ -9,6 +9,14 @@
 		<local:ViewLocator/>
 	</Application.DataTemplates>
 
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Styles/IconResources.axaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
+
 	<Application.Styles>
 
 		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Themes/Base.axaml"/>
@@ -16,6 +24,7 @@
 
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml"/>
 
+		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Icons.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Styles/FontSizes.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Styles/Border.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Styles/TextBox.axaml"/>
@@ -32,7 +41,6 @@
 		<StyleInclude Source="avares://FootprintViewer.UI/Controls/Dialog.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Controls/RangeSlider.axaml"/>
 
-		<StyleInclude Source="avares://FootprintViewer.UI/Icons.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Styles/ToolTip.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Controls/SidePanelItem.axaml"/>
 		<StyleInclude Source="avares://FootprintViewer.UI/Controls/SidePanel.axaml"/>

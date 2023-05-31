@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:selectors="clr-namespace:FootprintViewer.UI.Selectors"
+             xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
              xmlns:c="clr-namespace:FootprintViewer.UI.Controls"
              xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
              mc:Ignorable="d" d:DesignWidth="280"
@@ -13,36 +13,15 @@
 		<vm:GroundTargetViewModel></vm:GroundTargetViewModel>
 	</Design.DataContext>
 
-	<UserControl.Resources>
-		<selectors:DataTemplateSelector x:Key="GroundTargetInfoIconSelector">
-			<DataTemplate x:Key="Point">
-				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19"
-							  Foreground="{DynamicResource TextHighBrush}"
-							  Data="{DynamicResource fg-poi}"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="Route">
-				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19"
-							  Foreground="{DynamicResource TextHighBrush}"
-							  Data="{DynamicResource fg-route}"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="Area">
-				<Viewbox Width="36" Height="36">
-					<PathIcon Margin="8.5" Width="19" Height="19"
-							  Foreground="{DynamicResource TextHighBrush}"
-							  Data="{DynamicResource fg-regular-shape-o}"/>
-				</Viewbox>
-			</DataTemplate>
-		</selectors:DataTemplateSelector>
-	</UserControl.Resources>
-
 	<Border Classes="item">
 		<Grid ColumnDefinitions="Auto,*">
-			<ContentPresenter Content="{Binding}"
-							  ContentTemplate="{StaticResource GroundTargetInfoIconSelector}"/>
+
+			<Viewbox Width="36" Height="36">
+				<PathIcon Margin="8.5" Width="19" Height="19"
+						  Foreground="{DynamicResource TextHighBrush}"
+						  Data="{Binding Key, Converter={x:Static conv:PathIconConverter.Instance}}"/>
+			</Viewbox>
+
 			<TextBlock Text="{Binding Name}"
 					   Margin="8,0,0,0"
 					   VerticalAlignment="Center"

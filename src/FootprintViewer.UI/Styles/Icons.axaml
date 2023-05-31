@@ -1,0 +1,130 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:materialIcons="using:Material.Icons.Avalonia">
+
+	<Design.PreviewWith>
+		<Border Padding="20" Width="400">
+			<Border.Styles>
+				<Style Selector="ContentPresenter.icon1">
+					<Setter Property="Background" Value="#373737"></Setter>
+					<Setter Property="Width" Value="36"></Setter>
+					<Setter Property="Height" Value="36"></Setter>
+					<Setter Property="Margin" Value="1"></Setter>
+					<Setter Property="ContentTemplate">
+						<Setter.Value>
+							<DataTemplate>
+								<PathIcon Foreground="{StaticResource IconAccentBrush}" Width="19" Height="19" Data="{Binding}"/>
+							</DataTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				<Style Selector="ContentPresenter.icon2">
+					<Setter Property="Background" Value="#373737"></Setter>
+					<Setter Property="Width" Value="46"></Setter>
+					<Setter Property="Height" Value="46"></Setter>
+					<Setter Property="Margin" Value="1"></Setter>
+					<Setter Property="ContentTemplate">
+						<Setter.Value>
+							<DataTemplate>
+								<PathIcon Foreground="#d6d9dd" Width="32" Height="32" Data="{Binding}"/>
+							</DataTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</Border.Styles>
+			<StackPanel>
+				<WrapPanel>
+					<ContentPresenter Classes="icon1" Content="{DynamicResource IconSatellite}"/>
+					<ContentPresenter Classes="icon1" Content="{DynamicResource IconSunElevation}"/>
+					<ContentPresenter Classes="icon1" Content="{DynamicResource IconCloudy}"/>
+					<ContentPresenter Classes="icon1" Content="{DynamicResource IconGrid}"/>
+				</WrapPanel>
+				<WrapPanel>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-arrow}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-point}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-polyline-pt}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-polygon-pt}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-polyline}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-polygon-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-regular-shape-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-rectangle-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-modify-poly-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-rotate}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-scale-poly}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-move}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-polygon-pt}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-rectangle-pt}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-circle-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-measure}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-zoom-in}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-zoom-out}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-route}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-location-arrow}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-poi}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-poi-alt}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-pois}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-map}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-map-user}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-layers-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-layer-stack-o}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-satellite}"/>
+					<ContentPresenter Classes="icon2" Content="{DynamicResource fg-satellite-earth}"/>
+				</WrapPanel>
+				<StackPanel Spacing="4" Orientation="Horizontal">
+					<ContentPresenter ContentTemplate="{DynamicResource IconCenterKey}"/>
+					<ContentPresenter ContentTemplate="{DynamicResource IconSatelliteKey}"/>
+					<ContentPresenter ContentTemplate="{DynamicResource IconBeginKey}"/>
+					<ContentPresenter ContentTemplate="{DynamicResource IconShapeKey}"/>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
+
+	<Styles.Resources>
+
+		<DataTemplate x:Key="IconCenterKey">
+			<Border Cursor="Help"
+					Background="Transparent"
+					ToolTip.Tip="Center">
+				<Viewbox Width="20" Height="20">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+												Kind="MapMarker" />
+				</Viewbox>
+			</Border>
+		</DataTemplate>
+		<DataTemplate x:Key="IconSatelliteKey">
+			<Border Cursor="Help"
+					Background="Transparent"
+					ToolTip.Tip="Satellite (Node - Swath)">
+				<Viewbox Width="20" Height="20">
+					<PathIcon Foreground="{StaticResource IconAccentBrush}"
+							  Data="{StaticResource IconSatellite}"/>
+				</Viewbox>
+			</Border>
+		</DataTemplate>
+		<DataTemplate x:Key="IconBeginKey">
+			<Border Cursor="Help"
+					Background="Transparent"
+					ToolTip.Tip="Begin (Duration)">
+				<Viewbox Width="20" Height="20">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+												Kind="ClockStart" />
+				</Viewbox>
+			</Border>
+		</DataTemplate>
+		<DataTemplate x:Key="IconShapeKey">
+			<Border Cursor="Help"
+					Background="Transparent"
+					ToolTip.Tip="Type shape">
+				<Viewbox Width="20" Height="20">
+					<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+												Kind="Shape" />
+				</Viewbox>
+			</Border>
+		</DataTemplate>
+
+		<SolidColorBrush x:Key="IconAccentBrush" Color="#e39400"/>
+		<SolidColorBrush x:Key="IconMainBrush" Color="#d6d9dd"/>
+
+	</Styles.Resources>
+</Styles>
