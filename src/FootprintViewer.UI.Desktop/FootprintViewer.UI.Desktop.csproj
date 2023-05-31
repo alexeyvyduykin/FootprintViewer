@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\FootprintViewer.Fluent\FootprintViewer.UI.csproj" />
+		<ProjectReference Include="..\FootprintViewer.UI\FootprintViewer.UI.csproj" />
 	</ItemGroup>
 
 </Project>
