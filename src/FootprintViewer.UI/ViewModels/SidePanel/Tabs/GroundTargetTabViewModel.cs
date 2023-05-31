@@ -3,12 +3,12 @@ using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Layers.Providers;
+using FootprintViewer.Services;
 using FootprintViewer.UI.Extensions;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.SidePanel.Filters;
 using FootprintViewer.UI.ViewModels.SidePanel.Items;
-using FootprintViewer.Layers.Providers;
-using FootprintViewer.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
@@ -53,12 +53,11 @@ public sealed class GroundTargetTabViewModel : SidePanelTabViewModel
 
         var filterObservable = _groundTargets
             .Connect()
-            .ObserveOn(RxApp.TaskpoolScheduler)
             .Transform(s => new GroundTargetViewModel(s))
             .Filter(filter1)
-            .ObserveOn(RxApp.MainThreadScheduler)
             .Filter(filter2)
-            .Filter(filter3);
+            .Filter(filter3)
+            .ObserveOn(RxApp.MainThreadScheduler);
 
         filterObservable
             .Sort(SortExpressionComparer<GroundTargetViewModel>.Ascending(t => t.Name))
