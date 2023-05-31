@@ -3,6 +3,7 @@ using Avalonia.Input;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels;
 using Mapsui;
+using Mapsui.Extensions;
 using Mapsui.Interactivity.UI;
 using Mapsui.UI.Avalonia;
 
@@ -18,18 +19,18 @@ public class UserMapControl : MapControl
     {
         EffectiveViewportChanged += UserMapControl_EffectiveViewportChanged;
 
-        MouseWheelAnimation.Duration = 850;
-
         // TODO: hack
         var mapService = Services.Locator.GetRequiredService<IMapService>();
-        this.Map = (Map)mapService.Map;
-        mapService.SetNavigator(this.Navigator!);
-        mapService.SetViewport(this.Viewport!);
+        this.Map = mapService.Map;
+        //  mapService.SetNavigator(this.Navigator!);
+        //  mapService.SetViewport(this.Viewport!);
+
+        Map.Navigator.MouseWheelAnimation.Duration = 850;
     }
 
     private void UserMapControl_EffectiveViewportChanged(object? sender, global::Avalonia.Layout.EffectiveViewportChangedEventArgs e)
     {
-        ScaleMapBar?.ChangedViewport(Viewport);
+        ScaleMapBar?.ChangedViewport(Map.Navigator.Viewport);
     }
 
     public ScaleMapBar? ScaleMapBar
@@ -64,7 +65,7 @@ public class UserMapControl : MapControl
         {
             var isLeftMouseDown = e.GetCurrentPoint(this).Properties.IsLeftButtonPressed;
 
-            ScaleMapBar?.ChangedViewport(Viewport);
+            ScaleMapBar?.ChangedViewport(Map.Navigator.Viewport);
 
             if (isLeftMouseDown == true)
             {
@@ -79,7 +80,7 @@ public class UserMapControl : MapControl
             {
                 var position = e.GetPosition(this);
 
-                var worldPosition = Viewport.ScreenToWorld(position.X, position.Y);
+                var worldPosition = Map.Navigator.Viewport.ScreenToWorld(position.X, position.Y);
 
                 ScaleMapBar?.ChangedPosition(worldPosition);
             }
@@ -90,7 +91,7 @@ public class UserMapControl : MapControl
     {
         base.OnPointerWheelChanged(e);
 
-        ScaleMapBar?.ChangedViewport(Viewport);
+        ScaleMapBar?.ChangedViewport(Map.Navigator.Viewport);
     }
 
     public void SetCursor(CursorType cursorType)

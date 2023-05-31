@@ -5,7 +5,6 @@ using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;
-using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using System.Collections.Generic;
@@ -16,12 +15,12 @@ public class MapService : IMapService
 {
     private readonly Map _map;
     private readonly MapState _state;
-    public INavigator? _navigator;
-    public IReadOnlyViewport? _viewport;
     private readonly LayerStyleManager _styleManager = new();
     private readonly AreaOfInterest _aoi;
     private readonly Dictionary<LayerType, IProvider?> _providers = new();
     private readonly FeatureManager _featureManager = new();
+
+    private const string SelectField = Mapsui.Interactivity.InteractiveFields.Select;
 
     public MapService()
     {
@@ -55,8 +54,8 @@ public class MapService : IMapService
         _aoi = new AreaOfInterest(_map);
 
         _featureManager = _featureManager
-            .WithSelect(f => f[InteractiveFields.Select] = true)
-            .WithUnselect(f => f[InteractiveFields.Select] = false)
+            .WithSelect(f => f[SelectField] = true)
+            .WithUnselect(f => f[SelectField] = false)
             .WithEnter(f => f["Highlight"] = true)
             .WithLeave(f => f["Highlight"] = false);
     }
@@ -138,16 +137,6 @@ public class MapService : IMapService
         _providers.Add(type, provider);
     }
 
-    public void SetNavigator(INavigator navigator)
-    {
-        _navigator = navigator;
-    }
-
-    public void SetViewport(IReadOnlyViewport viewport)
-    {
-        _viewport = viewport;
-    }
-
     public T? GetProvider<T>() where T : IProvider
     {
         try
@@ -200,9 +189,7 @@ public class MapService : IMapService
 
     public MapState State => _state;
 
-    public INavigator? Navigator => _navigator;
-
-    public IReadOnlyViewport? Viewport => _viewport;
+    public Navigator Navigator => _map.Navigator;
 
     public LayerStyleManager LayerStyle => _styleManager;
 

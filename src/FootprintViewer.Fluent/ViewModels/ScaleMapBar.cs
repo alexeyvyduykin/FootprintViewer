@@ -20,13 +20,14 @@ public sealed class ScaleMapBar : ViewModelBase
             .ToProperty(this, x => x.Position, out _position);
     }
 
-    public void ChangedViewport(IReadOnlyViewport viewport)
+    public void ChangedViewport(Viewport viewport)
     {
         Viewport = viewport;
 
-        var center0 = viewport.Center;
+        var cx = viewport.CenterX;
+        var cy = viewport.CenterY;
 
-        var (_, lat) = SphericalMercator.ToLonLat(center0.X, center0.Y);
+        var (_, lat) = SphericalMercator.ToLonLat(cx, cy);
 
         double groundResolution0 = viewport.Resolution * Math.Cos(lat / 180.0 * Math.PI);
 
@@ -34,7 +35,7 @@ public sealed class ScaleMapBar : ViewModelBase
 
         var unitConverter = MetricUnitConverter.Instance;
 
-        var center = new MPoint(viewport.Center.X, viewport.Center.Y);
+        var center = new MPoint(viewport.CenterX, viewport.CenterY);
 
         var proj = new Projection();
 
@@ -78,7 +79,7 @@ public sealed class ScaleMapBar : ViewModelBase
         Position2 = new MPoint(lon, lat);
     }
 
-    public IReadOnlyViewport? Viewport { get; set; }
+    public Viewport? Viewport { get; set; }
 
     [Reactive]
     private MPoint? Position2 { get; set; }

@@ -5,6 +5,7 @@ using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using Mapsui.Utilities;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;

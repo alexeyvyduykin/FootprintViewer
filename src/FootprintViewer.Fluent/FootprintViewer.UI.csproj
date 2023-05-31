@@ -6,7 +6,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AvaloniaVersion>0.10.18</AvaloniaVersion>
+		<AvaloniaVersion>0.10.21</AvaloniaVersion>
+		<AvaloniaXamlBehaviorsVersion>0.10.19</AvaloniaXamlBehaviorsVersion>
+		<MapsuiVersion>4.0.0-rc.1</MapsuiVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,19 +28,14 @@
 		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.ReactiveUI.Events" Version="$(AvaloniaVersion)" />
-		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaXamlBehaviorsVersion)" />
 		<PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Mapsui" Version="4.0.0-beta.5" />
-		<PackageReference Include="Mapsui.Avalonia" Version="4.0.0-beta.5" />
+		<PackageReference Include="Mapsui.Avalonia" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-		<PackageReference Include="SkiaSharp" Version="2.88.1-preview.108" />
 		<PackageReference Include="ReactiveUI" Version="18.0.10" />
-		<PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
-		<PackageReference Include="NetTopologySuite" Version="2.4.0" />
-		<PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
 		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
 		<PackageReference Include="sqlite-net" Version="1.6.292" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
@@ -50,6 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI.Avalonia\Mapsui.Interactivity.UI.Avalonia.csproj" />
 		<ProjectReference Include="..\FootprintViewer\FootprintViewer.csproj" />
 	</ItemGroup>

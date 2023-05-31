@@ -5,11 +5,11 @@ using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
-using Mapsui.Utilities;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Mapsui.Animations;
 
 namespace FootprintViewer.UI.Extensions;
 
@@ -42,7 +42,7 @@ public static class MapServiceExtensions
 
     private static void ZoomIn(this IMapService mapService, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.ZoomIn(duration, easing);
+        mapService.Navigator.ZoomIn(duration, easing);
 
         if (duration != 0)
         {
@@ -52,7 +52,7 @@ public static class MapServiceExtensions
 
     private static void ZoomOut(this IMapService mapService, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.ZoomOut(duration, easing);
+        mapService.Navigator.ZoomOut(duration, easing);
 
         if (duration != 0)
         {
@@ -62,44 +62,44 @@ public static class MapServiceExtensions
 
     private static void ZoomIn(this IMapService mapService, MPoint centerOfZoom, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.ZoomIn(centerOfZoom, duration, easing);
+        mapService.Navigator.ZoomIn(centerOfZoom, duration, easing);
     }
 
     private static void ZoomOut(this IMapService mapService, MPoint centerOfZoom, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.ZoomOut(centerOfZoom, duration, easing);
+        mapService.Navigator.ZoomOut(centerOfZoom, duration, easing);
     }
 
     private static void CenterOnCoordinate(this IMapService mapService, double lon, double lat, long duration = 0, Easing? easing = null)
     {
         var (x, y) = SphericalMercator.FromLonLat(lon, lat);
 
-        mapService.Navigator?.CenterOn(x, y, duration, easing);
+        mapService.Navigator.CenterOn(x, y, duration, easing);
     }
 
     private static void CenterOn(this IMapService mapService, double x, double y, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.CenterOn(x, y, duration, easing);
+        mapService.Navigator.CenterOn(x, y, duration, easing);
     }
 
     private static void CenterOn(this IMapService mapService, MPoint center, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.CenterOn(center, duration, easing);
+        mapService.Navigator.CenterOn(center, duration, easing);
     }
 
-    private static void NavigateTo(this IMapService mapService, MRect extent, ScaleMethod scaleMethod = ScaleMethod.Fit, long duration = 0, Easing? easing = null)
+    private static void NavigateTo(this IMapService mapService, MRect extent, MBoxFit boxFit = MBoxFit.Fit, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.NavigateTo(extent, scaleMethod, duration, easing);
+        mapService.Navigator.ZoomToBox(extent, boxFit, duration, easing);
     }
 
-    private static void NavigateToFullEnvelope(this IMapService mapService, ScaleMethod scaleMethod = ScaleMethod.Fill, long duration = 0, Easing? easing = null)
+    private static void NavigateToFullEnvelope(this IMapService mapService, MBoxFit boxFit = MBoxFit.Fill, long duration = 0, Easing? easing = null)
     {
-        mapService.Navigator?.NavigateToFullEnvelope(scaleMethod, duration, easing);
+        mapService.Navigator.ZoomToPanBounds(boxFit, duration, easing);
     }
 
     private static void FlyTo(this IMapService mapService, MPoint center, double maxResolution, long duration = 2000)
     {
-        mapService.Navigator?.FlyTo(center, maxResolution, duration);
+        mapService.Navigator.FlyTo(center, maxResolution, duration);
 
         Observable.StartAsync(() => mapService.ForceUpdate(duration + 100), RxApp.MainThreadScheduler).Subscribe();
     }
@@ -109,26 +109,6 @@ public static class MapServiceExtensions
         await Task.Delay(TimeSpan.FromMilliseconds(delay));
 
         mapService.Map.ForceUpdate();
-    }
-
-    public static void EnterFeature(this IMapService mapService, ISelector selector)
-    {
-        mapService.EnterFeature(selector.PointeroverLayer, selector.HoveringFeature);
-    }
-
-    public static void LeaveFeature(this IMapService mapService, ISelector selector)
-    {
-        mapService.LeaveFeature(selector.PointeroverLayer);
-    }
-
-    public static void SelectFeature(this IMapService mapService, ISelector selector)
-    {
-        mapService.SelectFeature(selector.SelectedLayer, selector.SelectedFeature);
-    }
-
-    public static void UnselectFeature(this IMapService mapService, ISelector selector)
-    {
-        mapService.UnselectFeature(selector.SelectedLayer);
     }
 
     public static void EnterFeature(this IMapService mapService, string name, LayerType type)

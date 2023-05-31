@@ -17,7 +17,7 @@ public class MapToolsViewModel : ViewModelBase
         Snapshot = ReactiveCommand.CreateFromObservable<Unit, Unit>(s =>
         Observable.Start(() =>
         {
-            MapHelper.CreateSnapshot(mapService.Viewport, mapService.Map.Layers, Services.MapSnapshotDir, Services.Config.SelectedMapSnapshotExtension);
+            MapHelpers.CreateSnapshot(mapService.Map.Navigator.Viewport, mapService.Map.Layers, Services.MapSnapshotDir, Services.Config.SelectedMapSnapshotExtension);
         }).Delay(TimeSpan.FromSeconds(1)));
 
         Timelines = ReactiveCommand.CreateFromTask(TimelinesImpl);

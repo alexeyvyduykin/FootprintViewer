@@ -225,12 +225,9 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
             .ForEach(s => s.DataHasChanged());
     }
 
-    private async Task OpenInfoPanel(ISelector selector)
+    private async Task OpenInfoPanel(ILayer layer, IFeature feature)
     {
-        var feature = selector.SelectedFeature;
-        var layer = selector.SelectedLayer;
         var localStorage = Services.Locator.GetRequiredService<ILocalStorageService>();
-
 
         InfoPanelItemViewModel? panel = layer?.Name switch
         {
@@ -261,9 +258,9 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
         }
     }
 
-    private void CloseInfoPanel(ISelector selector)
+    private void CloseInfoPanel(ILayer layer)
     {
-        string? key = selector.SelectedLayer?.Name switch
+        string? key = layer?.Name switch
         {
             nameof(LayerType.Footprint) => "Footprint",
             nameof(LayerType.GroundTarget) => "GroundTarget",
@@ -337,10 +334,10 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
         }
     }
 
-    private InfoPanelItemViewModel CreateAOIPanel(IDesigner designer)
+    private InfoPanelItemViewModel CreateAOIPanel(GeometryFeature feature)
     {
-        var center = SphericalMercator.ToLonLat(designer.Feature.Geometry!.Centroid.ToMPoint());
-        var area = designer.Area();
+        var center = SphericalMercator.ToLonLat(feature.Geometry!.Centroid.ToMPoint());
+        var area = feature.Geometry?.Area() ?? 0.0;// designer.Area();
 
         var descr = $"{FormatHelper.ToArea(area)} | {FormatHelper.ToCoordinate(center.X, center.Y)}";
 

@@ -6,6 +6,7 @@ using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using Mapsui.Utilities;
 using ReactiveUI;
 using SpaceScience.Extensions;
 using System.Collections.Generic;

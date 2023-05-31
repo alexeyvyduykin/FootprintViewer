@@ -1,18 +1,15 @@
 ﻿using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
-using FootprintViewer.UI.Extensions;
-using FootprintViewer.UI.ViewModels.Tips;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
+using FootprintViewer.UI.ViewModels.Tips;
 using Mapsui;
-using Mapsui.Extensions;
 using Mapsui.Interactivity;
 using Mapsui.Interactivity.Extensions;
 using Mapsui.Interactivity.UI;
 using Mapsui.Layers;
 using Nito.Disposables.Internals;
 using ReactiveUI;
-using Splat;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -46,13 +43,11 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                var feature = s.Feature.Copy();
-
                 HideTip();
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _mapService.AOI.Update(feature, FeatureType.AOIRectangle);
+                _mapService.AOI.Update(s, FeatureType.AOIRectangle);
 
                 _mapService.State.Reset();
             });
@@ -83,13 +78,11 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                var feature = s.Feature.Copy();
-
                 HideTip();
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _mapService.AOI.Update(feature, FeatureType.AOIPolygon);
+                _mapService.AOI.Update(s, FeatureType.AOIPolygon);
 
                 _mapService.State.Reset();
             });
@@ -115,13 +108,11 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                var feature = s.Feature.Copy();
-
                 HideTip();
 
                 InfoPanel.Show(CreateAOIPanel(s));
 
-                _mapService.AOI.Update(feature, FeatureType.AOICircle);
+                _mapService.AOI.Update(s, FeatureType.AOICircle);
 
                 _mapService.State.Reset();
             });
@@ -156,9 +147,7 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                var feature = s.Feature.Copy();
-
-                layer?.AddRoute(new InteractiveRoute(feature), FeatureType.Route.ToString());
+                layer?.AddRoute(new InteractiveRoute(s), FeatureType.Route.ToString());
 
                 HideTip();
 
@@ -196,22 +185,22 @@ public partial class MainViewModel
         _selector.Select
             .Subscribe(async s =>
             {
-                _mapService.SelectFeature(s);
-                await OpenInfoPanel(s);
+                _mapService.SelectFeature(s.Layer, s.Feature);
+                await OpenInfoPanel(s.Layer, s.Feature);
             });
 
         _selector.Unselect
             .Subscribe(s =>
             {
-                _mapService.UnselectFeature(s);
-                CloseInfoPanel(s);
+                _mapService.UnselectFeature(s.Layer);
+                CloseInfoPanel(s.Layer);
             });
 
         _selector.HoverBegin
-            .Subscribe(s => _mapService.EnterFeature(s));
+            .Subscribe(s => _mapService.EnterFeature(s.Layer, s.Feature));
 
         _selector.HoverEnd
-            .Subscribe(s => _mapService.LeaveFeature(s));
+            .Subscribe(s => _mapService.LeaveFeature(s.Layer));
 
         Interactive = _selector;
 
@@ -242,13 +231,13 @@ public partial class MainViewModel
             State = States.Editing;
         });
 
-        _selector.Unselect.Subscribe(s =>
+        ((IDecoratorSelector)_selector).DecoratorUnselecting.Subscribe(s =>
         {
-            Interactive = s;
+            Interactive = _selector;
 
             State = States.Selecting;
 
-            EditFeature(s.SelectedFeature);
+            EditFeature(s);
         });
 
         Interactive = _selector;
@@ -280,13 +269,13 @@ public partial class MainViewModel
             State = States.Editing;
         });
 
-        _selector.Unselect.Subscribe(s =>
+        ((IDecoratorSelector)_selector).DecoratorUnselecting.Subscribe(s =>
         {
-            Interactive = s;
+            Interactive = _selector;
 
             State = States.Selecting;
 
-            EditFeature(s.SelectedFeature);
+            EditFeature(s);
         });
 
         Interactive = _selector;
@@ -318,11 +307,11 @@ public partial class MainViewModel
             State = States.Editing;
         });
 
-        _selector.Unselect.Subscribe(s =>
+        ((IDecoratorSelector)_selector).DecoratorUnselecting.Subscribe(s =>
         {
-            Interactive = s;
+            Interactive = _selector;
             State = States.Selecting;
-            EditFeature(s.SelectedFeature);
+            EditFeature(s);
         });
 
         Interactive = _selector;
@@ -353,11 +342,11 @@ public partial class MainViewModel
             State = States.Editing;
         });
 
-        _selector.Unselect.Subscribe(s =>
+        ((IDecoratorSelector)_selector).DecoratorUnselecting.Subscribe(s =>
         {
-            Interactive = s;
+            Interactive = _selector;
             State = States.Selecting;
-            EditFeature(s.SelectedFeature);
+            EditFeature(s);
         });
 
         Interactive = _selector;
@@ -373,7 +362,7 @@ public partial class MainViewModel
 
         designer.EndCreating.Subscribe(s =>
         {
-            AddUserGeometry(s.Feature.Copy(), UserGeometryType.Point);
+            AddUserGeometry(s, UserGeometryType.Point);
 
             HideTip();
 
@@ -401,7 +390,7 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Rectangle);
+                AddUserGeometry(s, UserGeometryType.Rectangle);
 
                 HideTip();
 
@@ -429,7 +418,7 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Circle);
+                AddUserGeometry(s, UserGeometryType.Circle);
 
                 HideTip();
 
@@ -488,7 +477,7 @@ public partial class MainViewModel
         designer.EndCreating
             .Subscribe(s =>
             {
-                AddUserGeometry(s.Feature.Copy(), UserGeometryType.Polygon);
+                AddUserGeometry(s, UserGeometryType.Polygon);
 
                 HideTip();
 

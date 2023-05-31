@@ -27,6 +27,7 @@ public sealed class GroundTargetViewModel : ViewModelBase, ISelectorItem, IViewe
 
     private static Geometry? CreateGeometry(GroundTargetType type, Geometry? geometry)
     {
+        // TODO: interactivity extensions with MainVertices refactoring
         var cordinates = geometry?
             .MainVertices()
             .Select(s => SphericalMercator.FromLonLat(s.X, s.Y))

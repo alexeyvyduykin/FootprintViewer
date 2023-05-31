@@ -1,4 +1,4 @@
-﻿using Mapsui.Interactivity;
+﻿using FootprintViewer.Extensions;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
 using NetTopologySuite.Geometries;

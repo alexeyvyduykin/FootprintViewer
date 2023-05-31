@@ -14,19 +14,13 @@ public interface IMapService
 
     MapState State { get; }
 
-    INavigator? Navigator { get; }
-
-    IReadOnlyViewport? Viewport { get; }
+    Navigator Navigator { get; }
 
     LayerStyleManager LayerStyle { get; }
 
     AreaOfInterest AOI { get; }
 
     T? GetProvider<T>() where T : IProvider;
-
-    void SetNavigator(INavigator navigator);
-
-    void SetViewport(IReadOnlyViewport viewport);
 
     void AddLayerProvider(LayerType type, IProvider provider);
 

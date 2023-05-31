@@ -44,9 +44,9 @@ public sealed class LayerContainerViewModel : ViewModelBase
         Observable.StartAsync(() => UpdateLayersAsync(mapService.Map), RxApp.MainThreadScheduler);
     }
 
-    private async Task UpdateLayersAsync(IMap? map) => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
+    private async Task UpdateLayersAsync(Map? map) => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
 
-    private void UpdateLayers(IMap? map)
+    private void UpdateLayers(Map? map)
     {
         if (map is { })
         {

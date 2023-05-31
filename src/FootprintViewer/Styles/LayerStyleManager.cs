@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Factories;
-using Mapsui.Interactivity;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Styles;
@@ -20,8 +19,13 @@ public class LayerStyleManager
     private const int _maxVisibleTargetStyle = 5000;
     private const int _maxVisibleFootprintStyle = 10000;
 
-    private const string SelectField = InteractiveFields.Select;
+    // TODO: interactivity keys refactoring
+    private const string SelectField = Mapsui.Interactivity.InteractiveFields.Select;
     private const string HoverField = "Highlight";
+
+    private const string ExtraPolygonHoverLineField = Mapsui.Interactivity.InteractiveNames.ExtraPolygonHoverLine;
+    private const string ExtraPolygonAreaField = Mapsui.Interactivity.InteractiveNames.ExtraPolygonArea;
+    private const string ExtraRouteHoverLineField = Mapsui.Interactivity.InteractiveNames.ExtraRouteHoverLine;
 
     private readonly Dictionary<LayerType, LayerStyleViewModel[]> _dict;
     private readonly Dictionary<LayerType, LayerStyleViewModel?> _selectedDict;
@@ -264,7 +268,10 @@ public class LayerStyleManager
         var style1 = CreateTargetHighlightThemeStyle();
         var style2 = CreateTargetThemeStyle();
 
-        return new StyleCollection() { style1, style2 };
+        return new StyleCollection()
+        {
+            Styles = { style1, style2 }
+        };
     }
 
     private static ThemeStyle CreateTargetHighlightThemeStyle()
@@ -668,7 +675,7 @@ public class LayerStyleManager
                 {
                     if (item.Equals("Name") == true)
                     {
-                        if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraPolygonHoverLine) == true)
+                        if (string.Equals((string)gf["Name"]!, ExtraPolygonHoverLineField) == true)
                         {
                             return new VectorStyle
                             {
@@ -676,7 +683,7 @@ public class LayerStyleManager
                                 Line = new Pen(_color, 4) { PenStyle = PenStyle.Dot },
                             };
                         }
-                        else if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraPolygonArea) == true)
+                        else if (string.Equals((string)gf["Name"]!, ExtraPolygonAreaField) == true)
                         {
                             return new VectorStyle
                             {
@@ -685,7 +692,7 @@ public class LayerStyleManager
                                 Outline = null,
                             };
                         }
-                        else if (string.Equals((string)gf["Name"]!, InteractiveNames.ExtraRouteHoverLine) == true)
+                        else if (string.Equals((string)gf["Name"]!, ExtraRouteHoverLineField) == true)
                         {
                             return new VectorStyle
                             {

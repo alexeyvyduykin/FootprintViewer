@@ -114,7 +114,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         Observable.StartAsync(() => UpdateLayersAsync(mapService.Map), RxApp.MainThreadScheduler);
     }
 
-    private async Task UpdateLayersAsync(IMap? map)
+    private async Task UpdateLayersAsync(Map? map)
         => await Observable.Start(() => UpdateLayers(map), RxApp.TaskpoolScheduler);
 
     private static bool IsStyle(ILayer layer, LayerStyleManager styleManager)
@@ -122,7 +122,7 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
         return styleManager.GetStyle(layer.Name) is not null;
     }
 
-    private void UpdateLayers(IMap? map)
+    private void UpdateLayers(Map? map)
     {
         if (map is { })
         {

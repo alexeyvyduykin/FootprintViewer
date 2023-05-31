@@ -5,7 +5,6 @@ using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts.Extensions;
 using Mapsui.Tiling.Layers;
-using Mapsui.UI;
 using NetTopologySuite.Geometries;
 using SQLite;
 using System.Collections.Generic;
@@ -19,27 +18,27 @@ public static class MapsuiExtensions
     {
         var layer = CreateWorldMapLayer(resource);
         map.ReplaceLayer(layer, LayerType.WorldMap);
-        map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Extent /*Envelope*/ };
+        //map.Limiter = new ViewportLimiterKeepWithin { PanLimits = layer.Extent /*Envelope*/ };
     }
 
-    public static void AddLayer(this IMap map, ILayer layer, LayerType layerType)
+    public static void AddLayer(this Map map, ILayer layer, LayerType layerType)
     {
         map.AddLayer(layer, layerType.ToString());
     }
 
-    public static void AddLayer(this IMap map, ILayer layer, string name)
+    public static void AddLayer(this Map map, ILayer layer, string name)
     {
         layer.Name = name;
 
         map.Layers.Add(layer);
     }
 
-    public static void RemoveLayer(this IMap map, LayerType layerType)
+    public static void RemoveLayer(this Map map, LayerType layerType)
     {
         map.RemoveLayer(layerType.ToString());
     }
 
-    public static void RemoveLayer(this IMap map, string name)
+    public static void RemoveLayer(this Map map, string name)
     {
         var layer = map.Layers.FindLayer(name).FirstOrDefault();
 
@@ -49,22 +48,22 @@ public static class MapsuiExtensions
         }
     }
 
-    public static T? GetLayer<T>(this IMap map, LayerType layerType) where T : ILayer
+    public static T? GetLayer<T>(this Map map, LayerType layerType) where T : ILayer
     {
         return (T?)map.Layers.FirstOrDefault(l => l.Name.Equals(layerType.ToString()));
     }
 
-    public static ILayer? GetLayer(this IMap map, LayerType layerType)
+    public static ILayer? GetLayer(this Map map, LayerType layerType)
     {
         return map.GetLayer<ILayer>(layerType);
     }
 
-    public static void ReplaceLayer(this IMap map, ILayer layer, LayerType layerType)
+    public static void ReplaceLayer(this Map map, ILayer layer, LayerType layerType)
     {
         map.ReplaceLayer(layer, layerType.ToString());
     }
 
-    public static void ReplaceLayer(this IMap map, ILayer layer, string name)
+    public static void ReplaceLayer(this Map map, ILayer layer, string name)
     {
         int index = 0;
         ILayer? removable = null;
@@ -111,7 +110,7 @@ public static class MapsuiExtensions
         return layer?.GetFeatures().Where(f => string.Equals(name, (string?)f["Name"])).FirstOrDefault();
     }
 
-    public static void ForceUpdate(this IMap map)
+    public static void ForceUpdate(this Map map)
     {
         var temp = new Layer();
         map.Layers.Add(temp);

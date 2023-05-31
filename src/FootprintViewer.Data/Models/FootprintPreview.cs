@@ -65,7 +65,7 @@ public class FootprintPreview
             CenterY = extent.CenterY,
             Width = _previewWidth,
             Height = _previewHeight,
-            Resolution = ZoomHelper.DetermineResolution(extent.Width, extent.Height, _previewWidth, _previewHeight)
+            Resolution = ZoomHelper.CalculateResolutionForWorldSize(extent.Width, extent.Height, _previewWidth, _previewHeight)
         };
 
         var memoryStream = new Mapsui.Rendering.Skia.MapRenderer().RenderToBitmapStream(viewport, new[] { layer }/*, _backgroundColorMask*/);
