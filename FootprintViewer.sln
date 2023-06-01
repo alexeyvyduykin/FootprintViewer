@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.UI", "src\F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FootprintViewer.UI.Desktop", "src\FootprintViewer.UI.Desktop\FootprintViewer.UI.Desktop.csproj", "{DD079B13-DBF7-4739-A8F2-9B8514F33910}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlannedScheduleOnMapSample", "samples\PlannedScheduleOnMapSample\PlannedScheduleOnMapSample.csproj", "{B557AA6E-3050-4DE6-A364-251D02E4FDB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,10 @@ Global
 		{DD079B13-DBF7-4739-A8F2-9B8514F33910}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD079B13-DBF7-4739-A8F2-9B8514F33910}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD079B13-DBF7-4739-A8F2-9B8514F33910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B557AA6E-3050-4DE6-A364-251D02E4FDB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B557AA6E-3050-4DE6-A364-251D02E4FDB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B557AA6E-3050-4DE6-A364-251D02E4FDB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B557AA6E-3050-4DE6-A364-251D02E4FDB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{9E022310-D034-4B87-A1F3-86D2C100CE08} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{97729474-7F9A-4EAD-9104-3C7A414CD54F} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
 		{DD079B13-DBF7-4739-A8F2-9B8514F33910} = {032C50C0-B7A2-4650-9611-0ACDB22BEC8A}
+		{B557AA6E-3050-4DE6-A364-251D02E4FDB5} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
