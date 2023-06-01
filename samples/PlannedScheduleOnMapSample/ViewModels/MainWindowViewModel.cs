@@ -20,7 +20,11 @@ public class MainWindowViewModel : ViewModelBase
         string path = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "world.mbtiles");
         var resource = new MapResource("world", path);
         Map.SetWorldMapLayer(resource);
+
+        PlannedScheduleTab = new();
     }
+
+    public PlannedScheduleTabViewModel PlannedScheduleTab { get; set; }
 
     public Map Map { get; private set; }
 

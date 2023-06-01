@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 x:DataType="vm:TaskResultViewModel"
+             x:Class="PlannedScheduleOnMapSample.Views.Items.TaskResultView">
+
+	<Design.DataContext>
+		<vm:TaskResultViewModel></vm:TaskResultViewModel>
+	</Design.DataContext>
+
+	<Border Classes="item">
+		<StackPanel Spacing="4">
+			<TextBlock Text="{Binding TaskName}" Classes="h4 high"/>
+			<TextBlock Text="{Binding SatelliteName}" Classes="h3 medium"/>
+			<TextBlock Text="{Binding Begin}" Classes="h3 medium right"/>
+			<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}" Classes="h3 medium right"/>
+			<Separator/>
+			<ContentControl Content="{Binding Model}"/>
+		</StackPanel>
+	</Border>
+	
+</UserControl>
