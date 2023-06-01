@@ -1,12 +1,24 @@
 using Avalonia.Controls;
+using Mapsui.UI.Avalonia;
+using PlannedScheduleOnMapSample.ViewModels;
+using System;
 
-namespace PlannedScheduleOnMapSample.Views
+namespace PlannedScheduleOnMapSample.Views;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+
+        if (DataContext is MainWindowViewModel viewModel)
         {
-            InitializeComponent();
+            MapControl.Map = viewModel.Map;
         }
     }
 }

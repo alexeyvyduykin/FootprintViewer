@@ -12,7 +12,7 @@ public class TaskResultViewModel : ViewModelBase
 
     public TaskResultViewModel(ITaskResult taskResult)
     {
-        Model = taskResult;
+        Model = (ObservationTaskResult)taskResult;
 
         SatelliteName = taskResult.SatelliteName;
         TaskName = taskResult.TaskName;
@@ -28,13 +28,13 @@ public class TaskResultViewModel : ViewModelBase
 
     public double Duration { get; set; }
 
-    public ITaskResult Model { get; set; }
+    public ObservationTaskResult Model { get; set; }
 
     //public List<Interval>? Windows { get; set; }
 
     //public Interval? Transition { get; set; }
 
-    public static ITaskResult CreateObservation(string taskName, Footprint footprint)
+    public static ObservationTaskResult CreateObservation(string taskName, Footprint footprint)
     {
         var begin = footprint.Begin;
         var duration = footprint.Duration;
@@ -66,6 +66,32 @@ public class TaskResultViewModel : ViewModelBase
             Duration = _random.Next(20, 40),
             Node = _random.Next(1, 16),
             Direction = (SwathDirection)_random.Next(0, 2),
+        };
+    }
+
+    public static Footprint Create(ObservationTaskResult taskResult)
+    {
+        var node = taskResult.Node;
+        var begin = taskResult.Interval.Begin;
+        var duration = taskResult.Interval.Duration;
+        var direction = taskResult.Direction;
+        var satName = taskResult.SatelliteName;
+        var targetName = taskResult.TargetName;
+        var taskName = taskResult.TaskName;
+        var center = taskResult.Geometry.Center;
+        var border = taskResult.Geometry.Border;
+
+        return new Footprint()
+        {
+            Name = $"Footprint_{taskName}",
+            TargetName = targetName,
+            SatelliteName = satName,
+            Center = center,
+            Border = border,
+            Begin = begin.AddSeconds(duration / 2.0),
+            Duration = duration,
+            Node = node + 1,
+            Direction = direction,
         };
     }
 }

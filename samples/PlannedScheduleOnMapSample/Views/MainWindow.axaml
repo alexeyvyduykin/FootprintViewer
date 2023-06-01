@@ -4,24 +4,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:map="clr-namespace:FootprintViewer.UI;assembly=FootprintViewer.UI"
-		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"             
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:views="using:PlannedScheduleOnMapSample.Views"
+		xmlns:avalonia="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PlannedScheduleOnMapSample.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="PlannedScheduleOnMapSample">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
 	<Grid ColumnDefinitions="*,Auto">
-		<map:UserMapControl MapSource="{Binding Map}"
+		<avalonia:MapControl x:Name="MapControl"/>
+
+		<!--<map:UserMapControl MapSource="{Binding Map}"
 							Interactive="{Binding Interactive}"
 							State="{Binding State}"
 							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"/>
+							VerticalAlignment="Stretch"/>-->
 		<views:PlannedScheduleTabView Grid.Column="1"
-									  DataContext="{Binding PlannedScheduleTab}"/>		
+									  DataContext="{Binding PlannedScheduleTab}"/>
 	</Grid>
 </Window>
