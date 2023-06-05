@@ -1,9 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
 using FootprintViewer.Helpers;
-using Mapsui.Layers;
 using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.ViewModels.Items;
 using ReactiveUI;
@@ -53,35 +51,6 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     public void ToLayerProvider(FootprintProvider provider)
     {
         provider.SetObservable(_layerObservable);
-    }
-
-    public void ToMemoryLayer(MemoryLayer layer)
-    {
-        _layerObservable.Subscribe(s =>
-        {
-            layer.Features = s.Select(s => FeatureBuilder.Build(s)).ToList();
-        });
-    }
-
-    public void ToWritableLayer(WritableLayer layer)
-    {
-        _layerObservable.Subscribe(s =>
-        {
-            layer.AddRange(s.Select(s => FeatureBuilder.Build(s)).ToList());
-            layer.DataHasChanged();
-        });
-    }
-
-    public void ToObservableMemoryLayer(ObservableMemoryLayer<Footprint> layer)
-    {
-        var col = new ObservableCollection<Footprint>();
-
-        layer.ObservableCollection = col;
-
-        _layerObservable.Subscribe(s =>
-        {
-            layer.ObservableCollection.Add(s);
-        });
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
