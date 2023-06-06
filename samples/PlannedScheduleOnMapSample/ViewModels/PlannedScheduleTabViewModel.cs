@@ -1,7 +1,8 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
+using FootprintViewer.Data;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Helpers;
+using PlannedScheduleOnMapSample.Design;
 using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.ViewModels.Items;
 using ReactiveUI;
@@ -21,9 +22,14 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     private readonly ReadOnlyObservableCollection<TaskResultViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private IObservable<IReadOnlyCollection<Footprint>> _layerObservable;
+    private readonly DataManager _dataManager;
 
-    public PlannedScheduleTabViewModel()
+    public PlannedScheduleTabViewModel() : this(DesignData.CreateDataManager()) { }
+
+    public PlannedScheduleTabViewModel(DataManager dataManager)
     {
+        _dataManager = dataManager;
+
         var observable = _plannedSchedules
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -59,19 +65,14 @@ public class PlannedScheduleTabViewModel : ViewModelBase
 
     private async Task UpdateImpl()
     {
-        var list = await System.Reactive.Linq.Observable.Start(() =>
-        {
-            string path = System.IO.Path.Combine(EnvironmentHelpers.GetFullBaseDirectory(), "Assets", "PlannedSchedule.json");
+        var res = await _dataManager.GetDataAsync<PlannedScheduleResult>(MainWindowViewModel.PlannedScheduleKey);
 
-            var result = (PlannedScheduleResult)JsonHelpers.DeserializeFromFile<PlannedScheduleResult>(path)!;
-
-            return result.PlannedSchedules.ToList();
-        }, RxApp.TaskpoolScheduler);
+        var tasks = res.FirstOrDefault()!.PlannedSchedules;
 
         _plannedSchedules.Edit(innerList =>
         {
             innerList.Clear();
-            innerList.AddRange(list);
+            innerList.AddRange(tasks);
         });
     }
 

@@ -10,14 +10,15 @@
 
 	<Design.DataContext>
 		<vm:MessageBoxViewModel>
-			<vm:MessageBoxViewModel.Text>ClickInfo: Footprint[Name] = Footprint00735</vm:MessageBoxViewModel.Text>
+			<vm:MessageBoxViewModel.Text>ClickInfo: Footprint = Footprint00735</vm:MessageBoxViewModel.Text>
 		</vm:MessageBoxViewModel>
 	</Design.DataContext>
 
 	<Border>
 		<Grid>
-			<TextBox Text="{Binding Text}"
-					 IsReadOnly="True"
+			<TextBox Text="{Binding Text}"					 
+					 FontSize="16"
+					 IsReadOnly="True"					 
 					 IsHitTestVisible="False"
 					 CornerRadius="0"></TextBox>
 		</Grid>

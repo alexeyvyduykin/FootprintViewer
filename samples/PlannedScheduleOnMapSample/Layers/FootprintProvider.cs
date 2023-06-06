@@ -29,7 +29,15 @@ public class FootprintProvider : MemoryProvider
     public void UpdateData(IReadOnlyCollection<Footprint> footprints)
     {
         var features = new List<IFeature>(footprints
-            .Select(FeatureBuilder.Build));
+            .Select(s => 
+            {
+                var feature = FeatureBuilder.Build(s);
+
+                feature["Satellite"] = s.SatelliteName;
+                feature["Node"] = s.Node;
+
+                return feature;
+            }));
 
         _provider = new MemoryProvider(features);
     }

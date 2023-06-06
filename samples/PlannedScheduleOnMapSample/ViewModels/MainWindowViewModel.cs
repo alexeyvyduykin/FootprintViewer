@@ -1,4 +1,5 @@
 ﻿using BruTile.MbTiles;
+using FootprintViewer.Data;
 using FootprintViewer.Helpers;
 using FootprintViewer.Styles;
 using Mapsui;
@@ -12,6 +13,7 @@ using Mapsui.Styles.Thematics;
 using Mapsui.Tiling.Layers;
 using NetTopologySuite.Geometries;
 using PlannedScheduleOnMapSample.Layers;
+using PlannedScheduleOnMapSample.Models;
 using ReactiveUI.Fody.Helpers;
 using SQLite;
 using System;
@@ -28,12 +30,18 @@ public class MainWindowViewModel : ViewModelBase
 
     public static MainWindowViewModel Instance = new();
 
-    private const string WorldKey = "WorldMapLayer";
-    private const string FootprintKey = "FootprintLayer";
-    private const string TrackKey = "TrackLayer";
+    public const string WorldKey = "WorldMapLayer";
+    public const string FootprintKey = "FootprintLayer";
+    public const string TrackKey = "TrackLayer";
+    public const string PlannedScheduleKey = "PlannedSchedule";
+
+    private readonly FootprintService _footprintService;
+    private readonly DataManager _dataManager = new();
 
     public MainWindowViewModel()
     {
+        _dataManager.RegisterSource(PlannedScheduleKey, new CustomSource());
+
         var provider = new FootprintProvider();
 
         Map = new Map();
@@ -42,7 +50,7 @@ public class MainWindowViewModel : ViewModelBase
         Map.Layers.Add(CreateFootprintLayer(provider));
         Map.Layers.Add(CreateTrackLayer());
 
-        PlannedScheduleTab = new();
+        PlannedScheduleTab = new(_dataManager);
         PlannedScheduleTab.ToLayerProvider(provider);
 
         MessageBox = new();
@@ -52,6 +60,8 @@ public class MainWindowViewModel : ViewModelBase
             .WithUnselect(f => f[SelectField] = false)
             .WithEnter(f => f[HoverField] = true)
             .WithLeave(f => f[HoverField] = false);
+
+        _footprintService = new(Map, _dataManager);
 
         SelectCommand();
     }
@@ -89,7 +99,7 @@ public class MainWindowViewModel : ViewModelBase
 
         var layer = new WritableLayer()
         {
-            Name = TrackKey,           
+            Name = TrackKey,
             Style = style,
             IsMapInfoLayer = false
         };
@@ -104,11 +114,13 @@ public class MainWindowViewModel : ViewModelBase
             .AttachTo(Map)
             .Build();
 
-        _selector.Select.Subscribe(s =>
+        _selector.Select.Subscribe(async s =>
         {
             SelectFeature(s.Feature, s.Layer);
+        
+            MessageBox.ShowFootprintFeature(s.Feature);
 
-            MessageBox.Show($"ClickInfo: Footprint = {s.Feature["Name"]}");
+            await _footprintService.ShowTrackAsync((string)s.Feature["Name"]!);            
         });
 
         _selector.Unselect.Subscribe(s =>

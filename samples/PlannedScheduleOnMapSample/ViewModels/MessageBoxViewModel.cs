@@ -1,4 +1,5 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using Mapsui;
+using ReactiveUI.Fody.Helpers;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
 
@@ -9,8 +10,14 @@ public class MessageBoxViewModel : ViewModelBase
 
     }
 
-    public void Show(string text)
+    public void ShowFootprintFeature(IFeature feature)
     {
+        var text = $"""
+ClickInfo: Footprint = {feature["Name"]}
+           Satellite = {feature["Satellite"]}
+           Node      = {feature["Node"]}
+""";
+
         Text = text;
     }
 
