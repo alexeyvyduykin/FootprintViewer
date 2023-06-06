@@ -13,6 +13,7 @@ namespace PlannedScheduleOnMapSample.Layers;
 
 public class FootprintProvider : MemoryProvider
 {
+    private static Random _random = new();
     private IProvider _provider = new MemoryProvider();
 
     public FootprintProvider()
@@ -27,7 +28,9 @@ public class FootprintProvider : MemoryProvider
 
     public void UpdateData(IReadOnlyCollection<Footprint> footprints)
     {
-        var features = new List<IFeature>(footprints.Select(FeatureBuilder.Build));
+        var features = new List<IFeature>(footprints
+            .Select(FeatureBuilder.Build));
+
         _provider = new MemoryProvider(features);
     }
 

@@ -17,7 +17,8 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<Grid ColumnDefinitions="*,Auto">
+	<Grid ColumnDefinitions="*,Auto"
+		  RowDefinitions="*,Auto">
 		<avalonia:MapControl x:Name="MapControl">
 			<!--<inter:Interaction.Behavior>
 				<inter:InteractivityBehavior Map="{Binding Map}"
@@ -26,12 +27,18 @@
 			</inter:Interaction.Behavior>-->
 		</avalonia:MapControl>
 
+		<views:MessageBoxView Grid.Column="0" 
+							  Grid.Row="1"
+							  DataContext="{Binding MessageBox}"/>
+		
 		<!--<map:UserMapControl MapSource="{Binding Map}"
 							Interactive="{Binding Interactive}"
 							State="{Binding State}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"/>-->
+			
 		<views:PlannedScheduleTabView Grid.Column="1"
+									  Grid.RowSpan="2"
 									  DataContext="{Binding PlannedScheduleTab}"/>
 	</Grid>
 </Window>
