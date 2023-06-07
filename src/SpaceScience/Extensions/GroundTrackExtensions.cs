@@ -20,10 +20,74 @@ public static class GroundTrackExtensions
             .ToList();
     }
 
+    public static List<(double lonDeg, double latDeg, double u, double t)> GetFullTrack(this GroundTrack track, int node, double duration, Func<double, double>? lonConverter = null)
+    {
+        var list = new List<(double lonDeg, double latDeg, double u, double t)>();
+
+        // TODO: duration cut
+        double durationSum = 0.0;
+        int node1 = node;
+        var uPrev = track.CacheTrack.First().u;
+        var tPrev = track.CacheTrack.First().t;
+
+        if (lonConverter != null)
+        {
+            foreach (var item in track.CacheTrack)
+            {
+                if (item.u < uPrev)
+                {
+                    node1++;
+                }
+
+                var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node1;
+
+                list.Add((lonConverter.Invoke(item.lonDeg + offset), item.latDeg, item.u, item.t));
+
+                uPrev = item.u;
+            }
+
+            return list;
+        }
+
+        foreach (var item in track.CacheTrack)
+        {
+            if (item.u < uPrev)
+            {
+                node1++;
+            }
+
+            var dd = item.t - tPrev;
+
+            var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node1;
+
+            list.Add((item.lonDeg + offset, item.latDeg, item.u, item.t));
+
+            uPrev = item.u;
+            tPrev = item.t;
+        }
+
+        return list;
+    }
+
     public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
     {
         return track
             .GetFullTrack(node, lonConverter)
+            .Select(s => (s.lonDeg, s.latDeg))
+            .ToList();
+    }
+
+    public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, double duration, Func<double, double>? lonConverter = null)
+    {
+        var node1 = node;
+
+        if (track._isNodeCorrect == true)
+        {
+            node1--;
+        }
+
+        return track
+            .GetFullTrack(node1, duration, lonConverter)
             .Select(s => (s.lonDeg, s.latDeg))
             .ToList();
     }

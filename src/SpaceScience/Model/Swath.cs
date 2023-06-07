@@ -76,4 +76,10 @@ public class Swath
         _nearTrack.CalculateTrackWithLogStep(100);
         _farTrack.CalculateTrackWithLogStep(100);
     }
+
+    public void CalculateSwathOnInterval(double t0, double t1, double dt)
+    {
+        _nearTrack.CalculateTrackOnTimeInterval(t0, t1, dt);
+        _farTrack.CalculateTrackOnTimeInterval(t0, t1, dt);
+    }
 }

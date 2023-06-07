@@ -38,6 +38,15 @@ public static class OrbitExtensions
         return new SwathBuilderResult(leftRes, rightRes);
     }
 
+    public static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths(this Orbit orbit, int node, double t0, double t1, double dt, double lookAngleDeg, double radarAngleDeg, SwathDirection direction)
+    {
+        var swath = new Swath(orbit, lookAngleDeg, radarAngleDeg, direction);
+
+        var (near, far) = BuildSwaths(swath, node, t0, t1, dt);
+
+        return (near, far);
+    }
+
     public static (double centralAngleMinDeg, double centralAngleMaxDeg) GetValidRange(this Orbit orbit, double angle1Deg, double angle2Deg)
     {
         double u0 = 0;
@@ -91,5 +100,16 @@ public static class OrbitExtensions
         }
 
         return swaths;
+    }
+
+    private static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths(Swath swath, int node, double t0, double t1, double dt)
+    {
+        swath.CalculateSwathOnInterval(t0, t1, dt);
+
+        var near = swath.GetNearTrack(node, t1 - t0, LonConverters.Default);
+
+        var far = swath.GetFarTrack(node, t1 - t0, LonConverters.Default);
+
+        return (near, far);
     }
 }

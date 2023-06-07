@@ -116,6 +116,66 @@ public class GroundTrack
         return;
     }
 
+    // TODO: make complex solution
+    internal bool _isNodeCorrect = false;
+
+    public void CalculateTrackOnTimeInterval(double t0, double t1, double dt = 60.0)
+    {
+        if (t0 < 0)
+        {
+            _isNodeCorrect = true;
+        }
+
+        var period = _orbit.Period;
+        var tBegin = Math.Min(t0, t1);
+        var tEnd = Math.Max(t0, t1);
+
+        int n = 0;
+
+        while (tBegin >= period)
+        {
+            tBegin -= period;
+            n++;
+        }
+
+        tEnd -= n * period;
+
+        _cache.Clear();
+
+        if (Math.Abs(tBegin - tEnd) >= period)
+        {
+            // default one node, with start from [tBegin, tEnd)
+
+            for (double t = tBegin; t < tBegin + period; t += dt)
+            {
+                var u = _orbit.Anomalia(t);
+
+                var (lonDeg, latDeg) = ContinuousTrack(u);
+
+                _cache.Add((lonDeg, latDeg, u, t));
+            }
+
+            return;
+        }
+
+        for (double t = tBegin; t < tEnd; t += dt)
+        {
+            var u = _orbit.Anomalia(t);
+
+            var (lonDeg, latDeg) = ContinuousTrack(u);
+
+            _cache.Add((lonDeg, latDeg, u, t));
+        }
+
+        var uEnd = _orbit.Anomalia(tEnd);
+
+        var (lonDegEnd, latDegEnd) = ContinuousTrack(uEnd);
+
+        _cache.Add((lonDegEnd, latDegEnd, uEnd, tEnd));
+
+        return;
+    }
+
     public void CalculateTrack(double uBegin, double uEnd, int counts = 10)
     {
         _cache.Clear();
