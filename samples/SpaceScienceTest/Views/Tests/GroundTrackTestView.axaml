@@ -9,21 +9,43 @@
 
 	<Design.DataContext>
 		<vm:GroundTrackTestViewModel>
-			<vm:GroundTrackTestViewModel.Node>7</vm:GroundTrackTestViewModel.Node>
+			<vm:GroundTrackTestViewModel.Node1>7</vm:GroundTrackTestViewModel.Node1>
+			<vm:GroundTrackTestViewModel.BeginTimeSec>3943</vm:GroundTrackTestViewModel.BeginTimeSec>
+			<vm:GroundTrackTestViewModel.EndTimeSec>4230</vm:GroundTrackTestViewModel.EndTimeSec>
+			<vm:GroundTrackTestViewModel.Node2>10</vm:GroundTrackTestViewModel.Node2>
 		</vm:GroundTrackTestViewModel>
 	</Design.DataContext>
 
 	<Border Padding="10">
-		<StackPanel>
+		<StackPanel Spacing="8">
 
-			<TextBlock Text="{Binding Node, StringFormat='Node={0}'}"/>
+			<TextBlock Text="{Binding Period, StringFormat='Period={0}'}"/>
 
-			<Slider Value="{Binding Node}"
+			<CheckBox IsChecked="{Binding IsVisible1}">Test1</CheckBox>
+			
+			<TextBlock Text="{Binding Node1, StringFormat='Node={0}'}"/>
+
+			<Slider Value="{Binding Node1}"
 					Minimum="1"
 					Maximum="20"
 					TickFrequency="1"
-					IsSnapToTickEnabled="True">
-			</Slider>
+					IsSnapToTickEnabled="True"/>
+
+			<Separator Height="1" Background="White"/>
+			
+			<CheckBox IsChecked="{Binding IsVisible2}">Test2</CheckBox>
+
+			<TextBox Text="{Binding BeginTimeSec}"></TextBox>
+
+			<TextBox Text="{Binding EndTimeSec}"></TextBox>
+
+			<TextBlock Text="{Binding Node2, StringFormat='Node={0}'}"/>
+
+			<Slider Value="{Binding Node2}"
+					Minimum="1"
+					Maximum="20"
+					TickFrequency="1"
+					IsSnapToTickEnabled="True"/>
 
 		</StackPanel>
 	</Border>
