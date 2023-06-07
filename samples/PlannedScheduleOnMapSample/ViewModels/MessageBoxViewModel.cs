@@ -16,6 +16,7 @@ public class MessageBoxViewModel : ViewModelBase
 ClickInfo: Footprint = {feature["Name"]}
            Satellite = {feature["Satellite"]}
            Node      = {feature["Node"]}
+           Direction = {feature["Direction"]}
 """;
 
         Text = text;

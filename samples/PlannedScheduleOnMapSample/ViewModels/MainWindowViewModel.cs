@@ -97,7 +97,7 @@ public class MainWindowViewModel : ViewModelBase
     {
         var style = CreateTrackLayerStyle();
 
-        var layer = new WritableLayer()
+        var layer = new QueueLayer()
         {
             Name = TrackKey,
             Style = style,
@@ -117,10 +117,10 @@ public class MainWindowViewModel : ViewModelBase
         _selector.Select.Subscribe(async s =>
         {
             SelectFeature(s.Feature, s.Layer);
-        
+
             MessageBox.ShowFootprintFeature(s.Feature);
 
-            await _footprintService.ShowTrackAsync((string)s.Feature["Name"]!);            
+            await _footprintService.ShowTrackAsync(s.Feature);
         });
 
         _selector.Unselect.Subscribe(s =>
@@ -233,27 +233,63 @@ public class MainWindowViewModel : ViewModelBase
                 return null;
             }
 
-            if (gf[SelectField] is true)
+            if ((string)gf["Name"]! == "FootprintTrack")
             {
                 return new VectorStyle()
                 {
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Green, 0.55f)),
-                    Outline = new Pen(Color.Black, 4.0),
-                    Line = new Pen(Color.Black, 4.0)
+                    Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
+                    Outline = new Pen(Color.Blue, 2.0),
+                    Line = new Pen(Color.Blue, 2.0)
                 };
             }
 
-            if (gf[HoverField] is true)
+            if ((string)gf["Name"]! == "BaseTrack")
             {
                 return new VectorStyle()
                 {
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Green, 0.85f)),
-                    Outline = new Pen(Color.Yellow, 3.0),
-                    Line = new Pen(Color.Yellow, 3.0)
+                    Fill = new Brush(Color.Opacity(Color.Yellow, 0.55f)),
+                    Outline = new Pen(Color.Yellow, 1.0),
+                    Line = new Pen(Color.Yellow, 1.0)
+                };
+            }
+
+            if ((string)gf["Name"]! == "FootprintSwath")
+            {
+                return new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Orange, 1.0f)),
+                    Outline = new Pen(Color.Orange, 2.0),
+                    Line = new Pen(Color.Orange, 2.0)
+                };
+            }
+
+            if ((string)gf["Name"]! == "BaseSwath")
+            {
+                return new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Indigo, 0.55f)),
+                    Outline = new Pen(Color.Indigo, 1.0),
+                    Line = new Pen(Color.Indigo, 1.0)
+                };
+            }
+
+            if ((string)gf["Name"]! == "Arrow")
+            {
+                return new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Red, 1.0f)),
+                    Outline = new Pen(Color.Red, 1.0),
+                    Line = new Pen(Color.Red, 1.0)
                 };
             }
 
