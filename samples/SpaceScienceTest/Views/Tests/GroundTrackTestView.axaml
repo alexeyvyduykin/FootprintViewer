@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SpaceScienceTest.ViewModels.Tests"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+			 x:DataType="vm:GroundTrackTestViewModel"
+             x:Class="SpaceScienceTest.Views.Tests.GroundTrackTestView">
+
+	<Design.DataContext>
+		<vm:GroundTrackTestViewModel>
+			<vm:GroundTrackTestViewModel.Node>7</vm:GroundTrackTestViewModel.Node>
+		</vm:GroundTrackTestViewModel>
+	</Design.DataContext>
+
+	<Border Padding="10">
+		<StackPanel>
+
+			<TextBlock Text="{Binding Node, StringFormat='Node={0}'}"/>
+
+			<Slider Value="{Binding Node}"
+					Minimum="1"
+					Maximum="20"
+					TickFrequency="1"
+					IsSnapToTickEnabled="True">
+			</Slider>
+
+		</StackPanel>
+	</Border>
+
+</UserControl>

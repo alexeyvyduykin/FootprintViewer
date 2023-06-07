@@ -52,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\FootprintViewer.Data\FootprintViewer.Data.csproj" />
 		<ProjectReference Include="..\..\src\SpaceScience\SpaceScience.csproj" />
 	</ItemGroup>
 
