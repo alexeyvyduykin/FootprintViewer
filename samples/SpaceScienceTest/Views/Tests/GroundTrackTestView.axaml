@@ -3,14 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:SpaceScienceTest.ViewModels.Tests"
-			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+			 mc:Ignorable="d" d:DesignWidth="400"
 			 x:DataType="vm:GroundTrackTestViewModel"
              x:Class="SpaceScienceTest.Views.Tests.GroundTrackTestView">
 
 	<Design.DataContext>
 		<vm:GroundTrackTestViewModel>
+			<vm:GroundTrackTestViewModel.IsVisible1>True</vm:GroundTrackTestViewModel.IsVisible1>
 			<vm:GroundTrackTestViewModel.Node1>7</vm:GroundTrackTestViewModel.Node1>
-			<vm:GroundTrackTestViewModel.BeginTimeSec>3943</vm:GroundTrackTestViewModel.BeginTimeSec>
+			<vm:GroundTrackTestViewModel.BeginTimeSec>1943</vm:GroundTrackTestViewModel.BeginTimeSec>
 			<vm:GroundTrackTestViewModel.EndTimeSec>4230</vm:GroundTrackTestViewModel.EndTimeSec>
 			<vm:GroundTrackTestViewModel.Node2>10</vm:GroundTrackTestViewModel.Node2>
 		</vm:GroundTrackTestViewModel>
@@ -22,7 +23,7 @@
 			<TextBlock Text="{Binding Period, StringFormat='Period={0}'}"/>
 
 			<CheckBox IsChecked="{Binding IsVisible1}">Test1</CheckBox>
-			
+
 			<TextBlock Text="{Binding Node1, StringFormat='Node={0}'}"/>
 
 			<Slider Value="{Binding Node1}"
@@ -32,12 +33,24 @@
 					IsSnapToTickEnabled="True"/>
 
 			<Separator Height="1" Background="White"/>
-			
+
 			<CheckBox IsChecked="{Binding IsVisible2}">Test2</CheckBox>
 
-			<TextBox Text="{Binding BeginTimeSec}"></TextBox>
+			<TextBlock Text="{Binding BeginTimeSec, StringFormat='BeginTimeSec={0}'}"/>
 
-			<TextBox Text="{Binding EndTimeSec}"></TextBox>
+			<Slider Value="{Binding BeginTimeSec}"
+					Minimum="-6000"
+					Maximum="12000"
+					TickFrequency="100"
+					IsSnapToTickEnabled="True"/>
+
+			<TextBlock Text="{Binding EndTimeSec, StringFormat='EndTimeSec={0}'}"/>
+
+			<Slider Value="{Binding EndTimeSec}"
+					Minimum="-6000"
+					Maximum="12000"
+					TickFrequency="100"
+					IsSnapToTickEnabled="True"/>
 
 			<TextBlock Text="{Binding Node2, StringFormat='Node={0}'}"/>
 

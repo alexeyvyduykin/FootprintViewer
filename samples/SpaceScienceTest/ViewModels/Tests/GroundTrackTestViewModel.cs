@@ -39,7 +39,6 @@ public class GroundTrackTestViewModel : ViewModelBase
 
         this.WhenAnyValue(s => s.BeginTimeSec, s => s.EndTimeSec, s => s.IsVisible2)
             .Where(s => s.Item3 == true)
-            .Throttle(TimeSpan.FromSeconds(1))
             .Select(_ => Unit.Default)
             .InvokeCommand(Update2);
 
@@ -108,7 +107,7 @@ public class GroundTrackTestViewModel : ViewModelBase
 
         _layer1.Clear();
         _layer1.AddRange(trackFeature);
-        _layer1.Add(FeatureBuilder.CreateArrow(trackLine.Last()));
+        _layer1.Add(ArrowFeatureBuilder.Create(trackLine.Last()));
         _layer1.DataHasChanged();
     }
 
@@ -148,7 +147,7 @@ public class GroundTrackTestViewModel : ViewModelBase
 
         _layer2.Clear();
         _layer2.AddRange(trackFeature);
-        _layer2.Add(FeatureBuilder.CreateArrow(trackLine.Last()));
+        _layer2.Add(ArrowFeatureBuilder.Create(trackLine.Last()));
         _layer2.DataHasChanged();
     }
 }

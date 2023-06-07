@@ -8,19 +8,19 @@ using System.Linq;
 
 namespace SpaceScienceTest.Builders;
 
-public static class FeatureBuilder
+public static class ArrowFeatureBuilder
 {
-    public static IFeature CreateArrow(IEnumerable<(double lonDeg, double latDeg)> vertices)
+    public static IFeature Create(IEnumerable<(double lonDeg, double latDeg)> vertices)
     {
         var dd = vertices.TakeLast(2).ToList();
         var (x1, y1) = dd[0];
         var (x2, y2) = dd[1];
-        var arrow = CreateArrowShape(x1, y1, x2, y2, 2.0);
+        var arrow = CreateShape(x1, y1, x2, y2, 2.0);
 
         return arrow.ToFeature("Arrow");
     }
 
-    private static Polygon CreateArrowShape(double x1, double y1, double x2, double y2, double len = 1.0)
+    private static Polygon CreateShape(double x1, double y1, double x2, double y2, double len = 1.0)
     {
         // Backward direction vector
         var (dx, dy) = (x1 - x2, y1 - y2);
