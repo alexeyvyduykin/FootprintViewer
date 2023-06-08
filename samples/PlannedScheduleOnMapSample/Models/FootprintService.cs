@@ -2,7 +2,7 @@
 using FootprintViewer.Data;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Extensions;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
@@ -53,7 +53,7 @@ public class FootprintService
         var radarAngle = satellite.RadarAngleDeg;
         var lookAngle = satellite.LookAngleDeg;
 
-        var features = orbit.BuildTracks().ToFeature("");
+        var features = FeatureBuilder.CreateTracks("", satellite.BuildTracks());
 
         var track = new GroundTrack(orbit);
         var begin0 = begin.AddSeconds(-period * (node - 1));
@@ -69,16 +69,16 @@ public class FootprintService
 
         var trackLineBase = track.GetTrack(node - 1, duration + 2 * 60, LonConverters.Default);//.ToCutList();
 
-        var trackFeature = trackLine.ToLineStringFeature("FootprintTrack");
-        var trackFeatureBase = trackLineBase.ToLineStringFeature("BaseTrack");
+        var trackFeature = FeatureBuilder.CreateTrack("FootprintTrack", trackLine);
+        var trackFeatureBase = FeatureBuilder.CreateTrack("BaseTrack", trackLineBase);
 
         var (baseNear, baseFar) = orbit.BuildSwaths(node - 1, t0 - 60, t1 + 60, 10, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
-        var baseNearSwathFeature = baseNear.ToLineStringFeature("BaseSwath");
-        var baseFarSwathFeature = baseFar.ToLineStringFeature("BaseSwath");
+        var baseNearSwathFeature = FeatureBuilder.CreateTrack("BaseSwath", baseNear);
+        var baseFarSwathFeature = FeatureBuilder.CreateTrack("BaseSwath", baseFar);
 
         var (near, far) = orbit.BuildSwaths(node - 1, t0, t1, 2, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
-        var nearSwathFeature = near.ToLineStringFeature("FootprintSwath");
-        var farSwathFeature = far.ToLineStringFeature("FootprintSwath");
+        var nearSwathFeature = FeatureBuilder.CreateTrack("FootprintSwath", near);
+        var farSwathFeature = FeatureBuilder.CreateTrack("FootprintSwath", far);
 
         var dd = trackLineBase.TakeLast(2).ToList();
         var (x1, y1) = dd[0];

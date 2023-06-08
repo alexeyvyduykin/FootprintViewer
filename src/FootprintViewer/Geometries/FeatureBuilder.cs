@@ -1,6 +1,9 @@
-﻿using Mapsui.Projections;
+﻿using Mapsui;
+using Mapsui.Nts.Extensions;
+using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FootprintViewer.Geometries;
 
@@ -206,5 +209,18 @@ public static partial class FeatureBuilder
         }
 
         return (lat1 + (180 - lon1) * (lat2 - lat1) / (lon2 - lon1));
+    }
+
+    public static IFeature CreateLineString(string name, List<(double lonDeg, double latDeg)> list)
+    {
+        var vertices = list.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
+
+        var line = new GeometryFactory().CreateLineString(vertices.ToGreaterThanTwoCoordinates());
+
+        var feature = line.ToFeature();
+
+        feature["Name"] = name;
+
+        return (IFeature)feature;
     }
 }

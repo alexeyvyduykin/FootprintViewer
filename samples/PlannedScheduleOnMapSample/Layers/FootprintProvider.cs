@@ -1,5 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
@@ -29,9 +29,9 @@ public class FootprintProvider : MemoryProvider
     public void UpdateData(IReadOnlyCollection<Footprint> footprints)
     {
         var features = new List<IFeature>(footprints
-            .Select(s => 
+            .Select(s =>
             {
-                var feature = FeatureBuilder.Build(s);
+                var feature = FeatureBuilder.CreateFootprint(s);
 
                 feature["Satellite"] = s.SatelliteName;
                 feature["Node"] = s.Node;
