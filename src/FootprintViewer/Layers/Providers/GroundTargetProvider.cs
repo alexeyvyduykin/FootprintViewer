@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -24,7 +24,7 @@ public class GroundTargetProvider : IProvider, IDynamic, IFeatureProvider
         _groundTargets
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => FeatureBuilder.Build(s))
+            .Transform(s => FeatureBuilder.CreateGroundTarget(s))
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
     }

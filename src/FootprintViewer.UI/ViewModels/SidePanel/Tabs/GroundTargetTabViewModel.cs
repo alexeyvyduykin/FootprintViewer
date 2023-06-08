@@ -2,8 +2,8 @@
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Models;
 using FootprintViewer.Services;
 using FootprintViewer.UI.Extensions;
 using FootprintViewer.UI.Services2;

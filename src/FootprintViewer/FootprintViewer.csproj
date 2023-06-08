@@ -16,7 +16,6 @@
 		<PackageReference Include="Mapsui.Tiling" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Mapsui.Rendering.Skia" Version="$(MapsuiVersion)" />
 		<PackageReference Include="ReactiveUI" Version="18.0.10" />
-		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
 		<PackageReference Include="CliWrap" Version="3.4.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 		<PackageReference Include="TimeDataViewer" Version="1.0.1" />
@@ -29,11 +28,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity.UI\Mapsui.Interactivity.UI.csproj" />-->
 		<ProjectReference Include="..\..\..\MapsuiInteractivity\src\Mapsui.Interactivity\Mapsui.Interactivity.csproj" />
 		<ProjectReference Include="..\..\..\TimeDataViewer\TimeDataViewer\src\TimeDataViewerLite\TimeDataViewerLite.csproj" />
 		<ProjectReference Include="..\FootprintViewer.Data\FootprintViewer.Data.csproj" />
-		<ProjectReference Include="..\SpaceScience\SpaceScience.csproj" />
 	</ItemGroup>
 
 </Project>

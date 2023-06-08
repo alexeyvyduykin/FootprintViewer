@@ -1,6 +1,5 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Factories;
 using FootprintViewer.Models;
 using FootprintViewer.Services;
 using FootprintViewer.UI.Extensions;

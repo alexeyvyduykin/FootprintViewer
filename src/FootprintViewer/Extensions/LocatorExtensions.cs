@@ -1,12 +1,9 @@
-﻿using Splat;
+﻿namespace FootprintViewer.Extensions;
 
-namespace FootprintViewer
+public static class LocatorExtensions
 {
-    public static class LocatorExtensions
+    public static T GetExistingService<T>(this IServiceProvider dependencyResolver)
     {
-        public static T GetExistingService<T>(this IReadonlyDependencyResolver dependencyResolver)
-        {
-            return dependencyResolver.GetService<T>() ?? throw new Exception($"Type {typeof(T)} not registered.");
-        }
+        return (T)(dependencyResolver.GetService(typeof(T)) ?? throw new Exception($"Type {typeof(T)} not registered."));
     }
 }

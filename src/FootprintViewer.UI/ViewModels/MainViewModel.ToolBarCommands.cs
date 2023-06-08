@@ -1,6 +1,6 @@
 ﻿using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
 using FootprintViewer.Layers;
+using FootprintViewer.Models;
 using FootprintViewer.Styles;
 using FootprintViewer.UI.ViewModels.Tips;
 using Mapsui;

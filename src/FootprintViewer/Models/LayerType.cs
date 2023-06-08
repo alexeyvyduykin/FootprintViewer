@@ -1,4 +1,4 @@
-﻿namespace FootprintViewer.Factories;
+﻿namespace FootprintViewer.Models;
 
 public enum LayerType
 {

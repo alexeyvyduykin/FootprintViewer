@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Factories;
-using FootprintViewer.Layers;
+﻿using FootprintViewer.Layers;
 using FootprintViewer.Layers.Providers;
 using FootprintViewer.Models;
 using FootprintViewer.StateMachines;

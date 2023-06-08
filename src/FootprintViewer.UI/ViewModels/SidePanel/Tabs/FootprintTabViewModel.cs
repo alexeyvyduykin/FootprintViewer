@@ -3,7 +3,6 @@ using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
 using FootprintViewer.UI.Extensions;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.SidePanel.Filters;
@@ -17,6 +16,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using FootprintViewer.Models;
 
 namespace FootprintViewer.UI.ViewModels.SidePanel.Tabs;
 

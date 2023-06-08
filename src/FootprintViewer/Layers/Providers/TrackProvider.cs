@@ -1,14 +1,12 @@
-﻿using ConcurrentCollections;
-using FootprintViewer.Data.Extensions;
+﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Extensions;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Utilities;
 using ReactiveUI;
-using SpaceScience.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -85,7 +83,7 @@ public class TrackProvider : IProvider, IDynamic
         {
             return satellites.ToDictionary(
                 s => s.Name!,
-                s => s.ToOrbit().BuildTracks().ToFeature(s.Name!));
+                s => FeatureBuilder.CreateTracks(s.Name!, s.BuildTracks()));
         }, RxApp.TaskpoolScheduler);
     }
 

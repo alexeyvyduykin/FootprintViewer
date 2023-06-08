@@ -1,5 +1,4 @@
-﻿using FootprintViewer.Factories;
-using FootprintViewer.Models;
+﻿using FootprintViewer.Models;
 using FootprintViewer.StateMachines;
 using FootprintViewer.Styles;
 using Mapsui;

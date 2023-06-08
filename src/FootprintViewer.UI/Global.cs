@@ -2,8 +2,8 @@
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
-using FootprintViewer.Factories;
 using FootprintViewer.Helpers;
+using FootprintViewer.Models;
 using System.Collections.Generic;
 using System.IO;
 
@@ -176,7 +176,7 @@ public class Global
         {
             case Models.PlannedScheduleState.None:
                 break;
-            case Models.PlannedScheduleState.Demo:                
+            case Models.PlannedScheduleState.Demo:
                 return CreateDemoSources();
             case Models.PlannedScheduleState.JsonFile:
                 {

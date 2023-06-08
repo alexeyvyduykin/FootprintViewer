@@ -1,6 +1,6 @@
 ﻿using BruTile.MbTiles;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+using FootprintViewer.Models;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Nts.Extensions;

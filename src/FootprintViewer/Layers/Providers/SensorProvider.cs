@@ -1,14 +1,13 @@
-﻿using ConcurrentCollections;
-using FootprintViewer.Data.Extensions;
+﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Extensions;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
 using Mapsui.Utilities;
 using ReactiveUI;
-using SpaceScience.Extensions;
+//using SpaceScience.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -94,17 +93,16 @@ public class SensorProvider : IProvider, IDynamic
     {
         return await Observable.Start(() =>
         {
-            var dict = satellites.ToDictionary(
-                s => s.Name!,
-                s => s.ToOrbit().BuildSwaths(s.LookAngleDeg, s.RadarAngleDeg));
+            var leftDict1 = satellites.ToDictionary(s => s.Name!, s => s.BuildSwaths(SwathDirection.Left));
+            var rightDict1 = satellites.ToDictionary(s => s.Name!, s => s.BuildSwaths(SwathDirection.Right));
 
-            var leftDict = dict.ToDictionary(
+            var leftDict = leftDict1.ToDictionary(
                 s => s.Key,
-                s => s.Value.ToFeature(s.Key, SpaceScience.Model.SwathDirection.Left));
+                s => FeatureBuilder.CreateSwaths(s.Key, s.Value));
 
-            var rightDict = dict.ToDictionary(
+            var rightDict = rightDict1.ToDictionary(
                 s => s.Key,
-                s => s.Value.ToFeature(s.Key, SpaceScience.Model.SwathDirection.Right));
+                s => FeatureBuilder.CreateSwaths(s.Key, s.Value));
 
             return (leftDict, rightDict);
         }, RxApp.TaskpoolScheduler);

@@ -6,7 +6,7 @@ using FootprintViewer.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace FootprintViewer.Factories;
+namespace FootprintViewer.Models;
 
 public class DbFactory : IDbFactory
 {

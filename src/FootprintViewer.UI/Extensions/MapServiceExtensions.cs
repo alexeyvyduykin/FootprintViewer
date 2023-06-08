@@ -1,15 +1,14 @@
-﻿using FootprintViewer.Factories;
+﻿using FootprintViewer.Layers.Providers;
+using FootprintViewer.Models;
 using FootprintViewer.UI.Services2;
-using FootprintViewer.Layers.Providers;
 using Mapsui;
-using Mapsui.Interactivity;
+using Mapsui.Animations;
 using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Mapsui.Animations;
 
 namespace FootprintViewer.UI.Extensions;
 

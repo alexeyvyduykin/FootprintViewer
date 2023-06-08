@@ -1,6 +1,5 @@
-﻿using ConcurrentCollections;
-using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
+﻿using FootprintViewer.Data.Models;
+using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
@@ -67,7 +66,7 @@ public class GroundStationProvider : IProvider, IDynamic
                     Angles = angles,
                 };
 
-                _cache[name] = FeatureBuilder.Build(gs);
+                _cache[name] = FeatureBuilder.CreateGroundStation(gs);
             }
 
             _featureCache.Clear();

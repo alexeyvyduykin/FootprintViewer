@@ -1,12 +1,12 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.Factories;
-using FootprintViewer.UI.Services2;
-using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using FootprintViewer.Layers.Providers;
+using FootprintViewer.Models;
 using FootprintViewer.Services;
 using FootprintViewer.Styles;
+using FootprintViewer.UI.Services2;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;

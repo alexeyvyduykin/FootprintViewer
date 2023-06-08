@@ -4,7 +4,6 @@ using FootprintViewer.Data.Models;
 using Mapsui.Styles;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using SpaceScience.Extensions;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.UI.ViewModels.SidePanel.Items;
@@ -26,7 +25,7 @@ public sealed class SatelliteViewModel : ViewModelBase, IViewerItem
 
         _name = satellite.Name!;
 
-        var nodes = satellite.ToOrbit().NodesOnDay();
+        var nodes = satellite.NodesOnDay();
 
         _maxNode = nodes;
 
