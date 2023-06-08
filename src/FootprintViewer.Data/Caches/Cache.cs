@@ -1,5 +1,4 @@
-﻿using DynamicData;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Caches;
@@ -8,13 +7,13 @@ public class Cache<TKey, TSubKey>
     where TKey : class
     where TSubKey : class
 {
-    public readonly Dictionary<TKey, IDictionary<TSubKey, IList<object>>> _cache = new();
+    public readonly Dictionary<TKey, Dictionary<TSubKey, List<object>>> _cache = new();
 
     private void AddKeys(TKey key, IList<TSubKey> subKeys)
     {
         if (ContainsKey(key) == false)
         {
-            _cache.Add(key, subKeys.ToDictionary<TSubKey, TSubKey, IList<object>>(s => s, _ => new List<object>()));
+            _cache.Add(key, subKeys.ToDictionary(s => s, _ => new List<object>()));
         }
         else
         {

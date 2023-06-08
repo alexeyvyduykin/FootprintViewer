@@ -1,5 +1,4 @@
 ﻿using FootprintViewer.Data.Models;
-using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Model;
 using System.Reactive.Linq;
@@ -11,7 +10,7 @@ public static class SatelliteBuilder
     private static readonly Random _random = new();
 
     public static async Task<IList<Satellite>> CreateAsync(int count)
-        => await Observable.Start(() => Create(count), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => Create(count));
 
     public static IList<Satellite> Create(int count)
     {

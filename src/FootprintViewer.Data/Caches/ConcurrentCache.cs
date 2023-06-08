@@ -1,5 +1,4 @@
-﻿using DynamicData;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Reactive.Linq;
 
@@ -9,13 +8,13 @@ public class ConcurrentCache<TKey, TSubKey>
     where TKey : class
     where TSubKey : class
 {
-    public readonly ConcurrentDictionary<TKey, IDictionary<TSubKey, IList<object>>> _cache = new();
+    public readonly ConcurrentDictionary<TKey, Dictionary<TSubKey, List<object>>> _cache = new();
 
     private void AddKeys(TKey key, IList<TSubKey> subKeys)
     {
         if (ContainsKey(key) == false)
         {
-            _cache.TryAdd(key, subKeys.ToDictionary<TSubKey, TSubKey, IList<object>>(s => s, _ => new List<object>()));
+            _cache.TryAdd(key, subKeys.ToDictionary(s => s, _ => new List<object>()));
         }
         else
         {

@@ -6,22 +6,11 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<MapsuiVersion>4.0.0-rc.1</MapsuiVersion>
-	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="ReactiveUI" Version="18.0.10" />
-		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
-		<PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
 		<PackageReference Include="NetTopologySuite.IO.GeoJSON" Version="2.0.4" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Nito.AsyncEx" Version="5.1.2" />
-		<PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
-		<PackageReference Include="Mapsui" Version="$(MapsuiVersion)" />
-		<PackageReference Include="Mapsui.Nts" Version="$(MapsuiVersion)" />
-		<PackageReference Include="Mapsui.Tiling" Version="$(MapsuiVersion)" />
-		<PackageReference Include="Mapsui.Rendering.Skia" Version="$(MapsuiVersion)" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Model;
 using System.Reactive.Linq;
@@ -12,10 +11,10 @@ public static class GroundTargetBuilder
     private static readonly Random _random = new();
 
     public static async Task<IList<GroundTarget>> CreateAsync(IList<Footprint> footprints, int count)
-    => await Observable.Start(() => Create(footprints, count), RxApp.TaskpoolScheduler);
+    => await Observable.Start(() => Create(footprints, count));
 
     public static async Task<IList<GroundTarget>> CreateAsync(int count)
-        => await Observable.Start(() => Create(count), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => Create(count));
 
     public static GroundTarget CreateRandom()
     {

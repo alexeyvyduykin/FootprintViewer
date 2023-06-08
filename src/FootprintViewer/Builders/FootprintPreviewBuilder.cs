@@ -1,7 +1,7 @@
-﻿using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Models;
 using SkiaSharp;
 
-namespace FootprintViewer.Data.Builders;
+namespace FootprintViewer.Builders;
 
 public static class FootprintPreviewBuilder
 {

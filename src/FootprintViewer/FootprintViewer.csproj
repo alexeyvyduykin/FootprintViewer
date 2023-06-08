@@ -5,13 +5,23 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<MapsuiVersion>4.0.0-rc.1</MapsuiVersion>
+	</PropertyGroup>
+
 	<ItemGroup>
+		<PackageReference Include="BruTile.MbTiles" Version="5.0.0" />
+		<PackageReference Include="Mapsui" Version="$(MapsuiVersion)" />
+		<PackageReference Include="Mapsui.Nts" Version="$(MapsuiVersion)" />
+		<PackageReference Include="Mapsui.Tiling" Version="$(MapsuiVersion)" />
+		<PackageReference Include="Mapsui.Rendering.Skia" Version="$(MapsuiVersion)" />
 		<PackageReference Include="ReactiveUI" Version="18.0.10" />
 		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
 		<PackageReference Include="CliWrap" Version="3.4.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 		<PackageReference Include="TimeDataViewer" Version="1.0.1" />
 		<PackageReference Include="Stateless" Version="5.13.0" />
+		<PackageReference Include="NetTopologySuite.IO.ShapeFile" Version="2.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

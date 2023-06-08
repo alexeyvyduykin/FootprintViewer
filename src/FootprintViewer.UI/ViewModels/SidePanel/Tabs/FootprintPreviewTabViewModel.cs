@@ -1,12 +1,12 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Data.Models;
 using FootprintViewer.Factories;
+using FootprintViewer.Models;
+using FootprintViewer.Services;
 using FootprintViewer.UI.Extensions;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.SidePanel.Filters;
 using FootprintViewer.UI.ViewModels.SidePanel.Items;
-using FootprintViewer.Services;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using ReactiveUI;

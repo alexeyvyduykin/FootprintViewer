@@ -1,10 +1,12 @@
-﻿using FootprintViewer.Data;
+﻿using FootprintViewer.Builders;
+using FootprintViewer.Data;
 using FootprintViewer.Data.Builders;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
-using FootprintViewer.UI.Services2;
+using FootprintViewer.Models;
 using FootprintViewer.Services;
+using FootprintViewer.UI.Services2;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.IO;

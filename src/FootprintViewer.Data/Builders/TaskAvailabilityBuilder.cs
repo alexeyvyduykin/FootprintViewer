@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using SpaceScience;
 using System.Reactive.Linq;
 
@@ -12,10 +11,10 @@ public static class TaskAvailabilityBuilder
     private static readonly Random _random = new();
 
     public static async Task<List<TaskAvailability>> CreateCommunicationsAsync(IList<Satellite> satellites, IList<GroundStation> groundStations, IList<Footprint> footprints, IList<ITask> tasks)
-    => await Observable.Start(() => CreateCommunications(satellites, groundStations, footprints, tasks), RxApp.TaskpoolScheduler);
+    => await Observable.Start(() => CreateCommunications(satellites, groundStations, footprints, tasks));
 
     public static async Task<List<TaskAvailability>> CreateObservationsAsync(IList<Footprint> footprints, IList<Satellite> satellites, IList<ITask> tasks)
-        => await Observable.Start(() => CreateObservations(footprints, satellites, tasks), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => CreateObservations(footprints, satellites, tasks));
 
     public static List<TaskAvailability> CreateObservations(IList<ITask> tasks, IList<Satellite> satellites, IList<(string satName, IList<TimeWindowResult> windows)> windows)
     {

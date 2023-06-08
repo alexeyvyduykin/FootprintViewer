@@ -1,10 +1,13 @@
 ﻿using BruTile.MbTiles;
+using FootprintViewer.Layers;
 using Mapsui;
 using Mapsui.Utilities;
 using SkiaSharp;
 using SQLite;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace FootprintViewer.Data.Models;
+namespace FootprintViewer.Models;
 
 public class FootprintPreview
 {

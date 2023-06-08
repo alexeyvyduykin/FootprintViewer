@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
@@ -10,7 +9,7 @@ public static class GroundStationBuilder
     private static Random _random = new();
 
     private static async Task<T> Start<T>(Func<T> func)
-        => await Observable.Start(func, RxApp.TaskpoolScheduler);
+        => await Observable.Start(func);
 
     public static async Task<IList<GroundStation>> CreateDefaultAsync()
         => await Start(() => CreateDefault());

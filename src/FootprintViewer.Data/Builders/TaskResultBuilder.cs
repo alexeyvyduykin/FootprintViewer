@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using SpaceScience;
 using System.Reactive.Linq;
 
@@ -11,10 +10,10 @@ public static class TaskResultBuilder
     private static readonly Random _random = new();
 
     public static async Task<List<ITaskResult>> CreateObservationsAsync(IList<ITask> tasks, IList<Footprint> footprints)
-        => await Observable.Start(() => CreateObservations(tasks, footprints), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => CreateObservations(tasks, footprints));
 
     public static async Task<List<ITaskResult>> CreateCommunicationsAsync(List<TaskAvailability> availabilities)
-        => await Observable.Start(() => CreateCommunications(availabilities), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => CreateCommunications(availabilities));
 
     public static List<ITaskResult> CreateObservations(IList<ITask> tasks, IList<Satellite> satellites, IList<(string satName, IList<TimeWindowResult> windows)> windows)
     {
@@ -61,7 +60,7 @@ public static class TaskResultBuilder
             var latDeg = selectRes.Lat;
 
             var node = selectRes.Node;
-            var dicrection = (selectRes.IsLeftSwath == true) ? Models.SwathDirection.Left : Models.SwathDirection.Right;
+            var dicrection = (selectRes.IsLeftSwath == true) ? SwathDirection.Left : SwathDirection.Right;
 
             var taskResult = new ObservationTaskResult()
             {

@@ -1,5 +1,5 @@
-﻿using FootprintViewer.Data.Builders;
-using FootprintViewer.Data.Models;
+﻿using FootprintViewer.Builders;
+using FootprintViewer.Models;
 using SkiaSharp;
 
 namespace FootprintViewer.UI.ViewModels.SidePanel.Items;

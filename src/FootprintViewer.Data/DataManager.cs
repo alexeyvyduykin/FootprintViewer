@@ -1,7 +1,5 @@
-﻿using DynamicData;
-using FootprintViewer.Data.Caches;
+﻿using FootprintViewer.Data.Caches;
 using Nito.AsyncEx;
-using ReactiveUI;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
@@ -139,7 +137,7 @@ public class DataManager : IDataManager
             }
 
             return new List<T>();
-        }, RxApp.TaskpoolScheduler);
+        });
     }
 
     public async Task<bool> TryAddAsync(string key, object value)
@@ -168,7 +166,7 @@ public class DataManager : IDataManager
             }
 
             return false;
-        }, RxApp.TaskpoolScheduler);
+        });
     }
 
     public async Task<bool> TryRemoveAsync(string key, object value)
@@ -197,7 +195,7 @@ public class DataManager : IDataManager
             }
 
             return false;
-        }, RxApp.TaskpoolScheduler);
+        });
     }
 
     public async Task<bool> TryEditAsync(string key, string id, object newValue)
@@ -226,6 +224,6 @@ public class DataManager : IDataManager
             }
 
             return false;
-        }, RxApp.TaskpoolScheduler);
+        });
     }
 }

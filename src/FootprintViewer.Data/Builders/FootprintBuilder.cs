@@ -1,7 +1,6 @@
 ﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
-using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
@@ -18,7 +17,7 @@ public static class FootprintBuilder
     private static readonly int _durationMax = 30;
 
     public static async Task<IList<Footprint>> CreateAsync(IList<Satellite> satellites, int count)
-        => await Observable.Start(() => Create(satellites, count), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => Create(satellites, count));
 
     public static IList<Footprint> Create(IList<Satellite> satellites, int footprintCount)
     {

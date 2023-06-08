@@ -1,10 +1,11 @@
-﻿using FootprintViewer.Data.Extensions;
-using Mapsui.Nts.Extensions;
+﻿using Mapsui.Nts.Extensions;
 using Mapsui.Projections;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO.ShapeFile.Extended;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace FootprintViewer.Data.Models;
+namespace FootprintViewer.Models;
 
 public class FootprintPreviewGeometry
 {

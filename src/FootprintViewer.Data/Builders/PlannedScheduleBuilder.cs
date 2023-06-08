@@ -1,6 +1,5 @@
 ﻿using FootprintViewer.Data.Extensions;
 using FootprintViewer.Data.Models;
-using ReactiveUI;
 using SpaceScience;
 using SpaceScience.Extensions;
 using System.Reactive.Linq;
@@ -10,10 +9,10 @@ namespace FootprintViewer.Data.Builders;
 public static class PlannedScheduleBuilder
 {
     public static async Task<PlannedScheduleResult> CreateAsync(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
-        => await Observable.Start(() => Create(satellites, groundTargets, groundStations, footprints), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => Create(satellites, groundTargets, groundStations, footprints));
 
     public static async Task<PlannedScheduleResult> CreateAsync(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations)
-        => await Observable.Start(() => Create(satellites, groundTargets, groundStations), RxApp.TaskpoolScheduler);
+        => await Observable.Start(() => Create(satellites, groundTargets, groundStations));
 
     public static PlannedScheduleResult Create(IList<Satellite> satellites, IList<GroundTarget> groundTargets, IList<GroundStation> groundStations, IList<Footprint> footprints)
     {

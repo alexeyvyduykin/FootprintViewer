@@ -1,9 +1,9 @@
 ﻿using DynamicData;
 using DynamicData.Binding;
 using FootprintViewer.Data.DbContexts;
-using FootprintViewer.Data.Models;
-using FootprintViewer.UI.ViewModels.SidePanel.Items;
+using FootprintViewer.Models;
 using FootprintViewer.Services;
+using FootprintViewer.UI.ViewModels.SidePanel.Items;
 using NetTopologySuite.Geometries;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
