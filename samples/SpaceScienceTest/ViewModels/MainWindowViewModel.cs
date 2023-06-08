@@ -20,6 +20,7 @@ public class MainWindowViewModel : ViewModelBase
     public const string WorldKey = "WorldMapLayer";
     public const string GroundTrackTestKey1 = "GroundTrackTestLayer1";
     public const string GroundTrackTestKey2 = "GroundTrackTestLayer2";
+    public const string FootprintTestKey1 = "FootprintTestLayer1";
 
     public MainWindowViewModel()
     {
@@ -28,8 +29,10 @@ public class MainWindowViewModel : ViewModelBase
         Map.Layers.Add(CreateWorldMapLayer());
         Map.Layers.Add(CreateGroundTrackTestLayer1());
         Map.Layers.Add(CreateGroundTrackTestLayer2());
+        Map.Layers.Add(CreateFootprintTestLayer1());
 
         GroundTrackTest = new(this);
+        FootprintTest = new(this);
     }
 
     private static ILayer CreateWorldMapLayer()
@@ -61,6 +64,15 @@ public class MainWindowViewModel : ViewModelBase
         {
             Name = GroundTrackTestKey2,
             Style = CreateGroundTrackTestLayerStyle2()
+        };
+    }
+
+    private static ILayer CreateFootprintTestLayer1()
+    {
+        return new QueueLayer()
+        {
+            Name = FootprintTestKey1,
+            Style = CreateFootprintTestLayerStyle1()
         };
     }
 
@@ -129,7 +141,50 @@ public class MainWindowViewModel : ViewModelBase
             };
         });
     }
+
+    private static IStyle CreateFootprintTestLayerStyle1()
+    {
+        return new ThemeStyle(f =>
+        {
+            if (f is not GeometryFeature gf)
+            {
+                return null;
+            }
+
+            if (gf.Geometry is Point)
+            {
+                return new SymbolStyle()
+                {
+                    Fill = new Brush(Color.Opacity(Color.Orange, 1.0f)),
+                    Line = new Pen(Color.Orange, 2.0),
+                    Outline = new Pen(Color.Orange, 2.0),
+                    SymbolType = SymbolType.Ellipse,
+                    SymbolScale = 0.4,
+                };
+            }
+
+            if ((string)gf["Name"]! == "Arrow")
+            {
+                return new VectorStyle()
+                {
+                    Fill = new Brush(Color.Opacity(Color.Red, 1.0f)),
+                    Outline = new Pen(Color.Red, 1.0),
+                    Line = new Pen(Color.Red, 1.0)
+                };
+            }
+
+            return new VectorStyle()
+            {
+                Fill = new Brush(Color.Opacity(Color.Green, 1.0f)),
+                Line = new Pen(Color.Green, 2.0),
+                Outline = new Pen(Color.Green, 2.0),
+            };
+        });
+    }
+
     public GroundTrackTestViewModel GroundTrackTest { get; set; }
+
+    public FootprintTestViewModel FootprintTest { get; set; }
 
     public Map Map { get; private set; }
 }

@@ -20,14 +20,17 @@
 		</avalonia:MapControl>
 
 		<TabControl Grid.Column="1"
+					SelectedIndex="1"
 					Width="400">
 
 			<TabItem Header="GroundTrack" FontSize="12">
-				<testViews:GroundTrackTestView DataContext="{Binding GroundTrackTest}"/>				
+				<testViews:GroundTrackTestView DataContext="{Binding GroundTrackTest}"/>
 			</TabItem>
-			
-			
-			
+
+			<TabItem Header="Footprint" FontSize="12">
+				<testViews:FootprintTestView DataContext="{Binding FootprintTest}"/>
+			</TabItem>
+
 		</TabControl>
 	</Grid>
 </Window>

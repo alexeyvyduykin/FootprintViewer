@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SpaceScienceTest.ViewModels.Tests"
+			 mc:Ignorable="d" d:DesignWidth="300"
+			 x:DataType="vm:FootprintTestViewModel"
+             x:Class="SpaceScienceTest.Views.Tests.FootprintTestView">
+
+	<Design.DataContext>
+		<vm:FootprintTestViewModel>
+			<vm:FootprintTestViewModel.IsRight>True</vm:FootprintTestViewModel.IsRight>
+			<vm:FootprintTestViewModel.Node>3</vm:FootprintTestViewModel.Node>
+		</vm:FootprintTestViewModel>
+	</Design.DataContext>
+
+	<Border Padding="10">
+		<StackPanel Spacing="8">
+
+			<RadioButton IsChecked="{Binding IsLeft}" GroupName="direction">Left</RadioButton>
+			<RadioButton IsChecked="{Binding IsRight}" GroupName="direction">Right</RadioButton>
+
+			<TextBlock Text="{Binding Node, StringFormat='Node={0}'}"/>
+
+			<Slider Value="{Binding Node}"
+					Minimum="1"
+					Maximum="20"
+					TickFrequency="1"
+					IsSnapToTickEnabled="True"/>
+
+			<TextBlock Text="{Binding U, StringFormat='U={0}'}"/>
+
+			<Slider Value="{Binding U}"
+					Minimum="0"
+					Maximum="359"
+					TickFrequency="1"
+					IsSnapToTickEnabled="True"/>
+
+		</StackPanel>
+	</Border>
+
+</UserControl>
