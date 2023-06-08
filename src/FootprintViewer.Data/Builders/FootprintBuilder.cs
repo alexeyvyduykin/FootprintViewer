@@ -44,26 +44,26 @@ public static class FootprintBuilder
 
             var countPerNode = (int)(footprintCountPerSat / nodes);
 
-            var uDelta = 360.0 / countPerNode;
+            var uDeltaDeg = 360.0 / countPerNode;
 
-            for (int node = 0; node < nodes; node++)
+            for (int node = 1; node <= nodes; node++)
             {
-                double uLast = 0.0;
+                double uLastDeg = 0.0;
                 for (int j = 0; j < countPerNode; j++)
                 {
-                    double u1 = uLast;
-                    double u2 = uLast + uDelta;
+                    double u1Deg = uLastDeg;
+                    double u2Deg = uLastDeg + uDeltaDeg;
 
-                    double u = u1 + (u2 - u1) / 2.0;
+                    double uDeg = u1Deg + (u2Deg - u1Deg) / 2.0;
                     double duration = _random.Next(_durationMin, _durationMax + 1);
 
                     Models.SwathDirection sensorIndex;
 
-                    if (u >= 75 && u <= 105)
+                    if (uDeg >= 75 && uDeg <= 105)
                     {
                         sensorIndex = Models.SwathDirection.Left;
                     }
-                    else if (u >= 255 && u <= 285)
+                    else if (uDeg >= 255 && uDeg <= 285)
                     {
                         sensorIndex = Models.SwathDirection.Right;
                     }
@@ -72,7 +72,7 @@ public static class FootprintBuilder
                         sensorIndex = (Models.SwathDirection)_random.Next(0, 1 + 1);
                     }
 
-                    var (t, center, border) = GetRandomFootprint(orbit, bands[(int)sensorIndex], node + 1, u);
+                    var (t, center, border) = GetRandomFootprint(orbit, bands[(int)sensorIndex], node, uDeg);
 
                     footprints.Add(new Footprint()
                     {
@@ -80,14 +80,14 @@ public static class FootprintBuilder
                         TargetName = $"GroundTarget{footprintIndex:0000}",
                         SatelliteName = satellite.Name,
                         Center = center,
-                        Border = new LineString(border.Select(s => new Coordinate(s.lonRad, s.latRad)).ToArray()),
+                        Border = new LineString(border),
                         Begin = epoch.AddSeconds(t - duration / 2.0),
                         Duration = duration,
-                        Node = node + 1,
+                        Node = node,
                         Direction = sensorIndex,
                     });
 
-                    uLast += uDelta;
+                    uLastDeg += uDeltaDeg;
                 }
 
             }
@@ -123,13 +123,72 @@ public static class FootprintBuilder
         return aCenter + res / 2.0;
     }
 
-    private static (double, Point, IEnumerable<(double lonRad, double latRad)>) GetRandomFootprint(Orbit orbit, Swath swath, int node, double u)
+    public static LineString CreateFootprintBorder(double lonDeg, double latDeg)
     {
-        var list = new List<(double lonRad, double latRad)>();
+        double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
 
-        var (t, c) = GetRandomCenterPoint(orbit, swath, node, u);
-        var centerLonDeg = c.lonRad * SpaceMath.RadiansToDegrees;
-        var centerLatDeg = c.latRad * SpaceMath.RadiansToDegrees;
+        var (dlon1, dlat1) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon2, dlat2) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon3, dlat3) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        a -= Math.PI / 2.0;
+
+        var (dlon4, dlat4) = (_r * Math.Cos(a), _r * Math.Sin(a));
+
+        var border = new[]
+        {
+            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1),
+            (LonConverters.Default(lonDeg + dlon2), latDeg + dlat2),
+            (LonConverters.Default(lonDeg + dlon3), latDeg + dlat3),
+            (LonConverters.Default(lonDeg + dlon4), latDeg + dlat4),
+            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1)
+        };
+
+        var coords = border.Select(s => new Coordinate(s.Item1, s.Item2)).ToArray();
+
+        return new LineString(coords);
+    }
+
+    private static (double, (double lonDeg, double latDeg)) GetRandomCenterPoint(Orbit orbit, Swath swath, int node, double uDeg)
+    {
+        var a1 = swath.NearTrack.AngleDeg;
+        var a2 = swath.FarTrack.AngleDeg;
+
+        var angleDeg = GetRandomAngle(a1, a2);
+
+        var dir = swath.Direction;
+
+        var trackDir = dir switch
+        {
+            SpaceScience.Model.SwathDirection.Left => TrackDirection.Left,
+            SpaceScience.Model.SwathDirection.Right => TrackDirection.Right,
+            SpaceScience.Model.SwathDirection.Middle => throw new NotImplementedException(),
+            _ => throw new NotImplementedException()
+        };
+
+        var factor = new FactorShiftTrack(orbit, a1, a2, dir);
+        var track = new GroundTrack(orbit, factor, angleDeg, trackDir);
+
+        var uRad = uDeg * SpaceMath.DegreesToRadians;
+
+        track.CalculateTrack(uRad, uRad, 1);
+
+        var (lonDeg, latDeg, _, t) = track.GetFullTrack(node, LonConverters.Default).FirstOrDefault();
+
+        return (t, (lonDeg, latDeg));
+    }
+
+    public static (double, Point, Coordinate[]) GetRandomFootprint(Orbit orbit, Swath swath, int node, double uDeg)
+    {
+        var list = new List<(double lonDeg, double latDeg)>();
+
+        var (t, (centerLonDeg, centerLatDeg)) = GetRandomCenterPoint(orbit, swath, node, uDeg);
 
         double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
 
@@ -207,92 +266,6 @@ public static class FootprintBuilder
         var res4 = (lon4, centerLatDeg + dlat4);
         list.Add(res4);
 
-        return (t, new Point(centerLonDeg, centerLatDeg), list);
+        return (t, new Point(centerLonDeg, centerLatDeg), list.Select(s => new Coordinate(s.lonDeg, s.latDeg)).ToArray());
     }
-
-    private static (double, (double lonRad, double latRad)) GetRandomCenterPoint(Orbit orbit, Swath swath, int node, double u)
-    {
-        var a1 = swath.NearTrack.AngleDeg;
-        var a2 = swath.FarTrack.AngleDeg;
-
-        var angle = GetRandomAngle(a1, a2);
-
-        var dir = swath.NearTrack.Direction;
-
-        SpaceScience.Model.SwathDirection mode = dir switch
-        {
-            TrackDirection.None => SpaceScience.Model.SwathDirection.Middle,
-            TrackDirection.Left => SpaceScience.Model.SwathDirection.Left,
-            TrackDirection.Right => SpaceScience.Model.SwathDirection.Right,
-            _ => SpaceScience.Model.SwathDirection.Middle
-        };
-
-        var factor = new FactorShiftTrack(orbit, a1, a2, mode);
-        var track = new GroundTrack(orbit, factor, angle, dir);
-  
-        var (t, p) = GetGroundPoint(node, u, track);
-
-        return (t, p);
-    }
-
-    private static (double, (double lonRad, double latRad)) GetGroundPoint(int node, double u, GroundTrack track)
-    {
-        var counts = 10;
-
-        if (u >= 0.0 && u <= 90.0)
-        {
-            track.CalculateTrack(0.0, Math.Tau / 4.0, counts);
-        }
-        else if (u >= 90.0 && u <= 180.0)
-        {
-            track.CalculateTrack(Math.Tau / 4.0, Math.Tau / 2.0, counts);
-        }
-        else if (u >= 180.0 && u <= 270.0)
-        {
-            track.CalculateTrack(Math.Tau / 2.0, 3.0 * Math.Tau / 4.0, counts);
-        }
-        else
-        {
-            track.CalculateTrack(3.0 * Math.Tau / 4.0, Math.Tau, counts);
-        }
-
-        Random random = new();
-        var i = random.Next(0, counts);
-        var (lonDeg, latDeg, _, t) = track.GetFullTrackOfIndex(i, node, LonConverters.Default);
-
-        return (t, (lonDeg * SpaceMath.DegreesToRadians, latDeg * SpaceMath.DegreesToRadians));
-    }
-
-    public static LineString CreateFootprintBorder(double lonDeg, double latDeg)
-    {
-        double a = _random.Next(0, 90 + 1) * SpaceMath.DegreesToRadians;
-
-        var (dlon1, dlat1) = (_r * Math.Cos(a), _r * Math.Sin(a));
-
-        a -= Math.PI / 2.0;
-
-        var (dlon2, dlat2) = (_r * Math.Cos(a), _r * Math.Sin(a));
-
-        a -= Math.PI / 2.0;
-
-        var (dlon3, dlat3) = (_r * Math.Cos(a), _r * Math.Sin(a));
-
-        a -= Math.PI / 2.0;
-
-        var (dlon4, dlat4) = (_r * Math.Cos(a), _r * Math.Sin(a));
-
-        var border = new[]
-        {
-            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1),
-            (LonConverters.Default(lonDeg + dlon2), latDeg + dlat2),
-            (LonConverters.Default(lonDeg + dlon3), latDeg + dlat3),
-            (LonConverters.Default(lonDeg + dlon4), latDeg + dlat4),
-            (LonConverters.Default(lonDeg + dlon1), latDeg + dlat1)
-        };
-
-        var coords = border.Select(s => new Coordinate(s.Item1, s.Item2)).ToArray();
-
-        return new LineString(coords);
-    }
-
 }

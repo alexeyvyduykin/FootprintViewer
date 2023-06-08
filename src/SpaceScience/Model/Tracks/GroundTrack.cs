@@ -180,7 +180,18 @@ public class GroundTrack
     {
         _cache.Clear();
 
-        var du = (uEnd - uBegin) / (counts - 1);
+        var num = Math.Max(1, counts);
+
+        if (num == 1)
+        {
+            var (lonDeg, latDeg) = ContinuousTrack(uBegin);
+
+            _cache.Add((lonDeg, latDeg, uBegin, uBegin * _period / (2 * Math.PI)));
+
+            return;
+        }
+
+        var du = (uEnd - uBegin) / (num - 1);
 
         for (double u = uBegin; u <= uEnd; u += du)
         {

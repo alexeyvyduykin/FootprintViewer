@@ -5,12 +5,15 @@ public class Swath
     private readonly FactorShiftTrack _factorShiftTrack;
     private readonly GroundTrack _nearTrack;
     private readonly GroundTrack _farTrack;
+    private readonly SwathDirection _direction;
 
-    public Swath(Orbit orbit, double lookAngleDEG, double radarAngleDEG, SwathDirection mode)
+    public Swath(Orbit orbit, double lookAngleDEG, double radarAngleDEG, SwathDirection direction)
     {
         Orbit = orbit;
 
-        var (near, far) = mode switch
+        _direction = direction;
+
+        var (near, far) = direction switch
         {
             SwathDirection.Middle => (TrackDirection.Left, TrackDirection.Right),
             SwathDirection.Left => (TrackDirection.Left, TrackDirection.Left),
@@ -21,7 +24,7 @@ public class Swath
         double minLookAngleDeg = lookAngleDEG - radarAngleDEG / 2.0;
         double maxLookAngleDeg = lookAngleDEG + radarAngleDEG / 2.0;
 
-        _factorShiftTrack = new FactorShiftTrack(orbit, minLookAngleDeg, maxLookAngleDeg, mode);
+        _factorShiftTrack = new FactorShiftTrack(orbit, minLookAngleDeg, maxLookAngleDeg, direction);
 
         _nearTrack = new GroundTrack(orbit, _factorShiftTrack, minLookAngleDeg, near);
         _farTrack = new GroundTrack(orbit, _factorShiftTrack, maxLookAngleDeg, far);
@@ -30,6 +33,8 @@ public class Swath
     public GroundTrack NearTrack => _nearTrack;
 
     public GroundTrack FarTrack => _farTrack;
+
+    public SwathDirection Direction => _direction;
 
     public bool IsCoverPolis(double latRAD, out double timeFromANToPolis)
     {
