@@ -221,6 +221,22 @@ public static partial class FeatureBuilder
 
         feature["Name"] = name;
 
-        return (IFeature)feature;
+        return feature;
+    }
+
+    public static IFeature CreatePolygon(List<(double lonDeg, double latDeg)> list, string? name = "")
+    {
+        var vertices = list.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
+
+        var polygon = new GeometryFactory().CreatePolygon(vertices.ToClosedCoordinates());
+
+        var feature = polygon.ToFeature();
+
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            feature["Name"] = name;
+        }
+
+        return feature;
     }
 }

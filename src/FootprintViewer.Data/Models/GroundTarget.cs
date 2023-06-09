@@ -12,6 +12,9 @@ public class GroundTarget
     [JsonProperty("Type")]
     public GroundTargetType Type { get; set; }
 
+    [JsonProperty("Center")]
+    public Point Center { get; set; } = null!;
+
     [JsonProperty("Points")]
     public Geometry? Points { get; set; }
 }

@@ -94,18 +94,21 @@ public static class GroundTargetBuilder
             {
                 Name = name,
                 Type = GroundTargetType.Point,
+                Center = center,
                 Points = new Point(center.X, center.Y),
             },
             GroundTargetType.Route => new GroundTarget()
             {
                 Name = name,
                 Type = GroundTargetType.Route,
+                Center = center,
                 Points = CreateRoute(center)
             },
             GroundTargetType.Area => new GroundTarget()
             {
                 Name = name,
                 Type = GroundTargetType.Area,
+                Center = center,
                 Points = CreateArea(center)
             },
             _ => throw new Exception()

@@ -42,7 +42,7 @@ public static class TimeWindowBuilder
 
     private static (double lonDeg, double latDeg, string name) ToTarget(GroundTarget gt)
     {
-        var coord = gt.Points?.Centroid.Coordinate ?? new();
+        var coord = gt.Center;
         var name = gt.Name ?? "";
         return (coord.X, coord.Y, name);
     }
