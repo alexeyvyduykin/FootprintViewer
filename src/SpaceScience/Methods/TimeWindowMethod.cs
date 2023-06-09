@@ -23,17 +23,18 @@ internal static class TimeWindowMethod
         var track = new GroundTrack(orbit);
 
         var factor = new FactorShiftTrack(orbit, angle1Deg, angle2Deg, SwathDirection.Left);
-        var nearTrack = new GroundTrack(orbit, factor, angle1Deg, TrackDirection.Left);
-        var farTrack = new GroundTrack(orbit, factor, angle2Deg, TrackDirection.Left);
+
+        var nearTrackLeft = new GroundTrack(orbit, factor, angle1Deg, TrackDirection.Left);
+        var nearTrackRight = new GroundTrack(orbit, factor, angle1Deg, TrackDirection.Right);
 
         track.CalculateTrack(dt);
-        nearTrack.CalculateTrack(dt);
-        farTrack.CalculateTrack(dt);
+        nearTrackLeft.CalculateTrack(dt);
+        nearTrackRight.CalculateTrack(dt);
 
         foreach (var (lonTargetDeg, latTargetDeg, name) in targets)
         {
-            (double lon, double lat) leftSaveDeg = (0.0, 0.0);
-            (double lon, double lat) rightSaveDeg = (0.0, 0.0);
+            (double lon, double lat) nearLeftSaveDeg = (0.0, 0.0);
+            (double lon, double lat) nearRightSaveDeg = (0.0, 0.0);
             double lonSaveDeg = 0.0;
             double latSaveDeg = 0.0;
             double tVis = double.NaN;
@@ -96,8 +97,8 @@ internal static class TimeWindowMethod
                             lastCounter = counter;
                             minCenterlAngleDeg = centralAngleDeg;
 
-                            leftSaveDeg = nearTrack.GetTrackOfIndex(i, node, LonConverters.Default);
-                            rightSaveDeg = farTrack.GetTrackOfIndex(i, node, LonConverters.Default);
+                            nearLeftSaveDeg = nearTrackLeft.GetTrackOfIndex(i, node, LonConverters.Default);
+                            nearRightSaveDeg = nearTrackRight.GetTrackOfIndex(i, node, LonConverters.Default);
                             tVis = t;
                             uVis = u;
                             nodeVis = node;
@@ -121,10 +122,10 @@ internal static class TimeWindowMethod
                     {
                         if (lastCounter != 1 && isMiss == false)
                         {
-                            var rLev = SpaceMethods.CreateCentralAngle(leftSaveDeg, (lonTargetDeg, latTargetDeg));
-                            var rPrav = SpaceMethods.CreateCentralAngle(rightSaveDeg, (lonTargetDeg, latTargetDeg));
+                            var nearLeftAngle = SpaceMethods.CreateCentralAngle(nearLeftSaveDeg, (lonTargetDeg, latTargetDeg));
+                            var nearRightAngle = SpaceMethods.CreateCentralAngle(nearRightSaveDeg, (lonTargetDeg, latTargetDeg));
 
-                            var isLeftSwath = (rLev < rPrav);
+                            var isLeftSwath = (nearLeftAngle < nearRightAngle);
 
                             var track33 = new GroundTrack(orbit);
                             track33.CalculateTrack(uBeginVisible, uEndVisible);
@@ -167,10 +168,10 @@ internal static class TimeWindowMethod
             {
                 if (counter != lastCounter && isMiss == false)
                 {
-                    var rLev = SpaceMethods.CreateCentralAngle(leftSaveDeg, (lonTargetDeg, latTargetDeg));
-                    var rPrav = SpaceMethods.CreateCentralAngle(rightSaveDeg, (lonTargetDeg, latTargetDeg));
+                    var nearLeftAngle = SpaceMethods.CreateCentralAngle(nearLeftSaveDeg, (lonTargetDeg, latTargetDeg));
+                    var nearRightAngle = SpaceMethods.CreateCentralAngle(nearRightSaveDeg, (lonTargetDeg, latTargetDeg));
 
-                    var isLeftSwath = (rLev < rPrav);
+                    var isLeftSwath = (nearLeftAngle < nearRightAngle);
 
                     var track33 = new GroundTrack(orbit);
                     track33.CalculateTrack(uBeginVisible, uEndVisible);
