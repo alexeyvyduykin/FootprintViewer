@@ -1,7 +1,4 @@
-﻿using FootprintViewer.Data.Extensions;
-using FootprintViewer.Data.Models;
-using SpaceScience;
-using SpaceScience.Extensions;
+﻿using FootprintViewer.Data.Models;
 using System.Reactive.Linq;
 
 namespace FootprintViewer.Data.Builders;
@@ -40,7 +37,7 @@ public static class PlannedScheduleBuilder
     {
         var tasks = TaskBuilder.Create(groundTargets, groundStations);
 
-        var timeWindows = CreateTimeWindows(satellites, groundTargets);
+        var timeWindows = TimeWindowBuilder.Create(satellites, groundTargets);
         var observationTasks = TaskResultBuilder.CreateObservations(tasks, satellites, timeWindows);
         var observationWindows = TaskAvailabilityBuilder.CreateObservations(tasks, satellites, timeWindows);
         // var communicationWindows = TaskAvailabilityBuilder.CreateCommunications(satellites, groundStations, footprints, tasks);
@@ -59,34 +56,6 @@ public static class PlannedScheduleBuilder
             //  PlannedSchedules = observationTasks.Concat(communicationTasks).ToList()
             PlannedSchedules = observationTasks.ToList()
         };
-    }
-
-    private static IList<(string satName, IList<TimeWindowResult> windows)> CreateTimeWindows(IList<Satellite> satellites, IList<GroundTarget> gts)
-    {
-        var targets = gts.Select(s => ToTarget(s)).ToList();
-
-        var list = new List<(string satName, IList<TimeWindowResult> windows)>();
-
-        foreach (var sat in satellites)
-        {
-            var orbit = sat.ToOrbit();
-            var nodes = orbit.NodesOnDay();
-            var gam1Deg = sat.LookAngleDeg - sat.RadarAngleDeg / 2.0;
-            var gam2Deg = sat.LookAngleDeg + sat.RadarAngleDeg / 2.0;
-
-            var res = SpaceMethods.ObservationGroundTargets(orbit, 0, nodes - 1, gam1Deg, gam2Deg, targets);
-
-            list.Add((sat.Name!, res));
-        }
-
-        return list;
-
-        static (double lonDeg, double latDeg, string name) ToTarget(GroundTarget gt)
-        {
-            var coord = gt.Points?.Centroid.Coordinate ?? new();
-            var name = gt.Name ?? "";
-            return (coord.X, coord.Y, name);
-        }
     }
 
     public static PlannedScheduleResult CreateRandom()

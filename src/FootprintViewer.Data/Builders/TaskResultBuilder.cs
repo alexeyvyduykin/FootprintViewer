@@ -17,8 +17,8 @@ public static class TaskResultBuilder
 
     public static List<ITaskResult> CreateObservations(IList<ITask> tasks, IList<Satellite> satellites, IList<(string satName, IList<TimeWindowResult> windows)> windows)
     {
-        int durationMin = 10;
-        int durationMax = 30;
+        int durationMin = 30;// 10;
+        int durationMax = 45;// 30;
 
         var random = new Random();
 
@@ -60,7 +60,7 @@ public static class TaskResultBuilder
             var latDeg = selectRes.Lat;
 
             var node = selectRes.Node;
-            var dicrection = (selectRes.IsLeftSwath == true) ? SwathDirection.Left : SwathDirection.Right;
+            var direction = (selectRes.IsLeftSwath == true) ? SwathDirection.Left : SwathDirection.Right;
 
             var taskResult = new ObservationTaskResult()
             {
@@ -68,7 +68,7 @@ public static class TaskResultBuilder
                 TargetName = gtName,
                 TaskName = taskName,
                 Node = node,
-                Direction = dicrection,
+                Direction = direction,
                 SatelliteName = satName,
                 Interval = new Interval
                 {
