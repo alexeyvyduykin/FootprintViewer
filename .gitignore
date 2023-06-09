@@ -338,3 +338,4 @@ snapshots/
 
 # Json files
 samples/JsonDataBuilderSample/Output/
+samples/PlannedScheduleOnMapSample/Assets/PlannedSchedule.json

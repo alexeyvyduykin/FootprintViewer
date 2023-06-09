@@ -9,13 +9,13 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Remove="Assets\PlannedSchedule.json" />
 		<None Remove=".gitignore" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="..\..\src\FootprintViewer.UI\Assets\PlannedSchedule.json" Link="Assets\PlannedSchedule.json" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="..\..\src\FootprintViewer.UI\Assets\world.mbtiles" Link="Assets\world.mbtiles" />
+		<None Include="..\..\src\FootprintViewer.UI\Assets\world.mbtiles" Link="Assets\world.mbtiles">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 	<ItemGroup>
 		<!--This helps with theme dll-s trimming.
@@ -41,5 +41,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\FootprintViewer.UI\FootprintViewer.UI.csproj" />
 		<ProjectReference Include="..\..\src\SpaceScience\SpaceScience.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Assets\PlannedSchedule.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
