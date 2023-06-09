@@ -36,6 +36,7 @@ public class FootprintService
         var footprintName = (string)feature["Name"]!;
         var satelliteName = (string)feature["Satellite"]!;
         var node = (int)feature["Node"]!;
+        var targetName = (string)feature["Target"]!;
 
         var res = (await _dataManager.GetDataAsync<PlannedScheduleResult>(MainWindowViewModel.PlannedScheduleKey)).FirstOrDefault()!;
 
@@ -45,6 +46,8 @@ public class FootprintService
         var duration = observationTask.Interval.Duration;
 
         var direction = observationTask.Direction.ToString();
+
+        var groundTarget = res.GroundTargets.Where(s => Equals(s.Name, targetName)).FirstOrDefault()!;
 
         var satellite = res.Satellites.Where(s => Equals(s.Name, satelliteName)).FirstOrDefault()!;
         var orbit = satellite.ToOrbit();
@@ -87,14 +90,36 @@ public class FootprintService
 
         var arrowFeature = arrow.ToFeature("Arrow");
 
+        var fTarget = FeatureBuilder.CreateGroundTarget(groundTarget);
+
+        var firstPoint = trackLine.First();
+        var lastPoint = trackLine.Last();
+        var firstNearPoint = near.First();
+        var lastNearPoint = near.Last();
+        var firstFarPoint = far.First();
+        var lastFarPoint = far.Last();
+
+        var f1 = FeatureBuilder.CreateLineString("", new() { firstPoint, firstNearPoint, firstFarPoint });
+        var f2 = FeatureBuilder.CreateLineString("", new() { lastPoint, lastNearPoint, lastFarPoint });
+
+        var p1 = FeatureBuilder.CreatePolygon(new() { firstNearPoint, lastNearPoint, lastFarPoint, firstFarPoint }, "AreaPoly");
+
         _trackLayer.Clear();
+        
+        _trackLayer.Add(p1);
+
+
         _trackLayer.Add(trackFeatureBase);
         _trackLayer.Add(trackFeature);
         _trackLayer.Add(baseNearSwathFeature);
         _trackLayer.Add(baseFarSwathFeature);
-        _trackLayer.Add(nearSwathFeature);
-        _trackLayer.Add(farSwathFeature);
+      //  _trackLayer.Add(nearSwathFeature);
+      //  _trackLayer.Add(farSwathFeature);
         _trackLayer.Add(arrowFeature);
+        _trackLayer.Add(fTarget);
+       // _trackLayer.Add(f1);
+       // _trackLayer.Add(f2);
+    
         _trackLayer.DataHasChanged();
     }
 

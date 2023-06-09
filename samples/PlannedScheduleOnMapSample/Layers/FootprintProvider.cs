@@ -36,6 +36,7 @@ public class FootprintProvider : MemoryProvider
                 feature["Satellite"] = s.SatelliteName;
                 feature["Node"] = s.Node;
                 feature["Direction"] = s.Direction.ToString();
+                feature["Target"] = s.TargetName;
 
                 return feature;
             }));
