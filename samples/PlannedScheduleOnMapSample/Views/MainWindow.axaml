@@ -37,6 +37,10 @@
 				<views:SatelliteTabView DataContext="{Binding SatelliteTab}"/>
 			</TabItem>
 
+			<TabItem Header="3">
+				<views:GroundTargetTabView DataContext="{Binding GroundTargetTab}"/>
+			</TabItem>
+
 		</TabControl>
 
 	</Grid>

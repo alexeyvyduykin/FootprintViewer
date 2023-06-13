@@ -36,6 +36,7 @@ public class MainWindowViewModel : ViewModelBase
     public const string FootprintKey = "FootprintLayer";
     public const string TrackKey = "TrackLayer";
     public const string PlannedScheduleKey = "PlannedSchedule";
+    public const string GroundTargetKey = "GroundTargetLayer";
 
     private readonly FootprintService _footprintService;
     private readonly DataManager _dataManager = new();
@@ -46,10 +47,12 @@ public class MainWindowViewModel : ViewModelBase
 
         var footprintProvider = new FootprintProvider();
         var satelliteProvider = new SatelliteProvider();
+        var groundTargetProvider = new GroundTargetProvider();
 
         Map = new Map();
 
         Map.Layers.Add(CreateWorldMapLayer());
+        Map.Layers.Add(CreateGroundTargetLayer(groundTargetProvider));
         Map.Layers.Add(CreateSatelliteLayer(satelliteProvider));
         Map.Layers.Add(CreateFootprintLayer(footprintProvider));
         Map.Layers.Add(CreateTrackLayer());
@@ -59,6 +62,9 @@ public class MainWindowViewModel : ViewModelBase
 
         SatelliteTab = new(_dataManager);
         SatelliteTab.ToLayerProvider(satelliteProvider);
+
+        GroundTargetTab = new(_dataManager);
+        GroundTargetTab.ToLayerProvider(groundTargetProvider);
 
         MessageBox = new();
 
@@ -98,6 +104,18 @@ public class MainWindowViewModel : ViewModelBase
         return layer;
     }
 
+    private static ILayer CreateGroundTargetLayer(IProvider provider)
+    {
+        var style = CreateGroundTargetLayerStyle();
+
+        var layer = new DynamicLayer(provider, true)
+        {
+            Name = GroundTargetKey,
+            Style = style
+        };
+
+        return layer;
+    }
 
     private static ILayer CreateFootprintLayer(IProvider provider)
     {
@@ -359,6 +377,42 @@ public class MainWindowViewModel : ViewModelBase
         });
     }
 
+    private static IStyle CreateGroundTargetLayerStyle()
+    {
+        return new ThemeStyle(f =>
+        {
+            if (f is not GeometryFeature gf)
+            {
+                return null;
+            }
+
+            if (gf.Geometry is Point)
+            {
+                return new SymbolStyle()
+                {
+                    Fill = null,// new Brush(Color.Opacity(Color.Black, 0.55f)),
+                    Line = new Pen(Color.Black, 2.0),
+                    Outline = new Pen(Color.Black, 2.0),
+                    SymbolType = SymbolType.Ellipse,
+                    SymbolScale = 0.4,
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                };
+                // return null;
+            }
+
+            return new VectorStyle()
+            {
+                Fill = null,// new Brush(Color.Opacity(Color.Green, 0.55f)),
+                Line = new Pen(Color.Black, 2.0),
+                Outline = new Pen(Color.Black, 2.0),
+                MinVisible = 0,
+                MaxVisible = _maxVisibleFootprintStyle,
+            };
+        });
+    }
+
+
     private static IStyle CreateSatelliteLayerStyle()
     {
         return new ThemeStyle(f =>
@@ -392,6 +446,8 @@ public class MainWindowViewModel : ViewModelBase
     public PlannedScheduleTabViewModel PlannedScheduleTab { get; set; }
 
     public SatelliteTabViewModel SatelliteTab { get; set; }
+
+    public GroundTargetTabViewModel GroundTargetTab { get; set; }
 
     public Map Map { get; private set; }
 

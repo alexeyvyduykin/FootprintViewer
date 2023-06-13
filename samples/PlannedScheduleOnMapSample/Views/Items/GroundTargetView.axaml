@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignHeight="450"
+			 xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 x:DataType="vm:GroundTargetViewModel"
+             x:Class="PlannedScheduleOnMapSample.Views.Items.GroundTargetView">
+
+	<Design.DataContext>
+		<vm:GroundTargetViewModel></vm:GroundTargetViewModel>
+	</Design.DataContext>
+
+	<Border>
+		<StackPanel Spacing="4">
+			<TextBlock Text="{Binding Name}"/>
+			<TextBlock Text="{Binding Type}"/>
+			<Separator/>
+			<ContentControl Content="{Binding Model}"/>
+		</StackPanel>
+	</Border>
+
+</UserControl>

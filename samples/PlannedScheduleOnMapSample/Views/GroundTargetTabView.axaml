@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels"
+			 xmlns:items="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 xmlns:views="using:PlannedScheduleOnMapSample.Views.Items"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+			 MinWidth="400"
+			 x:DataType="vm:GroundTargetTabViewModel"
+             x:Class="PlannedScheduleOnMapSample.Views.GroundTargetTabView">
+
+	<Design.DataContext>
+		<vm:GroundTargetTabViewModel>
+			<vm:GroundTargetTabViewModel.OnlyObservables>True</vm:GroundTargetTabViewModel.OnlyObservables>
+		</vm:GroundTargetTabViewModel>
+	</Design.DataContext>
+
+	<Panel Margin="0,8">
+
+		<ProgressBar IsVisible="{Binding IsLoading}"
+					 Classes="Circle"
+					 VerticalAlignment="Center"
+					 HorizontalAlignment="Center"
+					 IsIndeterminate="True"/>
+
+		<Grid IsVisible="{Binding !IsLoading}"
+			  RowDefinitions="Auto,*">
+
+			<StackPanel Spacing="4" Margin="4">
+				<CheckBox IsChecked="{Binding OnlyObservables}">OnlyObservables</CheckBox>
+				<CheckBox IsChecked="{Binding NotObservables}">NotObservables</CheckBox>
+			</StackPanel>
+
+			<ListBox Grid.Row="1"
+					 Items="{Binding Items}"
+					 VirtualizationMode="Simple">
+				<ListBox.ItemTemplate>
+					<DataTemplate DataType="items:GroundTargetViewModel">
+						<views:GroundTargetView DataContext="{Binding}"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+
+
+	</Panel>
+
+</UserControl>
