@@ -34,10 +34,7 @@ public class GroundTargetProvider : MemoryProvider, IDynamic
             {
                 var feature = FeatureBuilder.CreateGroundTarget(s);
 
-                //feature["Satellite"] = s.SatelliteName;
-                //feature["Node"] = s.Node;
-                //feature["Direction"] = s.Direction.ToString();
-                //feature["Target"] = s.TargetName;
+                feature["Type"] = s.Type.ToString();
 
                 return feature;
             }));

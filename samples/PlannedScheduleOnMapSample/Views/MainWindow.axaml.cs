@@ -8,6 +8,7 @@ using Mapsui.Interactivity.UI.Input.Core;
 using Mapsui.UI.Avalonia;
 using Mapsui.UI.Avalonia.Extensions;
 using PlannedScheduleOnMapSample.ViewModels;
+using System;
 
 namespace PlannedScheduleOnMapSample.Views;
 
@@ -59,6 +60,16 @@ public partial class MainWindow : Window
 
         _controller = InteractiveControllerFactory.GetController(_state);
         _controller.HandleMouseEnter(_mapAdaptor, new MouseEventArgs());
+
+        vm.InteractiveObservable.Subscribe(s =>
+        {
+            _interactive = s;
+
+            _mapAdaptor = new(MapControl, _interactive);
+
+            _controller = InteractiveControllerFactory.GetController(_state);
+            _controller.HandleMouseEnter(_mapAdaptor, new MouseEventArgs());
+        });
     }
 
     protected void MapControlPointerEnter(object? sender, PointerEventArgs args)

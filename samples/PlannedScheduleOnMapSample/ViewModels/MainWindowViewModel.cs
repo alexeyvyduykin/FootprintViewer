@@ -1,4 +1,5 @@
 ﻿using BruTile.MbTiles;
+using FootprintViewer;
 using FootprintViewer.Data;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers;
@@ -15,9 +16,13 @@ using Mapsui.Tiling.Layers;
 using NetTopologySuite.Geometries;
 using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.Models;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SQLite;
 using System;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
 
@@ -28,6 +33,7 @@ public class MainWindowViewModel : ViewModelBase
     private readonly FeatureManager _featureManager;
     private const string SelectField = InteractiveFields.Select;
     private const string HoverField = InteractiveFields.Hover;
+    private Subject<IInteractive> _subj = new();
 
     public static MainWindowViewModel Instance = new();
 
@@ -76,8 +82,18 @@ public class MainWindowViewModel : ViewModelBase
 
         _footprintService = new(Map, _dataManager);
 
-        SelectCommand();
+        this.WhenAnyValue(s => s.IsFootprintSelector)
+            .WhereTrue()
+            .Subscribe(_ => SetFootprintSelector());
+
+        this.WhenAnyValue(s => s.IsGroundTargetSelector)
+            .WhereTrue()
+            .Subscribe(_ => SetGroundTargetSelector());
+
+        IsFootprintSelector = true;
     }
+
+    public IObservable<IInteractive> InteractiveObservable => _subj.AsObservable();
 
     private static ILayer CreateWorldMapLayer()
     {
@@ -146,12 +162,17 @@ public class MainWindowViewModel : ViewModelBase
         return layer;
     }
 
-    private void SelectCommand()
+    private void SetFootprintSelector()
     {
         _selector = new InteractiveBuilder()
             .SelectSelector<Selector>()
             .AttachTo(Map)
             .Build();
+
+        var layer1 = Map.Layers.FindLayer(FootprintKey).Single();
+        var layer2 = Map.Layers.FindLayer(GroundTargetKey).Single();
+        layer1.IsMapInfoLayer = true;
+        layer2.IsMapInfoLayer = false;
 
         _selector.Select.Subscribe(async s =>
         {
@@ -179,7 +200,43 @@ public class MainWindowViewModel : ViewModelBase
 
         Interactive = _selector;
         State = States.Selecting;
+
+        _subj.OnNext(_selector);
     }
+
+    private void SetGroundTargetSelector()
+    {
+        _selector = new InteractiveBuilder()
+            .SelectSelector<Selector>()
+            .AttachTo(Map)
+            .Build();
+
+        var layer1 = Map.Layers.FindLayer(FootprintKey).Single();
+        var layer2 = Map.Layers.FindLayer(GroundTargetKey).Single();
+        layer1.IsMapInfoLayer = false;
+        layer2.IsMapInfoLayer = true;
+
+        _selector.Select.Subscribe(s =>
+        {
+            SelectFeature(s.Feature, s.Layer);
+
+            MessageBox.ShowGroundTargetFeature(s.Feature);
+
+            // await _footprintService.ShowTrackAsync(s.Feature);
+        });
+
+        _selector.Unselect.Subscribe(s =>
+        {
+            UnselectFeature(s.Layer);
+        });
+
+        Interactive = _selector;
+        State = States.Selecting;
+
+        _subj.OnNext(_selector);
+    }
+
+
 
     private void EnterFeature(IFeature feature, ILayer layer)
     {
@@ -386,32 +443,60 @@ public class MainWindowViewModel : ViewModelBase
                 return null;
             }
 
+            bool isSelect = gf[SelectField] is true;
+
+            var width = isSelect ? 4.0f : 2.0f;
+
             if (gf.Geometry is Point)
             {
                 return new SymbolStyle()
                 {
-                    Fill = null,// new Brush(Color.Opacity(Color.Black, 0.55f)),
-                    Line = new Pen(Color.Black, 2.0),
-                    Outline = new Pen(Color.Black, 2.0),
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.4,
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
+                    Outline = new Pen(Color.Black, width),
+                    Line = new Pen(Color.Black, width),
+                    SymbolType = SymbolType.Ellipse,
+                    SymbolScale = 0.4,
                 };
-                // return null;
+            }
+
+            if ((string)gf["Type"]! == "Route")
+            {
+                var styleBorder = new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
+                    Outline = new Pen(Color.Opacity(Color.Black, 0.05f), 16.0),
+                    Line = new Pen(Color.Opacity(Color.Black, 0.05f), 16.0)
+                };
+
+                var style = new VectorStyle()
+                {
+                    MinVisible = 0,
+                    MaxVisible = _maxVisibleFootprintStyle,
+                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
+                    Outline = new Pen(Color.Black, width),
+                    Line = new Pen(Color.Black, width)
+                };
+
+                return new StyleCollection
+                {
+                    Styles = new() { styleBorder, style }
+                };
             }
 
             return new VectorStyle()
             {
-                Fill = null,// new Brush(Color.Opacity(Color.Green, 0.55f)),
-                Line = new Pen(Color.Black, 2.0),
-                Outline = new Pen(Color.Black, 2.0),
                 MinVisible = 0,
                 MaxVisible = _maxVisibleFootprintStyle,
+                Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
+                Outline = new Pen(Color.Black, width),
+                Line = new Pen(Color.Black, width)
             };
         });
     }
-
 
     private static IStyle CreateSatelliteLayerStyle()
     {
@@ -442,7 +527,6 @@ public class MainWindowViewModel : ViewModelBase
         });
     }
 
-
     public PlannedScheduleTabViewModel PlannedScheduleTab { get; set; }
 
     public SatelliteTabViewModel SatelliteTab { get; set; }
@@ -459,4 +543,10 @@ public class MainWindowViewModel : ViewModelBase
 
     [Reactive]
     public string State { get; set; } = States.Default;
+
+    [Reactive]
+    public bool IsFootprintSelector { get; set; }
+
+    [Reactive]
+    public bool IsGroundTargetSelector { get; set; }
 }

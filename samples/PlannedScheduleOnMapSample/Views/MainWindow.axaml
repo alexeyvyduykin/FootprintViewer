@@ -10,6 +10,7 @@
 	    xmlns:avalonia="clr-namespace:Mapsui.UI.Avalonia;assembly=Mapsui.UI.Avalonia"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PlannedScheduleOnMapSample.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="PlannedScheduleOnMapSample">
 
@@ -24,6 +25,15 @@
 		<views:MessageBoxView Grid.Column="0"
 							  Grid.Row="1"
 							  DataContext="{Binding MessageBox}"/>
+
+		<Border VerticalAlignment="Top"
+				HorizontalAlignment="Left"
+			Background="Black">
+			<StackPanel Spacing="4">
+				<RadioButton GroupName="gp1" IsChecked="{Binding IsFootprintSelector}">Footprint</RadioButton>
+				<RadioButton GroupName="gp1" IsChecked="{Binding IsGroundTargetSelector}">GroundTarget</RadioButton>
+			</StackPanel>
+		</Border>
 
 		<TabControl Width="400"
 					Grid.Column="1"

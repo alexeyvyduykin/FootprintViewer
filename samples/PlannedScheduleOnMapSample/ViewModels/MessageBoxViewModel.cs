@@ -23,6 +23,16 @@ ClickInfo: Footprint = {feature["Name"]}
         Text = text;
     }
 
+    public void ShowGroundTargetFeature(IFeature feature)
+    {
+        var text = $"""
+ClickInfo: GroundTarget = {feature["Name"]}
+           Type         = {feature["Type"]}
+""";
+
+        Text = text;
+    }
+
     [Reactive]
     public string Text { get; set; } = string.Empty;
 }
