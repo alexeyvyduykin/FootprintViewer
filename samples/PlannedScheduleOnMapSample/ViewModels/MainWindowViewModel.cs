@@ -373,13 +373,17 @@ public class MainWindowViewModel : ViewModelBase
                 return null;
             }
 
+            if ((string)gf["Name"]! == "FootprintTrack")
+            {
+                return new VectorStyle()
+                {
+                    Line = new Pen(Color.Opacity(Color.Red, 0.65f), 12.0)
+                };
+            }
+
             return new VectorStyle()
             {
-                Fill = new Brush(Color.Opacity(Color.Green, 0.55f)),
-                Line = new Pen(Color.Green, 2.0),
-                Outline = new Pen(Color.Green, 2.0),
-                //  MinVisible = 0,
-                //  MaxVisible = _maxVisibleFootprintStyle,
+                Line = new Pen(Color.Opacity(Color.Green, 0.25f), 12.0),
             };
         });
     }

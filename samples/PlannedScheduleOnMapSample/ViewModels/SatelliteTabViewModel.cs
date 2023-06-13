@@ -6,11 +6,11 @@ using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.ViewModels.Items;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
@@ -21,8 +21,8 @@ public class SatelliteTabViewModel : ViewModelBase
     private readonly SourceList<SatelliteViewModel> _satellites = new();
     private readonly ReadOnlyObservableCollection<SatelliteViewModel> _items;
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
-    private readonly IObservable<IReadOnlyCollection<Satellite>> _layerObservable;
     private readonly DataManager _dataManager;
+    private readonly Subject<PlannedScheduleResult> _subj = new();
 
     public SatelliteTabViewModel() : this(DesignData.CreateDataManager()) { }
 
@@ -39,10 +39,6 @@ public class SatelliteTabViewModel : ViewModelBase
             .Bind(out _items)
             .Subscribe();
 
-        _layerObservable = observable
-            .Transform(s => s.Satellite)
-            .ToCollection();
-
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
 
         _isLoading = Update.IsExecuting
@@ -56,7 +52,9 @@ public class SatelliteTabViewModel : ViewModelBase
     {
         _provider = provider;
 
-        provider.SetObservable(_layerObservable);
+        var layerObservable = _subj.AsObservable();
+
+        provider.SetObservable(layerObservable);
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
@@ -79,6 +77,8 @@ public class SatelliteTabViewModel : ViewModelBase
             innerList.Clear();
             innerList.AddRange(satellites);
         });
+
+        _subj.OnNext(res.First());
     }
 
     public ReadOnlyObservableCollection<SatelliteViewModel> Items => _items;

@@ -5,6 +5,7 @@ using Mapsui;
 using Mapsui.Fetcher;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using SpaceScience.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ public class SatelliteProvider : MemoryProvider, IDynamic
     private static Random _random = new();
     private IProvider _provider = new MemoryProvider();
     private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _cache = new();
+    private readonly Dictionary<string, Dictionary<int, List<IFeature>>> _ivalCache = new();
     private readonly Dictionary<string, List<IFeature>> _features = new();
 
     public SatelliteProvider()
@@ -27,7 +29,7 @@ public class SatelliteProvider : MemoryProvider, IDynamic
 
     public event DataChangedEventHandler? DataChanged;
 
-    public void SetObservable(IObservable<IReadOnlyCollection<Satellite>> observable)
+    public void SetObservable(IObservable<PlannedScheduleResult> observable)
     {
         observable.Subscribe(UpdateData);
     }
@@ -47,9 +49,11 @@ public class SatelliteProvider : MemoryProvider, IDynamic
                 var min2 = Math.Min(node - 1, max);
                 var node2 = Math.Max(min, min2);
 
-                var res = _cache[satelliteName][node2];
+                var res1 = _cache[satelliteName][node2];
+                var res2 = _ivalCache[satelliteName][node2];
 
-                _features[satelliteName].AddRange(res);
+                _features[satelliteName].AddRange(res1);
+                _features[satelliteName].AddRange(res2);
             }
 
             _provider = new MemoryProvider(_features.SelectMany(s => s.Value));
@@ -58,18 +62,24 @@ public class SatelliteProvider : MemoryProvider, IDynamic
         }
     }
 
-    public void UpdateData(IReadOnlyCollection<Satellite> satellites)
+    public void UpdateData(PlannedScheduleResult plannedSchedule)
     {
         _cache.Clear();
+        _ivalCache.Clear();
         _features.Clear();
 
-        foreach (var item in satellites)
+        var res = plannedSchedule.BuildObservableIntervals();
+
+        foreach (var item in plannedSchedule.Satellites)
         {
             var d = item.BuildTracks();
 
             var a = FeatureBuilder.CreateTracks("", d);
 
+            var b = FeatureBuilder.CreateTracks("FootprintTrack", res[item.Name]);
+
             _cache.Add(item.Name, a);
+            _ivalCache.Add(item.Name, b);
             _features.Add(item.Name, new());
         }
     }
