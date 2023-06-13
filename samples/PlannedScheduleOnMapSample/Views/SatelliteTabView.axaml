@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels"
+			 xmlns:views="using:PlannedScheduleOnMapSample.Views.Items"
+             xmlns:items="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 
+			 mc:Ignorable="d" d:DesignHeight="450"
+			 MinWidth="400"
+			 x:DataType="vm:SatelliteTabViewModel"
+             x:Class="PlannedScheduleOnMapSample.Views.SatelliteTabView">
+
+	<Design.DataContext>
+		<vm:SatelliteTabViewModel></vm:SatelliteTabViewModel>
+	</Design.DataContext>
+
+	<Panel Margin="0,8">
+
+		<ProgressBar IsVisible="{Binding IsLoading}"
+					 Classes="Circle"
+					 VerticalAlignment="Center"
+					 HorizontalAlignment="Center"
+					 IsIndeterminate="True"/>
+
+		<ItemsControl IsVisible="{Binding !IsLoading}"
+					  Items="{Binding Items}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate DataType="items:SatelliteViewModel">
+					<views:SatelliteView DataContext="{Binding}"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Panel>
+
+</UserControl>

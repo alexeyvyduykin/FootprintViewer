@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 
+			 mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+			 x:DataType="vm:SatelliteViewModel"
+             x:Class="PlannedScheduleOnMapSample.Views.Items.SatelliteView">
+
+	<Design.DataContext>
+		<vm:SatelliteViewModel></vm:SatelliteViewModel>
+	</Design.DataContext>
+
+	<Border Margin="8">
+		<StackPanel Spacing="4">
+
+			<Grid ColumnDefinitions="*,Auto">
+				<TextBlock Text="{Binding Name}"/>
+				<CheckBox Grid.Column="1"
+						  IsChecked="{Binding IsVisible}">IsVisible</CheckBox>
+			</Grid>
+
+			<TextBlock Text="{Binding Node, StringFormat='Node={0}'}"/>
+			<Slider Value="{Binding Node}"
+					Minimum="1"
+					Maximum="20"
+					TickFrequency="1"
+					IsSnapToTickEnabled="True"/>
+		</StackPanel>
+	</Border>
+
+</UserControl>

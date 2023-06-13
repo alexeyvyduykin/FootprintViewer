@@ -1,6 +1,7 @@
 ﻿using BruTile.MbTiles;
 using FootprintViewer.Data;
 using FootprintViewer.Helpers;
+using FootprintViewer.Layers;
 using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Interactivity;
@@ -31,6 +32,7 @@ public class MainWindowViewModel : ViewModelBase
     public static MainWindowViewModel Instance = new();
 
     public const string WorldKey = "WorldMapLayer";
+    public const string SatelliteKey = "SatelliteLayer";
     public const string FootprintKey = "FootprintLayer";
     public const string TrackKey = "TrackLayer";
     public const string PlannedScheduleKey = "PlannedSchedule";
@@ -42,16 +44,21 @@ public class MainWindowViewModel : ViewModelBase
     {
         _dataManager.RegisterSource(PlannedScheduleKey, new CustomSource());
 
-        var provider = new FootprintProvider();
+        var footprintProvider = new FootprintProvider();
+        var satelliteProvider = new SatelliteProvider();
 
         Map = new Map();
 
         Map.Layers.Add(CreateWorldMapLayer());
-        Map.Layers.Add(CreateFootprintLayer(provider));
+        Map.Layers.Add(CreateSatelliteLayer(satelliteProvider));
+        Map.Layers.Add(CreateFootprintLayer(footprintProvider));
         Map.Layers.Add(CreateTrackLayer());
 
         PlannedScheduleTab = new(_dataManager);
-        PlannedScheduleTab.ToLayerProvider(provider);
+        PlannedScheduleTab.ToLayerProvider(footprintProvider);
+
+        SatelliteTab = new(_dataManager);
+        SatelliteTab.ToLayerProvider(satelliteProvider);
 
         MessageBox = new();
 
@@ -77,6 +84,20 @@ public class MainWindowViewModel : ViewModelBase
             Name = WorldKey
         };
     }
+
+    private static ILayer CreateSatelliteLayer(IProvider provider)
+    {
+        var style = CreateSatelliteLayerStyle();
+
+        var layer = new DynamicLayer(provider, true)
+        {
+            Name = SatelliteKey,
+            Style = style
+        };
+
+        return layer;
+    }
+
 
     private static ILayer CreateFootprintLayer(IProvider provider)
     {
@@ -236,11 +257,11 @@ public class MainWindowViewModel : ViewModelBase
                     Line = new Pen(Color.Black, 1.0),
                     Outline = new Pen(Color.Black, 1.0),
                     SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.8,                    
+                    SymbolScale = 0.8,
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
                 };
-               // return null;
+                // return null;
             }
 
             if ((string)gf["Name"]! == "Target")
@@ -261,8 +282,8 @@ public class MainWindowViewModel : ViewModelBase
                 {
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
-                  //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
-                   // Outline = new Pen(Color.Blue, 2.0),
+                    //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
+                    // Outline = new Pen(Color.Blue, 2.0),
                     Line = new Pen(Color.Opacity(Color.Blue, 0.65f), 12.0)
                 };
             }
@@ -273,8 +294,8 @@ public class MainWindowViewModel : ViewModelBase
                 {
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
-                  //  Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
-                  //  Outline = new Pen(Color.Black, 1.0),
+                    //  Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
+                    //  Outline = new Pen(Color.Black, 1.0),
                     Line = new Pen(Color.Opacity(Color.Black, 0.20f), 12.0)
                 };
             }
@@ -297,7 +318,7 @@ public class MainWindowViewModel : ViewModelBase
                 {
                     MinVisible = 0,
                     MaxVisible = _maxVisibleFootprintStyle,
-                   // Fill = new Brush(Color.Opacity(Color.Indigo, 0.55f)),
+                    // Fill = new Brush(Color.Opacity(Color.Indigo, 0.55f)),
                     Outline = new Pen(Color.Orange, 2.0),
                     Line = new Pen(Color.Orange, 2.0)
                 };
@@ -338,7 +359,35 @@ public class MainWindowViewModel : ViewModelBase
         });
     }
 
+    private static IStyle CreateSatelliteLayerStyle()
+    {
+        return new ThemeStyle(f =>
+        {
+            if (f is not GeometryFeature gf)
+            {
+                return null;
+            }
+
+            if (gf.Geometry is Point)
+            {
+                return null;
+            }
+
+            return new VectorStyle()
+            {
+                Fill = new Brush(Color.Opacity(Color.Green, 0.55f)),
+                Line = new Pen(Color.Green, 2.0),
+                Outline = new Pen(Color.Green, 2.0),
+                //  MinVisible = 0,
+                //  MaxVisible = _maxVisibleFootprintStyle,
+            };
+        });
+    }
+
+
     public PlannedScheduleTabViewModel PlannedScheduleTab { get; set; }
+
+    public SatelliteTabViewModel SatelliteTab { get; set; }
 
     public Map Map { get; private set; }
 

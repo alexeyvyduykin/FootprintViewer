@@ -19,26 +19,25 @@
 
 	<Grid ColumnDefinitions="*,Auto"
 		  RowDefinitions="*,Auto">
-		<avalonia:MapControl x:Name="MapControl">
-			<!--<inter:Interaction.Behavior>
-				<inter:InteractivityBehavior Map="{Binding Map}"
-											 Interactive="{Binding Interactive}"
-											 State="{Binding State}"/>
-			</inter:Interaction.Behavior>-->
-		</avalonia:MapControl>
+		<avalonia:MapControl x:Name="MapControl"/>
 
-		<views:MessageBoxView Grid.Column="0" 
+		<views:MessageBoxView Grid.Column="0"
 							  Grid.Row="1"
 							  DataContext="{Binding MessageBox}"/>
-		
-		<!--<map:UserMapControl MapSource="{Binding Map}"
-							Interactive="{Binding Interactive}"
-							State="{Binding State}"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"/>-->
-			
-		<views:PlannedScheduleTabView Grid.Column="1"
-									  Grid.RowSpan="2"
-									  DataContext="{Binding PlannedScheduleTab}"/>
+
+		<TabControl Width="400"
+					Grid.Column="1"
+					Grid.RowSpan="2">
+
+			<TabItem Header="1">
+				<views:PlannedScheduleTabView DataContext="{Binding PlannedScheduleTab}"/>
+			</TabItem>
+
+			<TabItem Header="2">
+				<views:SatelliteTabView DataContext="{Binding SatelliteTab}"/>
+			</TabItem>
+
+		</TabControl>
+
 	</Grid>
 </Window>
