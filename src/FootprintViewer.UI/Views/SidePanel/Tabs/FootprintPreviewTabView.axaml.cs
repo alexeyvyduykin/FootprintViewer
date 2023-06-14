@@ -8,10 +8,13 @@ namespace FootprintViewer.UI.Views.SidePanel.Tabs
         {
             InitializeComponent();
 
-            SearchToggleButton.Flyout.Closing += Flyout_Closing;
+            if (SearchToggleButton.Flyout is { })
+            {
+                SearchToggleButton.Flyout.Closed += Flyout_Closed;
+            }
         }
 
-        private void Flyout_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        private void Flyout_Closed(object? sender, EventArgs e)
         {
             SearchToggleButton.IsChecked = false;
         }

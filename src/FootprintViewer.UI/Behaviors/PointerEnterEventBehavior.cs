@@ -31,12 +31,12 @@ public class PointerEnterEventBehavior : Behavior<Interactive>
 
     protected override void OnAttachedToVisualTree()
     {
-        AssociatedObject?.AddHandler(InputElement.PointerEnterEvent, PointerEnter, RoutingStrategies);
+        AssociatedObject?.AddHandler(InputElement.PointerEnteredEvent, PointerEnter, RoutingStrategies);
     }
 
     protected override void OnDetachedFromVisualTree()
     {
-        AssociatedObject?.RemoveHandler(InputElement.PointerEnterEvent, PointerEnter);
+        AssociatedObject?.RemoveHandler(InputElement.PointerEnteredEvent, PointerEnter);
     }
 
     private void PointerEnter(object? sender, PointerEventArgs e)

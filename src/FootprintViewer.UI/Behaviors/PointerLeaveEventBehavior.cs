@@ -31,12 +31,12 @@ public class PointerLeaveEventBehavior : Behavior<Interactive>
 
     protected override void OnAttachedToVisualTree()
     {
-        AssociatedObject?.AddHandler(InputElement.PointerLeaveEvent, PointerLeave, RoutingStrategies);
+        AssociatedObject?.AddHandler(InputElement.PointerExitedEvent, PointerLeave, RoutingStrategies);
     }
 
     protected override void OnDetachedFromVisualTree()
     {
-        AssociatedObject?.RemoveHandler(InputElement.PointerLeaveEvent, PointerLeave);
+        AssociatedObject?.RemoveHandler(InputElement.PointerExitedEvent, PointerLeave);
     }
 
     private void PointerLeave(object? sender, PointerEventArgs e)

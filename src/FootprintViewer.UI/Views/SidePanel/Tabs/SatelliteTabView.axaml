@@ -27,7 +27,7 @@
 			<ScrollViewer x:Name="ScrollViewer1"
 						  VerticalScrollBarVisibility="Auto"
 						  AllowAutoHide="True">
-				<ItemsControl Items="{Binding Items}"
+				<ItemsControl ItemsSource="{Binding Items}"
 							  Margin="4"
 							  IsVisible="{Binding !IsLoading}">
 					<ItemsControl.ItemsPanel>

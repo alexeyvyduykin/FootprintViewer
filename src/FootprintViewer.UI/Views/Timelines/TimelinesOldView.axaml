@@ -5,13 +5,16 @@
              xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.Timelines"
 			 xmlns:selectors="clr-namespace:TimeDataViewer.Selectors;assembly=TimeDataViewer"
 			 xmlns:c="using:FootprintViewer.UI.Controls"
-			 xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"
+		
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:CompileBindings="True"
 		     x:DataType="vm:TimelinesOldViewModel"
              x:Class="FootprintViewer.UI.Views.Timelines.TimelinesOldView">
 
-	<Design.DataContext>
+		 <!--xmlns:timelines="clr-namespace:TimeDataViewer.Controls;assembly=TimeDataViewer"-->
+	
+	
+	<!--<Design.DataContext>
 		<vm:TimelinesOldViewModel></vm:TimelinesOldViewModel>
 	</Design.DataContext>
 
@@ -47,6 +50,6 @@
 								   SelectedInterval="{Binding $parent[UserControl].DataContext.SelectedInterval}"
 								   x:CompileBindings="False">
 		</timelines:TimelineControl>
-	</c:ContentArea>
+	</c:ContentArea>-->
 
 </UserControl>

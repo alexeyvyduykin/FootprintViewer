@@ -155,15 +155,17 @@
 								<ItemsPresenter Name="PART_ItemsPresenter"
 												VerticalAlignment="Stretch"
 												Grid.Row="1"
-												ItemTemplate="{TemplateBinding ItemTemplate}"
+												
 												ItemsPanel="{TemplateBinding ItemsPanel}"
-												Items="{TemplateBinding Items}">
+											>
+									<!--ItemTemplate="{TemplateBinding ItemTemplate}"-->
+									<!--Items="{TemplateBinding Items}"-->
 								</ItemsPresenter>
 
 								<ItemsControl Name="PART_ItemsControlBottom"
 											  VerticalAlignment="Bottom"
-											  Grid.Row="2"
-											  Items="{TemplateBinding ActionTabs}">
+											  Grid.Row="2"											  
+											  ItemsSource="{TemplateBinding ActionTabs}">
 								</ItemsControl>
 							</Grid>
 						</SplitView.Pane>

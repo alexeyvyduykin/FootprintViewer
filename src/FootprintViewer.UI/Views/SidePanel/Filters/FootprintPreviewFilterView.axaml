@@ -104,7 +104,7 @@
 						  VerticalAlignment="Center"/>
 			</DockPanel>
 
-			<ItemsControl Margin="0,0,0,10" Items="{Binding Sensors}">
+			<ItemsControl Margin="0,0,0,10" ItemsSource="{Binding Sensors}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate DataType="vm:SensorItemViewModel">
 						<Border Padding="16,8">

@@ -46,8 +46,8 @@ public class ContentArea : ContentControl
     public static readonly StyledProperty<IBrush> HeaderBackgroundProperty =
         AvaloniaProperty.Register<ContentArea, IBrush>(nameof(HeaderBackground));
 
-    private IContentPresenter? _titlePresenter;
-    private IContentPresenter? _captionPresenter;
+    private ContentPresenter? _titlePresenter;
+    private ContentPresenter? _captionPresenter;
 
     public object Title
     {
@@ -127,7 +127,7 @@ public class ContentArea : ContentControl
         set => SetValue(HeaderBackgroundProperty, value);
     }
 
-    protected override bool RegisterContentPresenter(IContentPresenter presenter)
+    protected override bool RegisterContentPresenter(ContentPresenter presenter)
     {
         var result = base.RegisterContentPresenter(presenter);
 
@@ -166,12 +166,12 @@ public class ContentArea : ContentControl
         {
             var className = sender == _captionPresenter ? "caption" : "title";
 
-            if (e.OldValue is IStyledElement oldValue)
+            if (e.OldValue is StyledElement oldValue)
             {
                 oldValue.Classes.Remove(className);
             }
 
-            if (e.NewValue is IStyledElement newValue)
+            if (e.NewValue is StyledElement newValue)
             {
                 newValue.Classes.Add(className);
             }

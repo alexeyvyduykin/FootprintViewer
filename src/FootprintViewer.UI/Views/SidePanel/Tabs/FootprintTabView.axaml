@@ -122,10 +122,17 @@
 						 IsIndeterminate="True"/>
 
 			<ListBox IsVisible="{Binding !IsLoading}"
-					 Items="{Binding Items}"
+					 ItemsSource="{Binding Items}"
 					 ItemTemplate="{StaticResource FootprintItemTemplate}"
-					 VirtualizationMode="Simple"
-					 Classes="sidePanel"/>
+					
+					 Classes="sidePanel">
+				<!--VirtualizationMode="Simple"-->
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel/>
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
+			</ListBox>
 		</Grid>
 
 		<StackPanel Grid.Row="3"

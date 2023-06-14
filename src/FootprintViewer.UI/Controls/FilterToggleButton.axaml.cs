@@ -26,11 +26,11 @@ namespace FootprintViewer.UI.Controls
             get => GetValue(FilterProperty);
             set => SetValue(FilterProperty, value);
         }
+        
+        public static readonly StyledProperty<PlacementMode> PlacementProperty =
+            AvaloniaProperty.Register<FilterToggleButton, PlacementMode>(nameof(Placement), PlacementMode.LeftEdgeAlignedTop);
 
-        public static readonly StyledProperty<FlyoutPlacementMode> PlacementProperty =
-            AvaloniaProperty.Register<FilterToggleButton, FlyoutPlacementMode>(nameof(Placement), FlyoutPlacementMode.LeftEdgeAlignedTop);
-
-        public FlyoutPlacementMode Placement
+        public PlacementMode Placement
         {
             get => GetValue(PlacementProperty);
             set => SetValue(PlacementProperty, value);
@@ -63,7 +63,7 @@ namespace FootprintViewer.UI.Controls
             base.OnApplyTemplate(e);
         }
 
-        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> e)
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
 

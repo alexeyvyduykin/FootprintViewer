@@ -32,7 +32,7 @@
 		<Style Selector="MenuItem" x:DataType="vm:MenuItemViewModel">
 			<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}"/>
 			<Setter Property="Header" Value="{Binding Header}"/>
-			<Setter Property="Items" Value="{Binding Items}"/>
+			<Setter Property="ItemsSource" Value="{Binding Items}"/>
 			<Setter Property="Command" Value="{Binding Command}"/>
 			<Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
 		</Style>
@@ -90,7 +90,7 @@
 
 		<Style Selector="ItemsControl.toolCollection"
 			   x:DataType="toolBar:ToolCollection">
-			<Setter Property="Items" Value="{Binding Items}"></Setter>
+			<Setter Property="ItemsSource" Value="{Binding Items}"></Setter>
 			<Setter Property="ItemsPanel">
 				<Setter.Value>
 					<ItemsPanelTemplate>
@@ -160,7 +160,7 @@
 					<MenuFlyout x:CompileBindings="False"
 								Placement="RightEdgeAlignedTop"
 								ShowMode="TransientWithDismissOnPointerMoveAway"
-								Items="{Binding $parent[UserControl].DataContext.MapItems}"/>
+								ItemsSource="{Binding $parent[UserControl].DataContext.MapItems}"/>
 				</ToggleButton.Flyout>
 				<Viewbox Classes="t1">
 					<PathIcon Data="{DynamicResource fg-map}" Classes="t1"/>

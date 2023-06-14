@@ -123,7 +123,7 @@
 							   Classes="h3 medium"/>
 
 					<StackPanel Spacing="2">
-						<ItemsControl Items="{Binding MapBackgrounds}">
+						<ItemsControl ItemsSource="{Binding MapBackgrounds}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate DataType="items:MapBackgroundItemViewModel">
 									<StackPanel Orientation="Horizontal">
@@ -173,7 +173,7 @@
 							   Classes="h3 medium"/>
 
 					<ComboBox x:Name="ComboBox"
-							  Items="{Binding SnapshotExtensions}"
+							  ItemsSource="{Binding SnapshotExtensions}"
 							  SelectedItem="{Binding SelectedSnapshotExtension}"/>
 				</StackPanel>
 
@@ -181,7 +181,7 @@
 
 			<TabItem Header="Styles">
 
-				<ItemsControl Items="{Binding LayerItems}"
+				<ItemsControl ItemsSource="{Binding LayerItems}"
 							  HorizontalAlignment="Left"
 							  Width="360">
 					<ItemsControl.ItemsPanel>
@@ -197,7 +197,7 @@
 										   VerticalAlignment="Center"/>
 								<ComboBox Grid.Column="1"
 										  HorizontalAlignment="Stretch"
-										  Items="{Binding Styles}"
+										  ItemsSource="{Binding Styles}"
 										  SelectedItem="{Binding SelectedStyle}">
 									<ComboBox.ItemTemplate>
 										<DataTemplate x:DataType="styles:LayerStyleViewModel">

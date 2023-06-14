@@ -65,7 +65,7 @@ public class AccordionStackPanel : StackPanel
         control.SetValue(IsExpandedProperty, value);
     }
 
-    private static bool Coerce(IAvaloniaObject obj, bool value)
+    private static bool Coerce(AvaloniaObject obj, bool value)
     {
         Control? target = obj as Control;
         if (target is not null)

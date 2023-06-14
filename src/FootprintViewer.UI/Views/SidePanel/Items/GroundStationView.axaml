@@ -95,7 +95,7 @@
 							<DataTemplate>
 								<ComboBox x:Name="ModeComboBox"
 										  Grid.Column="1"
-										  Items="{Binding AvailableCountModes}"
+										  ItemsSource="{Binding AvailableCountModes}"
 										  SelectedItem="{Binding CountMode}"/>
 							</DataTemplate>
 						</c:TextValue.ContentTemplate>
@@ -105,13 +105,13 @@
 						<c:TextValue.ContentTemplate>
 							<DataTemplate>
 								<ComboBox x:Name="CountComboBox"
-										  Items="{Binding AvailableAreaCounts}"
+										  ItemsSource="{Binding AvailableAreaCounts}"
 										  SelectedItem="{Binding AreaCount}"/>
 							</DataTemplate>
 						</c:TextValue.ContentTemplate>
 					</c:TextValue>
 
-					<ItemsControl Items="{Binding AreaItems}">
+					<ItemsControl ItemsSource="{Binding AreaItems}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="vm:GroundStationAreaViewModel">
 								<Grid ColumnDefinitions="40, 30, *">

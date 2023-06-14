@@ -11,7 +11,7 @@ public class DataTemplateSelector : IDataTemplate
     [Content]
     public Dictionary<string, IDataTemplate> Templates { get; } = new Dictionary<string, IDataTemplate>();
 
-    public IControl Build(object param)
+    public Control Build(object? param)
     {
         string? key = null;
 
@@ -33,11 +33,11 @@ public class DataTemplateSelector : IDataTemplate
             return Templates[key].Build(param);
         }
 
-        return new TextBlock() {Text = "error" };// throw new Exception("Key not register in DataTemplateSelector");
+        return new TextBlock() { Text = "error" };// throw new Exception("Key not register in DataTemplateSelector");
     }
 
-    public bool Match(object data)
+    public bool Match(object? data)
     {
-        return data is ISelectorItem || data is string;
+        return data is ISelectorItem or string;
     }
 }

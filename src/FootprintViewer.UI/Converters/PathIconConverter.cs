@@ -25,7 +25,7 @@ public class PathIconConverter : IValueConverter
                 return AvaloniaProperty.UnsetValue;
             }
 
-            if (Application.Current?.Resources.TryGetResource(icon, out var resource) == true)
+            if (Application.Current?.Resources.TryGetResource(icon, null, out var resource) == true)
             {
                 return resource;
             }

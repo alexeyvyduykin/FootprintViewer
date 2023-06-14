@@ -56,7 +56,7 @@ public static class ItemsControlExtensions
 
         // Find the ScrollContentPresenter
         ScrollContentPresenter? presenter = null;
-        for (IVisual? vis = container; vis != null && vis != itemsControl; vis = vis.GetVisualParent()/* VisualTreeHelper.GetParent(vis)*/)
+        for (Visual? vis = container; vis != null && vis != itemsControl; vis = vis.GetVisualParent()/* VisualTreeHelper.GetParent(vis)*/)
         {
             if ((presenter = vis as ScrollContentPresenter) != null)
             {
@@ -81,7 +81,7 @@ public static class ItemsControlExtensions
         Size size = container.DesiredSize;//RenderSize;
                                           // Point c = container.TransformToAncestor((IVisual)scrollInfo).Transform(new Point(size.Width / 2, size.Height / 2));
 
-        Point c = container.TranslatePoint(new Point(size.Width / 2, size.Height / 2), (IVisual)scrollInfo)!.Value;
+        Point c = container.TranslatePoint(new Point(size.Width / 2, size.Height / 2), (Visual)scrollInfo)!.Value;
 
         Point center = new Point(c.X + scrollInfo.Offset.X, c.Y + scrollInfo.Offset.Y);
 
@@ -120,17 +120,17 @@ public static class ItemsControlExtensions
         return Math.Min(extent - viewport, Math.Max(0, center - viewport / 2));
     }
 
-    private static AvaloniaObject? FirstVisualChild(IVisual? visual)
+    private static AvaloniaObject? FirstVisualChild(Visual? visual)
     {
         if (visual == null)
         {
             return null;
         }
-        if (visual.VisualChildren.Count/* VisualTreeHelper.GetChildrenCount(visual)*/ == 0)
+        if (visual.GetVisualChildren().Count()/* VisualTreeHelper.GetChildrenCount(visual)*/ == 0)
         {
             return null;
         }
 
-        return (AvaloniaObject)visual.VisualChildren.First();// VisualTreeHelper.GetChild(visual, 0);
+        return (AvaloniaObject)visual.GetVisualChildren().First();// VisualTreeHelper.GetChild(visual, 0);
     }
 }

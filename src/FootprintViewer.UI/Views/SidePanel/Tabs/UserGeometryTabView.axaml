@@ -25,7 +25,7 @@
 					 HorizontalAlignment="Center"
 					 IsIndeterminate="True"/>
 
-		<ListBox Items="{Binding Items}"
+		<ListBox ItemsSource="{Binding Items}"
 				 IsVisible="{Binding !IsLoading}"
 				 Classes="sidePanel">
 			<ListBox.ItemTemplate>

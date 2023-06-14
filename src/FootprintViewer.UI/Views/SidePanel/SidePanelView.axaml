@@ -116,7 +116,7 @@
 	</UserControl.Styles>
 
 	<Panel>
-		<c:SidePanel Items="{Binding Tabs}"
+		<c:SidePanel ItemsSource="{Binding Tabs}"
 					 ActionTabs="{Binding ActionTabs}"
 					 PaneWidth="500"
 					 IsExpanded="{Binding IsExpanded, Mode=TwoWay}"

@@ -81,7 +81,7 @@
 						 Classes="t1 high"
 						 Grid.Column="2" Grid.Row="3"/>
 				<ComboBox Classes="t1 high"
-						  Items="{Binding AvailableTables}"
+						  ItemsSource="{Binding AvailableTables}"
 						  SelectedItem="{Binding SelectedTable}"
 						  Grid.Column="2" Grid.Row="4"/>
 			</Grid>

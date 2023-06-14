@@ -6,7 +6,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MapsuiVersion>4.0.0-rc.1</MapsuiVersion>
+		<MapsuiVersion>4.0.0-rc.3</MapsuiVersion>
+		<ReactiveUIVersion>18.3.1</ReactiveUIVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,7 +16,7 @@
 		<PackageReference Include="Mapsui.Nts" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Mapsui.Tiling" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Mapsui.Rendering.Skia" Version="$(MapsuiVersion)" />
-		<PackageReference Include="ReactiveUI" Version="18.0.10" />
+		<PackageReference Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
 		<PackageReference Include="CliWrap" Version="3.4.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 		<PackageReference Include="TimeDataViewer" Version="1.0.1" />

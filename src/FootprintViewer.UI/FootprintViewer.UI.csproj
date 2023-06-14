@@ -6,9 +6,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AvaloniaVersion>0.10.21</AvaloniaVersion>
-		<AvaloniaXamlBehaviorsVersion>0.10.19</AvaloniaXamlBehaviorsVersion>
-		<MapsuiVersion>4.0.0-rc.1</MapsuiVersion>
+		<AvaloniaVersion>11.0.0-rc1.1</AvaloniaVersion>
+		<AvaloniaXamlBehaviorsVersion>11.0.0-rc1.1</AvaloniaXamlBehaviorsVersion>
+		<MapsuiVersion>4.0.0-rc.3</MapsuiVersion>
+		<ReactiveUIVersion>18.3.1</ReactiveUIVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,19 +25,18 @@
 	<ItemGroup>
 		<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-		<PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
-		<PackageReference Include="Avalonia.ReactiveUI.Events" Version="$(AvaloniaVersion)" />
 		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="$(AvaloniaXamlBehaviorsVersion)" />
-		<PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Mapsui.Avalonia" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
-		<PackageReference Include="ReactiveUI" Version="18.0.10" />
-		<PackageReference Include="ReactiveUI.Fody" Version="18.0.10" />
+		<PackageReference Include="ReactiveUI" Version="$(ReactiveUIVersion)" />
+		<PackageReference Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)" />
 		<PackageReference Include="sqlite-net" Version="1.6.292" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />

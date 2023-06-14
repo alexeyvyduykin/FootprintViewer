@@ -36,7 +36,7 @@
 				   NextContent="Ok">
 		<Panel>
 
-			<ListBox Items="{Binding Items}"
+			<ListBox ItemsSource="{Binding Items}"
 					 Background="Transparent"
 					 SelectedItem="{Binding SelectedItem}"
 					 VerticalAlignment="Stretch"

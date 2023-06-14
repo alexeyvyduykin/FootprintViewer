@@ -161,7 +161,7 @@
 						 IsIndeterminate="True"/>
 
 			<ListBox IsVisible="{Binding !IsLoading}"
-					 Items="{Binding Items}"
+					 ItemsSource="{Binding Items}"
 					 SelectedItem="{Binding SelectedItem}"
 					 ItemTemplate="{StaticResource FootprintPreviewItemTemplate}"
 					 ScrollViewer.VerticalScrollBarVisibility="Visible"/>

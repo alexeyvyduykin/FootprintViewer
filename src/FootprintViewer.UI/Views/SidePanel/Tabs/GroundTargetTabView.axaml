@@ -118,7 +118,7 @@
 						 HorizontalAlignment="Center"
 						 IsIndeterminate="True"/>
 			<ListBox IsVisible="{Binding !IsLoading}"
-					 Items="{Binding Items}"
+					 ItemsSource="{Binding Items}"
 					 Classes="sidePanel"
 					 SelectedItem="{Binding SelectedItem}"
 					 ItemTemplate="{StaticResource GroundTargetItemTemplate}"/>

@@ -47,7 +47,7 @@ public class PointerMovedEventBehavior : Behavior<Interactive>
 
     protected virtual void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (sender is IVisual visual)
+        if (sender is Visual visual)
         {
             var screenPosition = e.GetPosition(visual);
 

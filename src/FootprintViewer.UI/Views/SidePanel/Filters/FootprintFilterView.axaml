@@ -65,7 +65,7 @@
 						  IsChecked="{Binding IsAllSatellites}"/>
 			</Grid>
 
-			<ItemsControl Items="{Binding Satellites}">
+			<ItemsControl ItemsSource="{Binding Satellites}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate DataType="vm:SatelliteItemViewModel">
 						<Border Padding="28,0,0,0">

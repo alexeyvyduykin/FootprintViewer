@@ -34,7 +34,7 @@
 	</UserControl.Styles>
 
 	<Grid>
-		<ItemsControl Items="{Binding Panels}">
+		<ItemsControl ItemsSource="{Binding Panels}">
 			<ItemsControl.DataTemplates>
 
 				<DataTemplate DataType="vm:FootprintInfoPanelItemViewModel">
