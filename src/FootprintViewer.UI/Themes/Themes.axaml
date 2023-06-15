@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Color x:Key="AcrylicTrimBackground">#A0202020</Color>
+	<Color x:Key="TileBorderColor">#66757575</Color>
+	<Color x:Key="RegionColor">#191D24</Color>
+	<Color x:Key="SystemAltHighColor">#FF000000</Color>
+
+	<SolidColorBrush x:Key="MainBrush" Color="#171e26"/>
+	<SolidColorBrush x:Key="DialogOverlayColor" Color="#7F2E2E2E"/>
+	<SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FF424242"/>
+	<SolidColorBrush x:Key="MaterialDesignPaper" Color="#FF303030"/>
+	<SolidColorBrush x:Key="MaterialDesignBody" Color="#DDFFFFFF"/>
+	<SolidColorBrush x:Key="MaterialDesignLightBackground" Color="#FFFAFAFA"/>
+	<SolidColorBrush x:Key="MaterialDesignLightForeground" Color="#DD000000"/>
+	<SolidColorBrush x:Key="MaterialDesignDarkBackground" Color="#FF303030"/>
+	<SolidColorBrush x:Key="MaterialDesignDarkForeground" Color="#FFFAFAFA"/>
+
+	<SolidColorBrush x:Key="PrimaryHueLightBrush" Color="Blue"/>
+	<SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="White"/>
+	<SolidColorBrush x:Key="PrimaryHueMidBrush" Color="Blue"/>
+	<SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="White"/>
+	<SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="Blue"/>
+	<SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="White"/>
+	<SolidColorBrush x:Key="SecondaryHueMidBrush" Color="Blue"/>
+	<SolidColorBrush x:Key="SecondaryHueMidForegroundBrush" Color="White"/>
+
+	<SolidColorBrush x:Key="TipBrush" Color="Black" Opacity="0.65"/>
+
+	<BoxShadows x:Key="EmptyBoxShadow">0 0 0 0 #000000</BoxShadows>
+	<BoxShadows x:Key="DialogBoxShadow">4 11 30 1 #3F000000</BoxShadows>
+	<BoxShadows x:Key="DialogAlertStartBoxShadow">0 0 10 5 #FF5E96ED</BoxShadows>
+	<BoxShadows x:Key="DialogAlertEndBoxShadow">0 0 10 1 #FF5E96ED</BoxShadows>
+
+	<Easing x:Key="FluentEasing">0.4,0,0.6,1</Easing>
+
+	<SolidColorBrush x:Key="BackgroundBrush" Color="#191D24"/>
+
+	<SolidColorBrush x:Key="IconForegroundBrush" Color="{DynamicResource Gray3}"/>
+	<SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource Red8}"/>
+	<SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource Green8}"/>
+
+	<SolidColorBrush x:Key="AccentDarkBrush" Color="{DynamicResource BlueGray900}"/>
+	<SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource BlueGray800}"/>
+	<SolidColorBrush x:Key="AccentLightBrush" Color="{DynamicResource BlueGray700}"/>
+
+	<SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource Blue8}"/>
+
+	<SolidColorBrush x:Key="TextHighBrush" Color="{DynamicResource Gray3}"/>
+	<SolidColorBrush x:Key="TextMediumBrush" Color="{DynamicResource Gray5}"/>
+	<SolidColorBrush x:Key="TextLowBrush" Color="{DynamicResource Gray6}"/>
+	<SolidColorBrush x:Key="TextDisableBrush" Color="{DynamicResource Gray7}"/>
+
+	<SolidColorBrush x:Key="ActionButtonForegroundColor" Color="{DynamicResource Gray9}" />
+	<SolidColorBrush x:Key="ActionButtonBackgroundColor" Color="{DynamicResource Green8}" />
+	<SolidColorBrush x:Key="ActionButtonPressedBackgroundColor" Color="{DynamicResource Green7}" />
+	<SolidColorBrush x:Key="ActionButtonPointerOverBackgroundColor" Color="{DynamicResource Green7}" />
+	<SolidColorBrush x:Key="ActionButtonDisabledBackgroundColor" Color="{DynamicResource SystemChromeDisabledLowColor}" />
+
+	<SolidColorBrush x:Key="InvisibleButtonBackgroundColor" Color="Transparent" />
+	<SolidColorBrush x:Key="InvisibleButtonPointerOverBackgroundColor" Color="{DynamicResource Gray6}" />
+	<SolidColorBrush x:Key="InvisibleButtonPressedBackgroundColor" Color="{DynamicResource Gray6}" />
+
+	<SolidColorBrush x:Key="IconAccentBrush" Color="#e39400"/>
+	<SolidColorBrush x:Key="IconMainBrush" Color="#d6d9dd"/>
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key='Default'>
+
+		</ResourceDictionary>
+		<ResourceDictionary x:Key='Dark'>
+
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

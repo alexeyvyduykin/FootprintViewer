@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:materialIcons="using:Material.Icons.Avalonia">
+
+	<DataTemplate x:Key="IconCenterKey">
+		<Border Cursor="Help"
+				Background="Transparent"
+				ToolTip.Tip="Center">
+			<Viewbox Width="20" Height="20">
+				<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+											Kind="MapMarker" />
+			</Viewbox>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="IconSatelliteKey">
+		<Border Cursor="Help"
+				Background="Transparent"
+				ToolTip.Tip="Satellite (Node - Swath)">
+			<Viewbox Width="20" Height="20">
+				<PathIcon Foreground="{DynamicResource IconAccentBrush}"
+						  Data="{DynamicResource IconSatellite}"/>
+			</Viewbox>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="IconBeginKey">
+		<Border Cursor="Help"
+				Background="Transparent"
+				ToolTip.Tip="Begin (Duration)">
+			<Viewbox Width="20" Height="20">
+				<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+											Kind="ClockStart" />
+			</Viewbox>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="IconShapeKey">
+		<Border Cursor="Help"
+				Background="Transparent"
+				ToolTip.Tip="Type shape">
+			<Viewbox Width="20" Height="20">
+				<materialIcons:MaterialIcon Foreground="{DynamicResource IconAccentBrush}"
+											Kind="Shape" />
+			</Viewbox>
+		</Border>
+	</DataTemplate>
+
+</ResourceDictionary>

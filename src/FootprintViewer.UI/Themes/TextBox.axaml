@@ -50,8 +50,7 @@
 			<ControlTemplate>
 				<DataValidationErrors>
 					<Panel>
-						<Border
-						  Name="PART_BorderElement"
+						<Border Name="PART_BorderElement"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
 						  BorderThickness="{TemplateBinding BorderThickness}"
@@ -60,8 +59,7 @@
 						  MinHeight="{TemplateBinding MinHeight}">
 						</Border>
 
-						<Border
-						  Margin="{TemplateBinding BorderThickness}">
+						<Border Margin="{TemplateBinding BorderThickness}">
 							<Grid ColumnDefinitions="Auto,*,Auto" >
 								<ContentPresenter Grid.Column="0" Grid.ColumnSpan="1" Content="{TemplateBinding InnerLeftContent}"/>
 								<DockPanel x:Name="PART_InnerDockPanel" Grid.Column="1" Grid.ColumnSpan="1" Margin="{TemplateBinding Padding}">

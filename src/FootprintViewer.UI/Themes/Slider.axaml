@@ -1,5 +1,5 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<Design.PreviewWith>
 		<Border Margin="20" Width="200" Height="200">
@@ -15,6 +15,7 @@
 
 	<Styles.Resources>
 		<x:Double x:Key="SliderTrackThemeHeight">1</x:Double>
+		<StreamGeometry x:Key="ThumbGeometry">F1 M10,10z M0,0z M0,0 10,0 10,6 5,10 0,6 0,0Z</StreamGeometry>
 	</Styles.Resources>
 
 	<Style Selector="Slider:horizontal">
@@ -22,94 +23,89 @@
 		<Setter Property="Foreground" Value="{DynamicResource TextDisableBrush}" />
 	</Style>
 
-	<Style Selector="Slider:pressed /template/ RepeatButton">
+	<Style Selector="Slider:horizontal:pressed /template/ RepeatButton">
 		<Setter Property="RenderTransform" Value="scale(1.0)" />
 	</Style>
 
-	<Style Selector="Slider /template/ TickBar">
+	<Style Selector="Slider:horizontal /template/ TickBar">
 		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}" />
 	</Style>
 
-	<Style Selector="Slider /template/ Thumb.SliderThumbStyle">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate>
-					<Panel>
-						<Path Fill="{TemplateBinding Background}"
-							  Width="{TemplateBinding Width}"
-							  Height="{TemplateBinding Height}"
-							  Stretch="Uniform"
-							  Data="{StaticResource ThumbGeometry}" />
-						<Path Stroke="{TemplateBinding Foreground}"
-							  StrokeThickness="1"
-							  Width="{TemplateBinding Width}"
-							  Height="{TemplateBinding Height}"
-							  Stretch="Uniform"
-							  Data="{StaticResource ThumbGeometry}" />
-					</Panel>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-
-	<!-- Normal State -->
-
-	<Style Selector="Slider /template/ Thumb.SliderThumbStyle">
+	<Style Selector="Slider:horizontal /template/ Thumb">
 		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource AccentLightBrush}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Path Fill="{TemplateBinding Background}"
+						  Width="{TemplateBinding Width}"
+						  Height="{TemplateBinding Height}"
+						  Stretch="Uniform"
+						  Data="{StaticResource ThumbGeometry}" />
+					<Path Stroke="{TemplateBinding Foreground}"
+						  StrokeThickness="1"
+						  Width="{TemplateBinding Width}"
+						  Height="{TemplateBinding Height}"
+						  Stretch="Uniform"
+						  Data="{StaticResource ThumbGeometry}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
 	</Style>
 
 	<!-- Disabled State -->
 
-	<Style Selector="Slider:disabled /template/ RepeatButton#PART_DecreaseButton">
+	<Style Selector="Slider:horizontal:disabled /template/ RepeatButton#PART_DecreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextDisableBrush}" />
 	</Style>
 
-	<Style Selector="Slider:disabled /template/ RepeatButton#PART_IncreaseButton">
+	<Style Selector="Slider:horizontal:disabled /template/ RepeatButton#PART_IncreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextDisableBrush}" />
 	</Style>
 
-	<Style Selector="Slider:disabled /template/ Thumb.SliderThumbStyle">
+	<Style Selector="Slider:horizontal:disabled /template/ Thumb.SliderThumbStyle">
 		<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource AccentDarkBrush}" />
 	</Style>
 
-	<Style Selector="Slider:disabled /template/ TickBar">
+	<Style Selector="Slider:horizontal:disabled /template/ TickBar">
 		<Setter Property="Fill" Value="{DynamicResource TextDisableBrush}" />
 	</Style>
 
 	<!-- PointerOver State -->
-	<Style Selector="Slider:pointerover /template/ RepeatButton#PART_IncreaseButton">
+
+	<Style Selector="Slider:horizontal:pointerover /template/ RepeatButton#PART_IncreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextHighBrush}" />
 	</Style>
 
-	<Style Selector="Slider:pointerover /template/ Thumb.SliderThumbStyle">
+	<Style Selector="Slider:horizontal:pointerover /template/ Thumb">
 		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
 	</Style>
 
-	<Style Selector="Slider:pointerover /template/ RepeatButton#PART_DecreaseButton">
+	<Style Selector="Slider:horizontal:pointerover /template/ RepeatButton#PART_DecreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextHighBrush}" />
 	</Style>
 
 	<!-- Pressed State -->
-	<Style Selector="Slider:pressed /template/ RepeatButton#PART_IncreaseButton">
+
+	<Style Selector="Slider:horizontal:pressed /template/ RepeatButton#PART_IncreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextHighBrush}" />
 	</Style>
 
-	<Style Selector="Slider:pressed /template/ Thumb.SliderThumbStyle">
+	<Style Selector="Slider:horizontal:pressed /template/ Thumb.SliderThumbStyle">
 		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
 	</Style>
 
-	<Style Selector="Slider:pointerover /template/ RepeatButton#PART_DecreaseButton">
+	<Style Selector="Slider:horizontal:pointerover /template/ RepeatButton#PART_DecreaseButton">
 		<Setter Property="Background" Value="{DynamicResource TextHighBrush}" />
 	</Style>
 
-	<Style Selector="Slider:error /template/ Thumb.SliderThumbStyle">
+	<Style Selector="Slider:horizontal:error /template/ Thumb">
 		<Setter Property="Background" Value="Red" />
 	</Style>
 
-	<Style Selector="Slider:error">
+	<Style Selector="Slider:horizontal:error">
 		<Setter Property="Foreground" Value="{DynamicResource SystemControlErrorTextForegroundBrush}" />
 	</Style>
 
-</Styles>
+</Styles >
