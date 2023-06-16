@@ -22,6 +22,7 @@
 				<ResourceInclude Source="/Controls/FilterToggleButton.axaml"/>
 				<ResourceInclude Source="/Controls/RangeSlider.axaml"/>
 				<ResourceInclude Source="/Controls/TextValue.axaml"/>
+				<ResourceInclude Source="/Controls/SidePanelItem.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 							
 		</ResourceDictionary>
@@ -53,7 +54,7 @@
 	
 
 		<StyleInclude Source="/Themes/ToolTip.axaml"/>
-		<StyleInclude Source="/Controls/SidePanelItem.axaml"/>
+		
 		<StyleInclude Source="/Controls/SidePanel.axaml"/>-->
 	
 	<!--
