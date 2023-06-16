@@ -21,6 +21,7 @@
 				<ResourceInclude Source="/Controls/ContentArea.axaml"/>
 				<ResourceInclude Source="/Controls/FilterToggleButton.axaml"/>
 				<ResourceInclude Source="/Controls/RangeSlider.axaml"/>
+				<ResourceInclude Source="/Controls/TextValue.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 							
 		</ResourceDictionary>
@@ -46,7 +47,7 @@
 		<StyleInclude Source="/Themes/Slider.axaml"/>
 		<StyleInclude Source="/Themes/ListBox.axaml"/>
 
-		<StyleInclude Source="/Controls/TextValue.axaml"/>
+	
 
 		<StyleInclude Source="/Controls/Dialog.axaml"/>
 	

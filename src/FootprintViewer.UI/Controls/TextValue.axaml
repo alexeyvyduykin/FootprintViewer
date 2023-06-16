@@ -1,6 +1,6 @@
-<Styles xmlns="https://github.com/avaloniaui"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:c="using:FootprintViewer.UI.Controls">
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:c="using:FootprintViewer.UI.Controls">
 
 	<Design.PreviewWith>
 		<Border Padding="40" Width="300">
@@ -20,7 +20,12 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<Style Selector="c|TextValue">
+	<ControlTheme x:Key="{x:Type c:TextValue}" TargetType="c:TextValue">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH3}"/>
+
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid ColumnDefinitions="*,Auto">
@@ -38,13 +43,6 @@
 				</Grid>
 			</ControlTemplate>
 		</Setter>
-	</Style>
+	</ControlTheme>
 
-	<Style Selector="c|TextValue">
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="VerticalContentAlignment" Value="Center"/>
-		<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}"/>
-		<Setter Property="FontSize" Value="{DynamicResource FontSizeH3}"/>
-	</Style>
-
-</Styles>
+</ResourceDictionary>
