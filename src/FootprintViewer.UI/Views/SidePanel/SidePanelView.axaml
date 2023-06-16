@@ -29,56 +29,6 @@
 		</vm:SidePanelViewModel>
 	</Design.DataContext>
 
-	<UserControl.Resources>
-		<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
-			<DataTemplate x:Key="FootprintPreviewTabViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="Image" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="SatelliteTabViewModel">
-				<Viewbox Margin="8">
-					<PathIcon Data="{DynamicResource fg-satellite}" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="GroundTargetTabViewModel">
-				<Viewbox Margin="8">
-					<PathIcon Data="{DynamicResource fg-pois}" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="FootprintTabViewModel">
-				<Viewbox Margin="8">
-					<PathIcon Data="{DynamicResource fg-satellite-earth}" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="UserGeometryTabViewModel">
-				<Viewbox Margin="8">
-					<PathIcon Data="{DynamicResource fg-map-user}" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="GroundStationTabViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="SatelliteUplink" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="PlannedScheduleTabViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="ChartTimeline" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="AddPlannedSchedulePageViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="PowerPlug" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-			<DataTemplate x:Key="SettingsViewModel">
-				<Viewbox Margin="4">
-					<materialIcons:MaterialIcon Kind="AccountCog" Classes="high"/>
-				</Viewbox>
-			</DataTemplate>
-		</selectors:DataTemplateSelector>
-	</UserControl.Resources>
-
 	<UserControl.Styles>
 		<Style Selector="c|SidePanelItem">
 			<!--<Setter Property="Title" Value="{Binding Title, Converter={StaticResource sidePanelTitleConv}, StringFormat={}-{0}}"/>-->
@@ -92,27 +42,6 @@
 			<Setter Property="DockPanel.Dock" Value="Bottom"/>
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
 		</Style>-->
-		<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
-			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
-		</Style>
-
-		<Style Selector="c|SidePanel /template/ ItemsControl#PART_ItemsControlBottom">
-
-			<Setter Property="ItemTemplate">
-				<Setter.Value>
-					<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
-						<Button Command="{Binding Command}"
-								Classes="invisible icon">
-
-
-							<ContentControl Content="{Binding Key}"
-											ContentTemplate="{DynamicResource SidePanelIconSelector}"/>
-						</Button>
-					</DataTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-
 	</UserControl.Styles>
 
 	<Panel>
@@ -120,8 +49,8 @@
 					 ActionTabs="{Binding ActionTabs}"
 					 PaneWidth="500"
 					 IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
-					 ItemTemplate="{StaticResource SidePanelIconSelector}"
-					 SelectedItem="{Binding SelectedTab}"/>
+					 SelectedItem="{Binding SelectedTab}"
+					 ItemTemplate="{DynamicResource BaseIconSelector}"/>
 	</Panel>
 
 </UserControl>

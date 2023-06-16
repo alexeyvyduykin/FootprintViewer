@@ -23,6 +23,7 @@
 				<ResourceInclude Source="/Controls/RangeSlider.axaml"/>
 				<ResourceInclude Source="/Controls/TextValue.axaml"/>
 				<ResourceInclude Source="/Controls/SidePanelItem.axaml"/>
+				<ResourceInclude Source="/Controls/SidePanel.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 							
 		</ResourceDictionary>
@@ -55,7 +56,7 @@
 
 		<StyleInclude Source="/Themes/ToolTip.axaml"/>
 		
-		<StyleInclude Source="/Controls/SidePanel.axaml"/>-->
+		-->
 	
 	<!--
 		<StyleInclude Source="avares://TimeDataViewerLite/Styles/Styles.axaml"/>-->

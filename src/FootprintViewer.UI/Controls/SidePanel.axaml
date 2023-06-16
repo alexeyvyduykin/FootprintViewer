@@ -1,11 +1,11 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="using:FootprintViewer.UI.Controls"
-		xmlns:selectors="clr-namespace:FootprintViewer.UI.Selectors"
-		xmlns:materialIcons="using:Material.Icons.Avalonia"
-		xmlns:sys="using:System"
-		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
-		xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel">
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:c="using:FootprintViewer.UI.Controls"
+					xmlns:selectors="clr-namespace:FootprintViewer.UI.Selectors"
+					xmlns:materialIcons="using:Material.Icons.Avalonia"
+					xmlns:sys="using:System"
+					xmlns:generic="clr-namespace:System.Collections.Generic;assembly=System.Collections"
+					xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel">
 
 	<Design.PreviewWith>
 		<Border Padding="20" Height="420">
@@ -32,28 +32,10 @@
 						 PaneWidth="280">
 				<c:SidePanel.Resources>
 					<generic:List x:Key="actionTabs" x:TypeArguments="vm:SidePanelActionTabViewModel">
-						<vm:SidePanelActionTabViewModel Key="Key1"/>
-						<vm:SidePanelActionTabViewModel Key="Key2"/>
-						<vm:SidePanelActionTabViewModel Key="Key3"/>
+						<vm:SidePanelActionTabViewModel Key="SettingsViewModel"/>
+						<vm:SidePanelActionTabViewModel Key="AddPlannedSchedulePageViewModel"/>
+						<vm:SidePanelActionTabViewModel Key="SettingsViewModel"/>
 					</generic:List>
-					<selectors:DataTemplateSelector x:Key="SidePanelIconSelector">
-						<DataTemplate x:Key="Key1">
-							<Viewbox Margin="4">
-								<materialIcons:MaterialIcon Kind="ChartTimeline" Classes="high"/>
-							</Viewbox>
-						</DataTemplate>
-						<DataTemplate x:Key="Key2">
-							<Viewbox Margin="4">
-								<materialIcons:MaterialIcon Kind="PowerPlug" Classes="high"/>
-							</Viewbox>
-						</DataTemplate>
-						<DataTemplate x:Key="Key3">
-							<Viewbox Margin="4">
-								<materialIcons:MaterialIcon Kind="AccountCog" Classes="high"/>
-							</Viewbox>
-						</DataTemplate>
-					</selectors:DataTemplateSelector>
-
 				</c:SidePanel.Resources>
 				<c:SidePanel.Items>
 					<c:SidePanelItem Header="{StaticResource PathIconRectangle}" Title="Title1" IsSelected="True">
@@ -76,33 +58,34 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<!-- Add Styles Here -->
-	<Style Selector="SplitView.t1">
-		<Setter Property="Template">
-			<ControlTemplate>
-				<DockPanel Name="PART_Container">
+	<ControlTheme x:Key="SplitViewTheme" TargetType="SplitView">
+		<Style Selector="^:right">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<DockPanel Name="PART_Container">
+						<Panel Name="PART_PaneRoot"
+							   DockPanel.Dock="Right"
+							   Background="{TemplateBinding PaneBackground}"
+							   ClipToBounds="True"
+							   Width="50">
+							<ContentPresenter x:Name="PART_PanePresenter"
+											  Content="{TemplateBinding Pane}"
+											  ContentTemplate="{TemplateBinding PaneTemplate}"/>
+						</Panel>
 
-					<Panel Name="PART_PaneRoot"
-						   DockPanel.Dock="Right"
-						   Background="{TemplateBinding PaneBackground}"
-						   ClipToBounds="True">
-						<ContentPresenter x:Name="PART_PanePresenter"
-										  Content="{TemplateBinding Pane}"
-										  ContentTemplate="{TemplateBinding PaneTemplate}"/>
-					</Panel>
+						<Panel Name="PART_ContentRoot">
+							<ContentPresenter x:Name="PART_ContentPresenter"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}" />
+						</Panel>
 
-					<Panel Name="PART_ContentRoot">
-						<ContentPresenter x:Name="PART_ContentPresenter"
-										  Content="{TemplateBinding Content}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}" />
-					</Panel>
+					</DockPanel>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+	</ControlTheme>
 
-				</DockPanel>
-			</ControlTemplate>
-		</Setter>
-	</Style>
-
-	<Style Selector="Expander.t3">
+	<ControlTheme x:Key="ExpanderTheme" TargetType="Expander">
 		<Setter Property="ClipToBounds" Value="False"/>
 		<Setter Property="ExpandDirection" Value="Left"/>
 		<Setter Property="Background" Value="Transparent"/>
@@ -127,10 +110,72 @@
 				</Border>
 			</ControlTemplate>
 		</Setter>
-	</Style>
+	</ControlTheme>
 
-	<!--SidePanel-->
-	<Style Selector="c|SidePanel">
+	<ControlTheme x:Key="ToggleButtonExpandTheme" TargetType="ToggleButton">
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+		<Setter Property="Foreground" Value="{DynamicResource TextHighBrush}"/>
+		<Setter Property="Height" Value="50"/>
+		<Setter Property="Width" Value="50"/>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Border.BorderThickness" Value="0"/>
+		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel Background="{TemplateBinding Background}">
+					<Path Name="PART_ExpandIcon"
+						  Fill="{TemplateBinding Foreground}"/>
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^ /template/ Path#PART_ExpandIcon">
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="14"/>
+			<Setter Property="Stretch" Value="Uniform"/>
+			<Setter Property="Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+		</Style>
+
+		<Style Selector="^[IsChecked=true] /template/ Path#PART_ExpandIcon">
+			<Setter Property="RenderTransform" Value="rotate(180deg)"/>
+		</Style>
+
+		<Style Selector="^ /template/ Path">
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0.25" Easing="CubicEaseOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="^:pointerover">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
+		</Style>
+
+	</ControlTheme>
+
+	<ControlTheme x:Key="ButtonActionTheme" TargetType="Button">
+		<Setter Property="Cursor" Value="Cross" />
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="CornerRadius" Value="0"/>
+
+		<Style Selector="^ /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+		</Style>
+		<Style Selector="^:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+		</Style>
+		<Style Selector="^:pressed /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="{x:Type c:SidePanel}" TargetType="c:SidePanel">
 		<Setter Property="TitleBackground" Value="{DynamicResource AccentBrush}"/>
 		<Setter Property="PaneBackground" Value="{DynamicResource AccentBrush}"/>
 		<Setter Property="ContentBackground" Value="Transparent"/>
@@ -138,44 +183,70 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
-					<SplitView Classes="t1"
-							   PanePlacement="Right"
+					<SplitView PanePlacement="Right"
 							   PaneBackground="{TemplateBinding PaneBackground}"
 							   CompactPaneLength="{TemplateBinding PaneTitleHeight}"
 							   DisplayMode="Inline"
 							   IsPaneOpen="True"
-							   OpenPaneLength="{TemplateBinding PaneTitleHeight}">
+							   OpenPaneLength="{TemplateBinding PaneTitleHeight}"
+							   Theme="{StaticResource SplitViewTheme}">
 
 						<SplitView.Pane>
 							<Grid RowDefinitions="Auto,*,*">
 								<ToggleButton x:Name="PART_toggle"
 											  Width="{TemplateBinding PaneTitleHeight}"
 											  Height="{TemplateBinding PaneTitleHeight}"
-											  Classes="expand"
 											  Background="{TemplateBinding TitleBackground}"
-											  IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"/>
+											  IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+											  Theme="{StaticResource ToggleButtonExpandTheme}"/>
 
 								<ItemsPresenter Name="PART_ItemsPresenter"
 												VerticalAlignment="Stretch"
 												Grid.Row="1"
-												
-												ItemsPanel="{TemplateBinding ItemsPanel}"
-											>
-									<!--ItemTemplate="{TemplateBinding ItemTemplate}"-->
-									<!--Items="{TemplateBinding Items}"-->
-								</ItemsPresenter>
+												ItemsPanel="{TemplateBinding ItemsPanel}"/>
 
 								<ItemsControl Name="PART_ItemsControlBottom"
 											  VerticalAlignment="Bottom"
-											  Grid.Row="2"											  
+											  Grid.Row="2"
 											  ItemsSource="{TemplateBinding ActionTabs}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Vertical"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
+											<Button Name="PART_ActionButton"
+													Background="{DynamicResource AccentBrush}"
+													Command="{Binding Command}"
+													Cursor="Hand"
+													Padding="0"
+													CornerRadius="0"
+													Width="50"
+													Height="50">
+												<ContentControl Content="{Binding Key}"
+																ContentTemplate="{DynamicResource BaseIconSelector}"/>
+												<Button.Styles>
+													<Style Selector="Button#PART_ActionButton /template/ ContentPresenter">
+														<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+													</Style>
+													<Style Selector="Button#PART_ActionButton:pointerover /template/ ContentPresenter">
+														<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+													</Style>
+													<Style Selector="Button#PART_ActionButton:pressed /template/ ContentPresenter">
+														<Setter Property="Background" Value="{DynamicResource AccentLightBrush}" />
+													</Style>
+												</Button.Styles>
+											</Button>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
 								</ItemsControl>
 							</Grid>
 						</SplitView.Pane>
 						<SplitView.Content>
 
-							<Expander Classes="t3"
-									  IsExpanded="{TemplateBinding IsExpanded}">
+							<Expander IsExpanded="{TemplateBinding IsExpanded}"
+									  Theme="{StaticResource ExpanderTheme}">
 
 								<DockPanel Width="{TemplateBinding PaneWidth}">
 									<Border Height="{TemplateBinding PaneTitleHeight}"
@@ -200,42 +271,21 @@
 				</Panel>
 			</ControlTemplate>
 		</Setter>
-	</Style>
 
-	<Style Selector="c|SidePanel /template/ ItemsPresenter#PART_ItemsPresenter">
-		<Setter Property="ItemsPanel">
-			<Setter.Value>
-				<ItemsPanelTemplate>
-					<DockPanel />
-				</ItemsPanelTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+		<Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter">
+			<Setter Property="ItemsPanel">
+				<Setter.Value>
+					<ItemsPanelTemplate>
+						<DockPanel />
+					</ItemsPanelTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 
-	<Style Selector="c|SidePanel /template/ ItemsControl#PART_ItemsControlBottom">
-		<Setter Property="ItemsPanel">
-			<Setter.Value>
-				<ItemsPanelTemplate>
-					<StackPanel Orientation="Vertical"/>
-				</ItemsPanelTemplate>
-			</Setter.Value>
-		</Setter>
-		<Setter Property="ItemTemplate">
-			<Setter.Value>
-				<DataTemplate x:DataType="vm:SidePanelActionTabViewModel">
-					<Button Command="{Binding Command}"
-							Width="50"
-							Height="50"
-							Classes="invisible icon">
-						<TextBlock Text="{Binding Key}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</Button>
-				</DataTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
+		<Style Selector="^ /template/ TextBlock#PART_title">
+			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
+		</Style>
 
-	<Style Selector="c|SidePanel /template/ TextBlock#PART_title">
-		<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
-	</Style>
-	
-</Styles>
+	</ControlTheme>
+
+</ResourceDictionary>
