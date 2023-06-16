@@ -63,7 +63,10 @@
 						</Panel>
 					</c:SidePanelItem>
 					<c:SidePanelItem Header="{StaticResource PathIconPolygon}" Title="Title2" >
-						<Border Margin="20" Background="Green" />
+						<Panel>
+							<Border Height="200" Background="Red" />
+							<Border Width="20" Background="Green" HorizontalAlignment="Left" />
+						</Panel>
 					</c:SidePanelItem>
 					<c:SidePanelItem Header="{StaticResource PathIconCircle}" Title="Title3" >
 						<Border Margin="20" Background="Blue" />

@@ -1,41 +1,17 @@
-<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:materialIcons="using:Material.Icons.Avalonia"
-		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-        xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
-		xmlns:system="clr-namespace:System;assembly=System.Runtime"
-		xmlns:c="using:FootprintViewer.UI.Controls">
-
-	<Styles.Resources>
-
-		<SolidColorBrush x:Key="OptimizePrivacyOptionSelectedColor">#1B273D</SolidColorBrush>
-
-		<SolidColorBrush x:Key="NavBarItemSelectedBrush">#FFFFFFFF</SolidColorBrush>
-
-		<Color x:Key="MainColor">#1B273D</Color>
-
-		<Color x:Key="TileBorderColor">#66757575</Color>
-		<BoxShadows x:Key="OptimizePrivacyOptionBoxShadow1">0 6 16 0 #22000000</BoxShadows>
-		<BoxShadows x:Key="OptimizePrivacyOptionBoxShadow2">0 9 23 0 #4A000000</BoxShadows>
-
-		<SolidColorBrush x:Key="FPointerover"
-					 Opacity="0.55"
-					 Color="{DynamicResource MainColor}"/>
-
-		<SolidColorBrush x:Key="InvisibleButtonBackgroundColor" Opacity="0" Color="{DynamicResource SystemBaseHighColor}" />
-		<SolidColorBrush x:Key="InvisibleButtonPointerOverBackgroundColor" Opacity="0.15"
-						 Color="{DynamicResource SystemBaseHighColor}" />
-		<SolidColorBrush x:Key="InvisibleButtonPressedBackgroundColor" Opacity="0.25"
-						 Color="{DynamicResource SystemBaseHighColor}" />
-
-	</Styles.Resources>
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:materialIcons="using:Material.Icons.Avalonia"
+					xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+					xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
+					xmlns:system="clr-namespace:System;assembly=System.Runtime"
+					xmlns:c="using:FootprintViewer.UI.Controls">
 
 	<Design.PreviewWith>
 		<Border Padding="130,30,30,30" Width="500">
 			<StackPanel>
 				<StackPanel.Resources>
 					<Flyout x:Key="MySharedFlyout">
-						<TextBlock Text="gfsdfsdfs" Background="#c92a2a"/>
+						<TextBlock Text="gfsdfsdfs" Background="Red"/>
 					</Flyout>
 				</StackPanel.Resources>
 				<c:FilterToggleButton Title="Filter options"
@@ -45,50 +21,50 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<Style Selector="materialIcons|MaterialIcon.a0">
-		<Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"></Setter>
-		<Setter Property="Kind" Value="Circle"></Setter>
-		<Setter Property="Width" Value="38"></Setter>
-		<Setter Property="Height" Value="38"></Setter>
-	</Style>
+	<!--<SolidColorBrush x:Key="OptimizePrivacyOptionSelectedColor">#1B273D</SolidColorBrush>-->
 
-	<Style Selector="materialIcons|MaterialIcon.a1">
-		<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
-		<Setter Property="Kind" Value="Tune"></Setter>
-		<Setter Property="Width" Value="22"></Setter>
-		<Setter Property="Height" Value="22"></Setter>
-	</Style>
+	<SolidColorBrush x:Key="SelectionBackgroundBrush">#FFFFFFFF</SolidColorBrush>
 
-	<Style Selector="materialIcons|MaterialIcon.a2">
-		<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
-		<Setter Property="Kind" Value="Close"></Setter>
-		<Setter Property="Width" Value="26"></Setter>
-		<Setter Property="Height" Value="26"></Setter>
-	</Style>
+	<!--<Color x:Key="MainColor">#1B273D</Color>-->
 
-	<Style Selector="materialIcons|MaterialIcon.a3">
-		<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
-		<Setter Property="Kind" Value="FilterRemove"></Setter>
-		<Setter Property="Width" Value="16"></Setter>
-		<Setter Property="Height" Value="16"></Setter>
-	</Style>
+	<!--<Color x:Key="TileBorderColor">#66757575</Color>-->
+	<!--<BoxShadows x:Key="OptimizePrivacyOptionBoxShadow1">0 6 16 0 #22000000</BoxShadows>
+	<BoxShadows x:Key="OptimizePrivacyOptionBoxShadow2">0 9 23 0 #4A000000</BoxShadows>-->
 
-	<Style Selector="FlyoutPresenter">
-		<Setter Property="Margin" Value="0,0,10,0"></Setter>
-	</Style>
+	<!--<SolidColorBrush x:Key="FPointerover"
+				 Opacity="0.55"
+				 Color="{DynamicResource MainColor}"/>-->
 
-	<Style Selector="Button.remove /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
-	</Style>
-	<Style Selector="Button.remove:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource WarningBrush}" />
-	</Style>
+	<!--<SolidColorBrush x:Key="InvisibleButtonBackgroundColor" Opacity="0" Color="{DynamicResource SystemBaseHighColor}" />
+	<SolidColorBrush x:Key="InvisibleButtonPointerOverBackgroundColor" Opacity="0.15"
+					 Color="{DynamicResource SystemBaseHighColor}" />
+	<SolidColorBrush x:Key="InvisibleButtonPressedBackgroundColor" Opacity="0.25"
+					 Color="{DynamicResource SystemBaseHighColor}" />-->
 
-	<Style Selector="c|FilterToggleButton">
+	<ControlTheme x:Key="FilterRemoveButton"
+				  TargetType="Button"
+				  BasedOn="{StaticResource {x:Type Button}}">
+		<Setter Property="Background" Value="{DynamicResource PrimaryBrush}"></Setter>
 
+		<Style Selector="^:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource WarningBrush}" />
+		</Style>
+	</ControlTheme>
+
+	<ControlTheme x:Key="{x:Type c:FilterToggleButton}" TargetType="c:FilterToggleButton">
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="0" />
+		<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
+					<Panel.Styles>
+						<Style Selector="FlyoutPresenter">
+							<Setter Property="Margin" Value="0,0,10,0"/>
+						</Style>
+					</Panel.Styles>
 					<Border x:Name="PART_Border"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
@@ -96,9 +72,8 @@
 							CornerRadius="{TemplateBinding CornerRadius}">
 						<Grid ColumnDefinitions="Auto,10,*,Auto" Margin="10">
 							<Panel>
-								<materialIcons:MaterialIcon Classes="a0"/>
-								<materialIcons:MaterialIcon Classes.a1="{Binding !$parent[ToggleButton].IsChecked}"
-															Classes.a2="{Binding $parent[ToggleButton].IsChecked}"/>
+								<materialIcons:MaterialIcon x:Name="Icon1"/>
+								<materialIcons:MaterialIcon x:Name="Icon2"/>
 							</Panel>
 
 							<TextBlock x:Name="PART_TextBlock"
@@ -106,11 +81,11 @@
 									   Text="{TemplateBinding Title}"/>
 
 							<Button x:Name="PART_Button"
-									Classes="remove"
 									Grid.Column="3"
 									IsVisible="{TemplateBinding IsDirty}"
-									Command="{TemplateBinding ResetCommand}">
-								<materialIcons:MaterialIcon Classes="a3"/>
+									Command="{TemplateBinding ResetCommand}"
+									Theme="{StaticResource FilterRemoveButton}">
+								<materialIcons:MaterialIcon x:Name="Icon3"/>
 							</Button>
 						</Grid>
 					</Border>
@@ -118,55 +93,77 @@
 				</Panel>
 			</ControlTemplate>
 		</Setter>
-	</Style>
 
-	<Style Selector="c|FilterToggleButton">
-		<Setter Property="Cursor" Value="Hand" />
-		<Setter Property="ClipToBounds" Value="False" />
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="CornerRadius" Value="0" />
-		<Setter Property="Background" Value="{DynamicResource AccentDarkBrush}" />
-	</Style>
+		<Style Selector="^ /template/ materialIcons|MaterialIcon#Icon1">
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"></Setter>
+			<Setter Property="Kind" Value="Circle"></Setter>
+			<Setter Property="Width" Value="38"></Setter>
+			<Setter Property="Height" Value="38"></Setter>
+		</Style>
 
-	<Style Selector="c|FilterToggleButton /template/ TextBlock#PART_TextBlock">
-		<Setter Property="VerticalAlignment" Value="Center" />
-		<Setter Property="FontSize" Value="18" />
-		<Setter Property="Foreground" Value="{DynamicResource TextForegroundBrush}" />
-	</Style>
+		<Style Selector="^ /template/ materialIcons|MaterialIcon#Icon2">
+			<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
+			<Setter Property="Kind" Value="Tune"></Setter>
+			<Setter Property="Width" Value="22"></Setter>
+			<Setter Property="Height" Value="22"></Setter>
+		</Style>
 
-	<Style Selector="c|FilterToggleButton /template/ Border#SelectionBackground">
-		<Setter Property="Opacity" Value="0" />
-		<Setter Property="Background" Value="{DynamicResource NavBarItemSelectedBrush}" />
-		<Setter Property="CornerRadius" Value="0" />
-		<Setter Property="IsHitTestVisible" Value="False" />
-		<Setter Property="Transitions">
-			<Transitions>
-				<DoubleTransition Property="Opacity" Duration="0:0:0.275" Easing="{StaticResource FluentEasing}" />
-			</Transitions>
-		</Setter>
-	</Style>
+		<Style Selector="^:checked /template/ materialIcons|MaterialIcon#Icon2">
+			<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
+			<Setter Property="Kind" Value="Close"></Setter>
+			<Setter Property="Width" Value="26"></Setter>
+			<Setter Property="Height" Value="26"></Setter>
+		</Style>
 
-	<!-- Pointerover -->
-	<Style Selector="c|FilterToggleButton:pointerover /template/ Border#SelectionBackground">
-		<Setter Property="Opacity" Value="0.05" />
-	</Style>
+		<Style Selector="^ /template/ materialIcons|MaterialIcon#Icon3">
+			<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"></Setter>
+			<Setter Property="Kind" Value="FilterRemove"></Setter>
+			<Setter Property="Width" Value="16"></Setter>
+			<Setter Property="Height" Value="16"></Setter>
+		</Style>
 
-	<!-- Pressed -->
-	<Style Selector="c|FilterToggleButton:pressed /template/ Border#PART_Border">
-		<Setter Property="RenderTransform" Value="scale(0.98)" />
-	</Style>
+		<Style Selector="^ /template/ TextBlock#PART_TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="FontSize" Value="18" />
+			<Setter Property="Foreground" Value="{DynamicResource TextMediumBrush}" />
+		</Style>
 
-	<!-- Checked -->
-	<!--<Style Selector="c|FilterToggleButton:checked /template/ Border#PART_Border">
-		<Setter Property="RenderTransform" Value="scale(0.98)" />
-	</Style>-->
 
-	<!--<Style Selector="c|FilterToggleButton:checked /template/ Border#SelectionBackground">		
-		<Setter Property="Opacity" Value="0" />
-	</Style>-->
+		<Style Selector="^ /template/ Border#SelectionBackground">
+			<Setter Property="Opacity" Value="0" />
+			<Setter Property="Background" Value="{StaticResource SelectionBackgroundBrush}" />
+			<Setter Property="CornerRadius" Value="0" />
+			<Setter Property="IsHitTestVisible" Value="False" />
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:0.275" Easing="{StaticResource FluentEasing}" />
+				</Transitions>
+			</Setter>
+		</Style>
 
-	<Style Selector="c|FilterToggleButton:checked /template/ Border#PART_Border">
-		<Setter Property="Opacity" Value="0.55" />
-	</Style>
+		<!-- Pointerover -->
+		<Style Selector="^:pointerover /template/ Border#SelectionBackground">
+			<Setter Property="Opacity" Value="0.05" />
+		</Style>
 
-</Styles>
+		<!-- Pressed -->
+		<Style Selector="^:pressed /template/ Border#PART_Border">
+			<Setter Property="RenderTransform" Value="scale(0.98)" />
+		</Style>
+
+		<!-- Checked -->
+		<Style Selector="^:checked /template/ Border#PART_Border">
+			<Setter Property="RenderTransform" Value="scale(0.98)" />
+		</Style>
+
+		<Style Selector="^:checked /template/ Border#SelectionBackground">
+			<Setter Property="Opacity" Value="0" />
+		</Style>
+
+		<Style Selector="^:checked /template/ Border#PART_Border">
+			<Setter Property="Opacity" Value="0.55" />
+		</Style>
+
+	</ControlTheme>
+
+</ResourceDictionary>

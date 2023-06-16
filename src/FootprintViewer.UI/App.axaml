@@ -14,12 +14,16 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<MergeResourceInclude Source="/Themes/Base.axaml"/>
-				<MergeResourceInclude Source="/Themes/Themes.axaml"/>
-				<MergeResourceInclude Source="/Themes/Icons.axaml"/>
-				<MergeResourceInclude Source="/Themes/IconDataTemplates.axaml"/>		
+				<ResourceInclude Source="/Themes/Base.axaml"/>
+				<ResourceInclude Source="/Themes/Themes.axaml"/>
+				<ResourceInclude Source="/Themes/Icons.axaml"/>
+				<ResourceInclude Source="/Themes/IconDataTemplates.axaml"/>	
+				<!--<ResourceInclude Source="/Controls/ContentArea.axaml"/>-->
+				<ResourceInclude Source="/Controls/FilterToggleButton.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
+							
 		</ResourceDictionary>
+	
 	</Application.Resources>
 
 	<Application.Styles>
@@ -27,6 +31,7 @@
 		<materialIcons:MaterialIconStyles />
 		
 		<StyleInclude Source="/Themes/FontSizes.axaml"/>
+		<!--
 		<StyleInclude Source="/Themes/Border.axaml"/>
 		<StyleInclude Source="/Themes/TextBox.axaml"/>
 		<StyleInclude Source="/Themes/Button.axaml"/>
@@ -39,14 +44,14 @@
 		<StyleInclude Source="/Themes/ListBox.axaml"/>
 
 		<StyleInclude Source="/Controls/TextValue.axaml"/>
-		<StyleInclude Source="/Controls/ContentArea.axaml"/>
+
 		<StyleInclude Source="/Controls/Dialog.axaml"/>
 		<StyleInclude Source="/Controls/RangeSlider.axaml"/>
 
 		<StyleInclude Source="/Themes/ToolTip.axaml"/>
 		<StyleInclude Source="/Controls/SidePanelItem.axaml"/>
-		<StyleInclude Source="/Controls/SidePanel.axaml"/>
-		<StyleInclude Source="/Controls/FilterToggleButton.axaml"/>
+		<StyleInclude Source="/Controls/SidePanel.axaml"/>-->
+	
 	<!--
 		<StyleInclude Source="avares://TimeDataViewerLite/Styles/Styles.axaml"/>-->
 

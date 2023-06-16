@@ -73,7 +73,7 @@
 		<Style Selector="materialIcons|MaterialIcon.t1">
 			<Setter Property="Width" Value="35"></Setter>
 			<Setter Property="Height" Value="35"></Setter>
-			<Setter Property="Foreground" Value="{DynamicResource TextLightBrush}"></Setter>
+			<Setter Property="Foreground" Value="{DynamicResource TextHighBrush}"></Setter>
 		</Style>
 
 		<Style Selector="Viewbox.t1">
