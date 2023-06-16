@@ -8,12 +8,8 @@
 
 	<Design.PreviewWith>
 		<Border Background="{DynamicResource BackgroundBrush}"
-				Height="300" >
-			<Border.DataContext>
-				<vmd:ContentAreaDesign/>
-			</Border.DataContext>
-			<!--DataContext="{x:Static vmd:DesignData.ContentArea}"-->
-
+				DataContext="{x:Static vmd:DesignData.ContentArea}"
+				Height="300">
 			<c:ContentArea Title="Title"
 						   Caption="Description:"
 						   Width="500"
@@ -22,7 +18,7 @@
 						   SkipContent="Skip"
 						   NextContent="Continue">
 				<StackPanel>
-					<TextBlock Classes="h6 medium" 
+					<TextBlock Classes="h6 medium"
 							   Text="Add a Planned Schedule"/>
 					<TextBlock Classes="h3 medium">
 						This is the content.
@@ -32,14 +28,7 @@
 		</Border>
 	</Design.PreviewWith>
 
-	<ControlTheme x:Key="ArrowLeftIcon" TargetType="materialIcons:MaterialIcon">
-		<Setter Property="Kind" Value="ArrowLeft"/>
-		<Setter Property="Width" Value="22"/>
-		<Setter Property="Height" Value="22"/>
-		<Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}"/>
-	</ControlTheme>
-
-	<ControlTheme x:Key="ContentArea" TargetType="c:ContentArea">
+	<ControlTheme x:Key="{x:Type c:ContentArea}" TargetType="c:ContentArea">
 		<Setter Property="IsHitTestVisible" Value="{Binding IsActive}" />
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -98,20 +87,38 @@
 										<i:Interaction.Behaviors>
 											<behaviors:ButtonExecuteCommandOnKeyDownBehavior IsEnabled="{Binding IsActive}" Key="Back" />
 										</i:Interaction.Behaviors>
-										<materialIcons:MaterialIcon Theme="{StaticResource ArrowLeftIcon}"/>
+										<materialIcons:MaterialIcon Kind="ArrowLeft"
+																	Width="22"
+																	Height="22"
+																	Foreground="{DynamicResource IconForegroundBrush}"/>
 									</Button>
 									<ContentPresenter Name="PART_TitlePresenter"
 													  Classes="h6 high"
-													  Content="{TemplateBinding Title}" />
+													  Content="{TemplateBinding Title}">
+										<ContentPresenter.Styles>
+											<Style Selector=":is(Control).title TextBlock, :is(TextBlock).title">
+												<Setter Property="TextWrapping" Value="Wrap" />
+												<Setter Property="VerticalAlignment" Value="Center" />
+											</Style>
+										</ContentPresenter.Styles>
+									</ContentPresenter>
 								</DockPanel>
 								<ContentPresenter Name="PART_CaptionPresenter"
 												  Classes="h2 low"
-												  Content="{TemplateBinding Caption}" />
+												  Content="{TemplateBinding Caption}">
+									<ContentPresenter.Styles>
+										<Style Selector=":is(Control).caption TextBlock, :is(TextBlock).caption">
+											<Setter Property="TextWrapping" Value="Wrap" />
+											<Setter Property="VerticalAlignment" Value="Center" />
+										</Style>
+									</ContentPresenter.Styles>
+								</ContentPresenter>
 								<Panel Height="6" IsVisible="{Binding !EnableBack}" />
 							</StackPanel>
 						</Panel>
 
-						<ScrollViewer x:Name="PART_ScrollViewer" ClipToBounds="{TemplateBinding ClipToBounds}"
+						<ScrollViewer x:Name="PART_ScrollViewer"
+									  ClipToBounds="{TemplateBinding ClipToBounds}"
 									  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
 									  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
 							<ScrollViewer.Styles>
@@ -144,16 +151,6 @@
 
 		<Style Selector="^ /template/ Panel#PART_ButtonArea">
 			<Setter Property="Margin" Value="31,10" />
-		</Style>
-
-		<Style Selector="^ :is(Control).title TextBlock, ^ :is(TextBlock).title">
-			<Setter Property="TextWrapping" Value="Wrap" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-
-		<Style Selector="^ :is(Control).caption TextBlock, ^ :is(TextBlock).caption">
-			<Setter Property="TextWrapping" Value="Wrap" />
-			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 
 		<Style Selector="^ /template/ ProgressBar#LoadingRing">

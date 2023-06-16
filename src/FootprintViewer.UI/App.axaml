@@ -18,7 +18,7 @@
 				<ResourceInclude Source="/Themes/Themes.axaml"/>
 				<ResourceInclude Source="/Themes/Icons.axaml"/>
 				<ResourceInclude Source="/Themes/IconDataTemplates.axaml"/>	
-				<!--<ResourceInclude Source="/Controls/ContentArea.axaml"/>-->
+				<ResourceInclude Source="/Controls/ContentArea.axaml"/>
 				<ResourceInclude Source="/Controls/FilterToggleButton.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 							
@@ -31,10 +31,12 @@
 		<materialIcons:MaterialIconStyles />
 		
 		<StyleInclude Source="/Themes/FontSizes.axaml"/>
-		<!--
 		<StyleInclude Source="/Themes/Border.axaml"/>
 		<StyleInclude Source="/Themes/TextBox.axaml"/>
 		<StyleInclude Source="/Themes/Button.axaml"/>
+		
+		<!--
+
 					
 		<StyleInclude Source="/Themes/ToggleButton.axaml"/>
 		<StyleInclude Source="/Themes/CheckBox.axaml"/>
