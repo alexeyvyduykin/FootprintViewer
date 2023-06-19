@@ -50,9 +50,6 @@
 				</Viewbox>
 			</Border>
 		</DataTemplate>
-		<Flyout x:Key="Filter">
-			<filtersView:GroundTargetFilterView DataContext="{Binding Filter}"/>
-		</Flyout>
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -74,10 +71,15 @@
 	<Grid RowDefinitions="Auto,Auto,*,50"
 		  Background="{DynamicResource AccentDarkBrush}">
 
-		<c:FilterToggleButton Title="Filter options"
-							  Filter="{StaticResource Filter}"
+		<c:FilterToggleButton Title="Filter options"							  
 							  IsDirty="{Binding Filter.IsDirty}"
-							  ResetCommand="{Binding Filter.Reset}"/>
+							  ResetCommand="{Binding Filter.Reset}">
+			<c:FilterToggleButton.Filter>
+				<Flyout>
+					<filtersView:GroundTargetFilterView DataContext="{Binding Filter}"/>
+				</Flyout>
+			</c:FilterToggleButton.Filter>
+		</c:FilterToggleButton>
 
 		<Grid Grid.Row="1"
 			  Margin="16,8"

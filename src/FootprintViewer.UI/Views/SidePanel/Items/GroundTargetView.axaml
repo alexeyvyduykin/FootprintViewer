@@ -13,7 +13,10 @@
 		<vm:GroundTargetViewModel></vm:GroundTargetViewModel>
 	</Design.DataContext>
 
-	<Border Classes="item">
+	<Border Classes="itemExtrude"
+			Classes.itemSelect="{Binding $parent[ListBoxItem].IsSelected}"
+			Classes.itemHover="{Binding $parent[ListBoxItem].IsPointerOver}">
+
 		<Grid ColumnDefinitions="Auto,*">
 
 			<Viewbox Width="36" Height="36">

@@ -17,7 +17,7 @@
 			<StackPanel>
 				<ListBox ItemTemplate="{StaticResource ItemTemplate}"
 						 Classes="sidePanel">
-					<ListBox.Items>
+					<ListBox.ItemsSource>
 						<generic:List x:TypeArguments="sys:String">
 							<sys:String>Item1</sys:String>
 							<sys:String>Item2</sys:String>
@@ -27,7 +27,7 @@
 							<sys:String>Item6</sys:String>
 							<sys:String>Item7</sys:String>
 						</generic:List>
-					</ListBox.Items>
+					</ListBox.ItemsSource>
 				</ListBox>
 			</StackPanel>
 		</Border>
