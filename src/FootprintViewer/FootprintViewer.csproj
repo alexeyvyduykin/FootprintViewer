@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MapsuiVersion>4.0.0-rc.3</MapsuiVersion>
+		<MapsuiVersion>4.0.0</MapsuiVersion>
 		<ReactiveUIVersion>18.3.1</ReactiveUIVersion>
 	</PropertyGroup>
 

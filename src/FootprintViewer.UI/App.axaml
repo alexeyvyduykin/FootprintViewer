@@ -37,18 +37,15 @@
 
 		<StyleInclude Source="/Themes/FontSizes.axaml"/>
 		<StyleInclude Source="/Themes/Border.axaml"/>
-		<StyleInclude Source="/Themes/TextBox.axaml"/>
-		<StyleInclude Source="/Themes/Button.axaml"/>
-
-		<!--					
-		<StyleInclude Source="/Themes/ToggleButton.axaml"/>
+		<!--<StyleInclude Source="/Themes/TextBox.axaml"/>
+		<StyleInclude Source="/Themes/Button.axaml"/>-->				
+		<!--<StyleInclude Source="/Themes/ToggleButton.axaml"/>
 		<StyleInclude Source="/Themes/CheckBox.axaml"/>
 		<StyleInclude Source="/Themes/ComboBox.axaml"/>
 		<StyleInclude Source="/Themes/ToggleSwitch.axaml"/>
 		<StyleInclude Source="/Themes/Slider.axaml"/>
 		<StyleInclude Source="/Themes/ListBox.axaml"/>			
-		<StyleInclude Source="/Themes/ToolTip.axaml"/>		
-		-->
+		<StyleInclude Source="/Themes/ToolTip.axaml"/>-->		
 
 		<!--
 		<StyleInclude Source="avares://TimeDataViewerLite/Styles/Styles.axaml"/>-->

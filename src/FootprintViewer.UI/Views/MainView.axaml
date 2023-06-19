@@ -27,7 +27,7 @@
 
 		<Panel>
 
-			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
+			<!--<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
 								  MapSource="{Binding Map}"
 								  Interactive="{Binding Interactive}"
 								  State="{Binding State}"
@@ -50,7 +50,7 @@
 								    Canvas.Top="{Binding Y}"/>
 				</Canvas>
 
-			</local:UserMapControl>
+			</local:UserMapControl>-->
 
 			<toolBar:ToolBarView DataContext="{Binding ToolBar}"
 								 VerticalAlignment="Center"

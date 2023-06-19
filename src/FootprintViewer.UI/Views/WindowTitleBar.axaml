@@ -14,7 +14,7 @@
 
 	<UserControl.Styles>
 		<Style Selector="materialIcons|MaterialIcon">
-			<Setter Property="Foreground" Value="{DynamicResource TextLightBrush}"/>
+			<Setter Property="Foreground" Value="{DynamicResource TextHighBrush}"/>
 		</Style>
 		<Style Selector="TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -44,8 +44,8 @@
 	</UserControl.Styles>
 
 	<Panel>
-		<DockPanel Background="{DynamicResource BackgroundBrush}"
-				   IsHitTestVisible="False"/>
+		<Border IsHitTestVisible="False" 
+				Classes="back"/>
 		<DockPanel>
 			<Grid ColumnDefinitions="5,Auto,5,*"
 				  VerticalAlignment="Center"
