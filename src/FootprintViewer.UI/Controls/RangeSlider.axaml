@@ -34,7 +34,6 @@
 	<x:Double x:Key="SliderVerticalThumbHeight">20</x:Double>
 	<x:Double x:Key="SliderTrackBackgroundHeight">1</x:Double>
 	<x:Double x:Key="SliderTrackForegroundHeight">4</x:Double>
-	<StreamGeometry x:Key="ThumbGeometry">F1 M10,10z M0,0z M0,0 10,0 10,6 5,10 0,6 0,0Z</StreamGeometry>
 
 	<ControlTheme x:Key="SliderThumbTheme" TargetType="Thumb">
 		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
@@ -47,13 +46,13 @@
 							  Width="{TemplateBinding Width}"
 							  Height="{TemplateBinding Height}"
 							  Stretch="Uniform"
-							  Data="{StaticResource ThumbGeometry}" />
+							  Data="{DynamicResource SliderThumbGeometry}" />
 						<Path Stroke="{TemplateBinding Foreground}"
 							  StrokeThickness="1"
 							  Width="{TemplateBinding Width}"
 							  Height="{TemplateBinding Height}"
 							  Stretch="Uniform"
-							  Data="{StaticResource ThumbGeometry}" />
+							  Data="{DynamicResource SliderThumbGeometry}" />
 					</Panel>
 				</ControlTemplate>
 			</Setter.Value>

@@ -74,6 +74,8 @@
 	<SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="{DynamicResource Gray3}" />
 	<SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="{DynamicResource Gray3}" />
 
+	<StreamGeometry x:Key="SliderThumbGeometry">F1 M10,10z M0,0z M0,0 10,0 10,6 5,10 0,6 0,0Z</StreamGeometry>
+
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key='Default'>
 

@@ -15,7 +15,6 @@
 
 	<Styles.Resources>
 		<x:Double x:Key="SliderTrackThemeHeight">1</x:Double>
-		<StreamGeometry x:Key="ThumbGeometry">F1 M10,10z M0,0z M0,0 10,0 10,6 5,10 0,6 0,0Z</StreamGeometry>
 	</Styles.Resources>
 
 	<Style Selector="Slider:horizontal">
@@ -41,13 +40,13 @@
 						  Width="{TemplateBinding Width}"
 						  Height="{TemplateBinding Height}"
 						  Stretch="Uniform"
-						  Data="{StaticResource ThumbGeometry}" />
+						  Data="{DynamicResource SliderThumbGeometry}" />
 					<Path Stroke="{TemplateBinding Foreground}"
 						  StrokeThickness="1"
 						  Width="{TemplateBinding Width}"
 						  Height="{TemplateBinding Height}"
 						  Stretch="Uniform"
-						  Data="{StaticResource ThumbGeometry}" />
+						  Data="{DynamicResource SliderThumbGeometry}" />
 				</Panel>
 			</ControlTemplate>
 		</Setter>
