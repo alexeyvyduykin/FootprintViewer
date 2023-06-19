@@ -29,8 +29,6 @@
 		<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
 		<Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
 		<Setter Property="MinHeight" Value="32" />
-		<!--<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-    <Setter Property="FocusVisualMargin" Value="-7,-3,-7,-3" />-->
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid x:Name="RootGrid" ColumnDefinitions="Auto,*">
@@ -60,14 +58,14 @@
 						</Viewbox>
 					</Grid>
 					<ContentPresenter x:Name="ContentPresenter"
-								   ContentTemplate="{TemplateBinding ContentTemplate}"
-								   Content="{TemplateBinding Content}"
-								   Margin="{TemplateBinding Padding}"
-								   RecognizesAccessKey="True"
-								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-								   Grid.Column="1" />
-					<!-- TODO: TextWrapping="Wrap" on contentpresenter -->
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  Content="{TemplateBinding Content}"
+									  Margin="{TemplateBinding Padding}"
+									  RecognizesAccessKey="True"
+									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+									  TextWrapping="Wrap"
+									  Grid.Column="1" />
 				</Grid>
 			</ControlTemplate>
 		</Setter>
