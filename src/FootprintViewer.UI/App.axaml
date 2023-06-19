@@ -38,8 +38,9 @@
 		<StyleInclude Source="/Themes/FontSizes.axaml"/>
 		<StyleInclude Source="/Themes/Border.axaml"/>
 		<StyleInclude Source="/Themes/TextBox.axaml"/>
-		<!--<StyleInclude Source="/Themes/Button.axaml"/>-->				
-		<!--<StyleInclude Source="/Themes/ToggleButton.axaml"/>
+		<StyleInclude Source="/Themes/Button.axaml"/>		
+		<StyleInclude Source="/Themes/ToggleButton.axaml"/>		
+		<!--
 		<StyleInclude Source="/Themes/CheckBox.axaml"/>
 		<StyleInclude Source="/Themes/ComboBox.axaml"/>
 		<StyleInclude Source="/Themes/ToggleSwitch.axaml"/>

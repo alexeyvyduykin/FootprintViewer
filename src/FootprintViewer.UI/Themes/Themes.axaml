@@ -57,7 +57,6 @@
 	<SolidColorBrush x:Key="ActionButtonPointerOverBackgroundColor" Color="{DynamicResource Green7}" />
 	<SolidColorBrush x:Key="ActionButtonDisabledBackgroundColor" Color="{DynamicResource SystemChromeDisabledLowColor}" />
 
-	<SolidColorBrush x:Key="InvisibleButtonBackgroundColor" Color="Transparent" />
 	<SolidColorBrush x:Key="InvisibleButtonPointerOverBackgroundColor" Color="{DynamicResource Gray6}" />
 	<SolidColorBrush x:Key="InvisibleButtonPressedBackgroundColor" Color="{DynamicResource Gray6}" />
 
