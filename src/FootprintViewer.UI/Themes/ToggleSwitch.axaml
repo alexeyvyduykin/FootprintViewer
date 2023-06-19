@@ -16,8 +16,10 @@
 							  VerticalAlignment="Bottom"/>
 				<ToggleSwitch IsChecked="True" />
 
-				<ToggleSwitch IsChecked="True" Classes="h3 option" OffContent="Off content" OnContent="On content"/>
-				<ToggleSwitch IsChecked="False" Classes="h3 option" OffContent="Off content" OnContent="On content"/>
+				<ToggleSwitch IsChecked="True" Classes="h3 option"
+							  OffContent="Off content" OnContent="On content"/>
+				<ToggleSwitch IsChecked="False" Classes="h3 option"
+							  OffContent="Off content" OnContent="On content"/>
 
 				<ToggleSwitch IsEnabled="False" IsChecked="True" Classes="h3 option" OffContent="Off content" OnContent="On content"/>
 				<ToggleSwitch IsEnabled="False" IsChecked="False" Classes="h3 option" OffContent="Off content" OnContent="On content"/>
@@ -29,10 +31,15 @@
 	<Style Selector="ToggleSwitch.option">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Grid ColumnDefinitions="*,Auto">
+				<Grid ColumnDefinitions="*,Auto"
+					  Background="{TemplateBinding Background}">
+
 					<Grid x:Name="SwitchAreaGrid"
 						  Grid.ColumnSpan="2"
-						  TemplatedControl.IsTemplateFocusTarget="True"/>
+						  Background="{DynamicResource ToggleSwitchContainerBackground}"
+						  Margin="0,5"
+						  TemplatedControl.IsTemplateFocusTarget="True" />
+
 					<ContentPresenter x:Name="PART_OffContentPresenter"
 									  Content="{TemplateBinding OffContent}"
 									  ContentTemplate="{TemplateBinding OffContentTemplate}"
@@ -49,19 +56,28 @@
 							Height="22"
 							Width="40"
 							CornerRadius="10"
-							BorderThickness="1" />
+							Background="{DynamicResource ToggleSwitchFillOff}"
+							BorderBrush="{DynamicResource ToggleSwitchStrokeOff}"
+							BorderThickness="{DynamicResource ToggleSwitchOuterBorderStrokeThickness}" />
 					<Border x:Name="SwitchKnobBounds"
 							Grid.Column="1"
 							Height="22"
 							Width="40"
-							CornerRadius="10"/>
-					<Canvas x:Name="SwitchKnob"
+							CornerRadius="10"
+							Background="{DynamicResource ToggleSwitchFillOn}"
+							BorderBrush="{DynamicResource ToggleSwitchStrokeOn}"
+							BorderThickness="{DynamicResource ToggleSwitchOnStrokeThickness}"/>
+					<Canvas x:Name="PART_SwitchKnob"
 							Grid.Column="1"
 							HorizontalAlignment="Left"
 							Width="20" Height="20">
-						<Grid x:Name="MovingKnobs" Width="20" Height="20">
-							<Ellipse x:Name="SwitchKnobOn" Width="14" Height="14" />
-							<Ellipse x:Name="SwitchKnobOff" Width="14" Height="14" />
+						<Grid x:Name="PART_MovingKnobs" Width="20" Height="20">
+							<Ellipse x:Name="SwitchKnobOn"
+									 Fill="{DynamicResource ToggleSwitchKnobFillOn}"
+									 Width="14" Height="14" />
+							<Ellipse x:Name="SwitchKnobOff"
+									 Fill="{DynamicResource ToggleSwitchKnobFillOff}"
+									 Width="14" Height="14" />
 						</Grid>
 					</Canvas>
 				</Grid>
@@ -81,44 +97,26 @@
 		<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		<Setter Property="Height" Value="32"/>
 	</Style>
+
 	<Style Selector="ToggleSwitch.option:pointerover /template/ ContentPresenter#PART_OnContentPresenter">
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
+
 	<Style Selector="ToggleSwitch.option:pointerover /template/ ContentPresenter#PART_OffContentPresenter">
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
-	<!-- NormalState -->
-
-	<Style Selector="ToggleSwitch /template/ Border#OuterBorder">
-		<Setter Property="BorderBrush" Value="{DynamicResource TextMediumBrush}"/>
-	</Style>
-
-	<Style Selector="ToggleSwitch /template/ Border#SwitchKnobBounds">
-		<Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentLightBrush}"/>
-		<Setter Property="BorderThickness" Value="1"/>
-	</Style>
-
-	<Style Selector="ToggleSwitch /template/ Ellipse#SwitchKnobOn">
-		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
-	</Style>
-
-	<Style Selector="ToggleSwitch /template/ Ellipse#SwitchKnobOff">
-		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
-	</Style>
-
 	<!-- PointerOverState -->
 	<Style Selector="ToggleSwitch:pointerover /template/ Border#OuterBorder">
-		<Setter Property="BorderBrush" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<Style Selector="ToggleSwitch:pointerover /template/ Ellipse#SwitchKnobOff">
-		<Setter Property="Fill" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<Style Selector="ToggleSwitch:pointerover /template/ Ellipse#SwitchKnobOn">
-		<Setter Property="Fill" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<Style Selector="ToggleSwitch:pointerover /template/ Border#SwitchKnobBounds">
@@ -134,15 +132,15 @@
 
 	<Style Selector="ToggleSwitch:pressed /template/ Border#SwitchKnobBounds">
 		<Setter Property="Background" Value="{DynamicResource AccentLightBrush}"/>
-		<Setter Property="BorderBrush" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<Style Selector="ToggleSwitch:pressed /template/ Ellipse#SwitchKnobOff">
-		<Setter Property="Fill" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<Style Selector="ToggleSwitch:pressed /template/ Ellipse#SwitchKnobOn">
-		<Setter Property="Fill" Value="{DynamicResource TextLightBrush}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextHighBrush}"/>
 	</Style>
 
 	<!-- DisabledState -->

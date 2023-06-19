@@ -63,6 +63,17 @@
 	<SolidColorBrush x:Key="IconAccentBrush" Color="#e39400"/>
 	<SolidColorBrush x:Key="IconMainBrush" Color="#d6d9dd"/>
 
+	<!--<SolidColorBrush x:Key="ToggleSwitchFillOff" Color="{DynamicResource SystemChromeDisabledLowColor}" />-->
+	<SolidColorBrush x:Key="ToggleSwitchStrokeOff" Color="{DynamicResource Gray5}" />
+	<Thickness x:Key="ToggleSwitchOuterBorderStrokeThickness">1</Thickness>
+
+	<SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{DynamicResource BlueGray800}" />
+	<SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="{DynamicResource BlueGray700}" />
+	<Thickness x:Key="ToggleSwitchOnStrokeThickness">1</Thickness>
+
+	<SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="{DynamicResource Gray3}" />
+	<SolidColorBrush x:Key="ToggleSwitchKnobFillOff" Color="{DynamicResource Gray3}" />
+
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key='Default'>
 
