@@ -8,7 +8,7 @@ namespace FootprintViewer.Data.DbContexts;
 // TODO: https://stackoverflow.com/questions/51864015/entity-framework-map-model-class-to-table-at-run-time
 class CustomModelCacheKeyFactory : IModelCacheKeyFactory
 {
-    public object Create(DbContext context) => new CustomModelCacheKey(context);
+    public object Create(DbContext context, bool designTime) => new CustomModelCacheKey(context);
 }
 
 class CustomModelCacheKey
