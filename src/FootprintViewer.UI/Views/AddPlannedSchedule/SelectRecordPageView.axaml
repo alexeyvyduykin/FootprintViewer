@@ -7,8 +7,8 @@
 			 xmlns:vmd="using:FootprintViewer.UI.Designer"
 			 xmlns:items="using:FootprintViewer.UI.ViewModels.AddPlannedSchedule.Items"
 			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="380"
-			 x:DataType="vm:SelectRecordPageViewModel"
-             x:Class="FootprintViewer.UI.Views.AddPlannedSchedule.SelectRecordPageView">
+             x:Class="FootprintViewer.UI.Views.AddPlannedSchedule.SelectRecordPageView"
+			 x:CompileBindings="False">
 
 	<Design.DataContext>
 		<vmd:SelectRecordPageDesignViewModel>
@@ -41,6 +41,7 @@
 					 SelectedItem="{Binding SelectedItem}"
 					 VerticalAlignment="Stretch"
 					 ScrollViewer.VerticalScrollBarVisibility="Visible">
+
 				<ListBox.DataTemplates>
 					<DataTemplate x:DataType="items:PlannedScheduleItemViewModel">
 						<Border Margin="4">

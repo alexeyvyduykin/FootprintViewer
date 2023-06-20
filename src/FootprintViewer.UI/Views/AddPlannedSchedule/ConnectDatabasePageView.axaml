@@ -7,7 +7,7 @@
 			 xmlns:vm="using:FootprintViewer.UI.ViewModels.AddPlannedSchedule"
 			 mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
 			 x:DataType="vm:ConnectDatabasePageViewModel"
-			 x:CompileBindings="True"
+			 x:CompileBindings="False"
              x:Class="FootprintViewer.UI.Views.AddPlannedSchedule.ConnectDatabasePageView">
 
 	<Design.DataContext>
