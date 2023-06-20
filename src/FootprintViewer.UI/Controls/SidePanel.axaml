@@ -282,7 +282,7 @@
 			</Setter>
 		</Style>
 
-		<Style Selector="^ /template/ TextBlock#PART_title">
+		<Style Selector="^ /template/ TextBlock#PART_title" x:CompileBindings="False">
 			<Setter Property="Text" Value="{Binding $parent[TabControl].SelectedItem.Title, FallbackValue=''}"/>
 		</Style>
 

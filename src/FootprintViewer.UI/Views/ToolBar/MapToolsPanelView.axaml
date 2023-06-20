@@ -6,7 +6,8 @@
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 MinHeight="250"
 			 mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="250"
-             x:Class="FootprintViewer.UI.Views.ToolBar.MapToolsPanelView">
+             x:Class="FootprintViewer.UI.Views.ToolBar.MapToolsPanelView"
+			 x:DataType="vm:MapToolsViewModel">
 
 	<Design.DataContext>
 		<vm:MapToolsViewModel></vm:MapToolsViewModel>

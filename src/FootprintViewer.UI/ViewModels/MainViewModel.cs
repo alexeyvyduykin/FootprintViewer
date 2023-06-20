@@ -139,9 +139,9 @@ public sealed partial class MainViewModel : ViewModelBase, IStateCommands
                 satelliteTabViewModel,
                 groundStationTabViewModel,
                 groundTargetTabViewModel,
-              //  footprintTabViewModel,
-               // userGeometryTabViewModel,
-               // plannedScheduleTabViewModel,
+                footprintTabViewModel,
+                userGeometryTabViewModel,
+                plannedScheduleTabViewModel,
             }),
             ActionTabs = new()
             {

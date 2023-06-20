@@ -25,8 +25,8 @@
 		<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">
 			<itemsView:FootprintPreviewView DataContext="{Binding}">
 				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</itemsView:FootprintPreviewView>
 		</DataTemplate>
@@ -110,7 +110,8 @@
 
 				<Button Grid.Column="3"
 						IsVisible="{Binding Filter.IsDirty}"
-						Command="{Binding Filter.Reset}">
+						Command="{Binding Filter.Reset}"
+						x:CompileBindings="False">
 					<materialIcons:MaterialIcon Foreground="{DynamicResource ThemeForegroundBrush}"
 												Kind="FilterRemove"/>
 				</Button>

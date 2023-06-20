@@ -26,8 +26,8 @@
 		<DataTemplate x:Key="GroundTargetItemTemplate" x:DataType="items:GroundTargetViewModel">
 			<itemsView:GroundTargetView DataContext="{Binding}">
 				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</itemsView:GroundTargetView>
 		</DataTemplate>
@@ -73,7 +73,8 @@
 
 		<c:FilterToggleButton Title="Filter options"							  
 							  IsDirty="{Binding Filter.IsDirty}"
-							  ResetCommand="{Binding Filter.Reset}">
+							  ResetCommand="{Binding Filter.Reset}"
+							  x:CompileBindings="False">
 			<c:FilterToggleButton.Filter>
 				<Flyout>
 					<filtersView:GroundTargetFilterView DataContext="{Binding Filter}"/>

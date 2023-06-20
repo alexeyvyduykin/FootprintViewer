@@ -4,7 +4,8 @@
 					xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
 					xmlns:materialIcons="using:Material.Icons.Avalonia"
 					xmlns:vmd="clr-namespace:FootprintViewer.UI.Designer"
-					xmlns:c="using:FootprintViewer.UI.Controls">
+					xmlns:c="using:FootprintViewer.UI.Controls"
+					x:CompileBindings="False">
 
 	<Design.PreviewWith>
 		<Border Background="{DynamicResource BackgroundBrush}"
@@ -58,7 +59,7 @@
 										Content="{TemplateBinding SkipContent}"
 										Command="{Binding SkipCommand}"
 										Classes="activeHyperLink"
-										VerticalAlignment="Center" />
+										VerticalAlignment="Center"/>
 								<Button Name="PART_NextButton"
 										MinWidth="95"
 										Classes="action h3"

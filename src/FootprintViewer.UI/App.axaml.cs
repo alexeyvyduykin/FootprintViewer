@@ -12,6 +12,7 @@ using FootprintViewer.Services;
 using FootprintViewer.UI.Designer;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels;
+using FootprintViewer.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using System.Reactive.Concurrency;
@@ -20,7 +21,7 @@ namespace FootprintViewer.UI;
 
 public class App : Application
 {
-    private ApplicationStateManager? _applicationStateManager;
+    //private ApplicationStateManager? _applicationStateManager;
 
     static App()
     {
@@ -104,25 +105,52 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            _applicationStateManager = new ApplicationStateManager(desktopLifetime);
-
-            DataContext = _applicationStateManager.ApplicationViewModel;
-
             RxApp.MainThreadScheduler.Schedule(
                 async () =>
                 {
                     MainViewModel.Instance.Initialize();
-
                     await MainViewModel.Instance.InitAsync();
                 });
+
+            desktop.MainWindow = new MainWindow
+            {
+                DataContext = MainViewModel.Instance
+            };
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime)
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            throw new Exception();
+            singleViewPlatform.MainView = new MainView
+            {
+                DataContext = new MainViewModel()
+            };
         }
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    //public override void OnFrameworkInitializationCompleted()
+    //{
+    //    if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+    //    {
+    //        _applicationStateManager = new ApplicationStateManager(desktopLifetime);
+
+    //        DataContext = _applicationStateManager.ApplicationViewModel;
+
+    //        RxApp.MainThreadScheduler.Schedule(
+    //            async () =>
+    //            {
+    //                MainViewModel.Instance.Initialize();
+
+    //                await MainViewModel.Instance.InitAsync();
+    //            });
+    //    }
+    //    else if (ApplicationLifetime is ISingleViewApplicationLifetime)
+    //    {
+    //        throw new Exception();
+    //    }
+
+    //    base.OnFrameworkInitializationCompleted();
+    //}
 }

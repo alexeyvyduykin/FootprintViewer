@@ -38,7 +38,8 @@
 						CommandParameter="{Binding}"
 						Classes="invisible"
 						Padding="4"
-						Grid.Column="2">
+						Grid.Column="2"
+						x:CompileBindings="False">
 					<Viewbox Width="24" Height="24">
 						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
 													Kind="MapSearch" />

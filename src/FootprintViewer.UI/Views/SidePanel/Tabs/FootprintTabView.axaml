@@ -28,8 +28,8 @@
 					  x:DataType="items:FootprintViewModel">
 			<itemsView:FootprintView DataContext="{Binding}">
 				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}"/>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</itemsView:FootprintView>
 		</DataTemplate>
@@ -80,7 +80,8 @@
 		<c:FilterToggleButton Title="Filter options"
 							  Filter="{StaticResource Filter}"
 							  IsDirty="{Binding Filter.IsDirty}"
-							  ResetCommand="{Binding Filter.Reset}"/>
+							  ResetCommand="{Binding Filter.Reset}"
+							  x:CompileBindings="False"/>
 
 		<Grid Grid.Row="1"
 			  Margin="16,8"

@@ -19,7 +19,7 @@
 		<Style Selector="CheckBox">
 			<Setter Property="ContentTemplate">
 				<Setter.Value>
-					<DataTemplate>
+					<DataTemplate x:CompileBindings="False">
 						<TextBlock Text="{Binding}" Classes="Body2"/>
 					</DataTemplate>
 				</Setter.Value>

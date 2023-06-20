@@ -9,7 +9,8 @@
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="FootprintViewer.UI.Views.ToolBar.MapToolsView"
-			 Background="Transparent">
+			 Background="Transparent"
+			 x:DataType="vm:MapToolsViewModel">
 
 	<Design.DataContext>
 		<vm:MapToolsViewModel></vm:MapToolsViewModel>

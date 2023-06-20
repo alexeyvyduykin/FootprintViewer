@@ -29,8 +29,8 @@
 			<Grid ColumnDefinitions="Auto,*">
 				<StackPanel Spacing="2">
 					<TextBlock Text="Footprint:" Classes="h3 medium"/>
-					<TextBlock Text="{Binding Footprint.Center.Coordinate, Converter={StaticResource CoordinateConv}}"
-							   Classes="h3 medium"/>
+					<!--<TextBlock Text="{Binding Footprint.Center.Coordinate, Converter={StaticResource CoordinateConv}}"
+							   Classes="h3 medium"/>-->
 				</StackPanel>
 
 				<Button Classes="invisible"
@@ -38,7 +38,8 @@
 						Command="{Binding $parent[ListBox].DataContext.TargetToMap}"
 						CommandParameter="{Binding}"
 						Padding="4"
-						Grid.Column="1">
+						Grid.Column="1"
+						x:CompileBindings="False">
 					<Viewbox Width="24" Height="24">
 						<materialIcons:MaterialIcon Foreground="{DynamicResource TextHighBrush}"
 													Kind="MapSearch" />

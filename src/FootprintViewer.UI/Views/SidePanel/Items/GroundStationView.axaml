@@ -92,7 +92,7 @@
 
 					<c:TextValue Text="Split method" Content="{Binding}">
 						<c:TextValue.ContentTemplate>
-							<DataTemplate>
+							<DataTemplate x:DataType="vm:GroundStationViewModel">
 								<ComboBox x:Name="ModeComboBox"
 										  Grid.Column="1"
 										  ItemsSource="{Binding AvailableCountModes}"
@@ -103,7 +103,7 @@
 
 					<c:TextValue Text="Count segments" Content="{Binding}">
 						<c:TextValue.ContentTemplate>
-							<DataTemplate>
+							<DataTemplate x:DataType="vm:GroundStationViewModel">
 								<ComboBox x:Name="CountComboBox"
 										  ItemsSource="{Binding AvailableAreaCounts}"
 										  SelectedItem="{Binding AreaCount}"/>

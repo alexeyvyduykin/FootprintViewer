@@ -30,7 +30,7 @@
 	</Design.DataContext>
 
 	<UserControl.Styles>
-		<Style Selector="c|SidePanelItem">
+		<Style Selector="c|SidePanelItem" x:DataType="vm:SidePanelTabViewModel">
 			<!--<Setter Property="Title" Value="{Binding Title, Converter={StaticResource sidePanelTitleConv}, StringFormat={}-{0}}"/>-->
 			<Setter Property="IsSelected" Value="{Binding IsActive}"/>
 		</Style>
