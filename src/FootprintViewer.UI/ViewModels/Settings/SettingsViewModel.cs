@@ -6,14 +6,13 @@ using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
 using FootprintViewer.Data.Sources;
 using FootprintViewer.Extensions;
-using FootprintViewer.UI.Helpers;
+using FootprintViewer.Logging;
+using FootprintViewer.Services;
+using FootprintViewer.Styles;
 using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.Dialogs;
 using FootprintViewer.UI.ViewModels.Settings.Items;
 using FootprintViewer.UI.ViewModels.ToolBar;
-using FootprintViewer.Logging;
-using FootprintViewer.Services;
-using FootprintViewer.Styles;
 using Mapsui;
 using Mapsui.Layers;
 using ReactiveUI;
@@ -208,7 +207,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
     {
         try
         {
-            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Add map background", new[] { "mbtiles" });
+            var appService = Services.Locator.GetRequiredService<ApplicationService>();
+
+            var filePath = await appService.ShowOpenFileDialogAsync("Add map background", new[] { "Mbtiles" });
 
             if (filePath is null)
             {

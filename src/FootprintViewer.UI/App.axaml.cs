@@ -48,6 +48,7 @@ public class App : Application
         var localStorage = CreateLocalStorageService(config);
         var mapService = CreateMapService();
 
+        serviceCollection.AddSingleton<ApplicationService>();
         serviceCollection.AddSingleton<ILocalStorageService>(_ => localStorage);
         serviceCollection.AddSingleton<IMapService>(_ => mapService);
 

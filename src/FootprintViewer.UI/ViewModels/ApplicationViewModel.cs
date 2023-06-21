@@ -1,20 +1,22 @@
-﻿using ReactiveUI;
+﻿using FootprintViewer.UI.Services2;
+using ReactiveUI;
 using System.Windows.Input;
 
 namespace FootprintViewer.UI.ViewModels;
 
 public class ApplicationViewModel : ViewModelBase
 {
-    private readonly IMainWindowService _mainWindowService;
-
-    public ApplicationViewModel(IMainWindowService mainWindowService)
+    public ApplicationViewModel()
     {
-        _mainWindowService = mainWindowService;
-
         QuitCommand = ReactiveCommand.Create(() => Shutdown());
     }
 
-    public void Shutdown() => _mainWindowService.Shutdown();
+    public void Shutdown()
+    {
+        var appService = Services.Locator.GetRequiredService<ApplicationService>();
+
+        appService.Exit();
+    }
 
     public ICommand QuitCommand { get; }
 }

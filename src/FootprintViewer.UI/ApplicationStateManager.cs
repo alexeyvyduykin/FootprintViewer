@@ -4,7 +4,7 @@ using FootprintViewer.UI.Views;
 
 namespace FootprintViewer.UI;
 
-public class ApplicationStateManager : IMainWindowService
+public class ApplicationStateManager //: IMainWindowService
 {
     private readonly IClassicDesktopStyleApplicationLifetime _lifetime;
 
@@ -12,7 +12,7 @@ public class ApplicationStateManager : IMainWindowService
     {
         _lifetime = lifetime;
 
-        ApplicationViewModel = new ApplicationViewModel(this);
+        ApplicationViewModel = new ApplicationViewModel();
 
         CreateAndShowMainWindow();
     }
@@ -34,10 +34,5 @@ public class ApplicationStateManager : IMainWindowService
         _lifetime.MainWindow = mainWindow;
 
         mainWindow.Show();
-    }
-
-    public void Shutdown()
-    {
-        throw new NotImplementedException();
     }
 }

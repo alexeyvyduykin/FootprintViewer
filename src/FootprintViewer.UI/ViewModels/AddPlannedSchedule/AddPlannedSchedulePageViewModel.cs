@@ -1,6 +1,6 @@
-﻿using FootprintViewer.UI.Helpers;
+﻿using FootprintViewer.Logging;
+using FootprintViewer.UI.Services2;
 using FootprintViewer.UI.ViewModels.Dialogs;
-using FootprintViewer.Logging;
 using ReactiveUI;
 using System.IO;
 using System.Reactive;
@@ -48,7 +48,9 @@ public class AddPlannedSchedulePageViewModel : DialogViewModelBase<Unit>
         {
             var lastDirectory = _lastOpenDirectory ?? Services.Config.LastPlannedScheduleJsonFile;
 
-            var filePath = await FileDialogHelper.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "json" }, lastDirectory);
+            var appService = Services.Locator.GetRequiredService<ApplicationService>();
+
+            var filePath = await appService.ShowOpenFileDialogAsync("Import planned schedule file", new[] { "Json" }, lastDirectory);
 
             if (filePath is null)
             {
