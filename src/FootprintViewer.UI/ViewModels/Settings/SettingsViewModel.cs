@@ -1,5 +1,4 @@
-﻿using CliWrap;
-using DynamicData;
+﻿using DynamicData;
 using DynamicData.Alias;
 using FootprintViewer.Data;
 using FootprintViewer.Data.DbContexts;
@@ -135,8 +134,9 @@ public sealed class SettingsViewModel : DialogViewModelBase<object>
 
     private async Task OpenSnapshotDirectoryImpl()
     {
-        await Cli.Wrap("cmd").WithArguments($"/K start {SnapshotDirectory} && exit").ExecuteAsync();
-        //await FileDialogHelper.ShowOpenFileDialogAsync("Snapshots", SnapshotExtensions.ToArray(), SnapshotDirectory);
+        var appService = Services.Locator.GetRequiredService<ApplicationService>();
+
+        await appService.OpenDirectoryAsync(SnapshotDirectory);
     }
 
     private static List<string> AvailableExtensions()

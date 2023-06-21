@@ -59,6 +59,11 @@ public class ApplicationService
         return null;
     }
 
+    public async Task OpenDirectoryAsync(string directory)
+    {
+        await CliWrap.Cli.Wrap("cmd").WithArguments($"/K start {directory} && exit").ExecuteAsync();
+    }
+
     private static List<FilePickerFileType> GenerateFilters(string[] filters)
     {
         var types = new List<FilePickerFileType>();
