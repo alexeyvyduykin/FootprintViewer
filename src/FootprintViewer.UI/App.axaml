@@ -3,7 +3,6 @@
              xmlns:local="using:FootprintViewer.UI"
              xmlns:vm="using:FootprintViewer.UI.ViewModels"
 			 xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 x:DataType="vm:ApplicationViewModel"
              x:Class="FootprintViewer.UI.App"
 			 RequestedThemeVariant="Dark">
 
