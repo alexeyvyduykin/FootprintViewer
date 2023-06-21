@@ -6,6 +6,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Tabs"
              xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
+             xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
 			 xmlns:items="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
              xmlns:c="using:FootprintViewer.UI.Controls"
              xmlns:itemsView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Items"
@@ -24,10 +25,10 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="GroundTargetItemTemplate" x:DataType="items:GroundTargetViewModel">
-			<itemsView:GroundTargetView DataContext="{Binding}">
+			<itemsView:GroundTargetView DataContext="{Binding FallbackValue={x:Null}, TargetNullValue={x:Null}}">
 				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
+					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl], Converter={x:Static conv:GroundTargetTabConverter.Instance}, ConverterParameter=Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl], Converter={x:Static conv:GroundTargetTabConverter.Instance}, ConverterParameter=Leave}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</itemsView:GroundTargetView>
 		</DataTemplate>
