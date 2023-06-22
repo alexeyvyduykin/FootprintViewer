@@ -49,8 +49,8 @@ public partial class MainWindow : Window
 
         MapControl.Map = vm.Map;
 
-        MapControl.PointerEnter += MapControlPointerEnter;
-        MapControl.PointerLeave += MapControlPointerLeave;
+        MapControl.PointerEntered += MapControlPointerEnter;
+        MapControl.PointerExited += MapControlPointerLeave;
         MapControl.PointerWheelChanged += MapControlPointerWheelChanged;
         MapControl.PointerPressed += MapControlPointerPressed;
         MapControl.PointerMoved += MapControlPointerMoved;
@@ -113,7 +113,7 @@ public partial class MainWindow : Window
         var args1 = new MouseDownEventArgs
         {
 #pragma warning disable CS0618 // Тип или член устарел
-            ChangedButton = args.GetPointerPoint(null).Properties.PointerUpdateKind.Convert(),
+            ChangedButton = args.GetCurrentPoint(null).Properties.PointerUpdateKind.Convert(),
 #pragma warning restore CS0618 // Тип или член устарел
             ClickCount = args.ClickCount,
             MapInfo = mapInfo

@@ -24,7 +24,7 @@
 					 IsIndeterminate="True"/>
 
 		<ItemsControl IsVisible="{Binding !IsLoading}"
-					  Items="{Binding Items}">
+					  ItemsSource="{Binding Items}">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate DataType="items:SatelliteViewModel">
 					<views:SatelliteView DataContext="{Binding}"/>

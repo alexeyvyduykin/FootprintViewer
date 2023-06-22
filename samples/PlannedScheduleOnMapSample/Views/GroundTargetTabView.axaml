@@ -33,8 +33,7 @@
 			</StackPanel>
 
 			<ListBox Grid.Row="1"
-					 Items="{Binding Items}"
-					 VirtualizationMode="Simple">
+					 ItemsSource="{Binding Items}">
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="items:GroundTargetViewModel">
 						<views:GroundTargetView DataContext="{Binding}"/>

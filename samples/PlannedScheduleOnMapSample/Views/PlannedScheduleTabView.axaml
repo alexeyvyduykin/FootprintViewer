@@ -23,8 +23,7 @@
 					 IsIndeterminate="True"/>
 
 		<ListBox IsVisible="{Binding !IsLoading}"
-				 Items="{Binding Items}"			
-				 VirtualizationMode="Simple">
+				 ItemsSource="{Binding Items}">
 			<ListBox.ItemTemplate>		
 				<DataTemplate DataType="items:TaskResultViewModel">
 					<views:TaskResultView DataContext="{Binding}"/>
