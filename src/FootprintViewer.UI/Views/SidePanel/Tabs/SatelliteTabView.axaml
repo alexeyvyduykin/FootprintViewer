@@ -39,7 +39,7 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<itemsView:SatelliteView DataContext="{Binding}"/>
+							<itemsView:SatelliteView/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

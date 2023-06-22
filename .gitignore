@@ -339,3 +339,9 @@ snapshots/
 # Json files
 samples/JsonDataBuilderSample/Output/
 samples/PlannedScheduleOnMapSample/Assets/PlannedSchedule.json
+
+# Test projects
+samples/.gitignore
+samples/Directory.Build.props
+samples/ListBoxSample
+samples/ListBoxSample.Desktop

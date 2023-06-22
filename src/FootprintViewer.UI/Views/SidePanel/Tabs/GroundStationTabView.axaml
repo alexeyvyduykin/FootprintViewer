@@ -35,7 +35,7 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<itemsView:GroundStationView DataContext="{Binding}"/>
+							<itemsView:GroundStationView/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

@@ -22,9 +22,7 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:TaskResultViewModel">
-			<itemsView:TaskResultView Name="FootprintItem"
-									  DataContext="{Binding}">
-			</itemsView:TaskResultView>
+			<itemsView:TaskResultView></itemsView:TaskResultView>
 		</DataTemplate>
 	</UserControl.Resources>
 

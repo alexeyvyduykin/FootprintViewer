@@ -30,7 +30,7 @@
 				 Classes="sidePanel">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="items:UserGeometryViewModel">
-					<itemsView:UserGeometryView DataContext="{Binding}"/>
+					<itemsView:UserGeometryView/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>

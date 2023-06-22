@@ -6,13 +6,13 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:vm="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Tabs"
              xmlns:behaviors="clr-namespace:FootprintViewer.UI.Behaviors"
-             xmlns:conv="clr-namespace:FootprintViewer.UI.Converters"
-			 xmlns:items="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
+             xmlns:items="clr-namespace:FootprintViewer.UI.ViewModels.SidePanel.Items"
              xmlns:c="using:FootprintViewer.UI.Controls"
              xmlns:itemsView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Items"
              xmlns:filtersView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Filters"
              xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 x:DataType="vm:GroundTargetTabViewModel"
+			 x:Name="Tab"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="450">
 
@@ -25,11 +25,11 @@
 
 	<UserControl.Resources>
 		<DataTemplate x:Key="GroundTargetItemTemplate" x:DataType="items:GroundTargetViewModel">
-			<itemsView:GroundTargetView DataContext="{Binding FallbackValue={x:Null}, TargetNullValue={x:Null}}">
-				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl], Converter={x:Static conv:GroundTargetTabConverter.Instance}, ConverterParameter=Enter}" x:CompileBindings="False"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl], Converter={x:Static conv:GroundTargetTabConverter.Instance}, ConverterParameter=Leave}" x:CompileBindings="False"/>
-				</i:Interaction.Behaviors>
+			<itemsView:GroundTargetView>
+				<!--<i:Interaction.Behaviors>
+					<behaviors:PointerEnterEventBehavior Command="{Binding #Tab.DataContext.Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding #Tab.DataContext.Leave}" x:CompileBindings="False"/>
+				</i:Interaction.Behaviors>-->
 			</itemsView:GroundTargetView>
 		</DataTemplate>
 		<DataTemplate x:Key="GroupTemplate">
@@ -72,7 +72,7 @@
 	<Grid RowDefinitions="Auto,Auto,*,50"
 		  Background="{DynamicResource AccentDarkBrush}">
 
-		<c:FilterToggleButton Title="Filter options"							  
+		<c:FilterToggleButton Title="Filter options"
 							  IsDirty="{Binding Filter.IsDirty}"
 							  ResetCommand="{Binding Filter.Reset}"
 							  x:CompileBindings="False">

@@ -27,7 +27,7 @@
 
 		<Panel>
 
-			<!--<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
+			<local:UserMapControl ScaleMapBar="{Binding ScaleMapBar}"
 								  MapSource="{Binding Map}"
 								  Interactive="{Binding Interactive}"
 								  State="{Binding State}"
@@ -37,20 +37,19 @@
 					<behaviors:PointerLeaveEventBehavior Command="{Binding Leave}" x:CompileBindings="False"/>
 					<behaviors:PointerMovedEventBehavior Command="{Binding Moved}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
+			</local:UserMapControl>
+			
+			<Canvas IsHitTestVisible="False"
+					IsVisible="{Binding Tip, Converter={x:Static ObjectConverters.IsNotNull}}"
+					Background="Transparent">
 
-				<Canvas IsHitTestVisible="False"
-						IsVisible="{Binding Tip, Converter={x:Static ObjectConverters.IsNotNull}}"
-						Background="Transparent">
-
-					<ContentControl x:DataType="tips:Tip"
-									DataContext="{Binding Tip}"
-									Content="{Binding Content}"
-									IsVisible="{Binding IsVisible}"
-								    Canvas.Left="{Binding X}"
-								    Canvas.Top="{Binding Y}"/>
-				</Canvas>
-
-			</local:UserMapControl>-->
+				<ContentControl x:DataType="tips:Tip"
+								DataContext="{Binding Tip}"
+								Content="{Binding Content}"
+								IsVisible="{Binding IsVisible}"
+								Canvas.Left="{Binding X}"
+								Canvas.Top="{Binding Y}"/>
+			</Canvas>
 
 			<toolBar:ToolBarView DataContext="{Binding ToolBar}"
 								 VerticalAlignment="Center"

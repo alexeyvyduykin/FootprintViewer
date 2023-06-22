@@ -24,6 +24,7 @@
 				<ResourceInclude Source="/Controls/TextValue.axaml"/>
 				<ResourceInclude Source="/Controls/SidePanelItem.axaml"/>
 				<ResourceInclude Source="/Controls/SidePanel.axaml"/>
+				<ResourceInclude Source="/Themes/ProgressBar.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 		</ResourceDictionary>

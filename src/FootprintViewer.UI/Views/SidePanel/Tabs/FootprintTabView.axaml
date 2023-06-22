@@ -13,6 +13,7 @@
              xmlns:itemsView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Items"
 			 xmlns:filtersView="clr-namespace:FootprintViewer.UI.Views.SidePanel.Filters"
              x:DataType="vm:FootprintTabViewModel"
+			 x:Name="Tab"
              mc:Ignorable="d"
              d:DesignWidth="380" d:DesignHeight="550">
 
@@ -24,15 +25,14 @@
 	</Design.DataContext>
 
 	<UserControl.Resources>
-		<DataTemplate x:Key="FootprintItemTemplate"
-					  x:DataType="items:FootprintViewModel">
-			<itemsView:FootprintView DataContext="{Binding}">
+		<!--<DataTemplate x:Key="FootprintItemTemplate" x:DataType="items:FootprintViewModel">
+			<itemsView:FootprintView>
 				<i:Interaction.Behaviors>
-					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
+					<behaviors:PointerEnterEventBehavior Command="{Binding #Tab.DataContext.Enter}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding #Tab.DataContext.Leave}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</itemsView:FootprintView>
-		</DataTemplate>
+		</DataTemplate>-->
 		<DataTemplate x:Key="GroupTemplate">
 			<Border Background="Transparent" Cursor="Help"
 					ToolTip.Tip="Area of Interest(AOI) active">
@@ -72,6 +72,9 @@
 			<Setter Property="Width" Value="26"></Setter>
 			<Setter Property="Height" Value="26"></Setter>
 		</Style>
+
+
+
 	</UserControl.Styles>
 
 	<Grid RowDefinitions="Auto,Auto,*,50"
@@ -114,7 +117,8 @@
 
 		</Grid>
 
-		<Grid Grid.Row="2">
+		<Grid Grid.Row="2"
+			  IsVisible="{Binding #Tab.IsVisible}">
 
 			<ProgressBar IsVisible="{Binding IsLoading}"
 						 Classes="Circle"
@@ -124,15 +128,30 @@
 
 			<ListBox IsVisible="{Binding !IsLoading}"
 					 ItemsSource="{Binding Items}"
-					 ItemTemplate="{StaticResource FootprintItemTemplate}"
+				
 					
 					 Classes="sidePanel">
+
+				<!--ItemTemplate="{StaticResource FootprintItemTemplate}"-->
+
 				<!--VirtualizationMode="Simple"-->
-				<ListBox.ItemsPanel>
+				<!--<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<VirtualizingStackPanel/>
 					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
+				</ListBox.ItemsPanel>-->
+
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="items:FootprintViewModel">
+						<itemsView:FootprintView>
+							<!--<i:Interaction.Behaviors>
+								<behaviors:PointerEnterEventBehavior Command="{Binding #Tab.DataContext.Enter}" x:CompileBindings="False"/>
+								<behaviors:PointerLeaveEventBehavior Command="{Binding #Tab.DataContext.Leave}" x:CompileBindings="False"/>
+							</i:Interaction.Behaviors>-->
+						</itemsView:FootprintView>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+								
 			</ListBox>
 		</Grid>
 
