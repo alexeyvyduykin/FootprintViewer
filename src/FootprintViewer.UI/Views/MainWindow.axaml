@@ -12,7 +12,8 @@
 		ExtendClientAreaTitleBarHeightHint="-1"
 		Icon="/Assets/app-logo.ico"
 		x:DataType="vm:MainViewModel"
-		x:CompileBindings="True">
+		x:CompileBindings="True"
+		x:Name="WindowName">
 
 	<Design.DataContext>
 		<vm:MainViewModel></vm:MainViewModel>
@@ -30,7 +31,7 @@
 		<Panel>
 			<views:BackgroundView />
 			<views:MainView x:CompileBindings="False"
-							IsHitTestVisible="{Binding $parent.DataContext.IsMainContentEnabled^, FallbackValue=True}" />
+							IsHitTestVisible="{Binding DataContext.IsMainContentEnabled^, ElementName=#WindowName , FallbackValue=True}" />
 			<views:DialogsView />
 		</Panel>
 	</DockPanel>

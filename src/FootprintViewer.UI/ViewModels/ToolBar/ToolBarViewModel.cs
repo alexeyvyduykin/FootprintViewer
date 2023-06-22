@@ -1,10 +1,10 @@
 ﻿using DynamicData;
 using FootprintViewer.Data.DbContexts;
 using FootprintViewer.Data.Models;
-using FootprintViewer.UI.Extensions;
-using FootprintViewer.UI.Services2;
 using FootprintViewer.Services;
 using FootprintViewer.StateMachines;
+using FootprintViewer.UI.Extensions;
+using FootprintViewer.UI.Services2;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;

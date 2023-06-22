@@ -17,7 +17,8 @@
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="540"
 			 x:DataType="toolBar:ToolBarViewModel"
              x:Class="FootprintViewer.UI.Views.ToolBar.ToolBarView"
-			 x:CompileBindings="True">
+			 x:CompileBindings="True"
+			 x:Name="ToolBarName">
 
 	<Design.DataContext>
 		<toolBar:ToolBarViewModel></toolBar:ToolBarViewModel>
@@ -160,7 +161,7 @@
 					<MenuFlyout x:CompileBindings="False"
 								Placement="RightEdgeAlignedTop"
 								ShowMode="TransientWithDismissOnPointerMoveAway"
-								ItemsSource="{Binding $parent[UserControl].DataContext.MapItems}"/>
+								ItemsSource="{Binding #ToolBarName.DataContext.MapItems}"/>
 				</ToggleButton.Flyout>
 				<Viewbox Classes="t1">
 					<PathIcon Data="{DynamicResource fg-map}" Classes="t1"/>
@@ -171,13 +172,13 @@
 			<ToggleButton x:Name="MapLayerSelectorButton"
 						  x:CompileBindings="False"
 						  DataContext="{Binding MapLayers}"
-						  IsChecked="{Binding $parent[UserControl].DataContext.IsLayerContainerOpen}"
+						  IsChecked="{Binding #ToolBarName.DataContext.IsLayerContainerOpen}"
 						  Classes="map">
 				<ToggleButton.Flyout>
 					<Flyout x:CompileBindings="False"
 							Placement="RightEdgeAlignedTop"
 							ShowMode="TransientWithDismissOnPointerMoveAway">
-						<toolBarView:LayerContainerView DataContext="{Binding $parent[UserControl].DataContext.LayerContainer}"/>
+						<toolBarView:LayerContainerView DataContext="{Binding DataContext.LayerContainer, ElementName=ToolBarName}"/>
 					</Flyout>
 				</ToggleButton.Flyout>
 				<Viewbox Classes="t1">

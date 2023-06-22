@@ -20,6 +20,8 @@ public class MPointConverter : IValueConverter
             return $"{lonStr} {latStr}";
         }
 
+        return $"Converting error: type {value} not MPoint";
+
         // converter used for the wrong type
         return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
     }

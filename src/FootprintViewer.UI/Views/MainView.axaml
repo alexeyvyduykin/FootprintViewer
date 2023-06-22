@@ -16,7 +16,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
-             x:Class="FootprintViewer.UI.Views.MainView">
+             x:Class="FootprintViewer.UI.Views.MainView"
+			 x:Name="MainViewName">
 
 	<Design.DataContext>
 		<vm:MainViewModel></vm:MainViewModel>
@@ -34,8 +35,8 @@
 								  HorizontalAlignment="Stretch"
 								  VerticalAlignment="Stretch">
 				<i:Interaction.Behaviors>
-					<behaviors:PointerLeaveEventBehavior Command="{Binding Leave}" x:CompileBindings="False"/>
-					<behaviors:PointerMovedEventBehavior Command="{Binding Moved}" x:CompileBindings="False"/>
+					<behaviors:PointerLeaveEventBehavior Command="{Binding #MainViewName.DataContext.Leave}" x:CompileBindings="False"/>
+					<behaviors:PointerMovedEventBehavior Command="{Binding #MainViewName.DataContext.Moved}" x:CompileBindings="False"/>
 				</i:Interaction.Behaviors>
 			</local:UserMapControl>
 			

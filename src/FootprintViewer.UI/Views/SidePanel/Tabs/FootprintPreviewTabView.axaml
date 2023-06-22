@@ -24,10 +24,10 @@
 	<UserControl.Resources>
 		<DataTemplate x:Key="FootprintPreviewItemTemplate" x:DataType="items:FootprintPreviewViewModel">
 			<itemsView:FootprintPreviewView DataContext="{Binding}">
-				<i:Interaction.Behaviors>
+				<!--<i:Interaction.Behaviors>
 					<behaviors:PointerEnterEventBehavior Command="{Binding $parent[UserControl].DataContext.Enter}" x:CompileBindings="False"/>
 					<behaviors:PointerLeaveEventBehavior Command="{Binding $parent[UserControl].DataContext.Leave}" x:CompileBindings="False"/>
-				</i:Interaction.Behaviors>
+				</i:Interaction.Behaviors>-->
 			</itemsView:FootprintPreviewView>
 		</DataTemplate>
 		<DataTemplate x:Key="GroupTemplate">
