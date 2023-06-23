@@ -4,11 +4,13 @@ using FootprintViewer.Data;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
+using FootprintViewer.UI.Services2;
 using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Interactivity.UI;
 using Mapsui.Layers;
 using Mapsui.Nts;
+using Mapsui.Projections;
 using Mapsui.Providers;
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
@@ -23,6 +25,7 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
 
@@ -46,12 +49,14 @@ public class MainWindowViewModel : ViewModelBase
 
     private readonly FootprintService _footprintService;
     private readonly DataManager _dataManager = new();
+    private readonly FootprintProvider _footprintProvider;
+    private readonly ILayer _footprintLayer;
 
     public MainWindowViewModel()
     {
         _dataManager.RegisterSource(PlannedScheduleKey, new CustomSource());
 
-        var footprintProvider = new FootprintProvider();
+        _footprintProvider = new FootprintProvider();
         var satelliteProvider = new SatelliteProvider();
         var groundTargetProvider = new GroundTargetProvider();
 
@@ -60,11 +65,12 @@ public class MainWindowViewModel : ViewModelBase
         Map.Layers.Add(CreateWorldMapLayer());
         Map.Layers.Add(CreateGroundTargetLayer(groundTargetProvider));
         Map.Layers.Add(CreateSatelliteLayer(satelliteProvider));
-        Map.Layers.Add(CreateFootprintLayer(footprintProvider));
+        _footprintLayer = CreateFootprintLayer(_footprintProvider);
+        Map.Layers.Add(_footprintLayer);
         Map.Layers.Add(CreateTrackLayer());
 
         PlannedScheduleTab = new(_dataManager);
-        PlannedScheduleTab.ToLayerProvider(footprintProvider);
+        PlannedScheduleTab.ToLayerProvider(_footprintProvider);
 
         SatelliteTab = new(_dataManager);
         SatelliteTab.ToLayerProvider(satelliteProvider);
@@ -94,6 +100,60 @@ public class MainWindowViewModel : ViewModelBase
     }
 
     public IObservable<IInteractive> InteractiveObservable => _subj.AsObservable();
+
+    public FeatureManager FeatureManager => _featureManager;
+
+    public void SelectFootprint(string name)
+    {                  
+        var feature = _footprintProvider.Find(name, "Name")!;
+     
+        FeatureManager.Select(feature);
+
+        _footprintLayer.DataHasChanged();
+    }
+
+    public async Task SelectFootprint(string name, bool isPreview)
+    {
+        var feature = _footprintProvider.Find(name, "Name")!;
+
+        FeatureManager.Select(feature);
+
+        if (isPreview == true)
+        {
+            await _footprintService.ShowTrackAsync(feature);
+        }
+
+        _footprintLayer.DataHasChanged();
+    }
+
+    MPoint _lastPoint = new();
+    public void FlyToFootprint(string name)
+    {
+        var feature = _footprintProvider.Find(name, "Name")!;
+
+        var center = feature.Extent.Centroid;
+        var rect = feature.Extent.Grow(4.0);
+
+        //var (x, y) = SphericalMercator.FromLonLat(center.X, center.Y);
+
+        //mapService.FlyTo(new MPoint(x, y), 100000);
+
+        // Map.Navigator.FlyTo(center, 100000, duration: 800);
+     
+        // Map.Navigator.Pinch(center, _lastPoint, 1000, 0);
+
+
+      Map.Navigator.CenterOn(center, duration: 800);
+
+      //  Map.Navigator.ZoomToBox(rect, duration: 800);
+
+        //Observable.StartAsync(() => mapService.ForceUpdate(duration + 100), RxApp.MainThreadScheduler).Subscribe();
+
+
+        //_footprintLayer.DataHasChanged();
+
+        _lastPoint = center;
+    }
 
     private static ILayer CreateWorldMapLayer()
     {

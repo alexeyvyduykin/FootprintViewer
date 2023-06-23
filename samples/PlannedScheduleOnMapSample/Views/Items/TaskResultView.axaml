@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="250"
 			 xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels.Items"
+			 xmlns:mia="using:Material.Icons.Avalonia"			 
 			 x:DataType="vm:TaskResultViewModel"
              x:Class="PlannedScheduleOnMapSample.Views.Items.TaskResultView">
 
@@ -19,6 +20,17 @@
 			<TextBlock Text="{Binding Duration, StringFormat={}{0} sec}" Classes="h3 medium right"/>
 			<Separator/>
 			<ContentControl Content="{Binding Model}"/>
+			<Separator/>
+			<StackPanel Orientation="Vertical" Margin="8,0,8,0">
+				<Button Command="{Binding CenterOn}"
+						CommandParameter="{Binding}"
+						Padding="4">
+					<mia:MaterialIcon Foreground="White" 
+									  Width="24" 
+									  Height="24" 
+									  Kind="Camera"/>
+				</Button>
+			</StackPanel>
 		</StackPanel>
 	</Border>
 	

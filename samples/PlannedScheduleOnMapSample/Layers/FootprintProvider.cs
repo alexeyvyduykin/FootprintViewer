@@ -3,6 +3,7 @@ using FootprintViewer.Geometries;
 using Mapsui;
 using Mapsui.Layers;
 using Mapsui.Providers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace PlannedScheduleOnMapSample.Layers;
 public class FootprintProvider : MemoryProvider
 {
     private static Random _random = new();
-    private IProvider _provider = new MemoryProvider();
+    private MemoryProvider _provider = new MemoryProvider();
+
 
     public FootprintProvider()
     {
@@ -58,5 +60,22 @@ public class FootprintProvider : MemoryProvider
     public override async Task<IEnumerable<IFeature>> GetFeaturesAsync(FetchInfo fetchInfo)
     {
         return await _provider.GetFeaturesAsync(fetchInfo);
+    }
+
+    public new IFeature? Find(object? value, string fieldName)
+    {
+        var fdfdf = _provider.Features.First()["Name"];
+       // var res = _provider.Find(value, fieldName);
+
+
+        foreach (var item in _provider.Features)
+        {
+            if (string.Equals(item["Name"], value))
+            {
+                return item;
+            }
+        }
+
+        return null;
     }
 }

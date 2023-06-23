@@ -35,6 +35,20 @@
 			</StackPanel>
 		</Border>
 
+		<Border VerticalAlignment="Top"
+				HorizontalAlignment="Right"
+				Background="Black">
+			<StackPanel>
+				<StackPanel.Styles>
+					<Style Selector="TextBlock">
+						<Setter Property="Foreground" Value="White"/>
+					</Style>
+				</StackPanel.Styles>
+				
+				<TextBlock x:Name="ResolutionTextBlock"/>
+			</StackPanel>						
+		</Border>
+		
 		<TabControl Width="400"
 					Grid.Column="1"
 					Grid.RowSpan="2">

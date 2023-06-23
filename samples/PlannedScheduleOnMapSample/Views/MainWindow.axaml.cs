@@ -125,7 +125,7 @@ public partial class MainWindow : Window
     protected void MapControlPointerMoved(object? sender, PointerEventArgs args)
     {
         var screenPosition = args.GetPosition(MapControl).ToMapsui();
-
+   
         // var mapInfo = MapControl.GetMapInfo(screenPosition);
 
         var args1 = new MouseEventArgs

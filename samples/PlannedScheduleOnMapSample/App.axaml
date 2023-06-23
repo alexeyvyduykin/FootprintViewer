@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:PlannedScheduleOnMapSample"
+			 xmlns:mia="using:Material.Icons.Avalonia"			 			 
              x:Class="PlannedScheduleOnMapSample.App"
 			 RequestedThemeVariant="Dark">
 	<Application.DataTemplates>
@@ -9,7 +10,8 @@
 
 	<Application.Styles>
 		<FluentTheme/>
-
+		<mia:MaterialIconStyles />
+		
 		<Style Selector="TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>

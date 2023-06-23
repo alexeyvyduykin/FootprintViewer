@@ -6,6 +6,7 @@ using PlannedScheduleOnMapSample.Design;
 using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.ViewModels.Items;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,9 +35,15 @@ public class PlannedScheduleTabViewModel : ViewModelBase
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new TaskResultViewModel(s));
+ 
+        var filter1 = this.WhenAnyValue(s => s.SearchString)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1))
+            .Select(SearchStringPredicate);
 
         observable
             .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
+            .Filter(filter1)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _items)
             .Subscribe();
@@ -46,12 +53,39 @@ public class PlannedScheduleTabViewModel : ViewModelBase
             .ToCollection();
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
+       
+        CenterOn = ReactiveCommand.Create<TaskResultViewModel>(CenterOnImpl);
 
         _isLoading = Update.IsExecuting
             .ObserveOn(RxApp.MainThreadScheduler)
             .ToProperty(this, x => x.IsLoading);
 
         Update.Execute().Subscribe();
+
+        this.WhenAnyValue(s => s.SelectedItem)
+            .WhereNotNull()
+            .Select(s => s.Model)
+            .Subscribe(async s => 
+            {
+                var name = $"Footprint_{s.TaskName}";               
+               // MainWindowViewModel.Instance.SelectFootprint(name);
+                await MainWindowViewModel.Instance.SelectFootprint(name, IsPreview);
+                //MainWindowViewModel.Instance.FlyToFootprint(name);
+            });
+
+    }
+
+    private static Func<TaskResultViewModel, bool> SearchStringPredicate(string? arg)
+    {
+        return (s =>
+        {
+            if (string.IsNullOrEmpty(arg) == true)
+            {
+                return true;
+            }
+
+            return s.TaskName.Contains(arg, StringComparison.CurrentCultureIgnoreCase);
+        });
     }
 
     public void ToLayerProvider(FootprintProvider provider)
@@ -60,6 +94,8 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     }
 
     public ReactiveCommand<Unit, Unit> Update { get; }
+
+    public ReactiveCommand<TaskResultViewModel, Unit> CenterOn { get; }
 
     public bool IsLoading => _isLoading.Value;
 
@@ -76,5 +112,21 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         });
     }
 
+    private void CenterOnImpl(TaskResultViewModel task)
+    {
+        var name = $"Footprint_{task.TaskName}";
+
+        MainWindowViewModel.Instance.FlyToFootprint(name);
+    }
+
     public ReadOnlyObservableCollection<TaskResultViewModel> Items => _items;
+
+    [Reactive]
+    public string? SearchString { get; set; }
+
+    [Reactive]
+    public bool IsPreview { get; set; }
+
+    [Reactive]
+    public TaskResultViewModel? SelectedItem { get; set; }
 }

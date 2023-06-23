@@ -123,9 +123,11 @@ public class FootprintService
         _trackLayer.DataHasChanged();
     }
 
-
-    private Polygon CreateArrow(double x1, double y1, double x2, double y2)
+    private Polygon CreateArrow(double x11, double y11, double x22, double y22)
     {
+        var (x1, y1) = SphericalMercator.FromLonLat(x11, y11);
+        var (x2, y2) = SphericalMercator.FromLonLat(x22, y22);
+
         // Backward direction vector
         var (dx, dy) = (x1 - x2, y1 - y2);
 
@@ -147,13 +149,12 @@ public class FootprintService
         var bx = udx * cosa + udy * sina;
         var by = -udx * sina + udy * cosa;
 
-
         // Points for head with wing length L = 20:
-        double len = 0.5;
+        double len = 50000;// 0.5;
         var (a, b) = (x1 + len * ax, y1 + len * ay);
         var (c, d) = (x1 + len * bx, y1 + len * by);
 
-        var list = new[]
+        var list = new (double x, double y)[]
         {
             (x2, y2),
             (a, b),
@@ -162,7 +163,7 @@ public class FootprintService
         };
 
         var coordinates = list
-            .Select(s => SphericalMercator.FromLonLat(s.Item1, s.Item2))
+           // .Select(s => SphericalMercator.FromLonLat(s.Item1, s.Item2))
             .Select(s => new Coordinate(s.x, s.y))
             .ToArray();
 

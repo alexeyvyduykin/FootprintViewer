@@ -1,6 +1,8 @@
 ﻿using FootprintViewer.Data.Models;
 using NetTopologySuite.Geometries;
+using ReactiveUI;
 using System;
+using System.Reactive;
 
 namespace PlannedScheduleOnMapSample.ViewModels.Items;
 
@@ -18,6 +20,21 @@ public class TaskResultViewModel : ViewModelBase
         TaskName = taskResult.TaskName;
         Begin = taskResult.Interval.Begin;
         Duration = taskResult.Interval.Duration;
+
+        CenterOn = ReactiveCommand.Create<object?>(CenterOnImpl);
+
+    }
+
+    public ReactiveCommand<object?, Unit> CenterOn { get; }
+
+    private void CenterOnImpl(object? value)
+    {
+        if (value is TaskResultViewModel task)
+        {
+            var name = $"Footprint_{task.TaskName}";
+
+            MainWindowViewModel.Instance.FlyToFootprint(name);
+        }
     }
 
     public string TaskName { get; set; }

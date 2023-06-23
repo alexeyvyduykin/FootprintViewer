@@ -5,7 +5,8 @@
 			 xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels"
 			 xmlns:items="using:PlannedScheduleOnMapSample.ViewModels.Items"
 			 xmlns:views="using:PlannedScheduleOnMapSample.Views.Items"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             xmlns:mia="using:Material.Icons.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
 			 MinWidth="400"
 			 x:DataType="vm:PlannedScheduleTabViewModel"
              x:Class="PlannedScheduleOnMapSample.Views.PlannedScheduleTabView">
@@ -22,14 +23,35 @@
 					 HorizontalAlignment="Center"
 					 IsIndeterminate="True"/>
 
-		<ListBox IsVisible="{Binding !IsLoading}"
-				 ItemsSource="{Binding Items}">
+<Grid IsVisible="{Binding !IsLoading}"
+	  RowDefinitions="Auto,Auto,*">	
+
+<TextBox Text="{Binding SearchString}"></TextBox>
+
+
+	<StackPanel Grid.Row="1" Margin="8,4,8,4">
+		<ToggleButton IsChecked="{Binding IsPreview}"
+					  Padding="4">
+			<mia:MaterialIcon Width="24" 
+							  Height="24"
+							  Kind="Image"/>
+		</ToggleButton>
+	</StackPanel>
+	
+		<ListBox Grid.Row="2"
+				 ItemsSource="{Binding Items}"
+			SelectedItem="{Binding SelectedItem}">
 			<ListBox.ItemTemplate>		
 				<DataTemplate DataType="items:TaskResultViewModel">
-					<views:TaskResultView DataContext="{Binding}"/>
+					<views:TaskResultView>	
+						
+					</views:TaskResultView>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+	
+</Grid>		
+
 	</Panel>
 
 </UserControl>
