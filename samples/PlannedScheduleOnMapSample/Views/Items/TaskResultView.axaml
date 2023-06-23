@@ -12,7 +12,8 @@
 		<vm:TaskResultViewModel></vm:TaskResultViewModel>
 	</Design.DataContext>
 
-	<Border Classes="item">
+	<Border Classes="item"
+			Background="Transparent">
 		<StackPanel Spacing="4">
 			<TextBlock Text="{Binding TaskName}" Classes="h4 high"/>
 			<TextBlock Text="{Binding SatelliteName}" Classes="h3 medium"/>

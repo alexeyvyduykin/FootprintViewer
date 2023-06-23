@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
 
@@ -73,6 +74,24 @@ public class PlannedScheduleTabViewModel : ViewModelBase
                 //MainWindowViewModel.Instance.FlyToFootprint(name);
             });
 
+        this.WhenAnyValue(s => s.IsDimming)
+            .Skip(1)
+            .Subscribe(s => 
+            {
+                MainWindowViewModel.Instance.FootprintDimming(s); 
+            });
+
+        Entered = ReactiveCommand.Create<TaskResultViewModel>(s => 
+        {
+            var name = $"Footprint_{s.TaskName}";
+
+            MainWindowViewModel.Instance.EnterFootprint(name);
+        });
+
+        Exited = ReactiveCommand.Create(() => 
+        {
+            MainWindowViewModel.Instance.LeaveFootprint();
+        });
     }
 
     private static Func<TaskResultViewModel, bool> SearchStringPredicate(string? arg)
@@ -96,6 +115,10 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> Update { get; }
 
     public ReactiveCommand<TaskResultViewModel, Unit> CenterOn { get; }
+
+    public ReactiveCommand<TaskResultViewModel, Unit> Entered { get; }
+
+    public ReactiveCommand<Unit, Unit> Exited { get; }
 
     public bool IsLoading => _isLoading.Value;
 
@@ -126,6 +149,9 @@ public class PlannedScheduleTabViewModel : ViewModelBase
 
     [Reactive]
     public bool IsPreview { get; set; }
+
+    [Reactive]
+    public bool IsDimming { get; set; }
 
     [Reactive]
     public TaskResultViewModel? SelectedItem { get; set; }

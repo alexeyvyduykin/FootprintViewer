@@ -80,11 +80,15 @@ public class MainWindowViewModel : ViewModelBase
 
         MessageBox = new();
 
+        //_featureManager = new FeatureManager()
+        //    .WithSelect(f => f[SelectField] = true)
+        //    .WithUnselect(f => f[SelectField] = false)
+        //    .WithEnter(f => f[HoverField] = true)
+        //    .WithLeave(f => f[HoverField] = false);
+
         _featureManager = new FeatureManager()
-            .WithSelect(f => f[SelectField] = true)
-            .WithUnselect(f => f[SelectField] = false)
-            .WithEnter(f => f[HoverField] = true)
-            .WithLeave(f => f[HoverField] = false);
+            .WithSelectStyle(StyleBuilder.CreateSelectFootprintStyle())
+            .WithHoverStyle(StyleBuilder.CreateHoverFootprintStyle());
 
         _footprintService = new(Map, _dataManager);
 
@@ -112,6 +116,13 @@ public class MainWindowViewModel : ViewModelBase
         _footprintLayer.DataHasChanged();
     }
 
+    public void FootprintDimming(bool active)
+    {
+        _footprintLayer.Style = StyleBuilder.CreateFootprintStyle(active);
+
+        _footprintLayer.DataHasChanged();
+    }
+
     public async Task SelectFootprint(string name, bool isPreview)
     {
         var feature = _footprintProvider.Find(name, "Name")!;
@@ -126,7 +137,22 @@ public class MainWindowViewModel : ViewModelBase
         _footprintLayer.DataHasChanged();
     }
 
-    MPoint _lastPoint = new();
+    public void EnterFootprint(string name)
+    {
+        var feature = _footprintProvider.Find(name, "Name")!;
+
+        FeatureManager.Enter(feature);
+
+        _footprintLayer.DataHasChanged();
+    }
+
+    public void LeaveFootprint()
+    {
+        FeatureManager.Leave();
+
+        _footprintLayer.DataHasChanged();
+    }
+
     public void FlyToFootprint(string name)
     {
         var feature = _footprintProvider.Find(name, "Name")!;
@@ -140,8 +166,6 @@ public class MainWindowViewModel : ViewModelBase
 
         // Map.Navigator.FlyTo(center, 100000, duration: 800);
      
-        // Map.Navigator.Pinch(center, _lastPoint, 1000, 0);
-
 
       Map.Navigator.CenterOn(center, duration: 800);
 
@@ -151,8 +175,6 @@ public class MainWindowViewModel : ViewModelBase
 
 
         //_footprintLayer.DataHasChanged();
-
-        _lastPoint = center;
     }
 
     private static ILayer CreateWorldMapLayer()
@@ -169,7 +191,7 @@ public class MainWindowViewModel : ViewModelBase
 
     private static ILayer CreateSatelliteLayer(IProvider provider)
     {
-        var style = CreateSatelliteLayerStyle();
+        var style = StyleBuilder.CreateSatelliteLayerStyle();
 
         var layer = new DynamicLayer(provider, true)
         {
@@ -182,7 +204,7 @@ public class MainWindowViewModel : ViewModelBase
 
     private static ILayer CreateGroundTargetLayer(IProvider provider)
     {
-        var style = CreateGroundTargetLayerStyle();
+        var style = StyleBuilder.CreateGroundTargetLayerStyle();
 
         var layer = new DynamicLayer(provider, true)
         {
@@ -195,14 +217,14 @@ public class MainWindowViewModel : ViewModelBase
 
     private static ILayer CreateFootprintLayer(IProvider provider)
     {
-        var style = CreateFootprintLayerStyle();
+        var style = StyleBuilder.CreateFootprintStyle(dimming: false);
 
         var layer = new Layer()
         {
             Name = FootprintKey,
             DataSource = provider,
             Style = style,
-            IsMapInfoLayer = true
+            IsMapInfoLayer = true,
         };
 
         return layer;
@@ -210,7 +232,7 @@ public class MainWindowViewModel : ViewModelBase
 
     private static ILayer CreateTrackLayer()
     {
-        var style = CreateTrackLayerStyle();
+        var style = StyleBuilder.CreateTrackLayerStyle();
 
         var layer = new QueueLayer()
         {
@@ -326,266 +348,6 @@ public class MainWindowViewModel : ViewModelBase
             .Unselect();
     }
 
-    private static IStyle CreateFootprintLayerStyle()
-    {
-        return new ThemeStyle(f =>
-        {
-            if (f is not GeometryFeature gf)
-            {
-                return null;
-            }
-
-            if (gf.Geometry is Point)
-            {
-                return null;
-            }
-
-            if (gf[SelectField] is true)
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Green, 0.55f)),
-                    Outline = new Pen(Color.Black, 4.0),
-                    Line = new Pen(Color.Black, 4.0)
-                };
-            }
-
-            if (gf[HoverField] is true)
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Green, 0.85f)),
-                    Outline = new Pen(Color.Yellow, 3.0),
-                    Line = new Pen(Color.Yellow, 3.0)
-                };
-            }
-
-            return new VectorStyle()
-            {
-                Fill = new Brush(Color.Opacity(Color.Green, 0.25f)),
-                Line = new Pen(Color.Green, 1.0),
-                Outline = new Pen(Color.Green, 1.0),
-                MinVisible = 0,
-                MaxVisible = _maxVisibleFootprintStyle,
-            };
-        });
-    }
-
-    private static IStyle CreateTrackLayerStyle()
-    {
-        return new ThemeStyle(f =>
-        {
-            if (f is not GeometryFeature gf)
-            {
-                return null;
-            }
-
-            if (gf.Geometry is Point)
-            {
-                return new SymbolStyle()
-                {
-                    Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
-                    Line = new Pen(Color.Black, 1.0),
-                    Outline = new Pen(Color.Black, 1.0),
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.8,
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                };
-                // return null;
-            }
-
-            if ((string)gf["Name"]! == "Target")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
-                    // Outline = new Pen(Color.Blue, 2.0),
-                    Line = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "FootprintTrack")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
-                    // Outline = new Pen(Color.Blue, 2.0),
-                    Line = new Pen(Color.Opacity(Color.Blue, 0.65f), 12.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "BaseTrack")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
-                    //  Outline = new Pen(Color.Black, 1.0),
-                    Line = new Pen(Color.Opacity(Color.Black, 0.20f), 12.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "FootprintSwath")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Orange, 1.0f)),
-                    Outline = new Pen(Color.Orange, 2.0),
-                    Line = new Pen(Color.Orange, 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "BaseSwath")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    // Fill = new Brush(Color.Opacity(Color.Indigo, 0.55f)),
-                    Outline = new Pen(Color.Orange, 2.0),
-                    Line = new Pen(Color.Orange, 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "Arrow")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Red, 1.0f)),
-                    Outline = new Pen(Color.Red, 1.0),
-                    Line = new Pen(Color.Red, 1.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "AreaPoly")
-            {
-                return new VectorStyle()
-                {
-                    Fill = new Brush(Color.Opacity(Color.Orange, 0.25f)),
-                    Line = null,
-                    Outline = null,
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                };
-            }
-
-            return new VectorStyle()
-            {
-                Fill = null,// new Brush(Color.Opacity(Color.Green, 0.55f)),
-                Line = new Pen(Color.Black, 2.0),
-                Outline = new Pen(Color.Black, 2.0),
-                MinVisible = 0,
-                MaxVisible = _maxVisibleFootprintStyle,
-            };
-        });
-    }
-
-    private static IStyle CreateGroundTargetLayerStyle()
-    {
-        return new ThemeStyle(f =>
-        {
-            if (f is not GeometryFeature gf)
-            {
-                return null;
-            }
-
-            bool isSelect = gf[SelectField] is true;
-
-            var width = isSelect ? 4.0f : 2.0f;
-
-            if (gf.Geometry is Point)
-            {
-                return new SymbolStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
-                    Outline = new Pen(Color.Black, width),
-                    Line = new Pen(Color.Black, width),
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.4,
-                };
-            }
-
-            if ((string)gf["Type"]! == "Route")
-            {
-                var styleBorder = new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
-                    Outline = new Pen(Color.Opacity(Color.Black, 0.05f), 16.0),
-                    Line = new Pen(Color.Opacity(Color.Black, 0.05f), 16.0)
-                };
-
-                var style = new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
-                    Outline = new Pen(Color.Black, width),
-                    Line = new Pen(Color.Black, width)
-                };
-
-                return new StyleCollection
-                {
-                    Styles = new() { styleBorder, style }
-                };
-            }
-
-            return new VectorStyle()
-            {
-                MinVisible = 0,
-                MaxVisible = _maxVisibleFootprintStyle,
-                Fill = new Brush(Color.Opacity(Color.Black, 0.05f)),
-                Outline = new Pen(Color.Black, width),
-                Line = new Pen(Color.Black, width)
-            };
-        });
-    }
-
-    private static IStyle CreateSatelliteLayerStyle()
-    {
-        return new ThemeStyle(f =>
-        {
-            if (f is not GeometryFeature gf)
-            {
-                return null;
-            }
-
-            if (gf.Geometry is Point)
-            {
-                return null;
-            }
-
-            if ((string)gf["Name"]! == "FootprintTrack")
-            {
-                return new VectorStyle()
-                {
-                    Line = new Pen(Color.Opacity(Color.Red, 0.65f), 12.0)
-                };
-            }
-
-            return new VectorStyle()
-            {
-                Line = new Pen(Color.Opacity(Color.Green, 0.25f), 12.0),
-            };
-        });
-    }
 
     public PlannedScheduleTabViewModel PlannedScheduleTab { get; set; }
 

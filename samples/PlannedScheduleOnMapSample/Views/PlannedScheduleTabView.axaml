@@ -2,12 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:vm="using:PlannedScheduleOnMapSample.ViewModels"
+			 xmlns:behs="using:PlannedScheduleOnMapSample.Behaviors"
 			 xmlns:items="using:PlannedScheduleOnMapSample.ViewModels.Items"
 			 xmlns:views="using:PlannedScheduleOnMapSample.Views.Items"
              xmlns:mia="using:Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
 			 MinWidth="400"
+			 x:Name="Tab"
 			 x:DataType="vm:PlannedScheduleTabViewModel"
              x:Class="PlannedScheduleOnMapSample.Views.PlannedScheduleTabView">
 
@@ -29,12 +32,19 @@
 <TextBox Text="{Binding SearchString}"></TextBox>
 
 
-	<StackPanel Grid.Row="1" Margin="8,4,8,4">
+	<StackPanel Grid.Row="1" Spacing="8" Margin="8,4,8,4" 
+				Orientation="Horizontal">
 		<ToggleButton IsChecked="{Binding IsPreview}"
 					  Padding="4">
 			<mia:MaterialIcon Width="24" 
 							  Height="24"
 							  Kind="Image"/>
+		</ToggleButton>
+		<ToggleButton IsChecked="{Binding IsDimming}"
+					  Padding="4">
+			<mia:MaterialIcon Width="24"
+							  Height="24"
+							  Kind="BoxShadow"/>
 		</ToggleButton>
 	</StackPanel>
 	
@@ -43,8 +53,11 @@
 			SelectedItem="{Binding SelectedItem}">
 			<ListBox.ItemTemplate>		
 				<DataTemplate DataType="items:TaskResultViewModel">
-					<views:TaskResultView>	
-						
+					<views:TaskResultView>
+						<i:Interaction.Behaviors>
+								<behs:PointerEnteredEventBehavior Command="{Binding #Tab.DataContext.Entered}" x:CompileBindings="False"/>
+								<behs:PointerExitedEventBehavior Command="{Binding #Tab.DataContext.Exited}" x:CompileBindings="False"/>
+						</i:Interaction.Behaviors>
 					</views:TaskResultView>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
