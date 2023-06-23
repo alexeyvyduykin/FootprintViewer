@@ -32,19 +32,19 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     {
         _dataManager = dataManager;
 
-        var observable = _plannedSchedules
-            .Connect()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => new TaskResultViewModel(s));
- 
         var filter1 = this.WhenAnyValue(s => s.SearchString)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Throttle(TimeSpan.FromSeconds(1))
             .Select(SearchStringPredicate);
 
+        var observable = _plannedSchedules
+            .Connect()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Transform(s => new TaskResultViewModel(s))
+            .Filter(filter1);
+ 
         observable
-            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
-            .Filter(filter1)
+            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))         
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _items)
             .Subscribe();
@@ -103,6 +103,13 @@ public class PlannedScheduleTabViewModel : ViewModelBase
                 return true;
             }
 
+            if (arg.Contains("Satellite:") == true)
+            {
+                var res = arg.Replace("Satellite:", "").Trim();
+
+                return s.SatelliteName.Contains(res, StringComparison.CurrentCultureIgnoreCase);
+            }
+
             return s.TaskName.Contains(arg, StringComparison.CurrentCultureIgnoreCase);
         });
     }
@@ -114,6 +121,7 @@ public class PlannedScheduleTabViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, Unit> Update { get; }
 
+    // TODO: DblClick on list item call CenterOn
     public ReactiveCommand<TaskResultViewModel, Unit> CenterOn { get; }
 
     public ReactiveCommand<TaskResultViewModel, Unit> Entered { get; }
