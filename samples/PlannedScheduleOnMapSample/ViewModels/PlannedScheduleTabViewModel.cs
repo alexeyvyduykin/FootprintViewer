@@ -13,8 +13,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace PlannedScheduleOnMapSample.ViewModels;
 
@@ -25,6 +25,7 @@ public class PlannedScheduleTabViewModel : ViewModelBase
     private readonly ObservableAsPropertyHelper<bool> _isLoading;
     private IObservable<IReadOnlyCollection<Footprint>> _layerObservable;
     private readonly DataManager _dataManager;
+    private readonly Subject<PlannedScheduleResult> _subj = new();
 
     public PlannedScheduleTabViewModel() : this(DesignData.CreateDataManager()) { }
 
@@ -42,9 +43,9 @@ public class PlannedScheduleTabViewModel : ViewModelBase
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(s => new TaskResultViewModel(s))
             .Filter(filter1);
- 
+
         observable
-            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))         
+            .Sort(SortExpressionComparer<TaskResultViewModel>.Ascending(s => s.Begin))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(out _items)
             .Subscribe();
@@ -54,7 +55,7 @@ public class PlannedScheduleTabViewModel : ViewModelBase
             .ToCollection();
 
         Update = ReactiveCommand.CreateFromTask(UpdateImpl);
-       
+
         CenterOn = ReactiveCommand.Create<TaskResultViewModel>(CenterOnImpl);
 
         _isLoading = Update.IsExecuting
@@ -66,29 +67,27 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         this.WhenAnyValue(s => s.SelectedItem)
             .WhereNotNull()
             .Select(s => s.Model)
-            .Subscribe(async s => 
+            .Subscribe(s =>
             {
-                var name = $"Footprint_{s.TaskName}";               
-               // MainWindowViewModel.Instance.SelectFootprint(name);
-                await MainWindowViewModel.Instance.SelectFootprint(name, IsPreview);
-                //MainWindowViewModel.Instance.FlyToFootprint(name);
+                var name = $"Footprint_{s.TaskName}";
+                MainWindowViewModel.Instance.SelectFootprint(name, s, IsPreview, IsFullTrack, IsSwath, IsGroundTarget);
             });
 
         this.WhenAnyValue(s => s.IsDimming)
             .Skip(1)
-            .Subscribe(s => 
+            .Subscribe(s =>
             {
-                MainWindowViewModel.Instance.FootprintDimming(s); 
+                MainWindowViewModel.Instance.FootprintDimming(s);
             });
 
-        Entered = ReactiveCommand.Create<TaskResultViewModel>(s => 
+        Entered = ReactiveCommand.Create<TaskResultViewModel>(s =>
         {
             var name = $"Footprint_{s.TaskName}";
 
             MainWindowViewModel.Instance.EnterFootprint(name);
         });
 
-        Exited = ReactiveCommand.Create(() => 
+        Exited = ReactiveCommand.Create(() =>
         {
             MainWindowViewModel.Instance.LeaveFootprint();
         });
@@ -119,6 +118,13 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         provider.SetObservable(_layerObservable);
     }
 
+    public void ToLayerProvider(FootprintTrackProvider provider)
+    {
+        var layerObservable = _subj.AsObservable();
+     
+        provider.SetObservable(layerObservable);
+    }
+
     public ReactiveCommand<Unit, Unit> Update { get; }
 
     // TODO: DblClick on list item call CenterOn
@@ -135,6 +141,8 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         var res = await _dataManager.GetDataAsync<PlannedScheduleResult>(MainWindowViewModel.PlannedScheduleKey);
 
         var tasks = res.FirstOrDefault()!.PlannedSchedules;
+
+        _subj.OnNext(res.First());
 
         _plannedSchedules.Edit(innerList =>
         {
@@ -157,6 +165,21 @@ public class PlannedScheduleTabViewModel : ViewModelBase
 
     [Reactive]
     public bool IsPreview { get; set; }
+
+    [Reactive]
+    public bool IsFullTrack { get; set; }
+
+    [Reactive]
+    public bool IsSwath { get; set; }
+
+    [Reactive]
+    public bool IsGroundTarget { get; set; }
+
+    [Reactive]
+    public bool IsObservables { get; set; }
+
+    [Reactive]
+    public bool IsAvailabilities { get; set; }
 
     [Reactive]
     public bool IsDimming { get; set; }

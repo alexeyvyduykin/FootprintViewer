@@ -1,6 +1,7 @@
 ﻿using BruTile.MbTiles;
 using FootprintViewer;
 using FootprintViewer.Data;
+using FootprintViewer.Data.Models;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
@@ -43,6 +44,7 @@ public class MainWindowViewModel : ViewModelBase
     public const string WorldKey = "WorldMapLayer";
     public const string SatelliteKey = "SatelliteLayer";
     public const string FootprintKey = "FootprintLayer";
+    public const string FootprintTrackKey = "FootprintPreviewLayer";
     public const string TrackKey = "TrackLayer";
     public const string PlannedScheduleKey = "PlannedSchedule";
     public const string GroundTargetKey = "GroundTargetLayer";
@@ -50,13 +52,16 @@ public class MainWindowViewModel : ViewModelBase
     private readonly FootprintService _footprintService;
     private readonly DataManager _dataManager = new();
     private readonly FootprintProvider _footprintProvider;
+    private readonly FootprintTrackProvider _footprintTrackProvider;
     private readonly ILayer _footprintLayer;
+    private readonly ILayer _footprintTrackLayer;
 
     public MainWindowViewModel()
     {
         _dataManager.RegisterSource(PlannedScheduleKey, new CustomSource());
 
         _footprintProvider = new FootprintProvider();
+        _footprintTrackProvider = new FootprintTrackProvider(_dataManager);
         var satelliteProvider = new SatelliteProvider();
         var groundTargetProvider = new GroundTargetProvider();
 
@@ -66,11 +71,14 @@ public class MainWindowViewModel : ViewModelBase
         Map.Layers.Add(CreateGroundTargetLayer(groundTargetProvider));
         Map.Layers.Add(CreateSatelliteLayer(satelliteProvider));
         _footprintLayer = CreateFootprintLayer(_footprintProvider);
+        _footprintTrackLayer = CreateFootprintTrackLayer(_footprintTrackProvider);
         Map.Layers.Add(_footprintLayer);
+        Map.Layers.Add(_footprintTrackLayer);
         Map.Layers.Add(CreateTrackLayer());
 
         PlannedScheduleTab = new(_dataManager);
         PlannedScheduleTab.ToLayerProvider(_footprintProvider);
+        PlannedScheduleTab.ToLayerProvider(_footprintTrackProvider);
 
         SatelliteTab = new(_dataManager);
         SatelliteTab.ToLayerProvider(satelliteProvider);
@@ -79,12 +87,6 @@ public class MainWindowViewModel : ViewModelBase
         GroundTargetTab.ToLayerProvider(groundTargetProvider);
 
         MessageBox = new();
-
-        //_featureManager = new FeatureManager()
-        //    .WithSelect(f => f[SelectField] = true)
-        //    .WithUnselect(f => f[SelectField] = false)
-        //    .WithEnter(f => f[HoverField] = true)
-        //    .WithLeave(f => f[HoverField] = false);
 
         _featureManager = new FeatureManager()
             .WithSelectStyle(StyleBuilder.CreateSelectFootprintStyle())
@@ -135,6 +137,28 @@ public class MainWindowViewModel : ViewModelBase
         }
 
         _footprintLayer.DataHasChanged();
+    }
+
+    public void SelectFootprint(string name, ObservationTaskResult taskResult, bool isPreview, bool isFullTrack, bool isSwath, bool isGt)
+    {
+        var feature = _footprintProvider.Find(name, "Name")!;
+
+        FeatureManager.Select(feature);
+
+        if (isPreview == true)
+        {
+           // await _footprintService.ShowTrackAsync(feature);
+        }
+
+        _footprintLayer.DataHasChanged();
+
+        if (isPreview == true)
+        {
+            _footprintTrackProvider.ShowTrack(taskResult, isFullTrack, isSwath, isGt);
+        }
+
+        _footprintLayer.DataHasChanged();
+        _footprintTrackLayer.DataHasChanged();
     }
 
     public void EnterFootprint(string name)
@@ -225,6 +249,21 @@ public class MainWindowViewModel : ViewModelBase
             DataSource = provider,
             Style = style,
             IsMapInfoLayer = true,
+        };
+
+        return layer;
+    }
+
+    private static ILayer CreateFootprintTrackLayer(IProvider provider)
+    {
+        var style = StyleBuilder.CreateFootprintTrackStyle();
+
+        var layer = new DynamicLayer(provider, true)
+        {
+            Name = FootprintTrackKey,
+        //    DataSource = provider,
+            Style = style,
+            IsMapInfoLayer = false,
         };
 
         return layer;

@@ -40,12 +40,38 @@
 							  Height="24"
 							  Kind="Image"/>
 		</ToggleButton>
+		
+		<ToggleButton IsChecked="{Binding IsFullTrack}"
+					  Padding="4">
+			<mia:MaterialIcon Width="24" 
+							  Height="24"
+							  Kind="VectorLine"/>
+		</ToggleButton>
+		
+		<ToggleButton IsChecked="{Binding IsSwath}"
+					  Padding="4">
+			<mia:MaterialIcon Width="24" 
+							  Height="24"
+							  Kind="VectorRectangle"/>
+		</ToggleButton>
+
+		<ToggleButton IsChecked="{Binding IsGroundTarget}"
+					  Padding="4">
+			<mia:MaterialIcon Width="24" 
+							  Height="24"
+							  Kind="MapMarkerRadius"/>
+		</ToggleButton>
+
+		<Border Background="White" 
+				Width="2"/>			
+
 		<ToggleButton IsChecked="{Binding IsDimming}"
 					  Padding="4">
 			<mia:MaterialIcon Width="24"
 							  Height="24"
 							  Kind="BoxShadow"/>
 		</ToggleButton>
+	
 	</StackPanel>
 	
 		<ListBox Grid.Row="2"
