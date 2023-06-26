@@ -64,13 +64,13 @@ public class PlannedScheduleTabViewModel : ViewModelBase
 
         Update.Execute().Subscribe();
 
-        this.WhenAnyValue(s => s.SelectedItem)
-            .WhereNotNull()
-            .Select(s => s.Model)
+        this.WhenAnyValue(s => s.SelectedItem, s => s.IsPreview, s => s.IsFullTrack, s => s.IsSwath, s => s.IsGroundTarget)
+            .Where(s => s.Item1 != null)
             .Subscribe(s =>
             {
-                var name = $"Footprint_{s.TaskName}";
-                MainWindowViewModel.Instance.SelectFootprint(name, s, IsPreview, IsFullTrack, IsSwath, IsGroundTarget);
+                var task = s.Item1!.Model;
+                var name = $"Footprint_{task.TaskName}";
+                MainWindowViewModel.Instance.SelectFootprint(name, task, s.Item2, s.Item3, s.Item4, s.Item5);
             });
 
         this.WhenAnyValue(s => s.IsDimming)
@@ -118,10 +118,10 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         provider.SetObservable(_layerObservable);
     }
 
-    public void ToLayerProvider(FootprintTrackProvider provider)
+    public void ToLayerProvider(FootprintPreviewProvider provider)
     {
         var layerObservable = _subj.AsObservable();
-     
+
         provider.SetObservable(layerObservable);
     }
 

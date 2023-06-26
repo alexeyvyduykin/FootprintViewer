@@ -5,18 +5,12 @@ using FootprintViewer.Data.Models;
 using FootprintViewer.Helpers;
 using FootprintViewer.Layers;
 using FootprintViewer.Styles;
-using FootprintViewer.UI.Services2;
 using Mapsui;
 using Mapsui.Interactivity;
 using Mapsui.Interactivity.UI;
 using Mapsui.Layers;
-using Mapsui.Nts;
-using Mapsui.Projections;
 using Mapsui.Providers;
-using Mapsui.Styles;
-using Mapsui.Styles.Thematics;
 using Mapsui.Tiling.Layers;
-using NetTopologySuite.Geometries;
 using PlannedScheduleOnMapSample.Layers;
 using PlannedScheduleOnMapSample.Models;
 using ReactiveUI;
@@ -44,7 +38,7 @@ public class MainWindowViewModel : ViewModelBase
     public const string WorldKey = "WorldMapLayer";
     public const string SatelliteKey = "SatelliteLayer";
     public const string FootprintKey = "FootprintLayer";
-    public const string FootprintTrackKey = "FootprintPreviewLayer";
+    public const string FootprintPreviewKey = "FootprintPreviewLayer";
     public const string TrackKey = "TrackLayer";
     public const string PlannedScheduleKey = "PlannedSchedule";
     public const string GroundTargetKey = "GroundTargetLayer";
@@ -52,16 +46,16 @@ public class MainWindowViewModel : ViewModelBase
     private readonly FootprintService _footprintService;
     private readonly DataManager _dataManager = new();
     private readonly FootprintProvider _footprintProvider;
-    private readonly FootprintTrackProvider _footprintTrackProvider;
+    private readonly FootprintPreviewProvider _footprintPreviewProvider;
     private readonly ILayer _footprintLayer;
-    private readonly ILayer _footprintTrackLayer;
+    private readonly ILayer _footprintPreviewLayer;
 
     public MainWindowViewModel()
     {
         _dataManager.RegisterSource(PlannedScheduleKey, new CustomSource());
 
         _footprintProvider = new FootprintProvider();
-        _footprintTrackProvider = new FootprintTrackProvider(_dataManager);
+        _footprintPreviewProvider = new FootprintPreviewProvider(_dataManager);
         var satelliteProvider = new SatelliteProvider();
         var groundTargetProvider = new GroundTargetProvider();
 
@@ -71,14 +65,14 @@ public class MainWindowViewModel : ViewModelBase
         Map.Layers.Add(CreateGroundTargetLayer(groundTargetProvider));
         Map.Layers.Add(CreateSatelliteLayer(satelliteProvider));
         _footprintLayer = CreateFootprintLayer(_footprintProvider);
-        _footprintTrackLayer = CreateFootprintTrackLayer(_footprintTrackProvider);
+        _footprintPreviewLayer = CreateFootprintPreviewLayer(_footprintPreviewProvider);
         Map.Layers.Add(_footprintLayer);
-        Map.Layers.Add(_footprintTrackLayer);
+        Map.Layers.Add(_footprintPreviewLayer);
         Map.Layers.Add(CreateTrackLayer());
 
         PlannedScheduleTab = new(_dataManager);
         PlannedScheduleTab.ToLayerProvider(_footprintProvider);
-        PlannedScheduleTab.ToLayerProvider(_footprintTrackProvider);
+        PlannedScheduleTab.ToLayerProvider(_footprintPreviewProvider);
 
         SatelliteTab = new(_dataManager);
         SatelliteTab.ToLayerProvider(satelliteProvider);
@@ -110,9 +104,9 @@ public class MainWindowViewModel : ViewModelBase
     public FeatureManager FeatureManager => _featureManager;
 
     public void SelectFootprint(string name)
-    {                  
+    {
         var feature = _footprintProvider.Find(name, "Name")!;
-     
+
         FeatureManager.Select(feature);
 
         _footprintLayer.DataHasChanged();
@@ -145,20 +139,10 @@ public class MainWindowViewModel : ViewModelBase
 
         FeatureManager.Select(feature);
 
-        if (isPreview == true)
-        {
-           // await _footprintService.ShowTrackAsync(feature);
-        }
+        _footprintPreviewProvider.Update(taskResult, isPreview, isFullTrack, isSwath, isGt);
 
         _footprintLayer.DataHasChanged();
-
-        if (isPreview == true)
-        {
-            _footprintTrackProvider.ShowTrack(taskResult, isFullTrack, isSwath, isGt);
-        }
-
-        _footprintLayer.DataHasChanged();
-        _footprintTrackLayer.DataHasChanged();
+        _footprintPreviewLayer.DataHasChanged();
     }
 
     public void EnterFootprint(string name)
@@ -189,11 +173,11 @@ public class MainWindowViewModel : ViewModelBase
         //mapService.FlyTo(new MPoint(x, y), 100000);
 
         // Map.Navigator.FlyTo(center, 100000, duration: 800);
-     
 
-      Map.Navigator.CenterOn(center, duration: 800);
 
-      //  Map.Navigator.ZoomToBox(rect, duration: 800);
+        Map.Navigator.CenterOn(center, duration: 800);
+
+        //  Map.Navigator.ZoomToBox(rect, duration: 800);
 
         //Observable.StartAsync(() => mapService.ForceUpdate(duration + 100), RxApp.MainThreadScheduler).Subscribe();
 
@@ -254,14 +238,14 @@ public class MainWindowViewModel : ViewModelBase
         return layer;
     }
 
-    private static ILayer CreateFootprintTrackLayer(IProvider provider)
+    private static ILayer CreateFootprintPreviewLayer(IProvider provider)
     {
         var style = StyleBuilder.CreateFootprintTrackStyle();
 
         var layer = new DynamicLayer(provider, true)
         {
-            Name = FootprintTrackKey,
-        //    DataSource = provider,
+            Name = FootprintPreviewKey,
+            //    DataSource = provider,
             Style = style,
             IsMapInfoLayer = false,
         };

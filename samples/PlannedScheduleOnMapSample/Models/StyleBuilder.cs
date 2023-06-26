@@ -2,6 +2,7 @@
 using Mapsui.Styles;
 using Mapsui.Styles.Thematics;
 using NetTopologySuite.Geometries;
+using System.Linq;
 
 namespace PlannedScheduleOnMapSample.Models;
 
@@ -46,6 +47,65 @@ public static class StyleBuilder
         };
     }
 
+    public static IStyle CreateFootprintSwathStyle()
+    {
+        return new VectorStyle()
+        {
+            MinVisible = 0,
+            MaxVisible = _maxVisibleFootprintStyle,
+            Outline = new Pen(Color.Orange, 2.0),
+            Line = new Pen(Color.Orange, 2.0)
+        };
+    }
+
+    public static IStyle CreateFootprintSwathAreaStyle()
+    {
+        return new VectorStyle()
+        {
+            MinVisible = 0,
+            MaxVisible = _maxVisibleFootprintStyle,
+            Fill = new Brush(Color.Opacity(Color.Orange, 0.25f)),
+            Line = null,//new Pen(Color.Orange, 0.0),
+            Outline = null//new Pen(Color.Orange, 0.0)
+        };
+    }
+
+    public static IStyle CreateArrowStyle()
+    {
+        return new VectorStyle()
+        {
+            MinVisible = 0,
+            MaxVisible = _maxVisibleFootprintStyle,
+            Fill = new Brush(Color.Opacity(Color.Red, 1.0f)),
+            Outline = new Pen(Color.Red, 1.0),
+            Line = new Pen(Color.Red, 1.0)
+        };
+    }
+
+    public static IStyle CreateGroundTargetPointStyle()
+    {
+        return new SymbolStyle()
+        {
+            MinVisible = 0,
+            MaxVisible = _maxVisibleFootprintStyle,
+            Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
+            Line = new Pen(Color.Black, 1.0),
+            Outline = new Pen(Color.Black, 1.0),
+            SymbolType = SymbolType.Ellipse,
+            SymbolScale = 0.8,
+        };
+    }
+
+    public static IStyle CreateGroundTargetStyle()
+    {
+        return new VectorStyle()
+        {
+            MinVisible = 0,
+            MaxVisible = _maxVisibleFootprintStyle,
+            Line = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0)
+        };
+    }
+
     public static IStyle CreateFootprintTrackStyle()
     {
         return new ThemeStyle(f =>
@@ -55,116 +115,41 @@ public static class StyleBuilder
                 return null;
             }
 
-            if (gf.Geometry is Point)
+            if (gf.Fields.Contains("Name") == true)
             {
-                return new SymbolStyle()
+                if (Equals(gf["Name"], "BaseTrack") == true)
                 {
-                    Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
-                    Line = new Pen(Color.Black, 1.0),
-                    Outline = new Pen(Color.Black, 1.0),
-                    SymbolType = SymbolType.Ellipse,
-                    SymbolScale = 0.8,
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                };
-                // return null;
+                    return new VectorStyle()
+                    {
+                        MinVisible = 0,
+                        MaxVisible = _maxVisibleFootprintStyle,
+                        Line = new Pen(Color.Opacity(Color.Black, 0.20f), 12.0)
+                    };
+                }
+
+                if (Equals(gf["Name"], "FootprintTrack") == true)
+                {
+                    return new VectorStyle()
+                    {
+                        MinVisible = 0,
+                        MaxVisible = _maxVisibleFootprintStyle,
+                        Line = new Pen(Color.Opacity(Color.Blue, 0.65f), 12.0),
+                    };
+                }
             }
 
-            if ((string)gf["Name"]! == "Target")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
-                    // Outline = new Pen(Color.Blue, 2.0),
-                    Line = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "FootprintTrack")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Blue, 1.0f)),
-                    // Outline = new Pen(Color.Blue, 2.0),
-                    Line = new Pen(Color.Opacity(Color.Blue, 0.65f), 12.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "BaseTrack")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    //  Fill = new Brush(Color.Opacity(Color.Black, 0.55f)),
-                    //  Outline = new Pen(Color.Black, 1.0),
-                    Line = new Pen(Color.Opacity(Color.Black, 0.20f), 12.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "FootprintSwath")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Orange, 1.0f)),
-                    Outline = new Pen(Color.Orange, 2.0),
-                    Line = new Pen(Color.Orange, 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "BaseSwath")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    // Fill = new Brush(Color.Opacity(Color.Indigo, 0.55f)),
-                    Outline = new Pen(Color.Orange, 2.0),
-                    Line = new Pen(Color.Orange, 2.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "Arrow")
-            {
-                return new VectorStyle()
-                {
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                    Fill = new Brush(Color.Opacity(Color.Red, 1.0f)),
-                    Outline = new Pen(Color.Red, 1.0),
-                    Line = new Pen(Color.Red, 1.0)
-                };
-            }
-
-            if ((string)gf["Name"]! == "AreaPoly")
-            {
-                return new VectorStyle()
-                {
-                    Fill = new Brush(Color.Opacity(Color.Orange, 0.25f)),
-                    Line = null,
-                    Outline = null,
-                    MinVisible = 0,
-                    MaxVisible = _maxVisibleFootprintStyle,
-                };
-            }
+            return null;
 
             return new VectorStyle()
             {
-                Fill = null,// new Brush(Color.Opacity(Color.Green, 0.55f)),
-                Line = new Pen(Color.Black, 2.0),
-                Outline = new Pen(Color.Black, 2.0),
                 MinVisible = 0,
                 MaxVisible = _maxVisibleFootprintStyle,
+                Fill = null,
+                Line = new Pen(Color.Black, 2.0),
+                Outline = new Pen(Color.Black, 2.0),
             };
         });
     }
-
 
     public static IStyle CreateTrackLayerStyle()
     {
