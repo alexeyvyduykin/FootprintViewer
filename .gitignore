@@ -345,3 +345,4 @@ samples/.gitignore
 samples/Directory.Build.props
 samples/ListBoxSample
 samples/ListBoxSample.Desktop
+samples/SidePanelSample

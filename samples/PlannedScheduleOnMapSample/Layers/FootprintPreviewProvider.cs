@@ -156,18 +156,13 @@ public class FootprintPreviewProvider : MemoryProvider, IDynamic
         var trackFeatures = trackLines.Select(s => FeatureBuilder.CreateTrack("FootprintTrack", s)).ToList();
         var baseTrackFeatures = baseTrackLines.Select(s => FeatureBuilder.CreateTrack("BaseTrack", s)).ToList();
 
-        //var dd = trackLineBase.TakeLast(2).ToList();
-        //var (x1, y1) = dd[0];
-        //var (x2, y2) = dd[1];
-        //var arrow = CreateArrow(x1, y1, x2, y2);
-
         var dd = baseTrackLines.Last().TakeLast(2).ToList();
         var (x1, y1) = dd[0];
         var (x2, y2) = dd[1];
         var arrow = CreateArrow(x1, y1, x2, y2);
 
         var arrowFeature = arrow.ToFeatureEx(style: StyleBuilder.CreateArrowStyle());
-    
+
         var features = new List<IFeature>();
         features.AddRange(baseTrackFeatures);
         features.AddRange(trackFeatures);
@@ -266,20 +261,9 @@ public class FootprintPreviewProvider : MemoryProvider, IDynamic
         var (near, far) = orbit.BuildSwaths2(node - 1, t0, t1, 2, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
 
         var firstNearPoint = near.First();
-        var lastNearPoint = near.Last(); 
+        var lastNearPoint = near.Last();
         var lastFarPoint = far.Last();
         var firstFarPoint = far.First();
-
-        //var areaGeometry = FeatureBuilder.AreaCutting(new Coordinate[]
-        //{
-        //    new Coordinate(firstNearPoint.lonDeg, firstNearPoint.latDeg),
-        //    new Coordinate(lastNearPoint.lonDeg, lastNearPoint.latDeg),
-        //    new Coordinate(lastFarPoint.lonDeg, lastFarPoint.latDeg),
-        //    new Coordinate(firstFarPoint.lonDeg, firstFarPoint.latDeg),
-        //    new Coordinate(firstNearPoint.lonDeg, firstNearPoint.latDeg),
-        //});
-
-        //var area = areaGeometry.ToFeatureEx(style: StyleBuilder.CreateFootprintSwathAreaStyle());
 
         var res = LonSplitters.Default.SplitArea(new() { firstNearPoint, lastNearPoint, lastFarPoint, firstFarPoint });
 

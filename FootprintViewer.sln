@@ -61,6 +61,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListBoxSample", "samples\Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListBoxSample.Desktop", "samples\ListBoxSample.Desktop\ListBoxSample.Desktop.csproj", "{23C52072-4C79-4FEE-A354-A7590C70D937}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SidePanelSample", "samples\SidePanelSample\SidePanelSample.csproj", "{B172B59C-F4F5-448B-9032-447EB58ADB44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{23C52072-4C79-4FEE-A354-A7590C70D937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23C52072-4C79-4FEE-A354-A7590C70D937}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23C52072-4C79-4FEE-A354-A7590C70D937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B172B59C-F4F5-448B-9032-447EB58ADB44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B172B59C-F4F5-448B-9032-447EB58ADB44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B172B59C-F4F5-448B-9032-447EB58ADB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B172B59C-F4F5-448B-9032-447EB58ADB44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +203,7 @@ Global
 		{D8E0DE37-0E06-43F3-A65A-522816838744} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{F1A9EDAA-21A8-446D-8276-53982F22CF13} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 		{23C52072-4C79-4FEE-A354-A7590C70D937} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
+		{B172B59C-F4F5-448B-9032-447EB58ADB44} = {6184C0DB-894C-43A7-A55D-C3B76E234163}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA46E11F-6A62-4684-82C3-F08F9E1279F3}
