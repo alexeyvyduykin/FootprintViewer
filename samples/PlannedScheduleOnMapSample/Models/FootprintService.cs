@@ -88,7 +88,7 @@ public class FootprintService
         var (x2, y2) = dd[1];
         var arrow = CreateArrow(x1, y1, x2, y2);
 
-        var arrowFeature = arrow.ToFeature("Arrow");
+        var arrowFeature = arrow.ToFeatureEx("Arrow");
 
         var fTarget = FeatureBuilder.CreateGroundTarget(groundTarget);
 

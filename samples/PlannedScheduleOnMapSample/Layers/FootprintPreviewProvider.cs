@@ -12,6 +12,7 @@ using NetTopologySuite.Geometries;
 using PlannedScheduleOnMapSample.Models;
 using PlannedScheduleOnMapSample.ViewModels;
 using ReactiveUI;
+using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
 using System;
@@ -145,23 +146,34 @@ public class FootprintPreviewProvider : MemoryProvider, IDynamic
         var track = new GroundTrack(orbit);
 
         track.CalculateTrackOnTimeInterval(t0, t1, 2);
-        var trackLine = track.GetTrack(node - 1, duration, LonConverters.Default);//.ToCutList();
+        var res1 = track.GetTrack(node - 1, duration);
+        var trackLines = LonSplitters.Default.Split(res1);
 
         track.CalculateTrackOnTimeInterval(t0 - 60, t1 + 60, 10);
-        var trackLineBase = track.GetTrack(node - 1, duration + 2 * 60, LonConverters.Default);//.ToCutList();
+        var res2 = track.GetTrack(node - 1, duration + 2 * 60);
+        var baseTrackLines = LonSplitters.Default.Split(res2);
 
-        var trackFeature = FeatureBuilder.CreateTrack("FootprintTrack", trackLine);
-        var trackFeatureBase = FeatureBuilder.CreateTrack("BaseTrack", trackLineBase);
+        var trackFeatures = trackLines.Select(s => FeatureBuilder.CreateTrack("FootprintTrack", s)).ToList();
+        var baseTrackFeatures = baseTrackLines.Select(s => FeatureBuilder.CreateTrack("BaseTrack", s)).ToList();
 
-        var dd = trackLineBase.TakeLast(2).ToList();
+        //var dd = trackLineBase.TakeLast(2).ToList();
+        //var (x1, y1) = dd[0];
+        //var (x2, y2) = dd[1];
+        //var arrow = CreateArrow(x1, y1, x2, y2);
+
+        var dd = baseTrackLines.Last().TakeLast(2).ToList();
         var (x1, y1) = dd[0];
         var (x2, y2) = dd[1];
         var arrow = CreateArrow(x1, y1, x2, y2);
 
-        var arrowFeature = arrow.ToFeature("");
-        arrowFeature.Styles.Add(StyleBuilder.CreateArrowStyle());
+        var arrowFeature = arrow.ToFeatureEx(style: StyleBuilder.CreateArrowStyle());
+    
+        var features = new List<IFeature>();
+        features.AddRange(baseTrackFeatures);
+        features.AddRange(trackFeatures);
+        features.Add(arrowFeature);
 
-        return new List<IFeature>() { trackFeatureBase, trackFeature, arrowFeature };
+        return features;
     }
 
     private List<IFeature> GetFullTrackFeatures(string satelliteName, int node)
@@ -243,26 +255,52 @@ public class FootprintPreviewProvider : MemoryProvider, IDynamic
         var node = observationTask.Node + 1;
         var direction = observationTask.Direction.ToString();
 
-        var (baseNear, baseFar) = orbit.BuildSwaths(node - 1, t0 - 60, t1 + 60, 10, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
-        var baseNearSwathFeature = FeatureBuilder.CreateTrack("", baseNear);
-        baseNearSwathFeature.Styles.Add(StyleBuilder.CreateFootprintSwathStyle());
-        var baseFarSwathFeature = FeatureBuilder.CreateTrack("", baseFar);
-        baseFarSwathFeature.Styles.Add(StyleBuilder.CreateFootprintSwathStyle());
+        var (baseNear, baseFar) = orbit.BuildSwaths2(node - 1, t0 - 60, t1 + 60, 10, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
+        var baseNear2 = LonSplitters.Default.Split(baseNear);
+        var baseFar2 = LonSplitters.Default.Split(baseFar);
 
-        var (near, far) = orbit.BuildSwaths(node - 1, t0, t1, 2, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
+        var baseNearSwathFeature = FeatureBuilder.CreateTrack(baseNear2, style: StyleBuilder.CreateFootprintSwathStyle());
+
+        var baseFarSwathFeature = FeatureBuilder.CreateTrack(baseFar2, style: StyleBuilder.CreateFootprintSwathStyle());
+
+        var (near, far) = orbit.BuildSwaths2(node - 1, t0, t1, 2, lookAngle, radarAngle, Enum.Parse<SpaceScience.Model.SwathDirection>(direction));
 
         var firstNearPoint = near.First();
-        var lastNearPoint = near.Last();
-        var firstFarPoint = far.First();
+        var lastNearPoint = near.Last(); 
         var lastFarPoint = far.Last();
+        var firstFarPoint = far.First();
 
-        var p1 = FeatureBuilder.CreatePolygon(new() { firstNearPoint, lastNearPoint, lastFarPoint, firstFarPoint }, "");
-        p1.Styles.Add(StyleBuilder.CreateFootprintSwathAreaStyle());
+        //var areaGeometry = FeatureBuilder.AreaCutting(new Coordinate[]
+        //{
+        //    new Coordinate(firstNearPoint.lonDeg, firstNearPoint.latDeg),
+        //    new Coordinate(lastNearPoint.lonDeg, lastNearPoint.latDeg),
+        //    new Coordinate(lastFarPoint.lonDeg, lastFarPoint.latDeg),
+        //    new Coordinate(firstFarPoint.lonDeg, firstFarPoint.latDeg),
+        //    new Coordinate(firstNearPoint.lonDeg, firstNearPoint.latDeg),
+        //});
 
-        return new()
+        //var area = areaGeometry.ToFeatureEx(style: StyleBuilder.CreateFootprintSwathAreaStyle());
+
+        var res = LonSplitters.Default.SplitArea(new() { firstNearPoint, lastNearPoint, lastFarPoint, firstFarPoint });
+
+        var geoms = res
+            .Select(s => s.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg)).ToList())
+            .Select(s => s.ToClosedCoordinates())
+            .Select(s => new LinearRing(s))
+            .Select(s => (Geometry)new Polygon(s));
+
+        var area = new GeometryFactory()
+            .BuildGeometry(geoms)
+            .ToFeatureEx(style: StyleBuilder.CreateFootprintSwathAreaStyle());
+
+        var features = new List<IFeature>
         {
-            baseNearSwathFeature, baseFarSwathFeature, p1
+            baseNearSwathFeature,
+            baseFarSwathFeature,
+            area
         };
+
+        return features;
     }
 
     private IFeature GetGroundTargetFeature(ObservationTaskResult observationTask)

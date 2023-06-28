@@ -91,6 +91,8 @@ public class PlannedScheduleTabViewModel : ViewModelBase
         {
             MainWindowViewModel.Instance.LeaveFootprint();
         });
+
+        SearchString = "Satellite: 1";
     }
 
     private static Func<TaskResultViewModel, bool> SearchStringPredicate(string? arg)

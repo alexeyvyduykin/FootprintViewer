@@ -102,7 +102,9 @@ public static class StyleBuilder
         {
             MinVisible = 0,
             MaxVisible = _maxVisibleFootprintStyle,
-            Line = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0)
+            Fill = null,
+            Line = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0),
+            Outline = new Pen(Color.Opacity(Color.Black, 1.0f), 2.0)
         };
     }
 
