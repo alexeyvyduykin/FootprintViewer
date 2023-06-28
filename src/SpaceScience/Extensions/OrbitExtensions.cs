@@ -22,7 +22,7 @@ public static class OrbitExtensions
         var nodes = orbit.NodesOnDay();
 
         var res = Enumerable.Range(0, nodes)
-            .ToDictionary(s => s, s => track.GetTrack(s, LonConverters.Default).ToCutList());
+            .ToDictionary(s => s, s => LonSplitters.Default.Split(track.GetTrack(s)));
 
         return new TrackBuilderResult(res);
     }
@@ -36,6 +36,15 @@ public static class OrbitExtensions
         var rightRes = BuildSwaths(orbit, rightSwath);
 
         return new SwathBuilderResult(leftRes, rightRes);
+    }
+
+    public static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths2(this Orbit orbit, int node, double t0, double t1, double dt, double lookAngleDeg, double radarAngleDeg, SwathDirection direction)
+    {
+        var swath = new Swath(orbit, lookAngleDeg, radarAngleDeg, direction);
+
+        var (near, far) = BuildSwaths2(swath, node, t0, t1, dt);
+
+        return (near, far);
     }
 
     public static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths(this Orbit orbit, int node, double t0, double t1, double dt, double lookAngleDeg, double radarAngleDeg, SwathDirection direction)
@@ -109,6 +118,17 @@ public static class OrbitExtensions
         var near = swath.GetNearTrack(node, t1 - t0, LonConverters.Default);
 
         var far = swath.GetFarTrack(node, t1 - t0, LonConverters.Default);
+
+        return (near, far);
+    }
+
+    private static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths2(Swath swath, int node, double t0, double t1, double dt)
+    {
+        swath.CalculateSwathOnInterval(t0, t1, dt);
+
+        var near = swath.GetNearTrack(node, t1 - t0);
+
+        var far = swath.GetFarTrack(node, t1 - t0);
 
         return (near, far);
     }

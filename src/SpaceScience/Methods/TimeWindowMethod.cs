@@ -150,8 +150,8 @@ internal static class TimeWindowMethod
                                 NadirTime = tVis,
                                 NadirU = uVis,
                                 MinAngle = minCenterlAngleDeg,
-                                Interval = interval.ToCutList(),
-                                Direction = direction.ToCutList()
+                                Interval = LonSplitters.Default.Split(interval),
+                                Direction = LonSplitters.Default.Split(direction)
                             });
                         }
 
@@ -196,8 +196,8 @@ internal static class TimeWindowMethod
                         NadirTime = tVis,
                         NadirU = uVis,
                         MinAngle = minCenterlAngleDeg,
-                        Interval = interval.ToCutList(),
-                        Direction = direction.ToCutList()
+                        Interval = LonSplitters.Default.Split(interval),
+                        Direction = LonSplitters.Default.Split(direction)
                     });
                 }
             }
