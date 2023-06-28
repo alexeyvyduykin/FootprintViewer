@@ -1,4 +1,5 @@
 ﻿using FootprintViewer.Data.Models;
+using SpaceScience;
 using SpaceScience.Extensions;
 using SpaceScience.Model;
 
@@ -72,7 +73,9 @@ public static class PlannedSchedulesExtensions
 
                     track.CalculateTrackOnTimeInterval(t0, t1, 2);
 
-                    var trackLine = track.GetTrack(i, duration, LonConverters.Default).ToCutList();
+                    var res = track.GetTrack(i, duration);
+
+                    var trackLine = LonSplitters.Default.Split(res);
 
                     dict2[i].AddRange(trackLine);
                 }
