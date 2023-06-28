@@ -16,7 +16,7 @@ public static partial class FeatureBuilder
     {
         var poly = AreaCutting(footprint.Border.Coordinates);
 
-        var feature = poly.ToFeature(footprint.Name!);
+        var feature = poly.ToFeatureEx(footprint.Name);
 
         return feature;
     }

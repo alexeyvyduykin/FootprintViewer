@@ -1,5 +1,6 @@
 ﻿using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
+using Mapsui.Styles;
 using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,11 +73,19 @@ public static class NetTopologySuiteExtensions
         return coordinates;
     }
 
-    public static GeometryFeature ToFeature(this Geometry geometry, string name)
+    public static GeometryFeature ToFeatureEx(this Geometry geometry, string? name = null, IStyle? style = null)
     {
         var feature = geometry.ToFeature();
 
-        feature["Name"] = name;
+        if (string.IsNullOrEmpty(name) == false)
+        {
+            feature["Name"] = name;
+        }
+
+        if (style is { })
+        {
+            feature.Styles.Add(style);
+        }
 
         return feature;
     }

@@ -24,7 +24,7 @@ public class UserGeometryProvider : IProvider, IDynamic, IFeatureProvider
         _userGeometries
             .Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Transform(s => (IFeature)s.Geometry!.ToFeature(s.Name!))
+            .Transform(s => (IFeature)s.Geometry!.ToFeatureEx(s.Name))
             .Bind(out _features)
             .Subscribe(_ => DataHasChanged());
     }

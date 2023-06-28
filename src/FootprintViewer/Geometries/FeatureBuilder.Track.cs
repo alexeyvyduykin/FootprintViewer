@@ -1,4 +1,7 @@
 ﻿using Mapsui;
+using Mapsui.Projections;
+using Mapsui.Styles;
+using NetTopologySuite.Geometries;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,5 +26,21 @@ public static partial class FeatureBuilder
     public static IFeature CreateTrack(string name, List<(double lonDeg, double latDeg)> list)
     {
         return CreateLineString(name, list);
+    }
+
+    public static IFeature CreateTrack(List<List<(double lonDeg, double latDeg)>> list, string? name = null, IStyle? style = null)
+    {
+        var lineStrings = new List<LineString>();
+
+        foreach (var item in list)
+        {
+            var vertices = item.Select(s => SphericalMercator.FromLonLat(s.lonDeg, s.latDeg));
+
+            var line = new GeometryFactory().CreateLineString(vertices.ToGreaterThanTwoCoordinates());
+
+            lineStrings.Add(line);
+        }
+
+        return new MultiLineString(lineStrings.ToArray()).ToFeatureEx(name, style);
     }
 }
