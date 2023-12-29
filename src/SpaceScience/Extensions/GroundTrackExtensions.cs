@@ -4,9 +4,17 @@ namespace SpaceScience.Extensions;
 
 public static class GroundTrackExtensions
 {
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static List<(double lonDeg, double latDeg, double u, double t)> GetFullTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
     {
-        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+        if (node < 1)
+        {
+            node = 1;
+        }
+
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * (node - 1);
 
         if (lonConverter != null)
         {
@@ -20,13 +28,21 @@ public static class GroundTrackExtensions
             .ToList();
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static List<(double lonDeg, double latDeg, double u, double t)> GetFullTrack(this GroundTrack track, int node, double duration, Func<double, double>? lonConverter = null)
     {
+        if (node < 1)
+        {
+            node = 1;
+        }
+
         var list = new List<(double lonDeg, double latDeg, double u, double t)>();
 
         // TODO: duration cut
         double durationSum = 0.0;
-        int node1 = node;
+        int node1 = node - 1;
         var uPrev = track.CacheTrack.First().u;
         var tPrev = track.CacheTrack.First().t;
 
@@ -69,6 +85,9 @@ public static class GroundTrackExtensions
         return list;
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, Func<double, double>? lonConverter = null)
     {
         return track
@@ -77,10 +96,19 @@ public static class GroundTrackExtensions
             .ToList();
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static List<(double lonDeg, double latDeg)> GetTrack(this GroundTrack track, int node, double duration, Func<double, double>? lonConverter = null)
     {
+        if (node < 1)
+        {
+            node = 1;
+        }
+
         var node1 = node;
 
+        // TODO: remove nodeCorrect
         if (track._isNodeCorrect == true)
         {
             node1--;
@@ -92,9 +120,17 @@ public static class GroundTrackExtensions
             .ToList();
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static (double lonDeg, double latDeg) GetTrackOfIndex(this GroundTrack track, int index, int node, Func<double, double>? lonConverter = null)
     {
-        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+        if (node < 1)
+        {
+            node = 1;
+        }
+
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * (node - 1);
 
         var (lonDeg, latDeg, _, _) = track.CacheTrack[index];
 
@@ -106,9 +142,17 @@ public static class GroundTrackExtensions
         return (lonDeg + offset, latDeg);
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static (double lonDeg, double latDeg, double u, double t) GetFullTrackOfIndex(this GroundTrack track, int index, int node, Func<double, double>? lonConverter = null)
     {
-        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * node;
+        if (node < 1)
+        {
+            node = 1;
+        }
+
+        var offset = (track.NodeOffsetDeg + track.EarthRotateOffsetDeg) * (node - 1);
 
         var (lonDeg, latDeg, u, t) = track.CacheTrack[index];
 

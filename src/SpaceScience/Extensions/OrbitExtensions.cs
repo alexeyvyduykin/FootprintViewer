@@ -13,6 +13,16 @@ public static class OrbitExtensions
         return (int)Math.Floor(86400.0 / orbit.Period);
     }
 
+    /// <summary>
+    /// nodes = [1, 2, 3 ... n]
+    /// </summary>
+    public static int[] ToNodesOnDay(this Orbit orbit)
+    {
+        var nodeCount = orbit.NodesOnDay();
+        var nodes = Enumerable.Range(1, nodeCount).ToArray();
+        return nodes;
+    }
+
     public static TrackBuilderResult BuildTracks(this Orbit orbit)
     {
         var track = new GroundTrack(orbit);
@@ -21,7 +31,7 @@ public static class OrbitExtensions
 
         var nodes = orbit.NodesOnDay();
 
-        var res = Enumerable.Range(0, nodes)
+        var res = Enumerable.Range(1, nodes)
             .ToDictionary(s => s, s => LonSplitters.Default.Split(track.GetTrack(s)));
 
         return new TrackBuilderResult(res);
@@ -32,12 +42,18 @@ public static class OrbitExtensions
         var leftSwath = new Swath(orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Left);
         var rightSwath = new Swath(orbit, lookAngleDeg, radarAngleDeg, SwathDirection.Right);
 
-        var leftRes = BuildSwaths(orbit, leftSwath);
-        var rightRes = BuildSwaths(orbit, rightSwath);
+        var nodeCount = orbit.NodesOnDay();
+        var nodes = Enumerable.Range(1, nodeCount).ToArray();
+
+        var leftRes = leftSwath.BuildSwaths(nodes);
+        var rightRes = rightSwath.BuildSwaths(nodes);
 
         return new SwathBuilderResult(leftRes, rightRes);
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths2(this Orbit orbit, int node, double t0, double t1, double dt, double lookAngleDeg, double radarAngleDeg, SwathDirection direction)
     {
         var swath = new Swath(orbit, lookAngleDeg, radarAngleDeg, direction);
@@ -47,6 +63,9 @@ public static class OrbitExtensions
         return (near, far);
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     public static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths(this Orbit orbit, int node, double t0, double t1, double dt, double lookAngleDeg, double radarAngleDeg, SwathDirection direction)
     {
         var swath = new Swath(orbit, lookAngleDeg, radarAngleDeg, direction);
@@ -79,38 +98,9 @@ public static class OrbitExtensions
         return (centralAngleMinDeg, centralAngleMaxDeg);
     }
 
-    private static Dictionary<int, List<List<(double lonDeg, double latDeg)>>> BuildSwaths(Orbit orbit, Swath swath)
-    {
-        var swaths = new Dictionary<int, List<List<(double lonDeg, double latDeg)>>>();
-
-        swath.CalculateSwathWithLogStep();
-
-        var nodes = orbit.NodesOnDay();
-
-        for (int i = 0; i < nodes; i++)
-        {
-            var near = swath
-                .GetNearTrack(i, LonConverters.Default)
-                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
-                .ToList();
-
-            var far = swath
-                .GetFarTrack(i, LonConverters.Default)
-                .Select(s => (s.lonDeg * SpaceMath.DegreesToRadians, s.latDeg * SpaceMath.DegreesToRadians))
-                .ToList();
-
-            var engine2D = new SwathCore2D(near, far, swath.IsCoverPolis);
-
-            var shapes = engine2D.CreateShapes(false, false);
-
-            var convertShapes = shapes.Select(s => s.Select(g => (g.lonRad * SpaceMath.RadiansToDegrees, g.latRad * SpaceMath.RadiansToDegrees)).ToList()).ToList();
-
-            swaths.Add(i, convertShapes);
-        }
-
-        return swaths;
-    }
-
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     private static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths(Swath swath, int node, double t0, double t1, double dt)
     {
         swath.CalculateSwathOnInterval(t0, t1, dt);
@@ -122,6 +112,9 @@ public static class OrbitExtensions
         return (near, far);
     }
 
+    /// <summary>
+    /// node = [1; n]
+    /// </summary>
     private static (List<(double lonDeg, double latDeg)> near, List<(double lonDeg, double latDeg)> far) BuildSwaths2(Swath swath, int node, double t0, double t1, double dt)
     {
         swath.CalculateSwathOnInterval(t0, t1, dt);
