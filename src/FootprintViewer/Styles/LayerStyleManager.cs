@@ -20,12 +20,12 @@ public class LayerStyleManager
     private const int _maxVisibleFootprintStyle = 10000;
 
     // TODO: interactivity keys refactoring
-    private const string SelectField = Mapsui.Interactivity.InteractiveFields.Select;
+    private const string SelectField = "Select";// Mapsui.Interactivity.InteractiveFields.Select;
     private const string HoverField = "Highlight";
 
-    private const string ExtraPolygonHoverLineField = Mapsui.Interactivity.InteractiveNames.ExtraPolygonHoverLine;
-    private const string ExtraPolygonAreaField = Mapsui.Interactivity.InteractiveNames.ExtraPolygonArea;
-    private const string ExtraRouteHoverLineField = Mapsui.Interactivity.InteractiveNames.ExtraRouteHoverLine;
+    private const string ExtraPolygonHoverLineField = "ExtraPolygonHoverLine";// Mapsui.Interactivity.InteractiveNames.ExtraPolygonHoverLine;
+    private const string ExtraPolygonAreaField = "ExtraPolygonArea";// Mapsui.Interactivity.InteractiveNames.ExtraPolygonArea;
+    private const string ExtraRouteHoverLineField = "ExtraRouteHoverLine";// Mapsui.Interactivity.InteractiveNames.ExtraRouteHoverLine;
 
     private readonly Dictionary<LayerType, LayerStyleViewModel[]> _dict;
     private readonly Dictionary<LayerType, LayerStyleViewModel?> _selectedDict;

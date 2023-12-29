@@ -43,8 +43,7 @@ public static class SatelliteExtensions
         };
 
         var swath = new Swath(orbit, satellite.LookAngleDeg, satellite.RadarAngleDeg, dir);
-        var res = swath.BuildSwaths(orbit);
-
+        var res = swath.BuildSwaths(orbit.ToNodesOnDay());
         return res;
     }
 

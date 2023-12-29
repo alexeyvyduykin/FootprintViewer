@@ -19,7 +19,7 @@ public class MapService : IMapService
     private readonly Dictionary<LayerType, IProvider?> _providers = new();
     private readonly FeatureManager _featureManager = new();
 
-    private const string SelectField = Mapsui.Interactivity.InteractiveFields.Select;
+    //private const string SelectField = Mapsui.Interactivity.InteractiveFields.Select;
 
     public MapService()
     {
@@ -55,8 +55,8 @@ public class MapService : IMapService
         _aoi = new AreaOfInterest(_map);
 
         _featureManager = _featureManager
-            .WithSelect(f => f[SelectField] = true)
-            .WithUnselect(f => f[SelectField] = false)
+            .WithSelect(f => f["Select"] = true)
+            .WithUnselect(f => f["Select"] = false)
             .WithEnter(f => f["Highlight"] = true)
             .WithLeave(f => f["Highlight"] = false);
     }
