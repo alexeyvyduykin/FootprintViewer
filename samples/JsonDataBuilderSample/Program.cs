@@ -6,7 +6,7 @@ namespace JsonDataBuilderSample;
 
 internal class Program
 {
-    static async Task Main(string[] _) => await Sample1();
+    static async Task Main(string[] _) => await Compute1("demo.json");
 
     static async Task Sample1()
     {
@@ -67,6 +67,28 @@ internal class Program
 
         JsonHelper.SerializeToFile(plannedSchedulePath, plannedSchedule);
         var plannedScheduleSuccess = JsonHelper.Verified<PlannedScheduleResult>(plannedSchedulePath);
+        Console.WriteLine($"File {Path.GetFileName(plannedSchedulePath)} is build and verified = {plannedScheduleSuccess}.");
+    }
+
+    // TODO: add support for PlannedScheduleObject
+    static async Task Compute1(string filename)
+    {
+        var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+
+        var dataDir = Path.Combine(root, @"..\..\..\Output");
+
+        Directory.CreateDirectory(dataDir);
+
+        var plannedSchedulePath = Path.GetFullPath(Path.Combine(dataDir, filename));
+
+        var gts = await GroundTargetBuilder.CreateAsync(2000/*300*/);
+        var satellites = await SatelliteBuilder.CreateAsync(5);
+        var gss = await GroundStationBuilder.CreateDefaultAsync();
+
+        var psObject = await Models.PlannedScheduleBuilder.CreateAsync(satellites, gts, gss);
+
+        JsonHelper.SerializeToFile(plannedSchedulePath, psObject);
+        var plannedScheduleSuccess = JsonHelper.Verified<Models.PlannedScheduleObject>(plannedSchedulePath);
         Console.WriteLine($"File {Path.GetFileName(plannedSchedulePath)} is build and verified = {plannedScheduleSuccess}.");
     }
 }
