@@ -29,8 +29,8 @@ public class MainWindowViewModel : ViewModelBase
     private const int _maxVisibleFootprintStyle = 10000;
     private ISelector? _selector;
     private readonly FeatureManager _featureManager;
-    private const string SelectField = InteractiveFields.Select;
-    private const string HoverField = InteractiveFields.Hover;
+    //private const string SelectField = InteractiveFields.Select;
+    //private const string HoverField = InteractiveFields.Hover;
     private Subject<IInteractive> _subj = new();
 
     public static MainWindowViewModel Instance = new();
